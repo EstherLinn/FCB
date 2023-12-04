@@ -1,0 +1,66 @@
+﻿; EditorConfig to support per-solution formatting.
+; Use the EditorConfig VS add-in to make this work.
+; http://editorconfig.org/
+
+; This is the default for the codeline.
+root = true
+
+; All files
+[*]
+indent_style = space
+trim_trailing_whitespace = true
+charset = utf-8-bom
+# 新行喜好設定
+insert_final_newline = false
+
+; .NET Code - almost, but not exactly, the same suggestions as corefx
+[*.cs]
+#### .NET 編碼慣例 ####
+
+# 組合管理 Using
+dotnet_sort_system_directives_first = false
+
+# this. 和 Me. 喜好設定
+dotnet_style_qualification_for_event = false:suggestion
+dotnet_style_qualification_for_field = true:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_property = true:suggestion
+
+# 語言關鍵字與 BCL 類型喜好設定
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
+
+# 修飾元喜好設定
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
+
+# 'using' 指示詞的喜好設定
+csharp_using_directive_placement = outside_namespace:none
+
+# 程式碼區塊喜好設定
+csharp_prefer_braces = true:suggestion
+csharp_prefer_simple_using_statement = false
+csharp_style_namespace_declarations = block_scoped:suggestion
+
+#### C# 編碼慣例 ####
+# var 喜好設定
+csharp_style_var_elsewhere = true:suggestion
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+# 修飾元喜好設定
+csharp_preferred_modifier_order = public, private, protected, internal, file, new, static, abstract, virtual, sealed, readonly, override, extern, unsafe, volatile, async, required:suggestion
+
+; JavaScript and JS mixes - match eslint settings
+[*.{js,ts,vue}]
+indent_size = 4
+
+; PowerShell - match defaults for New-ModuleManifest and PSScriptAnalyzer Invoke-Formatter
+[*.{ps1,psd1,psm1}]
+indent_size = 4
+
+; Markdown - match markdownlint settings; JSON also matches .NET Core templates
+[*.{md,markdown,json}]
+indent_size = 2
+
+; Other
+[*.{appxmanifest,axml,build,config,csproj,dbml,discomap,dtd,jsproj,lsproj,njsproj,nuspec,proj,props,StyleCop,targets,tasks,vbproj,xaml,xamlx,xml,xoml,xsd}]
+indent_size = 2
