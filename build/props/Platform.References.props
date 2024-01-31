@@ -1,0 +1,27 @@
+﻿<!--
+***********************************************************************************************
+ Platform.Properties.props
+                                                                      [ESi // ESi]
+***********************************************************************************************
+-->
+
+<Project>
+  <ItemGroup>
+    <PackageReference Include="Sitecore.Kernel" />
+    <PackageReference Include="Sitecore.Mvc" />
+    <PackageReference Include="Sitecore.Mvc.Analytics" />
+
+    <!-- Important; prevents Sitecore ootb references from being published. -->
+    <PackageReference Include="Sitecore.Assemblies.Platform" />
+    <PackageReference Include="Sitecore.Assemblies.SitecoreHeadlessServicesServer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.Mvc" />
+    <PackageReference Include="Microsoft.AspNet.Razor" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" />
+    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Xcms.Sitecore.Foundation.Basic" VersionOverride="[0.1.0, )" />
+  </ItemGroup>
+</Project>

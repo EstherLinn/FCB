@@ -1,9 +1,28 @@
 ﻿### Standard detritus ###
 
+[Dd]ocker/
 [Dd]eploy/
+[Ee]xport/
 .nuget
 [Tt]emp/
 !/**/.gitkeep
+
+# =========================
+# Sitecore
+# =========================
+# may contain OAuth secrets, do not commit
+.sitecore/
+.sitecore/user.json
+
+# NuGet cache for Sitecore CLI
+.sitecore/package-cache/
+
+# Ephemeral index caches used by serialization, do not commit
+.scindex
+
+# Don't commit packages
+*.itempackage
+*.sicpackage
 
 # Created by https://www.toptal.com/developers/gitignore/api/
 # Edit at https://www.toptal.com/developers/gitignore?templates=
@@ -198,7 +217,7 @@ fabric.properties
 
 ## Cache file creation bug
 ## See https://youtrack.jetbrains.com/issue/JBR-2257
-.idea/$CACHE_FILE$
+.idea/$cache_file$
 
 ## CodeStream plugin
 ## https://plugins.jetbrains.com/plugin/12206-codestream

@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  These props are used by Central Package Versions to ensure consistent NuGet
+  package versions in your Visual Studio projects.
+  https://github.com/microsoft/MSBuildSdks/tree/master/src/CentralPackageVersions
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PlatformVersion>10.3.1</PlatformVersion>
+    <SitecoreAspNetVersion>21.0.*</SitecoreAspNetVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- === unit Test === -->
+    <PackageReference Update="AutoFixture" Version="4.18.1" />
+    <PackageReference Update="FluentAssertions" Version="6.12.0" />
+    <PackageReference Update="Moq" Version="4.20.70" />
+    <PackageReference Update="Sitecore.FakeDb" Version="2.0.1" />
+    <PackageReference Update="xunit" Version="2.6.5" />
+
+    <!-- === misc === -->
+    <PackageReference Update="ChoETL" Version="1.2.1.64" />
+    <PackageReference Update="Dapper" Version="2.1.28" />
+    <PackageReference Update="Flurl.Http" Version="4.0.2" />
+    <PackageReference Update="HtmlSanitizer" Version="8.0.811" />
+    <PackageReference Update="Mapster" Version="7.3.0" />
+    <PackageReference Update="Quartz" Version="3.8.0" />
+    <PackageReference Update="Scriban" Version="5.9.1" />
+    <PackageReference Update="SiteCron" Version="3.6.1" />
+    <PackageReference Update="X.PagedList" Version="8.4.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- === platform vulnerability version fix for === -->
+    <PackageReference Update="Microsoft.AspNet.Identity.Owin" Version="2.2.4" />
+    <PackageReference Update="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Update="System.Security.Cryptography.Xml" Version="6.0.1" />
+    <PackageReference Update="SharpZipLib" Version="1.4.2" />
+
+    <!-- === force upgrade sitecore dependency package version === -->
+    <PackageReference Update="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Update="System.Collections.Immutable" Version="8.0.0" />
+    <PackageReference Update="System.Memory" Version="4.5.5" />
+    <PackageReference Update="System.Text.Json" Version="6.0.9" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- === shared === -->
+    <PackageReference Update="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="4.1.0" />
+    <PackageReference Update="Microsoft.Net.Compilers.ToolSet" Version="4.8.0" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.8.0" />
+    <PackageReference Update="SonarAnalyzer.CSharp" Version="9.20.0.85982" />
+
+    <!-- === platform pin the specified version for sitecore 10.3.* === -->
+    <PackageReference Update="Microsoft.AspNet.Mvc" Version="5.2.4" />
+    <PackageReference Update="Microsoft.AspNet.Razor" Version="3.2.4" />
+    <PackageReference Update="Microsoft.AspNet.WebPages" Version="3.2.4" />
+
+    <!-- === platform deploy === -->
+    <PackageReference Update="RichardSzalay.Helix.Publishing.WebRoot" Version="1.5.6" />
+    <PackageReference Update="WebConfigTransformRunner" Version="1.0.0.1" />
+
+    <!-- === platform === -->
+    <PackageReference Update="Sitecore.Assemblies.Platform" Version="$(PlatformVersion)" />
+    <PackageReference Update="Sitecore.Analytics" Version="$(PlatformVersion)" />
+    <PackageReference Update="Sitecore.Mvc.Analytics" Version="$(PlatformVersion)" />
+    <PackageReference Update="Sitecore.Kernel" Version="$(PlatformVersion)" />
+    <PackageReference Update="Sitecore.Mvc" Version="$(PlatformVersion)" />
+    <PackageReference Update="Sitecore.Logging" Version="$(PlatformVersion)" />
+    <PackageReference Update="Sitecore.Buckets" Version="$(PlatformVersion)" />
+    <PackageReference Update="Sitecore.Owin" Version="$(PlatformVersion)" />
+    <PackageReference Update="Sitecore.Owin.Authentication" Version="$(PlatformVersion)" />
+    <PackageReference Update="Sitecore.ContentSearch" Version="$(PlatformVersion)" />
+    <PackageReference Update="Sitecore.ContentSearch.Linq" Version="$(PlatformVersion)" />
+
+    <!-- === platform Headless === -->
+    <PackageReference Update="Sitecore.Assemblies.SitecoreHeadlessServicesServer" Version="$(SitecoreAspNetVersion)" />
+    <PackageReference Update="Sitecore.LayoutService" Version="8.0.*" />
+    <PackageReference Update="Sitecore.Services.GraphQL" Version="6.0.*" />
+    <PackageReference Update="Sitecore.Services.GraphQL.ContentSchema" Version="6.0.*" />
+
+    <!-- === rendering -->
+    <PackageReference Update="Sitecore.AspNet.ExperienceEditor" Version="$(SitecoreAspNetVersion)" />
+    <PackageReference Update="Sitecore.AspNet.Tracking" Version="$(SitecoreAspNetVersion)" />
+    <PackageReference Update="Sitecore.AspNet.Tracking.VisitorIdentification" Version="$(SitecoreAspNetVersion)" />
+    <PackageReference Update="Sitecore.LayoutService.Client" Version="$(SitecoreAspNetVersion)" />
+    <PackageReference Update="Sitecore.AspNet.RenderingEngine" Version="$(SitecoreAspNetVersion)" />
+    <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.0" />
+    <PackageReference Update="Microsoft.Extensions.Http" Version="3.1.1" />
+    <PackageReference Update="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+  </ItemGroup>
+</Project>

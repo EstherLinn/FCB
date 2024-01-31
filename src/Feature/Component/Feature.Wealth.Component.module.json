@@ -1,0 +1,12 @@
+﻿{
+  "namespace": "Feature.Wealth.Component",
+  "references": [ "Foundation.*" ],
+  "items": {
+    "includes": [
+      {
+        "name": "templates",
+        "path": "/sitecore/templates/Feature/Component"
+      }
+    ]
+  }
+}

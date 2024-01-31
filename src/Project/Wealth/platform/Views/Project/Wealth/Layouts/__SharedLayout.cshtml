@@ -1,0 +1,106 @@
+﻿@using Sitecore.Mvc.Analytics.Extensions
+<!DOCTYPE html>
+<html class="no-js" lang="zh-hant-tw">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#fafafa">
+    <link href="/site.webmanifest" rel="manifest">
+    <!-- 3rd party vendor -->
+    <!-- ui vendor -->
+    <!-- override-->
+    <!-- library -->
+    <!-- #START RenderSection: Head -->
+    @RenderSection("Head", false)
+    <!-- #END RenderSection: Head -->
+    @if (!Sitecore.Context.PageMode.IsExperienceEditor)
+    {
+        <!-- #START Placeholder: page-head-->
+        @Html.Sitecore().Placeholder("page-head")
+        <!-- #END Placeholder: page-head-->
+    }
+    <!-- assets script -->
+    @* @RenderAssetsService.Current.RenderScript(ScriptLocation.Head) *@
+    <!-- assets style-->
+    @* @RenderAssetsService.Current.RenderStyles() *@
+    @Html.Sitecore().VisitorIdentification()
+</head>
+<body>
+    <!-- assets script -->
+    @* @RenderAssetsService.Current.RenderScript(ScriptLocation.BodyTop) *@
+    <script>
+        @if (Sitecore.Context.PageMode.IsPreview)
+        {
+            @:if (!!jQuery) { jQuery.noConflict(true); }
+        }
+        const SC_DATA = {};
+        addObjectValue(SC_DATA, 'Lang', '@Sitecore.Context.Language');
+        addObjectValue(SC_DATA, 'ContentLang', '@Sitecore.Context.ContentLanguage');
+        @if (Sitecore.Context.IsLoggedIn && Sitecore.Context.IsAdministrator)
+        {
+            @:addObjectValue(SC_DATA, 'Site', '@Sitecore.Context.Site.Name');
+            @:addObjectValue(SC_DATA, 'Path', '@Sitecore.Context.Item.Paths.Path');
+            @:addObjectValue(SC_DATA, 'ItemId', '@Sitecore.Context.Item.ID');
+            @:addObjectValue(SC_DATA, 'Database', '@Sitecore.Context.Data.Database.Name');
+        }
+    </script>
+    <!--[if lte IE 11]>
+        <div class="c-browserUpgrade">
+            <b>您的網路瀏覽器已過舊。</b>
+            <span>更新您的瀏覽器以獲得更佳的安全性、速度以及在此網站的最佳體驗。</span>
+            <span class="c-browserUpgrade__actions">
+                <a class="c-browserUpgrade__update" href="https://browser-update.org/zh_TW/update-browser.html" target="_blank" title="更新瀏覽器" rel="noopener noreferrer">更新瀏覽器</a>
+
+            </span>
+        </div>
+    <![endif]-->
+
+    <div class="l-container">
+        <header class="l-header u-hidden-embed">
+            <div class="l-header__burger">
+                <!-- [data-burger]: 綁定手機版選單開啟功能 -->
+                <a href="#" class="o-burger" data-burger>
+                    <span></span>
+                    <span></span>
+                </a>
+            </div>
+            <div class="l-header__logo">
+                <a href="./index.html" class="o-ci">
+                    <img src="./themes/images/layout/logo.svg" alt="第一銀行logo" class="o-ci__logo">
+                    <span class="o-ci__site">第e理財網</span>
+                </a>
+            </div>
+
+            <!-- #START Placeholder: page-header -->
+            @Html.Sitecore().Placeholder("page-header")
+            <!-- #END Placeholder: page-header -->
+
+
+            <!-- #START Placeholder: search -->
+            @Html.Sitecore().Placeholder("search")
+            <!-- #END Placeholder: search -->
+            <!-- #START Placeholder: navbar -->
+            @Html.Sitecore().Placeholder("navbar")
+            <!-- #END Placeholder: navbar -->
+        </header>
+        @Html.Sitecore().Placeholder("breadcrumb")
+        @RenderBody()
+        <footer>
+            <!-- #START Placeholder: page-footer -->
+            @Html.Sitecore().Placeholder("page-footer")
+            <!-- #END Placeholder: page-footer -->
+        </footer>
+        <aside class="c-sidebar">
+            <div class="c-sidebar__wrap">
+                @Html.Sitecore().Placeholder("page-widget")
+            </div>
+        </aside>
+    </div>
+    <!-- #START RenderSection: Bottom -->
+    @RenderSection("Bottom", false)
+    <!-- #END RenderSection: Bottom -->
+    <!-- assets script -->
+    @* @RenderAssetsService.Current.RenderScript(ScriptLocation.BodyBottom) *@
+</body>
+</html>

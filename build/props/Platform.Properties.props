@@ -1,0 +1,13 @@
+<!--
+***********************************************************************************************
+ Platform.Properties.props
+                                                                      [ESi // ESi]
+***********************************************************************************************
+-->
+
+<Project>
+  <PropertyGroup>
+    <!-- Set solution-wide config file for binding redirects, to reduce msbuild warns -->
+    <AppConfig>$(SolutionDir)\Build\props\Platform.AssemblyBindings.config</AppConfig>
+  </PropertyGroup>
+</Project>

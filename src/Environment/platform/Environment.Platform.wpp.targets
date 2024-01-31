@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <SitecoreAssembliesToExclude Include="bin\*.dll.config" />
+
+    <!-- Sitecore builtin assemblies -->
+    <SitecoreAssembliesToExclude Include="@(SitecoreAssemblies)" />
+
+    <!--<AdditionalFilesToRemoveFromTarget Include="Assemblies">
+      <TargetPath>bin\*.dll.config</TargetPath>
+    </AdditionalFilesToRemoveFromTarget>-->
+
+    <!-- Deployment project -->
+    <SitecoreAssembliesToExclude Include="Environment.Platform.dll" />
+    <SitecoreAssembliesToExclude Include="Sitecore.LayoutService.dll" />
+    <SitecoreAssembliesToExclude Include="Sitecore.LayoutService.Mvc.dll" />
+  </ItemGroup>
+  <PropertyGroup>
+    <AutoPublish Condition="'$(AutoPublish)' == '' and '$(Configuration)' == 'Debug' and '$(BuildingInsideVisualStudio)' == 'true' and '$(PublishProfile)' != ''">true</AutoPublish>
+    <AutoPublishDependsOn Condition="'$(AutoPublish)' == 'true'">$(AutoPublishDependsOn);WebPublish</AutoPublishDependsOn>
+  </PropertyGroup>
+  <Target Name="AutoPublish" AfterTargets="Build" DependsOnTargets="$(AutoPublishDependsOn)"></Target>
+</Project>

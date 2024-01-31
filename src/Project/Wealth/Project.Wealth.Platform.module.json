@@ -1,0 +1,12 @@
+{
+  "namespace": "Project.Wealth.Platform",
+  "references": ["Foundation.*"],
+  "items": {
+    "includes": [
+      {
+        "name": "templates",
+        "path": "/sitecore/templates/Project/Wealth"
+      }
+    ]
+  }
+}

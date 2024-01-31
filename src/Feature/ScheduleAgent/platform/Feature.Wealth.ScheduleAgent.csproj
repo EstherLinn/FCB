@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Feature.Wealth.ScheduleAgent</RootNamespace>
+    <AssemblyName>Feature.Wealth.ScheduleAgent</AssemblyName>
+    <SitecoreRoleType>platform</SitecoreRoleType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SupportsSystemWeb" />
+  </ItemGroup>
+</Project>

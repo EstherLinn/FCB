@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Project.Wealth.Platform</RootNamespace>
+    <AssemblyName>Project.Wealth.Platform</AssemblyName>
+    <SitecoreRoleType>platform</SitecoreRoleType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SupportsSystemWeb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="themes\project\wealth\css\" />
+    <Folder Include="themes\project\wealth\js\" />
+    <Folder Include="themes\project\wealth\media\" />
+    <Folder Include="Views\Project\Wealth\Partial\" />
+  </ItemGroup>
+</Project>

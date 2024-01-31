@@ -1,0 +1,160 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Feature", "Feature", "{29EC27BC-A457-43F7-80D4-5BC4652E3B1E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Foundation", "Foundation", "{2FAA7571-FDE5-4C40-B707-2DF817B106DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{B05190A2-032D-4EB9-8A8B-9E4F6B4137DB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution", "_Solution", "{B1193882-4F06-4167-B77D-4DDE2D0981E6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		nuget.config = nuget.config
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Build", "_Build", "{E0B50069-0660-4AC3-A42D-4D76A1E1C7A8}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		Packages.props = Packages.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "props", "props", "{5B7449CB-88C3-420A-AE20-54B231435EF0}"
+	ProjectSection(SolutionItems) = preProject
+		build\props\Default.Compiler.props = build\props\Default.Compiler.props
+		build\props\Default.Properties.props = build\props\Default.Properties.props
+		build\props\Identity.Properties.props = build\props\Identity.Properties.props
+		build\props\Platform.AssemblyBindings.config = build\props\Platform.AssemblyBindings.config
+		build\props\Platform.ProjectContent.props = build\props\Platform.ProjectContent.props
+		build\props\Platform.Properties.props = build\props\Platform.Properties.props
+		build\props\Platform.References.props = build\props\Platform.References.props
+		build\props\Rendering.Properties.props = build\props\Rendering.Properties.props
+		build\props\_SitecoreRoleType.props = build\props\_SitecoreRoleType.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Environment", "Environment", "{1BA5E8F8-9602-47A2-8AC0-8325CB4C7988}"
+	ProjectSection(SolutionItems) = preProject
+		src\Environment\README.md = src\Environment\README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Environment.Platform", "src\Environment\platform\Environment.Platform.csproj", "{EF4770B2-6548-4822-A40D-C0D476EC4A7D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wealth", "Wealth", "{8C9130AF-BB4A-4055-B6BF-7E899D2DBE96}"
+	ProjectSection(SolutionItems) = preProject
+		src\Project\Wealth\Project.Wealth.Platform.module.json = src\Project\Wealth\Project.Wealth.Platform.module.json
+		src\Project\Wealth\README.md = src\Project\Wealth\README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.Wealth.Platform", "src\Project\Wealth\platform\Project.Wealth.Platform.csproj", "{B5072DB2-D181-4E59-B841-B4B917064EB0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foundation.Wealth", "src\Foundation\Wealth\platform\Foundation.Wealth.csproj", "{25151D17-0E19-421E-BE2D-03A70533FF3C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wealth", "Wealth", "{DE9E73A4-3210-4C58-A205-BB3ED65C1402}"
+	ProjectSection(SolutionItems) = preProject
+		src\Foundation\Wealth\Foundation.Wealth.module.json = src\Foundation\Wealth\Foundation.Wealth.module.json
+		src\Foundation\Wealth\README.md = src\Foundation\Wealth\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Account", "Account", "{2035F016-21B3-42D2-9801-5E0FE5B61EFD}"
+	ProjectSection(SolutionItems) = preProject
+		src\Feature\Account\Feature..Wealth.Account.module.json = src\Feature\Account\Feature..Wealth.Account.module.json
+		src\Feature\Account\README.md = src\Feature\Account\README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Wealth.Account", "src\Feature\Account\platform\Feature.Wealth.Account.csproj", "{E2640298-ADD3-419B-844E-87DAF6EC8B5F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Component", "Component", "{904A6923-FA97-4B7C-9ADA-B9B1EAD6943A}"
+	ProjectSection(SolutionItems) = preProject
+		src\Feature\Component\Feature.Wealth.Component.module.json = src\Feature\Component\Feature.Wealth.Component.module.json
+		src\Feature\Component\README.md = src\Feature\Component\README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Wealth.Component", "src\Feature\Component\platform\Feature.Wealth.Component.csproj", "{4408B99F-5B07-443C-A28F-57D807C0B54B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScheduleAgent", "ScheduleAgent", "{ACBE49FA-D85A-482A-A269-82F495F04D3A}"
+	ProjectSection(SolutionItems) = preProject
+		src\Feature\ScheduleAgent\Feature.Wealth.ScheduleAgent.module.json = src\Feature\ScheduleAgent\Feature.Wealth.ScheduleAgent.module.json
+		src\Feature\ScheduleAgent\README.md = src\Feature\ScheduleAgent\README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Wealth.ScheduleAgent", "src\Feature\ScheduleAgent\platform\Feature.Wealth.ScheduleAgent.csproj", "{5FA6B441-2341-437E-AEF9-526F64E3FCA2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Octon", "Octon", "{5FA88619-6896-472A-97A1-C28AD0996237}"
+	ProjectSection(SolutionItems) = preProject
+		src\Feature\Octon\Feature.Wealth.Octon.module.json = src\Feature\Octon\Feature.Wealth.Octon.module.json
+		src\Feature\Octon\README.md = src\Feature\Octon\README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Wealth.Octon", "src\Feature\Octon\platform\Feature.Wealth.Octon.csproj", "{8F6E3B00-2CAD-4244-AC91-DB0BD4F88D74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Tools", "_Tools", "{AC0B302B-AC34-416D-B854-43ADBA4A8787}"
+	ProjectSection(SolutionItems) = preProject
+		tools\export.ps1 = tools\export.ps1
+		tools\build.ps1 = tools\build.ps1
+		tools\offline.ps1 = tools\offline.ps1
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF4770B2-6548-4822-A40D-C0D476EC4A7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF4770B2-6548-4822-A40D-C0D476EC4A7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF4770B2-6548-4822-A40D-C0D476EC4A7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF4770B2-6548-4822-A40D-C0D476EC4A7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5072DB2-D181-4E59-B841-B4B917064EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5072DB2-D181-4E59-B841-B4B917064EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5072DB2-D181-4E59-B841-B4B917064EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5072DB2-D181-4E59-B841-B4B917064EB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25151D17-0E19-421E-BE2D-03A70533FF3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25151D17-0E19-421E-BE2D-03A70533FF3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25151D17-0E19-421E-BE2D-03A70533FF3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25151D17-0E19-421E-BE2D-03A70533FF3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2640298-ADD3-419B-844E-87DAF6EC8B5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2640298-ADD3-419B-844E-87DAF6EC8B5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2640298-ADD3-419B-844E-87DAF6EC8B5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2640298-ADD3-419B-844E-87DAF6EC8B5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4408B99F-5B07-443C-A28F-57D807C0B54B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4408B99F-5B07-443C-A28F-57D807C0B54B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4408B99F-5B07-443C-A28F-57D807C0B54B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4408B99F-5B07-443C-A28F-57D807C0B54B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FA6B441-2341-437E-AEF9-526F64E3FCA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FA6B441-2341-437E-AEF9-526F64E3FCA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FA6B441-2341-437E-AEF9-526F64E3FCA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FA6B441-2341-437E-AEF9-526F64E3FCA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F6E3B00-2CAD-4244-AC91-DB0BD4F88D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F6E3B00-2CAD-4244-AC91-DB0BD4F88D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F6E3B00-2CAD-4244-AC91-DB0BD4F88D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F6E3B00-2CAD-4244-AC91-DB0BD4F88D74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5B7449CB-88C3-420A-AE20-54B231435EF0} = {E0B50069-0660-4AC3-A42D-4D76A1E1C7A8}
+		{EF4770B2-6548-4822-A40D-C0D476EC4A7D} = {1BA5E8F8-9602-47A2-8AC0-8325CB4C7988}
+		{8C9130AF-BB4A-4055-B6BF-7E899D2DBE96} = {B05190A2-032D-4EB9-8A8B-9E4F6B4137DB}
+		{B5072DB2-D181-4E59-B841-B4B917064EB0} = {8C9130AF-BB4A-4055-B6BF-7E899D2DBE96}
+		{25151D17-0E19-421E-BE2D-03A70533FF3C} = {DE9E73A4-3210-4C58-A205-BB3ED65C1402}
+		{DE9E73A4-3210-4C58-A205-BB3ED65C1402} = {2FAA7571-FDE5-4C40-B707-2DF817B106DC}
+		{2035F016-21B3-42D2-9801-5E0FE5B61EFD} = {29EC27BC-A457-43F7-80D4-5BC4652E3B1E}
+		{E2640298-ADD3-419B-844E-87DAF6EC8B5F} = {2035F016-21B3-42D2-9801-5E0FE5B61EFD}
+		{904A6923-FA97-4B7C-9ADA-B9B1EAD6943A} = {29EC27BC-A457-43F7-80D4-5BC4652E3B1E}
+		{4408B99F-5B07-443C-A28F-57D807C0B54B} = {904A6923-FA97-4B7C-9ADA-B9B1EAD6943A}
+		{ACBE49FA-D85A-482A-A269-82F495F04D3A} = {29EC27BC-A457-43F7-80D4-5BC4652E3B1E}
+		{5FA6B441-2341-437E-AEF9-526F64E3FCA2} = {ACBE49FA-D85A-482A-A269-82F495F04D3A}
+		{5FA88619-6896-472A-97A1-C28AD0996237} = {29EC27BC-A457-43F7-80D4-5BC4652E3B1E}
+		{8F6E3B00-2CAD-4244-AC91-DB0BD4F88D74} = {5FA88619-6896-472A-97A1-C28AD0996237}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {009BAE54-E7BA-4B2B-AA86-F25104B0B1F1}
+	EndGlobalSection
+EndGlobal

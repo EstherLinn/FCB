@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>Feature.Wealth.Octon</RootNamespace>
+    <AssemblyName>Feature.Wealth.Octon</AssemblyName>
+    <SitecoreRoleType>platform</SitecoreRoleType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SupportsSystemWeb" />
+  </ItemGroup>
+</Project>
