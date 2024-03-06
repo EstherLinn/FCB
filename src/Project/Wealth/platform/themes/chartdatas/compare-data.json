@@ -1,0 +1,1006 @@
+{
+    "statusCode": 200,
+    "body": {
+        "lables": [
+            {
+                "id": "TA25",
+                "name": "安聯收益成長基金-AM穩定月收類股(美元)",
+                "upDown": "up",
+                "value": 12.22,
+                "type": "fund"
+            },
+            {
+                "id": "EK02",
+                "name": "VANGUARD總體國際債劵ETF",
+                "upDown": "up",
+                "value": 12.22,
+                "type": "etf"
+            },
+            {
+                "id": "78AE",
+                "name": "日盛新台商證券投資信託基金",
+                "upDown": "down",
+                "value": -10.99,
+                "type": "fund"
+            },
+            {
+                "id": "index001",
+                "name": "道瓊指數",
+                "upDown": "down",
+                "value": -10.99,
+                "type": "stock"
+            },
+            {
+                "id": "index002",
+                "name": "那斯達克指數",
+                "upDown": "down",
+                "value": -10.99,
+                "type": "stock"
+            },
+            {
+                "id": "index003",
+                "name": "日經指數",
+                "upDown": "down",
+                "value": -10.99,
+                "type": "stock"
+            }
+        ],
+        "navs": [
+            {
+                "id": "TA25",
+                "name": "安聯收益成長基金-AM穩定月收類股(美元)",
+                "list": [
+                    {
+                        "date": "2022-11-01",
+                        "upDown": "up",
+                        "value": 45.35
+                    },
+                    {
+                        "date": "2022-11-02",
+                        "upDown": "up",
+                        "value": 31.08
+                    },
+                    {
+                        "date": "2022-11-03",
+                        "upDown": "down",
+                        "value": -11.27
+                    },
+                    {
+                        "date": "2022-11-04",
+                        "upDown": "up",
+                        "value": 47.92
+                    },
+                    {
+                        "date": "2022-11-05",
+                        "upDown": "down",
+                        "value": -16.78
+                    },
+                    {
+                        "date": "2022-11-06",
+                        "upDown": "down",
+                        "value": -1.54
+                    },
+                    {
+                        "date": "2022-11-07",
+                        "upDown": "up",
+                        "value": 32.27
+                    },
+                    {
+                        "date": "2022-11-08",
+                        "upDown": "down",
+                        "value": -14.73
+                    },
+                    {
+                        "date": "2022-11-09",
+                        "upDown": "down",
+                        "value": -9.51
+                    },
+                    {
+                        "date": "2022-11-10",
+                        "upDown": "down",
+                        "value": -0.16
+                    },
+                    {
+                        "date": "2022-11-11",
+                        "upDown": "down",
+                        "value": -6.36
+                    },
+                    {
+                        "date": "2022-11-12",
+                        "upDown": "down",
+                        "value": -16.04
+                    },
+                    {
+                        "date": "2022-11-13",
+                        "upDown": "down",
+                        "value": -0.67
+                    },
+                    {
+                        "date": "2022-11-14",
+                        "upDown": "up",
+                        "value": 43.43
+                    },
+                    {
+                        "date": "2022-11-15",
+                        "upDown": "down",
+                        "value": -2.68
+                    },
+                    {
+                        "date": "2022-11-16",
+                        "upDown": "down",
+                        "value": -19.91
+                    },
+                    {
+                        "date": "2022-11-17",
+                        "upDown": "down",
+                        "value": -16.54
+                    },
+                    {
+                        "date": "2022-11-18",
+                        "upDown": "down",
+                        "value": -6.95
+                    },
+                    {
+                        "date": "2022-11-19",
+                        "upDown": "up",
+                        "value": 42.36
+                    },
+                    {
+                        "date": "2022-11-20",
+                        "upDown": "up",
+                        "value": 45.09
+                    },
+                    {
+                        "date": "2022-11-21",
+                        "upDown": "up",
+                        "value": 26.21
+                    },
+                    {
+                        "date": "2022-11-22",
+                        "upDown": "down",
+                        "value": -7.18
+                    },
+                    {
+                        "date": "2022-11-23",
+                        "upDown": "down",
+                        "value": -4.06
+                    },
+                    {
+                        "date": "2022-11-24",
+                        "upDown": "down",
+                        "value": -12.59
+                    },
+                    {
+                        "date": "2022-11-25",
+                        "upDown": "up",
+                        "value": 44.42
+                    },
+                    {
+                        "date": "2022-11-26",
+                        "upDown": "down",
+                        "value": -17.24
+                    },
+                    {
+                        "date": "2022-11-27",
+                        "upDown": "up",
+                        "value": 29.78
+                    },
+                    {
+                        "date": "2022-11-28",
+                        "upDown": "down",
+                        "value": -19.25
+                    },
+                    {
+                        "date": "2022-11-29",
+                        "upDown": "up",
+                        "value": 19.99
+                    },
+                    {
+                        "date": "2022-11-30",
+                        "upDown": "down",
+                        "value": -11.04
+                    },
+                    {
+                        "date": "2022-12-01",
+                        "upDown": "up",
+                        "value": 38.21
+                    },
+                    {
+                        "date": "2022-12-02",
+                        "upDown": "up",
+                        "value": 32.45
+                    },
+                    {
+                        "date": "2022-12-03",
+                        "upDown": "up",
+                        "value": 47.12
+                    },
+                    {
+                        "date": "2022-12-04",
+                        "upDown": "down",
+                        "value": -7.89
+                    },
+                    {
+                        "date": "2022-12-05",
+                        "upDown": "down",
+                        "value": -19.73
+                    },
+                    {
+                        "date": "2022-12-06",
+                        "upDown": "up",
+                        "value": 23.68
+                    },
+                    {
+                        "date": "2022-12-07",
+                        "upDown": "down",
+                        "value": -14.92
+                    }
+                ]
+            },
+            {
+                "id": "EK02",
+                "name": "VANGUARD總體國際債劵ETF",
+                "list": [
+                    {
+                        "date": "2022-11-01",
+                        "upDown": "down",
+                        "value": -4.27
+                    },
+                    {
+                        "date": "2022-11-02",
+                        "upDown": "down",
+                        "value": -11.56
+                    },
+                    {
+                        "date": "2022-11-03",
+                        "upDown": "down",
+                        "value": -8.91
+                    },
+                    {
+                        "date": "2022-11-04",
+                        "upDown": "down",
+                        "value": -10.73
+                    },
+                    {
+                        "date": "2022-11-05",
+                        "upDown": "up",
+                        "value": 46.79
+                    },
+                    {
+                        "date": "2022-11-06",
+                        "upDown": "up",
+                        "value": 34.18
+                    },
+                    {
+                        "date": "2022-11-07",
+                        "upDown": "down",
+                        "value": -18.27
+                    },
+                    {
+                        "date": "2022-11-08",
+                        "upDown": "up",
+                        "value": 19.85
+                    },
+                    {
+                        "date": "2022-11-09",
+                        "upDown": "up",
+                        "value": 37.46
+                    },
+                    {
+                        "date": "2022-11-10",
+                        "upDown": "up",
+                        "value": 11.68
+                    },
+                    {
+                        "date": "2022-11-11",
+                        "upDown": "up",
+                        "value": 28.92
+                    },
+                    {
+                        "date": "2022-11-12",
+                        "upDown": "down",
+                        "value": -0.47
+                    },
+                    {
+                        "date": "2022-11-13",
+                        "upDown": "up",
+                        "value": 37.18
+                    },
+                    {
+                        "date": "2022-11-14",
+                        "upDown": "up",
+                        "value": 17.64
+                    },
+                    {
+                        "date": "2022-11-15",
+                        "upDown": "up",
+                        "value": 27.95
+                    },
+                    {
+                        "date": "2022-11-16",
+                        "upDown": "up",
+                        "value": 22.37
+                    },
+                    {
+                        "date": "2022-11-17",
+                        "upDown": "down",
+                        "value": -9.03
+                    },
+                    {
+                        "date": "2022-11-18",
+                        "upDown": "down",
+                        "value": -14.69
+                    },
+                    {
+                        "date": "2022-11-19",
+                        "upDown": "up",
+                        "value": 38.25
+                    },
+                    {
+                        "date": "2022-11-20",
+                        "upDown": "up",
+                        "value": 47.12
+                    },
+                    {
+                        "date": "2022-11-21",
+                        "upDown": "up",
+                        "value": 23.66
+                    },
+                    {
+                        "date": "2022-11-22",
+                        "upDown": "down",
+                        "value": -2.98
+                    },
+                    {
+                        "date": "2022-11-23",
+                        "upDown": "down",
+                        "value": -17.57
+                    },
+                    {
+                        "date": "2022-11-24",
+                        "upDown": "up",
+                        "value": 40.94
+                    },
+                    {
+                        "date": "2022-11-25",
+                        "upDown": "down",
+                        "value": -16.72
+                    },
+                    {
+                        "date": "2022-11-26",
+                        "upDown": "down",
+                        "value": -3.47
+                    },
+                    {
+                        "date": "2022-11-27",
+                        "upDown": "up",
+                        "value": 33.68
+                    },
+                    {
+                        "date": "2022-11-28",
+                        "upDown": "up",
+                        "value": 26.71
+                    },
+                    {
+                        "date": "2022-11-29",
+                        "upDown": "down",
+                        "value": -14.65
+                    },
+                    {
+                        "date": "2022-11-30",
+                        "upDown": "down",
+                        "value": -17.82
+                    },
+                    {
+                        "date": "2022-12-01",
+                        "upDown": "down",
+                        "value": -10.07
+                    },
+                    {
+                        "date": "2022-12-02",
+                        "upDown": "down",
+                        "value": -6.37
+                    },
+                    {
+                        "date": "2022-12-03",
+                        "upDown": "up",
+                        "value": 39.61
+                    },
+                    {
+                        "date": "2022-12-04",
+                        "upDown": "down",
+                        "value": -15.44
+                    },
+                    {
+                        "date": "2022-12-05",
+                        "upDown": "up",
+                        "value": 36.72
+                    },
+                    {
+                        "date": "2022-12-06",
+                        "upDown": "down",
+                        "value": -1.88
+                    },
+                    {
+                        "date": "2022-12-07",
+                        "upDown": "up",
+                        "value": 45.91
+                    }
+                ]
+            },
+            {
+                "id": "78AE",
+                "name": "日盛新台商證券投資信託基金",
+                "list": [
+                    {
+                        "date": "2022-11-01",
+                        "upDown": "up",
+                        "value": 33.57
+                    },
+                    {
+                        "date": "2022-11-02",
+                        "upDown": "down",
+                        "value": -1.23
+                    },
+                    {
+                        "date": "2022-11-03",
+                        "upDown": "down",
+                        "value": -7.81
+                    },
+                    {
+                        "date": "2022-11-04",
+                        "upDown": "up",
+                        "value": 49.76
+                    },
+                    {
+                        "date": "2022-11-05",
+                        "upDown": "down",
+                        "value": -14.32
+                    },
+                    {
+                        "date": "2022-11-06",
+                        "upDown": "down",
+                        "value": -17.49
+                    },
+                    {
+                        "date": "2022-11-07",
+                        "upDown": "up",
+                        "value": 26.84
+                    },
+                    {
+                        "date": "2022-11-08",
+                        "upDown": "down",
+                        "value": -8.75
+                    },
+                    {
+                        "date": "2022-11-09",
+                        "upDown": "up",
+                        "value": 47.21
+                    },
+                    {
+                        "date": "2022-11-10",
+                        "upDown": "up",
+                        "value": 38.19
+                    },
+                    {
+                        "date": "2022-11-11",
+                        "upDown": "down",
+                        "value": -5.16
+                    },
+                    {
+                        "date": "2022-11-12",
+                        "upDown": "down",
+                        "value": -19.65
+                    },
+                    {
+                        "date": "2022-11-13",
+                        "upDown": "up",
+                        "value": 43.92
+                    },
+                    {
+                        "date": "2022-11-14",
+                        "upDown": "down",
+                        "value": -2.84
+                    },
+                    {
+                        "date": "2022-11-15",
+                        "upDown": "up",
+                        "value": 47.58
+                    },
+                    {
+                        "date": "2022-11-16",
+                        "upDown": "down",
+                        "value": -17.03
+                    },
+                    {
+                        "date": "2022-11-17",
+                        "upDown": "up",
+                        "value": 27.16
+                    },
+                    {
+                        "date": "2022-11-18",
+                        "upDown": "down",
+                        "value": -9.08
+                    },
+                    {
+                        "date": "2022-11-19",
+                        "upDown": "down",
+                        "value": -18.59
+                    },
+                    {
+                        "date": "2022-11-20",
+                        "upDown": "down",
+                        "value": -17.42
+                    },
+                    {
+                        "date": "2022-11-21",
+                        "upDown": "down",
+                        "value": -13.72
+                    },
+                    {
+                        "date": "2022-11-22",
+                        "upDown": "up",
+                        "value": 48.39
+                    },
+                    {
+                        "date": "2022-11-23",
+                        "upDown": "up",
+                        "value": 44.21
+                    },
+                    {
+                        "date": "2022-11-24",
+                        "upDown": "down",
+                        "value": -16.54
+                    },
+                    {
+                        "date": "2022-11-25",
+                        "upDown": "up",
+                        "value": 38.12
+                    },
+                    {
+                        "date": "2022-11-26",
+                        "upDown": "down",
+                        "value": -12.78
+                    },
+                    {
+                        "date": "2022-11-27",
+                        "upDown": "down",
+                        "value": -17.64
+                    },
+                    {
+                        "date": "2022-11-28",
+                        "upDown": "down",
+                        "value": -14.21
+                    },
+                    {
+                        "date": "2022-11-29",
+                        "upDown": "up",
+                        "value": 43.27
+                    },
+                    {
+                        "date": "2022-11-30",
+                        "upDown": "down",
+                        "value": -15.37
+                    },
+                    {
+                        "date": "2022-12-01",
+                        "upDown": "up",
+                        "value": 31.79
+                    },
+                    {
+                        "date": "2022-12-02",
+                        "upDown": "down",
+                        "value": -11.42
+                    },
+                    {
+                        "date": "2022-12-03",
+                        "upDown": "down",
+                        "value": -6.92
+                    },
+                    {
+                        "date": "2022-12-04",
+                        "upDown": "up",
+                        "value": 48.61
+                    },
+                    {
+                        "date": "2022-12-05",
+                        "upDown": "down",
+                        "value": -15.84
+                    },
+                    {
+                        "date": "2022-12-06",
+                        "upDown": "up",
+                        "value": 32.76
+                    },
+                    {
+                        "date": "2022-12-07",
+                        "upDown": "down",
+                        "value": -10.73
+                    }
+                ]
+            },
+            {
+                "id": "index001",
+                "name": "道瓊指數",
+                "list": [
+                    {
+                        "date": "2022-11-01",
+                        "upDown": "down",
+                        "value": -5.72
+                    },
+                    {
+                        "date": "2022-11-02",
+                        "upDown": "down",
+                        "value": -9.13
+                    },
+                    {
+                        "date": "2022-11-03",
+                        "upDown": "down",
+                        "value": -8.52
+                    },
+                    {
+                        "date": "2022-11-04",
+                        "upDown": "up",
+                        "value": 22.34
+                    },
+                    {
+                        "date": "2022-11-05",
+                        "upDown": "down",
+                        "value": -3.71
+                    },
+                    {
+                        "date": "2022-11-06",
+                        "upDown": "up",
+                        "value": 27.81
+                    },
+                    {
+                        "date": "2022-11-07",
+                        "upDown": "up",
+                        "value": 29.67
+                    },
+                    {
+                        "date": "2022-11-08",
+                        "upDown": "down",
+                        "value": -1.29
+                    },
+                    {
+                        "date": "2022-11-09",
+                        "upDown": "down",
+                        "value": -6.97
+                    },
+                    {
+                        "date": "2022-11-10",
+                        "upDown": "up",
+                        "value": 28.16
+                    },
+                    {
+                        "date": "2022-11-11",
+                        "upDown": "up",
+                        "value": 25.52
+                    },
+                    {
+                        "date": "2022-11-12",
+                        "upDown": "down",
+                        "value": -4.81
+                    },
+                    {
+                        "date": "2022-11-13",
+                        "upDown": "up",
+                        "value": 29.45
+                    },
+                    {
+                        "date": "2022-11-14",
+                        "upDown": "up",
+                        "value": 28.93
+                    },
+                    {
+                        "date": "2022-11-15",
+                        "upDown": "down",
+                        "value": -5.68
+                    },
+                    {
+                        "date": "2022-11-16",
+                        "upDown": "up",
+                        "value": 30.00
+                    },
+                    {
+                        "date": "2022-11-17",
+                        "upDown": "up",
+                        "value": 29.89
+                    },
+                    {
+                        "date": "2022-11-18",
+                        "upDown": "up",
+                        "value": 23.52
+                    },
+                    {
+                        "date": "2022-11-19",
+                        "upDown": "down",
+                        "value": -9.76
+                    },
+                    {
+                        "date": "2022-11-20",
+                        "upDown": "down",
+                        "value": -1.42
+                    },
+                    {
+                        "date": "2022-11-21",
+                        "upDown": "up",
+                        "value": 24.79
+                    },
+                    {
+                        "date": "2022-11-22",
+                        "upDown": "down",
+                        "value": -5.21
+                    },
+                    {
+                        "date": "2022-11-23",
+                        "upDown": "down",
+                        "value": -7.63
+                    },
+                    {
+                        "date": "2022-11-24",
+                        "upDown": "up",
+                        "value": 25.72
+                    },
+                    {
+                        "date": "2022-11-25",
+                        "upDown": "down",
+                        "value": -7.41
+                    },
+                    {
+                        "date": "2022-11-26",
+                        "upDown": "up",
+                        "value": 27.83
+                    },
+                    {
+                        "date": "2022-11-27",
+                        "upDown": "down",
+                        "value": -9.92
+                    },
+                    {
+                        "date": "2022-11-28",
+                        "upDown": "up",
+                        "value": 25.47
+                    },
+                    {
+                        "date": "2022-11-29",
+                        "upDown": "down",
+                        "value": -3.64
+                    },
+                    {
+                        "date": "2022-11-30",
+                        "upDown": "down",
+                        "value": -6.33
+                    },
+                    {
+                        "date": "2022-12-01",
+                        "upDown": "up",
+                        "value": 28.55
+                    },
+                    {
+                        "date": "2022-12-02",
+                        "upDown": "up",
+                        "value": 27.11
+                    },
+                    {
+                        "date": "2022-12-03",
+                        "upDown": "down",
+                        "value": -8.97
+                    },
+                    {
+                        "date": "2022-12-04",
+                        "upDown": "down",
+                        "value": -5.02
+                    },
+                    {
+                        "date": "2022-12-05",
+                        "upDown": "up",
+                        "value": 26.29
+                    },
+                    {
+                        "date": "2022-12-06",
+                        "upDown": "up",
+                        "value": 29.18
+                    },
+                    {
+                        "date": "2022-12-07",
+                        "upDown": "down",
+                        "value": -2.09
+                    }
+                ]
+            },
+            {
+                "id": "index002",
+                "name": "那斯達克指數",
+                "list": [
+                    {
+                        "date": "2022-11-01",
+                        "upDown": "up",
+                        "value": 22.87
+                    },
+                    {
+                        "date": "2022-11-02",
+                        "upDown": "down",
+                        "value": -1.96
+                    },
+                    {
+                        "date": "2022-11-03",
+                        "upDown": "down",
+                        "value": -2.78
+                    },
+                    {
+                        "date": "2022-11-04",
+                        "upDown": "up",
+                        "value": 37.23
+                    },
+                    {
+                        "date": "2022-11-05",
+                        "upDown": "down",
+                        "value": -0.34
+                    },
+                    {
+                        "date": "2022-11-06",
+                        "upDown": "up",
+                        "value": 31.89
+                    },
+                    {
+                        "date": "2022-11-07",
+                        "upDown": "up",
+                        "value": 35.71
+                    },
+                    {
+                        "date": "2022-11-08",
+                        "upDown": "down",
+                        "value": -3.22
+                    },
+                    {
+                        "date": "2022-11-09",
+                        "upDown": "down",
+                        "value": -4.67
+                    },
+                    {
+                        "date": "2022-11-10",
+                        "upDown": "up",
+                        "value": 29.61
+                    },
+                    {
+                        "date": "2022-11-11",
+                        "upDown": "up",
+                        "value": 28.55
+                    },
+                    {
+                        "date": "2022-11-12",
+                        "upDown": "down",
+                        "value": -0.81
+                    },
+                    {
+                        "date": "2022-11-13",
+                        "upDown": "up",
+                        "value": 32.14
+                    },
+                    {
+                        "date": "2022-11-14",
+                        "upDown": "up",
+                        "value": 29.36
+                    },
+                    {
+                        "date": "2022-11-15",
+                        "upDown": "down",
+                        "value": -1.68
+                    },
+                    {
+                        "date": "2022-11-16",
+                        "upDown": "up",
+                        "value": 39.00
+                    },
+                    {
+                        "date": "2022-11-17",
+                        "upDown": "up",
+                        "value": 31.89
+                    },
+                    {
+                        "date": "2022-11-18",
+                        "upDown": "up",
+                        "value": 25.52
+                    },
+                    {
+                        "date": "2022-11-19",
+                        "upDown": "down",
+                        "value": -4.76
+                    },
+                    {
+                        "date": "2022-11-20",
+                        "upDown": "down",
+                        "value": -1.42
+                    },
+                    {
+                        "date": "2022-11-21",
+                        "upDown": "up",
+                        "value": 27.79
+                    },
+                    {
+                        "date": "2022-11-22",
+                        "upDown": "down",
+                        "value": -2.21
+                    },
+                    {
+                        "date": "2022-11-23",
+                        "upDown": "down",
+                        "value": -3.63
+                    },
+                    {
+                        "date": "2022-11-24",
+                        "upDown": "up",
+                        "value": 25.72
+                    },
+                    {
+                        "date": "2022-11-25",
+                        "upDown": "down",
+                        "value": -2.41
+                    },
+                    {
+                        "date": "2022-11-26",
+                        "upDown": "up",
+                        "value": 28.83
+                    },
+                    {
+                        "date": "2022-11-27",
+                        "upDown": "down",
+                        "value": -4.92
+                    },
+                    {
+                        "date": "2022-11-28",
+                        "upDown": "up",
+                        "value": 25.47
+                    },
+                    {
+                        "date": "2022-11-29",
+                        "upDown": "down",
+                        "value": -0.64
+                    },
+                    {
+                        "date": "2022-11-30",
+                        "upDown": "down",
+                        "value": -3.33
+                    },
+                    {
+                        "date": "2022-12-01",
+                        "upDown": "up",
+                        "value": 28.55
+                    },
+                    {
+                        "date": "2022-12-02",
+                        "upDown": "up",
+                        "value": 27.11
+                    },
+                    {
+                        "date": "2022-12-03",
+                        "upDown": "down",
+                        "value": -3.97
+                    },
+                    {
+                        "date": "2022-12-04",
+                        "upDown": "down",
+                        "value": -0.02
+                    },
+                    {
+                        "date": "2022-12-05",
+                        "upDown": "up",
+                        "value": 26.29
+                    },
+                    {
+                        "date": "2022-12-06",
+                        "upDown": "up",
+                        "value": 29.18
+                    },
+                    {
+                        "date": "2022-12-07",
+                        "upDown": "down",
+                        "value": -2.09
+                    }
+                ]
+            }
+        ]
+    }
+}

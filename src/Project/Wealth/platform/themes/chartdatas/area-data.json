@@ -1,0 +1,52 @@
+{
+    "statusCode": 200,
+    "body": {
+        "updateDate": "2024-02-02",
+        "navs": [
+            {
+                "name": "美國",
+                "value": 81.7
+            },
+            {
+                "name": "瑞士",
+                "value": 6.0
+            },
+            {
+                "name": "英國",
+                "value": 3.2
+            },
+            {
+                "name": "德國",
+                "value": 3.0
+            },
+            {
+                "name": "法國",
+                "value": 1.7
+            },
+            {
+                "name": "愛爾蘭",
+                "value": 1.1
+            },
+            {
+                "name": "澳大利亞",
+                "value": 0.9
+            },
+            {
+                "name": "台灣",
+                "value": 0.6
+            },
+            {
+                "name": "巴西",
+                "value": 0.4
+            },
+            {
+                "name": "以色列",
+                "value": 0.3
+            },
+            {
+                "name": "其它",
+                "value": 4.2
+            }
+        ]
+    }
+}
