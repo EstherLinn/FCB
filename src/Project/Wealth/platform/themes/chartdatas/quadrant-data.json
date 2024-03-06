@@ -1,0 +1,43 @@
+{
+    "statusCode": 200,
+    "body": {
+        "self": {
+            "fundId": "KA63",
+            "fundName": "KA63 富蘭克林坦伯頓全球投資系列穩定月收益基金美元A(Mdis)",
+            "sd": 13.98,
+            "rate": 30.59
+        },
+        "navs": [
+            {
+                "fundId": "62AL",
+                "fundName": "62AL 景順潛力基金收益基金",
+                "sd": 15.24,
+                "rate": 10.59
+            },
+            {
+                "fundId": "KAAL",
+                "fundName": "KAAL KAAL基金收益基金",
+                "sd": 20.24,
+                "rate": 20.59
+            },
+            {
+                "fundId": "12KA",
+                "fundName": "12KA 12KA收益基金",
+                "sd": 30.24,
+                "rate": 50.59
+            },
+            {
+                "fundId": "BB79",
+                "fundName": "BB79 BB79收益基金",
+                "sd": 40.24,
+                "rate": 70.59
+            },
+            {
+                "fundId": "XY45",
+                "fundName": "XY45 XY45",
+                "sd": 60.24,
+                "rate": 80.59
+            }
+        ]
+    }
+}
