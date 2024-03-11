@@ -3,45 +3,19 @@
 }
 
 @section Head {
-    @{
-        <!-- Global css / Begin -->
-        <link rel="stylesheet" href="~/themes/vendor/magnific-popup/magnific-popup.css">
-        <link rel="stylesheet" href="~/themes/css/normalize.min.css">
-        <link rel="stylesheet" href="~/themes/css/layout.min.css">
-        <link rel="stylesheet" href="~/themes/css/main.min.css">
-        <!-- Global css / End -->
-    }
+
 }
 
 
-<main class="l-main">
-    @Html.Sitecore().Placeholder("main")
-</main>
+<!-- .l-navbar--gn: 綠色底色 (預設為無底色) -->
+<div class="l-navbar l-navbar--gn">
+    <div class="l-navbar__wrap">
+        @Html.Sitecore().Placeholder("breadcrumb")
+    </div>
+</div>
+
+@Html.Sitecore().Placeholder("main")
 
 @section Bottom {
-    @{
-        <!-- Global js / Begin -->
-        <script src="~/themes/vendor/modernizr-3.11.7.min.js"></script>
-        <script src="~/themes/vendor/jquery-3.7.1.min.js"></script>
-        <script src="~/themes/vendor/magnific-popup/magnific-popup.min.js"></script>
-        <script src="~/themes/js/extensions/magnific-popup-initialize.min.js"></script>
-        <script src="~/themes/vendor/floating-ui/floating-ui.core.umd.min.js"></script>
-        <script src="~/themes/vendor/floating-ui/floating-ui.dom.umd.min.js"></script>
-        <script src="~/themes/vendor/sweetalert2/sweetalert2.all.min.js"></script>
-        <script src="~/themes/vendor/scroll-direction/jquery.scroll-direction.min.js"></script>
-        <script src="~/themes/vendor/scroll-to-fixed/jquery-scrolltofixed.min.js"></script>
 
-        <script src="~/themes/vendor/select2/js/select2.min.js"></script>
-        <script src="~/themes/js/extensions/select2-initialize.min.js"></script>
-        <script src="~/themes/vendor/autocomplete/jquery.autocomplete.min.js"></script>
-        <script src="~/themes/vendor/swiper/swiper-bundle.min.js"></script>
-        <script src="~/themes/vendor/highcharts/highstock.js"></script>
-        <script src="~/themes/vendor/highcharts/modules/accessibility.js"></script>
-        <script src="~/themes/vendor/aso/aos.js"></script>
-        <script src="~/themes/js/extensions/aso-initialize.js"></script>
-
-        <script src="~/themes/js/plugins.min.js"></script>
-        <script src="~/themes/js/main.min.js"></script>
-        <!-- Global js / End -->
-    }
 }
