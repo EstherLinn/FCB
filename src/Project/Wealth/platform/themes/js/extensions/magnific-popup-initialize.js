@@ -36,6 +36,14 @@
   });
   $(function () {
     $('[data-popup]').magnificPopup();
+    $('[data-youtube]').magnificPopup({
+      disableOn: 700,
+      type: 'iframe',
+      mainClass: 'mfp-fade',
+      removalDelay: 160,
+      preloader: false,
+      fixedContentPos: false
+    });
     $('body').off('click.mfpClose').on('click.mfpClose', '[data-popup-close]', function (e) {
       e.preventDefault();
       $.magnificPopup.close();

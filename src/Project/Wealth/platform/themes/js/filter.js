@@ -103,6 +103,12 @@ $(function () {
     setTag();
   });
 
+  // input輸入
+  $('[data-filter-input]').on('change.filter', function () {
+    $(this).val($(this).val().trim());
+    setTag();
+  });
+
   // 重設所有條件
   $('[data-filter-reset]').on('click.reset', function (e) {
     e.preventDefault();
@@ -110,6 +116,10 @@ $(function () {
     $('[data-keyword-input]').val('');
     $('[data-filter-checkbox] input, [data-filter-radio] input').prop('checked', false).trigger('change');
     $('[data-filter-bar]').val('').trigger('input.reset');
+    $('[data-filter-input]').val('').trigger('change');
+    if ($('[data-filter-input][data-calendar="true"]').length > 0) {
+      $('[data-filter-input][data-calendar="true"]').datepicker('update');
+    }
   });
 
   /**
@@ -159,8 +169,10 @@ $(function () {
       }
       if (item.part) {
         let partValue = '';
+        const partDivideVal = $('[data-filter-group]').eq(index).find('[data-part-divide]').attr('data-part-divide');
+        const sign = !!partDivideVal ? partDivideVal : '/';
         item.val.forEach((val, index) => {
-          const divider = index === 0 ? '' : '/';
+          const divider = index === 0 ? '' : sign;
           partValue = partValue + divider + val;
         });
         let newTag = $(`<div class="l-pickGroup__item" data-filter-tag="${htmlEncode(item.title)}">
@@ -248,6 +260,11 @@ $(function () {
       $thisGroup.find('[data-filter-bar]').val('').trigger('input.reset');
       // reset radio
       $thisGroup.find('[data-filter-radio] input:checked').prop('checked', false).trigger('change');
+      // reset input
+      $thisGroup.find('[data-filter-input]').val('').trigger('change');
+      if ($thisGroup.find('[data-filter-input][data-calendar="true"]').length > 0) {
+        $thisGroup.find('[data-filter-input][data-calendar="true"]').datepicker('update');
+      }
     });
   }
   function htmlEncode(str) {
