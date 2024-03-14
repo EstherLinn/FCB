@@ -26,7 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xcms.Sitecore.Foundation.Basic">
-      <HintPath>..\..\..\..\..\..\SitecoreService\Xcms.Sitecore\src\Feature\Navigation\platform\bin\Release\net48\Xcms.Sitecore.Foundation.Basic.dll</HintPath>
+      <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.Basic.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
