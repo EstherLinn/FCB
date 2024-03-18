@@ -5,6 +5,7 @@
     <Authors></Authors>
     <Company></Company>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <PathMap>$(MSBuildProjectDirectory)=./</PathMap>
   </PropertyGroup>
 
   <!-- Dynamically load props from files based on <SitecoreRoleType> set in project file -->
