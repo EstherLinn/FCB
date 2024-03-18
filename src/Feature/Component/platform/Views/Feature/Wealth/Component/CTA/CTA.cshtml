@@ -1,38 +1,29 @@
-﻿@using Sitecore.Mvc
-@using Sitecore.Mvc.Presentation
-@using Feature.Wealth.Component.Models.CTA
-@using Sitecore.Resources.Media;
-@using Sitecore.Links;
-@using Sitecore.Data.Fields;
-@model Feature.Wealth.Component.Models.CTA.CTAModel
-
-@{
-    var item = Model.Item;
-    var imageField = item.Fields[Template.Image]; 
-    var imageUrl = imageField != null ? ((ImageField)imageField).MediaItem != null ? MediaManager.GetMediaUrl(((ImageField)imageField).MediaItem) : string.Empty : string.Empty;
-    var btnLink = ((LinkField)item.Fields[Template.ButtonLink]).Url;
-	var showIcon = ((CheckboxField)item.Fields[Template.ShowIcon]).Checked;
-}
+﻿@using Feature.Wealth.Component.Models.CTA
+@model CTAModel
 
 
-<div class="l-flex__item">
-	<div class="c-cardLecture">
-		<div class="c-cardLecture__caption">
-			<img src="@imageUrl" class="c-cardLecture__img c-cardLecture__img--pc" alt="">
-			<img src="@imageUrl" class="c-cardLecture__img c-cardLecture__img--mb" alt="">
-		</div>
-		<div class="c-cardLecture__content">
-			<h3 class="c-cardLecture__title">
-				@if (showIcon)
-				{
-					<i class="o-icon o-icon--xl o-icon--radio"></i>
-				}
-				@Html.Sitecore().Field(Template.MainTitle, item)
-			</h3>
-			<p class="c-cardLecture__desc"> @Html.Sitecore().Field(Template.Subtitle, item)</p>
-		</div>
-		<div class="c-cardLecture__action">
-			<a href="@btnLink" class="o-btnListen">@Html.Sitecore().Field(Template.ButtonLinkText, item)</a>
+
+@if (Model != null)
+{
+	<div class="l-flex__item">
+		<div class="c-cardLecture">
+			<div class="c-cardLecture__caption">
+				<img src="@Model.ImageUrl" class="c-cardLecture__img c-cardLecture__img--pc" alt="">
+				<img src="@Model.ImageUrl" class="c-cardLecture__img c-cardLecture__img--mb" alt="">
+			</div>
+			<div class="c-cardLecture__content">
+				<h3 class="c-cardLecture__title">
+					@if (Model.ShowIcon)
+					{
+						<i class="o-icon o-icon--xl o-icon--radio"></i>
+					}
+					@Html.Sitecore().Field(Template.MainTitle, Model.Item)
+				</h3>
+				<p class="c-cardLecture__desc"> @Html.Sitecore().Field(Template.Subtitle, Model.Item)</p>
+			</div>
+			<div class="c-cardLecture__action">
+				<a href="@Model.ButtonLink" class="o-btnListen">@Html.Sitecore().Field(Template.ButtonLinkText, Model.Item)</a>
+			</div>
 		</div>
 	</div>
-</div>
+}

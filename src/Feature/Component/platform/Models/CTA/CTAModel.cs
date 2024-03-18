@@ -1,17 +1,15 @@
 ﻿using Sitecore.Data.Items;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Feature.Wealth.Component.Models.CTA
 {
     public class CTAModel
     {
         public Item Item { get; set; }
-
+        public string ImageUrl { get; set; }
+        public string ButtonLink { get; set; }
+        public bool ShowIcon { get; set; }
     }
+
     public struct Template
     {
         /// <summary>
