@@ -1,34 +1,35 @@
-﻿@using Sitecore.Mvc
-@using Sitecore.Mvc.Presentation
-@using Feature.Wealth.Component.Models.IndexBanner
-@model Feature.Wealth.Component.Models.IndexBanner.IndexBannerModel
+﻿@using Feature.Wealth.Component.Models.IndexBanner
+@model IndexBannerModel
 
 
-
-<section class="swiper c-swiper c-swiper--kv" data-carousel="true">
-	<div class="swiper-wrapper c-swiper__wrapper">
-		@foreach (var banner in Model.Items)
-		{
-			<div class="swiper-slide c-swiper__slide">
-				<!-- .c-banner--light: 字體顯示為白色 -->
-				<div class="c-banner c-banner--kv c-banner--light">
-					<img src=@banner.Image class="c-banner__img c-banner__img--pc" loading="lazy" alt="聰明理財 快樂生活每一天">
-					<img src=@banner.Image class="c-banner__img c-banner__img--mb" loading="lazy" alt="聰明理財 快樂生活每一天">
-					<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
-					<div class="c-banner__content">
-						<h3 class="c-banner__title">@banner.TitleField</h3>
-						<p class="c-banner__slogan">@banner.SubtitleField</p>
-						<div class="c-banner__actions">
-							<!-- .o-btn--wt: 白色按鈕，kv 上按鈕的預設樣式 -->
-							<!-- .o-btn--dark@dt: 若 kv 圖片為淺/亮色系，加上此 class 在桌面版(@@dt=@@desktop)顯示綠框按鈕，避免吃色 -->
-							<a href="@banner.ButtonLink" class="o-btn o-btn--wt  o-btn--flat@lt">@banner.ButtonText</a>
+@if(Model != null)
+{
+	<section class="swiper c-swiper c-swiper--kv" data-carousel="true">
+		<div class="swiper-wrapper c-swiper__wrapper">
+			@foreach (var banner in Model.Items)
+			{
+				<div class="swiper-slide c-swiper__slide">
+					<!-- .c-banner--light: 字體顯示為白色 -->
+					<div class="c-banner c-banner--kv c-banner--light">
+						<img src="@banner.imageUrl" class="c-banner__img c-banner__img--pc" loading="lazy" alt="聰明理財 快樂生活每一天">
+						<img src="@banner.imageUrl" class="c-banner__img c-banner__img--mb" loading="lazy" alt="聰明理財 快樂生活每一天">
+						<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+						<div class="c-banner__content">
+							<h3 class="c-banner__title">@Html.Sitecore().Field(IndexBannerModel.Banner.MainTitle, banner.Item)</h3>
+							<p class="c-banner__slogan">@Html.Sitecore().Field(IndexBannerModel.Banner.Subtitle, banner.Item)</p>
+							<div class="c-banner__actions">
+								<!-- .o-btn--wt: 白色按鈕，kv 上按鈕的預設樣式 -->
+								<!-- .o-btn--dark@dt: 若 kv 圖片為淺/亮色系，加上此 class 在桌面版(@@dt=@@desktop)顯示綠框按鈕，避免吃色 -->
+								<a href="@banner.btnLink" class="o-btn o-btn--wt  o-btn--flat@lt">@Html.Sitecore().Field(IndexBannerModel.Banner.ButtonText, banner.Item)</a>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		}
-	</div>
-	<div class="swiper-button-next c-swiper__next"></div>
-	<div class="swiper-button-prev c-swiper__prev"></div>
-	<div class="swiper-pagination c-swiper__pagination"></div>
-</section>
+			}
+		</div>
+		<div class="swiper-button-next c-swiper__next"></div>
+		<div class="swiper-button-prev c-swiper__prev"></div>
+		<div class="swiper-pagination c-swiper__pagination"></div>
+	</section>
+}
+

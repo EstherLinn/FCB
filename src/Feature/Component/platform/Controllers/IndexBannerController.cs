@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.IndexBanner;
+using Sitecore.Data.Fields;
 using Sitecore.Mvc.Presentation;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -15,13 +15,30 @@ namespace Feature.Wealth.Component.Controllers
     {
         public ActionResult Index()
         {
-            var dataSourceItem = RenderingContext.Current.Rendering.Item;
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
             var childItems = dataSourceItem.Children.ToList();
+
+            var items = new List<IndexBannerModel.Banner>();
+
+            foreach (var childItem in childItems)
+            {
+                var imageField = (ImageField)childItem.Fields[IndexBannerModel.Banner.Image];
+                string imageUrl = imageField != null ? FieldUtils.ImageUrl(imageField) : string.Empty;
+
+                var btnField = childItem.Fields[IndexBannerModel.Banner.ButtonLink];
+                var btnLink = btnField != null ? FieldUtils.GeneralLink(btnField).Url : string.Empty;
+
+                items.Add(new IndexBannerModel.Banner(childItem)
+                {
+                    imageUrl = imageUrl,
+                    btnLink = btnLink
+                });
+            }
 
             var model = new IndexBannerModel
             {
                 DataSource = dataSourceItem,
-                Items = childItems.Select(item => new IndexBannerModel.Banner(item)).ToList()
+                Items = items
             };
 
             return View("/Views/Feature/Wealth/Component/IndexBanner/IndexBanner.cshtml", model);

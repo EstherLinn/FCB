@@ -1,12 +1,5 @@
-﻿using Sitecore.Data.Fields;
-using Sitecore.Data.Items;
-using Sitecore.Resources.Media;
-using Sitecore.Links;
-using System;
+﻿using Sitecore.Data.Items;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Feature.Wealth.Component.Models.IndexBanner
 {
@@ -24,28 +17,33 @@ namespace Feature.Wealth.Component.Models.IndexBanner
             }
 
             public Item Item { get; set; }
-            public string TitleField => Item["Title"];
-            public string SubtitleField => Item["Subtitle"];
-            public string ButtonText => Item["Button Text"];
+            public string imageUrl { get; set; }
+            public string btnLink { get; set; }
 
-            public string ButtonLink
-            {
-                get
-                {
-                    var btnLink = ((LinkField)Item.Fields["Button Link"]);
-                    return btnLink.Url;
-                }
-            }
+            /// <summary>
+            /// 插圖
+            /// </summary>
+            public static readonly string Image = "{1412E584-BB02-4848-92E0-3E68EC670E16}";
 
+            /// <summary>
+            /// 主標題
+            /// </summary>
+            public static readonly string MainTitle = "{F2D070E9-73F1-4093-BA86-65F54FDA8F91}";
 
-            public string Image
-            {
-                get
-                {
-                    var imgField = (ImageField)Item.Fields["Image"];
-                    return imgField?.MediaItem != null ? MediaManager.GetMediaUrl(imgField.MediaItem) : string.Empty;
-                }
-            }
+            /// <summary>
+            /// 次標題
+            /// </summary>
+            public static readonly string Subtitle = "{1A558A9E-E7E7-414B-8051-CD440E7D68A2}";
+
+            /// <summary>
+            /// 按鈕連結文字
+            /// </summary>
+            public static readonly string ButtonText = "{EC121B56-E4A5-471B-8288-9BB0E10D62CB}";
+
+            /// <summary>
+            /// 按鈕連結
+            /// </summary>
+            public static readonly string ButtonLink = "{A876C9CA-B633-4794-BA01-6665D96E1627}";
         }
     }
 }
