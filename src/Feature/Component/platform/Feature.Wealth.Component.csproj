@@ -6,6 +6,12 @@
     <SitecoreRoleType>platform</SitecoreRoleType>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Dapper" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectCapability Include="SupportsSystemWeb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
   </ItemGroup>
 </Project>
