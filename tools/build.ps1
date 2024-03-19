@@ -50,6 +50,35 @@ Function Publish-Tool {
     Move-Item -LiteralPath $WebConfigTransformRunner -Destination $TargetPath -Force
 }
 
+Function Cerate-DeployScript {
+    param(
+        [string]$Path,
+        [string]$Zip
+    )
+    $text = @"
+Push-Location `$PSScriptRoot
+`$Zip = '$Zip'
+Get-Website | Format-Table -AutoSize
+`$siteName = Read-Host 'Input "Name"'
+if(Get-IISSite -Name `$siteName){
+    `$site = Get-Website -Name `$siteName
+    Expand-Archive -Path `$Zip -DestinationPath `$site.PhysicalPath -Force
+
+    `$xdtPath = (Join-Path -Path `$site.PhysicalPath -ChildPath 'App_Data\Transforms\Deploy\xdts')
+    if (Test-Path `$xdtPath) {
+        `$xdtDirectory = (Get-ChildItem `$xdtPath -Recurse).DirectoryName
+        foreach (`$xdt in `$xdtDirectory) {
+            if (Get-ChildItem -Path `$xdt -Filter *.xdt) {
+                Invoke-TransformXmlDocTask -RootDirectoryPath `$site.PhysicalPath -XdtDirectory `$xdt
+            }
+        }
+    }
+}
+"@
+    $text | Out-File -FilePath (Join-Path -Path $Path -ChildPath "deploy.ps1") -Encoding utf8
+}
+
+
 if (!([System.IO.Path]::IsPathRooted($Path))) {
     $Path = $TargetPath
 }
@@ -63,7 +92,9 @@ if ($MSBuild) {
 
         [System.IO.Directory]::CreateDirectory($Path) | Out-Null
         $time = (Get-Date).ToString("yyyyMMddHHmmss")
-        $Path = (Join-Path -Path $Path -ChildPath "deploy_$time.zip")
+        $zipFile = "deploy_$time.zip"
+        Cerate-DeployScript $Path $zipFile
+        $Path = (Join-Path -Path $Path -ChildPath $zipFile)
         Add-Type -AssemblyName System.IO.Compression.FileSystem
         [System.IO.Compression.ZipFile]::CreateFromDirectory($TmpPath, $Path, [System.IO.Compression.CompressionLevel]::Optimal, $false)
 

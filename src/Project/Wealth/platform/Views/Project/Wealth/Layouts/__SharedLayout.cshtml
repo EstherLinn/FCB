@@ -8,9 +8,28 @@
     <meta name="theme-color" content="#fafafa">
     <link href="/site.webmanifest" rel="manifest">
     <!-- 3rd party vendor -->
+    <script src="~/themes/vendor/modernizr-3.11.7.min.js"></script>
+    <script src="~/themes/vendor/jquery-3.7.1.min.js"></script>
     <!-- ui vendor -->
+    @* <!-- Page plugin css / Begin --> *@
+    <link rel="stylesheet" href="~/themes/vendor/select2/css/select2.min.css" />
+    <link rel="stylesheet" href="~/themes/css/select2.min.css" />
+    <link rel="stylesheet" href="~/themes/vendor/noUiSlider/nouislider.min.css">
+    <link rel="stylesheet" href="~/themes/vendor/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="~/themes/vendor/aso/aos.css">
+    <link rel="stylesheet" href="~/themes/css/roboto.css">
+    <link rel="stylesheet" href="~/themes/vendor/datatables/datatables.min.css">
+    <link rel="stylesheet" href="~/themes/vendor/bootstrap-datepicker/css/bootstrap-datepicker.standalone.css" />
+    @* <!-- Page plugin css / End --> *@
+    @* <!-- Global css / Begin --> *@
+    <link rel="stylesheet" href="~/themes/vendor/magnific-popup/magnific-popup.css">
+    <link rel="stylesheet" href="~/themes/css/normalize.min.css">
+    <link rel="stylesheet" href="~/themes/css/layout.min.css">
+    <link rel="stylesheet" href="~/themes/css/main.min.css">
+    @* <!-- Global css / End --> *@
     <!-- override-->
     <!-- library -->
+    <script src="~/themes/foundation/basic/combine.min.js"></script>
     <!-- #START RenderSection: Head -->
     @RenderSection("Head", false)
     <!-- #END RenderSection: Head -->
@@ -20,6 +39,7 @@
         @Html.Sitecore().Placeholder("page-head")
         <!-- #END Placeholder: page-head-->
     }
+
     <!-- assets script -->
     @* @RenderAssetsService.Current.RenderScript(ScriptLocation.Head) *@
     <!-- assets style-->
@@ -51,11 +71,17 @@
             <span>更新您的瀏覽器以獲得更佳的安全性、速度以及在此網站的最佳體驗。</span>
             <span class="c-browserUpgrade__actions">
                 <a class="c-browserUpgrade__update" href="https://browser-update.org/zh_TW/update-browser.html" target="_blank" title="更新瀏覽器" rel="noopener noreferrer">更新瀏覽器</a>
-
             </span>
         </div>
     <![endif]-->
-
+    <div class="c-loading">
+        <div class="c-loading__wrap">
+            <div class="c-loading__pic">
+                <img src="~/themes/images/lions/lion-loading.svg" alt="">
+            </div>
+            <div class="c-loading__text">Loading...</div>
+        </div>
+    </div>
     <div class="l-container">
         <header class="l-header u-hidden-embed">
             <div class="l-header__burger">
@@ -71,21 +97,17 @@
                     <span class="o-ci__site">第e理財網</span>
                 </a>
             </div>
+            <!-- #START Placeholder: navbar -->
+            @Html.Sitecore().Placeholder("navbar")
+            <!-- #END Placeholder: navbar -->
 
             <!-- #START Placeholder: page-header -->
             @Html.Sitecore().Placeholder("page-header")
             <!-- #END Placeholder: page-header -->
-
-
-            <!-- #START Placeholder: search -->
-            @Html.Sitecore().Placeholder("search")
-            <!-- #END Placeholder: search -->
-            <!-- #START Placeholder: navbar -->
-            @Html.Sitecore().Placeholder("navbar")
-            <!-- #END Placeholder: navbar -->
         </header>
-        @Html.Sitecore().Placeholder("breadcrumb")
-        @RenderBody()
+        <main class="l-main">
+            @RenderBody()
+        </main>
         <footer>
             <!-- #START Placeholder: page-footer -->
             @Html.Sitecore().Placeholder("page-footer")
@@ -96,7 +118,31 @@
                 @Html.Sitecore().Placeholder("page-widget")
             </div>
         </aside>
+        <!-- [data-gotop]: 綁定gotop功能 -->
+        <a href="#" class="o-gotop is-active" data-gotop="true"></a>
     </div>
+
+    @* <!-- Global js / Begin --> *@
+    <script src="~/themes/vendor/magnific-popup/magnific-popup.min.js"></script>
+    <script src="~/themes/js/extensions/magnific-popup-initialize.min.js"></script>
+    <script src="~/themes/vendor/floating-ui/floating-ui.core.umd.min.js"></script>
+    <script src="~/themes/vendor/floating-ui/floating-ui.dom.umd.min.js"></script>
+    <script src="~/themes/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="~/themes/vendor/scroll-direction/jquery.scroll-direction.min.js"></script>
+    <script src="~/themes/vendor/scroll-to-fixed/jquery-scrolltofixed.min.js"></script>
+
+    <script src="~/themes/vendor/select2/js/select2.min.js"></script>
+    <script src="~/themes/js/extensions/select2-initialize.min.js"></script>
+    <script src="~/themes/vendor/autocomplete/jquery.autocomplete.min.js"></script>
+    <script src="~/themes/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="~/themes/vendor/highcharts/highstock.js"></script>
+    <script src="~/themes/vendor/highcharts/modules/accessibility.js"></script>
+    <script src="~/themes/vendor/aso/aos.js"></script>
+    <script src="~/themes/js/extensions/aso-initialize.js"></script>
+
+    <script src="~/themes/js/plugins.min.js"></script>
+    <script src="~/themes/js/main.min.js"></script>
+    @* <!-- Global js / End --> *@
     <!-- #START RenderSection: Bottom -->
     @RenderSection("Bottom", false)
     <!-- #END RenderSection: Bottom -->

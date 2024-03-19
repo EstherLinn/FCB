@@ -47,6 +47,7 @@
     <PackageReference Include="WebConfigTransformRunner" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Transforms\Deploy\xdts\web.config.xdt" />
     <None Include="Environment.Platform.wpp.targets" />
     <None Include="Directory.Build.props" />
   </ItemGroup>
@@ -58,6 +59,7 @@
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="Properties\PublishProfiles\Package.pubxml" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -22,6 +22,11 @@
     <PackageReference Include="Microsoft.AspNet.WebPages" />
     <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Xcms.Sitecore.Foundation.Basic" VersionOverride="[0.1.0, )" />
+    <!--<PackageReference Include="Xcms.Sitecore.Foundation.Basic" VersionOverride="[0.1.0, )" />-->
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Xcms.Sitecore.Foundation.Basic">
+      <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.Basic.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
