@@ -12,13 +12,9 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            var imageField = (ImageField)item.Fields[Template.Image];
-            string imageUrl = imageField != null ? FieldUtils.ImageUrl(imageField) : string.Empty;
-
-            var btnField = item.Fields[Template.ButtonLink];
-            var btnLink = btnField != null ? FieldUtils.GeneralLink(btnField).Url : string.Empty;
-
-            var showIcon = FieldUtils.IsChecked(item.Fields[Template.ShowIcon]);
+            var imageUrl = ItemUtils.ImageUrl(item,Template.Image);
+            var btnLink = ItemUtils.GeneralLink(item, Template.ButtonLink).Url;
+            var showIcon = ItemUtils.IsChecked(item, Template.ShowIcon);
 
             var model = new CTAModel()
             {

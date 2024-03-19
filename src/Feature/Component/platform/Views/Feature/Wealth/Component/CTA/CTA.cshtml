@@ -3,8 +3,10 @@
 
 
 
-@if (Model != null)
+@if (Model == null)
 {
+	return
+}
 	<div class="l-flex__item">
 		<div class="c-cardLecture">
 			<div class="c-cardLecture__caption">
@@ -26,4 +28,4 @@
 			</div>
 		</div>
 	</div>
-}
+
