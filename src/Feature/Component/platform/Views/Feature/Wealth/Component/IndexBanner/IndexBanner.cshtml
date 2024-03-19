@@ -2,8 +2,11 @@
 @model IndexBannerModel
 
 
-@if(Model != null)
+@if(Model == null)
 {
+	return;
+}
+
 	<section class="swiper c-swiper c-swiper--kv" data-carousel="true">
 		<div class="swiper-wrapper c-swiper__wrapper">
 			@foreach (var banner in Model.Items)
@@ -31,5 +34,5 @@
 		<div class="swiper-button-prev c-swiper__prev"></div>
 		<div class="swiper-pagination c-swiper__pagination"></div>
 	</section>
-}
+
 
