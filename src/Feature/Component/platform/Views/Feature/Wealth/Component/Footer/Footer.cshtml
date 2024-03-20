@@ -1,0 +1,84 @@
+﻿@model Feature.Wealth.Component.Models.Footer.FooterModel
+
+@if (!string.IsNullOrEmpty(Model.DataSource["Footer Top Content"]))
+{
+    @Html.Sitecore().Field("Footer Top Content", Model.DataSource)
+}
+
+<div class="l-footer__content">
+    <div class="l-wrap">
+        <div class="c-footer">
+            <div class="c-footer__main">
+                <div class="c-footer__info">
+                    <div class="c-company">
+
+                        @if (!string.IsNullOrEmpty(Model.DataSource["Footer Left Content"]))
+                        {
+                            @Html.Sitecore().Field("Footer Left Content", Model.DataSource)
+                        }
+
+                        <div class="c-company__follow">
+                            <span>@Html.Sitecore().Field("Social Title", Model.DataSource)</span>
+
+                            @if (Model.LeftLinkItems != null)
+                            {
+                                foreach (var item in Model.LeftLinkItems)
+                                {
+                                    var id = Html.Sitecore().Field("Icon Style", item).ToString();
+                                    var iconStyle = string.Empty;
+
+                                    if (!string.IsNullOrEmpty(id))
+                                    {
+                                        var iconStyleItem = Sitecore.Context.Database.GetItem(new Sitecore.Data.ID(id));
+
+                                        if (iconStyleItem != null)
+                                        {
+                                            iconStyle = iconStyleItem["Icon Class"];
+                                        }
+
+                                        if (!string.IsNullOrEmpty(iconStyle))
+                                        {
+                                            @Html.Sitecore().BeginField("Icon Link", item.Item, new { haschildren = true, @class = "c-company__social " + iconStyle })
+                                            @Html.Sitecore().EndField()
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="c-footer__links">
+                    <div class="o-siteLink">
+                        @if (Model.RightLinkItems != null)
+                        {
+                            foreach (var item in Model.RightLinkItems)
+                            {
+                                <div class="o-siteLink__group">
+                                    <div class="o-siteLink__title">@Html.Sitecore().Field("Text", item.Item)</div>
+                                    <ul class="o-siteLink__list">
+                                        @if (item.Children != null)
+                                        {
+                                            foreach (var linkItem in item.Children)
+                                            {
+                                                var link = Html.Sitecore().Field("Link", linkItem.Item).ToString();
+
+                                                string cssClass = link.Contains("_blank") ? "o-siteLink__item o-siteLink__item--external" : "o-siteLink__item";
+
+                                                <li>
+                                                    @Html.Sitecore().BeginField("Link", linkItem.Item, new { haschildren = true, @class = cssClass })
+                                                    <span>@Html.Sitecore().Field("Text", linkItem.Item)</span>
+                                                    @Html.Sitecore().EndField()
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="c-footer__copyright">First Commercial Bank ©2024</div>
+        </div>
+    </div>
+</div>
