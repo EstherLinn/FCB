@@ -1,0 +1,429 @@
+﻿@using Foundation.Wealth.Helper
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">基金通路報酬揭露</h1>
+        </div>
+        <div class="l-mainstage__content">
+            <div class="l-flex u-flex-col u-flex-gap-md">
+                <div class="l-flex__item">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        <div class="l-flex__item">
+                            依「中華民國證券投資信託暨顧問商業同業公會會員及其銷售機構基金通路報酬揭露施行要點」規定，揭露本行上架銷售基金通路報酬內容
+                        </div>
+                        <div class="l-flex__item">
+                            <a href="https://www.sitca.org.tw/ROC/FundIntroduce/FI0009.aspx" class="o-suffixLink o-suffixLink--right o-suffixLink--sm" target="_blank">看懂通路報酬揭露資訊</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <div class="c-simpleFilter">
+                        <div class="c-simpleFilter__item">
+                            <div class="c-simpleFilter__title">快速搜尋</div>
+                            <div class="c-simpleFilter__value">
+                                <div class="o-actionbox o-actionbox--lg" data-clear="true">
+                                    <!-- #keyword: 請見頁面下方的script邏輯，套用jquery.autocomplete套件 -->
+                                    <!-- [data-clear="textbox"]: 套用清除按鈕功能，標示此為文字輸入框 -->
+                                    <input id="keyword" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入代碼或名稱" data-search-input="" autocomplete="off">
+                                    <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-search-submit=""></button>
+                                    <!-- [data-clear="button"]: 套用清除按鈕功能，標示此為清除按鈕 -->
+                                    <button type="button" class="o-actionbox__clear" data-clear="button">清除</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-simpleFilter__divider">
+                            <div class="c-textDivider">
+                                <div class="c-textDivider__text">或</div>
+                            </div>
+                        </div>
+                        <div class="c-simpleFilter__item">
+                            <div class="c-simpleFilter__title">基金篩選</div>
+                            <div class="c-simpleFilter__value">
+                                <div class="l-selectbox">
+                                    <div class="l-selectbox__item l-selectbox__item--full@lt">
+                                        <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" data-select2-id="select2-data-1-wth2" tabindex="-1" aria-hidden="true">
+                                            <option value="" data-select2-id="select2-data-3-1dnq">選擇國內/境外</option>
+                                        </select>
+                                    </div>
+                                    <div class="l-selectbox__item l-selectbox__item--full@lt">
+                                        <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" data-select2-id="select2-data-4-utji" tabindex="-1" aria-hidden="true">
+                                            <option value="" data-select2-id="select2-data-6-523e">選擇投信公司</option>
+                                        </select>
+                                    </div>
+                                    <div class="l-selectbox__item l-selectbox__item--full@lt">
+                                        <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" data-dropdown-auto-width="true" data-fund-select="" data-select2-id="select2-data-7-jlgk" tabindex="-1" aria-hidden="true">
+                                            <option value="" data-select2-id="select2-data-9-7u13">選擇基金</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="l-wrap">
+    <div class="l-stage">
+        <!-- 顯示內容請在.c-empty 加上.u-hidden 隱藏區塊 -->
+        <div class="c-empty">
+            <div class="c-empty__img">
+                <img src="~/themes/images/lions/lion-filter.svg" alt="">
+            </div>
+            <div class="c-empty__desc">用上面篩選器搜尋你要的資訊吧！</div>
+        </div>
+
+        <span id="returnDetail"></span>
+
+        <!-- 無資料時請將.u-hidden 移除，顯示此區塊 -->
+        <div class="c-empty u-hidden" id="emptyResult">
+            <div class="c-empty__img">
+                <img src="~/themes/images/lions/lion-compare.svg" alt="">
+            </div>
+            <div class="c-empty__desc">查無基金，請嘗試調整篩選條件</div>
+        </div>
+    </div>
+</div>
+
+<template id="tmplKeywordNotFound">
+    <div class="c-empty">
+        <div class="c-empty__img">
+            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+        </div>
+        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
+    </div>
+</template>
+
+<link rel="stylesheet" href="~/themes/vendor/select2/css/select2.min.css" />
+<link rel="stylesheet" href="~/themes/css/select2.min.css" />
+
+<script>
+    (function ($, window, document, undefined) {
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            var FilterData, SearchData, SelectedFund;
+
+            // 快速搜尋及基金篩選 取得資料及渲染畫面
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "FundReturn", "GetFundReturnSearchFilterData")',
+                type: 'POST',
+                success: function (data) {
+                    FilterData = data.FundReturnFilter;
+                    SearchData = data.FundReturnSearch;
+
+                    GenerateFilter(FilterData);
+                    GenerateSearch(SearchData);
+
+                },
+                error: function () {
+
+                }
+            });
+
+            //設置已選取商品
+            function SetSelectedFund(productCode) {
+                SelectedFund = productCode;
+            }
+
+
+            /**快速搜尋 */
+            function GenerateSearch(searchData) {
+                let data = searchData;
+
+                // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
+                $('#keyword').autocomplete({
+                    noCache: true,
+                    minChars: 0,
+                    containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
+                    maxHeight: 'auto',
+                    zIndex: 5,
+                    preserveInput: true,
+                    showNoSuggestionNotice: true,
+                    noSuggestionNotice: $('#tmplKeywordNotFound').html(),
+
+                    //快速搜尋使用: 產品代號+空格+產品名稱，建議清單顯示最多5筆
+                    lookup: function (query, done) {
+                        query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+                        let result = [];
+                        for (let i = 0; i < data.length; i++) {
+                            if (query.length == 0 || new RegExp(query, 'gi').test(data[i].ProductCode + ' ' + data[i].ProductName)) {
+                                result.push({
+                                    fundcode: data[i].ProductCode,
+                                    value: data[i].ProductCode + ' ' + data[i].ProductName
+                                });
+
+                                if (result.length === 5) {
+                                    break;
+                                }
+                            }
+                        }
+
+                        done({
+                            suggestions: result
+                        });
+                    },
+                    onSearchComplete: function (query, suggestions) {
+                        var autocomplete = $(this).autocomplete();
+                        var container = autocomplete.suggestionsContainer;
+                        var $this = $(this);
+
+                        // 取消套件預設 blur 事件會關閉 suggestions container
+                        $this.off('blur.autocomplete');
+
+                        // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
+                        if (autocomplete.isRegisteGlobalEvent != true) {
+                            $(window).on('click.autocomplete', {
+                                source: this
+                            }, e => {
+                                if (e.target != e.data.source) {
+                                    autocomplete.hide();
+                                }
+                            });
+                            autocomplete.isRegisteGlobalEvent = true;
+                        }
+
+                        // 綁定 點擊名稱顯示內容的功能
+                        $(container).find('[data-fund]').on('click', function (e) {
+                            e.preventDefault();
+                            $('[data-search-input]').val($(this).find('.c-itemKeyword__title').text());
+
+                            ResetFilter();
+
+                            SetSelectedFund($(this).data('fundcode'));
+                            ShowDetail();
+                        });
+                    },
+                    formatResult: function (suggestion, currentValue) {
+                        return `<div class="c-itemKeyword">
+                                                                                <a href="#" class="c-itemKeyword__content" data-fund data-fundcode="${suggestion.fundcode}">
+                                                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                                                    </a>
+                                                                </div>`;
+                    }
+                });
+            }
+
+            // 搜尋(代碼或名稱) 確認商品存在 回傳productCode或空值
+            function SearchProduct(query) {
+                let data = SearchData;
+
+                if (!!query && !!query.length) {
+                    query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+                    let regex = new RegExp('^' + query + '$', 'i');
+                    for (var i = 0; i < data.length; i++) {
+                        if (regex.test(data[i].ProductCode) || regex.test(data[i].ProductName) || regex.test(data[i].ProductCode + ' ' + data[i].ProductName)) {
+                            productCode = data[i].ProductCode;
+                            return productCode;
+                        }
+                    }
+                }
+                return "";
+            }
+
+            // 搜尋事件處理
+            function HandleSearch() {
+                let query = $('[data-search-input]').val().trim();
+                //若查詢為空或輸入空白 不作效果
+                if (!query || !query.length) {
+                    return;
+                }
+
+                let productCode = SearchProduct(query);
+
+
+                if (productCode == "") {
+                    // 查無資料時效果
+                    $('.l-article').addClass('u-hidden');
+                    $('.l-stage .c-empty').addClass('u-hidden');
+                    $('#emptyResult').removeClass('u-hidden');
+                } else {
+                    SetSelectedFund(productCode);
+                    ShowDetail();
+                }
+            }
+
+
+            /**基金篩選 */
+            // 三層選單Selector
+            var $IndicatorSelector = $('[data-select2-id="select2-data-1-wth2"]');
+            var $CompanySelector = $('[data-select2-id="select2-data-4-utji"]');
+            var $FundSelector = $('[data-select2-id="select2-data-7-jlgk"]');
+
+            // 產生篩選選單
+            function GenerateFilter(filterdata) {
+                let data = filterdata;
+
+                // 三層選單Options
+                var CompanyOptions, FundOptions;
+
+                // 還原第一層選單
+                ResetFirst();
+
+                // 第一層選單改變
+                $IndicatorSelector.on('change', function () {
+
+                    // 還原子層選單
+                    ResetSecond();
+                    ResetThird();
+
+                    //依照第一層選項 填入第二層選單
+                    var selectedIndicatorVal = $(this).val();
+                    var selectedIndicator = data.find(function (item) {
+                        return item.DomesticForeignFundIndicator === selectedIndicatorVal;
+                    });
+
+                    if (selectedIndicator && selectedIndicator.FundCompanies) {
+                        CompanyOptions = selectedIndicator.FundCompanies;
+
+                        CompanyOptions.forEach(function (company) {
+                            $CompanySelector.append($('<option>', {
+                                value: company.FundCompanyID,
+                                text: company.FundCompanyName
+                            }));
+                        });
+                    }
+                });
+
+
+                // 第二層選單改變
+                $CompanySelector.on('change', function () {
+
+                    // 還原子層選單
+                    ResetThird();
+
+                    // 依照第二層選項 填入第三層選單
+                    var selectedCompanyId = $(this).val();
+                    var selectedCompany = CompanyOptions.find(function (company) {
+                        return company.FundCompanyID === selectedCompanyId;
+                    });
+
+                    if (selectedCompany && selectedCompany.Funds) {
+                        FundOptions = selectedCompany.Funds;
+
+                        FundOptions.forEach(function (fund) {
+                            $FundSelector.append($('<option>', {
+                                value: fund.ProductCode,
+                                text: fund.ProductCode + " " + fund.ProductName
+                            }));
+                        });
+                    }
+                });
+            }
+
+            // 還原篩選選單
+            function ResetFirst() {
+                let data = FilterData;
+
+                // 清空第一層並加上預設選項
+                $IndicatorSelector.empty();
+                $IndicatorSelector.append($('<option>', {
+                    value: "",
+                    text: "選擇國內/境外"
+                }));
+
+                // 填入第一層選單
+                data.forEach(function (item) {
+                    var opttext;
+                    if (item.DomesticForeignFundIndicator === 'D') {
+                        opttext = '國內';
+                    } else if (item.DomesticForeignFundIndicator === 'O') {
+                        opttext = '境外';
+                    }
+
+                    $IndicatorSelector.append($('<option>', {
+                        value: item.DomesticForeignFundIndicator,
+                        text: opttext
+                    }));
+                });
+            };
+            function ResetSecond() {
+                // 清空第二層並加上預設選項
+                $CompanySelector.empty();
+                $CompanySelector.append($('<option>', {
+                    value: "",
+                    text: "選擇投信公司"
+                }));
+            };
+            function ResetThird() {
+                // 清空第三層並加上預設選項
+                $FundSelector.empty();
+                $FundSelector.append($('<option>', {
+                    value: "",
+                    text: "選擇基金"
+                }));
+            };
+
+
+            /**詳細內容 */
+            // 綁定 點擊名稱顯示內容的功能
+            function ShowDetail() {
+                $('.l-article').removeClass('u-hidden');
+                $('.l-stage .c-empty').addClass('u-hidden');
+                $('html, body').animate({
+                    scrollTop: $('.l-stage').offset().top
+                }, 300);
+
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "FundReturn", "GetFundReturnDetail")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { "productCode": SelectedFund },
+                    success: function (data) {
+                        $('#returnDetail').html(data);
+                    },
+                    error: function () {
+
+                    }
+                });
+            }
+
+
+            /**快速搜尋及基金篩選 */
+            //綁定搜尋及篩選事件
+            $('[data-search-input]').on('keypress.fund', function (e) {
+                if (e.which === 13 && !!$(this).val()) {
+                    HandleSearch();
+                }
+            });
+            $('[data-search-submit]').on('click.fund', function (e) {
+                e.preventDefault();
+                HandleSearch()
+            });
+            $('[data-fund-select]').on('change.fund', function (e) {
+                if (!!e.target.value) {
+                    SetSelectedFund($('[data-fund-select]').val());
+                    ShowDetail();
+                }
+            });
+
+            // 搜尋及篩選同時僅能擇一操作
+            // 避免相互呼叫
+            var isInputEvent = false;
+            // 當輸入框被編輯時 還原篩選
+            function ResetFilter() {
+                isInputEvent = true;
+                ResetFirst();
+                $IndicatorSelector.trigger('change');
+            }
+            $("#keyword").on("input", function () {
+                ResetFilter();
+            });
+            // 當任一篩選改變時 清空輸入框
+            $("select").on("change", function () {
+                if (!isInputEvent) {
+                    // 清空輸入框
+                    $("#keyword").val("");
+                }
+                isInputEvent = false;
+            });
+        });
+
+    })(jQuery, window, document);
+</script>
