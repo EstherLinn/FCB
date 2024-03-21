@@ -6,9 +6,6 @@
     <SitecoreRoleType>platform</SitecoreRoleType>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Views\Feature\Wealth\Component\JoinMemberInfo\JoinMemberInfo.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
 </Project>
