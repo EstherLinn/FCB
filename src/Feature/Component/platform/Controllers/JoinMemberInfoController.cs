@@ -12,7 +12,7 @@ namespace Feature.Weakth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            return View("/Views/Wealth/JoinMemberInfo/JoinMemberInfo.cshtml", CreateModel(item));
+            return View("/Views/Feature/Wealth/Component/JoinMemberInfo/JoinMemberInfo.cshtml", CreateModel(item));
         }
 
         protected JoinMemberInfoModel CreateModel(Item item)
