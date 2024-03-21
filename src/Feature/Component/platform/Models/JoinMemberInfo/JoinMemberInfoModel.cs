@@ -22,9 +22,9 @@ namespace Feature.Wealth.Component.Models.JoinMemberInfo
 
             internal struct Fields
             {
-                internal static readonly ID Title = new ID("{E2AACFDA - 687D - 4586 - BFAE - E023E73CCAF3}");
+                internal static readonly ID Title = new ID("{E2AACFDA-687D-4586-BFAE-E023E73CCAF3}");
                 internal static readonly ID Subtitle = new ID("{9A842C98-5FB2-4902-8475-B24BEAE14831}");
-                internal static readonly ID Title1 = new ID("{A939A54F-2CF5-450F-8A61 - 243CC16313CA}");
+                internal static readonly ID Title1 = new ID("{A939A54F-2CF5-450F-8A61-243CC16313CA}");
                 internal static readonly ID Description1 = new ID("{AD5A46A1-A511-4735-ACCF-29883E12B6A8}");
                 internal static readonly ID Title2 = new ID("{FB106881-2570-452B-ADE7-CF33CE71CB7A}");
                 internal static readonly ID Description2 = new ID("{4E1974C7-C577-446F-AA0A-F1F7FD7BFFF0}");
@@ -35,7 +35,7 @@ namespace Feature.Wealth.Component.Models.JoinMemberInfo
                 internal static readonly ID Image2 = new ID("{C96A6430-915B-4E44-B6AD-293C76CEFB12}");
                 internal static readonly ID Image2_3X = new ID("{A776E272-C348-4761-8E65-81858A350455}");
                 internal static readonly ID Image3 = new ID("{0642A9AC-3AB9-4977-97BE-410D7C59E5A8}");
-                internal static readonly ID Image3_3X = new ID("{AAA1B6C8 - FC7A - 4491 - A1ED - 39D77CB09E07}");
+                internal static readonly ID Image3_3X = new ID("{AAA1B6C8-FC7A-4491-A1ED-39D77CB09E07}");
             }
         }
     }
