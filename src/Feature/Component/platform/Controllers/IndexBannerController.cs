@@ -21,8 +21,8 @@ namespace Feature.Wealth.Component.Controllers
 
             foreach (var childItem in childItems)
             {
-                var imageUrl = ItemUtils.ImageUrl(childItem, IndexBannerModel.Banner.Image);
-                var btnLink = ItemUtils.GeneralLink(childItem, IndexBannerModel.Banner.ButtonLink).Url;
+                var imageUrl = ItemUtils.ImageUrl(childItem, IndexBannerModel.Banner.Template.Fields.Image);
+                var btnLink = ItemUtils.GeneralLink(childItem, IndexBannerModel.Banner.Template.Fields.ButtonLink).Url;
 
                 items.Add(new IndexBannerModel.Banner(childItem)
                 {
