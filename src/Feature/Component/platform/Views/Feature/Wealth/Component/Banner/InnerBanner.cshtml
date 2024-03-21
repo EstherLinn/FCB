@@ -1,0 +1,9 @@
+﻿@using Feature.Wealth.Component.Models.Banner
+@model Feature.Wealth.Component.Models.Banner.InnerBannerModel
+
+<div class="c-kv">
+    <div class="c-kv__wrap">
+        <h1 class="c-kv__title u-ellipsis-2">@Html.Sitecore().Field(Template.Title, Model.Item)</h1>
+        <img src="~/themes/images/others/kv-topic.svg" class="c-kv__img" alt="">
+    </div>
+</div>
