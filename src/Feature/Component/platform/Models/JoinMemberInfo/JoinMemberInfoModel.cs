@@ -1,4 +1,5 @@
-﻿using Sitecore.Data.Fields;
+﻿using Sitecore.Data;
+using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.Resources.Media;
 using System;
@@ -6,111 +7,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
+using static Xcms.Sitecore.Foundation.Basic.Constant.Constants;
 
 namespace Feature.Wealth.Component.Models.JoinMemberInfo
 {
     public class JoinMemberInfoModel
     {
         public Item Item { get; set; }
+        public string Image1 { get; set; }
+        public string Image1_3X { get; set; }
+        public string Image2 { get; set; }
+        public string Image2_3X { get; set; }
+        public string Image3 { get; set; }
+        public string Image3_3X { get; set; }
+    }
 
-        private MvcHtmlString GetFieldValue(string fieldName)
-        {
-            return new MvcHtmlString(Sitecore.Web.UI.WebControls.FieldRenderer.Render(Item, fieldName));
-        }
+    internal struct JoinMemberInfo
+    {
+        internal static readonly ID Id = new ID("{547F4A24-EFCD-4C74-AA66-3D460A0BFC88}");
 
-        public MvcHtmlString Title
+        internal struct Fields
         {
-            get { return GetFieldValue("Title"); }
-        }
-
-        public MvcHtmlString Subtitle
-        {
-            get { return GetFieldValue("Subtitle"); }
-        }
-
-        public MvcHtmlString Title1
-        {
-            get { return GetFieldValue("Titl1"); }
-        }
-
-        public MvcHtmlString Title2
-        {
-            get { return GetFieldValue("Titl2"); }
-        }
-
-        public MvcHtmlString Title3
-        {
-            get { return GetFieldValue("Titl3"); }
-        }
-
-        public MvcHtmlString Description1
-        {
-            get { return GetFieldValue("Description1"); }
-        }
-
-        public MvcHtmlString Description2
-        {
-            get { return GetFieldValue("Description2"); }
-        }
-
-        public MvcHtmlString Description3
-        {
-            get { return GetFieldValue("Description3"); }
-        }
-
-        private string GetImageUrl(string fieldName)
-        {
-            var imgField = (ImageField)Item.Fields[fieldName];
-            return imgField?.MediaItem != null ? MediaManager.GetMediaUrl(imgField.MediaItem) : string.Empty;
-        }
-
-        public string Image1
-        {
-            get
-            {
-                return GetImageUrl("Image1");
-            }
-        }
-
-        public string Image1_3X
-        {
-            get
-            {
-                return GetImageUrl("Image1_3X");
-            }
-        }
-
-        public string Image2
-        {
-            get
-            {
-                return GetImageUrl("Image2");
-            }
-        }
-
-        public string Image2_3X
-        {
-            get
-            {
-                return GetImageUrl("Image2_3X");
-            }
-        }
-
-        public string Image3
-        {
-            get
-            {
-                return GetImageUrl("Image3");
-            }
-        }
-
-        public string Image3_3X
-        {
-            get
-            {
-                return GetImageUrl("Image3_3X");
-            }
+            internal static readonly ID Title = new ID("{E2AACFDA - 687D - 4586 - BFAE - E023E73CCAF3}");
+            internal static readonly ID Subtitle = new ID("{9A842C98-5FB2-4902-8475-B24BEAE14831}");
+            internal static readonly ID Title1 = new ID("{A939A54F-2CF5-450F-8A61 - 243CC16313CA}");
+            internal static readonly ID Description1 = new ID("{AD5A46A1-A511-4735-ACCF-29883E12B6A8}");
+            internal static readonly ID Title2 = new ID("{FB106881-2570-452B-ADE7-CF33CE71CB7A}");
+            internal static readonly ID Description2 = new ID("{4E1974C7-C577-446F-AA0A-F1F7FD7BFFF0}");
+            internal static readonly ID Title3 = new ID("{912C5111-3339-4BCE-A7F3-7CE9EF69B41E}");
+            internal static readonly ID Description3 = new ID("{9F068343-9693-4FE0-B180-09BC15A39AEB}");
+            internal static readonly ID Image1 = new ID("{4EE0C3D9-82B1-4746-A419-5C1A1FC39B7B}");
+            internal static readonly ID Image1_3X = new ID("{A88B8EFE-78BD-4616-B8E1-9FE519142FF0}");
+            internal static readonly ID Image2 = new ID("{C96A6430-915B-4E44-B6AD-293C76CEFB12}");
+            internal static readonly ID Image2_3X = new ID("{A776E272-C348-4761-8E65-81858A350455}");
+            internal static readonly ID Image3 = new ID("{0642A9AC-3AB9-4977-97BE-410D7C59E5A8}");
+            internal static readonly ID Image3_3X = new ID("{AAA1B6C8 - FC7A - 4491 - A1ED - 39D77CB09E07}");
         }
     }
 }
