@@ -18,12 +18,12 @@
                 {
                     <i class="o-icon o-icon--xl o-icon--radio"></i>
                 }
-                @Html.Sitecore().Field(Template.MainTitle, Model.Item)
+                @Html.Sitecore().Field(Template.CTA.Fields.MainTitle.ToString(), Model.Item)
             </h3>
-            <p class="c-cardLecture__desc"> @Html.Sitecore().Field(Template.Subtitle, Model.Item)</p>
+            <p class="c-cardLecture__desc"> @Html.Sitecore().Field(Template.CTA.Fields.SubTitle.ToString(), Model.Item)</p>
         </div>
         <div class="c-cardLecture__action">
-            <a href="@Model.ButtonLink" class="o-btnListen">@Html.Sitecore().Field(Template.ButtonLinkText, Model.Item)</a>
+            <a href="@Model.ButtonLink" class="o-btnListen">@Html.Sitecore().Field(Template.CTA.Fields.ButtonText.ToString(), Model.Item)</a>
         </div>
     </div>
 </div>
