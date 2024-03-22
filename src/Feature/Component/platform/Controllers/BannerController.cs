@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -13,11 +14,17 @@ namespace Feature.Wealth.Component.Controllers
     {
         public ActionResult InnerBanner()
         {
+            var item = RenderingContext.CurrentOrNull?.Rendering.Item;
+
+            var imageUrl = ItemUtils.ImageUrl(item, Template.Image);
+
             var model = new InnerBannerModel()
             {
-                Item = RenderingContext.Current?.Rendering.Item
+                Item = item,
+                ImageUrl = imageUrl,
             };
-            return View("/Views/Feature/Component/Banner/InnerBanner.cshtml", model);
+
+            return View("/Views/Feature/Wealth/Component/Banner/InnerBanner.cshtml", model);
         }
     }
 

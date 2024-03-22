@@ -1,15 +1,11 @@
 ﻿using Sitecore.Data.Items;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Feature.Wealth.Component.Models.Banner
 {
     public class InnerBannerModel
     {
         public Item Item { get; set; }
+        public string ImageUrl { get; set; }
     }
 
     public struct Template
@@ -25,6 +21,5 @@ namespace Feature.Wealth.Component.Models.Banner
         public static readonly string Title = "{397AF03E-2E2C-4AD1-A2BD-327C1CF047C4}";
 
     }
-
 }
 
