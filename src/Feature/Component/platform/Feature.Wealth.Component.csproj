@@ -6,9 +6,6 @@
     <SitecoreRoleType>platform</SitecoreRoleType>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Views\Feature\Wealth\Component\PopularityFund\PopularFundReturnView.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Dapper" />
   </ItemGroup>
   <ItemGroup>

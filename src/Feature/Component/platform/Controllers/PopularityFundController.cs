@@ -1,10 +1,11 @@
-﻿using Feature.Wealth.Component.Models.PopularityFund;
-using Feature.Wealth.Component.Repositories
-using Sitecore.Mvc.Presentation;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using Sitecore.Mvc.Presentation;
+using System.Collections.Generic;
+using Feature.Wealth.Component.Repositories;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Feature.Wealth.Component.Models.PopularityFund;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.Models.PopularityFund.PopularityFundModel;
 
@@ -18,12 +19,12 @@ namespace Feature.Wealth.Component.Controllers
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
 
-            var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, PopularityFundModel.Template.PopularityFund.Fields.FundID);
+            var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, Template.PopularityFund.Fields.FundID);
             var viewModel = new PopularityFundModel { Item = dataSourceItem };
 
             if (multilineField != null)
             {
-                viewModel.selectedId = multilineField;
+                viewModel.SelectedId = multilineField;
                 var funds = _popularityFundRepository.GetFundData();
                 var popularFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
                 popularFunds=popularFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ToList();
@@ -34,13 +35,16 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetSortedPopularityFund(string[] selectedId,string orderby= "SixMonthReturnOriginalCurrency", string desc="is-desc")
+        public ActionResult GetSortedPopularityFund(string[] selectedId,string orderby, string desc)
         {
+            if (orderby==null) { orderby = "SixMonthReturnOriginalCurrency"; }
+            if (desc==null) { desc = "is-desc"; }
+
             var funds = _popularityFundRepository.GetFundData();
             var popularFunds = funds.Where(fund => selectedId.Contains(fund.ProductCode)).ToList();
 
             var property = typeof(Funds).GetProperty(orderby);
-            if (desc == "is-desc")
+            if (desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase))
             {
                 popularFunds = popularFunds.OrderByDescending(f => property.GetValue(f, null)).ToList();
             }
@@ -55,6 +59,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 PopularFunds = renderDatas
             };
+
             return View("/Views/Feature/Wealth/Component/PopularityFund/PopularFundReturnView.cshtml", viewModel);
         }
 
