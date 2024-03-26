@@ -1,27 +1,28 @@
-﻿using Dapper;
+﻿using System.Data;
 using Foundation.Wealth.Manager;
-using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using static Feature.Wealth.Component.Models.HighRatedFund.HighRatedFundModel;
 
 namespace Feature.Wealth.Component.Repositories
 {
     public class HighRatedFundRepository
     {
-        private readonly IDbConnection _dbConnection = DbManager.Custom.DbConnection();
-
         public List<Funds> GetFundData()
         {
             List<Funds> fundItems = new List<Funds>();
 
-            string sql = @"SELECT *
-                          FROM [FCB_sitecore_Custom].[dbo].[vw_BasicFund] b
-                          join [FCB_sitecore_Custom].[dbo].[Fund_HighRated] h
-                          on b.ProductCode = h.ProductCode order by SixMonthReturnOriginalCurrency desc";
+            string sql = """
+                   SELECT * FROM
+                   [vw_BasicFund] b
+                   JOIN
+                   [Fund_HighRated] h
+                   ON
+                   b.ProductCode = h.ProductCode
+                   ORDER BY
+                   SixMonthReturnOriginalCurrency DESC
+                   """;
 
-            var results = _dbConnection.Query<Funds>(sql).ToList();
+            var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 
             foreach (var item in results)
             {
@@ -34,9 +35,6 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            DateTime navdate = Convert.ToDateTime(item.NetAssetValueDate);
-            string formattedDate = navdate.ToString("yyyy-MM-dd");
-            item.NetAssetValueDate = formattedDate;
             item.SixMonthReturnOriginalCurrency = decimal.Round(item.SixMonthReturnOriginalCurrency, 2);
             item.SixMonthReturnTWD = decimal.Round(item.SixMonthReturnTWD,2);
             item.NetAssetValue = decimal.Round(item.NetAssetValue, 4);
@@ -58,7 +56,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.NetAssetValue = f.NetAssetValue;
                 vm.NetAssetValueDate = f.NetAssetValueDate;
                 vm.SixMonthReturnOriginalCurrency = f.SixMonthReturnOriginalCurrency;
-                vm.ValuationCurrency = f.ValuationCurrency;
+                vm.CurrencyName = f.CurrencyName;
                 vm.RiskRewardLevel = f.RiskRewardLevel;
                 vm.OnlineSubscriptionAvailability = f.OnlineSubscriptionAvailability;
                 vm.PercentageChangeInFundPrice = f.PercentageChangeInFundPrice;
