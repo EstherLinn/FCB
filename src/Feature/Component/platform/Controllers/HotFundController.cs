@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Feature.Wealth.Component.Models.HotFund;
-using Feature.Wealth.Component.Repositories;
 using Sitecore.Mvc.Presentation;
+using System.Collections.Generic;
+using Feature.Wealth.Component.Repositories;
+using Feature.Wealth.Component.Models.HotFund;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.Models.HotFund.HotFundModel;
 
@@ -17,11 +18,11 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
-            var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, HotFundModel.Template.HotFund.Fields.FundID);
+            var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, Template.HotFund.Fields.FundID);
             var viewModel = new HotFundModel { Item = dataSourceItem };
             if (multilineField != null)
             {
-                viewModel.selectedId = multilineField;
+                viewModel.SelectedId = multilineField;
                 var funds = _HotFundRepository.GetFundData();
                 var hotFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
                 hotFunds = hotFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ToList();
@@ -31,13 +32,16 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetSortedHotFund(string[] selectedId, string orderby = "SixMonthReturnOriginalCurrency", string desc = "is-desc")
+        public ActionResult GetSortedHotFund(string[] selectedId, string orderby , string desc)
         {
+            if (orderby.IsNullOrEmpty()) { orderby = "SixMonthReturnOriginalCurrency"; }
+            if (desc.IsNullOrEmpty()) { orderby = "is-desc"; }
+
             var funds = _HotFundRepository.GetFundData();
             var hotFunds = funds.Where(fund => selectedId.Contains(fund.ProductCode)).ToList();
 
             var property = typeof(Funds).GetProperty(orderby);
-            if (desc == "is-desc")
+            if (desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase))
             {
                 hotFunds = hotFunds.OrderByDescending(f => property.GetValue(f, null)).ToList();
             }
@@ -52,7 +56,8 @@ namespace Feature.Wealth.Component.Controllers
             {
                 HotFunds = renderDatas
             };
-            return View("/Views/Feature/Wealth/Component/HotFund/HotFundReturnView.cshtml", viewModel);
+
+            return new JsonNetResult(this.RenderRazorViewToString("/Views/Feature/Wealth/Component/HotFund/HotFundReturnView.cshtml", viewModel).Replace(Environment.NewLine, string.Empty));
         }
 
 
