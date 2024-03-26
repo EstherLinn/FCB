@@ -9,9 +9,14 @@
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="themes\project\wealth\css\" />
-    <Folder Include="themes\project\wealth\js\" />
-    <Folder Include="themes\project\wealth\media\" />
-    <Folder Include="Views\Project\Wealth\Partial\" />
+    <Reference Include="Xcms.Sitecore.Foundation.Assets">
+      <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.Assets.dll</HintPath>
+    </Reference>
+    <Reference Include="Xcms.Sitecore.Feature.Metadata">
+      <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Feature.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="Xcms.Sitecore.Foundation.UrlBuilder">
+      <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.UrlBuilder.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

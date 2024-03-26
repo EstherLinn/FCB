@@ -17,5 +17,7 @@
 @Html.Sitecore().Placeholder("main")
 
 @section Bottom {
-
+    @{
+        Html.RenderPartial("~/Views/Project/Wealth/Partial/Popup.cshtml");
+    }
 }

@@ -1,0 +1,30 @@
+﻿@inherits Xcms.Sitecore.Foundation.Basic.MVC.EditorCompatibleView<IEnumerable<Xcms.Sitecore.Feature.Navigation.Models.Breadcrumb>>
+<div class="l-navbar__breadcrumb">
+    <ul class="o-breadcrumb">
+        @{
+            int ix = 0;
+            foreach (var node in Model)
+            {
+                if (ix == 0)
+                {
+                    ix++;
+                    <li class="o-breadcrumb__item"><a href="/" class="o-breadcrumb__link o-breadcrumb__link--home">Home</a></li>
+                }
+                else
+                {
+                    if (node.IsContextItem)
+                    {
+                        <li class="o-breadcrumb__item"><span class="o-breadcrumb__link">@node.GetBestLinkText()</span></li>
+                    }
+                    else
+                    {
+                        <li class="o-breadcrumb__item"><span class="o-breadcrumb__link">@node.GetBestLinkText()</span></li>
+                        @* <li class="o-breadcrumb__item"><a href="@node.Link.Url" class="o-breadcrumb__link">@node.GetBestLinkText()</a></li> *@
+                    }
+                }
+
+
+            }
+        }
+    </ul>
+</div>
