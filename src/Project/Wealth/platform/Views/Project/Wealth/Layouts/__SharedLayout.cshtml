@@ -1,4 +1,6 @@
 ﻿@using Sitecore.Mvc.Analytics.Extensions
+@using Xcms.Sitecore.Foundation.Assets.Models
+@using Xcms.Sitecore.Foundation.Assets.Services
 <!DOCTYPE html>
 <html class="no-js" lang="zh-hant-tw">
 <head>
@@ -8,28 +10,29 @@
     <meta name="theme-color" content="#fafafa">
     <link href="/site.webmanifest" rel="manifest">
     <!-- 3rd party vendor -->
-    <script src="~/themes/vendor/modernizr-3.11.7.min.js"></script>
-    <script src="~/themes/vendor/jquery-3.7.1.min.js"></script>
+    @RenderAssetsService.Current.Scripts("/themes/vendor/modernizr-3.11.7.min.js", "/themes/vendor/jquery-3.7.1.min.js")
     <!-- ui vendor -->
     @* <!-- Page plugin css / Begin --> *@
-    <link rel="stylesheet" href="~/themes/vendor/select2/css/select2.min.css" />
-    <link rel="stylesheet" href="~/themes/css/select2.min.css" />
-    <link rel="stylesheet" href="~/themes/vendor/noUiSlider/nouislider.min.css">
-    <link rel="stylesheet" href="~/themes/vendor/swiper/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="~/themes/vendor/aso/aos.css">
-    <link rel="stylesheet" href="~/themes/css/roboto.css">
-    <link rel="stylesheet" href="~/themes/vendor/datatables/datatables.min.css">
-    <link rel="stylesheet" href="~/themes/vendor/bootstrap-datepicker/css/bootstrap-datepicker.standalone.css" />
+    @RenderAssetsService.Current.Styles(
+            "/themes/vendor/select2/css/select2.min.css",
+            "/themes/css/select2.min.css",
+            "/themes/vendor/noUiSlider/nouislider.min.css",
+            "/themes/vendor/swiper/swiper-bundle.min.css",
+            "/themes/vendor/aso/aos.css",
+            "/themes/css/roboto.css",
+            "/themes/vendor/datatables/datatables.min.css",
+            "/themes/vendor/bootstrap-datepicker/css/bootstrap-datepicker.standalone.css")
     @* <!-- Page plugin css / End --> *@
     @* <!-- Global css / Begin --> *@
-    <link rel="stylesheet" href="~/themes/vendor/magnific-popup/magnific-popup.css">
-    <link rel="stylesheet" href="~/themes/css/normalize.min.css">
-    <link rel="stylesheet" href="~/themes/css/layout.min.css">
-    <link rel="stylesheet" href="~/themes/css/main.min.css">
+    @RenderAssetsService.Current.Styles(
+            "/themes/vendor/magnific-popup/magnific-popup.css",
+            "/themes/css/normalize.min.css",
+            "/themes/css/layout.min.css",
+            "/themes/css/main.min.css")
     @* <!-- Global css / End --> *@
     <!-- override-->
     <!-- library -->
-    <script src="~/themes/foundation/basic/combine.min.js"></script>
+    @RenderAssetsService.Current.Scripts("/themes/foundation/basic/combine.min.js")
     <!-- #START RenderSection: Head -->
     @RenderSection("Head", false)
     <!-- #END RenderSection: Head -->
@@ -39,16 +42,15 @@
         @Html.Sitecore().Placeholder("page-head")
         <!-- #END Placeholder: page-head-->
     }
-
     <!-- assets script -->
-    @* @RenderAssetsService.Current.RenderScript(ScriptLocation.Head) *@
+    @RenderAssetsService.Current.RenderScript(ScriptLocation.Head)
     <!-- assets style-->
-    @* @RenderAssetsService.Current.RenderStyles() *@
+    @RenderAssetsService.Current.RenderStyles()
     @Html.Sitecore().VisitorIdentification()
 </head>
 <body>
     <!-- assets script -->
-    @* @RenderAssetsService.Current.RenderScript(ScriptLocation.BodyTop) *@
+    @RenderAssetsService.Current.RenderScript(ScriptLocation.BodyTop)
     <script>
         @if (Sitecore.Context.PageMode.IsPreview)
         {
@@ -92,7 +94,7 @@
                 </a>
             </div>
             <div class="l-header__logo">
-                <a href="./index.html" class="o-ci">
+                <a href="/" class="o-ci">
                     <img src="~/themes/images/layout/logo.svg" alt="第一銀行logo" class="o-ci__logo">
                     <span class="o-ci__site">第e理財網</span>
                 </a>
@@ -100,7 +102,6 @@
             <!-- #START Placeholder: navbar -->
             @Html.Sitecore().Placeholder("navbar")
             <!-- #END Placeholder: navbar -->
-
             <!-- #START Placeholder: page-header -->
             @Html.Sitecore().Placeholder("page-header")
             <!-- #END Placeholder: page-header -->
@@ -123,30 +124,29 @@
     </div>
 
     @* <!-- Global js / Begin --> *@
-    <script src="~/themes/vendor/magnific-popup/magnific-popup.min.js"></script>
-    <script src="~/themes/js/extensions/magnific-popup-initialize.min.js"></script>
-    <script src="~/themes/vendor/floating-ui/floating-ui.core.umd.min.js"></script>
-    <script src="~/themes/vendor/floating-ui/floating-ui.dom.umd.min.js"></script>
-    <script src="~/themes/vendor/sweetalert2/sweetalert2.all.min.js"></script>
-    <script src="~/themes/vendor/scroll-direction/jquery.scroll-direction.min.js"></script>
-    <script src="~/themes/vendor/scroll-to-fixed/jquery-scrolltofixed.min.js"></script>
-
-    <script src="~/themes/vendor/select2/js/select2.min.js"></script>
-    <script src="~/themes/js/extensions/select2-initialize.min.js"></script>
-    <script src="~/themes/vendor/autocomplete/jquery.autocomplete.min.js"></script>
-    <script src="~/themes/vendor/swiper/swiper-bundle.min.js"></script>
-    <script src="~/themes/vendor/highcharts/highstock.js"></script>
-    <script src="~/themes/vendor/highcharts/modules/accessibility.js"></script>
-    <script src="~/themes/vendor/aso/aos.js"></script>
-    <script src="~/themes/js/extensions/aso-initialize.js"></script>
-
-    <script src="~/themes/js/plugins.min.js"></script>
-    <script src="~/themes/js/main.min.js"></script>
+    @RenderAssetsService.Current.Scripts(
+            "/themes/vendor/magnific-popup/magnific-popup.min.js",
+            "/themes/js/extensions/magnific-popup-initialize.min.js",
+            "/themes/vendor/floating-ui/floating-ui.core.umd.min.js",
+            "/themes/vendor/floating-ui/floating-ui.dom.umd.min.js",
+            "/themes/vendor/sweetalert2/sweetalert2.all.min.js",
+            "/themes/vendor/scroll-direction/jquery.scroll-direction.min.js",
+            "/themes/vendor/scroll-to-fixed/jquery-scrolltofixed.min.js",
+            "/themes/vendor/select2/js/select2.min.js",
+            "/themes/js/extensions/select2-initialize.min.js",
+            "/themes/vendor/autocomplete/jquery.autocomplete.min.js",
+            "/themes/vendor/swiper/swiper-bundle.min.js",
+            "/themes/vendor/highcharts/highstock.js",
+            "/themes/vendor/highcharts/modules/accessibility.js",
+            "/themes/vendor/aso/aos.js",
+            "/themes/js/extensions/aso-initialize.js",
+            "/themes/js/plugins.min.js",
+            "/themes/js/main.min.js")
     @* <!-- Global js / End --> *@
     <!-- #START RenderSection: Bottom -->
     @RenderSection("Bottom", false)
     <!-- #END RenderSection: Bottom -->
     <!-- assets script -->
-    @* @RenderAssetsService.Current.RenderScript(ScriptLocation.BodyBottom) *@
+    @RenderAssetsService.Current.RenderScript(ScriptLocation.BodyBottom)
 </body>
 </html>

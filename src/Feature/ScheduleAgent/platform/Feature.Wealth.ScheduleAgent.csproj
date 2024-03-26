@@ -8,4 +8,10 @@
   <ItemGroup>
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
+    <Reference Include="Xcms.Sitecore.Foundation.QuartzSchedule">
+      <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.QuartzSchedule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
