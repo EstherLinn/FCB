@@ -11,7 +11,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            var imageUrl = ItemUtils.ImageUrl(item, Template.Image);
+            var imageUrl = ItemUtils.ImageUrl(item, Templates.InnerBanner.Fields.Image);
 
             var model = new InnerBannerModel()
             {
@@ -22,5 +22,4 @@ namespace Feature.Wealth.Component.Controllers
             return View("/Views/Feature/Wealth/Component/Banner/InnerBanner.cshtml", model);
         }
     }
-
 }
