@@ -246,6 +246,8 @@
                                 $('.o-pagination__next').addClass('is-disabled');
                             } else if (totalPages === currentPage) {
                                 $('.o-pagination__next').addClass('is-disabled');
+                            } else if (page == 1) {
+                                $('.o-pagination__prev').addClass('is-disabled');
                             }
                             else {
                                 $('.o-pagination__next').removeClass('is-disabled');

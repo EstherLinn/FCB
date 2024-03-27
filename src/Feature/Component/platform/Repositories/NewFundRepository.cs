@@ -1,6 +1,4 @@
-﻿using Dapper;
-using System.Data;
-using System.Linq;
+﻿using System.Data;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.NewFund.NewFundModel;
@@ -9,14 +7,15 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class NewFundRepository
     {
-        private readonly IDbConnection _dbConnection = DbManager.Custom.DbConnection();
-
         public List<Funds> GetFundData()
         {
             List<Funds> fundItems = new List<Funds>();
+            var param="";
+            string sql = @"SELECT * FROM [FCB_sitecore_Custom].[dbo].[vw_BasicFund]
+                           WHERE [ListingDate] >= DATEADD(year, -7, GETDATE())
+                           ORDER BY SixMonthReturnOriginalCurrency DESC";
 
-            string sql = "SELECT * FROM [FCB_sitecore_Custom].[dbo].[vw_BasicFund] WHERE [ListingDate] >= DATEADD(year, -7, GETDATE()) order by SixMonthReturnOriginalCurrency desc";
-            var results = _dbConnection.Query<Funds>(sql).ToList();
+            var results = DbManager.Custom.ExecuteIList<Funds>(sql,param,CommandType.Text);
 
             foreach (var item in results)
             {
@@ -30,10 +29,10 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.NetAssetValue = decimal.Round(item.NetAssetValue,4);
-            item.SixMonthReturnOriginalCurrency = decimal.Round(item.SixMonthReturnOriginalCurrency,2);
-            item.SixMonthReturnTWD = decimal.Round(item.SixMonthReturnTWD,2);
-            item.PercentageChangeInFundPrice = decimal.Round((item.PercentageChangeInFundPrice) * 100,4);
+            item.NetAssetValue = decimal.Round(item.NetAssetValue, 4);
+            item.SixMonthReturnOriginalCurrency = decimal.Round(item.SixMonthReturnOriginalCurrency, 2);
+            item.SixMonthReturnTWD = decimal.Round(item.SixMonthReturnTWD, 2);
+            item.PercentageChangeInFundPrice = decimal.Round((item.PercentageChangeInFundPrice) * 100, 4);
         }
 
         /// <summary>

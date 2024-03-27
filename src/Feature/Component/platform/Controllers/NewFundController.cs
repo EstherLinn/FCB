@@ -39,17 +39,11 @@ namespace Feature.Wealth.Component.Controllers
             if (desc == null) { desc = "is-desc"; }
 
             var property = typeof(Funds).GetProperty(orderby);
-            bool isDesc = desc == "is-desc";
+            bool isDesc = desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase);
 
-            switch (isDesc)
-            {
-                case true:
-                    funds = funds.OrderByDescending(f => property.GetValue(f, null)).ToList();
-                    break;
-                case false:
-                    funds = funds.OrderBy(f => property.GetValue(f, null)).ToList();
-                    break;
-            }
+            funds = isDesc
+                 ? funds.OrderByDescending(f => property.GetValue(f, null)).ToList()
+                 : funds.OrderBy(f => property.GetValue(f, null)).ToList();
 
 
             var totalRecords = funds.Count();
