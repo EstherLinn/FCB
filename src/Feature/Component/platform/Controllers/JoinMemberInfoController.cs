@@ -4,7 +4,7 @@ using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
-namespace Feature.Weakth.Component.Controllers
+namespace Feature.Wealth.Component.Controllers
 {
     public class JoinMemberInfoController : Controller
     {
