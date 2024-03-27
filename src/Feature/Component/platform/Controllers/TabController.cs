@@ -11,12 +11,7 @@ namespace Feature.Wealth.Component.Controllers
     {
         public ActionResult Index()
         {
-            Item datasource = null;
-
-            if (Guid.TryParse(RenderingContext.Current.Rendering.DataSource, out Guid guid) && ID.TryParse(guid, out ID id))
-            {
-                datasource = Sitecore.Context.Database.GetItem(id);
-            }
+            var datasource = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             return View("/Views/Feature/Wealth/Component/Tab/Tab.cshtml", CreateModel(datasource));
         }

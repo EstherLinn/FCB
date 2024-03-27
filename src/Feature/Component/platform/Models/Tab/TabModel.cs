@@ -2,6 +2,7 @@
 using Sitecore.Data.Items;
 using System.Collections.Generic;
 using System.Linq;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.Tab
 {
@@ -14,7 +15,7 @@ namespace Feature.Wealth.Component.Models.Tab
         public TabModel(Item item)
         {
             this.Datasource = item;
-            this.SubItems = this.Datasource?.GetChildren()?.Where(i => i.Versions?.Count > 0)?.ToList() ?? new List<Item>();
+            this.SubItems = ItemUtils.GetChildren(this.Datasource)?.ToList() ?? new List<Item>();
         }
     }
 
