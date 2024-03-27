@@ -1,0 +1,8 @@
+﻿@if (Sitecore.Context.IsLoggedIn)
+{
+    Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LoginState.cshtml");
+}
+else
+{
+    Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LogoutState.cshtml");
+}

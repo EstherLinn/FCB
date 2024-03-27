@@ -22,7 +22,7 @@ namespace Foundation.Wealth.Manager
                 var cp = new ConnectionParameter
                 {
                     ConnectionSetting = ConfigurationManager.ConnectionStrings["custom"],
-                    DataBaseType = DataBaseTypeEnum.MsSql
+                    DataBaseType = DataBaseType.MsSql
                 };
                 _custom = DataAccessFactory.Create(cp);
                 return _custom;
