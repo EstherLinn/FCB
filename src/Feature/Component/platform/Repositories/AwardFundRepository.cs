@@ -1,37 +1,33 @@
-﻿using System;
+﻿using Flurl;
+using System;
+using Flurl.Http;
 using System.Data;
-using System.Linq;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using Sitecore.Configuration;
 using System.Collections.Generic;
-using Dapper;
-using Flurl;
-using Flurl.Http;
-using Newtonsoft.Json.Linq;
 using Foundation.Wealth.Manager;
 using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
-
 
 namespace Feature.Wealth.Component.Repositories
 {
     public class AwardFundRepository
     {
-        private readonly IDbConnection _dbConnection = DbManager.Custom.DbConnection();
-
         public List<Funds> GetFundData(string code)
         {
             List<Funds> fundItems = new List<Funds>();
+            var param = new { Code = code };
 
-            string sql = $"SELECT * FROM [FCB_sitecore_Custom].[dbo].[vw_BasicFund] WHERE ProductCode = '{code}'";
-            var results = _dbConnection.Query<Funds>(sql).ToList();
+            string sql = "SELECT * FROM [FCB_sitecore_Custom].[dbo].[vw_BasicFund] WHERE ProductCode =" + "'" + code + "'";
+            var results = DbManager.Custom.ExecuteIList<Funds>(sql, param, CommandType.Text);
 
             foreach (var item in results)
             {
                 ProcessFundFilterDatas(item);
                 fundItems.Add(item);
             }
-            return fundItems;
 
+            return fundItems;
         }
 
         private void ProcessFundFilterDatas(Funds item)
@@ -50,8 +46,8 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<List<Funds>> JsonPostAsync()
         {
             List<Funds> awardFundList = new List<Funds>();
-            
-        
+
+
             try
             {
                 var content = await _route.AppendPathSegment(_url)

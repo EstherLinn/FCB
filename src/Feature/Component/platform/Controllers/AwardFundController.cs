@@ -4,9 +4,9 @@ using System.Web.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Sitecore.Mvc.Presentation;
+using Feature.Wealth.Component.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.AwardFund;
-using Feature.Wealth.Component.Repositories;
 using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
 
 
@@ -31,20 +31,14 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetSortedAwardFund(string orderby, string desc)
         {
-            if (orderby.IsNullOrEmpty())
-            {
-                orderby = "Year";
-            }
-            if (desc.IsNullOrEmpty())
-            {
-                desc = "is-desc";
-            }
+            if (orderby.IsNullOrEmpty()) { orderby = "Year"; }
+            if (desc.IsNullOrEmpty()) { desc = "is-desc"; }
 
             Task<List<Funds>> award12024 = Task.Run(() => _repository.JsonPostAsync());
             var awardFunds = award12024.Result;
 
             var property = typeof(Funds).GetProperty(orderby);
-            if (desc == "is-desc")
+            if (desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase))
             {
                 awardFunds = awardFunds.OrderByDescending(f => property.GetValue(f, null)).ToList();
             }
