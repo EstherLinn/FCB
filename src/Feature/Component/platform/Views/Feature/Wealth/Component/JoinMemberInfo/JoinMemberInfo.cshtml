@@ -9,8 +9,8 @@
 <section class="c-block" data-aos="fade-up" data-aos-once="true">
     <div class="c-block__wrap">
         <hgroup class="c-block__header">
-            <h2 class="c-block__title">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Title, Model.Item)</h2>
-            <p class="c-block__subtitle">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Subtitle, Model.Item)</p>
+            <h2 class="c-block__title">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Title.ToString(), Model.Item)</h2>
+            <p class="c-block__subtitle">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Subtitle.ToString(), Model.Item)</p>
         </hgroup>
         <div class="c-block__content">
             <div class="l-feature">
@@ -18,8 +18,8 @@
                     <li class="l-feature__item">
                         <div class="c-feature c-feature--personalize">
                             <hgroup class="c-feature__content">
-                                <h3 class="c-feature__title">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Title1, Model.Item)</h3>
-                                <p class="c-feature__desc">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Description1, Model.Item)</p>
+                                <h3 class="c-feature__title">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Title1.ToString(), Model.Item)</h3>
+                                <p class="c-feature__desc">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Description1.ToString(), Model.Item)</p>
                             </hgroup>
                             <img src=@Model.Image1 srcset=@Model.Image1_3X alt="個人化商品推薦" class="c-feature__img">
                         </div>
@@ -27,8 +27,8 @@
                     <li class="l-feature__item">
                         <div class="c-feature c-feature--follow">
                             <hgroup class="c-feature__content">
-                                <h3 class="c-feature__title">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Title2, Model.Item)</h3>
-                                <p class="c-feature__desc">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Description2, Model.Item)</p>
+                                <h3 class="c-feature__title">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Title2.ToString(), Model.Item)</h3>
+                                <p class="c-feature__desc">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Description2.ToString(), Model.Item)</p>
                             </hgroup>
                             <img src=@Model.Image2 srcset=@Model.Image2_3X alt="觀察清單" class="c-feature__img">
                         </div>
@@ -36,8 +36,8 @@
                     <li class="l-feature__item">
                         <div class="c-feature c-feature--remote">
                             <hgroup class="c-feature__content">
-                                <h3 class="c-feature__title">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Title3, Model.Item)</h3>
-                                <p class="c-feature__desc">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Description3, Model.Item)</p>
+                                <h3 class="c-feature__title">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Title3.ToString(), Model.Item)</h3>
+                                <p class="c-feature__desc">@Html.Sitecore().Field(Template.JoinMemberInfo.Fields.Description3.ToString(), Model.Item)</p>
                             </hgroup>
                             <img src=@Model.Image3 srcset=@Model.Image3_3X alt="遠距理財服務" class="c-feature__img">
                         </div>

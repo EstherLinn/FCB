@@ -1,7 +1,7 @@
-﻿using Feature.Wealth.Component.Models.JoinMemberInfo;
+﻿using System.Web.Mvc;
+using Feature.Wealth.Component.Models.JoinMemberInfo;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
-using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Weakth.Component.Controllers
