@@ -88,36 +88,35 @@ namespace Feature.Wealth.Component.Models.PerformanceFundRank
             /// </summary>
             public string TargetName { get; internal set; }
         }
+    }
 
-
-        /// <summary>
-        /// 上稿內容
-        /// </summary>
-        public struct Template
+    /// <summary>
+    /// 上稿內容
+    /// </summary>
+    public struct Template
+    {
+        public struct PerformanceFundRank
         {
-            public struct PerformanceFundRank
+            public static readonly ID Id = new ID("{CB9A2DED-9F6B-4A56-BF94-3B99E7129B88}");
+
+            public struct Fields
             {
-                public static readonly ID Id = new ID("{CB9A2DED-9F6B-4A56-BF94-3B99E7129B88}");
+                /// <summary>
+                /// 主標題
+                /// </summary>
+                public static readonly ID MainTitle = new ID("{D7FA12C5-5FC8-4928-8E0D-64A982793216}");
 
-                public struct Fields
-                {
-                    /// <summary>
-                    /// 主標題
-                    /// </summary>
-                    public static readonly ID MainTitle = new ID("{D7FA12C5-5FC8-4928-8E0D-64A982793216}");
+                /// <summary>
+                /// 副標題
+                /// </summary>
+                public static readonly ID SubTitle = new ID("{1C5CB664-CEA4-40F4-9D16-BB7EE12127C0}");
 
-                    /// <summary>
-                    /// 副標題
-                    /// </summary>
-                    public static readonly ID SubTitle = new ID("{1C5CB664-CEA4-40F4-9D16-BB7EE12127C0}");
-
-                    /// <summary>
-                    /// 附註內容
-                    /// </summary>
-                    public static readonly ID NoteContent = new ID("{7C221A23-13CA-4E17-AC10-17948A3A8149}");
-                }
-
+                /// <summary>
+                /// 附註內容
+                /// </summary>
+                public static readonly ID NoteContent = new ID("{7C221A23-13CA-4E17-AC10-17948A3A8149}");
             }
+
         }
     }
 }

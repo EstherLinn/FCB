@@ -1,6 +1,6 @@
-﻿using System.Data;
+﻿using Dapper;
+using System.Data;
 using System.Linq;
-using Dapper;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.PerformanceFundRank.PerformanceFundRankModel;
@@ -15,7 +15,10 @@ namespace Feature.Wealth.Component.Repositories
         {
             List<Funds> fundItems = new List<Funds>();
 
-            string sql = "SELECT * FROM [FCB_sitecore_Custom].[dbo].[vw_BasicFund] where SixMonthReturnOriginalCurrency is not null order by SixMonthReturnOriginalCurrency desc";
+            string sql = @"SELECT * FROM [FCB_sitecore_Custom].[dbo].[vw_BasicFund]
+            WHERE SixMonthReturnOriginalCurrency IS NOT NULL
+            ORDER BY SixMonthReturnOriginalCurrency DESC";
+
             var results = _dbConnection.Query<Funds>(sql).ToList();
 
             foreach (var item in results)
@@ -30,10 +33,10 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.NetAssetValue = decimal.Round(item.NetAssetValue,4);
-            item.SixMonthReturnOriginalCurrency = decimal.Round(item.SixMonthReturnOriginalCurrency,2);
-            item.SixMonthReturnTWD = decimal.Round(item.SixMonthReturnTWD,2);
-            item.PercentageChangeInFundPrice = decimal.Round((item.PercentageChangeInFundPrice) * 100,4);
+            item.NetAssetValue = decimal.Round(item.NetAssetValue, 4);
+            item.SixMonthReturnOriginalCurrency = decimal.Round(item.SixMonthReturnOriginalCurrency, 2);
+            item.SixMonthReturnTWD = decimal.Round(item.SixMonthReturnTWD, 2);
+            item.PercentageChangeInFundPrice = decimal.Round((item.PercentageChangeInFundPrice) * 100, 4);
         }
 
         /// <summary>

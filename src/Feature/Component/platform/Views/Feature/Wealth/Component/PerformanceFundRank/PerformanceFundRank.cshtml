@@ -10,10 +10,10 @@
 <div class="l-mainstage">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
-            <h1 class="t-title">@Html.Sitecore().Field(PerformanceFundRankModel.Template.PerformanceFundRank.Fields.MainTitle.ToString(), Model.Item)</h1>
+            <h1 class="t-title">@Html.Sitecore().Field(Template.PerformanceFundRank.Fields.MainTitle.ToString(), Model.Item)</h1>
         </div>
         <div class="l-mainstage__content">
-            @Html.Sitecore().Field(PerformanceFundRankModel.Template.PerformanceFundRank.Fields.SubTitle.ToString(), Model.Item)
+            @Html.Sitecore().Field(Template.PerformanceFundRank.Fields.SubTitle.ToString(), Model.Item)
         </div>
     </div>
 </div>
@@ -427,7 +427,7 @@
                 <div class="c-notice__title">附註</div>
                 <div class="c-notice__content">
                     <div class="l-list l-list--xs">
-                        @Html.Sitecore().Field(PerformanceFundRankModel.Template.PerformanceFundRank.Fields.NoteContent.ToString(), Model.Item)
+                        @Html.Sitecore().Field(Template.PerformanceFundRank.Fields.NoteContent.ToString(), Model.Item)
                     </div>
                 </div>
             </div>
@@ -472,6 +472,9 @@
                                 $('.o-pagination__next').addClass('is-disabled');
                             } else if (totalPages === currentPage) {
                                 $('.o-pagination__next').addClass('is-disabled');
+                            } else if(currentPage == 1) {
+                                $('.o-pagination__prev').addClass('is-disabled');
+                                $('.o-pagination__next').removeClass('is-disabled');
                             }
                             else {
                                 $('.o-pagination__next').removeClass('is-disabled');
@@ -612,7 +615,7 @@
                 var pageSize = tabPanel.find('.o-selectbox--pagesize').val();
                 console.log('連棟排序');
                 loadData(tabTarget, selectedValue, 1, pageSize, sortingColumn, orderby);
-
+                var page = $('.o-pagination__no').val(1);
                 // 因展示，使用 setTimeout 延遲關閉 loading
                 setTimeout(() => {
                     // 關閉loading

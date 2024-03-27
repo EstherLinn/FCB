@@ -33,11 +33,11 @@ namespace Feature.Wealth.Component.Controllers
         {
             var funds = _performanceFundRankRepository.GetFundData();
 
-            if (tab == null) { tab = "tab-1"; }
+            if (tab.IsNullOrEmpty()) { tab = "tab-1"; }
             if (page == null) { page = 1; }
-            if (pageSize == null) { pageSize = "10"; }
-            if (orderby == null) { orderby = "SixMonthReturnOriginalCurrency"; }
-            if (desc == null) { desc = "is-desc"; }
+            if (pageSize.IsNullOrEmpty()) { pageSize = "10"; }
+            if (orderby.IsNullOrEmpty()) { orderby = "SixMonthReturnOriginalCurrency"; }
+            if (desc.IsNullOrEmpty()) { desc = "is-desc"; }
 
 
             switch (tab.ToLower())
@@ -59,24 +59,18 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             var property = typeof(Funds).GetProperty(orderby);
-            bool isDesc = desc == "is-desc";
+            bool isDesc = desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase);
 
-            switch (isDesc)
-            {
-                case true:
-                    funds = funds.OrderByDescending(f => property.GetValue(f, null)).ToList();
-                    break;
-                case false:
-                    funds = funds.OrderBy(f => property.GetValue(f, null)).ToList();
-                    break;
-            }
+            funds = isDesc
+                ? funds.OrderByDescending(f => property.GetValue(f, null)).ToList()
+                : funds.OrderBy(f => property.GetValue(f, null)).ToList();
 
 
             var totalRecords = funds.Count();
             int totalPages;
             List<Funds> renderDatas;
 
-            if (pageSize.ToLower() == "all")
+            if (pageSize.ToLower().Equals("all", StringComparison.OrdinalIgnoreCase))
             {
                 totalPages = 1;
                 renderDatas = _performanceFundRankRepository.GetFundRenderData(funds).ToList();
