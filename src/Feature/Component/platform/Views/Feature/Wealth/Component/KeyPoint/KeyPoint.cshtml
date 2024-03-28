@@ -1,0 +1,17 @@
+﻿@using Feature.Wealth.Component.Models.KeyPoint
+@model KeyPointModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<section class="c-section" data-aos="fade-up" data-aos-once="true">
+    <div class="l-wrap">
+        <div class="c-section__content">
+            <div class="c-quotes">
+                @Html.Sitecore().Field(Templates.KeyPoint.Fields.Content.ToString(), Model.Item)
+            </div>
+        </div>
+    </div>
+</section>
