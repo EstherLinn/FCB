@@ -12,14 +12,12 @@ namespace Feature.Wealth.Component.Repositories
             List<Funds> fundItems = new List<Funds>();
 
             string sql = """
-                   SELECT * FROM
-                   [vw_BasicFund] b
-                   JOIN
-                   [Fund_HighRated] h
-                   ON
-                   b.ProductCode = h.ProductCode
-                   ORDER BY
-                   SixMonthReturnOriginalCurrency DESC
+                   SELECT *
+                   FROM [vw_BasicFund] b
+                   JOIN [Fund_HighRated] h
+                   ON b.ProductCode = h.ProductCode
+                   ORDER BY SixMonthReturnOriginalCurrency
+                   DESC
                    """;
 
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);

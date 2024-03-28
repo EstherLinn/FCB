@@ -98,11 +98,6 @@ namespace Feature.Wealth.Component.Models.HighRatedFund
                 /// 標題備註
                 /// </summary>
                 public static readonly ID Content = new ID("{7A85A0BD-110A-4E93-BFED-0FBF5C88322D}");
-
-                /// <summary>
-                /// 附註內容
-                /// </summary>
-                public static readonly ID NoteContent = new ID("{2F8AB55E-63CA-416A-84BF-EB0F64660E02}");
             }
         }
     }
