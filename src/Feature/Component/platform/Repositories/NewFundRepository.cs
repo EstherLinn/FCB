@@ -10,12 +10,18 @@ namespace Feature.Wealth.Component.Repositories
         public List<Funds> GetFundData()
         {
             List<Funds> fundItems = new List<Funds>();
-            var param="";
-            string sql = @"SELECT * FROM [FCB_sitecore_Custom].[dbo].[vw_BasicFund]
-                           WHERE [ListingDate] >= DATEADD(year, -7, GETDATE())
-                           ORDER BY SixMonthReturnOriginalCurrency DESC";
 
-            var results = DbManager.Custom.ExecuteIList<Funds>(sql,param,CommandType.Text);
+            var sql = """
+             SELECT * FROM
+             [vw_BasicFund]
+             WHERE
+             [ListingDate] >= DATEADD(year, -1, GETDATE())
+             ORDER BY
+             SixMonthReturnOriginalCurrency
+             DESC
+             """;
+
+            var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 
             foreach (var item in results)
             {
@@ -51,7 +57,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.NetAssetValueDate = f.NetAssetValueDate;
                 vm.SixMonthReturnOriginalCurrency = f.SixMonthReturnOriginalCurrency;
                 vm.SixMonthReturnTWD = f.SixMonthReturnTWD;
-                vm.ValuationCurrency = f.ValuationCurrency;
+                vm.CurrencyName = f.CurrencyName;
                 vm.RiskRewardLevel = f.RiskRewardLevel;
                 vm.OnlineSubscriptionAvailability = f.OnlineSubscriptionAvailability;
                 vm.PercentageChangeInFundPrice = f.PercentageChangeInFundPrice;

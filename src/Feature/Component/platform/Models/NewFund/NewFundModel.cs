@@ -41,7 +41,12 @@ namespace Feature.Wealth.Component.Models.NewFund
             /// <summary>
             /// 計價幣別 
             /// </summary>
-            public string ValuationCurrency { get; set; }
+            public string CurrencyName { get; set; }
+
+            /// <summary>
+            /// 計價幣別代碼-排序使用
+            /// </summary>
+            public string CurrencyCode { get; set; }
 
             /// <summary>
             /// 六個月報酬原幣
