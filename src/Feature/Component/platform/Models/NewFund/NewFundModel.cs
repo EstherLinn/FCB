@@ -106,11 +106,6 @@ namespace Feature.Wealth.Component.Models.NewFund
                 /// 副標題
                 /// </summary>
                 public static readonly ID SubTitle = new ID("{F7CAFC5E-B1F0-4292-A423-B99AB3759648}");
-
-                /// <summary>
-                /// 附註內容
-                /// </summary>
-                public static readonly ID NoteContent = new ID("{C38F47B5-D630-4FDC-AFAE-A4F26729F0FD}");
             }
         }
 

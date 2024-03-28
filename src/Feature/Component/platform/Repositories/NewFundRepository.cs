@@ -12,12 +12,10 @@ namespace Feature.Wealth.Component.Repositories
             List<Funds> fundItems = new List<Funds>();
 
             var sql = """
-             SELECT * FROM
-             [vw_BasicFund]
-             WHERE
-             [ListingDate] >= DATEADD(year, -1, GETDATE())
-             ORDER BY
-             SixMonthReturnOriginalCurrency
+             SELECT *
+             FROM [vw_BasicFund]
+             WHERE [ListingDate] >= DATEADD(year, -1, GETDATE())
+             ORDER BY SixMonthReturnOriginalCurrency
              DESC
              """;
 
