@@ -1,13 +1,15 @@
 ﻿using Flurl;
 using System;
+using Dapper;
 using Flurl.Http;
 using System.Data;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using Sitecore.Configuration;
-using System.Collections.Generic;
 using Foundation.Wealth.Manager;
+using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
+
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -16,10 +18,18 @@ namespace Feature.Wealth.Component.Repositories
         public List<Funds> GetFundData(string code)
         {
             List<Funds> fundItems = new List<Funds>();
-            var param = new { Code = code };
 
-            string sql = "SELECT * FROM [FCB_sitecore_Custom].[dbo].[vw_BasicFund] WHERE ProductCode =" + "'" + code + "'";
-            var results = DbManager.Custom.ExecuteIList<Funds>(sql, param, CommandType.Text);
+            var parameters = new DynamicParameters();
+            parameters.Add("@ProductCode", code, DbType.String, ParameterDirection.Input, code.Length);
+
+            string sql = """
+                SELECT *
+                FROM [vw_BasicFund]
+                WHERE ProductCode = @ProductCode
+                """;
+
+
+            var results = DbManager.Custom.ExecuteIList<Funds>(sql, parameters, CommandType.Text);
 
             foreach (var item in results)
             {
