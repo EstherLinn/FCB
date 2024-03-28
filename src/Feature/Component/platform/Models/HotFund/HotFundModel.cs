@@ -106,10 +106,6 @@ namespace Feature.Wealth.Component.Models.HotFund
                 /// 標題備註
                 /// </summary>
                 public static readonly ID Content = new ID("{7BA535FA-A3E0-428E-B91C-D5E1E8D1E43C}");
-                /// <summary>
-                /// 附註內容
-                /// </summary>
-                public static readonly ID NoteContent = new ID("{26658643-63EB-49E2-8073-1C33BC115DC4}");
             }
         }
 

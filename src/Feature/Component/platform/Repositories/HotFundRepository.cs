@@ -11,7 +11,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             List<Funds> fundItems = new List<Funds>();
 
-            string sql = @"SELECT * FROM [vw_BasicFund]";
+            string sql = "SELECT * FROM [vw_BasicFund]";
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 
             foreach (var item in results)
