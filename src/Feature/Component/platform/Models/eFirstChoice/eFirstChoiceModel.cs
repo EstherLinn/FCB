@@ -94,18 +94,16 @@ namespace Feature.Wealth.Component.Models.eFirstChoice
                 /// 主標題
                 /// </summary>
                 public static readonly ID MainTitle = new ID("{92D93435-3C84-495F-B3F6-B0AA58C1F493}");
+
                 /// <summary>
                 /// 副標題
                 /// </summary>
                 public static readonly ID SubTitle = new ID("{5DBEEE77-2E93-4BF7-836F-96A1891ADA65}");
+
                 /// <summary>
                 /// 標題備註
                 /// </summary>
                 public static readonly ID Content = new ID("{7BA535FA-A3E0-428E-B91C-D5E1E8D1E43C}");
-                /// <summary>
-                /// 附註內容
-                /// </summary>
-                public static readonly ID NoteContent = new ID("{26658643-63EB-49E2-8073-1C33BC115DC4}");
             }
         }
 
