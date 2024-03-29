@@ -1,0 +1,99 @@
+﻿@model Feature.Wealth.Component.Models.DiscountContent.DiscountContentModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-wrap">
+    <div class="c-contentBanner">
+
+        @if (!string.IsNullOrEmpty(Model.PCBannerSrc))
+        {
+            <img class="c-contentBanner__img c-contentBanner__img--pc" src="@Model.PCBannerSrc" alt="">
+        }
+
+        @if (!string.IsNullOrEmpty(Model.MobileBannerSrc))
+        {
+            <img class="c-contentBanner__img c-contentBanner__img--mb" src="@Model.MobileBannerSrc" alt="">
+        }
+    </div>
+    <div class="c-article c-article--event">
+        <div class="c-article__head">
+
+            @switch (Model.DisplayTag)
+            {
+                case "New":
+                    <div class="c-article__tag">
+                        <div class="o-eventTag">
+                            <img src="~/themes/images/icons/white/star-solid.svg" alt="">
+                            <span>最新</span>
+                        </div>
+                    </div>
+                    break;
+                case "Hot":
+                    <div class="c-article__tag">
+                        <div class="o-eventTag">
+                            <img src="~/themes/images/icons/white/hot-solid.svg" alt="">
+                            <span>熱門</span>
+                        </div>
+                    </div>
+                    break;
+                case "Expiring":
+                    <div class="c-article__tag">
+                        <div class="o-eventTag">
+                            <img src="~/themes/images/icons/white/ring-solid.svg" alt="">
+                            <span>即將到期</span>
+                        </div>
+                    </div>
+                    break;
+                case "Limited":
+                    <div class="c-article__tag">
+                        <div class="o-eventTag">
+                            <img src="~/themes/images/icons/white/alarm-solid.svg" alt="">
+                            <span>限時快閃</span>
+                        </div>
+                    </div>
+                    break;
+                default:
+                    break;
+            }
+
+            @if (!string.IsNullOrEmpty(Model.DataSource["Main Title"]))
+            {
+                <div class="c-article__title">
+                    @Html.Sitecore().Field("Main Title", Model.DataSource)
+                </div>
+            }
+
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.DisplayDate))
+        {
+            <div class="c-article__extra">
+                <div class="c-minorInfo s4">
+                    <div class="c-minorInfo__main">
+                        <span class="t-date">@Model.DisplayDate</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.DataSource["Content"]))
+        {
+            @Html.Sitecore().Field("Content", Model.DataSource)
+        }
+
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ButtonLink) && !string.IsNullOrEmpty(Model.DataSource["Button Text"]))
+    {
+        <div class="l-action">
+            <div class="l-action__item">
+                @Html.Sitecore().BeginField("Button Link", Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--secondary o-btn--lg" })
+                @Html.Sitecore().Field("Button Text", Model.DataSource)
+                @Html.Sitecore().EndField()
+            </div>
+        </div>
+    }
+</div>
