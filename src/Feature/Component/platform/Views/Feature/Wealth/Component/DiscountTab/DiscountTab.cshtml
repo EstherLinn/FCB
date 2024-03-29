@@ -1,0 +1,82 @@
+﻿@model Feature.Wealth.Component.Models.DiscountTab.DiscountTabModel
+@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+
+@if (Model == null)
+{
+    return;
+}
+@{
+    bool isNavFirst = true;
+    bool isDropFirst = true;
+    bool isContentFirst = true;
+}
+
+@{
+    var mainTitle = Html.Sitecore().Field("Main Title", Model.DataSource).ToString();
+
+    if (Model.DataSource.FieldHasValue("Main Title"))
+    {
+        <div class="l-mainstage">
+            <div class="l-mainstage__wrap">
+                <div class="l-mainstage__title">
+                    <h1 class="t-title">@mainTitle</h1>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div class="l-wrap">
+    <div class="c-tab c-tab--wide" data-tab="true">
+        <div class="c-tab__header">
+            <ul class="c-tab__navs">
+
+                @foreach (var item in Model.TabList)
+                {
+                    var tabTitle = Html.Sitecore().Field("Tab Title", item).ToString();
+                    var placeHolder = Html.Sitecore().Field("Placeholder", item).ToString();
+
+                    if (!string.IsNullOrEmpty(tabTitle) && !string.IsNullOrEmpty(placeHolder))
+                    {
+                        <li>
+                            <a href="#" class="c-tab__item@(isNavFirst ? " is-active" : "")" target="_self" title="@tabTitle" data-tab-target="@placeHolder">@tabTitle</a>
+                        </li>
+
+                        isNavFirst = false;
+                    }
+                }
+            </ul>
+            <div class="c-tab__collapse">
+                <a href="#" class="c-tab__switch"></a>
+                <div class="c-tab__dropdown">
+                    @foreach (var item in Model.TabList)
+                    {
+                        var tabTitle = Html.Sitecore().Field("Tab Title", item).ToString();
+                        var placeHolder = Html.Sitecore().Field("Placeholder", item).ToString();
+
+                        if (!string.IsNullOrEmpty(tabTitle) && !string.IsNullOrEmpty(placeHolder))
+                        {
+                            <a href="#" class="c-tab__clone@(isDropFirst ? " is-active" : "")" target="_self" title="@tabTitle" data-tab-target="@placeHolder">@tabTitle</a>
+
+                            isDropFirst = false;
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        @foreach (var item in Model.TabList)
+        {
+            var placeHolder = Html.Sitecore().Field("Placeholder", item).ToString();
+
+            if (!string.IsNullOrEmpty(placeHolder))
+            {
+                <div class="c-tab__panel@(isContentFirst ? " is-active" : "")" data-tab-panel-id="@placeHolder">
+                    @Html.Sitecore().Placeholder(placeHolder)
+                </div>
+
+                isContentFirst = false;
+            }
+        }
+    </div>
+</div>
