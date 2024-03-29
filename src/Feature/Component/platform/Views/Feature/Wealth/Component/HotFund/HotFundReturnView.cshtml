@@ -1,0 +1,104 @@
+﻿@using Feature.Wealth.Component.Models.HotFund
+@model HotFundModel
+
+@foreach (var item in Model.HotFunds)
+{
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+        <td class="c-cardTable__top"></td>
+        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+            <div class="c-cardTable__content">
+                <div class="l-target">
+                    <div class="l-target__name">
+                        <a href="#" class="o-contentLink t-bold u-ellipsis-2">@item.ProductCode @item.ProductName</a>
+                    </div>
+                    @if (item.TargetName == "Y")
+                    {
+                        <div class="l-target__additional">
+                            <ul class="l-tag">
+                                <li class="l-tag__item">
+                                    <a href="#" class="o-tag">百元基金</a>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">最新淨值<br>(淨值日)</div>
+            <div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy/MM/dd")</span></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">
+                幣別
+                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+            </div>
+            <div class="c-cardTable__content">
+                <a href="#" class="o-link">@item.CurrencyName</a>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
+            <div class="c-cardTable__content">
+                @if (item.PercentageChangeInFundPrice < 0)
+                {
+                    <span class="o-fall">@item.PercentageChangeInFundPrice%</span>
+                }
+                else
+                {
+                    <span class="o-rise">@item.PercentageChangeInFundPrice%</span>
+                }
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">6個月績效</div>
+            <div class="c-cardTable__content">
+                @if (item.SixMonthReturnOriginalCurrency < 0)
+                {
+                    <span class="o-fall">@item.SixMonthReturnOriginalCurrency%</span>
+                }
+                else
+                {
+                    <span class="o-rise">@item.SixMonthReturnOriginalCurrency%</span>
+                }
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">風險屬性</div>
+            <div class="c-cardTable__content">@item.RiskRewardLevel</div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">國人持有金額占基金規模比重</div>
+            @if (item.DomesticInvestmentRatio == null)
+            {
+                <div class="c-cardTable__content">0</div>
+
+            }
+            else
+            {
+                <div class="c-cardTable__content">@item.DomesticInvestmentRatio</div>
+            }
+        </td>
+        <td class="c-cardTable__space"></td>
+        <td class="c-cardTable__footer" data-card-table-width="2/3">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                    </li>
+                    <li class="l-collect__item">
+                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                    </li>
+                </ul>
+            </div>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/3">
+            @if (item.OnlineSubscriptionAvailability == "Y")
+            {
+                <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            }
+        </td>
+    </tr>
+}
