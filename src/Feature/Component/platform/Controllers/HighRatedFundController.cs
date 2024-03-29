@@ -53,7 +53,7 @@ namespace Feature.Wealth.Component.Controllers
                 HighRatedFunds = renderDatas
             };
 
-            return new JsonNetResult(this.RenderRazorViewToString("/Views/Feature/Wealth/Component/HighRatedFund/HighRatedFundReturnView.cshtml", viewModel).Replace(Environment.NewLine, string.Empty));
+            return View("/Views/Feature/Wealth/Component/HighRatedFund/HighRatedFundReturnView.cshtml", viewModel);
         }
 
     }
