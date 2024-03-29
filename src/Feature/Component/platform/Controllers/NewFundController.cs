@@ -4,7 +4,6 @@ using System.Web.Mvc;
 using Sitecore.Mvc.Presentation;
 using System.Collections.Generic;
 using Feature.Wealth.Component.Repositories;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.NewFund;
 using static Feature.Wealth.Component.Models.NewFund.NewFundModel;
 
@@ -73,7 +72,7 @@ namespace Feature.Wealth.Component.Controllers
                 NewFunds = renderDatas
             };
 
-            return new JsonNetResult(this.RenderRazorViewToString("/Views/Feature/Wealth/Component/NewFund/NewFundReturn.cshtml", model).Replace(Environment.NewLine, string.Empty));
+            return View("/Views/Feature/Wealth/Component/NewFund/NewFundReturn.cshtml", model);
         }
 
 
