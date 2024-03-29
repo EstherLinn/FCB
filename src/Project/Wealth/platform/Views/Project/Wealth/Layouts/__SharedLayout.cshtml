@@ -64,7 +64,7 @@
             @:addObjectValue(SC_DATA, 'Site', '@Sitecore.Context.Site.Name');
             @:addObjectValue(SC_DATA, 'Path', '@Sitecore.Context.Item.Paths.Path');
             @:addObjectValue(SC_DATA, 'ItemId', '@Sitecore.Context.Item.ID');
-            @:addObjectValue(SC_DATA, 'Database', '@Sitecore.Context.Data.Database.Name');
+            @:addObjectValue(SC_DATA, 'Database', '@Sitecore.Context.Item.Database.Name');
         }
     </script>
     <!--[if lte IE 11]>
@@ -139,7 +139,12 @@
             "/themes/vendor/highcharts/highstock.js",
             "/themes/vendor/highcharts/modules/accessibility.js",
             "/themes/vendor/aso/aos.js",
+            "/themes/vendor/datatables/datatables.min.js",
             "/themes/js/extensions/aso-initialize.js",
+            "/themes/vendor/datatables/datatables.min.js",
+            "/themes/js/extensions/highcharts-initialize.min.js",
+            "/themes/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js",
+            "/themes/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.zh-TW.min.js",
             "/themes/js/plugins.min.js",
             "/themes/js/main.min.js")
     @* <!-- Global js / End --> *@

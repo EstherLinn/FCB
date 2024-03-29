@@ -21,6 +21,7 @@
     <!-- === misc === -->
     <PackageReference Update="ChoETL" Version="1.2.1.64" />
     <PackageReference Update="Dapper" Version="2.1.28" />
+    <PackageReference Update="Flurl" Version="4.0.0" />
     <PackageReference Update="Flurl.Http" Version="4.0.2" />
     <PackageReference Update="HtmlSanitizer" Version="8.0.811" />
     <PackageReference Update="Mapster" Version="7.3.0" />
