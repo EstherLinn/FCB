@@ -87,8 +87,8 @@
                                             <option value="基金名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">基金名稱低至高</option>
                                             <option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
                                             <option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
-                                            <option value="幣別高至低" data-sorting-column="ValuationCurrency" data-sorting-class="is-desc">幣別高至低</option>
-                                            <option value="幣別低至高" data-sorting-column="ValuationCurrency" data-sorting-class="is-asc">幣別低至高</option>
+                                            <option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
+                                            <option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
                                             <option value="當日漲跌幅高至低" data-sorting-column="PercentageChangeInFundPrice" data-sorting-class="is-desc">當日漲跌幅高至低</option>
                                             <option value="當日漲跌幅低至高" data-sorting-column="PercentageChangeInFundPrice" data-sorting-class="is-asc">當日漲跌幅低至高</option>
                                             <option value="6個月績效高至低" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-desc">6個月績效高至低</option>
@@ -133,7 +133,7 @@
                                                 <div class="c-table__title">
                                                     <span>幣別</span>
                                                     <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                                    <a href="#" class="o-sorting" data-sorting-column="ValuationCurrency"></a>
+                                                    <a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
                                                 </div>
                                             </th>
                                             <th>
@@ -254,8 +254,8 @@
                                             <option value="基金名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">基金名稱低至高</option>
                                             <option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
                                             <option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
-                                            <option value="幣別高至低" data-sorting-column="ValuationCurrency" data-sorting-class="is-desc">幣別高至低</option>
-                                            <option value="幣別低至高" data-sorting-column="ValuationCurrency" data-sorting-class="is-asc">幣別低至高</option>
+                                            <option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
+                                            <option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
                                             <option value="當日漲跌幅高至低" data-sorting-column="PercentageChangeInFundPrice" data-sorting-class="is-desc">當日漲跌幅高至低</option>
                                             <option value="當日漲跌幅低至高" data-sorting-column="PercentageChangeInFundPrice" data-sorting-class="is-asc">當日漲跌幅低至高</option>
                                             <option value="6個月績效高至低" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-desc">6個月績效高至低</option>
@@ -300,7 +300,7 @@
                                                 <div class="c-table__title">
                                                     <span>幣別</span>
                                                     <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                                    <a href="#" class="o-sorting" data-sorting-column="ValuationCurrency"></a>
+                                                    <a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
                                                 </div>
                                             </th>
                                             <th>
@@ -370,73 +370,7 @@
         </div>
     </div>
 </div>
-<div class="l-sharebar">
-    <div class="l-sharebar__wrap">
-        <div class="l-sharebar__content">
-            <div class="l-flex l-flex--inline u-flex-gap-sm">
-                <div class="l-flex__item">
-                    <a href="#" class="o-statusBtn o-statusBtn--btn o-statusBtn--tool" data-after="加入常用" data-text-on="已加入" data-msg="加入常用工具|移出常用工具" data-ia="true" data-ia-tooltip="false"></a>
-                </div>
-                <div class="l-flex__item">
-                    <!-- [data-popover]: 彈跳視窗功能，值為彈跳視窗的 selector -->
-                    <a href="#" class="o-btn o-btn--primary o-btn--icon" data-popover="#popoverFundPerformanceRankShare02">
-                        <img src="./../themes/images/icons/white/share.svg" alt="分享">分享
-                    </a>
-                    <div id="popoverFundPerformanceRankShare02" class="c-popover c-popover--auto u-left">
-                        <div class="c-popover__wrap">
-                            <nav class="c-popover__main">
-                                <ul class="l-flex u-flex-col u-flex-gap-md s4">
-                                    <li class="l-flex__item">
-                                        <a href="https://www.facebook.com/sharer/sharer.php?u=" class="o-social o-social--sm o-social--fb" target="_blank" data-share>
-                                            <span class="u-hidden@mb-only">Facebook</span>
-                                        </a>
-                                    </li>
-                                    <li class="l-flex__item">
-                                        <a href="https://social-plugins.line.me/lineit/share?url=" class="o-social o-social--sm o-social--line" target="_blank" data-share>
-                                            <span class="u-hidden@mb-only">LINE</span>
-                                        </a>
-                                    </li>
-                                    <li class="l-flex__item">
-                                        <div class="l-copy" data-copy>
-                                            <div class="l-copy__action">
-                                                <a href="#" class="o-social o-social--sm o-social--copy" data-copy-action>
-                                                    <span class="u-hidden@mb-only">複製網址</span>
-                                                </a>
-                                            </div>
-                                            <div class="l-copy__msg">
-                                                <div class="o-tooltip o-tooltip--relative o-tooltip--top" data-copy-msg>
-                                                    <div class="o-tooltip__content u-nowrap">已複製</div>
-                                                    <div class="o-tooltip__arrow"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div><!-- [data-collapse="true"]: 綁定開合功能 -->
-<div class="c-notice" data-collapse="true">
-    <div class="c-notice__wrap">
-        <div class="c-notice__outer" data-collapse-content="true">
-            <div class="c-notice__inner">
-                <div class="c-notice__title">附註</div>
-                <div class="c-notice__content">
-                    <div class="l-list l-list--xs">
-                        @Html.Sitecore().Field(Template.PerformanceFundRank.Fields.NoteContent.ToString(), Model.Item)
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="c-notice__actions">
-            <a href="#" class="c-notice__btn" data-collapse-button="true" data-collapse="收合" data-expand="展開"></a>
-        </div>
-    </div>
-</div>
+
 
 
 <script>
@@ -467,6 +401,7 @@
                             var paginationElement = tabPanel.find('.l-pagination__switch .o-pagination');
                             paginationElement.attr('data-total', totalPages);
                             paginationElement.find('.o-pagination__total').text(totalPages);
+                            var page = tabPanel.find('.o-pagination__no').val(currentPage);
                             if (totalPages <= 1) {
                                 $('.o-pagination__prev').addClass('is-disabled');
                                 $('.o-pagination__next').addClass('is-disabled');
@@ -477,6 +412,7 @@
                                 $('.o-pagination__next').removeClass('is-disabled');
                             }
                             else {
+                                $('.o-pagination__prev').removeClass('is-disabled');
                                 $('.o-pagination__next').removeClass('is-disabled');
                             }
 
@@ -496,6 +432,10 @@
                                     $(this).text(number);
                                 }
                             });
+                            setTimeout(() => {
+                                // 關閉loading
+                                window.loading('hide');
+                            }, 300);
                         } else {
                             console.error("Empty response received from the server.");
                         }
@@ -510,6 +450,7 @@
             var currentData = {};
 
             loadData('tab-1', '全部', 1, "10");
+            ChangeCurrency('tab-1');
 
             function findSortingColumns() {
                 var sortingInfo = [];
@@ -536,15 +477,15 @@
                 var tabTarget = $(this).data('tab-target');
                 var tabPanel = $('.c-tab__panel[data-tab-panel-id="' + tabTarget + '"]');
                 var pagesize = tabPanel.find('.o-selectbox--pagesize').val();
-                console.log("切換到國內國外", pagesize);
+                var selectedValue = tabPanel.find('.o-pelletbox__input:checked').val();
+                var currentPage = tabPanel.find('.o-pagination__no').val();
                 var sortingColumns = findSortingColumns();
                 sortingColumns.forEach(function (sortingInfo) {
-                    console.log('Sorting column:', sortingInfo.column, 'Sorting direction:', sortingInfo.direction);
-                    loadData(tabTarget, '全部', 1, pagesize, sortingInfo.column, sortingInfo.direction);
+                    loadData(tabTarget, selectedValue, 1, pagesize, sortingInfo.column, sortingInfo.direction);
+                    console.log('切換:', 'TAB', tabTarget, '，選擇的基金類型', selectedValue, '，現在第幾頁', currentPage,"，現在顯示幾筆", pagesize, "，排序順序", sortingInfo.column, "，升冪還降冪",sortingInfo.direction);
                 });
-                $('.o-pelletbox__input[value="全部"]').prop('checked', true);
-                $('.o-pagination__prev').addClass('is-disabled');
-
+                var page = tabPanel.find('.o-pagination__no').val(1);
+                ChangeCurrency(tabTarget);
                 setTimeout(() => {
                     // 關閉loading
                     window.loading('hide');
@@ -631,15 +572,13 @@
                 var tabTarget = findTabPanelId(this);
                 var tabPanel = $('.c-tab__panel[data-tab-panel-id="' + tabTarget + '"]');
                 var pageSize = tabPanel.find('.o-selectbox--pagesize').val();
+                var currentPage = tabPanel.find('.o-pagination__no').val();
                 var sortingColumns = findSortingColumns();
                 sortingColumns.forEach(function (sortingInfo) {
-                    console.log('Sorting column:', sortingInfo.column, 'Sorting direction:', sortingInfo.direction);
+                    console.log('切換:', 'TAB:', tabTarget, '，選擇的基金類型:', selectedValue, '，現在第幾頁:', currentPage, "，現在顯示幾筆:", pageSize, "，排序順序:", sortingInfo.column, "，升冪還降冪:", sortingInfo.direction);
                     loadData(tabTarget, selectedValue, 1, pageSize, sortingInfo.column, sortingInfo.direction);
                 });
-                console.log("切換基金類型:", selectedValue, tabTarget, "每頁顯示:", pageSize);
-                var page = $('.o-pagination__no').val(1);
-                $('.o-pagination__prev').addClass('is-disabled');
-
+                var page = tabPanel.find('.o-pagination__no').val(1);
                 setTimeout(() => {
                     // 關閉loading
                     window.loading('hide');
@@ -660,24 +599,46 @@
             }
 
             //原幣台幣切換
-            var capsuleboxInputs = document.querySelectorAll('.o-capsulebox__input');
-            capsuleboxInputs.forEach(function (input) {
-                input.addEventListener('change', function (event) {
-                    var tabItem = $('.c-tab__item.is-active');
-                    var tabTarget = tabItem.data('tab-target');
-                    var tabPanel = $('.c-tab__panel[data-tab-panel-id="' + tabTarget + '"]');
-                    var selectedValue = event.target.value;
-                    var selectedElement = tabPanel.find('.' + selectedValue);
-                    OCTWD(selectedValue);
-                    capsuleboxInputs.forEach(function (input) {
-                        if (input.value === selectedValue) {
-                            input.classList.add('selected');
-                        } else {
-                            input.classList.remove('selected');
-                        }
+            function ChangeCurrency(tabTarget) {
+                var tabPanel = $('.c-tab__panel[data-tab-panel-id="' + tabTarget + '"]');
+                var capsuleboxInputs = tabPanel.find('.o-capsulebox__input');
+
+                Array.from(capsuleboxInputs).forEach(function (input) {
+                    input.addEventListener('change', function (event) {
+                        window.loading('show');
+                        var selectedValue = event.target.value;
+
+                        Array.from(capsuleboxInputs).forEach(function (input) {
+                            if (input.value === selectedValue) {
+                                input.classList.add('selected');
+                            } else {
+                                input.classList.remove('selected');
+                            }
+                        });
+
+                        var pageSize = tabPanel.find('.o-selectbox--pagesize').val();
+                        var selectedcolumn = tabPanel.find('.o-pelletbox__input:checked').val();
+                        var currentPage = tabPanel.find('.o-pagination__no').val();
+                        var sortingColumns = findSortingColumns();
+                        sortingColumns.forEach(function (sortingInfo) {
+                            if (selectedValue === "台幣" & sortingInfo.column === "SixMonthReturnOriginalCurrency") {
+                                sortingInfo.column = "SixMonthReturnTWD"
+                                loadData(tabTarget, selectedcolumn, 1, pageSize, sortingInfo.column, sortingInfo.direction);
+                            } else if (selectedValue === "原幣" & sortingInfo.column === "SixMonthReturnOriginalCurrency") {
+                                loadData(tabTarget, selectedcolumn, 1, pageSize, sortingInfo.column, sortingInfo.direction);
+                            }
+                            else{
+                                OCTWD(selectedValue);
+                                setTimeout(() => {
+                                    // 關閉loading
+                                    window.loading('hide');
+                                }, 300);
+                            }
+                            console.log('台幣原幣切換:', tabTarget, selectedcolumn, 1, pageSize, sortingInfo.column, sortingInfo.direction);
+                        });
                     });
                 });
-            });
+            }
 
 
             function OCTWD(selectedValue) {
@@ -768,6 +729,8 @@
                         }
                     }
                 }
+
+                var page = tabPanel.find('.o-pagination__no').val(page);
 
                 // scroll 到表頭
                 $(this).trigger('scrolltop');

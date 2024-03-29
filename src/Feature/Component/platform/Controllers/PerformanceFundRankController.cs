@@ -93,7 +93,7 @@ namespace Feature.Wealth.Component.Controllers
                 PerformanceFunds = renderDatas
             };
 
-            return new JsonNetResult(this.RenderRazorViewToString("/Views/Feature/Wealth/Component/PerformanceFundRank/PerformanceFundReturn.cshtml", model).Replace(Environment.NewLine, string.Empty));
+            return View("/Views/Feature/Wealth/Component/PerformanceFundRank/PerformanceFundReturn.cshtml", model);
         }
 
 

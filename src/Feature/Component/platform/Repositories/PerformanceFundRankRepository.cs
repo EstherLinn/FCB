@@ -1,6 +1,4 @@
-﻿using Dapper;
-using System.Data;
-using System.Linq;
+﻿using System.Data;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.PerformanceFundRank.PerformanceFundRankModel;
@@ -9,17 +7,19 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class PerformanceFundRankRepository
     {
-        private readonly IDbConnection _dbConnection = DbManager.Custom.DbConnection();
-
         public List<Funds> GetFundData()
         {
             List<Funds> fundItems = new List<Funds>();
 
-            string sql = @"SELECT * FROM [FCB_sitecore_Custom].[dbo].[vw_BasicFund]
+            string sql = """
+            SELECT *
+            FROM [vw_BasicFund]
             WHERE SixMonthReturnOriginalCurrency IS NOT NULL
-            ORDER BY SixMonthReturnOriginalCurrency DESC";
+            ORDER BY SixMonthReturnOriginalCurrency
+            DESC
+            """;
 
-            var results = _dbConnection.Query<Funds>(sql).ToList();
+            var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 
             foreach (var item in results)
             {
@@ -55,7 +55,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.NetAssetValueDate = f.NetAssetValueDate;
                 vm.SixMonthReturnOriginalCurrency = f.SixMonthReturnOriginalCurrency;
                 vm.SixMonthReturnTWD = f.SixMonthReturnTWD;
-                vm.ValuationCurrency = f.ValuationCurrency;
+                vm.CurrencyName = f.CurrencyName;
                 vm.RiskRewardLevel = f.RiskRewardLevel;
                 vm.OnlineSubscriptionAvailability = f.OnlineSubscriptionAvailability;
                 vm.PercentageChangeInFundPrice = f.PercentageChangeInFundPrice;

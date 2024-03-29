@@ -46,7 +46,12 @@ namespace Feature.Wealth.Component.Models.PerformanceFundRank
             /// <summary>
             /// 計價幣別 
             /// </summary>
-            public string ValuationCurrency { get; set; }
+            public string CurrencyName { get; set; }
+
+            /// <summary>
+            /// 計價幣別代碼-排序使用
+            /// </summary>
+            public string CurrencyCode { get; set; }
 
             /// <summary>
             /// 六個月報酬原幣
@@ -110,11 +115,6 @@ namespace Feature.Wealth.Component.Models.PerformanceFundRank
                 /// 副標題
                 /// </summary>
                 public static readonly ID SubTitle = new ID("{1C5CB664-CEA4-40F4-9D16-BB7EE12127C0}");
-
-                /// <summary>
-                /// 附註內容
-                /// </summary>
-                public static readonly ID NoteContent = new ID("{7C221A23-13CA-4E17-AC10-17948A3A8149}");
             }
 
         }
