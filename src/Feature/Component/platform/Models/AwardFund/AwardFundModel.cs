@@ -76,35 +76,28 @@ namespace Feature.Wealth.Component.Models.AwardFund
     public struct Template
     {
         /// <summary>
-        /// 使用人氣基金Template
+        /// 與好評基金共用Template
         /// </summary>
         public struct AwardFund
         {
-            public static readonly ID Id = new ID("{7AE550B0-E6CA-4AC9-9C83-4B9ACFC95743}");
+            public static readonly ID Id = new ID("{E4C22549-EB3A-414B-8B3D-924301977A14}");
 
             public struct Fields
             {
                 /// <summary>
-                /// 熱銷基金FundID
-                /// </summary>
-                public static readonly string FundID = "{EFB9581C-8C8B-49AA-AADB-A4B6FFF2A0AF}";
-
-                /// <summary>
                 /// 主標題
                 /// </summary>
-                public static readonly ID MainTitle = new ID("{92D93435-3C84-495F-B3F6-B0AA58C1F493}");
+                public static readonly ID MainTitle = new ID("{D69D113E-304D-4610-BC70-70790E4B9CE9}");
+
                 /// <summary>
                 /// 副標題
                 /// </summary>
-                public static readonly ID SubTitle = new ID("{5DBEEE77-2E93-4BF7-836F-96A1891ADA65}");
+                public static readonly ID SubTitle = new ID("{73569CDE-837E-4DCC-8B5D-C51021ECB499}");
+
                 /// <summary>
                 /// 標題備註
                 /// </summary>
-                public static readonly ID Content = new ID("{7BA535FA-A3E0-428E-B91C-D5E1E8D1E43C}");
-                /// <summary>
-                /// 附註內容
-                /// </summary>
-                public static readonly ID NoteContent = new ID("{26658643-63EB-49E2-8073-1C33BC115DC4}");
+                public static readonly ID Content = new ID("{7A85A0BD-110A-4E93-BFED-0FBF5C88322D}");
             }
         }
 

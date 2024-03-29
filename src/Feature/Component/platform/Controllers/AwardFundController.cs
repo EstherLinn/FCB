@@ -52,7 +52,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 AwardFunds = awardFunds
             };
-            return new JsonNetResult(this.RenderRazorViewToString("/Views/Feature/Wealth/Component/AwardFund/AwardFundReturnView.cshtml", viewModel).Replace(Environment.NewLine, string.Empty));
+            return View("/Views/Feature/Wealth/Component/AwardFund/AwardFundReturnView.cshtml", viewModel);
         }
 
     }
