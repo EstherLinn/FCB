@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using Feature.Wealth.Component.Models.IndexBanner;
+﻿using System.Web.Mvc;
+using System.Collections.Generic;
 using Sitecore.Mvc.Presentation;
+using Feature.Wealth.Component.Models.IndexBanner;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using static Feature.Wealth.Component.Models.IndexBanner.IndexBannerModel;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -15,19 +15,25 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
-            var childItems = ItemUtils.GetChildren(dataSourceItem).ToList();
+            var childItems = ItemUtils.GetChildren(dataSourceItem);
 
-            var items = new List<IndexBannerModel.Banner>();
+            var items = new List<Banner>();
 
             foreach (var childItem in childItems)
             {
-                var imageUrl = ItemUtils.ImageUrl(childItem, IndexBannerModel.Banner.Template.Fields.Image);
-                var btnLink = ItemUtils.GeneralLink(childItem, IndexBannerModel.Banner.Template.Fields.ButtonLink).Url;
+                string imageUrlPC = ItemUtils.ImageUrl(childItem, Template.IndexBanner.Fields.ImagePC);
+                string imageUrlMB = ItemUtils.ImageUrl(childItem, Template.IndexBanner.Fields.ImageMB);
+                string btnLink = ItemUtils.GeneralLink(childItem, Template.IndexBanner.Fields.ButtonLink)?.Url;
+                bool checkedDarkMode = ItemUtils.IsChecked(childItem, Template.IndexBanner.Fields.DarkMode);
+                string btnText = ItemUtils.GetFieldValue(childItem, Template.IndexBanner.Fields.ButtonText);
 
-                items.Add(new IndexBannerModel.Banner(childItem)
+                items.Add(new Banner(childItem)
                 {
-                    imageUrl = imageUrl,
-                    btnLink = btnLink
+                    IsDark = checkedDarkMode,
+                    ImageUrlPC = imageUrlPC,
+                    ImageUrlMB = imageUrlMB,
+                    ButtonLink = btnLink,
+                    ButtonText = btnText
                 });
             }
 
