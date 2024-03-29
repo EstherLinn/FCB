@@ -9,6 +9,9 @@ namespace Feature.Wealth.Component.Models.GraphicCards
         public string ImageUrl1 { get; set; }
         public string ImageUrl2 { get; set; }
         public string ImageUrl3 { get; set; }
+        public string ImageUrl3x1 { get; set; }
+        public string ImageUrl3x2 { get; set; }
+        public string ImageUrl3x3 { get; set; }
         public string ButtonLink1 { get; set; }
         public string ButtonLink2 { get; set; }
         public string ButtonLink3 { get; set; }
@@ -31,6 +34,11 @@ namespace Feature.Wealth.Component.Models.GraphicCards
                 /// 長牌卡圖片
                 /// </summary>
                 public static readonly ID Image1 = new ID("{2599B72C-AF07-4DF1-8973-64AEB49E80A9}");
+
+                /// <summary>
+                /// 長牌卡圖片3x
+                /// </summary>
+                public static readonly ID Image3x1 = new ID("{78C5A889-6C05-4A76-A2B5-D1BCC8EF134C}");
 
                 /// <summary>
                 /// 長牌卡主標題
@@ -58,6 +66,11 @@ namespace Feature.Wealth.Component.Models.GraphicCards
                 public static readonly ID Image2 = new ID("{26F495E6-A9EA-44C5-A9B0-DE3DA147B599}");
 
                 /// <summary>
+                /// 短牌卡圖片3x
+                /// </summary>
+                public static readonly ID Image3x2 = new ID("{BD397650-C7CE-463D-A2CB-73D002F752CB}");
+
+                /// <summary>
                 /// 短牌卡主標題
                 /// </summary>
                 public static readonly ID Title2 = new ID("{9A35899A-C1BC-476E-9D3E-8587CBAD91C8}");
@@ -81,6 +94,11 @@ namespace Feature.Wealth.Component.Models.GraphicCards
                 /// 長牌卡圖片
                 /// </summary>
                 public static readonly ID Image3 = new ID("{C34F923F-A1F4-4D0D-8CA3-18A916E26D36}");
+
+                /// <summary>
+                /// 長牌卡圖片3x
+                /// </summary>
+                public static readonly ID Image3x3 = new ID("{19432D16-FD4D-47D7-8A8C-B1F19818D003}");
 
                 /// <summary>
                 /// 長牌卡主標題
