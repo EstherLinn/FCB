@@ -1,0 +1,56 @@
+﻿@using Feature.Wealth.Component.Models.Tab
+@model Feature.Wealth.Component.Models.Tab.TabModel
+
+@{
+    var placeholderKeyPrefix = "tab"; //placeholderKey 如tab1、tab2
+}
+
+<section class="c-block" data-aos="fade-up" data-aos-once="true">
+    <div class="c-block__wrap">
+        <div class="c-block__header">
+            <h2 class="c-block__title">@Html.Sitecore().Field(DatasourceTemplates.MainTitle.ToString(), Model.Datasource)</h2>
+        </div>
+        <div class="c-block__content">
+            <div class="c-tab" data-tab="true">
+                <div class="c-tab__header">
+                    <ul class="c-tab__navs">
+                        @for (var i = 0; i < Model.SubItems.Count(); i++)
+                        {
+                            var title = Html.Sitecore().Field(SubItemTemplates.Title.ToString(), Model.SubItems[i]);
+                            var active = i == 0 ? "is-active" : string.Empty;
+
+                            <li>
+                                <a href="#" class="c-tab__item @active" target="_self" title="@title" data-tab-target="tab-@(i+1)">@title</a>
+                            </li>
+                        }
+                    </ul>
+                    <div class="c-tab__collapse">
+                        <a href="#" class="c-tab__switch"></a>
+                        <div class="c-tab__dropdown">
+                            @for (var i = 0; i < Model.SubItems.Count(); i++)
+                            {
+                                var title = Html.Sitecore().Field(SubItemTemplates.Title.ToString(), Model.SubItems[i]);
+                                var active = i == 0 ? "is-active" : string.Empty;
+
+                                <a href="#" class="c-tab__clone @active" target="_self" title="@title" data-tab-target="tab-@(i+1)">@title</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                @for (var i = 0; i < Model.SubItems.Count(); i++)
+                {
+                    var title = Html.Sitecore().Field(SubItemTemplates.Title.ToString(), Model.SubItems[i]);
+                    var active = i == 0 ? "is-active" : string.Empty;
+                    var placeholderKey = placeholderKeyPrefix + (i + 1);
+
+                    <div class="c-tab__panel @active" data-tab-panel-id="tab-@(i+1)">
+                        <div class="l-flex u-flex-col u-flex-gap-md u-flex-gap-sm@lt">
+                            @Html.Sitecore().Placeholder(placeholderKey)
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
