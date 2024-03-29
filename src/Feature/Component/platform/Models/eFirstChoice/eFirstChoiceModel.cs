@@ -10,7 +10,7 @@ namespace Feature.Wealth.Component.Models.eFirstChoice
         public Item Item { get; set; }
         public string[] SelectedId { get; set; }
 
-        public IList<Funds> eFirstFunds { get; set; }
+        public IList<Funds> EFirstFunds { get; set; }
 
         /// <summary>
         /// 基金商品資訊

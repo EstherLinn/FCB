@@ -25,7 +25,7 @@ namespace Feature.Wealth.Component.Controllers
                 var funds = _repository.GetFundData();
                 var eFirstFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
                 eFirstFunds = eFirstFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ToList();
-                viewModel.eFirstFunds = _repository.GetFundRenderData(eFirstFunds);
+                viewModel.EFirstFunds = _repository.GetFundRenderData(eFirstFunds);
             }
             return View("/Views/Feature/Wealth/Component/eFirstChoice/eFirstChoice.cshtml", viewModel);
         }
@@ -50,7 +50,7 @@ namespace Feature.Wealth.Component.Controllers
             var renderDatas = _repository.GetFundRenderData(eFirstFunds);
             var viewModel = new eFirstChoiceModel
             {
-                eFirstFunds = renderDatas
+                EFirstFunds = renderDatas
             };
             
             return View("/Views/Feature/Wealth/Component/eFirstChoice/eFirstChoiceReturnView.cshtml", viewModel);
