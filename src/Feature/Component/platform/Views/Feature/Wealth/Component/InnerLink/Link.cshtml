@@ -1,0 +1,27 @@
+﻿@using Feature.Wealth.Component.Models.Link
+@model LinkModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<section class="c-section">
+    <div class="l-wrap">
+        <section class="c-section">
+            <div class="c-section__title">@Html.Sitecore().Field(Templates.LinkTitle.Fields.MainTitle.ToString(), Model.DataSource)</div>
+            <div class="c-section__content">
+                <div class="l-linkBox">
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="l-linkBox__item">
+                            <div class="c-box c-box--link u-shadow-animation">
+                                <a href="@item.LinkUrl" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold"><span>@Html.Sitecore().Field(Templates.Link.Fields.Title.ToString(), item.Item)</span></a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
