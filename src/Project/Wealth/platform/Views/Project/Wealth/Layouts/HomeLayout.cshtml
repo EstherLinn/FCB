@@ -1,0 +1,15 @@
+﻿@{
+    Layout = "~/Views/Project/Wealth/Layouts/__SharedLayout.cshtml";
+}
+
+@section Head {
+
+}
+
+@Html.Sitecore().Placeholder("main")
+
+@section Bottom {
+    @{
+        Html.RenderPartial("~/Views/Project/Wealth/Partial/Popup.cshtml");
+    }
+}
