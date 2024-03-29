@@ -3,9 +3,9 @@ using Sitecore.Data;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
 
-namespace Feature.Wealth.Component.Models.eFirstChoice
+namespace Feature.Wealth.Component.Models.EFirstChoice
 {
-    public class eFirstChoiceModel
+    public class EFirstChoiceModel
     {
         public Item Item { get; set; }
         public string[] SelectedId { get; set; }

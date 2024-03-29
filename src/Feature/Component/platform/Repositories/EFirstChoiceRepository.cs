@@ -1,11 +1,11 @@
 ﻿using System.Data;
 using System.Collections.Generic;
 using Foundation.Wealth.Manager;
-using static Feature.Wealth.Component.Models.eFirstChoice.eFirstChoiceModel;
+using static Feature.Wealth.Component.Models.EFirstChoice.EFirstChoiceModel;
 
 namespace Feature.Wealth.Component.Repositories
 {
-    public class eFirstChoiceRepository
+    public class EFirstChoiceRepository
     {
         public List<Funds> GetFundData()
         {

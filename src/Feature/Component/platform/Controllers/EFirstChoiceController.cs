@@ -5,20 +5,20 @@ using Sitecore.Mvc.Presentation;
 using System.Collections.Generic;
 using Feature.Wealth.Component.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Feature.Wealth.Component.Models.eFirstChoice;
+using Feature.Wealth.Component.Models.EFirstChoice;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-using static Feature.Wealth.Component.Models.eFirstChoice.eFirstChoiceModel;
+using static Feature.Wealth.Component.Models.EFirstChoice.EFirstChoiceModel;
 
 namespace Feature.Wealth.Component.Controllers
 {
-    public class eFirstChoiceController : Controller
+    public class EFirstChoiceController : Controller
     {
-        private eFirstChoiceRepository _repository = new eFirstChoiceRepository();
+        private EFirstChoiceRepository _repository = new EFirstChoiceRepository();
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
             var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, Template.eFirstChoice.Fields.FundID);
-            var viewModel = new eFirstChoiceModel { Item = dataSourceItem };
+            var viewModel = new EFirstChoiceModel { Item = dataSourceItem };
             if (multilineField != null)
             {
                 viewModel.SelectedId = multilineField;
@@ -27,7 +27,7 @@ namespace Feature.Wealth.Component.Controllers
                 eFirstFunds = eFirstFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ToList();
                 viewModel.EFirstFunds = _repository.GetFundRenderData(eFirstFunds);
             }
-            return View("/Views/Feature/Wealth/Component/eFirstChoice/eFirstChoice.cshtml", viewModel);
+            return View("/Views/Feature/Wealth/Component/EFirstChoice/EFirstChoice.cshtml", viewModel);
         }
 
         [HttpPost]
@@ -48,12 +48,12 @@ namespace Feature.Wealth.Component.Controllers
                 eFirstFunds = eFirstFunds.OrderBy(f => property.GetValue(f, null)).ToList();
             }
             var renderDatas = _repository.GetFundRenderData(eFirstFunds);
-            var viewModel = new eFirstChoiceModel
+            var viewModel = new EFirstChoiceModel
             {
                 EFirstFunds = renderDatas
             };
             
-            return View("/Views/Feature/Wealth/Component/eFirstChoice/eFirstChoiceReturnView.cshtml", viewModel);
+            return View("/Views/Feature/Wealth/Component/EFirstChoice/EFirstChoiceReturnView.cshtml", viewModel);
         }
     }
 }
