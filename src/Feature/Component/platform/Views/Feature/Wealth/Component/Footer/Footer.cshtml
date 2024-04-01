@@ -1,5 +1,10 @@
 ﻿@model Feature.Wealth.Component.Models.Footer.FooterModel
 
+@if (Model == null)
+{
+    return;
+}
+
 @if (!string.IsNullOrEmpty(Model.DataSource["Footer Top Content"]))
 {
     @Html.Sitecore().Field("Footer Top Content", Model.DataSource)
