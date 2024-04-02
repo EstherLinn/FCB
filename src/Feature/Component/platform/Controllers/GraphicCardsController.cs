@@ -17,9 +17,9 @@ namespace Feature.Wealth.Component.Controllers
             var imageUrl3x1 = ItemUtils.ImageUrl(item, Templates.GraphicCards.Fields.Image3x1);
             var imageUrl3x2 = ItemUtils.ImageUrl(item, Templates.GraphicCards.Fields.Image3x2);
             var imageUrl3x3 = ItemUtils.ImageUrl(item, Templates.GraphicCards.Fields.Image3x3);
-            var buttonLink1 = ItemUtils.ImageUrl(item, Templates.GraphicCards.Fields.ButtonLink1);
-            var buttonLink2 = ItemUtils.ImageUrl(item, Templates.GraphicCards.Fields.ButtonLink2);
-            var buttonLink3 = ItemUtils.ImageUrl(item, Templates.GraphicCards.Fields.ButtonLink3);
+            var buttonLink1 = ItemUtils.GeneralLink(item, Templates.GraphicCards.Fields.ButtonLink1)?.Url;
+            var buttonLink2 = ItemUtils.GeneralLink(item, Templates.GraphicCards.Fields.ButtonLink2)?.Url;
+            var buttonLink3 = ItemUtils.GeneralLink(item, Templates.GraphicCards.Fields.ButtonLink3)?.Url;
 
             var model = new GraphicCardsModel()
             {
