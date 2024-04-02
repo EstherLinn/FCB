@@ -1,0 +1,61 @@
+﻿@model Feature.Wealth.Component.Models.MultipleFileDownloadList.MultipleFileDownloadListModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="c-section">
+    <div class="l-wrap">
+        <div class="c-section__content">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+
+                @foreach (var listItem in Model.DownloadListItems)
+                {
+                    <div class="l-flex__item">
+                        <div class="c-collapse c-collapse--gy" data-collapse="true">
+
+                            @if (!string.IsNullOrEmpty(listItem.ItemTitle))
+                            {
+                                <div class="c-collapse__head" data-collapse-button="true">
+                                    <span>@listItem.ItemTitle</span>
+                                </div>
+                            }
+
+                            <div class="c-collapse__content" data-collapse-content="true">
+                                <div class="c-collapse__inner">
+                                    <div class="l-linkBox">
+                                        @foreach (var listSubItem in listItem.DownloadListSubitems)
+                                        {
+                                            <div class="l-linkBox__item">
+                                                <div class="c-box c-box--link u-shadow-animation">
+
+                                                    @Html.Sitecore().BeginField("Link", listSubItem.item, new { haschildren = true, @class = "o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf" })
+                                                    <div class="l-article">
+
+                                                        @if (!string.IsNullOrEmpty(listSubItem.Title))
+                                                        {
+                                                            <div class="l-article__title t-bold">@listSubItem.Title</div>
+                                                        }
+
+                                                        @if (!string.IsNullOrEmpty(listSubItem.Date))
+                                                        {
+                                                            <div class="l-article__date">@listSubItem.Date</div>
+                                                        }
+
+                                                    </div>
+                                                    @Html.Sitecore().EndField()
+
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
