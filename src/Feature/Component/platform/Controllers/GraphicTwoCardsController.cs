@@ -15,13 +15,16 @@ namespace Feature.Wealth.Component.Controllers
             var title1 = ItemUtils.GetFieldValue(dataSource, Templates.GraphicTwoCardsDatasource.Fields.Title1);
             var content1 = ItemUtils.GetFieldValue(dataSource, Templates.GraphicTwoCardsDatasource.Fields.Content1);
             var buttonText1 = ItemUtils.GetFieldValue(dataSource, Templates.GraphicTwoCardsDatasource.Fields.ButtonText1);
+            var buttonText1Field = Templates.GraphicTwoCardsDatasource.Fields.ButtonText1.ToString();
             var buttonLink1 = ItemUtils.GeneralLink(dataSource, Templates.GraphicTwoCardsDatasource.Fields.ButtonLink1).Url;
+            var buttonLink1Field = Templates.GraphicTwoCardsDatasource.Fields.ButtonLink1.ToString();
             var imageUrl2 = ItemUtils.ImageUrl(dataSource, Templates.GraphicTwoCardsDatasource.Fields.Image2);
             var title2 = ItemUtils.GetFieldValue(dataSource, Templates.GraphicTwoCardsDatasource.Fields.Title2);
             var content2 = ItemUtils.GetFieldValue(dataSource, Templates.GraphicTwoCardsDatasource.Fields.Content2);
             var buttonText2 = ItemUtils.GetFieldValue(dataSource, Templates.GraphicTwoCardsDatasource.Fields.ButtonText2);
+            var buttonText2Field = Templates.GraphicTwoCardsDatasource.Fields.ButtonText2.ToString();
             var buttonLink2 = ItemUtils.GeneralLink(dataSource, Templates.GraphicTwoCardsDatasource.Fields.ButtonLink2).Url;
-
+            var buttonLink2Field = Templates.GraphicTwoCardsDatasource.Fields.ButtonLink2.ToString();
 
             var model = new GraphicTwoCardsModel()
             {
@@ -30,12 +33,16 @@ namespace Feature.Wealth.Component.Controllers
                 Title1 = title1,
                 Content1 = content1,
                 ButtonText1 = buttonText1,
+                ButtonText1Field = buttonText1Field,
                 ButtonLink1 = buttonLink1,
+                ButtonLink1Field = buttonLink1Field,
                 ImageUrl2 = imageUrl2,
                 Title2 = title2,
                 Content2 = content2,
                 ButtonText2 = buttonText2,
+                ButtonText2Field = buttonText2Field,
                 ButtonLink2 = buttonLink2,
+                ButtonLink2Field = buttonLink2Field,
             };
 
             return View("/Views/Feature/Wealth/Component/GraphicTwoCards/GraphicTwoCards.cshtml", model);

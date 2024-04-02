@@ -10,12 +10,16 @@ namespace Feature.Wealth.Component.Models.GraphicTwoCards
         public string Title1 { get; set; }
         public string Content1 { get; set; }
         public string ButtonText1 { get; set; }
+        public string ButtonText1Field { get; set; }
         public string ButtonLink1 { get; set; }
+        public string ButtonLink1Field { get; set; }
         public string ImageUrl2 { get; set; }
         public string Title2 { get; set; }
         public string Content2 { get; set; }
         public string ButtonText2 { get; set; }
+        public string ButtonText2Field { get; set; }
         public string ButtonLink2 { get; set; }
+        public string ButtonLink2Field { get; set; }
     }
 
     public static class Templates
