@@ -236,7 +236,8 @@
 
   var pluginName = 'tab';
   var defaults = {
-    docking: true
+    docking: true,
+    scroll: true
   };
   function Plugin(element, options) {
     this.element = element;
@@ -272,15 +273,17 @@
       }).off('click').on('click', function (e) {
         e.preventDefault();
         $(this).trigger('switch');
-        setTimeout(function () {
-          $('html, body').animate({
-            scrollTop: that.$element.offset().top - $('.l-header').outerHeight(true)
-          }, 300, function () {
-            try {
-              window.AOS.refresh();
-            } catch (ex) {}
-          });
-        }, 300);
+        if (that.options.scroll) {
+          setTimeout(function () {
+            $('html, body').animate({
+              scrollTop: that.$element.offset().top - $('.l-header').outerHeight(true)
+            }, 300, function () {
+              try {
+                window.AOS.refresh();
+              } catch (ex) {}
+            });
+          }, 300);
+        }
       });
       this.$element.find('> .c-tab__header > .c-tab__navs > [data-tab-target].is-active').trigger('switch');
 
@@ -306,6 +309,15 @@
           },
           zIndex: 5
         });
+      }
+
+      // 頁面預設開啟其他頁籤
+      const url = location.href;
+      if (url.indexOf('?') !== -1 && url.indexOf('tab') !== -1) {
+        var tabParam = url.split('?')[1].split('&').find(item => item.indexOf('tab') === 0);
+        if (!!tabParam && tabParam.split('=')[0] === 'tab') {
+          $(`[data-tab-target="${tabParam.split('=')[1]}"]`).trigger('switch');
+        }
       }
       this.$element.attr('data-tab', true);
     },
@@ -775,6 +787,14 @@
     navigation: {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev'
+    },
+    on: {
+      lock: function (swiper) {
+        $(swiper.el).addClass('is-paginationless');
+      },
+      unlock: function (swiper) {
+        $(swiper.el).removeClass('is-paginationless');
+      }
     }
   };
   function Plugin(element, options) {
@@ -1104,4 +1124,38 @@
     });
   };
   $('[data-calendar]').datepickerExtend();
+})(jQuery);
+(function ($, undefined) {
+  'use strict';
+
+  var pluginName = 'toast';
+  var defaults = {
+    iconHtml: '<i class="o-icon o-icon--tickSolid o-icon--wt o-icon--xl o-icon--nonhover"></i>',
+    customClass: {
+      container: 'c-swal',
+      popup: 'c-swal__popup',
+      icon: 'c-swal__icon',
+      title: 'c-swal__title',
+      timerProgressBar: 'c-swal__timerProgressBar'
+    },
+    position: 'center',
+    showConfirmButton: false,
+    backdrop: false,
+    timerProgressBar: true,
+    returnFocus: false,
+    timer: 1500
+  };
+  window[pluginName] = (message, options) => {
+    if (typeof window.Swal === 'undefined') {
+      console.info('The third party "Swal" plugin could not be loaded!\n%cUnable to run the "toast" alert function.', 'color: orange;');
+      return;
+    }
+    let settings = $.extend(true, {}, defaults, options);
+    let toast = window.Swal.mixin(settings);
+    toast.fire({
+      titleText: message
+    });
+  };
+
+  //window.toast('顯示訊息');
 })(jQuery);

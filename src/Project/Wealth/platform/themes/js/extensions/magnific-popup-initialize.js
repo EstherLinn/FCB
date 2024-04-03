@@ -11,6 +11,7 @@
   $.extend($.magnificPopup.defaults, {
     fixedContentPos: true,
     fixedBgPos: true,
+    removalDelay: 0,
     // showCloseBtn: false,
     // closeOnBgClick: false,
     // closeBtnInside: false,

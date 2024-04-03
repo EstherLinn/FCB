@@ -48,6 +48,7 @@ body.is-globalization {
   flex-direction: column;
   box-sizing: border-box;
   min-height: 100%;
+  overflow: hidden;
 }
 .l-container:before {
   content: "";
@@ -91,6 +92,9 @@ body.is-globalization {
     height: 100%;
     opacity: 1;
   }
+}
+.l-container--empty {
+  padding-top: 0;
 }
 
 .l-wrap {
