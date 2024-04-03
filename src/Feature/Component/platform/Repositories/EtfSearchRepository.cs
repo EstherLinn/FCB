@@ -12,15 +12,20 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class EtfSearchRepository
     {
+        private IEnumerable<EtfSearchResult> SearchResults { get; set; }
+
         public EtfSearchModel GetETFSearchModel()
         {
             EtfSearchModel model = new EtfSearchModel();
             var result = MapperResult();
+            this.SearchResults = result;
 
             model.SearchResultModel = new EtfSearchResultModel()
             {
-                ResultProducts = result.ToList()
+                ResultProducts = result?.ToList()
             };
+
+            model.FilterModel = SetFilterOptions();
 
             return model;
         }
@@ -122,6 +127,27 @@ namespace Feature.Wealth.Component.Repositories
             var result = collection.Adapt<IEnumerable<EtfSearchResult>>(config);
 
             return result;
+        }
+
+        private EtfSearchFilterModel SetFilterOptions()
+        {
+            if (this.SearchResults == null || !this.SearchResults.Any())
+            {
+                return null;
+            }
+
+            var model = new EtfSearchFilterModel
+            {
+                PricingCurrencyList = this.SearchResults.OrderBy(i => i.CurrencyPair.Key).Select(i => i.CurrencyPair.Value).Distinct(),
+                InvestmentTargetList = this.SearchResults.OrderBy(i => i.InvestmentTarget.Key).Select(i => i.InvestmentTarget.Value).Where(i => !string.IsNullOrWhiteSpace(i)).Distinct(),
+                InvestmentRegionList = this.SearchResults.OrderBy(i => i.InvestmentRegion.Key).Select(i => i.InvestmentRegion.Value).Where(i => !string.IsNullOrWhiteSpace(i)).Distinct(),
+                InvestmentStyleList = this.SearchResults.OrderBy(i => i.InvestmentStyle.Key).Select(i => i.InvestmentStyle.Value).Where(i => !string.IsNullOrWhiteSpace(i)).Distinct(),
+                PublicLimitedCompanyList = this.SearchResults.OrderBy(i => i.PublicLimitedCompany.Key).Select(i => i.PublicLimitedCompany.Value).Where(i => !string.IsNullOrWhiteSpace(i)).Distinct(),
+                DividendDistributionFrequencyList = this.SearchResults.Select(i => { if (i.DividendDistributionFrequency == "無") { i.DividendDistributionFrequency = "不配息"; } return i.DividendDistributionFrequency; }).Where(i => !string.IsNullOrWhiteSpace(i)).Distinct(),
+                ExchangeList = this.SearchResults.Select(i => i.ExchangeID).OrderBy(i => i).Distinct()
+            };
+
+            return model;
         }
 
         #region Method

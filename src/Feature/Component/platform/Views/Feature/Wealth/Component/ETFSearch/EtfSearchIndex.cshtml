@@ -4,7 +4,7 @@
     return;
 }
 
-@Html.Partial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchFilter.cshtml")
+@Html.Partial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchFilter.cshtml", Model.FilterModel)
 @Html.Partial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchResult.cshtml", Model.SearchResultModel)
 
 <div id="popupPurchase" class="c-modal c-modal--sm mfp-hide">

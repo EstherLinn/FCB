@@ -6,6 +6,9 @@
     <SitecoreRoleType>platform</SitecoreRoleType>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="SiteCron" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
   <ItemGroup>

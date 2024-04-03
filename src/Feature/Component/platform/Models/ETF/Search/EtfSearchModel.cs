@@ -5,6 +5,8 @@ namespace Feature.Wealth.Component.Models.ETF.Search
     public class EtfSearchModel
     {
         public EtfSearchResultModel SearchResultModel { get; set; }
+
+        public EtfSearchFilterModel FilterModel { get; set; }
     }
 
     public enum RegionType

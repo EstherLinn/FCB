@@ -1,4 +1,10 @@
-﻿<div class="l-mainstage">
+﻿@model Feature.Wealth.Component.Models.ETF.Search.EtfSearchFilterModel
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-mainstage">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
             <h1 class="t-title">ETF搜尋</h1>
@@ -186,7 +192,7 @@
                                             <div class="c-filterForm" data-filter-group>
                                                 <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
                                                 <div class="c-filterForm__title" data-filter-title>
-                                                    <span>國內/境外</span>
+                                                    <span>國內/境外</span>@*對應JSON欄位【RegionType】*@
                                                 </div>
                                                 <div class="c-filterForm__value">
                                                     <div class="l-pickGroup">
@@ -246,7 +252,7 @@
                                         <div class="l-flex__item">
                                             <div class="c-filterForm" data-filter-group>
                                                 <div class="c-filterForm__title" data-filter-title>
-                                                    <span>計價幣別</span>
+                                                    <span>計價幣別</span>@*對應JSON欄位【CurrencyPair】*@
                                                 </div>
                                                 <div class="c-filterForm__value">
                                                     <div class="l-pickGroup">
@@ -260,131 +266,15 @@
                                                             <div class="l-pickCollapse" data-overflow-hide="pricingCurrency">
                                                                 <div class="l-pickCollapse__content" data-overflow-content="pricingCurrency">
                                                                     <div class="l-pickGroup">
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="美元"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="台幣"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="澳幣"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="南非幣"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="人民幣"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="日圓"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="歐元"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="加拿大幣"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="英鎊"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="新加坡幣"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="印尼盾"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="人民幣"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="日圓"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="新加坡幣"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="南非幣"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="澳幣"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="英鎊"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="歐元"></div>
-                                                                            </label>
-                                                                        </div>
+                                                                        @foreach (var currency in Model.PricingCurrencyList)
+                                                                        {
+                                                                            <div class="l-pickGroup__item">
+                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@currency"></div>
+                                                                                </label>
+                                                                            </div>
+                                                                        }
                                                                     </div>
                                                                 </div>
                                                                 <div class="l-pickCollapse__expand">
@@ -412,7 +302,7 @@
                                         <div class="l-flex__item">
                                             <div class="c-filterForm" data-filter-group>
                                                 <div class="c-filterForm__title" data-filter-title>
-                                                    <span>是否配息</span>
+                                                    <span>是否配息</span>@*對應JSON欄位【DividendDistributionFrequency】*@
                                                 </div>
                                                 <div class="c-filterForm__value">
                                                     <div class="l-pickGroup">
@@ -426,41 +316,15 @@
                                                             <div class="l-pickCollapse" data-overflow-hide="dividend">
                                                                 <div class="l-pickCollapse__content" data-overflow-content="dividend">
                                                                     <div class="l-pickGroup">
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="不配息"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="月配"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="季配"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="半年配"></div>
-                                                                            </label>
-                                                                        </div>
-
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="年配"></div>
-                                                                            </label>
-                                                                        </div>
+                                                                        @foreach (var frequency in Model.DividendDistributionFrequencyList)
+                                                                        {
+                                                                            <div class="l-pickGroup__item">
+                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@frequency"></div>
+                                                                                </label>
+                                                                            </div>
+                                                                        }
                                                                     </div>
                                                                 </div>
                                                                 <div class="l-pickCollapse__expand">
@@ -504,7 +368,7 @@
                                                         <div class="c-filterForm" data-filter-group>
                                                             <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>ETF規模</span>
+                                                                <span>ETF規模</span>@*對應JSON欄位【ScaleMillions】*@
                                                             </div>
                                                             <div class="c-filterForm__value">
                                                                 <!-- 拉霸本體[data-slider-bar="相對應ID"] -->
@@ -522,7 +386,7 @@
                                                     <div class="l-flex__item">
                                                         <div class="c-filterForm" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>投資標的</span>
+                                                                <span>投資標的</span>@*對應JSON欄位【InvestmentTarget】*@
                                                             </div>
                                                             <div class="c-filterForm__value">
                                                                 <div class="l-pickGroup">
@@ -536,90 +400,15 @@
                                                                         <div class="l-pickCollapse" data-overflow-hide="target">
                                                                             <div class="l-pickCollapse__content" data-overflow-content="target">
                                                                                 <div class="l-pickGroup">
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="資訊科技股"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="能源"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="貴重金屬"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="房地產"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="健康護理股"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="生物科技"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="平衡型"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="股票型"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="非必需消費股"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="健康護理股"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="生物科技"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="平衡型"></div>
-                                                                                        </label>
-                                                                                    </div>
+                                                                                    @foreach (var investmentTarget in Model.InvestmentTargetList)
+                                                                                    {
+                                                                                        <div class="l-pickGroup__item">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@investmentTarget"></div>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    }
                                                                                 </div>
                                                                             </div>
                                                                             <div class="l-pickCollapse__expand">
@@ -647,7 +436,7 @@
                                                     <div class="l-flex__item">
                                                         <div class="c-filterForm" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>投資地區</span>
+                                                                <span>投資地區</span>@*對應JSON欄位【InvestmentRegion】*@
                                                             </div>
                                                             <div class="c-filterForm__value">
                                                                 <div class="l-pickGroup">
@@ -661,104 +450,15 @@
                                                                         <div class="l-pickCollapse" data-overflow-hide="investArea">
                                                                             <div class="l-pickCollapse__content" data-overflow-content="investArea">
                                                                                 <div class="l-pickGroup">
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="日本"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="北美"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="全球"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="印度"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="印尼"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="亞洲"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="亞洲不含日本"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="拉丁美洲"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="東協"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="美國"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="香港"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="印度"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="印尼"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="亞洲"></div>
-                                                                                        </label>
-                                                                                    </div>
+                                                                                    @foreach (var investmentRegion in Model.InvestmentRegionList)
+                                                                                    {
+                                                                                        <div class="l-pickGroup__item">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@investmentRegion"></div>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    }
                                                                                 </div>
                                                                             </div>
                                                                             <div class="l-pickCollapse__expand">
@@ -786,7 +486,7 @@
                                                     <div class="l-flex__item">
                                                         <div class="c-filterForm" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>發行公司</span>
+                                                                <span>發行公司</span>@*對應JSON欄位【PublicLimitedCompany】*@
                                                             </div>
                                                             <div class="c-filterForm__value">
                                                                 <div class="l-pickGroup">
@@ -800,62 +500,15 @@
                                                                         <div class="l-pickCollapse" data-overflow-hide="company">
                                                                             <div class="l-pickCollapse__content" data-overflow-content="company">
                                                                                 <div class="l-pickGroup">
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="ARK ETF Trust"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="First Trust Portfolios"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="Global X Funds"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="Invesco PowerShares"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="iShares（BlackRock）"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="Global X Funds"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="Invesco PowerShares"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="iShares（BlackRock）"></div>
-                                                                                        </label>
-                                                                                    </div>
+                                                                                    @foreach (var company in Model.PublicLimitedCompanyList)
+                                                                                    {
+                                                                                        <div class="l-pickGroup__item">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@company"></div>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    }
                                                                                 </div>
                                                                             </div>
                                                                             <div class="l-pickCollapse__expand">
@@ -883,7 +536,7 @@
                                                     <div class="l-flex__item">
                                                         <div class="c-filterForm" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>交易所</span>
+                                                                <span>交易所</span>@*對應JSON欄位【ExchangeID】*@
                                                             </div>
                                                             <div class="c-filterForm__value">
                                                                 <div class="l-pickGroup">
@@ -897,48 +550,15 @@
                                                                         <div class="l-pickCollapse" data-overflow-hide="exchange">
                                                                             <div class="l-pickCollapse__content" data-overflow-content="exchange">
                                                                                 <div class="l-pickGroup">
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="TSE"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="HKE"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="OTC"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="Cboe BZX"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="NASDAQ"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="NYSE"></div>
-                                                                                        </label>
-                                                                                    </div>
+                                                                                    @foreach (var exchange in Model.ExchangeList)
+                                                                                    {
+                                                                                        <div class="l-pickGroup__item">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@exchange"></div>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    }
                                                                                 </div>
                                                                             </div>
                                                                             <div class="l-pickCollapse__expand">
@@ -966,7 +586,7 @@
                                                     <div class="l-flex__item">
                                                         <div class="c-filterForm" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>投資風格</span>
+                                                                <span>投資風格</span>@*對應JSON欄位【InvestmentStyle】*@
                                                             </div>
                                                             <div class="c-filterForm__value">
                                                                 <div class="l-pickGroup">
@@ -980,62 +600,15 @@
                                                                         <div class="l-pickCollapse" data-overflow-hide="investStyle">
                                                                             <div class="l-pickCollapse__content" data-overflow-content="investStyle">
                                                                                 <div class="l-pickGroup">
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="大型股成長型"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="大型股混合型"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="大型股價值型"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="中型股成長型"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="中型股混合型"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="中型股價值型"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="中型股混合型"></div>
-                                                                                        </label>
-                                                                                    </div>
-
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="中型股價值型"></div>
-                                                                                        </label>
-                                                                                    </div>
+                                                                                    @foreach (var investmentStyle in Model.InvestmentStyleList)
+                                                                                    {
+                                                                                        <div class="l-pickGroup__item">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@investmentStyle"></div>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    }
                                                                                 </div>
                                                                             </div>
                                                                             <div class="l-pickCollapse__expand">
@@ -1077,7 +650,7 @@
                                                         <div class="c-filterForm" data-filter-group="special">
                                                             <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>報酬率</span>
+                                                                <span>報酬率</span>@*對應JSON欄位有分淨值、市價報酬率*@
                                                             </div>
                                                             <!-- 多個條件組合成一個tag[data-filter-part="相對應組合ID"] -->
                                                             <div class="c-filterForm__value" data-filter-part="returnRate">
@@ -1188,7 +761,7 @@
                                                     <div class="l-flex__item">
                                                         <div class="c-filterForm" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>風險屬性</span>
+                                                                <span>風險屬性</span>@*對應JSON欄位【RiskLevel】*@
                                                             </div>
                                                             <div class="c-filterForm__value">
                                                                 <div class="l-pickGroup">
@@ -1264,7 +837,7 @@
                                                     <div class="l-flex__item">
                                                         <div class="c-filterForm" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>夏普指數</span>
+                                                                <span>夏普指數</span>@*對應JSON欄位有淨值風險【SharpeNetValueRisk】、市價風險【SharpeRatioMarketPriceRisk】*@
                                                                 <div class="s4">(Sharpe)</div>
                                                             </div>
                                                             <div class="c-filterForm__value">
@@ -1278,7 +851,7 @@
                                                     <div class="l-flex__item">
                                                         <div class="c-filterForm" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>貝他值</span>
+                                                                <span>貝他值</span>@*對應JSON欄位有淨值風險【BetaNetValueRisk】、市價風險【BetaMarketPriceRisk】*@
                                                                 <div class="s4">(Beta)</div>
                                                             </div>
                                                             <div class="c-filterForm__value">
@@ -1292,7 +865,7 @@
                                                     <div class="l-flex__item">
                                                         <div class="c-filterForm" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
-                                                                <span>標準差</span>
+                                                                <span>標準差</span>@*對應JSON欄位有淨值風險【AnnualizedStandardDeviationNetValueRisk】、市價風險【AnnualizedStandardDeviationMarketPriceRisk】*@
                                                             </div>
                                                             <div class="c-filterForm__value">
                                                                 <div class="c-sliderBar">
