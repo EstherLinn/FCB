@@ -492,6 +492,7 @@
       let originalH = $this.attr('data-overflow-height');
       let contentH = $(`[data-overflow-content="${id}"]`).outerHeight();
       $this.toggleClass('is-overflow', contentH > originalH);
+      $this.toggleClass('not-overflow', !(contentH > originalH));
       if (!$this.hasClass('is-expand')) {
         $this.toggleClass('is-collapse', contentH > originalH);
       }
@@ -825,7 +826,7 @@
     prev: '.o-pagination__prev',
     next: '.o-pagination__next',
     input: '.o-pagination__no',
-    wrapper: '.l-table',
+    wrapper: '.l-table, .l-scrolltop',
     total: 1,
     onchange: function (page) {}
     // onchange: function (page) { console.log(page); }
@@ -871,7 +872,7 @@
       }).off('blur.pagination').on('blur.pagination', function () {
         $(this).val(that.original);
       }).off('scrolltop.pagination').on('scrolltop.pagination', function (e) {
-        var $table = $(this).closest(that.options.wrapper).find('table');
+        var $table = $(this).closest(that.options.wrapper).find(':first-child');
         if (!$table.length) {
           return;
         }
@@ -880,8 +881,11 @@
         if (!$('html').hasClass('is-embed')) {
           top -= $('.l-header').outerHeight(true) || 0;
         }
+
         // 扣除 tab docking 高度
-        top -= $(this).closest('[data-tab]:not([data-docking="false"])').find('.c-tab__header').outerHeight(true) || 0;
+        // top -= $(this).closest('[data-tab]:not([data-docking="false"])').find('.c-tab__header').outerHeight(true) || 0;
+        // 移除 tab docking 狀態
+        $(this).closest('[data-tab]:not([data-docking="false"])').find('.c-tab__header').removeClass('scroll-to-fixed-fixed is-docking');
         $('html, body').animate({
           scrollTop: top
         }, 300);

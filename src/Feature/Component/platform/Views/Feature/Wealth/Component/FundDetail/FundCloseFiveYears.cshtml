@@ -1,0 +1,543 @@
+﻿@using Foundation.Wealth.Helper;
+@using Feature.Wealth.Component.Models.FundDetail
+
+@{
+    var FundSameLevelApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetSameLevelFund");
+    var detailsUrl = FundRelatedSettingModel.GetFundDetailsUrl();
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">近5年不同級別報酬率與費用率比較</h1>
+        </div>
+
+    </div>
+</div>
+<div class="l-wrap">
+    <div class="l-stage">
+        <div class="c-tab c-tab--capsule" data-tab="true" data-docking="false">
+            <div class="c-tab__header">
+                <ul class="c-tab__navs">
+                    <!-- .is-active: 作用中的項目 -->
+                    <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                    <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                    <li><a href="#" class="c-tab__item is-active" target="_self" title="報酬率" data-tab-target="tab-1">報酬率</a></li>
+                    <li><a href="#" class="c-tab__item " target="_self" title="費用率" data-tab-target="tab-2">費用率</a></li>
+                </ul>
+            </div>
+            <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+                <section class="c-section">
+                    <div class="c-section__conetnt">
+                        <div class="c-chartBox">
+                            <div class="c-chartBox__chart">
+                                <div id="rateChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="c-section">
+                    <div class="c-section__title">報酬率</div>
+                    <div class="c-section__conetnt">
+                        <div class="l-flex u-flex-col u-flex-gap-sm">
+                            <div class="l-flex__item u-right u-hidden@dt-only">
+                                <div class="o-sortingbox">
+                                    <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                    <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="rateTable" id="rateSelect">
+                                        <option value="">排序</option>
+                                        <option value="基金名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">基金名稱高至低</option>
+                                        <option value="基金名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">基金名稱低至高</option>
+                                        <option value="成立日遠到近" data-sorting-column="establishmentDay" data-sorting-class="is-desc">成立日遠到近</option>
+                                        <option value="成立日近到遠" data-sorting-column="establishmentDay" data-sorting-class="is-asc">成立日近到遠</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="l-flex__item">
+                                <div class="l-table">
+
+                                    <table class="c-table u-center" data-fixed-columns="true" data-table-name="rateTable" id="rateTable">
+                                    </table>
+                                </div>
+                                <div class="l-dataNotes"><span class="t-date">單位：%　❘　資料來源：基金公司</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="c-tab__panel" data-tab-panel-id="tab-2">
+                <section class="c-section">
+                    <div class="c-section__title">費用率</div>
+                    <div class="c-section__conetnt">
+                        <div class="l-flex u-flex-col u-flex-gap-sm">
+                            <div class="l-flex__item u-right u-hidden@dt-only">
+                                <div class="o-sortingbox">
+                                    <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                    <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="feeTable" id="feeSelect">
+                                        <option value="">排序</option>
+                                        <option value="基金名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">基金名稱高至低</option>
+                                        <option value="基金名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">基金名稱低至高</option>
+                                        <option value="成立日遠到近" data-sorting-column="establishmentDay" data-sorting-class="is-desc">成立日遠到近</option>
+                                        <option value="成立日近到遠" data-sorting-column="establishmentDay" data-sorting-class="is-asc">成立日近到遠</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="l-flex__item">
+                                <div class="l-table">
+                                    <table class="c-table u-center" data-fixed-columns="true" data-table-name="feeTable" id="feeTable">
+                                    </table>
+                                </div>
+                                <div class="l-dataNotes"><span class="t-date">單位：%　❘　資料來源：基金公司</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script defer>
+    (function ($, window, document, undefined) {
+    // 基金詳細頁 – 績效/淨值 - 近五年報酬率
+    document.addEventListener('DOMContentLoaded', function() {
+    if (!jQuery) {
+        return;
+    }
+    let detailsUrl = "@detailsUrl";
+    var getUrlString = location.href;
+    var url = new URL(getUrlString);
+    var fundId = url.searchParams.get('id');
+    let colorCode = [
+        '#238C6C',
+        '#D0A66C',
+        '#F58220',
+        '#A4844E',
+        '#948BF2',
+        '#FFAD04',
+        '#FF77C0',
+        '#C16FE8',
+        '#DD7676',
+        '#ABA1E4',
+        '#86BDDD',
+        '#60A6E2',
+        '#3AAB68',
+        '#D0AD72',
+        '#FDAA5E',
+        '#63C98D',
+        '#665DCC',
+        '#E7465A'
+    ];
+        let mapData = {};
+        function parseStringToFloat(str)
+        {
+            if (str == "") return 0;
+
+            return parseFloat(str);
+        }
+    async function initRate() {
+        try {
+            /*
+             * API參數：請替換成實際值
+             * id: 基金代號
+             */
+            const params = {
+                fundId: fundId
+            };
+            // 呼叫 API 基金詳細頁 – 績效/淨值 - 近五年報酬率
+            $.ajax({
+                url: `@FundSameLevelApiUrl`,
+                method: 'post',
+                data: params,
+
+                success: function(result) {
+
+                    if (result && result.resultSet.result.length > 0) {
+                        const set = new Set();
+                        let fund = result.resultSet.result.filter(item => !set.has(item.v5) ? set.add(item.v5) : false);
+                        mapData = fund.map((item, index) => {
+                            return {
+                                name: item.v5 ,
+                                // data: item.rate
+                            };
+                        });
+
+                        let rateGroup = [];
+                        let feeGroup = [];
+                        for (let i = 1; i <= result.resultSet.result.length; i++) {
+                            rateGroup.push(parseStringToFloat(result.resultSet.result[i - 1].v3));
+                            feeGroup.push(parseStringToFloat(result.resultSet.result[i - 1].v4));
+                            if (i % 5 == 0) {
+                                mapData[(i / 5) - 1].data = rateGroup;
+                                mapData[(i / 5) - 1].rate = rateGroup;
+                                mapData[(i / 5) - 1].fee = feeGroup;
+                                rateGroup = []; feeGroup = [];
+                            }
+                        }
+                        let years = result.resultSet.result.filter(item => !set.has(item.v2) ? set.add(item.v2) : false);
+
+                        years = years.map((item) => {
+                            return item.v2
+                        });
+                        $.each(mapData,function(idx,value){
+                            mapData[idx].color = colorCode[idx];
+                        });
+                        Highcharts.chart('rateChart', {
+                            chart: {
+                                type: 'column',
+                                height: 326
+                            },
+                            title: {
+                                text: ''
+                            },
+                            xAxis: {
+                                labels: {
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                },
+                                categories: years,
+                                lineColor: '#ebebeb'
+                            },
+                            yAxis: {
+                                title: false,
+                                labels: {
+                                    y: 4,
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                enabled: false
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            legend: {
+                                enabled: false
+                            },
+                            plotOptions: {
+                                series: {
+                                    groupPadding: 0.1
+                                },
+                                column: {
+                                    borderRadius: 4,
+                                    states: {
+                                        hover: {
+                                            brightness: 0,
+                                            halo: {
+                                                size: 0
+                                            }
+                                        },
+                                        inactive: {
+                                            opacity: 1
+                                        }
+                                    }
+                                }
+                            },
+                            series: mapData
+                        });
+                        $.each(years, function (index, value) {
+                            $('#rateSelect').append(`<option value="${value}報酬率高到低" data-sorting-column="${value}" data-sorting-class="is-desc">${value}報酬率高到低</option>`);
+                            $('#rateSelect').append(`<option value="${value}報酬率低到高" data-sorting-column="${value}" data-sorting-class="is-asc">${value}報酬率低到高</option>`);
+                            $('#feeSelect').append(`<option value="${value}費用率高到低" data-sorting-column="${value}" data-sorting-class="is-desc">${value}費用率高到低</option>`);
+                            $('#feeSelect').append(`<option value="${value}費用率低到高" data-sorting-column="${value}" data-sorting-class="is-asc">${value}費用率低到高</option>`);
+                        });
+                        ShowRateTable(mapData, years);
+                        ShowFeeTable(mapData, years);
+                        $('.o-sorting').on('click.sorting', function (e) {
+                            e.preventDefault();
+                            // 呼叫 loading
+                            window.loading('show');
+                            var $this = $(this);
+                            var orderby = '';
+                            if ($this.hasClass('is-asc')) {
+                                $this.removeClass('is-asc').addClass('is-desc');
+                                orderby = 'is-desc';
+                            } else {
+                                $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                                $this.addClass('is-asc');
+                                orderby = 'is-asc';
+                            }
+                            // 連動 sortingbox
+                            var tableName = $this.closest('[data-table-name]').data('table-name');
+                            var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+                            var sortingColumn = $this.data('sorting-column');
+                            var sortingYearsIdx = $this.data('idx');
+
+                            $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+                            $sortingbox.trigger('change');
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                                                        console.log(sortingColumn, orderby, tableName, sortingYearsIdx)
+
+>>>>>>> add : C02 基金詳細頁-境外
+=======
+>>>>>>> update: 移除console
+                            SortingTable(mapData,sortingColumn, orderby, tableName, sortingYearsIdx,years)
+                            $('#rateTb').html('');
+                            // 因展示，使用 setTimeout 延遲關閉 loading
+                            setTimeout(() => {
+                                // 關閉loading
+                                window.loading('hide');
+                            }, 300);
+                        });
+                        // 手機版分頁筆數功能
+                        $('[data-sortingbox="true"]').on('change.sorting', function (e) {
+                            // 呼叫 loading
+                            window.loading('show');
+                            var sorting = $(this).val();
+                            var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+                            var sortingColumn = $('option:selected', this).data('sorting-column');
+                            var orderby = $('option:selected', this).data('sorting-class');
+
+                            // 連動 table
+                            $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                            $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                            console.log(`排序：${sorting}`);
+>>>>>>> add : C02 基金詳細頁-境外
+=======
+>>>>>>> update: 移除console
+
+                            // 因展示，使用 setTimeout 延遲關閉 loading
+                            setTimeout(() => {
+                                // 關閉loading
+                                window.loading('hide');
+                            }, 300);
+                        });
+                    }
+                },
+                error: function(err) {
+                    console.log(err)
+                },
+            });
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+    initRate();
+
+    function ShowRateTable(data, years) {
+        let firstHtml = `<colgroup>
+                                            <col style="width: 35%; min-width: 200px;">
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                        </colgroup>
+                                        <thead>
+                                        <th style="min-width: 200px;">
+                                            <div class="c-table__title">
+                                                <span>基金名稱</span>
+                                                <a href="javascript:;" class="o-sorting u-hidden@lt" data-sorting-column="name"></a>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>成立日</span>
+                                                <a href="javascript:;" class="o-sorting u-hidden@lt" data-sorting-column="establishmentDay"></a>
+                                            </div>
+                                        </th>`;
+        let midHtml = "";
+        $.each(years, function(index, value) {
+
+            midHtml += `<th>
+                                            <div class="c-table__title">
+                                                <span>${value}</span>
+                                                <a href="javascript:;" class="o-sorting u-hidden@lt" data-sorting-column="${value}" data-idx=${index}></a>
+                                            </div>
+                                        </th>`;
+        });
+        midHtml += "</thead><tbody data-tbody-name='rateTable'>";
+        $.each(data, function(index, value) {
+            midHtml += ` <tr>
+                                                <td class="u-left">
+                                                    <a href="${detailsUrl}?id=${data[index].name}" class="c-legend c-legend--link" style="--legend-color:${data[index].color}">
+                                                        <span class="c-legend__name">${data[index].name}</span>
+                                                    </a>
+                                                </td>
+<<<<<<< HEAD
+<<<<<<< HEAD
+                                                <td>1999/07/01</td>
+=======
+                                                <td>2020/01/01</td>
+>>>>>>> add : C02 基金詳細頁-境外
+=======
+                                                <td>1999/07/01</td>
+>>>>>>> update: 移除console
+                                                <td><span class="${GiveStyle(data[index].rate[0])}">${GivePercent(data[index].rate[0])}</span></td>
+                                                <td><span class="${GiveStyle(data[index].rate[1])}">${GivePercent(data[index].rate[1])}</span></td>
+                                                <td><span class="${GiveStyle(data[index].rate[2])}">${GivePercent(data[index].rate[2])}</span></td>
+                                                <td><span class="${GiveStyle(data[index].rate[3])}">${GivePercent(data[index].rate[3])}</span></td>
+                                                <td><span class="${GiveStyle(data[index].rate[4])}">${GivePercent(data[index].rate[4])}</span></td>
+                                            </tr>`;
+        });
+
+        let endHtml = "</tbody>";
+        $('#rateTable').html(firstHtml + midHtml + endHtml);
+
+    }
+        function ShowFeeTable(data,years)
+        {
+            let firstHtml = `<colgroup>
+                                            <col style="width: 35%; min-width: 200px;">
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                        </colgroup>
+                                        <thead>
+                                        <th style="min-width: 200px;">
+                                            <div class="c-table__title">
+                                                <span>基金名稱</span>
+                                                <a href="javascript:;" class="o-sorting u-hidden@lt" data-sorting-column="name"></a>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>成立日</span>
+                                                <a href="javascript:;" class="o-sorting u-hidden@lt" data-sorting-column="establishmentDay"></a>
+                                            </div>
+                                        </th>`;
+            let midHtml = "";
+            $.each(years, function (index, value) {
+                midHtml += `<th>
+                                            <div class="c-table__title">
+                                                <span>${value}</span>
+                                                <a href="javascript:;" class="o-sorting u-hidden@lt" data-sorting-column="${value}" data-idx=${index}></a>
+                                            </div>
+                                        </th>`;
+            });
+            midHtml += "</thead><tbody data-tbody-name='feeTable'>";
+            $.each(data, function (index, value) {
+                midHtml += ` <tr>
+                                                <td class="u-left">
+                                                    <a href="${detailsUrl}?id=${data[index].name}" class="c-legend c-legend--link" style="--legend-color:${data[index].color}">
+                                                        <span class="c-legend__name">${data[index].name}</span>
+                                                    </a>
+                                                </td>
+                                                <td>1999/07/01</td>
+                                                <td><span class="${GiveStyle(data[index].fee[0])}">${GivePercent(data[index].fee[0])}</span></td>
+                                                <td><span class="${GiveStyle(data[index].fee[1])}">${GivePercent(data[index].fee[1])}</span></td>
+                                                <td><span class="${GiveStyle(data[index].fee[2])}">${GivePercent(data[index].fee[2])}</span></td>
+                                                <td><span class="${GiveStyle(data[index].fee[3])}">${GivePercent(data[index].fee[3])}</span></td>
+                                                <td><span class="${GiveStyle(data[index].fee[4])}">${GivePercent(data[index].fee[4])}</span></td>
+                                            </tr>`;
+            });
+
+            let endHtml = "</tbody>";
+            $('#feeTable').html(firstHtml + midHtml + endHtml);
+        }
+
+        function SortingTable(data, column, orderby, table, yearsidx) {
+            let sortingData = [];
+            if (column == 'name') {
+                sortingData = data.sort((a, b) => orderby == "is-asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+                c
+>>>>>>> add : C02 基金詳細頁-境外
+=======
+
+>>>>>>> update: 移除console
+            } else if (column == 'establishmentDay') {
+                if (orderby == "is-desc") {
+             @* sortingData = data.sort(fucntion(a,b)
+             {
+                 let dateA = new Date(a);
+                let dateB = new Date(b);
+                return dateA - dateB;
+             }); *@
+                } else {
+            @* sortingData = data.sort(fucntion(a,b)
+             {
+                    let dateA = new Date(a);
+                let dateB = new Date(b);
+                return dateB - dateA;
+             }); *@
+                }
+
+            } else {
+                let rateData = [];
+                $.each(data, function (idx, item) {
+                    rateData.push(item.rate[Number(yearsidx)])
+                });
+                rateData = rateData.sort(function (a, b) { return orderby == "is-asc" ? a - b : b - a; });
+                $.each(rateData, function (idx, item) {
+                    for (let x = 0; x < rateData.length; x++) {
+                        if (data[x].rate[Number(yearsidx)] == item) {
+                            sortingData.push(data[x]);
+                        }
+                    }
+
+                });
+<<<<<<< HEAD
+<<<<<<< HEAD
+            }
+           ShowSortingTable(sortingData, table);
+=======
+
+                ShowSortingTable(sortingData, table);
+            }
+>>>>>>> add : C02 基金詳細頁-境外
+=======
+            }
+           ShowSortingTable(sortingData, table);
+>>>>>>> update: 移除console
+        }
+        function ShowSortingTable(data,table)
+        {
+            let field = table== "rateTable" ?  "rate" : "fee";
+            let html ='';
+              $.each(data, function (index, value) {
+                html += ` <tr>
+                                                <td class="u-left">
+                                                    <a href="${detailsUrl}?id=${data[index].name}" class="c-legend c-legend--link" style="--legend-color:${data[index].color}">
+                                                        <span class="c-legend__name">${data[index].name}</span>
+                                                    </a>
+                                                </td>
+                                                <td>1999/07/01</td>
+                                                <td><span class="${GiveStyle(data[index][field][0])}">${GivePercent(data[index][field][0])}</span></td>
+                                                <td><span class="${GiveStyle(data[index][field][1])}">${GivePercent(data[index][field][1])}</span></td>
+                                                <td><span class="${GiveStyle(data[index][field][2])}">${GivePercent(data[index][field][2])}</span></td>
+                                                <td><span class="${GiveStyle(data[index][field][3])}">${GivePercent(data[index][field][3])}</span></td>
+                                                <td><span class="${GiveStyle(data[index][field][4])}">${GivePercent(data[index][field][4])}</span></td>
+                                            </tr>`;
+            });
+            $(`[data-tbody-name=${table}]`).html(html);
+        }
+
+        function GivePercent(num)
+        {
+        if (num == 0) return "-"
+
+     return num + "%";
+
+        }
+    function GiveStyle(num) {
+        if (num == 0) return ""
+
+        if (num < 0) {
+            return "o-fall";
+        } else {
+            return "o-rise";
+
+        }
+    }
+    });
+    })(jQuery, window, document);
+</script>

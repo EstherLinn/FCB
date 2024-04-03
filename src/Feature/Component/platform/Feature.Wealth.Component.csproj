@@ -7,18 +7,19 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Dapper" />
+    <PackageReference Include="Flurl" />
     <PackageReference Include="Flurl.Http" />
   </ItemGroup>
   <ItemGroup>
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
     <Reference Include="Xcms.Sitecore.Foundation.Caching">
       <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.Caching.dll</HintPath>
     </Reference>
     <Reference Include="Xcms.Sitecore.Feature.Navigation">
       <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Feature.Navigation.dll</HintPath>
     </Reference>
+    <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
   </ItemGroup>
 </Project>

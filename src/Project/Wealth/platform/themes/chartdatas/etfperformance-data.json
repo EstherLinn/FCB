@@ -1,0 +1,568 @@
+{
+    "statusCode": 200,
+    "body": {
+        "updateDate": "2023-11-01",
+        "marketPriceNavs": [
+            {
+                "date": "2022-11-01",
+                "upDown": "up",
+                "value": 19.21
+            },
+            {
+                "date": "2022-11-02",
+                "upDown": "up",
+                "value": 15.59
+            },
+            {
+                "date": "2022-11-03",
+                "upDown": "down",
+                "value": -12.99
+            },
+            {
+                "date": "2022-11-04",
+                "upDown": "up",
+                "value": 14.46
+            },
+            {
+                "date": "2022-11-05",
+                "upDown": "up",
+                "value": 14.69
+            },
+            {
+                "date": "2022-11-06",
+                "upDown": "down",
+                "value": -15.0
+            },
+            {
+                "date": "2022-11-07",
+                "upDown": "down",
+                "value": -12.89
+            },
+            {
+                "date": "2022-11-08",
+                "upDown": "down",
+                "value": -12.94
+            },
+            {
+                "date": "2022-11-09",
+                "upDown": "up",
+                "value": 14.16
+            },
+            {
+                "date": "2022-11-10",
+                "upDown": "down",
+                "value": -13.35
+            },
+            {
+                "date": "2022-11-11",
+                "upDown": "up",
+                "value": 13.17
+            },
+            {
+                "date": "2022-11-12",
+                "upDown": "up",
+                "value": 15.07
+            },
+            {
+                "date": "2022-11-13",
+                "upDown": "up",
+                "value": 15.69
+            },
+            {
+                "date": "2022-11-14",
+                "upDown": "down",
+                "value": -18.42
+            },
+            {
+                "date": "2022-11-15",
+                "upDown": "down",
+                "value": -19.1
+            },
+            {
+                "date": "2022-11-16",
+                "upDown": "up",
+                "value": 19.19
+            },
+            {
+                "date": "2022-11-17",
+                "upDown": "down",
+                "value": -22.96
+            },
+            {
+                "date": "2022-11-18",
+                "upDown": "up",
+                "value": 24.7
+            },
+            {
+                "date": "2022-11-19",
+                "upDown": "down",
+                "value": -28.07
+            },
+            {
+                "date": "2022-11-20",
+                "upDown": "down",
+                "value": -24.91
+            },
+            {
+                "date": "2022-11-21",
+                "upDown": "up",
+                "value": 26.15
+            },
+            {
+                "date": "2022-11-22",
+                "upDown": "up",
+                "value": 30.3
+            },
+            {
+                "date": "2022-11-23",
+                "upDown": "up",
+                "value": 26.3
+            },
+            {
+                "date": "2022-11-24",
+                "upDown": "down",
+                "value": -22.44
+            },
+            {
+                "date": "2022-11-25",
+                "upDown": "down",
+                "value": -21.14
+            },
+            {
+                "date": "2022-11-26",
+                "upDown": "up",
+                "value": 18.27
+            },
+            {
+                "date": "2022-11-27",
+                "upDown": "down",
+                "value": -15.42
+            },
+            {
+                "date": "2022-11-28",
+                "upDown": "up",
+                "value": 15.17
+            },
+            {
+                "date": "2022-11-29",
+                "upDown": "up",
+                "value": 12.72
+            },
+            {
+                "date": "2022-11-30",
+                "upDown": "down",
+                "value": -13.91
+            },
+            {
+                "date": "2022-12-01",
+                "upDown": "down",
+                "value": -16.44
+            },
+            {
+                "date": "2022-12-02",
+                "upDown": "up",
+                "value": 16.74
+            },
+            {
+                "date": "2022-12-03",
+                "upDown": "up",
+                "value": 17.2
+            },
+            {
+                "date": "2022-12-04",
+                "upDown": "down",
+                "value": -16.2
+            },
+            {
+                "date": "2022-12-05",
+                "upDown": "down",
+                "value": -14.36
+            },
+            {
+                "date": "2022-12-06",
+                "upDown": "down",
+                "value": -13.86
+            },
+            {
+                "date": "2022-12-07",
+                "upDown": "up",
+                "value": 11.96
+            }
+        ],
+        "netWorthNavs": [
+            {
+                "date": "2022-11-01",
+                "upDown": "up",
+                "value": 29.21
+            },
+            {
+                "date": "2022-11-02",
+                "upDown": "up",
+                "value": 25.59
+            },
+            {
+                "date": "2022-11-03",
+                "upDown": "down",
+                "value": -22.99
+            },
+            {
+                "date": "2022-11-04",
+                "upDown": "up",
+                "value": 24.46
+            },
+            {
+                "date": "2022-11-05",
+                "upDown": "up",
+                "value": 24.69
+            },
+            {
+                "date": "2022-11-06",
+                "upDown": "down",
+                "value": -25.0
+            },
+            {
+                "date": "2022-11-07",
+                "upDown": "down",
+                "value": -22.89
+            },
+            {
+                "date": "2022-11-08",
+                "upDown": "down",
+                "value": -22.94
+            },
+            {
+                "date": "2022-11-09",
+                "upDown": "up",
+                "value": 24.16
+            },
+            {
+                "date": "2022-11-10",
+                "upDown": "down",
+                "value": -23.35
+            },
+            {
+                "date": "2022-11-11",
+                "upDown": "up",
+                "value": 23.17
+            },
+            {
+                "date": "2022-11-12",
+                "upDown": "up",
+                "value": 25.07
+            },
+            {
+                "date": "2022-11-13",
+                "upDown": "up",
+                "value": 25.69
+            },
+            {
+                "date": "2022-11-14",
+                "upDown": "down",
+                "value": -28.42
+            },
+            {
+                "date": "2022-11-15",
+                "upDown": "down",
+                "value": -29.1
+            },
+            {
+                "date": "2022-11-16",
+                "upDown": "up",
+                "value": 29.19
+            },
+            {
+                "date": "2022-11-17",
+                "upDown": "down",
+                "value": -12.96
+            },
+            {
+                "date": "2022-11-18",
+                "upDown": "up",
+                "value": 14.7
+            },
+            {
+                "date": "2022-11-19",
+                "upDown": "down",
+                "value": -18.07
+            },
+            {
+                "date": "2022-11-20",
+                "upDown": "down",
+                "value": -14.91
+            },
+            {
+                "date": "2022-11-21",
+                "upDown": "up",
+                "value": 16.15
+            },
+            {
+                "date": "2022-11-22",
+                "upDown": "up",
+                "value": 20.3
+            },
+            {
+                "date": "2022-11-23",
+                "upDown": "up",
+                "value": 16.3
+            },
+            {
+                "date": "2022-11-24",
+                "upDown": "down",
+                "value": -12.44
+            },
+            {
+                "date": "2022-11-25",
+                "upDown": "down",
+                "value": -11.14
+            },
+            {
+                "date": "2022-11-26",
+                "upDown": "up",
+                "value": 8.27
+            },
+            {
+                "date": "2022-11-27",
+                "upDown": "down",
+                "value": -5.42
+            },
+            {
+                "date": "2022-11-28",
+                "upDown": "up",
+                "value": 5.17
+            },
+            {
+                "date": "2022-11-29",
+                "upDown": "up",
+                "value": 2.72
+            },
+            {
+                "date": "2022-11-30",
+                "upDown": "down",
+                "value": -3.91
+            },
+            {
+                "date": "2022-12-01",
+                "upDown": "down",
+                "value": -6.44
+            },
+            {
+                "date": "2022-12-02",
+                "upDown": "up",
+                "value": 6.74
+            },
+            {
+                "date": "2022-12-03",
+                "upDown": "up",
+                "value": 7.2
+            },
+            {
+                "date": "2022-12-04",
+                "upDown": "down",
+                "value": -6.2
+            },
+            {
+                "date": "2022-12-05",
+                "upDown": "down",
+                "value": -4.36
+            },
+            {
+                "date": "2022-12-06",
+                "upDown": "down",
+                "value": -3.86
+            },
+            {
+                "date": "2022-12-07",
+                "upDown": "up",
+                "value": 1.96
+            }
+        ],
+        "referNavs": [
+            {
+                "date": "2022-11-01",
+                "upDown": "down",
+                "value": -29.21
+            },
+            {
+                "date": "2022-11-02",
+                "upDown": "down",
+                "value": -25.59
+            },
+            {
+                "date": "2022-11-03",
+                "upDown": "up",
+                "value": 22.99
+            },
+            {
+                "date": "2022-11-04",
+                "upDown": "down",
+                "value": -24.46
+            },
+            {
+                "date": "2022-11-05",
+                "upDown": "down",
+                "value": -24.69
+            },
+            {
+                "date": "2022-11-06",
+                "upDown": "up",
+                "value": 25.0
+            },
+            {
+                "date": "2022-11-07",
+                "upDown": "up",
+                "value": 22.89
+            },
+            {
+                "date": "2022-11-08",
+                "upDown": "up",
+                "value": 22.94
+            },
+            {
+                "date": "2022-11-09",
+                "upDown": "down",
+                "value": -24.16
+            },
+            {
+                "date": "2022-11-10",
+                "upDown": "up",
+                "value": 23.35
+            },
+            {
+                "date": "2022-11-11",
+                "upDown": "down",
+                "value": -23.17
+            },
+            {
+                "date": "2022-11-12",
+                "upDown": "down",
+                "value": -25.07
+            },
+            {
+                "date": "2022-11-13",
+                "upDown": "down",
+                "value": -25.69
+            },
+            {
+                "date": "2022-11-14",
+                "upDown": "up",
+                "value": 28.42
+            },
+            {
+                "date": "2022-11-15",
+                "upDown": "up",
+                "value": 29.1
+            },
+            {
+                "date": "2022-11-16",
+                "upDown": "down",
+                "value": -29.19
+            },
+            {
+                "date": "2022-11-17",
+                "upDown": "up",
+                "value": 12.96
+            },
+            {
+                "date": "2022-11-18",
+                "upDown": "down",
+                "value": -14.7
+            },
+            {
+                "date": "2022-11-19",
+                "upDown": "up",
+                "value": 18.07
+            },
+            {
+                "date": "2022-11-20",
+                "upDown": "up",
+                "value": 14.91
+            },
+            {
+                "date": "2022-11-21",
+                "upDown": "down",
+                "value": -16.15
+            },
+            {
+                "date": "2022-11-22",
+                "upDown": "down",
+                "value": -20.3
+            },
+            {
+                "date": "2022-11-23",
+                "upDown": "down",
+                "value": -16.3
+            },
+            {
+                "date": "2022-11-24",
+                "upDown": "up",
+                "value": 12.44
+            },
+            {
+                "date": "2022-11-25",
+                "upDown": "up",
+                "value": 11.14
+            },
+            {
+                "date": "2022-11-26",
+                "upDown": "down",
+                "value": -8.27
+            },
+            {
+                "date": "2022-11-27",
+                "upDown": "up",
+                "value": 5.42
+            },
+            {
+                "date": "2022-11-28",
+                "upDown": "down",
+                "value": -5.17
+            },
+            {
+                "date": "2022-11-29",
+                "upDown": "down",
+                "value": -2.72
+            },
+            {
+                "date": "2022-11-30",
+                "upDown": "up",
+                "value": 3.91
+            },
+            {
+                "date": "2022-12-01",
+                "upDown": "up",
+                "value": 6.44
+            },
+            {
+                "date": "2022-12-02",
+                "upDown": "down",
+                "value": -6.74
+            },
+            {
+                "date": "2022-12-03",
+                "upDown": "down",
+                "value": -7.2
+            },
+            {
+                "date": "2022-12-04",
+                "upDown": "up",
+                "value": 6.2
+            },
+            {
+                "date": "2022-12-05",
+                "upDown": "up",
+                "value": 4.36
+            },
+            {
+                "date": "2022-12-06",
+                "upDown": "up",
+                "value": 3.86
+            },
+            {
+                "date": "2022-12-07",
+                "upDown": "down",
+                "value": -1.96
+            }
+        ],
+        "referName": "道瓊指數"
+    }
+}
