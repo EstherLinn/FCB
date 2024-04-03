@@ -209,7 +209,6 @@
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "AwardFund", "GetSortedAwardFund")',
                     type: 'POST',
-                    dataType: 'json',
                     data: { orderby: orderby, desc: desc },
                     success: function (data) {
                         $('#result').empty();

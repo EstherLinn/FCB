@@ -60,59 +60,38 @@ namespace Feature.Wealth.Component.Repositories
 
             try
             {
-                var content = await _route.AppendPathSegment(_url)
-                                .SetQueryParam("x", "FundAward")
-                                .SetQueryParam("c", "firstbank")
-                                .SetQueryParam("d", 0)
-                                .SetQueryParam("A", "晨星基金獎")
-                                .SetQueryParam("B", "2024年")
-                                .GetAsync()
-                                .ReceiveString()
-        ;
-                dynamic jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-                awardFundList.AddRange(ProcessJsonData(jsonData));
+                for (int year = DateTime.Now.Year - 1; year <= DateTime.Now.Year; year++)
+                {
+                    var content = await _route.AppendPathSegment(_url)
+                                              .SetQueryParam("x", "FundAward")
+                                              .SetQueryParam("c", "firstbank")
+                                              .SetQueryParam("d", 0)
+                                              .SetQueryParam("A", "晨星基金獎")
+                                              .SetQueryParam("B", $"{year}年")
+                                              .GetAsync()
+                                              .ReceiveString();
 
-                var content2 = await _route.AppendPathSegment(_url)
-                               .SetQueryParam("x", "FundAward")
-                               .SetQueryParam("c", "firstbank")
-                               .SetQueryParam("d", 0)
-                               .SetQueryParam("A", "Smart智富台灣基金獎")
-                               .SetQueryParam("B", "2024年")
-                               .GetAsync()
-                               .ReceiveString()
-       ;
-                dynamic jsonData2 = Newtonsoft.Json.JsonConvert.DeserializeObject(content2);
-                awardFundList.AddRange(ProcessJsonData(jsonData2));
+                    dynamic jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+                    awardFundList.AddRange(ProcessJsonData(jsonData));
 
-                var content3 = await _route.AppendPathSegment(_url)
-                               .SetQueryParam("x", "FundAward")
-                               .SetQueryParam("c", "firstbank")
-                               .SetQueryParam("d", 0)
-                               .SetQueryParam("A", "晨星基金獎")
-                               .SetQueryParam("B", "2023年")
-                               .GetAsync()
-                               .ReceiveString()
-       ;
-                dynamic jsonData3 = Newtonsoft.Json.JsonConvert.DeserializeObject(content3);
-                awardFundList.AddRange(ProcessJsonData(jsonData3));
+                    var content2 = await _route.AppendPathSegment(_url)
+                                               .SetQueryParam("x", "FundAward")
+                                               .SetQueryParam("c", "firstbank")
+                                               .SetQueryParam("d", 0)
+                                               .SetQueryParam("A", "Smart智富台灣基金獎")
+                                               .SetQueryParam("B", $"{year}年")
+                                               .GetAsync()
+                                               .ReceiveString();
 
-                var content4 = await _route.AppendPathSegment(_url)
-                               .SetQueryParam("x", "FundAward")
-                               .SetQueryParam("c", "firstbank")
-                               .SetQueryParam("d", 0)
-                               .SetQueryParam("A", "Smart智富台灣基金獎")
-                               .SetQueryParam("B", "2023年")
-                               .GetAsync()
-                               .ReceiveString()
-       ;
-                dynamic jsonData4 = Newtonsoft.Json.JsonConvert.DeserializeObject(content4);
-                awardFundList.AddRange(ProcessJsonData(jsonData4));
-
+                    dynamic jsonData2 = Newtonsoft.Json.JsonConvert.DeserializeObject(content2);
+                    awardFundList.AddRange(ProcessJsonData(jsonData2));
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
+
 
             return awardFundList;
         }
