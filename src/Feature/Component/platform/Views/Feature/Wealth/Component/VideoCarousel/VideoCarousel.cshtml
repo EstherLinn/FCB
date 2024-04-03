@@ -1,0 +1,120 @@
+﻿@using Feature.Wealth.Component.Models.VideoCarousel
+@model VideoCarouselModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<section class="c-block c-block--stage" data-aos="fade-up" data-aos-once="true">
+    <div class="c-block__wrap">
+        <div class="c-block__header">
+            <h2 class="c-block__title">@Html.Sitecore().Field(Templates.VideoCarouselIndex.Fields.MainTitle.ToString(), Model.DataSource)</h2>
+        </div>
+        <div class="c-block__content">
+            <div class="l-lectern">
+                <div class="l-lectern__table">
+                    <div class="c-lectern">
+                        <div class="c-lectern__title u-ellipsis-2">
+                            @if (Model.CheckedShowIcon)
+                            {
+                                <img src="~/themes/images/icons/green/audio-solid.svg" width="32" alt="">
+                            }
+                            @Html.Sitecore().Field(Templates.VideoCarouselIndex.Fields.Content.ToString(), Model.DataSource)
+                        </div>
+                        <div class="c-lectern__img">
+                            <img src="@Model.ImageUrl" alt="搜尋第一銀行">
+                        </div>
+                    </div>
+                </div>
+                <div class="l-lectern__board">
+                    <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{ "spaceBetween":32, "autoHeight": true, "navigation" :{ "enabled" :true }, "breakpoints" : {"1200": { "navigation" :{ "enabled" :false }}}}'>
+                        <div class="swiper-wrapper c-swiper__wrapper">
+                            @for (var i = 0; i < (Model.Items.Count() + 1) / 2; i++)
+                            {
+                                var item = Model.Items[2 * i];
+                                var icon = item.CheckedShowIcon ? "c-gridview__media--player" : string.Empty;
+
+                                <div class="swiper-slide c-swiper__slide">
+                                    <div class="l-flex l-flex--video">
+                                        <div class="l-flex__item">
+                                            <div class="c-box c-box--gapless u-shadow-animation">
+                                                <div class="c-gridview">
+                                                    @if (item.CheckedOpenVideoLinkinLightBox)
+                                                    {
+                                                        <a href="@item.LinkUrl" class="c-gridview__media @icon" target="_blank">
+                                                            <img src="@item.ImageUrl" class="c-gridview__img" srcset="@item.Image3xUrl" alt="">
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="c-gridview__media @icon" target="_blank">
+                                                            <img src="@item.ImageUrl" class="c-gridview__img" srcset="@item.Image3xUrl" alt="">
+                                                        </a>
+                                                    }
+                                                    <div class="c-gridview__anv">
+                                                        <div class="c-gridview__icon">
+                                                            <img src="~/themes/images/icons/others/audio.svg" alt="">
+                                                        </div>
+                                                        <div class="c-gridview__content c-gridview__content--gapless">
+                                                            <div class="c-gridview__main">
+                                                                <div class="c-gridview__title s3 u-ellipsis-2">@Html.Sitecore().Field(Templates.VideoCarouselVideos.Fields.Title.ToString(), item.Item)</div>
+                                                            </div>
+                                                            <div class="c-gridview__minor"><a href="@item.LinkUrl" class="o-suffixLink o-suffixLink--right o-suffixLink--xs" target="_blank">@Html.Sitecore().Field(Templates.VideoCarouselVideos.Fields.LinkText.ToString(), item.Item)</a></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if (2 * i + 1 < Model.Items.Count())
+                                        {
+                                            var item1 = Model.Items[2 * i + 1];
+                                            var icon1 = item1.CheckedShowIcon ? "c-gridview__media--player" : string.Empty;
+                                            <div class="l-flex__item">
+                                                <div class="c-box c-box--gapless u-shadow-animation">
+                                                    <div class="c-gridview">
+                                                        @if (item1.CheckedOpenVideoLinkinLightBox)
+                                                        {
+                                                            <a href="@item1.LinkUrl" class="c-gridview__media @icon1" target="_blank">
+                                                                <img src="@item1.ImageUrl" class="c-gridview__img" srcset="@item1.Image3xUrl" alt="">
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="c-gridview__media @icon1" target="_blank">
+                                                                <img src="@item1.ImageUrl" class="c-gridview__img" srcset="@item1.Image3xUrl" alt="">
+                                                            </a>
+                                                        }
+                                                        <div class="c-gridview__anv">
+                                                            <div class="c-gridview__icon">
+                                                                <img src="~/themes/images/icons/others/audio.svg" alt="">
+                                                            </div>
+                                                            <div class="c-gridview__content c-gridview__content--gapless">
+                                                                <div class="c-gridview__main">
+                                                                    <div class="c-gridview__title s3 u-ellipsis-2">@Html.Sitecore().Field(Templates.VideoCarouselVideos.Fields.Title.ToString(), item1.Item)</div>
+                                                                </div>
+                                                                <div class="c-gridview__minor"><a href="@item1.LinkUrl" class="o-suffixLink o-suffixLink--right o-suffixLink--xs" target="_blank">@Html.Sitecore().Field(Templates.VideoCarouselVideos.Fields.LinkText.ToString(), item1.Item)</a></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                            }
+
+                        </div>
+                        <div class="swiper-button-next c-swiper__next"></div>
+                        <div class="swiper-button-prev c-swiper__prev"></div>
+                        <div class="swiper-pagination c-swiper__pagination"></div>
+                    </div>
+                    <div class="l-lectern__actions">
+                        <a href="@Model.LinkUrl" class="o-btn o-btn--secondary">@Html.Sitecore().Field(Templates.VideoCarouselIndex.Fields.LinkText.ToString(), Model.DataSource)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

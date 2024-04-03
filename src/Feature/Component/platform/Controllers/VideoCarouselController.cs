@@ -1,0 +1,52 @@
+﻿using Feature.Wealth.Component.Models.VideoCarousel;
+using Sitecore.Mvc.Presentation;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+
+namespace Feature.Wealth.Component.Controllers
+{
+    public class VideoCarouselController : Controller
+    {
+        public ActionResult VideoCarousel()
+        {
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
+            bool checkedShowIcon = ItemUtils.IsChecked(dataSourceItem, Templates.VideoCarouselIndex.Fields.ShowIcon);
+            var imageUrl = ItemUtils.ImageUrl(dataSourceItem, Templates.VideoCarouselIndex.Fields.Image);
+            var linkUrl = ItemUtils.GeneralLink(dataSourceItem, Templates.VideoCarouselIndex.Fields.Link)?.Url;
+            var childItems = ItemUtils.GetChildren(dataSourceItem).ToList();
+
+            var items = new List<VideoCarouselModel.VideoCarousel>();
+
+            foreach (var childItem in childItems)
+            {
+                var vimageUrl = ItemUtils.ImageUrl(childItem, Templates.VideoCarouselVideos.Fields.Image);
+                var vimage3xUrl = ItemUtils.ImageUrl(childItem, Templates.VideoCarouselVideos.Fields.Image3x);
+                bool vcheckedShowIcon = ItemUtils.IsChecked(childItem, Templates.VideoCarouselVideos.Fields.ShowIcon);
+                bool vcheckedOpenVideoLinkinLightBox = ItemUtils.IsChecked(childItem, Templates.VideoCarouselVideos.Fields.OpenVideoLinkinLightBox);
+                var vlink = ItemUtils.GeneralLink(childItem, Templates.VideoCarouselVideos.Fields.Link)?.Url;
+
+                items.Add(new VideoCarouselModel.VideoCarousel(childItem)
+                {
+                    ImageUrl = vimageUrl,
+                    Image3xUrl = vimage3xUrl,
+                    CheckedShowIcon = vcheckedShowIcon,
+                    CheckedOpenVideoLinkinLightBox = vcheckedOpenVideoLinkinLightBox,
+                    LinkUrl = vlink,
+                });
+            }
+
+            var model = new VideoCarouselModel
+            {
+                DataSource = dataSourceItem,
+                CheckedShowIcon = checkedShowIcon,
+                ImageUrl = imageUrl,
+                LinkUrl = linkUrl,
+                Items = items
+            };
+
+            return View("/Views/Feature/Wealth/Component/VideoCarousel/VideoCarousel.cshtml", model);
+        }
+    }
+}
