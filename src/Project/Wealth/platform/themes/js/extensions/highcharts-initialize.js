@@ -36,7 +36,10 @@ function apiRequestPost(url, params) {
   'use strict';
 
   Highcharts.theme = {
-    colors: chartColors
+    colors: chartColors,
+    lang: {
+      thousandsSep: ','
+    }
   };
   Highcharts.setOptions(Highcharts.theme);
 })();

@@ -36,6 +36,11 @@
   }
   $.scrollDirection && $.scrollDirection.init();
 
+  // Cookie彈窗關閉
+  $('[data-cookie-close]').on('click.cookie', function () {
+    $('[data-cookie]').fadeOut();
+  });
+
   // go top button
   (function ($, window, undefined) {
     $(window).on('scrollDirection', function () {
