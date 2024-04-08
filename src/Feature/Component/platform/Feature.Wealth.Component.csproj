@@ -9,6 +9,7 @@
     <PackageReference Include="Dapper" />
     <PackageReference Include="Flurl" />
     <PackageReference Include="Flurl.Http" />
+    <PackageReference Include="Mapster" />
   </ItemGroup>
   <ItemGroup>
     <ProjectCapability Include="SupportsSystemWeb" />

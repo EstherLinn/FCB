@@ -1,0 +1,926 @@
+﻿@model Feature.Wealth.Component.Models.ETF.Search.EtfSearchResultModel
+@{
+    // TODO: 網址要改
+    var detailPage = "#";
+}
+@functions {
+    public string ChangePercentageClass(bool value)
+    {
+        string changeClass = string.Empty;
+        if (value == true)
+        {
+            changeClass = "o-rise";
+        }
+        else
+        {
+            changeClass = "o-fall";
+        }
+        return changeClass;
+    }
+}
+<div class="l-wrap">
+    <div class="c-tab c-tab--wide" data-tab="true">
+        <div class="c-tab__header">
+            <ul class="c-tab__navs">
+                <!-- .is-active: 作用中的項目 -->
+                <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                <li><a href="#" class="c-tab__item is-active" target="_self" title="市價績效" data-tab-target="tab-1">市價績效</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="淨值績效" data-tab-target="tab-2">淨值績效</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="市價風險" data-tab-target="tab-3">市價風險</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="淨值風險" data-tab-target="tab-4">淨值風險</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="交易狀況" data-tab-target="tab-5">交易狀況</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="基本資料" data-tab-target="tab-6">基本資料</a></li>
+                @*<li><a href="#" class="c-tab__item " target="_self" title="查無商品" data-tab-target="tab-7">查無商品</a></li>*@
+            </ul>
+            <div class="c-tab__collapse">
+                <a href="#" class="c-tab__switch"></a>
+                <div class="c-tab__dropdown">
+                    <a href="#" class="c-tab__clone is-active" target="_self" title="市價績效" data-tab-target="tab-1">市價績效</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="淨值績效" data-tab-target="tab-2">淨值績效</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="市價風險" data-tab-target="tab-3">市價風險</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="淨值風險" data-tab-target="tab-4">淨值風險</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="交易狀況" data-tab-target="tab-5">交易狀況</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="基本資料" data-tab-target="tab-6">基本資料</a>
+                    @*<a href="#" class="c-tab__clone " target="_self" title="查無商品" data-tab-target="tab-7">查無商品</a>*@
+                </div>
+            </div>
+        </div>
+        <!-- is-active: 作用中的項目 -->
+
+        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                        <div class="l-flex__item">
+                            <div class="o-capsulebox">
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency1" value="原幣" checked class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">原幣</span>
+                                </label>
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency1" value="台幣" class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">台幣</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item u-right u-hidden@dt-only">
+                            <div class="o-sortingbox">
+                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                @*市價績效*@
+                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="marketPriceTable">
+                                    <option value="">排序</option>
+                                    <option value="ETF名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">ETF名稱高至低</option>
+                                    <option value="ETF名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="市價高至低" data-sorting-column="market" data-sorting-class="is-desc">市價高至低</option>
+                                    <option value="市價低至高" data-sorting-column="market" data-sorting-class="is-asc">市價低至高</option>
+                                    <option value="幣別高至低" data-sorting-column="currency" data-sorting-class="is-desc">幣別高至低</option>
+                                    <option value="幣別低至高" data-sorting-column="currency" data-sorting-class="is-asc">幣別低至高</option>
+                                    <option value="1個月績效高至低" data-sorting-column="marketPriceOriginal_oneMonth" data-sorting-class="is-desc">1個月績效高至低</option>
+                                    <option value="1個月績效低至高" data-sorting-column="marketPriceOriginal_oneMonth" data-sorting-class="is-asc">1個月績效低至高</option>
+                                    <option value="3個月績效高至低" data-sorting-column="marketPriceOriginal_threeMonth" data-sorting-class="is-desc">3個月績效高至低</option>
+                                    <option value="3個月績效低至高" data-sorting-column="marketPriceOriginal_threeMonth" data-sorting-class="is-asc">3個月績效低至高</option>
+                                    <option value="6個月績效高至低" data-sorting-column="marketPriceOriginal_sixMonth" data-sorting-class="is-desc">6個月績效高至低</option>
+                                    <option value="6個月績效低至高" data-sorting-column="marketPriceOriginal_sixMonth" data-sorting-class="is-asc">6個月績效低至高</option>
+                                    <option value="1年績效高至低" data-sorting-column="marketPriceOriginal_oneYear" data-sorting-class="is-desc">1年績效高至低</option>
+                                    <option value="1年績效低至高" data-sorting-column="marketPriceOriginal_oneYear" data-sorting-class="is-asc">1年績效低至高</option>
+
+                                    <option value="1個月績效高至低" data-sorting-column="marketPriceTWD_oneMonth" data-sorting-class="is-desc">1個月績效高至低</option>
+                                    <option value="1個月績效低至高" data-sorting-column="marketPriceTWD_oneMonth" data-sorting-class="is-asc">1個月績效低至高</option>
+                                    <option value="3個月績效高至低" data-sorting-column="marketPriceTWD_threeMonth" data-sorting-class="is-desc">3個月績效高至低</option>
+                                    <option value="3個月績效低至高" data-sorting-column="marketPriceTWD_threeMonth" data-sorting-class="is-asc">3個月績效低至高</option>
+                                    <option value="6個月績效高至低" data-sorting-column="marketPriceTWD_sixMonth" data-sorting-class="is-desc">6個月績效高至低</option>
+                                    <option value="6個月績效低至高" data-sorting-column="marketPriceTWD_sixMonth" data-sorting-class="is-asc">6個月績效低至高</option>
+                                    <option value="1年績效高至低" data-sorting-column="marketPriceTWD_oneYear" data-sorting-class="is-desc">1年績效高至低</option>
+                                    <option value="1年績效低至高" data-sorting-column="marketPriceTWD_oneYear" data-sorting-class="is-asc">1年績效低至高</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item">  </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-2">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                        <div class="l-flex__item">
+                            <div class="o-capsulebox">
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency2" value="原幣" checked class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">原幣</span>
+                                </label>
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency2" value="台幣" class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">台幣</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item u-right u-hidden@dt-only">
+                            <div class="o-sortingbox">
+                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                @*淨值績效*@
+                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="netWorthTable">
+                                    <option value="">排序</option>
+                                    <option value="ETF名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">ETF名稱高至低</option>
+                                    <option value="ETF名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="最新淨值高至低" data-sorting-column="netWorth" data-sorting-class="is-desc">最新淨值高至低</option>
+                                    <option value="最新淨值低至高" data-sorting-column="netWorth" data-sorting-class="is-asc">最新淨值低至高</option>
+                                    <option value="幣別高至低" data-sorting-column="currency" data-sorting-class="is-desc">幣別高至低</option>
+                                    <option value="幣別低至高" data-sorting-column="currency" data-sorting-class="is-asc">幣別低至高</option>
+                                    <option value="1個月績效高至低" data-sorting-column="netWorthOriginal_oneMonth" data-sorting-class="is-desc">1個月績效高至低</option>
+                                    <option value="1個月績效低至高" data-sorting-column="netWorthOriginal_oneMonth" data-sorting-class="is-asc">1個月績效低至高</option>
+                                    <option value="3個月績效高至低" data-sorting-column="netWorthOriginal_threeMonth" data-sorting-class="is-desc">3個月績效高至低</option>
+                                    <option value="3個月績效低至高" data-sorting-column="netWorthOriginal_threeMonth" data-sorting-class="is-asc">3個月績效低至高</option>
+                                    <option value="6個月績效高至低" data-sorting-column="netWorthOriginal_sixMonth" data-sorting-class="is-desc">6個月績效高至低</option>
+                                    <option value="6個月績效低至高" data-sorting-column="netWorthOriginal_sixMonth" data-sorting-class="is-asc">6個月績效低至高</option>
+                                    <option value="1年績效高至低" data-sorting-column="netWorthOriginal_oneYear" data-sorting-class="is-desc">1年績效高至低</option>
+                                    <option value="1年績效低至高" data-sorting-column="netWorthOriginal_oneYear" data-sorting-class="is-asc">1年績效低至高</option>
+
+                                    <option value="1個月績效高至低" data-sorting-column="netWorthTWD_oneMonth" data-sorting-class="is-desc">1個月績效高至低</option>
+                                    <option value="1個月績效低至高" data-sorting-column="netWorthTWD_oneMonth" data-sorting-class="is-asc">1個月績效低至高</option>
+                                    <option value="3個月績效高至低" data-sorting-column="netWorthTWD_threeMonth" data-sorting-class="is-desc">3個月績效高至低</option>
+                                    <option value="3個月績效低至高" data-sorting-column="netWorthTWD_threeMonth" data-sorting-class="is-asc">3個月績效低至高</option>
+                                    <option value="6個月績效高至低" data-sorting-column="netWorthTWD_sixMonth" data-sorting-class="is-desc">6個月績效高至低</option>
+                                    <option value="6個月績效低至高" data-sorting-column="netWorthTWD_sixMonth" data-sorting-class="is-asc">6個月績效低至高</option>
+                                    <option value="1年績效高至低" data-sorting-column="netWorthTWD_oneYear" data-sorting-class="is-desc">1年績效高至低</option>
+                                    <option value="1年績效低至高" data-sorting-column="netWorthTWD_oneYear" data-sorting-class="is-asc">1年績效低至高</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item"> </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-3">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    風險指標：資產管理公司經常用來作為<a href="#" class="o-link">基金風險綜合評比</a>的指標。
+                </div>
+                <div class="l-flex__item">
+                    <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                        <div class="l-flex__item">
+                            <div class="o-capsulebox">
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency3" value="原幣" checked class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">原幣</span>
+                                </label>
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency3" value="台幣" class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">台幣</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item u-right u-hidden@dt-only">
+                            <div class="o-sortingbox">
+                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                @*市價風險*@
+                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="marketRiskTable">
+                                    <option value="">排序</option>
+                                    <option value="ETF名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">ETF名稱高至低</option>
+                                    <option value="ETF名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="市價高至低" data-sorting-column="market" data-sorting-class="is-desc">市價高至低</option>
+                                    <option value="市價低至高" data-sorting-column="market" data-sorting-class="is-asc">市價低至高</option>
+                                    <option value="風險屬性RR5至RR1" data-sorting-column="risk" data-sorting-class="is-desc">風險屬性RR5至RR1</option>
+                                    <option value="風險屬性RR1至RR5" data-sorting-column="risk" data-sorting-class="is-asc">風險屬性RR1至RR5</option>
+                                    <option value="Sharpe高至低" data-sorting-column="sharpe" data-sorting-class="is-desc">Sharpe高至低</option>
+                                    <option value="Sharpe低至高" data-sorting-column="sharpe" data-sorting-class="is-asc">Sharpe低至高</option>
+                                    <option value="Beta高至低" data-sorting-column="beta" data-sorting-class="is-desc">Beta高至低</option>
+                                    <option value="Beta低至高" data-sorting-column="beta" data-sorting-class="is-asc">Beta低至高</option>
+                                    <option value="年化標準差高至低" data-sorting-column="deviation" data-sorting-class="is-desc">年化標準差高至低</option>
+                                    <option value="年化標準差低至高" data-sorting-column="deviation" data-sorting-class="is-asc">年化標準差低至高</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item"> </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-4">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    風險指標：資產管理公司經常用來作為<a href="#" class="o-link">基金風險綜合評比</a>的指標。
+                </div>
+                <div class="l-flex__item">
+                    <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                        <div class="l-flex__item">
+                            <div class="o-capsulebox">
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency4" value="原幣" checked class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">原幣</span>
+                                </label>
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency4" value="台幣" class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">台幣</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item u-right u-hidden@dt-only">
+                            <div class="o-sortingbox">
+                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                @*淨值風險*@
+                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="netWorthRiskTable">
+                                    <option value="">排序</option>
+                                    <option value="ETF名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">ETF名稱高至低</option>
+                                    <option value="ETF名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="最新淨值高至低" data-sorting-column="netWorth" data-sorting-class="is-desc">最新淨值高至低</option>
+                                    <option value="最新淨值低至高" data-sorting-column="netWorth" data-sorting-class="is-asc">最新淨值低至高</option>
+                                    <option value="風險屬性RR5至RR1" data-sorting-column="risk" data-sorting-class="is-desc">風險屬性RR5至RR1</option>
+                                    <option value="風險屬性RR1至RR5" data-sorting-column="risk" data-sorting-class="is-asc">風險屬性RR1至RR5</option>
+                                    <option value="Sharpe高至低" data-sorting-column="sharpe" data-sorting-class="is-desc">Sharpe高至低</option>
+                                    <option value="Sharpe低至高" data-sorting-column="sharpe" data-sorting-class="is-asc">Sharpe低至高</option>
+                                    <option value="Beta高至低" data-sorting-column="beta" data-sorting-class="is-desc">Beta高至低</option>
+                                    <option value="Beta低至低" data-sorting-column="beta" data-sorting-class="is-asc">Beta低至低</option>
+                                    <option value="年化標準差高至低" data-sorting-column="deviation" data-sorting-class="is-desc">年化標準差高至低</option>
+                                    <option value="年化標準差低至高" data-sorting-column="deviation" data-sorting-class="is-asc">年化標準差低至高</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item"> </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-5">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                        <div class="l-flex__item">
+                            <div class="o-capsulebox">
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency5" value="原幣" checked class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">原幣</span>
+                                </label>
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency5" value="台幣" class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">台幣</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item u-right u-hidden@dt-only">
+                            <div class="o-sortingbox">
+                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                @*交易狀況*@
+                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="tradeTable">
+                                    <option value="">排序</option>
+                                    <option value="ETF名稱高至低" data-sorting-column="name" data-sorting-class="is-asc">ETF名稱高至低</option>
+                                    <option value="ETF名稱低至高" data-sorting-column="name" data-sorting-class="is-desc">ETF名稱低至高</option>
+                                    <option value="市價高至低" data-sorting-column="market" data-sorting-class="is-asc">市價高至低</option>
+                                    <option value="市價低至高" data-sorting-column="market" data-sorting-class="is-desc">市價低至高</option>
+                                    <option value="折溢價高至低" data-sorting-column="discount" data-sorting-class="is-asc">折溢價高至低</option>
+                                    <option value="折溢價低至高" data-sorting-column="discount" data-sorting-class="is-desc">折溢價低至高</option>
+                                    <option value="最新量高至低" data-sorting-column="price" data-sorting-class="is-asc">最新量高至低</option>
+                                    <option value="最新量低至高" data-sorting-column="price" data-sorting-class="is-desc">最新量低至高</option>
+                                    <option value="最新量-10日高至低" data-sorting-column="day" data-sorting-class="is-asc">最新量-10日高至低</option>
+                                    <option value="最新量-10日低至高" data-sorting-column="day" data-sorting-class="is-desc">最新量-10日低至高</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item"> </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-6">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                        <div class="l-flex__item">
+                            <div class="o-capsulebox">
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency6" value="原幣" checked class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">原幣</span>
+                                </label>
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="currency6" value="台幣" class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">台幣</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item u-right u-hidden@dt-only">
+                            <div class="o-sortingbox">
+                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                @*基本資料*@
+                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="baseTable">
+                                    <option value="">排序</option>
+                                    <option value="ETF名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">ETF名稱高至低</option>
+                                    <option value="ETF名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="市價高至低" data-sorting-column="market" data-sorting-class="is-desc">市價高至低</option>
+                                    <option value="市價低至高" data-sorting-column="market" data-sorting-class="is-asc">市價低至高</option>
+                                    <option value="幣別高至低" data-sorting-column="currency" data-sorting-class="is-desc">幣別高至低</option>
+                                    <option value="幣別低至高" data-sorting-column="currency" data-sorting-class="is-asc">幣別低至高</option>
+                                    <option value="投資標的高至低" data-sorting-column="targets" data-sorting-class="is-desc">投資標的高至低</option>
+                                    <option value="投資標的低至高" data-sorting-column="targets" data-sorting-class="is-asc">投資標的低至高</option>
+                                    <option value="成立年資高至低" data-sorting-column="seniority" data-sorting-class="is-desc">成立年資高至低</option>
+                                    <option value="成立年資低至高" data-sorting-column="seniority" data-sorting-class="is-asc">成立年資低至高</option>
+                                    <option value="管理費高至低" data-sorting-column="managementFee" data-sorting-class="is-desc">管理費高至低</option>
+                                    <option value="管理費低至高" data-sorting-column="managementFee" data-sorting-class="is-asc">管理費低至高</option>
+                                    <option value="規模高至低" data-sorting-column="scale" data-sorting-class="is-desc">規模高至低</option>
+                                    <option value="規模低至高" data-sorting-column="scale" data-sorting-class="is-asc">規模低至高</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item"> </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="l-table" data-list-name="MarketPricePerformance">
+        <table class="c-table@dt-only c-cardTable@lt" data-table-name="marketPriceTable">
+            <colgroup>
+                <col style="width: auto;">
+                <col style="width: 1;">
+                <col style="width: 1;">
+                <col style="width: 1;">
+                <col style="width: 1;">
+                <col style="width: 1;">
+                <col style="width: 1;">
+                <col style="width: 1;">
+                <col style="width: 1;">
+                <col style="width: 1;">
+            </colgroup>
+            <thead>
+                <tr class="u-nowrap">
+                    <th>
+                        <div class="c-table__title">
+                            <span>ETF名稱</span>
+                            <!-- .is-asc: 升冪 -->
+                            <!-- .is-desc: 降冪 -->
+                            <a href="#" class="o-sorting" data-sorting-column="name"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>交易所代碼</span>
+                        </div>
+                    </th>
+                    @*【市價(日期)】=> 市價績效,市價風險,交易狀況,基本資料*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>市價<br>(日期)</span>
+                            <a href="#" class="o-sorting" data-sorting-column="market"></a>
+                        </div>
+                    </th>
+                    @*【最新淨值(日期)】=> 淨值績效,淨值風險*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>最新淨值<br>(日期)</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorth"></a>
+                        </div>
+                    </th>
+                    @*【幣別】=> 市價績效,淨值績效,基本資料*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>幣別</span>
+                            <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                            <a href="#" class="o-sorting" data-sorting-column="currency"></a>
+                        </div>
+                    </th>
+                    @*【市價績效-報酬(原幣)】=> 市價績效*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>1個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPriceOriginal_oneMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>3個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPriceOriginal_threeMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>6個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPriceOriginal_sixMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>1年</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPriceOriginal_oneYear"></a>
+                        </div>
+                    </th>
+                    @*【市價績效-報酬(台幣)】=> 市價績效*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>1個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPriceTWD_oneMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>3個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPriceTWD_threeMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>6個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPriceTWD_sixMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>1年</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPriceTWD_oneYear"></a>
+                        </div>
+                    </th>
+                    @*【淨值績效-報酬(原幣)】=> 淨值績效*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>1個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorthOriginal_oneMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>3個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorthOriginal_threeMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>6個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorthOriginal_sixMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>1年</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorthOriginal_oneYear"></a>
+                        </div>
+                    </th>
+                    @*【淨值績效-報酬(台幣)】=> 淨值績效*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>1個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorthTWD_oneMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>3個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorthTWD_threeMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>6個月</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorthTWD_sixMonth"></a>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>1年</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorthTWD_oneYear"></a>
+                        </div>
+                    </th>
+                    @*【風險屬性】=> 市價風險,淨值風險*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>風險屬性</span>
+                            <a href="#" class="o-sorting" data-sorting-column="risk"></a>
+                        </div>
+                    </th>
+
+                    @*【Sharpe】=> 市價風險*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>Sharpe</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPrice_sharpe"></a>
+                        </div>
+                    </th>
+                    @*【Beta】=> 市價風險*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>Beta</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPrice_beta"></a>
+                        </div>
+                    </th>
+                    @*【年化標準差】=> 市價風險*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>年化標準差</span>
+                            <a href="#" class="o-sorting" data-sorting-column="marketPrice_deviation"></a>
+                        </div>
+                    </th>
+
+                    @*【Sharpe】=> 淨值風險*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>Sharpe</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorth_sharpe"></a>
+                        </div>
+                    </th>
+                    @*【Beta】=> 淨值風險*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>Beta</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorth_beta"></a>
+                        </div>
+                    </th>
+                    @*【年化標準差】=> 淨值風險*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>年化標準差</span>
+                            <a href="#" class="o-sorting" data-sorting-column="netWorth_deviation"></a>
+                        </div>
+                    </th>
+
+                    @*【折溢價】=> 交易狀況*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>折溢價</span>
+                            <a href="#" class="o-sorting" data-sorting-column="discount"></a>
+                        </div>
+                    </th>
+                    @*【最新量】=> 交易狀況*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>最新量</span>
+                            <a href="#" class="o-sorting" data-sorting-column="price"></a>
+                        </div>
+                    </th>
+                    @*【最新量-10日量】=> 交易狀況*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>最新量-10日量</span>
+                            <a href="#" class="o-sorting" data-sorting-column="day"></a>
+                        </div>
+                    </th>
+
+                    @*【投資標的】=> 基本資料*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>投資標的</span>
+                            <a href="#" class="o-sorting" data-sorting-column="targets"></a>
+                        </div>
+                    </th>
+                    @*【成立年資】=> 基本資料*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>成立年資</span>
+                            <a href="#" class="o-sorting" data-sorting-column="seniority"></a>
+                        </div>
+                    </th>
+                    @*【管理費】=> 基本資料*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>管理費</span>
+                            <a href="#" class="o-sorting" data-sorting-column="managementFee"></a>
+                        </div>
+                    </th>
+                    @*【規模(百萬)】=> 基本資料*@
+                    <th>
+                        <div class="c-table__title">
+                            <span>規模<br>(百萬)</span>
+                            <a href="#" class="o-sorting" data-sorting-column="scale"></a>
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="c-table__title">
+                            <span>關注/比較</span>
+                        </div>
+                    </th>
+                    <th>
+                        <div class="c-table__title">
+                            <span>申購</span>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 表格內文字對齊樣式，可於tr/td標籤上使用(若內容物為flexbox將不會發生作用)：
+                .u-center: 置中
+                .u-center@lt: pad(含)以下版本(<= 1199px)置中
+                .u-center@lt-up: pad(含)以上版本(>= 768px)置中
+                .u-center@dt-only: 僅桌機版本(>= 1200px)置中
+                .u-center@lt-only: 僅pad版本(>= 768px and <= 1199px)置中
+                .u-center@mb-only: 僅手機版本(<= 767px)置中
+                .u-left/.u-right: 置左/置右，比照置中模式 -->
+                <!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
+                @foreach (var product in Model.ResultProducts)
+                {
+                    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+                        <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+                        <td class="c-cardTable__top"></td>
+                        <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+                        <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
+                        @*【ETF名稱】=> 所有tab *@
+                        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+                            <div class="c-cardTable__content">
+                                <div class="l-target">
+                                    <div class="l-target__name">
+                                        <a href="@detailPage" class="o-contentLink t-bold u-ellipsis-2">@product.FirstBankCode @product.ETFName</a>
+                                    </div>
+                                    @*標籤*@
+                                    @*<div class="l-target__additional"> <ul class="l-tag"> <li class="l-tag__item"> <a href="#" class="o-tag">0信託管理費</a> </li> </ul> </div>*@
+                                </div>
+                            </div>
+                        </td>
+                        <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+                        <td class="c-cardTable__space"></td>
+                        <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+                        <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+                        @*【交易所代碼】=> 所有tab *@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                            <div class="c-cardTable__title" data-length="5">交易所代碼</div>
+                            <div class="c-cardTable__content">@product.ExchangeCode</div>
+                        </td>
+                        @*【市價(日期)】=> 市價績效,市價風險,交易狀況,基本資料*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                            <div class="c-cardTable__title" data-length="4">市價<br>(日期)</div>
+                            <div class="c-cardTable__content">@product.MarketPrice<br><span class="t-date">@product.NetAssetValueDate</span></div>
+                        </td>
+                        @*【最新淨值(日期)】=> 淨值績效,淨值風險*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                            <div class="c-cardTable__title" data-length="4">最新淨值<br>(日期)</div>
+                            <div class="c-cardTable__content">@product.NetAssetValue<br><span class="t-date">@product.NetAssetValueDate</span></div>
+                        </td>
+                        @*【幣別】=> 市價績效,淨值績效,基本資料*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">
+                                幣別
+                                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                            </div>
+                            <div class="c-cardTable__content">
+                                <a href="#" class="o-link">@product.CurrencyPair.Value</a>
+                            </div>
+                        </td>
+                        @*【市價績效-報酬(原幣)】=> 市價績效*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">1個月</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.MonthlyReturnMarketPriceOriginalCurrency.Key)">
+                                    @(product.MonthlyReturnMarketPriceOriginalCurrency.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">3個月</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.ThreeMonthReturnMarketPriceOriginalCurrency.Key)">
+                                    @(product.ThreeMonthReturnMarketPriceOriginalCurrency.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">6個月</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.SixMonthReturnMarketPriceOriginalCurrency.Key)">
+                                    @(product.SixMonthReturnMarketPriceOriginalCurrency.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">1年</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.OneYearReturnMarketPriceOriginalCurrency.Key)">
+                                    @(product.OneYearReturnMarketPriceOriginalCurrency.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        @*【市價績效-報酬(台幣)】=> 市價績效*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">1個月</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.MonthlyReturnMarketPriceTWD.Key)">
+                                    @(product.MonthlyReturnMarketPriceTWD.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">3個月</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.ThreeMonthReturnMarketPriceTWD.Key)">
+                                    @(product.ThreeMonthReturnMarketPriceTWD.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">6個月</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.SixMonthReturnMarketPriceTWD.Key)">
+                                    @(product.SixMonthReturnMarketPriceTWD.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">1年</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.OneYearReturnMarketPriceOriginalCurrency.Key)">
+                                    @(product.OneYearReturnMarketPriceOriginalCurrency.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        @*【淨值績效-報酬(原幣)】=> 淨值績效*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">1個月</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.MonthlyReturnNetValueOriginalCurrency.Key)">
+                                    @(product.MonthlyReturnNetValueOriginalCurrency.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">3個月</div>
+                            <div class="c-cardTable__content">
+
+                                <span class="@ChangePercentageClass(product.ThreeMonthReturnNetValueOriginalCurrency.Key)">
+                                    @(product.ThreeMonthReturnNetValueOriginalCurrency.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">6個月</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.SixMonthReturnNetValueOriginalCurrency.Key)">
+                                    @(product.SixMonthReturnNetValueOriginalCurrency.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">1年</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.OneYearReturnNetValueOriginalCurrency.Key)">
+                                    @(product.OneYearReturnNetValueOriginalCurrency.Value)%
+                                </span>
+                            </div>
+                        </td>
+
+                        @*【淨值績效-報酬(台幣)】=> 淨值績效*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">1個月</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.MonthlyReturnNetValueTWD.Key)">
+                                    @(product.MonthlyReturnNetValueTWD.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">3個月</div>
+                            <div class="c-cardTable__content">
+
+                                <span class="@ChangePercentageClass(product.ThreeMonthReturnNetValueTWD.Key)">
+                                    @(product.ThreeMonthReturnNetValueTWD.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">6個月</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.SixMonthReturnNetValueTWD.Key)">
+                                    @(product.SixMonthReturnNetValueTWD.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">1年</div>
+                            <div class="c-cardTable__content">
+                                <span class="@ChangePercentageClass(product.OneYearReturnNetValueTWD.Key)">
+                                    @(product.OneYearReturnNetValueTWD.Value)%
+                                </span>
+                            </div>
+                        </td>
+                        @*【風險屬性】=> 市價風險,淨值風險*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">風險屬性</div>
+                            <div class="c-cardTable__content">@product.RiskLevel</div>
+                        </td>
+                        @*【Sharpe】=> 市價風險*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">Sharpe</div>
+                            <div class="c-cardTable__content">@product.SharpeRatioMarketPriceRisk</div>
+                        </td>
+                        @*【Beta】=> 市價風險*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">Beta</div>
+                            <div class="c-cardTable__content">@product.BetaMarketPriceRisk</div>
+                        </td>
+                        @*【年化標準差】=> 市價風險*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">年化標準差</div>
+                            <div class="c-cardTable__content">@(product.AnnualizedStandardDeviationMarketPriceRisk)%</div>
+                        </td>
+                        @*【Sharpe】=> 淨值風險*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">Sharpe</div>
+                            <div class="c-cardTable__content">@product.SharpeNetValueRisk</div>
+                        </td>
+                        @*【Beta】=> 淨值風險*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">Beta</div>
+                            <div class="c-cardTable__content">@product.BetaNetValueRisk</div>
+                        </td>
+                        @*【年化標準差】=> 淨值風險*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">年化標準差</div>
+                            <div class="c-cardTable__content">@(product.AnnualizedStandardDeviationNetValueRisk)%</div>
+                        </td>
+                        @*【折溢價】=> 交易狀況*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">折溢價</div>
+                            <span class="@ChangePercentageClass(product.DiscountPremium.Key)">
+                                @(product.DiscountPremium.Value)%
+                            </span>
+                        </td>
+                        @*【最新量】=> 交易狀況*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">最新量</div>
+                            <div class="c-cardTable__content">@product.LatestVolumeTradingVolume.Value</div>
+                        </td>
+                        @*【最新量-10日量】=> 交易狀況*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">最新量-10日量</div>
+                            <div class="c-cardTable__content">@product.LatestVolumeTradingVolumeTenDayAverageVolume.Value</div>
+                        </td>
+                        @*【投資標的】=> 基本資料*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">投資標的</div>
+                            <div class="c-cardTable__content">@product.InvestmentTarget.Value</div>
+                        </td>
+                        @*【成立年資】=> 基本資料*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">成立年資</div>
+                            <div class="c-cardTable__content">@product.EstablishmentSeniority</div>
+                        </td>
+                        @*【管理費】=> 基本資料*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="4">管理費</div>
+                            <div class="c-cardTable__content">@(product.TotalManagementFee)%</div>
+                        </td>
+                        @*【規模(百萬)】=> 基本資料*@
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">規模<br>(百萬)</div>
+                            <div class="c-cardTable__content">@product.ScaleMillions</div>
+                        </td>
+
+                        <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+                        <td class="c-cardTable__space"></td>
+                        <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+                        <td class="c-cardTable__footer" data-card-table-width="2/3">
+                            <div class="c-cardTable__content">
+                                <ul class="l-collect l-collect--divider@lt">
+                                    <li class="l-collect__item">
+                                        <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                                        <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+                                        <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+                                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                    </li>
+                                    <li class="l-collect__item">
+                                        <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                                        <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+                                        <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+                                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__footer" data-card-table-width="1/3">
+                            @if (product.OnlineSubscriptionAvailability?.ToUpper() == "Y")
+                            {
+                                <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="l-pagination">
+            <div class="l-pagination__size">
+                <span>每頁顯示</span>
+                <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+                <select class="o-selectbox o-selectbox--pagesize" data-sizebox="true">
+                    <option value="10">10筆</option>
+                    <option value="50">50筆</option>
+                    <option value="100">100筆</option>
+                    <option value="all">全部</option>
+                </select>
+            </div>
+            <div class="l-pagination__switch">
+                <!-- [data-pagination="true"]: 載入後自動綁定分頁功能 -->
+                <!-- [data-total="888"]: 總筆數，必要資訊，供分頁狀態判斷使用 -->
+                <div class="o-pagination" data-pagination="true" data-total="100">
+                    <!-- .is-disabled: 停用狀態，無法點擊 -->
+                    <a href="#" class="o-pagination__prev is-disabled"></a>
+                    <span class="o-pagination__pager">
+                        <input type="number" value="1" class="o-pagination__no">
+                        <span class="o-pagination__total">100</span>
+                    </span>
+                    <!-- .is-disabled: 停用狀態，無法點擊 -->
+                    <a href="#" class="o-pagination__next"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
