@@ -6,6 +6,7 @@
     }
     // TODO: 網址要改
     var detailPage = "#";
+    var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId();
 }
 @functions {
     public string ChangePercentageClass(bool value)
@@ -22,7 +23,7 @@
         return changeClass;
     }
 }
-<div class="l-wrap">
+<div class="l-wrap" data-section="@(uid)-result">
     <div class="c-tab c-tab--wide" data-tab="true">
         <div class="c-tab__header">
             <ul class="c-tab__navs">
@@ -612,6 +613,7 @@
                 <!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
                 @foreach (var product in Model.ResultProducts)
                 {
+                    break; //TODO: for test, 迴圈要移除
                     <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
                         <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
                         <td class="c-cardTable__top"></td>
@@ -928,3 +930,7 @@
         </div>
     </div>
 </div>
+
+<script id="@uid-template" type="text/html">
+    @Html.Partial("/Views/Feature/Wealth/Component/ETFSearch/SearchResult/_ResultTemplate.cshtml")
+</script>

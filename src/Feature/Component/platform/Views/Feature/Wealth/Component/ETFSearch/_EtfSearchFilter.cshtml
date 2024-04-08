@@ -1,10 +1,13 @@
 ﻿@model Feature.Wealth.Component.Models.ETF.Search.EtfSearchFilterModel
-@if (Model == null)
-{
-    return;
+@{
+    if (Model == null)
+    {
+        return;
+    }
+    var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId();
 }
 
-<div class="l-mainstage">
+<div class="l-mainstage" data-section="@(uid)-filter">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
             <h1 class="t-title">ETF搜尋</h1>
@@ -920,6 +923,7 @@
                 <div class="l-filter__tool">
                     <div class="l-filter__total">
                         <div class="o-total">
+                            @*TODO:ETF數量*@
                             共<span>9999</span>檔ETF
                         </div>
                     </div>
