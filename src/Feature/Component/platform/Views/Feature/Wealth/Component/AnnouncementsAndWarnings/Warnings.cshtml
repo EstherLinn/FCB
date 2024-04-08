@@ -1,0 +1,24 @@
+﻿@using Feature.Wealth.Component.Models.Notice
+@model NoticeModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="c-section">
+    <div class="l-wrap">
+        <div class="c-section__content">
+            <div class="c-collapse c-collapse--warning" data-collapse="true">
+                <div class="c-collapse__head" data-collapse-button="true">
+                    <span>@Html.Sitecore().Field(Templates.Notice.Fields.MainTitle.ToString(), Model.Item)</span>
+                </div>
+                <div class="c-collapse__content" data-collapse-content="true">
+                    <div class="c-collapse__inner">
+                        @Html.Sitecore().Field(Templates.Notice.Fields.Content.ToString(), Model.Item)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

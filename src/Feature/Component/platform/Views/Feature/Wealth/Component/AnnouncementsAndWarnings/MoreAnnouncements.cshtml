@@ -1,0 +1,29 @@
+﻿@using Feature.Wealth.Component.Models.AnnouncementsAndWarnings
+@model AnnouncementsAndWarningsModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<section class="c-section">
+    <div class="l-wrap">
+        <div class="c-section__content">
+            <div class="l-feature l-feature--sm">
+                <ul class="l-feature__list">
+                    <li class="l-feature__item">
+                        <div class="c-feature c-feature--join c-feature--personalize">
+                            <div class="c-feature__content u-center">
+                                <h3 class="c-feature__title">@Html.Sitecore().Field(Templates.MoreAnnouncement.Fields.MainTitle.ToString(), Model.Item)</h3>
+                                <p class="c-feature__desc">@Html.Sitecore().Field(Templates.MoreAnnouncement.Fields.Description.ToString(), Model.Item)</p>
+                            </div>
+                            <div class="c-feature__plate">
+                                <img src="@Model.ImageUrl" srcset="@Model.Image3xUrl" alt="" class="c-feature__img">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
