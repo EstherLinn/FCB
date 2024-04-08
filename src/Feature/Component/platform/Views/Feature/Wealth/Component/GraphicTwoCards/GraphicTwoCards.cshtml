@@ -31,8 +31,8 @@
                             @if (!string.IsNullOrEmpty(Model.ButtonLink1) && !string.IsNullOrEmpty(Model.ButtonText1))
                             {
                                 <div class="c-feature__actions">
-                                    @Html.Sitecore().BeginField(Model.ButtonLink1Field, Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--thin o-btn--auto" })
-                                    @Html.Sitecore().Field(Model.ButtonText1Field, Model.DataSource)
+                                    @Html.Sitecore().BeginField(Templates.GraphicTwoCardsDatasource.Fields.ButtonLink1.ToString(), Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--thin o-btn--auto" })
+                                    @Html.Sitecore().Field(Templates.GraphicTwoCardsDatasource.Fields.ButtonText1.ToString(), Model.DataSource)
                                     @Html.Sitecore().EndField()
                                 </div>
                             }
@@ -71,8 +71,8 @@
                             @if (!string.IsNullOrEmpty(Model.ButtonLink2) && !string.IsNullOrEmpty(Model.ButtonText2))
                             {
                                 <div class="c-feature__actions">
-                                    @Html.Sitecore().BeginField(Model.ButtonLink2Field, Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--thin o-btn--auto" })
-                                    @Html.Sitecore().Field(Model.ButtonText2Field, Model.DataSource)
+                                    @Html.Sitecore().BeginField(Templates.GraphicTwoCardsDatasource.Fields.ButtonLink2.ToString(), Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--thin o-btn--auto" })
+                                    @Html.Sitecore().Field(Templates.GraphicTwoCardsDatasource.Fields.ButtonText2.ToString(), Model.DataSource)
                                     @Html.Sitecore().EndField()
                                 </div>
                             }
