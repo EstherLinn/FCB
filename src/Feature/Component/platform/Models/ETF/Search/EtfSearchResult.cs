@@ -73,7 +73,7 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// <summary>
         /// 是否可於網路申購
         /// </summary>
-        public string OnlineSubscriptionAvailability { get; set; }
+        public bool CanOnlineSubscription { get; set; }
 
         /// <summary>
         /// 風險等級

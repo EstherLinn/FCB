@@ -122,6 +122,7 @@ namespace Feature.Wealth.Component.Repositories
                     dest.InvestmentStyle = new KeyValuePair<int, string>(src.InvestmentStyleID, src.InvestmentStyleName);
                     dest.TotalManagementFee = RoundingPercentage(src.TotalManagementFee);
                     dest.ScaleMillions = RoundingPrice(src.ScaleMillions);
+                    dest.CanOnlineSubscription = src.OnlineSubscriptionAvailability?.ToUpper() == "Y";
                 });
 
             var result = collection.Adapt<IEnumerable<EtfSearchResult>>(config);
