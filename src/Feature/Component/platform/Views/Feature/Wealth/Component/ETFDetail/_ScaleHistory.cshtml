@@ -1,0 +1,376 @@
+﻿@model Feature.Wealth.Component.Models.ETF.Detail.EtfDetailModel
+@using Feature.Wealth.Component.Models.ETF.Detail;
+@using Foundation.Wealth.Helper;
+@*規模變動*@
+<div class="c-tab__panel" data-tab-panel-id="tab-9">
+    <section class="c-section u-printBreak">
+        <div class="c-section__content" data-chart="scale">
+            <div class="c-empty">
+                <div class="c-empty__img">
+                    <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                </div>
+                <div class="c-empty__desc">沒有資料</div>
+            </div>
+            <div class="c-chartBox">
+                <div class="c-chartBox__chart">
+                    <div id="scale"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">規模變動紀錄</div>
+        <div class="c-section__content">
+            @if (Model.ETFScaleRecords != null && Model.ETFScaleRecords.Any())
+            {
+
+                <div class="l-flex u-flex-col u-flex-gap-sm">
+                    <div class="l-flex__item">
+                        <div class="l-selectbox">
+                            <div class="l-selectbox__item">
+                                <select id="scale_select" class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true">
+                                    @*<option value="近一年">近一年</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>*@
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-flex__item" id="scale_table">
+                        <!-- 左右表格 -->
+                        @*<div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 50%;">
+                                                <col style="width: 50%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>規模日期</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>規模(百萬)</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        2023/06/30
+                                                    </td>
+                                                    <td>
+                                                        67.24
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 50%;">
+                                                <col style="width: 50%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>規模日期</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>規模(百萬)</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        2022/12/31
+                                                    </td>
+                                                    <td>
+                                                        67.24
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>*@
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="c-empty">
+                    <div class="c-empty__img">
+                        <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                    </div>
+                    <div class="c-empty__desc">沒有資料</div>
+                </div>
+            }
+        </div>
+    </section>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+
+        function required($element) {
+            const requiredMsg = '欄位必填';
+            let $parents = $element.closest('.l-form');
+            let $msg = $parents.find('.o-errorText');
+            let isEmpty = $element.val().trim() == '';
+            $parents.toggleClass('is-error', isEmpty);
+            $msg.text(isEmpty ? requiredMsg : '');
+            return !isEmpty;
+        }
+
+        function dateRange($inputStart, $inputEnd) {
+            const dateRangeMsg = '起訖日期區間錯誤';
+            let startDate = new Date($inputStart.val());
+            let endDate = new Date($inputEnd.val());
+            let $startParents = $inputStart.closest('.l-form');
+            let $endParents = $inputEnd.closest('.l-form');
+            if (endDate < startDate) {
+                $startParents.addClass('is-error');
+                $endParents.addClass('is-error');
+                $startParents.find('.o-errorText').text(dateRangeMsg);
+                return false;
+            } else {
+                $startParents.removeClass('is-error');
+                $endParents.removeClass('is-error');
+                $startParents.find('.o-errorText').text('');
+                return true;
+            }
+        }
+
+        //#region 規模變動 – 規模變動圖
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            function numberComma(num) {
+                let comma = /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g
+                return num.toString().replace(comma, ',')
+            }
+
+            async function initRate() {
+                try {
+                    /*
+                     * API參數
+                     * id: ETF代號
+                     */
+                    //const params = {
+                    //    id: etfId
+                    //};
+                    // 呼叫 API ETF詳細頁 – 規模變動 – 規模變動圖
+                    //const data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/scalechange', params);
+                    // 呼叫 mock data json
+                    // const data = await apiRequestGet('../themes/chartdatas/scale-data.json', params);
+
+                    const data = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.ETFScaleRecords)));
+
+
+                    if (Object.keys(data).length != 0) {
+                        let mapData = data.map((item, index) => {
+                            return {
+                                name: item.ScaleDate,
+                                x: new Date(item.ScaleDate).getTime(),
+                                y: item.ScaleMillions
+                            };
+                        });
+
+                        mapData = mapData.filter(function (item, index, arr) {
+                            return index < 12;
+                        });
+
+                        mapData.reverse();
+
+                        let mapYearData = data.map((item) => new Date(item.ScaleDate).getFullYear()).filter(function (element, index, arr) {
+                            return arr.indexOf(element) === index;
+                        });
+                        mapYearData.unshift("近一年");
+
+                        $.each(mapYearData, function (index, value) {
+                            $('#scale_select').append($('<option>', {
+                                value: value,
+                                text: value
+                            }));
+                        });
+
+                        $('#scale_select').on('change', function () {
+                            let rangeData = [];
+                            let range = this.value;
+
+                            if (range != "近一年") {
+                                rangeData = data.filter(function (item, index, arr) {
+                                    return item.ScaleDate.indexOf(range) >= 0;
+                                });
+                            } else {
+                                rangeData = data.filter(function (item, index, arr) {
+                                    return index < 12;
+                                });
+                            }
+
+                            let tbHtml = '';
+
+                            for (let i = 0; i < rangeData.length; i++) {
+
+                                if (i === 0) {
+                                    tbHtml += `<div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>`;
+                                }
+                                if (i === 0 || i === 6) {
+                                    let hiddenHeadClass = i === 6 ? "u-hidden@lt" : "";
+                                    tbHtml += `<div class="l-flex__item">
+                                        <div class="l-table">
+                                            <table class="c-table u-center">
+                                                <colgroup>
+                                                    <col style="width: 33.33%;">
+                                                    <col style="width: 33.33%;">
+                                                </colgroup>
+                                                <thead class="${hiddenHeadClass}">
+                                                    <tr>
+                                                        <th>
+                                                            <div class="c-table__title">
+                                                                <span>規模日期</span>
+                                                            </div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="c-table__title">
+                                                                <span>規模(百萬)</span>
+                                                            </div>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>`;
+                                }
+                                tbHtml += ` <tr>
+                                        <td>
+                                            ${rangeData[i].ScaleDate}
+                                                        </td>
+                                                        <td>
+                                                            ${rangeData[i].ScaleMillions.toFixed(2)}
+                                                        </td>
+                                                    </tr>`;
+                                if (i === 5 || i === rangeData - 1) {
+                                    tbHtml += `   </tbody>
+                                            </table>
+                                        </div> </div>`;
+                                }
+
+                                if (i === rangeData - 1) {
+                                    tbHtml += `</div >`;
+                                }
+                            }
+                            $('#scale_table').html(tbHtml);
+                        });
+
+                        $('#scale_select').trigger('change');
+
+                        Highcharts.chart('scale', {
+                            chart: {
+                                type: 'column'
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: ''
+                            },
+                            legend: {
+                                enabled: false
+                            },
+                            xAxis: {
+                                type: 'datetime',
+                                tickPosition: 'inside',
+                                tickWidth: 0.5,
+                                tickLength: 7,
+                                labels: {
+                                    formatter: function () {
+                                        const format = {
+                                            day: '%Y/%m',
+                                            week: '%Y/%m',
+                                            month: '%Y/%m'
+                                        }[this.tickPositionInfo.unitName];
+                                        return Highcharts.dateFormat(format, this.value);
+                                    },
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                },
+                                lineColor: '#ebebeb',
+                                tickColor: '#ebebeb'
+                            },
+                            yAxis: {
+                                title: {
+                                    text: '(百萬元)',
+                                    align: 'low',
+                                    rotation: 0,
+                                    offset: 0,
+                                    y: 30,
+                                    x: -50
+                                },
+                                showLastLabel: true,
+                                plotLines: [{
+                                    color: '#c3c3c3'
+                                }]
+                            },
+                            plotOptions: {
+                                series: {
+                                    pointPadding: 0.1,
+                                    groupPadding: 0.05,
+                                    colorByPoint: false,
+                                    states: {
+                                        hover: {
+                                            color: '#238C6C',
+                                            opacity: 1
+                                        }
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                split: false,
+                                useHTML: true,
+                                formatter: function () {
+                                    const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">'
+                                        + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + this.point.y + '百萬元' + '</div>';
+                                    return tooltip;
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            series: [{
+                                data: mapData,
+                                color: '#A4844E',
+                                opacity: 0.9
+                            }]
+                        });
+                        $('[data-chart="scale"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="scale"]').find('.c-chartBox').removeClass('u-hidden');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+
+                }
+            }
+            initRate();
+        });
+        //#endregion 規模變動 – 規模變動圖
+
+    })(jQuery, window, document);
+</script>

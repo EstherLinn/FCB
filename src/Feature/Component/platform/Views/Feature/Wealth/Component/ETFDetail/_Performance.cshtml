@@ -1,0 +1,1537 @@
+﻿@model Feature.Wealth.Component.Models.ETF.Detail.EtfDetailModel
+@using Feature.Wealth.Component.Models.ETF.Detail;
+@using Foundation.Wealth.Extensions;
+@using Foundation.Wealth.Helper;
+@{
+    var etfData = Model.BasicEtf as EtfDetail;
+    var ETFReturnChartDataApiUrl = ClientRoute.GenerateUrl(this, "EtfDetail", "GetReturnChartData");
+    var ETFReturnReferenceIndexChartDataApiUrl = ClientRoute.GenerateUrl(this, "EtfDetail", "GetReturnReferenceIndexChartData");
+}
+
+@*績效/淨值*@
+<div class="c-tab__panel" data-tab-panel-id="tab-2">
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">市價</div>
+        <div class="c-section__content">
+            <div class="c-borderBox">
+                <div class="l-divideList l-divideList--col4@lt-only l-divideList--col2@mb-only">
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>價格</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@(etfData.MarketPrice.FormatDecimalNumber(4))(@etfData.QuoteCurrency)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>漲跌/漲跌幅</span></div>
+                            <div class="c-numerical__content u-nowrap">
+
+                                <span class="@etfData.MarketPriceChangeStyle">@etfData.MarketPriceChange</span> / <span class="@etfData.MarketPriceChangePercentageStyle">@etfData.MarketPriceChangePercentage</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>最高價格(年)</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@etfData.HighestMarketPrice</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>最低價格(年)</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@etfData.LowestMarketPrice</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>自今年以來績效</span></div>
+                            <div class="c-numerical__content">
+
+                                <span class="@etfData.YeartoDateReturnMarketPriceOriginalCurrencyStyle">@etfData.YeartoDateReturnMarketPriceOriginalCurrency</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>年化標準差</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@etfData.AnnualizedStandardDeviationMarketPriceRisk</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>Sharpe</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@etfData.SharpeRatioMarketPriceRisk</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>Beta</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@etfData.BetaMarketPriceRisk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="l-dataNotes"><span class="t-note">資料日期：@etfData.NetAssetValueDate</span></div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">淨值</div>
+        <div class="c-section__content">
+            <div class="c-borderBox">
+                <div class="l-divideList l-divideList--col4@lt-only l-divideList--col2@mb-only">
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>價格</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@(etfData.NetAssetValue.FormatDecimalNumber(4))(@etfData.QuoteCurrency)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>漲跌/漲跌幅</span></div>
+                            <div class="c-numerical__content u-nowrap">
+
+                                <span class="@etfData.NetAssetValueChangeStyle">@etfData.NetAssetValueChange</span> / <span class="@etfData.NetAssetValueChangePercentageStyle">@etfData.NetAssetValueChangePercentage</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>最高價格(年)</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@etfData.HighestNetAssetValue</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>最低價格(年)</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@etfData.LowestNetAssestValue</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>自今年以來績效</span></div>
+                            <div class="c-numerical__content">
+
+                                <span class="@etfData.YeartoDateReturnNetValueOriginalCurrencyStyle">@etfData.YeartoDateReturnNetValueOriginalCurrency</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>年化標準差</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@etfData.AnnualizedStandardDeviationNetValueRisk</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>Sharpe</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@etfData.SharpeNetValueRisk</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>Beta</span></div>
+                            <div class="c-numerical__content">
+
+                                <span>@etfData.BetaNetValueRisk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="l-dataNotes"><span class="t-note">資料日期：@etfData.NetAssetValueDate</span></div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">市價/淨值走勢</div>
+        <div class="c-section__content">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="o-capsulebox">
+                        <label class="o-capsulebox__item">
+                            <input type="radio" name="marketCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="marketCurrency">
+                            <span class="o-capsulebox__text">原幣</span>
+                        </label>
+                        <label class="o-capsulebox__item">
+                            <input type="radio" name="marketCurrency" value="twn" class="o-capsulebox__input" data-trend-filter="marketCurrency">
+                            <span class="o-capsulebox__text">台幣</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="l-flex__item" data-chart="marketTrend">
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                        </div>
+                        <div class="c-empty__desc">沒有資料</div>
+                    </div>
+                    <div class="c-chartBox">
+                        <div class="c-chartBox__filter">
+                            <div class="l-flex u-flex-gap-md u-flex-top u-flex-col@lt">
+                                <div class="l-flex__item">
+                                    <div class="l-pickGroup">
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="marketDateRange" value="sinceYear" data-trend-filter="marketDateRange" checked>
+                                                <div class="o-btnRadio__text"><span>今年以來</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="marketDateRange" value="3m" data-trend-filter="marketDateRange">
+                                                <div class="o-btnRadio__text"><span>3個月</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="marketDateRange" value="6m" data-trend-filter="marketDateRange">
+                                                <div class="o-btnRadio__text"><span>6個月</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="marketDateRange" value="12m" data-trend-filter="marketDateRange">
+                                                <div class="o-btnRadio__text"><span>1年</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="marketDateRange" value="24m" data-trend-filter="marketDateRange">
+                                                <div class="o-btnRadio__text"><span>2年</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="marketDateRange" value="36m" data-trend-filter="marketDateRange">
+                                                <div class="o-btnRadio__text"><span>3年</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="marketDateRange" value="60m" data-trend-filter="marketDateRange">
+                                                <div class="o-btnRadio__text"><span>5年</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="marketDateRange" value="establishment" data-trend-filter="marketDateRange">
+                                                <div class="o-btnRadio__text"><span>成立至今</span></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-flex u-flex-gap-min u-flex-top u-flex-left u-flex-right@dt-only">
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <div class="l-form">
+                                                <div class="l-form__item">
+                                                    <div class="o-calendarBox o-calendarBox--filter">
+                                                        <!-- data-start-date: 請填寫成立日期 -->
+                                                        <!-- data-start-date: 若無限制日期，請移除此Attribute -->
+                                                        <!-- data-end-date: 若無限制日期，請移除此Attribute -->
+                                                        <input type="text" class="o-calendarBox__input" data-trend-filter="marketInputStart" data-calendar="true" data-start-date="@etfData.EstablishmentDate" data-end-date="0d" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="l-form__error">
+                                                    <span class="o-errorText"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="l-flex__item l-flex__item--auto">-</div>
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <div class="l-form">
+                                                <div class="l-form__item">
+                                                    <div class="o-calendarBox o-calendarBox--filter">
+                                                        <!-- data-start-date: 請填寫成立日期 -->
+                                                        <!-- data-start-date: 若無限制日期，請移除此Attribute -->
+                                                        <!-- data-end-date: 若無限制日期，請移除此Attribute -->
+                                                        <input type="text" class="o-calendarBox__input" data-trend-filter="marketInputEnd" data-calendar="true" data-start-date="@etfData.EstablishmentDate" data-end-date="0d" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="l-form__error">
+                                                    <span class="o-errorText"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <button type="submit" class="o-searchBtn" data-trend-filter="marketSubmit"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-chartBox__chart">
+                            <div id="marketTrendChart"></div>
+                        </div>
+                    </div>
+                    @*<div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="market">2023/09/13</span></div>*@
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">近30日市價/淨值</div>
+        <div class="c-section__content">
+            @if (Model.ETFThiryDaysNav != null && Model.ETFThiryDaysNav.Any())
+            {
+                int count = Model.ETFThiryDaysNav.Count; // 29
+                int index = 0, groupSize = 10, rowLimit = 5;
+
+                <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{"spaceBetween":20, "autoplay": false, "navigation":{ "enabled":true }, "breakpoints": {"1200": { "navigation":{ "enabled":false }}}}'>
+                    <div class="swiper-wrapper c-swiper__wrapper">
+                        @for (int i = 0 ; i < count ; i += groupSize)
+                        {
+                            <div class="swiper-slide c-swiper__slide">
+                                <!-- 左右表格 -->
+                                <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                    @for (int y = 0 ; y < groupSize && index < count ; y += rowLimit)
+                                    {
+                                        string hidden = string.Empty;
+
+                                        if (index != 0 && (index + 1) % groupSize != 0)
+                                        {
+                                            hidden = "u-hidden@lt";
+                                        }
+                                        <div class="l-flex__item">
+                                            <div class="l-table">
+                                                <table class="c-table u-center">
+                                                    <colgroup>
+                                                        <col style="width: 33.3%;">
+                                                        <col style="width: 33.3%;">
+                                                        <col style="width: 33.3%;">
+                                                        <col style="width: 33.3%;">
+                                                    </colgroup>
+                                                    <thead class="@hidden">
+                                                        <tr>
+                                                            <th>
+                                                                <div class="c-table__title">
+                                                                    <span>日期</span>
+                                                                </div>
+                                                            </th>
+                                                            <th>
+                                                                <div class="c-table__title">
+                                                                    <span>市價</span>
+                                                                </div>
+                                                            </th>
+                                                            <th>
+                                                                <div class="c-table__title">
+                                                                    <span>淨值</span>
+                                                                </div>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @for (int z = 0 ; z < rowLimit ; ++z)
+                                                        {
+                                                            index = i + y + z;
+                                                            if (index >= count)
+                                                            {
+                                                                break;
+                                                            }
+                                                            var item = Model.ETFThiryDaysNav[index];
+
+                                                            <tr>
+                                                                <td>
+                                                                    @DateTimeExtensions.FormatDate(item.NetAssetValueDate)
+                                                                </td>
+                                                                <td>
+                                                                    @item.MarketPrice.FormatDecimalNumber(4)
+                                                                </td>
+                                                                <td>
+                                                                    @item.NetAssetValue.FormatDecimalNumber(4)
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="swiper-button-next c-swiper__next"></div>
+                    <div class="swiper-button-prev c-swiper__prev"></div>
+                    <div class="swiper-pagination c-swiper__pagination"></div>
+                </div>
+            }
+            else
+            {
+                <div class="c-empty">
+                    <div class="c-empty__img">
+                        <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                    </div>
+                    <div class="c-empty__desc">沒有資料</div>
+                </div>
+            }
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">ETF績效圖</div>
+        <div class="c-section__content">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="o-capsulebox">
+                        <label class="o-capsulebox__item">
+                            <input type="radio" name="etfCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="etfCurrency">
+                            <span class="o-capsulebox__text">原幣</span>
+                        </label>
+                        <label class="o-capsulebox__item">
+                            <input type="radio" name="etfCurrency" value="twn" class="o-capsulebox__input" data-trend-filter="etfCurrency">
+                            <span class="o-capsulebox__text">台幣</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="l-flex__item" data-chart="etfTrend">
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                        </div>
+                        <div class="c-empty__desc">沒有資料</div>
+                    </div>
+                    <div class="c-chartBox">
+                        <div class="c-chartBox__filter">
+                            <div class="l-flex u-flex-gap-md u-flex-top u-flex-col@lt">
+                                <div class="l-flex__item">
+                                    <div class="l-pickGroup">
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="etfDateRange" value="sinceYear" data-trend-filter="etfDateRange" checked>
+                                                <div class="o-btnRadio__text"><span>今年以來</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="etfDateRange" value="3m" data-trend-filter="etfDateRange">
+                                                <div class="o-btnRadio__text"><span>3個月</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="etfDateRange" value="6m" data-trend-filter="etfDateRange">
+                                                <div class="o-btnRadio__text"><span>6個月</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="etfDateRange" value="12m" data-trend-filter="etfDateRange">
+                                                <div class="o-btnRadio__text"><span>1年</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="etfDateRange" value="24m" data-trend-filter="etfDateRange">
+                                                <div class="o-btnRadio__text"><span>2年</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="etfDateRange" value="36m" data-trend-filter="etfDateRange">
+                                                <div class="o-btnRadio__text"><span>3年</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="etfDateRange" value="60m" data-trend-filter="etfDateRange">
+                                                <div class="o-btnRadio__text"><span>5年</span></div>
+                                            </label>
+                                        </div>
+                                        <div class="l-pickGroup__item">
+                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                <input class="o-btnRadio__input" type="radio" name="etfDateRange" value="establishment" data-trend-filter="etfDateRange">
+                                                <div class="o-btnRadio__text"><span>成立至今</span></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-flex u-flex-gap-min u-flex-top u-flex-left u-flex-right@dt-only">
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <div class="l-form">
+                                                <div class="l-form__item">
+                                                    <div class="o-calendarBox o-calendarBox--filter">
+                                                        <!-- data-start-date: 請填寫成立日期 -->
+                                                        <!-- data-start-date: 若無限制日期，請移除此Attribute -->
+                                                        <!-- data-end-date: 若無限制日期，請移除此Attribute -->
+                                                        <input type="text" class="o-calendarBox__input" data-trend-filter="etfInputStart" data-calendar="true" data-start-date="@etfData.EstablishmentDate" data-end-date="0d" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="l-form__error">
+                                                    <span class="o-errorText"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="l-flex__item l-flex__item--auto">-</div>
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <div class="l-form">
+                                                <div class="l-form__item">
+                                                    <div class="o-calendarBox o-calendarBox--filter">
+                                                        <!-- data-start-date: 請填寫成立日期 -->
+                                                        <!-- data-start-date: 若無限制日期，請移除此Attribute -->
+                                                        <!-- data-end-date: 若無限制日期，請移除此Attribute -->
+                                                        <input type="text" class="o-calendarBox__input" data-trend-filter="etfInputEnd" data-calendar="true" data-start-date="@etfData.EstablishmentDate" data-end-date="0d" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="l-form__error">
+                                                    <span class="o-errorText"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <button type="submit" class="o-searchBtn" data-trend-filter="etfSubmit"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-chartBox__chart">
+                            <div id="etfTrendChart"></div>
+                        </div>
+                    </div>
+                    @*<div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="etf">2023/09/13</span></div>*@
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">累積報酬率</div>
+        <div class="c-section__content">
+            <div class="c-borderBox">
+                <div class="l-divideList l-divideList--col5@lt-only l-divideList--col2@mb-only">
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span class="t-bold">一週</span></div>
+                            <div class="c-numerical__content"><span class="@etfData.WeeklyReturnMarketPriceOriginalCurrencyStyle">@etfData.WeeklyReturnMarketPriceOriginalCurrency</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span class="t-bold">一個月</span></div>
+                            <div class="c-numerical__content"><span class="@etfData.MonthlyReturnMarketPriceOriginalCurrencyStyle">@etfData.MonthlyReturnMarketPriceOriginalCurrency</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span class="t-bold">本月</span></div>
+                            <div class="c-numerical__content"><span class="@etfData.MonthtoDateMarketPriceOriginalCurrencyStyle">@etfData.MonthtoDateMarketPriceOriginalCurrency</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span class="t-bold">年初至今</span></div>
+                            <div class="c-numerical__content"><span class="@etfData.YeartoDateReturnMarketPriceOriginalCurrencyStyle">@etfData.YeartoDateReturnMarketPriceOriginalCurrency</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span class="t-bold">三個月</span></div>
+                            <div class="c-numerical__content"><span class="@etfData.ThreeMonthReturnMarketPriceOriginalCurrencyStyle">@etfData.ThreeMonthReturnMarketPriceOriginalCurrency</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span class="t-bold">六個月</span></div>
+                            <div class="c-numerical__content"><span class="@etfData.SixMonthReturnMarketPriceOriginalCurrencyStyle">@etfData.SixMonthReturnMarketPriceOriginalCurrency</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span class="t-bold">一年</span></div>
+                            <div class="c-numerical__content"><span class="@etfData.OneYearReturnMarketPriceOriginalCurrencyStyle">@etfData.OneYearReturnMarketPriceOriginalCurrency</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span class="t-bold">二年</span></div>
+                            <div class="c-numerical__content"><span class="@etfData.TwoYearReturnMarketPriceOriginalCurrencyStyle">@etfData.TwoYearReturnMarketPriceOriginalCurrency</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span class="t-bold">三年</span></div>
+                            <div class="c-numerical__content"><span class="@etfData.ThreeYearReturnMarketPriceOriginalCurrencyStyle">@etfData.ThreeYearReturnMarketPriceOriginalCurrency</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span class="t-bold">五年</span></div>
+                            <div class="c-numerical__content"><span class="@etfData.FiveYearReturnMarketPriceOriginalCurrencyStyle">@etfData.FiveYearReturnMarketPriceOriginalCurrency</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">基準指數-道瓊指數</div>
+        <div class="c-section__content">
+
+            <div class="l-flex u-flex-col u-flex-gap-md">
+                <div class="l-flex__item">
+                    <div class="l-dataNotes u-left"><span class="t-tip">近5年績效</span></div>
+                    @if (Model.ETFNetWorthAnnunalReturn != null && Model.ETFNetWorthAnnunalReturn.Any())
+                    {
+                        <div class="l-table">
+                            <table class="c-table u-center u-nowrap" data-fixed-columns="true">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span> </span>
+                                            </div>
+                                        </th>
+                                        @foreach (var item in Model.ETFNetWorthAnnunalReturn)
+                                        {
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>@item.Year</span>
+                                                </div>
+                                            </th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>淨值年績效</td>
+                                        @foreach (var item in Model.ETFNetWorthAnnunalReturn)
+                                        {
+                                            <td><span class="@item.NetValueAnnualReturnOriginalCurrencyStyle">@item.NetValueAnnualReturnOriginalCurrency</span></td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>參考指數漲跌幅</td>
+                                        @foreach (var item in Model.ETFNetWorthAnnunalReturn)
+                                        {
+                                            <td><span class="@item.ReferenceIndexAnnualReturnStyle">@item.ReferenceIndexAnnualReturn</span></td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>差額</td>
+                                        @foreach (var item in Model.ETFNetWorthAnnunalReturn)
+                                        {
+                                            <td><span>@item.Difference</span></td>
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="c-empty">
+                            <div class="c-empty__img">
+                                <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                            </div>
+                            <div class="c-empty__desc">沒有資料</div>
+                        </div>
+                    }
+                </div>
+                <div class="l-flex__item">
+                    <div class="l-dataNotes u-left"><span class="t-tip">近一年各月報酬率</span></div>
+                    @if (Model.ETFNetWorthMonthlyReturn != null && Model.ETFNetWorthMonthlyReturn.Any())
+                    {
+                        <div class="l-table">
+                            <table class="c-table u-center u-nowrap" data-fixed-columns="true">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span> </span>
+                                            </div>
+                                        </th>
+                                        @foreach (var item in Model.ETFNetWorthMonthlyReturn)
+                                        {
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>@item.Month</span>
+                                                </div>
+                                            </th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>淨值月績效</td>
+                                        @foreach (var item in Model.ETFNetWorthMonthlyReturn)
+                                        {
+                                            <td><span class="@item.NetValueMonthlyReturnOriginalCurrencyStyle">@item.NetValueMonthlyReturnOriginalCurrency</span></td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>參考指數漲跌幅</td>
+                                        @foreach (var item in Model.ETFNetWorthMonthlyReturn)
+                                        {
+                                            <td><span class="@item.ReferenceIndexMonthlyReturnStyle">@item.ReferenceIndexMonthlyReturn</span></td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>差額</td>
+                                        @foreach (var item in Model.ETFNetWorthMonthlyReturn)
+                                        {
+                                            <td><span>@item.Difference</span></td>
+
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="c-empty">
+                            <div class="c-empty__img">
+                                <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                            </div>
+                            <div class="c-empty__desc">沒有資料</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+
+        function required($element) {
+            const requiredMsg = '欄位必填';
+            let $parents = $element.closest('.l-form');
+            let $msg = $parents.find('.o-errorText');
+            let isEmpty = $element.val().trim() == '';
+            $parents.toggleClass('is-error', isEmpty);
+            $msg.text(isEmpty ? requiredMsg : '');
+            return !isEmpty;
+        }
+
+        function dateRange($inputStart, $inputEnd) {
+            const dateRangeMsg = '起訖日期區間錯誤';
+            let startDate = new Date($inputStart.val());
+            let endDate = new Date($inputEnd.val());
+            let $startParents = $inputStart.closest('.l-form');
+            let $endParents = $inputEnd.closest('.l-form');
+            if (endDate < startDate) {
+                $startParents.addClass('is-error');
+                $endParents.addClass('is-error');
+                $startParents.find('.o-errorText').text(dateRangeMsg);
+                return false;
+            } else {
+                $startParents.removeClass('is-error');
+                $endParents.removeClass('is-error');
+                $startParents.find('.o-errorText').text('');
+                return true;
+            }
+        }
+
+        //#region 績效/淨值 – 市價/淨值走勢
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            $('[data-trend-filter="marketCurrency"]').on('change', function () {
+                getParams();
+            });
+            $('[data-trend-filter="marketDateRange"]').on('change', function () {
+                $('[data-trend-filter="marketInputStart"], [data-trend-filter="marketInputEnd"]').val('');
+                $('[data-chart="marketTrend"] .l-form').removeClass('is-error');
+                getParams();
+            });
+            $('[data-trend-filter="marketSubmit"]').on('click', function (e) {
+                let $inputStart = $('[data-trend-filter="marketInputStart"]');
+                let $inputEnd = $('[data-trend-filter="marketInputEnd"]');
+                if (required($inputStart) && required($inputEnd) && dateRange($inputStart, $inputEnd)) {
+                    $('[data-trend-filter="marketDateRange"]').prop('checked', false);
+                    getParams();
+                }
+            });
+            $('[data-trend-filter="marketCurrency"]:checked').trigger('change');
+
+            var chart;
+
+            function getParams() {
+                const obj = {
+                    currency: $('[data-trend-filter="marketCurrency"]:checked').val(),
+                    range: $('[data-trend-filter="marketDateRange"]:checked').val(),
+                    startDate: $('[data-trend-filter="marketInputStart"]').val(),
+                    endDate: $('[data-trend-filter="marketInputEnd"]').val()
+                };
+
+                let today = new Date();
+
+                function calDateRange(month) {
+                    let set = new Date().setMonth(new Date().getMonth() - month);
+                    let setDate = new Date(set);
+                    return setDate.getFullYear() + '-' + ((setDate.getMonth() + 1) < 10 ? '0' + (setDate.getMonth() + 1) : (setDate.getMonth() + 1)) + '-' + setDate.getDate();
+                }
+
+                if (!obj.startDate && !obj.endDate) {
+                    switch (obj.range) {
+                        case 'sinceYear':
+                            obj.startDate = today.getFullYear() + '-' + '01-01';
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '3m':
+                            obj.startDate = calDateRange(3)
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '6m':
+                            obj.startDate = calDateRange(6)
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '12m':
+                            obj.startDate = calDateRange(12);
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '24m':
+                            obj.startDate = calDateRange(24);
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '36m':
+                            obj.startDate = calDateRange(36);
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '60m':
+                            obj.startDate = calDateRange(60);
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case 'establishment':
+                            obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                    }
+
+                    $('[data-trend-filter="marketInputStart"]').val(obj.startDate.replaceAll('-', '/'));
+                    $('[data-trend-filter="marketInputEnd"]').val(obj.endDate.replaceAll('-', '/'));
+                    $('[data-trend-filter="marketInputStart"]').datepicker('setDate', obj.startDate.replaceAll('-', '/'));
+                    $('[data-trend-filter="marketInputEnd"]').datepicker('setDate', obj.endDate.replaceAll('-', '/'));
+                } else {
+                    obj.startDate = obj.startDate.replaceAll('/', '-');
+                    obj.endDate = obj.endDate.replaceAll('/', '-');
+                }
+
+                if (chart) {
+                    chart.showLoading();
+                }
+
+                let text = '';
+                switch (obj.trend) {
+                    case 'ori':
+                        text = '原幣';
+                        break;
+                    case 'twn':
+                        text = '台幣';
+                        break;
+                }
+
+                initTrendChart(obj, text);
+            }
+
+            function roundToTwo(num) {
+                return +(Math.round(num + 'e+2') + 'e-2');
+            }
+
+            async function initTrendChart(obj, text) {
+                try {
+                    /*
+                     * API參數
+                     * id: ETF代號：請替換成實際ETF的id
+                     * range: 區間
+                     * startDate: 自訂開始日期
+                     * endDate: 自訂結束日期
+                     */
+                    const params = {
+                        etfId: etfId,
+                        ...obj
+                    };
+
+                    // 呼叫 API ETF詳細頁 – 績效/淨值 - 市價/淨值走勢
+                    //let data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/navmarketpricetrend', params);
+                    // 呼叫 mock data json
+                    // const data = await apiRequestGet('../themes/chartdatas/market-pricet-data.json', params);
+
+                    var query = apiRequest('@ETFReturnChartDataApiUrl', params);
+                    query.then((data) => {
+                        if (Object.keys(data).length != 0
+                            && data.respMarketPrice
+                            && data.respNetAssetValue) {
+                            const mpDate = data.respMarketPrice.resultSet.result[0].v1.split(',');
+                            const mp = data.respMarketPrice.resultSet.result[0].v2.split(',');
+                            let mapMarketPriceData = mpDate.map((item, index) => {
+                                return {
+                                    name: item,
+                                    x: new Date(item).getTime(),
+                                    y: roundToTwo(mp[index])
+                                };
+                            });
+
+                            const navDate = data.respNetAssetValue.resultSet.result[0].v1.split(',');
+                            const nav = data.respNetAssetValue.resultSet.result[0].v2.split(',');
+                            let mapNetWorthData = navDate.map((item, index) => {
+                                return {
+                                    name: item, //切版無
+                                    x: new Date(item).getTime(),
+                                    y: roundToTwo(nav[index])
+                                };
+                            });
+
+                            mapMarketPriceData.reverse();
+                            mapNetWorthData.reverse();
+
+                            let series = [{
+                                name: '市價',
+                                data: mapMarketPriceData,
+                                legendSymbol: 'rectangle',
+                                turboThreshold: 0,
+                            }, {
+                                name: '淨值',
+                                data: mapNetWorthData,
+                                legendSymbol: 'rectangle',
+                                turboThreshold: 0,
+                            }];
+
+                            //const updateDate = data.body.updateDate.replaceAll('-', '/');
+                            // 資料日期
+                            //$('[data-update-date="market"]').text(updateDate);
+
+                            chart = Highcharts.stockChart('marketTrendChart', {
+                                chart: {
+                                    zooming: {
+                                        mouseWheel: {
+                                            enabled: false
+                                        }
+                                    },
+                                    height: 400,
+                                    events: {
+                                        // 抓出淨值最高最低的資料
+                                        load: function () {
+                                            var chart = this,
+                                                allPoints = chart.series[1].points,
+                                                maxValue,
+                                                maxPoint,
+                                                minValue,
+                                                minPoint;
+                                            allPoints.filter(function (point) {
+                                                if (!maxValue || maxValue < point.y) {
+                                                    maxValue = point.y;
+                                                    maxPoint = point;
+                                                }
+                                                if (!minValue || minValue > point.y) {
+                                                    minValue = point.y;
+                                                    minPoint = point;
+                                                }
+                                            });
+                                            var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
+                                            var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+                                            setTimeout(function () {
+                                                maxPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: maxPointMoreThanHalf ? -45 : 45,
+                                                        y: -5,
+                                                        formatter: function () {
+                                                            var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
+                                                    }
+                                                });
+                                            }, 300);
+                                            setTimeout(function () {
+                                                minPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: minPointMoreThanHalf ? -45 : 45,
+                                                        formatter: function () {
+                                                            var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
+                                                    }
+                                                });
+                                            }, 300);
+                                        }
+                                    },
+                                    rendererType: 'webgl'
+                                },
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                scrollbar: {
+                                    enabled: false
+                                },
+                                navigator: {
+                                    enabled: false
+                                },
+                                rangeSelector: {
+                                    enabled: false
+                                },
+                                legend: {
+                                    enabled: true,
+                                    align: 'left',
+                                    floating: false,
+                                    y: 20,
+                                    itemStyle: {
+                                        fontSize: '1em',
+                                        color: '#222',
+                                        cursor: 'default'
+                                    },
+                                    itemHoverStyle: {
+                                        color: '#222'
+                                    },
+                                    symbolHeight: 12,
+                                    symbolWidth: 12
+                                },
+                                plotOptions: {
+                                    series: {
+                                        dataGrouping: {
+                                            enabled: false
+                                        },
+                                        states: {
+                                            hover: {
+                                                enabled: true,
+                                                lineWidth: 2,
+                                                halo: {
+                                                    size: 8
+                                                }
+                                            }
+                                        },
+                                        events: {
+                                            legendItemClick: function () {
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    split: false,
+                                    shared: true,
+                                    outside: true,
+                                    useHTML: true,
+                                    formatter: function () {
+                                        let tooltipText = '';
+                                        this.points.forEach(point => {
+                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">' + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + point.series.name + ': ' + point.y + '美元' + '</div>' + '</div>';
+                                        });
+                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.x) + '</div>' + tooltipText + '</div>';
+                                    },
+                                    shadow: {
+                                        color: 'rgba(0, 0, 0, 0.1)'
+                                    }
+                                },
+                                xAxis: {
+                                    type: 'datetime',
+                                    tickPosition: 'inside',
+                                    tickWidth: 0.5,
+                                    tickLength: 7,
+                                    labels: {
+                                        formatter: function () {
+                                            const format = {
+                                                day: '%Y/%m/%d',
+                                                week: '%Y/%m',
+                                                month: '%Y/%m',
+                                                year: '%Y/%m'
+                                            }[this.tickPositionInfo.unitName];
+                                            return Highcharts.dateFormat(format, this.value);
+                                        },
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    },
+                                    crosshair: {
+                                        width: 1,
+                                        color: '#c3c3c3'
+                                    },
+                                    lineColor: '#ebebeb',
+                                    tickColor: '#ebebeb'
+                                },
+                                yAxis: {
+                                    showLastLabel: true,
+                                    opposite: false,
+                                    labels: {
+                                        y: 4,
+                                        formatter: function (value) {
+                                            return value.value;
+                                        },
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    },
+                                    plotLines: [{
+                                        color: '#c3c3c3'
+                                    }]
+                                },
+                                series: series
+                            });
+                            $('[data-chart="marketTrend"]').find('.c-empty').addClass('u-hidden');
+                            $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                        } else {
+                            $('[data-chart="marketTrend"]').find('.c-empty').removeClass('u-hidden');
+                            $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                        }
+                    }).catch((err) => {
+                        $('[data-chart="marketTrend"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                        console.log(err);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+
+        });
+        //#endregion 績效/淨值 – 市價/淨值走勢
+
+        //#region 績效/淨值 – ETF績效圖
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            $('[data-trend-filter="etfCurrency"]').on('change', function () {
+                getParams();
+            });
+            $('[data-trend-filter="etfDateRange"]').on('change', function () {
+                $('[data-trend-filter="etfInputStart"], [data-trend-filter="etfInputEnd"]').val('');
+                $('[data-chart="etfTrend"] .l-form').removeClass('is-error');
+                getParams();
+            });
+            $('[data-trend-filter="etfSubmit"]').on('click', function (e) {
+                let $inputStart = $('[data-trend-filter="etfInputStart"]');
+                let $inputEnd = $('[data-trend-filter="etfInputEnd"]');
+                if (required($inputStart) && required($inputEnd) && dateRange($inputStart, $inputEnd)) {
+                    $('[data-trend-filter="etfDateRange"]').prop('checked', false);
+                    getParams();
+                }
+            });
+
+            $('[data-trend-filter="etfCurrency"]:checked').trigger('change');
+
+            var chart;
+
+            function getParams() {
+                const obj = {
+                    currency: $('[data-trend-filter="etfCurrency"]:checked').val(),
+                    range: $('[data-trend-filter="etfDateRange"]:checked').val(),
+                    startDate: $('[data-trend-filter="etfInputStart"]').val(),
+                    endDate: $('[data-trend-filter="etfInputEnd"]').val()
+                };
+
+                let today = new Date();
+
+                function calDateRange(month) {
+                    let set = new Date().setMonth(new Date().getMonth() - month);
+                    let setDate = new Date(set);
+                    return setDate.getFullYear() + '-' + ((setDate.getMonth() + 1) < 10 ? '0' + (setDate.getMonth() + 1) : (setDate.getMonth() + 1)) + '-' + setDate.getDate();
+                }
+
+                if (!obj.startDate && !obj.endDate) {
+                    switch (obj.range) {
+                        case 'sinceYear':
+                            obj.startDate = today.getFullYear() + '-' + '01-01';
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '3m':
+                            obj.startDate = calDateRange(3)
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '6m':
+                            obj.startDate = calDateRange(6)
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '12m':
+                            obj.startDate = calDateRange(12);
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '24m':
+                            obj.startDate = calDateRange(24);
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '36m':
+                            obj.startDate = calDateRange(36);
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case '60m':
+                            obj.startDate = calDateRange(60);
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                        case 'establishment':
+                            obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                            obj.endDate = today.toISOString().split('T')[0];
+                            break;
+                    }
+
+                    $('[data-trend-filter="etfInputStart"]').val(obj.startDate.replaceAll('-', '/'));
+                    $('[data-trend-filter="etfInputEnd"]').val(obj.endDate.replaceAll('-', '/'));
+                    $('[data-trend-filter="etfInputStart"]').datepicker('setDate', obj.startDate.replaceAll('-', '/'));
+                    $('[data-trend-filter="etfInputEnd"]').datepicker('setDate', obj.endDate.replaceAll('-', '/'));
+                } else {
+                    obj.startDate = obj.startDate.replaceAll('/', '-');
+                    obj.endDate = obj.endDate.replaceAll('/', '-');
+                }
+
+                if (chart) {
+                    chart.showLoading();
+                }
+
+                let text = '';
+                switch (obj.trend) {
+                    case 'ori':
+                        text = '原幣';
+                        break;
+                    case 'twn':
+                        text = '台幣';
+                        break;
+                }
+
+                initETFTrendChart(obj, text);
+            }
+
+            function roundToTwo(num) {
+                return +(Math.round(num + 'e+2') + 'e-2');
+            }
+
+            function compare(a, b) {
+                if (a.name < b.name) {
+                    return -1;
+                }
+                if (a.name > b.name) {
+                    return 1;
+                }
+                return 0;
+            }
+
+            async function initETFTrendChart(obj, text) {
+                try {
+                    /*
+                     * API參數
+                     * id: ETF代號：請替換成實際ETF的id
+                     * range: 區間
+                     * startDate: 自訂開始日期
+                     * endDate: 自訂結束日期
+                     */
+                    const params = {
+                        etfId: etfId,
+                        ...obj
+                    };
+
+                    // 呼叫 API ETF詳細頁 – 績效/淨值 - 市價/淨值走勢
+                    //let data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/etfperformance', params);
+                    // 呼叫 mock data json
+                    //const data = await apiRequestGet('../themes/chartdatas/etfperformance-data.json', params);
+
+                    var query = apiRequest('@ETFReturnReferenceIndexChartDataApiUrl', params);
+                    query.then((data) => {
+                        if (Object.keys(data).length != 0
+                            && data.respMarketPrice
+                            && data.respNetAssetValue) {
+                            const mpDate = data.respMarketPrice.resultSet.result[0].v1.split(',');
+                            const mp = data.respMarketPrice.resultSet.result[0].v2.split(',');
+                            let mapMarketPriceData = mpDate.map((item, index) => {
+                                return {
+                                    name: item,
+                                    upDown: Number(mp[index]) < 0 ? 'down' : 'up',
+                                    x: new Date(item).getTime(),
+                                    y: roundToTwo(mp[index])
+                                };
+                            });
+
+                            const navDate = data.respNetAssetValue.resultSet.result[0].v1.split(',');
+                            const nav = data.respNetAssetValue.resultSet.result[0].v2.split(',');
+                            let mapNetWorthData = navDate.map((item, index) => {
+                                return {
+                                    name: item,
+                                    upDown: Number(nav[index]) < 0 ? 'down' : 'up',
+                                    x: new Date(item).getTime(),
+                                    y: roundToTwo(nav[index])
+                                };
+                            });
+
+                            let mapGlobalIndexData = data.respGlobalIndex.Item1.map(item => {
+                                return {
+                                    name: item.NetAssetValueDate,
+                                    upDown: item.NetAssetValue < 0 ? 'down' : 'up',
+                                    x: new Date(item.NetAssetValueDate).getTime(),
+                                    y: roundToTwo(item.NetAssetValue)
+                                };
+                            });
+
+                            mapMarketPriceData.reverse();
+                            mapNetWorthData.reverse();
+                            mapGlobalIndexData.sort(compare);
+
+                            let series = [{
+                                name: '市價',
+                                data: mapMarketPriceData,
+                                legendSymbol: 'rectangle',
+                                turboThreshold: 0,
+                            }, {
+                                name: '淨值',
+                                data: mapNetWorthData,
+                                legendSymbol: 'rectangle',
+                                turboThreshold: 0,
+                            }, {
+                                name: data.respGlobalIndex.Item2,
+                                data: mapGlobalIndexData,
+                                legendSymbol: 'rectangle',
+                                turboThreshold: 0,
+                            }];
+
+                            //const updateDate = data.body.updateDate.replaceAll('-', '/');
+                            //// 資料日期
+                            //$('[data-update-date="etf"]').text(updateDate);
+
+                            chart = Highcharts.stockChart('etfTrendChart', {
+                                chart: {
+                                    zooming: {
+                                        mouseWheel: {
+                                            enabled: false
+                                        }
+                                    },
+                                    height: 280,
+                                    events: {
+                                        // 抓出市價最高最低的資料
+                                        load: function () {
+                                            var chart = this,
+                                                allPoints = chart.series[0].points,
+                                                maxValue,
+                                                maxPoint,
+                                                minValue,
+                                                minPoint;
+                                            allPoints.filter(function (point) {
+                                                if (!maxValue || maxValue < point.y) {
+                                                    maxValue = point.y;
+                                                    maxPoint = point;
+                                                }
+                                                if (!minValue || minValue > point.y) {
+                                                    minValue = point.y;
+                                                    minPoint = point;
+                                                }
+                                            });
+                                            var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
+                                            var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+                                            setTimeout(function () {
+                                                maxPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: maxPointMoreThanHalf ? -45 : 45,
+                                                        y: -5,
+                                                        formatter: function () {
+                                                            var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
+                                                    }
+                                                });
+                                            }, 300);
+                                            setTimeout(function () {
+                                                minPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: minPointMoreThanHalf ? -45 : 45,
+                                                        formatter: function () {
+                                                            var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
+                                                    }
+                                                });
+                                            }, 300);
+                                        }
+                                    },
+                                    rendererType: 'webgl'
+                                },
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                scrollbar: {
+                                    enabled: false
+                                },
+                                navigator: {
+                                    enabled: false
+                                },
+                                rangeSelector: {
+                                    enabled: false
+                                },
+                                legend: {
+                                    enabled: true,
+                                    align: 'left',
+                                    floating: false,
+                                    y: 20,
+                                    itemStyle: {
+                                        fontSize: '1em',
+                                        color: '#222',
+                                        cursor: 'default'
+                                    },
+                                    itemHoverStyle: {
+                                        color: '#222'
+                                    },
+                                    symbolHeight: 12,
+                                    symbolWidth: 12
+                                },
+                                plotOptions: {
+                                    series: {
+                                        dataGrouping: {
+                                            enabled: false
+                                        },
+                                        states: {
+                                            hover: {
+                                                enabled: true,
+                                                lineWidth: 2,
+                                                halo: {
+                                                    size: 8
+                                                }
+                                            }
+                                        },
+                                        events: {
+                                            legendItemClick: function () {
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    split: false,
+                                    shared: true,
+                                    outside: true,
+                                    useHTML: true,
+                                    formatter: function () {
+                                        let tooltipText = '';
+                                        this.points.forEach(point => {
+                                            let upDownClass = '';
+                                            if (point.point.upDown === 'up') {
+                                                upDownClass = 'o-rise';
+                                            } else {
+                                                upDownClass = 'o-fall';
+                                            }
+                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">' + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + '<span>' + point.series.name + ': ' + '</span>' + '</div>' + '<span class="' + upDownClass + '">' + Math.abs(point.y) + '%</span>' + '</div>';
+                                        });
+                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.x) + '</div>' + tooltipText + '</div>';
+                                    },
+                                    shadow: {
+                                        color: 'rgba(0, 0, 0, 0.1)'
+                                    }
+                                },
+                                xAxis: {
+                                    type: 'datetime',
+                                    tickPosition: 'inside',
+                                    tickWidth: 0.5,
+                                    tickLength: 7,
+                                    labels: {
+                                        formatter: function () {
+                                            const format = {
+                                                day: '%Y/%m',
+                                                week: '%Y/%m',
+                                                month: '%Y/%m',
+                                                year: '%Y/%m'
+                                            }[this.tickPositionInfo.unitName];
+                                            return Highcharts.dateFormat(format, this.value);
+                                        },
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    },
+                                    crosshair: {
+                                        width: 1,
+                                        color: '#c3c3c3'
+                                    },
+                                    lineColor: '#ebebeb',
+                                    tickColor: '#ebebeb'
+                                },
+                                yAxis: {
+                                    showLastLabel: true,
+                                    opposite: false,
+                                    labels: {
+                                        y: 4,
+                                        formatter: function (value) {
+                                            return value.value;
+                                        },
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    },
+                                    plotLines: [{
+                                        color: '#c3c3c3'
+                                    }]
+                                },
+                                series: series
+                            });
+                            $('[data-chart="etfTrend"]').find('.c-empty').addClass('u-hidden');
+                            $('[data-chart="etfTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                        } else {
+                            $('[data-chart="etfTrend"]').find('.c-empty').removeClass('u-hidden');
+                            $('[data-chart="etfTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                        }
+                    }).catch((err) => {
+                        $('[data-chart="etfTrend"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="etfTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                        console.log(err);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        });
+        //#endregion 績效/淨值 – ETF績效圖
+
+    })(jQuery, window, document);
+</script>

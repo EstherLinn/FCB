@@ -1,0 +1,264 @@
+﻿@model Feature.Wealth.Component.Models.ETF.Detail.EtfDetailModel
+@using Feature.Wealth.Component.Models.ETF.Detail;
+@using Foundation.Wealth.Extensions;
+@{
+
+    var etfData = Model.BasicEtf as EtfDetail;
+    if (etfData == null)
+    {
+        return;
+    }
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__toolbar">
+            <div class="l-flex">
+                <div class="l-flex__item u-right u-hidden@lt">
+                    <a href="javascript:window.print()" class="o-prefixLink o-prefixLink--printer">列印</a>
+                </div>
+            </div>
+        </div>
+        <div class="l-mainstage__content">
+            <div class="l-pageHeader">
+                <div class="l-pageHeader__title">
+                    <div class="c-pageHeader">
+                        <div class="c-pageHeader__main">
+                            <h1 class="c-pageHeader__title">@etfData.ProductCode @etfData.ETFName</h1>
+                            @*
+                                <!-- 如果沒有tag，不要放 div.c-pageHeader__tags 區塊 -->
+                                <div class="c-pageHeader__tags">
+                                    <ul class="l-tag">
+                                        <li class="l-tag__item">
+                                            <a href="#" class="o-tag">百元ETF</a>
+                                        </li>
+                                    </ul>
+                                </div>*@
+                        </div>
+                        <div class="c-pageHeader__subContent">
+                            <h2 class="c-pageHeader__subTitle">@etfData.ETFEnglishName</h2>
+                        </div>
+                        <div class="c-pageHeader__views">
+                            <div class="o-views o-views--bk">@Model.VisitCount</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-pageHeader__content">
+                    <div class="l-pageHeader__info">
+                        <div class="l-detailInfo">
+                            <div class="l-detailInfo__major">
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical">
+                                        <div class="c-numerical__title u-left@dt-only">
+                                            <span>市價</span>
+                                        </div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only">
+                                            <span>@etfData.MarketPrice.FormatDecimalNumber()</span>
+                                            <span class="t-unit">@etfData.QuoteCurrency</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical">
+                                        <div class="c-numerical__title u-left@dt-only">
+                                            <span>漲跌 / 漲跌幅</span>
+                                        </div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only">
+                                            <span class="@etfData.NetAssetValueChangePercentageStyle">@(etfData.NetAssetValueChange) / @(etfData.NetAssetValueChangePercentage)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="l-detailInfo__lower">
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical c-numerical--horiz@lt">
+                                        <div class="c-numerical__title u-left@dt-only">
+                                            <span>日期</span>
+                                        </div>
+                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only">
+                                            <span>@etfData.NetAssetValueDate</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical c-numerical--horiz@lt">
+                                        <div class="c-numerical__title u-left@dt-only">
+                                            <span>風險屬性</span>
+                                        </div>
+                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only">
+                                            <span>
+                                                @{
+                                                    var risk = string.Empty;
+                                                    switch (etfData.RiskLevel)
+                                                    {
+                                                        case "RR1":
+                                                            risk = "低度屬性";
+                                                            break;
+                                                        case "RR2":
+                                                            risk = "中低度屬性";
+                                                            break;
+                                                        case "RR3":
+                                                            risk = "中度屬性";
+                                                            break;
+                                                        case "RR4":
+                                                            risk = "中高度屬性";
+                                                            break;
+                                                        case "RR5":
+                                                            risk = "高度屬性";
+                                                            break;
+                                                    }
+                                                    risk = etfData.RiskLevel + " " + risk;
+                                                    @risk
+                                                }
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-pageHeader__action">
+                        <ul class="l-pageWallet">
+                            <li class="l-pageWallet__item">
+                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+                                <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-msg="加入關注|取消關注" data-ia="false"></a>
+                            </li>
+                            <li class="l-pageWallet__item">
+                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+                                <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-msg="加入比較|取消比較" data-ia="false"></a>
+                            </li>
+                            @if (etfData.CanOnlineSubscription)
+                            {
+                                <li class="l-pageWallet__btn">
+                                    <a href="#popupPurchase" class="o-fixedBtn" data-popup="true">申購</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="l-wrap">
+    <div class="c-tab c-tab--wide" data-tab="true">
+
+        <div class="c-tab__header">
+            <ul class="c-tab__navs">
+                <!-- .is-active: 作用中的項目 -->
+                <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                <li><a href="#" class="c-tab__item is-active" target="_self" title="ETF概況" data-tab-target="tab-1">ETF概況</a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="績效/淨值" data-tab-target="tab-2">績效/淨值</a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="歷史買賣價" data-tab-target="tab-3">歷史買賣價</a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="技術分析" data-tab-target="tab-4">技術分析</a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="基本資料" data-tab-target="tab-5">基本資料</a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="持股狀況" data-tab-target="tab-6">持股狀況</a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="風險指標" data-tab-target="tab-7">風險指標</a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="配息紀錄" data-tab-target="tab-8">配息紀錄</a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="規模變動" data-tab-target="tab-9">規模變動</a></li>
+            </ul>
+            <div class="c-tab__collapse">
+                <a href="#" class="c-tab__switch"></a>
+                <div class="c-tab__dropdown">
+                    <a href="#" class="c-tab__clone is-active" target="_self" title="ETF概況" data-tab-target="tab-1">ETF概況</a>
+                    <a href="#" class="c-tab__clone" target="_self" title="績效/淨值" data-tab-target="tab-2">績效/淨值</a>
+                    <a href="#" class="c-tab__clone" target="_self" title="歷史買賣價" data-tab-target="tab-3">歷史買賣價</a>
+                    <a href="#" class="c-tab__clone" target="_self" title="技術分析" data-tab-target="tab-4">技術分析</a>
+                    <a href="#" class="c-tab__clone" target="_self" title="基本資料" data-tab-target="tab-5">基本資料</a>
+                    <a href="#" class="c-tab__clone" target="_self" title="持股狀況" data-tab-target="tab-6">持股狀況</a>
+                    <a href="#" class="c-tab__clone" target="_self" title="風險指標" data-tab-target="tab-7">風險指標</a>
+                    <a href="#" class="c-tab__clone" target="_self" title="配息紀錄" data-tab-target="tab-8">配息紀錄</a>
+                    <a href="#" class="c-tab__clone" target="_self" title="規模變動" data-tab-target="tab-9">規模變動</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- is-active: 作用中的項目 -->
+        @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_Overview.cshtml", Model)
+        @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_Performance.cshtml", Model)
+        @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_HistoricalPrices.cshtml", Model)
+        @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_TechnicalAnalysis.cshtml", Model)
+        @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_BasicInformation.cshtml", Model)
+        @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_Shareholding.cshtml", Model)
+        @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_RiskIndicator.cshtml", Model)
+        @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_DividendHistory.cshtml")
+        @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_ScaleHistory.cshtml")
+
+        @*<div class="c-hashTags">
+                <div class="c-hashTags__title">Tags</div>
+                <div class="c-hashTags__content">
+                    <ul class="l-divideList l-divideList--sm">
+                        <li class="l-divideList__item l-divideList__item--auto">
+                            <a href="" class="o-hashTag u-nowrap">#攻守兼備</a>
+                        </li>
+                        <li class="l-divideList__item l-divideList__item--auto">
+                            <a href="" class="o-hashTag u-nowrap">#新興崛起</a>
+                        </li>
+                        <li class="l-divideList__item l-divideList__item--auto">
+                            <a href="" class="o-hashTag u-nowrap">#優質首選</a>
+                        </li>
+                        <li class="l-divideList__item l-divideList__item--auto">
+                            <a href="" class="o-hashTag u-nowrap">#愛地球</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>*@
+    </div>
+
+</div>
+
+@if (!string.IsNullOrEmpty(Model.AccordionContent.ToString()))
+{
+    <div class="c-notice" data-collapse="true">
+        <div class="c-notice__wrap">
+            <div class="c-notice__outer" data-collapse-content="true">
+                <div class="c-notice__inner">
+                    @Model.AccordionContent
+                </div>
+            </div>
+            <div class="c-notice__actions">
+                <a href="#" class="c-notice__btn" data-collapse-button="true" data-collapse="收合" data-expand="展開"></a>
+            </div>
+        </div>
+    </div>
+}
+<script>
+
+    var url = new URL(location.href);
+    var etfId = url.searchParams.get('id');
+
+    function apiRequest(url, params) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url,
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                success: function (data) {
+                    resolve(data);
+                },
+                error: function (xhr, status, error) {
+                    reject(xhr, status, error);
+                }
+            });
+        });
+    }
+
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            // test code
+            //$('[data-tab-target="tab-9"]').trigger('click');
+        });
+    })(jQuery, window, document);
+</script>

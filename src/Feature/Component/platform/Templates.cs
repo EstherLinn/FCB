@@ -1,5 +1,4 @@
-﻿
-using Sitecore.Data;
+﻿using Sitecore.Data;
 
 namespace Feature.Wealth.Component
 {
@@ -15,7 +14,6 @@ namespace Feature.Wealth.Component
                 public static readonly ID FundTagTitle = new ID("{5361C9AE-E716-4127-A0A6-AF28CCE39134}");
                 public static readonly ID FundTagType = new ID("{9828043B-3665-4CC1-A66B-9D007791CF8B}");
                 public static readonly ID FundIdList = new ID("{0280C1D9-7E84-41AA-BD5E-2C8D94E59653}");
-
             }
         }
 

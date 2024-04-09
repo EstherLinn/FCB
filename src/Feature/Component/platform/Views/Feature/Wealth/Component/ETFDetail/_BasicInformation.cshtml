@@ -1,0 +1,302 @@
+﻿@model Feature.Wealth.Component.Models.ETF.Detail.EtfDetailModel
+@using Feature.Wealth.Component.Models.ETF.Detail;
+@using Foundation.Wealth.Helper;
+@{
+    var etfData = Model.BasicEtf as EtfDetail;
+    var ETFDocLinkApiUrl = ClientRoute.GenerateUrl(this, "EtfDetail", "GetDocLink");
+}
+@*基本資料*@
+<div class="c-tab__panel" data-tab-panel-id="tab-5">
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">ETF資訊 </div>
+        <div class="c-section__content">
+            <div class="c-zebraList">
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">交易所代碼</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.ExchangeCode</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">交易所</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.ExchangeID</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">註冊地</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.RegisteredLocation</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">成立日期</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.EstablishmentDate</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">是否上架</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.AvailabilityStatus</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">上架時間</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.ListingDate</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">下架時間</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.DelistingDate</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">放空交易</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.ShortSellingTransactions</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">選擇權交易</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.OptionsTrading</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">槓桿多空註記</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.LeverageLongShort</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">發行公司與管理人</div>
+        <div class="c-section__content">
+            <div class="c-zebraList">
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">發行公司</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.PublicLimitedCompanyName<br>@*<a href="#" class="o-link" target="_blank">{缺}</a>*@</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">經銷商</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.Dealer</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">保管機構</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.Depository</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">經理人</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.StockManager</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">投資策略</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.InvestmentStrategy</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">交易費用 </div>
+        <div class="c-section__content">
+            <div class="c-zebraList">
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">總管理費用</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.TotalManagementFee</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">申購手續費</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.SubscriptionFee</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">贖回手續費</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.RedemptionFee</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">申購淨值日</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.SubscriptionNAVDate</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">贖回淨值日</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.RedemptionNAVDate</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">贖回入款日</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.RedemptionDepositDate</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">最低單筆投資金額</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.MinimumSingleInvestmentAmount</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">最低定期定額投資金額</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.MinimumRegularInvestmentAmount</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">最低定期不定額投資金額</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.MinimumIrregularInvestmentAmount</span></div>
+                </div>
+                <div class="c-zebraList__item">
+                    <div class="c-zebraList__title">銀行相關說明</div>
+                    <div class="c-zebraList__content"><span class="t-bold">@etfData.BankRelatedInstructions</span></div>
+                </div>
+            </div>
+            <div class="l-dataNotes">
+                <div class="l-flex u-flex-col u-flex-gap-xs u-left">
+                    <div class="l-flex__item">
+                        <div class="t-tip s4">贖回入款日：T日表示「交易生效當日」，可能因基金投資地/本國休市日影響而非等同「交易申請日期」，即「交易生效當日」可能晚於「交易申請日期，上述日程僅提供參考，實際作業須依各基金公司之規定及作業為準。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">文件下載</div>
+        <div class="c-section__content">
+            <div class="l-linkBox">
+
+                <div class="l-linkBox__item u-hidden" id="etfDoc4">
+                    <div class="c-box c-box--link u-shadow-animation">
+                        <a href="#" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>年報</span></a>
+                    </div>
+                </div>
+
+                <div class="l-linkBox__item u-hidden" id="etfDoc1">
+                    <div class="c-box c-box--link u-shadow-animation">
+                        <a href="#" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>基金概覽</span></a>
+                    </div>
+                </div>
+
+                <div class="l-linkBox__item u-hidden" id="etfDoc2">
+                    <div class="c-box c-box--link u-shadow-animation">
+                        <a href="#" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>公開說明書</span></a>
+                    </div>
+                </div>
+
+                <div class="l-linkBox__item u-hidden" id="etfDoc3">
+                    <div class="c-box c-box--link u-shadow-animation">
+                        <a href="#" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>簡式公開說明書</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+        //#region 基本資料 – 文件下載
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            var apiUrl = '@ETFDocLinkApiUrl';
+
+            initDoc1();
+            initDoc2();
+            initDoc3();
+            initDoc4();
+
+            // 概覽
+            function initDoc1() {
+                var params = {
+                    etfId: etfId,
+                    idx: '1'
+                };
+                var $doc = $('#etfDoc1');
+                var query = apiRequest(apiUrl, params);
+
+                query.then((data) => {
+                    if (data) {
+                        if (data.resultSet.result[0].v1) {
+                            //公開說明書
+                            $doc.removeClass('u-hidden');
+                            $doc.find('a')[0].setAttribute('href', data.resultSet.result[0].v1);
+                        } else {
+                            $doc.addClass('u-hidden');
+                            $doc.find('a')[0].setAttribute('href', '');
+                        }
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    $doc.addClass('u-hidden');
+                    $doc.find('a')[0].setAttribute('href', '');
+                });
+            }
+
+            // 公開說明書
+            function initDoc2() {
+                var params = {
+                    etfId: etfId,
+                    idx: '2'
+                };
+                var $doc = $('#etfDoc2');
+                var query = apiRequest(apiUrl, params);
+
+                query.then((data) => {
+                    console.log(data);
+
+                    if (data) {
+                        if (data.resultSet.result[0].v1) {
+                            //公開說明書
+                            $doc.removeClass('u-hidden');
+                            $doc.find('a')[0].setAttribute('href', data.resultSet.result[0].v1);
+                        } else {
+                            $doc.addClass('u-hidden');
+                            $doc.find('a')[0].setAttribute('href', '');
+                        }
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    $doc.addClass('u-hidden');
+                    $doc.find('a')[0].setAttribute('href', '');
+                });
+            }
+
+            // 簡式公開說明書
+            function initDoc3() {
+                var params = {
+                    etfId: etfId,
+                    idx: '3'
+                };
+                var $doc = $('#etfDoc3');
+                var query = apiRequest(apiUrl, params);
+
+                query.then((data) => {
+                    console.log(data);
+
+                    if (data) {
+                        if (data.resultSet.result[0].v1) {
+                            //公開說明書
+                            $doc.removeClass('u-hidden');
+                            $doc.find('a')[0].setAttribute('href', data.resultSet.result[0].v1);
+                        } else {
+                            $doc.addClass('u-hidden');
+                            $doc.find('a')[0].setAttribute('href', '');
+                        }
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    $doc.addClass('u-hidden');
+                    $doc.find('a')[0].setAttribute('href', '');
+                });
+            }
+
+            // 年報
+            function initDoc4() {
+                var params = {
+                    etfId: etfId,
+                    idx: '4'
+                };
+                var $doc = $('#etfDoc4');
+                var query = apiRequest(apiUrl, params);
+
+                query.then((data) => {
+                    console.log(data);
+
+                    if (data) {
+                        if (data.resultSet.result[0].v1) {
+                            //公開說明書
+                            $doc.removeClass('u-hidden');
+                            $doc.find('a')[0].setAttribute('href', data.resultSet.result[0].v1);
+                        } else {
+                            $doc.addClass('u-hidden');
+                            $doc.find('a')[0].setAttribute('href', '');
+                        }
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    $doc.addClass('u-hidden');
+                    $doc.find('a')[0].setAttribute('href', '');
+                });
+            }
+        });
+        //#endregion 基本資料 – 文件下載
+    })(jQuery, window, document);
+</script>
