@@ -241,7 +241,7 @@
 
             $(function () {
                 // table 排序功能
-                $(document).on('click.sorting', '.o-sorting', function (e) {
+                $('.o-sorting').on('click.sorting', function (e) {
                     e.preventDefault();
                     // 呼叫 loading
                     window.loading('show');
@@ -271,7 +271,7 @@
                 });
 
                 // 手機版分頁筆數功能
-                $(document).on('change.sorting', '[data-sortingbox="true"]', function (e) {
+                $('[data-sortingbox="true"]').on('change.sorting', function (e) {
                     // 呼叫 loading
                     window.loading('show');
                     var sorting = $(this).val();
@@ -292,14 +292,14 @@
                 });
 
                 // 分頁功能
-                $(document).on('update.pagination', '.o-pagination__no', function (e) {
+                $('.o-pagination__no').on('update.pagination', function (e) {
                     // 呼叫 loading
                     window.loading('show');
                     var page = parseInt($(this).val());
                     console.log(`頁碼：${page}`);
 
                     // scroll 到表頭
-                    $(this).trigger('scrolltop');
+                    $(this).closest('.l-table').scrollPosition('scroll');
 
                     // 因展示，故使用 setTimeout 延遲關閉 loading
                     setTimeout(() => {
@@ -309,11 +309,24 @@
                 });
 
                 // 分頁筆數功能
-                $(document).on('change.pagesize', '[data-sizebox="true"]', function (e) {
+                $('[data-sizebox="true"]').on('change.pagesize', function (e) {
                     // 呼叫 loading
                     window.loading('show');
                     var size = $(this).val();
                     console.log(`每頁顯示${size}筆`);
+
+                    // 調整分頁
+                    var $parentWrap = $(this).closest('.l-pagination');
+                    var dataLength = parseInt($parentWrap.attr('data-length'));
+                    $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', size === 'all');
+                    if (size !== 'all') {
+                        var total = Math.ceil(dataLength / size);
+                        $parentWrap.find('[data-total]').attr('data-total', total);
+                        $parentWrap.find('.o-pagination__total').text(total);
+                        $parentWrap.find('.o-pagination__no').val(1);
+                        $parentWrap.find('.o-pagination__prev').addClass('is-disabled');
+                        $parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
+                    }
 
                     // 因展示，使用 setTimeout 延遲關閉 loading
                     setTimeout(() => {
