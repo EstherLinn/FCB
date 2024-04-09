@@ -6,8 +6,10 @@ namespace Feature.Wealth.Component.Models.CTA
     public class CTAModel
     {
         public Item Item { get; set; }
-        public string ImageUrl { get; set; }
+        public string ImagePcUrl { get; set; }
+        public string ImageMbUrl { get; set; }
         public string ButtonLink { get; set; }
+        public string ButtonText { get; set; }
         public bool ShowIcon { get; set; }
     }
 
@@ -20,9 +22,14 @@ namespace Feature.Wealth.Component.Models.CTA
             public struct Fields
             {
                 /// <summary>
-                /// 插圖
+                /// 插圖-電腦版
                 /// </summary>
-                public static readonly ID Image = new ID("{7D47B613-D632-432B-A7AB-DBD4FDDEB2B5}");
+                public static readonly ID ImagePc = new ID("{7D47B613-D632-432B-A7AB-DBD4FDDEB2B5}");
+
+                /// <summary>
+                /// 插圖-手機板
+                /// </summary>
+                public static readonly ID ImageMb = new ID("{EB97F51D-0B7D-44D5-A816-090493B98939}");
 
                 /// <summary>
                 /// 主標題
