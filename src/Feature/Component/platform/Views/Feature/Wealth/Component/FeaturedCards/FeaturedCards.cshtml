@@ -1,0 +1,30 @@
+﻿@using Feature.Wealth.Component.Models.FeaturedCards
+@model FeaturedCardsModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<section class="c-section" data-aos="fade-up" data-aos-once="true">
+    <div class="l-wrap">
+        <div class="c-section__title u-left">@Html.Sitecore().Field(Templates.FeaturedCardsTitle.Fields.MainTitle.ToString(), Model.DataSource)</div>
+        <div class="c-section__desc">@Html.Sitecore().Field(Templates.FeaturedCardsTitle.Fields.Description.ToString(), Model.DataSource)</div>
+        <div class="c-section__content">
+            <div class="l-featureCard">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="l-featureCard__item">
+                        <div class="c-featureCard">
+                            <div class="c-featureCard__num">@Html.Sitecore().Field(Templates.FeaturedCards.Fields.Label.ToString(), item.Item)</div>
+                            <div class="c-featureCard__content">
+                                <div class="c-featureCard__title">@Html.Sitecore().Field(Templates.FeaturedCards.Fields.Title.ToString(), item.Item)</div>
+                                <div class="c-featureCard__desc">@Html.Sitecore().Field(Templates.FeaturedCards.Fields.Content.ToString(), item.Item)</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
