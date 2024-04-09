@@ -10,6 +10,7 @@
     var bankDeferPurchase = Model.BankDeferPurchase;
     var fundMgmtFee = Model.FundMgmtFee.ToString("0.##");
     var fundShareMgmtFeeToBank = Model.FundShareMgmtFeeToBank.ToString("0.##");
+    var fundShareMgmtFeeToBankNum = Model.FundShareMgmtFeeToBank;
     var currentYear = new System.Globalization.TaiwanCalendar().GetYear(DateTime.UtcNow);
     var fundCompanyName = Model.FundCompanyName;
     var fundSponsorSeminarsEduToBank = Model.FundSponsorSeminarsEduToBank;
@@ -52,6 +53,20 @@
     <div class="l-article__content">
         <section class="c-section c-section--article">
             <div class="c-section__title">1. 投資人支付</div>
+            @{
+                string paymentContent;
+
+                if (isFeePost)
+                {
+                    paymentContent = string.Format("本基金手續費遞延至贖回時收取，台端申購時無需支付手續費，惟本行將先自基金公司收取不多於 {0}%。",
+                    bankDeferPurchase.ToString("0.##"));
+                }
+                else
+                {
+                    paymentContent = string.Format("台端支付的基金申購手續費率為{0}%，其中本行收取不多於{0}%。",
+                    subscriptionFee);
+                }
+            }
             <div class="c-section__conetnt">
                 <div class="l-table">
                     <table class="c-table">
@@ -80,8 +95,10 @@
                                 </td>
                                 <td>
                                     <ol class="c-list c-list--num">
-                                        <li>台端支付的基金申購手續費率為 @subscriptionFee，其中本行收取不多於 @subscriptionFee。</li>
+
+                                        <li>@paymentContent</li>
                                         <li>台端支付的基金轉換/轉申購手續費為 @fundConversionFee%，其中本行收取不多於 @fundShareConvFeeToBank%。</li>
+
                                     </ol>
                                 </td>
                             </tr>
@@ -210,6 +227,10 @@
                     calculateExample = string.Format("由 台端所支付之 {0} 元申購手續費中收取不多於 {1} 元 （100,000 ＊ {2}% ＝ {3}元）",
                     subscriptionFeeAmount, subscriptionFeeAmount, subscriptionFeeNum, subscriptionFeeAmount);
                 }
+
+
+                var fundShareMgmtFeeToBankAmount = (100000 * fundShareMgmtFeeToBankNum / 100).ToString("#,##0.####");
+
             }
             <div class="c-section__conetnt">
                 @calculateContent
@@ -231,7 +252,7 @@
                                 @fundCompanyName 支付：
                                 <ol class="c-list c-list--bracketNum c-list--min">
                                     <li>
-                                        台端持有本基金期間之經理費分成：不多於 1,000元（100,000 ＊ 1% ＝ 1,000元）
+                                        @string.Format("台端持有本基金期間之經理費分成：不多於 {0}元（100,000 ＊ {1}% ＝ {2}元）", fundShareMgmtFeeToBankAmount, fundShareMgmtFeeToBank, fundShareMgmtFeeToBankAmount)
                                     </li>
                                     <li>
                                         @string.Format("產品說明會及員工教育訓練：{0}", GetDisplayWithBound(fundSponsorSeminarsEduToBank, boundS))
