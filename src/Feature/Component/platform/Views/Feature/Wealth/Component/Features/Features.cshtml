@@ -1,0 +1,46 @@
+﻿@using Feature.Wealth.Component.Models.Features
+@model FeaturesModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<section class="c-section" data-aos="fade-up" data-aos-once="true">
+    <div class="l-wrap">
+        <div class="c-section__title u-left">@Html.Sitecore().Field(Templates.FeaturesTitle.Fields.MainTitle.ToString(), Model.DataSource)</div>
+        <div class="c-section__content">
+            <div class="l-productCard">
+                @foreach (var item in Model.Items)
+                {
+                    var linkText1 = Html.Sitecore().Field(Templates.Features.Fields.LinkText1.ToString(), item.Item).ToString();
+                    var linkText2 = Html.Sitecore().Field(Templates.Features.Fields.LinkText2.ToString(), item.Item).ToString();
+
+                    <div class="l-productCard__item">
+                        <div class="c-productCard">
+                            <div class="c-productCard__media">
+                                <img src="@item.ImageUrl" class="c-productCard__img" alt="">
+                            </div>
+                            <div class="c-productCard__content">
+                                <div class="c-productCard__name u-ellipsis-1">@Html.Sitecore().Field(Templates.Features.Fields.Title.ToString(), item.Item)</div>
+                                <div class="c-productCard__btns">
+                                    <a href="/fund/search.html" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@Html.Sitecore().Field(Templates.Features.Fields.ButtonText.ToString(), item.Item)</a>
+                                </div>
+                            </div>
+                            <div class="c-productCard__links">
+                                @if (linkText1 != "")
+                                {
+                                    <a href="@item.LinkUrl1" class="o-suffixLink o-suffixLink--xs o-suffixLink--external">@linkText1</a>
+                                }
+                                @if (linkText2 != "")
+                                {
+                                    <a href="@item.LinkUrl2" class="o-suffixLink o-suffixLink--xs o-suffixLink--external">@linkText2</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
