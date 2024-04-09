@@ -11,15 +11,19 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            var imageUrl = ItemUtils.ImageUrl(item,Template.CTA.Fields.Image);
-            var btnLink = ItemUtils.GeneralLink(item, Template.CTA.Fields.ButtonLink)?.Url;
-            var showIcon = ItemUtils.IsChecked(item, Template.CTA.Fields.ShowIcon);
+            string imagePcUrl = ItemUtils.ImageUrl(item,Template.CTA.Fields.ImagePc);
+            string imageMbUrl = ItemUtils.ImageUrl(item,Template.CTA.Fields.ImageMb);
+            string btnLink = ItemUtils.GeneralLink(item, Template.CTA.Fields.ButtonLink)?.Url;
+            bool showIcon = ItemUtils.IsChecked(item, Template.CTA.Fields.ShowIcon);
+            string btnText = ItemUtils.GetFieldValue(item, Template.CTA.Fields.ButtonText);
 
             var model = new CTAModel()
             {
                 Item = item,
-                ImageUrl = imageUrl,
+                ImagePcUrl = imagePcUrl,
+                ImageMbUrl = imageMbUrl,
                 ButtonLink = btnLink,
+                ButtonText = btnText,
                 ShowIcon = showIcon
             };
 

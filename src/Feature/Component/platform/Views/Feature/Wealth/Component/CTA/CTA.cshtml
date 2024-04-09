@@ -6,25 +6,31 @@
     return;
 }
 
-<div class="l-flex__item">
-    <div class="c-cardLecture">
-        <div class="c-cardLecture__caption">
-            <img src="@Model.ImageUrl" class="c-cardLecture__img c-cardLecture__img--pc" alt="">
-            <img src="@Model.ImageUrl" class="c-cardLecture__img c-cardLecture__img--mb" alt="">
-        </div>
-        <div class="c-cardLecture__content">
-            <h3 class="c-cardLecture__title">
-                @if (Model.ShowIcon)
+<div class="c-block c-block--cardLecture">
+    <div class="c-block__wrap">
+        <div class="c-block__content">
+            <div class="c-cardLecture">
+                <div class="c-cardLecture__caption">
+                    <img src="@Model.ImagePcUrl" class="c-cardLecture__img c-cardLecture__img--pc" alt="">
+                    <img src="@Model.ImageMbUrl" class="c-cardLecture__img c-cardLecture__img--mb" alt="">
+                </div>
+                <div class="c-cardLecture__content">
+                    <h3 class="c-cardLecture__title">
+                        @if (Model.ShowIcon)
+                        {
+                            <i class="o-icon o-icon--xl o-icon--radio"></i>
+                        }
+                        @Html.Sitecore().Field(Template.CTA.Fields.MainTitle.ToString(), Model.Item)
+                    </h3>
+                    <p class="c-cardLecture__desc">@Html.Sitecore().Field(Template.CTA.Fields.SubTitle.ToString(), Model.Item)</p>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.ButtonLink) || !string.IsNullOrEmpty(Model.ButtonText))
                 {
-                    <i class="o-icon o-icon--xl o-icon--radio"></i>
+                    <div class="c-cardLecture__action">
+                        <a href="@Model.ButtonLink" class="o-btnListen">@Model.ButtonText</a>
+                    </div>
                 }
-                @Html.Sitecore().Field(Template.CTA.Fields.MainTitle.ToString(), Model.Item)
-            </h3>
-            <p class="c-cardLecture__desc"> @Html.Sitecore().Field(Template.CTA.Fields.SubTitle.ToString(), Model.Item)</p>
-        </div>
-        <div class="c-cardLecture__action">
-            <a href="@Model.ButtonLink" class="o-btnListen">@Html.Sitecore().Field(Template.CTA.Fields.ButtonText.ToString(), Model.Item)</a>
+            </div>
         </div>
     </div>
 </div>
-
