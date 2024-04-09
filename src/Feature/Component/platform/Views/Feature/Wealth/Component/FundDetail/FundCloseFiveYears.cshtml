@@ -270,14 +270,6 @@
 
                             $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
                             $sortingbox.trigger('change');
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-                                                        console.log(sortingColumn, orderby, tableName, sortingYearsIdx)
-
->>>>>>> add : C02 基金詳細頁-境外
-=======
->>>>>>> update: 移除console
                             SortingTable(mapData,sortingColumn, orderby, tableName, sortingYearsIdx,years)
                             $('#rateTb').html('');
                             // 因展示，使用 setTimeout 延遲關閉 loading
@@ -298,13 +290,6 @@
                             // 連動 table
                             $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
                             $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-                            console.log(`排序：${sorting}`);
->>>>>>> add : C02 基金詳細頁-境外
-=======
->>>>>>> update: 移除console
 
                             // 因展示，使用 setTimeout 延遲關閉 loading
                             setTimeout(() => {
@@ -366,15 +351,7 @@
                                                         <span class="c-legend__name">${data[index].name}</span>
                                                     </a>
                                                 </td>
-<<<<<<< HEAD
-<<<<<<< HEAD
                                                 <td>1999/07/01</td>
-=======
-                                                <td>2020/01/01</td>
->>>>>>> add : C02 基金詳細頁-境外
-=======
-                                                <td>1999/07/01</td>
->>>>>>> update: 移除console
                                                 <td><span class="${GiveStyle(data[index].rate[0])}">${GivePercent(data[index].rate[0])}</span></td>
                                                 <td><span class="${GiveStyle(data[index].rate[1])}">${GivePercent(data[index].rate[1])}</span></td>
                                                 <td><span class="${GiveStyle(data[index].rate[2])}">${GivePercent(data[index].rate[2])}</span></td>
@@ -445,15 +422,6 @@
             let sortingData = [];
             if (column == 'name') {
                 sortingData = data.sort((a, b) => orderby == "is-asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
-                c
->>>>>>> add : C02 基金詳細頁-境外
-=======
-
->>>>>>> update: 移除console
             } else if (column == 'establishmentDay') {
                 if (orderby == "is-desc") {
              @* sortingData = data.sort(fucntion(a,b)
@@ -485,19 +453,10 @@
                     }
 
                 });
-<<<<<<< HEAD
-<<<<<<< HEAD
-            }
-           ShowSortingTable(sortingData, table);
-=======
 
-                ShowSortingTable(sortingData, table);
             }
->>>>>>> add : C02 基金詳細頁-境外
-=======
-            }
+            
            ShowSortingTable(sortingData, table);
->>>>>>> update: 移除console
         }
         function ShowSortingTable(data,table)
         {
