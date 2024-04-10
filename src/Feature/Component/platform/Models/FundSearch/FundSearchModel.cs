@@ -22,6 +22,9 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public bool Purchase { get; set; }
     }
 
+    /// <summary>
+    /// Dapper接資料
+    /// </summary>
     public class FundSearchModel
     {
         /// <summary>
@@ -42,17 +45,17 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// 淨值日期
         /// </summary>
-        public DateTime NetAssetValueDate { get; set; }
+        public DateTime? NetAssetValueDate { get; set; }
 
         /// <summary>
         /// 淨值日期顯示(yyyy/MM/dd)
         /// </summary>
-        public string NetAssetValueDateFormat =>NetAssetValueDate.ToString("yyyy/MM/dd");
+        public string NetAssetValueDateFormat => NetAssetValueDate?.ToString("yyyy/MM/dd");
 
         /// <summary>
         /// 淨值
         /// </summary>
-        public decimal NetAssetValue { get; set; }
+        public decimal? NetAssetValue { get; set; }
 
         /// <summary>
         /// 計價幣別 
@@ -67,82 +70,42 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// 一個月報酬原幣-需加%
         /// </summary>
-        public decimal OneMonthReturnOriginalCurrency { get; set; }
-
-        /// <summary>
-        /// 一個月報酬原幣漲跌
-        /// </summary>
-        public bool IsUpOneMonthReturnOriginalCurrency { get; set; }
+        public decimal? OneMonthReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三個月報酬原幣-需加%
         /// </summary>
-        public decimal ThreeMonthReturnOriginalCurrency { get; set; }
-
-        /// <summary>
-        /// 三個月報酬原幣漲跌
-        /// </summary>
-        public bool IsUpThreeMonthReturnOriginalCurrency { get; set; }
+        public decimal? ThreeMonthReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 六個月報酬原幣-需加%
         /// </summary>
-        public decimal SixMonthReturnOriginalCurrency { get; set; }
-
-        /// <summary>
-        /// 六個月報酬原幣漲跌
-        /// </summary>
-        public bool IsUpSixMonthReturnOriginalCurrency { get; set; }
+        public decimal? SixMonthReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年報酬原幣-需加%
         /// </summary>
-        public decimal OneYearReturnOriginalCurrency { get; set; }
-
-        /// <summary>
-        /// 一年報酬原幣漲跌
-        /// </summary>
-        public bool IsUpOneYearReturnOriginalCurrency { get; set; }
+        public decimal? OneYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一個月報酬台幣-需加%
         /// </summary>
-        public decimal OneMonthReturnTWD { get; set; }
-
-        /// <summary>
-        /// 一個月報酬台幣漲跌
-        /// </summary>
-        public bool IsUpOneMonthReturnTWD { get; set; }
+        public decimal? OneMonthReturnTWD { get; set; }
 
         /// <summary>
         /// 三個月報酬台幣-需加%
         /// </summary>
-        public decimal ThreeMonthReturnTWD { get; set; }
-
-        /// <summary>
-        /// 三個月報酬台幣漲跌
-        /// </summary>
-        public bool IsUpThreeMonthReturnTWD { get; set; }
+        public decimal? ThreeMonthReturnTWD { get; set; }
 
         /// <summary>
         /// 六個月報酬台幣-需加%
         /// </summary>
-        public decimal SixMonthReturnTWD { get; set; }
-
-        /// <summary>
-        /// 六個月報酬台幣漲跌
-        /// </summary>
-        public bool IsUpSixMonthReturnTWD { get; set; }
+        public decimal? SixMonthReturnTWD { get; set; }
 
         /// <summary>
         /// 一年報酬台幣-需加%
         /// </summary>
-        public decimal OneYearReturnTWD { get; set; }
-
-        /// <summary>
-        /// 一年報酬台幣漲跌
-        /// </summary>
-        public bool IsUpOneYearReturnTWD { get; set; }
+        public decimal? OneYearReturnTWD { get; set; }
 
         ///基本資料
         /// <summary>
@@ -163,22 +126,17 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// 漲跌幅-需加%
         /// </summary>
-        public decimal PercentageChangeInFundPrice { get; set; }
-
-        /// <summary>
-        /// 漲跌幅漲跌
-        /// </summary>
-        public bool IsUpPercentageChangeInFundPrice { get; set; }
+        public decimal? PercentageChangeInFundPrice { get; set; }
 
         /// <summary>
         /// 基金規模百萬原幣
         /// </summary>
-        public decimal FundSizeMillionOriginalCurrency { get; set; }
+        public decimal? FundSizeMillionOriginalCurrency { get; set; }
 
         /// <summary>
         /// 基金規模百萬台幣
         /// </summary>
-        public decimal FundSizeMillionTWD { get; set; }
+        public decimal? FundSizeMillionTWD { get; set; }
 
         /// <summary>
         /// 基金類型
@@ -199,22 +157,22 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// Sharpe
         /// </summary>
-        public decimal Sharpe { get; set; }
+        public decimal? Sharpe { get; set; }
 
         /// <summary>
         /// Beta
         /// </summary>
-        public decimal Beta { get; set; }
+        public decimal? Beta { get; set; }
 
         /// <summary>
         /// Alpha
         /// </summary>
-        public decimal OneYearAlpha { get; set; }
+        public decimal? OneYearAlpha { get; set; }
 
         /// <summary>
         /// 年化標準差
         /// </summary>
-        public decimal AnnualizedStandardDeviation { get; set; }
+        public decimal? AnnualizedStandardDeviation { get; set; }
 
         /// <summary>
         /// 是否可於網路申購
@@ -265,26 +223,26 @@ namespace Feature.Wealth.Component.Models.FundSearch
 
         public string NetAssetValueDate { get; set; }
 
-        public decimal NetAssetValue { get; set; }
+        public decimal? NetAssetValue { get; set; }
 
         public KeyValuePair<string, string> Currency { get; set; }
-        public KeyValuePair<bool, decimal> OneMonthReturnOriginalCurrency { get; set; }
-        public KeyValuePair<bool, decimal> ThreeMonthReturnOriginalCurrency { get; set; }
-        public KeyValuePair<bool, decimal> SixMonthReturnOriginalCurrency { get; set; }
-        public KeyValuePair<bool, decimal> OneYearReturnOriginalCurrency { get; set; }
-        public KeyValuePair<bool, decimal> OneMonthReturnTWD { get; set; }
-        public KeyValuePair<bool, decimal> ThreeMonthReturnTWD { get; set; }
-        public KeyValuePair<bool, decimal> SixMonthReturnTWD { get; set; }
-        public KeyValuePair<bool, decimal> OneYearReturnTWD { get; set; }
+        public KeyValuePair<bool, decimal?> OneMonthReturnOriginalCurrency { get; set; }
+        public KeyValuePair<bool, decimal?> ThreeMonthReturnOriginalCurrency { get; set; }
+        public KeyValuePair<bool, decimal?> SixMonthReturnOriginalCurrency { get; set; }
+        public KeyValuePair<bool, decimal?> OneYearReturnOriginalCurrency { get; set; }
+        public KeyValuePair<bool, decimal?> OneMonthReturnTWD { get; set; }
+        public KeyValuePair<bool, decimal?> ThreeMonthReturnTWD { get; set; }
+        public KeyValuePair<bool, decimal?> SixMonthReturnTWD { get; set; }
+        public KeyValuePair<bool, decimal?> OneYearReturnTWD { get; set; }
 
         ///基本資料
         public KeyValuePair<string, string> FundCurrency { get; set; }
 
-        public decimal FundSizeMillionOriginalCurrency { get; set; }
+        public decimal? FundSizeMillionOriginalCurrency { get; set; }
 
-        public decimal FundSizeMillionTWD { get; set; }
+        public decimal? FundSizeMillionTWD { get; set; }
 
-        public KeyValuePair<bool, decimal> PercentageChangeInFundPrice { get; set; }
+        public KeyValuePair<bool, decimal?> PercentageChangeInFundPrice { get; set; }
 
         /// <summary>
         /// 基金類型
@@ -305,32 +263,38 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// Sharpe
         /// </summary>
-        public decimal Sharpe { get; set; }
+        public decimal? Sharpe { get; set; }
 
         /// <summary>
         /// Beta
         /// </summary>
-        public decimal Beta { get; set; }
+        public decimal? Beta { get; set; }
 
         /// <summary>
         /// Alpha
         /// </summary>
-        public decimal OneYearAlpha { get; set; }
+        public decimal? OneYearAlpha { get; set; }
 
         /// <summary>
         /// 年化標準差
         /// </summary>
-        public decimal AnnualizedStandardDeviation { get; set; }
+        public decimal? AnnualizedStandardDeviation { get; set; }
 
         /// <summary>
         /// 是否可於網路申購
         /// </summary>
-        public string OnlineSubscriptionAvailability { get; set; }
+        public bool IsOnlineSubscriptionAvailability { get; set; }
 
         /// <summary>
-        /// 百元標的
+        /// tags 標籤列
         /// </summary>
-        public string TargetName { get; set; }
+        public List<string> Tags { get; set; }
+
+        /// <summary>
+        /// 詳細頁連結
+        /// </summary>
+        public string DetailLink { get; set; }
+
     }
 
     public class SearchBarData
@@ -368,11 +332,6 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// 基金評等內容
         /// </summary>
         public static readonly string Content = "{587133C2-172C-4AA9-A7B5-44E1D7E41B34}";
-
-        /// <summary>
-        /// 備註內容
-        /// </summary>
-        public static readonly string NoteContent = "{B229B90D-3562-449E-903E-FCCBE7EA7014}";
 
         /// <summary>
         /// Tag的名稱

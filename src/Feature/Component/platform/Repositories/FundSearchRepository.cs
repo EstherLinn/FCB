@@ -3,81 +3,25 @@ using System.Text;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using Feature.Wealth.Component.Models.FundSearch;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Feature.Wealth.Component.Models.FundDetail;
 
 
 namespace Feature.Wealth.Component.Repositories
 {
     public class FundSearchRepository
     {
-        public List<FundSearchModel> GetFundSearchData()
+        public IList<FundSearchModel> GetFundSearchData()
         {
-            List<FundSearchModel> fundItems = new List<FundSearchModel>();
-
             string sql = "SELECT * FROM [vw_BasicFund]";
             var results = DbManager.Custom.ExecuteIList<FundSearchModel>(sql, null, CommandType.Text);
-
-            foreach (var item in results)
-            {
-                ProcessFundFilterDatas(item);
-                fundItems.Add(item);
-            }
-
-            return fundItems;
-        }
-
-
-        private void ProcessFundFilterDatas(FundSearchModel item)
-        {
-            item.OneMonthReturnOriginalCurrency = decimal.Round(item.OneMonthReturnOriginalCurrency, 2);
-            item.OneMonthReturnTWD = decimal.Round(item.OneMonthReturnTWD, 2);
-
-            item.IsUpOneMonthReturnOriginalCurrency = item.OneMonthReturnOriginalCurrency >= 0 ? true : false;
-            item.IsUpOneMonthReturnTWD = item.OneMonthReturnTWD >= 0 ? true : false;
-
-            item.ThreeMonthReturnOriginalCurrency = decimal.Round(item.ThreeMonthReturnOriginalCurrency, 2);
-            item.ThreeMonthReturnTWD = decimal.Round(item.ThreeMonthReturnTWD, 2);
-            item.IsUpThreeMonthReturnOriginalCurrency = item.ThreeMonthReturnOriginalCurrency >= 0 ? true : false;
-            item.IsUpThreeMonthReturnTWD = item.ThreeMonthReturnTWD >= 0 ? true : false;
-
-            item.SixMonthReturnOriginalCurrency = decimal.Round(item.SixMonthReturnOriginalCurrency, 2);
-            item.SixMonthReturnTWD = decimal.Round(item.SixMonthReturnTWD, 2);
-            item.IsUpSixMonthReturnOriginalCurrency = item.SixMonthReturnOriginalCurrency >= 0 ? true : false;
-            item.IsUpSixMonthReturnTWD = item.SixMonthReturnTWD >= 0 ? true : false;
-
-            item.OneYearReturnOriginalCurrency = decimal.Round(item.OneYearReturnOriginalCurrency, 2);
-            item.OneYearReturnTWD = decimal.Round(item.OneYearReturnTWD, 2);
-            item.IsUpOneYearReturnOriginalCurrency = item.OneYearReturnOriginalCurrency >= 0 ? true : false;
-            item.IsUpOneYearReturnTWD = item.OneYearReturnTWD >= 0 ? true : false;
-
-            item.NetAssetValue = decimal.Round(item.NetAssetValue, 4);
-            item.PercentageChangeInFundPrice = decimal.Round((item.PercentageChangeInFundPrice * 100), 4);
-            item.IsUpPercentageChangeInFundPrice = item.PercentageChangeInFundPrice >= 0 ? true : false;
-
-            item.FundSizeMillionOriginalCurrency = decimal.Round(item.FundSizeMillionOriginalCurrency, 4);
-            item.FundSizeMillionTWD = decimal.Round(item.FundSizeMillionTWD, 4);
-
-            item.FundSizeMillionOriginalCurrency = decimal.Round((item.FundSizeMillionOriginalCurrency / 1000000),4);
-            item.FundSizeMillionTWD = decimal.Round((item.FundSizeMillionTWD / 1000000),4);
-
-            item.Sharpe = decimal.Round(item.Sharpe, 4);
-            item.Beta = decimal.Round(item.Beta, 4);
-            item.OneYearAlpha = decimal.Round(item.OneYearAlpha, 4);
-            item.AnnualizedStandardDeviation = decimal.Round(item.AnnualizedStandardDeviation, 4);
-
-            if (item.DividendFrequencyName == "無" || item.DividendFrequencyName == null)
-            {
-                item.DividendFrequencyName = "不配息";
-            }
-            if (item.FundCurrency == "TWD")
-            {
-                item.FundCurrencyName = "新臺幣";
-            }
+            return results;
         }
 
         /// <summary>
         /// 取得資料-列表渲染用
         /// </summary>
-        public List<Funds> GetFundRenderData(List<FundSearchModel> funds)
+        public List<Funds> GetFundRenderData(IList<FundSearchModel> funds)
         {
             var result = new List<Funds>();
 
@@ -85,43 +29,94 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var vm = new Funds();
                 //共用欄位
-                vm.TargetName = f.TargetName;
+                if (f.TargetName == "Y")
+                {
+                    vm.Tags = ["百元基金"];
+                }
+                vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator;
                 vm.ProductCode = f.ProductCode;
                 vm.ProductName = f.ProductName;
-                vm.NetAssetValue = f.NetAssetValue;
+                vm.NetAssetValue = Round4(f.NetAssetValue);
                 vm.NetAssetValueDate = f.NetAssetValueDateFormat;
-                vm.OnlineSubscriptionAvailability = f.OnlineSubscriptionAvailability;
+                vm.IsOnlineSubscriptionAvailability = Extender.ToBoolean(f.OnlineSubscriptionAvailability);
                 //績效表現
                 vm.Currency = new KeyValuePair<string, string>(f.CurrencyCode, f.CurrencyName);
-                vm.SixMonthReturnOriginalCurrency = CreateReturnDictionary(f.IsUpSixMonthReturnOriginalCurrency, f.SixMonthReturnOriginalCurrency);
-                vm.OneMonthReturnOriginalCurrency = CreateReturnDictionary(f.IsUpOneMonthReturnOriginalCurrency, f.OneMonthReturnOriginalCurrency);
-                vm.ThreeMonthReturnOriginalCurrency = CreateReturnDictionary(f.IsUpThreeMonthReturnOriginalCurrency, f.ThreeMonthReturnOriginalCurrency);
-                vm.OneYearReturnOriginalCurrency = CreateReturnDictionary(f.IsUpOneYearReturnOriginalCurrency, f.OneYearReturnOriginalCurrency);
-                vm.SixMonthReturnTWD = CreateReturnDictionary(f.IsUpSixMonthReturnTWD, f.SixMonthReturnTWD);
-                vm.OneMonthReturnTWD = CreateReturnDictionary(f.IsUpOneMonthReturnTWD, f.OneMonthReturnTWD);
-                vm.ThreeMonthReturnTWD = CreateReturnDictionary(f.IsUpThreeMonthReturnTWD, f.ThreeMonthReturnTWD);
-                vm.OneYearReturnTWD = CreateReturnDictionary(f.IsUpOneYearReturnTWD, f.OneYearReturnTWD);
+                vm.SixMonthReturnOriginalCurrency = CreateReturnDictionary(f.SixMonthReturnOriginalCurrency);
+                vm.OneMonthReturnOriginalCurrency = CreateReturnDictionary( f.OneMonthReturnOriginalCurrency);
+                vm.ThreeMonthReturnOriginalCurrency = CreateReturnDictionary(f.ThreeMonthReturnOriginalCurrency);
+                vm.OneYearReturnOriginalCurrency = CreateReturnDictionary( f.OneYearReturnOriginalCurrency);
+                vm.SixMonthReturnTWD = CreateReturnDictionary(f.SixMonthReturnTWD);
+                vm.OneMonthReturnTWD = CreateReturnDictionary(f.OneMonthReturnTWD);
+                vm.ThreeMonthReturnTWD = CreateReturnDictionary(f.ThreeMonthReturnTWD);
+                vm.OneYearReturnTWD = CreateReturnDictionary(f.OneYearReturnTWD);
                 //基本資料
                 vm.FundCurrency = new KeyValuePair<string, string>(f.FundCurrencyCode, f.FundCurrencyName);
-                vm.PercentageChangeInFundPrice = CreateReturnDictionary(f.IsUpPercentageChangeInFundPrice, f.PercentageChangeInFundPrice);
-                vm.FundSizeMillionOriginalCurrency = f.FundSizeMillionOriginalCurrency;
-                vm.FundSizeMillionTWD = f.FundSizeMillionTWD;
+                vm.PercentageChangeInFundPrice = Percentage(f.PercentageChangeInFundPrice);
+                vm.FundSizeMillionOriginalCurrency = RoundFundSize(f.FundSizeMillionOriginalCurrency);
+                vm.FundSizeMillionTWD = RoundFundSize(f.FundSizeMillionTWD);
                 vm.FundTypeName = f.FundTypeName;
-                vm.DividendFrequencyName = f.DividendFrequencyName;
+
+                if(f.DividendFrequencyName =="無" || f.DividendFrequencyName == null)
+                {
+                    vm.DividendFrequencyName = "不配息";
+                }
+                else
+                {
+                    vm.DividendFrequencyName = f.DividendFrequencyName;
+                }
+
                 //風險指標
                 vm.RiskRewardLevel = f.RiskRewardLevel;
-                vm.Sharpe = f.Sharpe;
-                vm.Beta = f.Beta;
-                vm.OneYearAlpha = f.OneYearAlpha;
-                vm.AnnualizedStandardDeviation = f.AnnualizedStandardDeviation;
+                vm.Sharpe = Round4(f.Sharpe);
+                vm.Beta = Round4(f.Beta);
+                vm.OneYearAlpha = Round4(f.OneYearAlpha);
+                vm.AnnualizedStandardDeviation = Round4(f.AnnualizedStandardDeviation);
+                vm.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
                 result.Add(vm);
             }
             return result;
         }
 
-        private KeyValuePair<bool, decimal> CreateReturnDictionary(bool isUp, decimal value)
+        private KeyValuePair<bool, decimal?> CreateReturnDictionary(decimal? value)
         {
-            return new KeyValuePair<bool, decimal>(isUp, value);
+            bool isUp = value >= 0;
+            if (value == null)
+            {
+                isUp = true;
+            }
+            if (value != null)
+            {
+                value = decimal.Round((decimal)value, 2);
+            }
+            return new KeyValuePair<bool, decimal?>(isUp, value);
+        }
+
+        private KeyValuePair<bool, decimal?> Percentage(decimal? value)
+        {
+            bool isUp = value >= 0;
+            if (value != null)
+            {
+                value = decimal.Round((decimal)value, 4);
+            }
+            return new KeyValuePair<bool, decimal?>(isUp, value);
+        }
+
+        private static decimal? Round4(decimal? value)
+        {
+            if (value != null)
+            {
+                value = decimal.Round((decimal)value, 4);
+            }
+            return value;
+        }
+
+        private static decimal? RoundFundSize(decimal? value)
+        {
+            if (value != null)
+            {
+                value = decimal.Round(((decimal)value / 1000000), 4);
+            }
+            return value;
         }
 
 
