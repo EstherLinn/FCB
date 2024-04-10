@@ -7,7 +7,6 @@ namespace Feature.Wealth.Component.Models.AnnouncementsAndWarnings
     {
         public Item Item { get; set; }
         public string ImageUrl { get; set; }
-        public string Image3xUrl { get; set; }
         public string ButtonLink { get; set; }
     }
 
@@ -36,11 +35,6 @@ namespace Feature.Wealth.Component.Models.AnnouncementsAndWarnings
                 /// 圖片
                 /// </summary>
                 public static readonly ID Image = new ID("{165CF1CD-164B-4E21-88B3-DBF05EE58192}");
-
-                /// <summary>
-                /// 圖片3x
-                /// </summary>
-                public static readonly ID Image3x = new ID("{BC43F2D5-EB08-4404-8DE3-1938EC76D656}");
 
                 /// <summary>
                 /// 主標題

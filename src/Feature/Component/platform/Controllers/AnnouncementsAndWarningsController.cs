@@ -39,13 +39,11 @@ namespace Feature.Wealth.Component.Controllers
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             var imageUrl = ItemUtils.ImageUrl(item, Templates.MoreAnnouncement.Fields.Image);
-            var image3xUrl = ItemUtils.ImageUrl(item, Templates.MoreAnnouncement.Fields.Image3x);
 
             var model = new AnnouncementsAndWarningsModel()
             {
                 Item = item,
                 ImageUrl = imageUrl,
-                Image3xUrl = image3xUrl,
             };
 
             return View("/Views/Feature/Wealth/Component/AnnouncementsAndWarnings/MoreAnnouncements.cshtml", model);
