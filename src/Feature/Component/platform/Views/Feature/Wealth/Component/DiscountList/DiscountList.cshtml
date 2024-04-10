@@ -1,0 +1,310 @@
+﻿@model Feature.Wealth.Component.Models.DiscountList.DiscountListModel
+@using Feature.Wealth.Component.Models.DiscountContent
+@using Foundation.Wealth.Helper
+
+@if (Model == null || !Model.CardList.Any())
+{
+    return;
+}
+
+<div class="l-scrolltop" discountListGuid="@Model.Guid">
+    @foreach (var cardList in Model.CardList)
+    {
+        <div class="l-flex l-flex--list" style="@cardList.CardListClass">
+            @foreach (var item in cardList.CardItems)
+            {
+                <div class="l-flex__item">
+                    <div class="c-box c-box--gapless u-shadow-animation">
+                        @Html.Sitecore().BeginField(Templates.DiscountContentDatasource.Fields.CardButtonLink.ToString(), item.Item, new { haschildren = true, @class = "c-gridview" })
+
+                        <div class="c-gridview__media @item.ExpiryMask">
+                            @if (!string.IsNullOrEmpty(item.CardImage))
+                            {
+                                <img src="@item.CardImage" class="c-gridview__img" alt="">
+                            }
+
+                            @switch (item.DisplayTag)
+                            {
+                                case "New":
+                                    <div class="c-gridview__tag">
+                                        <div class="o-eventTag">
+                                            <img src="/themes/images/icons/white/star-solid.svg" alt="">
+                                            <span>最新</span>
+                                        </div>
+                                    </div>
+                                    break;
+                                case "Hot":
+                                    <div class="c-gridview__tag">
+                                        <div class="o-eventTag">
+                                            <img src="/themes/images/icons/white/hot-solid.svg" alt="">
+                                            <span>熱門</span>
+                                        </div>
+                                    </div>
+                                    break;
+                                case "Expiring":
+                                    <div class="c-gridview__tag">
+                                        <div class="o-eventTag">
+                                            <img src="/themes/images/icons/white/ring-solid.svg" alt="">
+                                            <span>即將到期</span>
+                                        </div>
+                                    </div>
+                                    break;
+                                case "Limited":
+                                    <div class="c-gridview__tag">
+                                        <div class="o-eventTag">
+                                            <img src="/themes/images/icons/white/alarm-solid.svg" alt="">
+                                            <span>限時快閃</span>
+                                        </div>
+                                    </div>
+                                    break;
+                                default:
+                                    break;
+                            }
+                        </div>
+                        <div class="c-gridview__content">
+                            <div class="c-gridview__main">
+
+                                @if (!string.IsNullOrEmpty(item.Title))
+                                {
+                                    <div class="c-gridview__title u-ellipsis-2">
+                                        @item.Title
+                                    </div>
+                                }
+
+                                @if (!string.IsNullOrEmpty(item.DisplayDate))
+                                {
+                                    <div class="c-gridview__desc t-date">
+                                        @item.DisplayDate
+                                    </div>
+                                }
+
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(item.CardButtonText))
+                            {
+                                <div class="c-gridview__footer">
+                                    <div class="o-suffixLink o-suffixLink--right o-suffixLink--xs">@item.CardButtonText</div>
+                                </div>
+                            }
+
+                        </div>
+
+                        @Html.Sitecore().EndField()
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="l-pagination" data-length="@Model.TotalCards">
+        <div class="l-pagination__size">
+            <span>每頁顯示</span>
+            <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+            <select class="o-selectbox o-selectbox--pagesize" data-sizebox="true" selectGuid="@Model.Guid">
+                <option value="9">9筆</option>
+                <option value="45">45筆</option>
+                <option value="90">90筆</option>
+                <option value="all">全部</option>
+            </select>
+        </div>
+        <div class="l-pagination__switch">
+            <!-- [data-pagination="true"]: 載入後自動綁定分頁功能 -->
+            <!-- [data-total="888"]: 總筆數，必要資訊，供分頁狀態判斷使用 -->
+            <div class="o-pagination" data-pagination="true" data-total="@Model.TotalPages">
+                <!-- .is-disabled: 停用狀態，無法點擊 -->
+                <a href="#" class="o-pagination__prev is-disabled" prevGuid="@Model.Guid"></a>
+                <span class="o-pagination__pager">
+                    <input type="number" value="1" class="o-pagination__no" inputGuid="@Model.Guid">
+                    <span class="o-pagination__total">@Model.TotalPages</span>
+                </span>
+                <!-- .is-disabled: 停用狀態，無法點擊 -->
+                <a href="#" class="o-pagination__next" nextGuid="@Model.Guid"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function($, window, document, undefined) {
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // 分頁筆數功能
+        $('[selectGuid="@Model.Guid"]').on('change.pagesize', function(e) {
+
+            var pageSize = $(this).val();
+            var dataSourceId = '@Model.Guid';
+
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "DiscountList", "UpdatePageSize")',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    "pageSize": pageSize,
+                    "dataSourceId": dataSourceId
+                },
+                success: function(res) {
+                    // 呼叫 loading
+                    window.loading('show');
+
+                    if (res != null && res.data != null) {
+                        // 清空現有的卡片列表内容
+                        $('[discountlistguid="' + res.data.Guid + '"] .l-flex--list').remove();
+
+                        // 組合卡片列表
+                        $.each(res.data.CardList, function(index, cardList) {
+                            var cardListDiv = $('<div class="l-flex l-flex--list"></div>').attr('style', cardList.CardListClass);
+
+                            $.each(cardList.CardItems, function(index, cardItem) {
+                                var cardItemDiv = $('<div class="l-flex__item"></div>');
+                                var cardBoxDiv = $('<div class="c-box c-box--gapless u-shadow-animation"></div>');
+
+                                var cardLink = $('<a class="c-gridview" href="' + cardItem.CardButtonLink + '"></a>');
+                                var cardMedia = $('<div class="c-gridview__media"></div>').addClass(cardItem.ExpiryMask);
+
+                                var cardImage = $('<img src="' + cardItem.CardImage + '" class="c-gridview__img" alt="">');
+                                cardMedia.append(cardImage);
+
+                                if (cardItem.DisplayTag) {
+                                    var tagText = '';
+                                    var tagIcon = '';
+
+                                    switch (cardItem.DisplayTag) {
+                                        case 'New':
+                                            tagText = '最新';
+                                            tagIcon = '/themes/images/icons/white/star-solid.svg';
+                                            break;
+                                        case 'Hot':
+                                            tagText = '熱門';
+                                            tagIcon = '/themes/images/icons/white/hot-solid.svg';
+                                            break;
+                                        case 'Expiring':
+                                            tagText = '即將到期';
+                                            tagIcon = '/themes/images/icons/white/ring-solid.svg';
+                                            break;
+                                        case 'Limited':
+                                            tagText = '限時快閃';
+                                            tagIcon = '/themes/images/icons/white/ring-solid.svg';
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    var tagDiv = $('<div class="c-gridview__tag"><div class="o-eventTag"><img src="' + tagIcon + '" alt=""><span>' + tagText + '</span></div></div>');
+                                    cardMedia.append(tagDiv);
+                                }
+
+                                cardLink.append(cardMedia);
+
+                                var cardContent = $('<div class="c-gridview__content"></div>');
+                                var cardMain = $('<div class="c-gridview__main"></div>');
+
+                                if (cardItem.Title) {
+                                    var cardTitle = $('<div class="c-gridview__title u-ellipsis-2">' + cardItem.Title + '</div>');
+                                    cardMain.append(cardTitle);
+                                }
+
+                                if (cardItem.DisplayDate) {
+                                    var cardDesc = $('<div class="c-gridview__desc t-date">' + cardItem.DisplayDate + '</div>');
+                                    cardMain.append(cardDesc);
+                                }
+
+                                cardContent.append(cardMain);
+
+                                if (cardItem.CardButtonText) {
+                                    var cardFooter = $('<div class="c-gridview__footer"></div>');
+                                    var cardButton = $('<div class="o-suffixLink o-suffixLink--right o-suffixLink--xs">' + cardItem.CardButtonText + '</div>');
+                                    cardFooter.append(cardButton);
+                                    cardContent.append(cardFooter);
+                                }
+
+                                cardLink.append(cardContent);
+                                cardBoxDiv.append(cardLink);
+                                cardItemDiv.append(cardBoxDiv);
+                                cardListDiv.append(cardItemDiv);
+                            });
+
+                            var paginationDiv = $('[discountlistguid="' + res.data.Guid + '"] .l-pagination');
+
+                            cardListDiv.insertBefore(paginationDiv);
+                        });
+                    }
+
+                    // 調整分頁
+                    var $parentWrap = $('[selectGuid="' + res.data.Guid + '"]').closest('.l-pagination');
+                    var total = res.data.TotalPages;
+
+                    $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', pageSize === 'all');
+                    $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', total === '1');
+
+                    if (pageSize !== 'all' || total !== "1") {
+                        $parentWrap.find('[data-total]').attr('data-total', total);
+                        $parentWrap.find('.o-pagination__total').text(total);
+                        $parentWrap.find('.o-pagination__no').val(1);
+                        $parentWrap.find('.o-pagination__prev').addClass('is-disabled');
+                        $parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
+                    }
+
+                    // 因展示，使用 setTimeout 延遲關閉 loading
+                    setTimeout(() => {
+                        // 關閉loading
+                        window.loading('hide');
+                    }, 300);
+                },
+                error: function() {
+
+                }
+            });
+        });
+
+        // 分頁功能
+        $('[inputGuid="@Model.Guid"]').on('update.pagination', function(e) {
+            // 呼叫 loading
+            window.loading('show');
+
+            var inputField = $(this);
+
+            var previousValue = inputField.val();
+
+            var pageNumber = parseInt(previousValue);
+
+            var totalPageCount = parseInt($('[discountlistguid="@Model.Guid"] .o-pagination').attr("data-total"));
+
+            if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPageCount) {
+
+                $('[discountlistGuid="@Model.Guid"]').find('.l-flex--list').hide();
+
+                $('[discountlistGuid="@Model.Guid"]').find('.l-flex--list').eq(pageNumber - 1).show();
+
+                var prevButton = $('[prevGuid="@Model.Guid"]');
+                var nextButton = $('[nextGuid="@Model.Guid"]');
+
+                if (pageNumber > 1 && pageNumber < totalPageCount) {
+                    prevButton.removeClass("is-disabled");
+                    nextButton.removeClass("is-disabled");
+                } else if (pageNumber === 1 && pageNumber < totalPageCount) {
+                    prevButton.addClass("is-disabled");
+                    nextButton.removeClass("is-disabled");
+                } else if (pageNumber > 1 && pageNumber === totalPageCount) {
+                    prevButton.removeClass("is-disabled");
+                    nextButton.addClass("is-disabled");
+                } else {
+                    prevButton.addClass("is-disabled");
+                    nextButton.addClass("is-disabled");
+                }
+            } else {
+                inputField.val(previousValue);
+            }
+
+            // scroll 到表頭
+            $(this).closest('.l-scrolltop').scrollPosition('scroll');
+
+            // 因展示，故使用 setTimeout 延遲關閉 loading
+            setTimeout(() => {
+                // 關閉loading
+                window.loading('hide');
+            }, 300);
+        });
+
+    });
+})(jQuery, window, document);
+
+</script>
