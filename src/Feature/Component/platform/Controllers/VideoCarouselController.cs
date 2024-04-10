@@ -22,7 +22,6 @@ namespace Feature.Wealth.Component.Controllers
             foreach (var childItem in childItems)
             {
                 var vimageUrl = ItemUtils.ImageUrl(childItem, Templates.VideoCarouselVideos.Fields.Image);
-                var vimage3xUrl = ItemUtils.ImageUrl(childItem, Templates.VideoCarouselVideos.Fields.Image3x);
                 bool vcheckedShowIcon = ItemUtils.IsChecked(childItem, Templates.VideoCarouselVideos.Fields.ShowIcon);
                 bool vcheckedOpenVideoLinkinLightBox = ItemUtils.IsChecked(childItem, Templates.VideoCarouselVideos.Fields.OpenVideoLinkinLightBox);
                 var vlink = ItemUtils.GeneralLink(childItem, Templates.VideoCarouselVideos.Fields.Link)?.Url;
@@ -30,7 +29,6 @@ namespace Feature.Wealth.Component.Controllers
                 items.Add(new VideoCarouselModel.VideoCarousel(childItem)
                 {
                     ImageUrl = vimageUrl,
-                    Image3xUrl = vimage3xUrl,
                     CheckedShowIcon = vcheckedShowIcon,
                     CheckedOpenVideoLinkinLightBox = vcheckedOpenVideoLinkinLightBox,
                     LinkUrl = vlink,
