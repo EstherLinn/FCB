@@ -35,6 +35,10 @@ namespace Feature.Wealth.Component.Models.FundDetail
         /// </summary>
         public string DividendFrequencyOneYear { get; set; }
 
+        /// <summary>
+        /// 主要投資區域
+        /// </summary>
+        public string PrimaryInvestmentRegion { get; set; }
 
     }
 }

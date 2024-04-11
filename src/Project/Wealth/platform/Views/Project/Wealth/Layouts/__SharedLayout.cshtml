@@ -151,6 +151,9 @@
     <!-- #START RenderSection: Bottom -->
     @RenderSection("Bottom", false)
     <!-- #END RenderSection: Bottom -->
+      <!-- #START RenderSection: Scripts -->
+    @RenderSection("Scripts", false)
+    <!-- #END RenderSection: Scripts -->
     <!-- assets script -->
     @RenderAssetsService.Current.RenderScript(ScriptLocation.BodyBottom)
 </body>

@@ -29,10 +29,8 @@
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__toolbar">
             <div class="l-flex">
-                <div class="l-flex__item">
-                    <select id="fundSelect" class="o-selectbox o-selectbox--funds" data-selection-css-class="select2-selection--funds" data-selectbox="true" data-width="auto" data-placeholder="切換基金級別" data-dropdown-auto-width="true" data-dropdown-css-class="select2-dropdown--autoWidth">
-                        <option value=""></option>
-
+                <div class="l-flex__item" id="fundSelect">
+                    <select class="o-selectbox o-selectbox--funds" data-selection-css-class="select2-selection--funds" data-selectbox="true" data-width="auto" data-placeholder="切換基金級別" data-dropdown-auto-width="true" data-dropdown-css-class="select2-dropdown--autoWidth">
                     </select>
                 </div>
                 <div class="l-flex__item u-right u-hidden@lt">
@@ -47,7 +45,7 @@
                         <div class="c-pageHeader__main">
                             <h1 class="c-pageHeader__title">@BasicData.ProductCode @BasicData.FundName</h1>
                             <!-- 如果沒有tag，不要放 div.c-pageHeader__tags 區塊 -->
-                            @if (@BasicData.TargetName == "Y" || Model.MarketTagList.Any())
+                            @if (@BasicData.TargetName == "Y")
                             {
                                 <div class="c-pageHeader__tags">
                                     <ul class="l-tag">
@@ -57,10 +55,10 @@
                                                 <a href="#" class="o-tag">百元基金</a>
                                             }
                                         </li>
-                                        @foreach (var item in Model.MarketTagList)
+                                      @*  @foreach (var item in Model.MarketTagList)
                                         {
                                             <a href="#" class="o-tag">@item</a>
-                                        }
+                                        }*@
                                     </ul>
                                 </div>
                             }
@@ -135,7 +133,7 @@
                         </div>
                     </div>
 
-                    <div class="l-pageHeader__action">
+                    <div class="l-pageHeader__action u-hidden-embed">
                         <ul class="l-pageWallet">
                             <li class="l-pageWallet__item">
                                 <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
@@ -152,7 +150,7 @@
                             @if (BasicData.OnlineSubscriptionAvailability == "Y")
                             {
                                 <li class="l-pageWallet__btn">
-                                    <a href="#popupPurchase" class="o-fixedBtn" data-popup="true">申購</a>
+                                    <a href="#" data-eh="subscription-init,subscription-click" eh-subscription-init class="o-fixedBtn" data-popup="true" data-fundid="@BasicData.ProductCode">申購</a>
                                 </li>
                             }
                         </ul>
@@ -401,7 +399,8 @@
 
                                         if (count == Model.FundTypeRanks.Count() || count % 3 == 0)
                                         {
-                                            @Html.Raw(rankEndTag)}
+                                            @Html.Raw(rankEndTag)
+                                        }
                                         count++;
                                     }
 
@@ -424,7 +423,7 @@
                     }
                 </div>
             </section>
-            @if (Model.HotTagList.Any())
+         @*   @if (Model.HotTagList.Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -439,7 +438,7 @@
                         </ul>
                     </div>
                 </div>
-            }
+            }*@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-2">
             <section class="c-section u-printBreak">
@@ -588,18 +587,21 @@
                                     {
                                         if (dayCount % ten == 1)
                                         {
-                                            @Html.Raw("<div class='swiper-slide c-swiper__slide>'");
+                                            @Html.Raw("<div class='swiper-slide c-swiper__slide>'")                                           
                                             <!-- 左右表格 -->
-                                            @Html.Raw("<div class='l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only' data-merge-table>");
+                                            @Html.Raw("<div class='l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only' data-merge-table>")
                                         }
                                         if (dayCount == 1 || dayCount % five == 1)
                                         {
-
+                                            var hiddenHeaderClass = string.Empty;
+                                            if(dayCount % ten == 6){
+                                                hiddenHeaderClass = "u-hidden@lt";
+                                            }
                                             @Html.Raw("<div class='l-flex__item'>")
                                             @Html.Raw("<div class='l-table'>")
                                             @Html.Raw("<table class='c-table u-center'>")
                                             @Html.Raw("<colgroup><col style = 'width: 25%;' ><col style ='width: 25%;'><col style = 'width: 25%;' ><col style ='width: 25%;'></colgroup>")
-                                            @Html.Raw("<thead><tr><th><div class='c-table__title'><span>日期</span></div></th>")
+                                            @Html.Raw(string.Format("<thead class='{0}'><tr><th><div class='c-table__title'><span>日期</span></div></th>",hiddenHeaderClass))
                                             @Html.Raw("<th><div class='c-table__title'><span>淨值</span></div></th>")
                                             @Html.Raw("<th><div class='c-table__title'><span>漲跌</span></div></th>")
                                             @Html.Raw("<th><div class='c-table__title'> <span>漲跌幅</span></div></th></tr></thead><tbody>")
@@ -629,7 +631,8 @@
 
                                         if (dayCount == Model.FundThiryDaysNetValue.Count() || dayCount % 10 == 0)
                                         {
-                                            @Html.Raw(" </div> </div>");
+                                            @Html.Raw(" </div> </div>")
+                                            ;
 
                                         }
                                         dayCount++;
@@ -1185,14 +1188,6 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="l-dataNotes u-left">
-
-                                @if (!string.IsNullOrEmpty(closeFiveYearsUrl))
-                                {
-                                    <a href="@(closeFiveYearsUrl + "?id=" + BasicData.ProductCode)" target="_blank" class="o-prefixLink o-prefixLink--link">近五年費用率及報酬率</a>
-                                }
-
-                            </div>
                         }
                         else
                         {
@@ -1378,7 +1373,7 @@
 
                 </div>
             </section>
-            @if (Model.HotTagList.Any())
+            @*@if (Model.HotTagList.Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -1393,7 +1388,7 @@
                         </ul>
                     </div>
                 </div>
-            }
+            }*@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-3">
             <section class="c-section u-printBreak">
@@ -1552,7 +1547,7 @@
                             </div>
                         </div>
                         <div class="c-zebraList__item">
-                            <div class="c-zebraList__title">申購淨值日</div>
+                            <div class="c-zebraList__title">申購淨值日(註1)</div>
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
                                     @BasicData.SubscriptionDate.CheckNullOrEmptyString()
@@ -1560,7 +1555,7 @@
                             </div>
                         </div>
                         <div class="c-zebraList__item">
-                            <div class="c-zebraList__title">贖回淨值日</div>
+                            <div class="c-zebraList__title">贖回淨值日(註1)</div>
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
                                     @BasicData.RedemptionDate.CheckNullOrEmptyString()
@@ -1568,7 +1563,7 @@
                             </div>
                         </div>
                         <div class="c-zebraList__item">
-                            <div class="c-zebraList__title">贖回入款日</div>
+                            <div class="c-zebraList__title">贖回入款日(註1)</div>
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
                                     @BasicData.RedemptionDepositDate.CheckNullOrEmptyString()
@@ -1576,7 +1571,7 @@
                             </div>
                         </div>
                         <div class="c-zebraList__item">
-                            <div class="c-zebraList__title">最低單筆投資金額(註)</div>
+                            <div class="c-zebraList__title">最低單筆投資金額(註2)</div>
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
                                     @BasicData.MinimumSingleInvestmentAmount.CheckNullOrEmptyString()
@@ -1584,7 +1579,7 @@
                             </div>
                         </div>
                         <div class="c-zebraList__item">
-                            <div class="c-zebraList__title">最低定期定額<br>投資金額(註)</div>
+                            <div class="c-zebraList__title">最低定期定額<br>投資金額(註2)</div>
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
                                     @BasicData.MinimumRegularInvestmentAmount.CheckNullOrEmptyString()
@@ -1656,7 +1651,14 @@
                                 <a href="#" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>財務報告書</span></a>
                             </div>
                         </div>
-
+                        @if (!string.IsNullOrEmpty(closeFiveYearsUrl))
+                        {
+                            <div class="l-linkBox__item ">
+                                <div class="c-box c-box--link u-shadow-animation">
+                                    <a href="@(closeFiveYearsUrl + "?id=" + BasicData.ProductCode)" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold"><span>近五年費用率及報酬率</span></a>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </section>
@@ -1686,7 +1688,7 @@
                     </div>
                 </div>
             </section>
-            @if (Model.HotTagList.Any())
+            @*@if (Model.HotTagList.Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -1701,7 +1703,7 @@
                         </ul>
                     </div>
                 </div>
-            }
+            }*@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-4">
             <section class="c-section u-printBreak">
@@ -1784,7 +1786,7 @@
 
             </section>
 
-            @if (Model.HotTagList.Any())
+            @*@if (Model.HotTagList.Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -1799,7 +1801,7 @@
                         </ul>
                     </div>
                 </div>
-            }
+            }*@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-5">
             <section class="c-section u-printBreak">
@@ -2277,7 +2279,7 @@
                                             <td>年化標準差</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].AnnualizedStandardDeviation.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].AnnualizedStandardDeviation.FormatDecimalNumber(4)</td>
+                                                <td @Model.FundYearRateOfReturn[i].AnnualizedStandardDeviation.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].AnnualizedStandardDeviation.FormatDecimalNumber(4,needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2288,7 +2290,7 @@
                                             <td>Beta</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].Beta.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].Beta.FormatDecimalNumber(4)</td>
+                                                <td @Model.FundYearRateOfReturn[i].Beta.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].Beta.FormatDecimalNumber(4,needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2299,7 +2301,7 @@
                                             <td>Sharpe Ratio</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].Sharpe.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].Sharpe.FormatDecimalNumber(4)</td>
+                                                <td @Model.FundYearRateOfReturn[i].Sharpe.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].Sharpe.FormatDecimalNumber(4,needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2310,7 +2312,7 @@
                                             <td>Treynor Index</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].TreynorIndex.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].TreynorIndex.FormatDecimalNumber(4)</td>
+                                                <td @Model.FundYearRateOfReturn[i].TreynorIndex.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].TreynorIndex.FormatDecimalNumber(4,needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2321,7 +2323,7 @@
                                             <td>Jensen Ratio</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].JensenIndex.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].JensenIndex.FormatDecimalNumber(4)</td>
+                                                <td @Model.FundYearRateOfReturn[i].JensenIndex.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].JensenIndex.FormatDecimalNumber(4,needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2332,7 +2334,7 @@
                                             <td>Informaton Ratio</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].InformationRatio.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].InformationRatio.FormatDecimalNumber(4)</td>
+                                                <td @Model.FundYearRateOfReturn[i].InformationRatio.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].InformationRatio.FormatDecimalNumber(4,needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2355,7 +2357,7 @@
                     }
                 </div>
             </section>
-            @if (Model.HotTagList.Any())
+           @* @if (Model.HotTagList.Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -2370,7 +2372,7 @@
                         </ul>
                     </div>
                 </div>
-            }
+            }*@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-6">
             <section class="c-section u-printBreak">
@@ -2473,7 +2475,7 @@
                     }
                 </div>
             </section>
-            @if (Model.HotTagList.Any())
+           @* @if (Model.HotTagList.Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -2488,7 +2490,7 @@
                         </ul>
                     </div>
                 </div>
-            }
+            }*@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-7">
             <section class="c-section u-printBreak">
@@ -2522,7 +2524,7 @@
                             </div>
                             <div class="l-flex__item" id='scale_table'>
                                 <!-- 左右表格 -->
-                            </div>
+                        </div>
                         </div>
                     }
                     else
@@ -2536,7 +2538,7 @@
                     }
                 </div>
             </section>
-            @if (Model.HotTagList.Any())
+           @* @if (Model.HotTagList.Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -2551,1777 +2553,560 @@
                         </ul>
                     </div>
                 </div>
-            }
+            }*@
         </div>
     </div>
 </div>
-
-<div class="c-notice" data-collapse="true">
-    @if (TemplateCanRender)
-    {
-        @Html.Sitecore().Field(Template.FundDetailsPage.Fields.Content.ToString(), Model.Item)
-    }
-</div>
-
-<div id="popupPurchase" class="c-modal c-modal--sm mfp-hide">
-    <div class="c-modal__wrap">
-        <header class="c-modal__header">
-            <h2 class="c-modal__title">立即申購</h2>
-        </header>
-        <div class="c-modal__content">
-            <div class="u-hidden@lt-up">
-                <div class="l-flex u-flex-col u-flex-gap-xs">
-                    <div class="l-flex__item">
-                        <span class="t-bold">選擇申購平台：</span>
-                    </div>
-                    <div class="l-flex__item">
-                        <div class="l-pickGroup">
-                            <div class="l-pickGroup__item">
-                                <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform" checked data-name="firste">
-                                    <div class="o-btnRadio__text"><span>第e行動</span></div>
-                                </label>
-                            </div>
-                            <div class="l-pickGroup__item">
-                                <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform" data-name="ileo">
-                                    <div class="o-btnRadio__text"><span>iLEO</span></div>
-                                </label>
-                            </div>
+<div class="l-sharebar">
+    <div class="l-sharebar__wrap">
+        <div class="l-sharebar__content">
+            <div class="l-flex l-flex--inline u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <!-- [data-popover]: 彈跳視窗功能，值為彈跳視窗的 selector -->
+                    <a href="#" class="o-btn o-btn--primary o-btn--icon" data-popover="#popoverFundDetailShare02">
+                        <img src="@Url.Content("~/themes/images/icons/white/share.svg")" alt="分享">分享
+                    </a>
+                    <div id="popoverFundDetailShare02" class="c-popover c-popover--auto u-left">
+                        <div class="c-popover__wrap">
+                            <nav class="c-popover__main">
+                                <ul class="l-flex u-flex-col u-flex-gap-md s4">
+                                    <li class="l-flex__item">
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u=" class="o-social o-social--sm o-social--fb" target="_blank" data-share>
+                                            <span class="u-hidden@mb-only">Facebook</span>
+                                        </a>
+                                    </li>
+                                    <li class="l-flex__item">
+                                        <a href="https://social-plugins.line.me/lineit/share?url=" class="o-social o-social--sm o-social--line" target="_blank" data-share>
+                                            <span class="u-hidden@mb-only">LINE</span>
+                                        </a>
+                                    </li>
+                                    <li class="l-flex__item">
+                                        <div class="l-copy" data-copy>
+                                            <div class="l-copy__action">
+                                                <a href="#" class="o-social o-social--sm o-social--copy" data-copy-action>
+                                                    <span class="u-hidden@mb-only">複製網址</span>
+                                                </a>
+                                            </div>
+                                            <div class="l-copy__msg">
+                                                <div class="o-tooltip o-tooltip--relative o-tooltip--top" data-copy-msg>
+                                                    <div class="o-tooltip__content u-nowrap">已複製</div>
+                                                    <div class="o-tooltip__arrow"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="c-modal__action">
-            <div class="l-action l-action--inline">
-                <div class="l-action__item">
-                    <a href="@Model.SubcriptionSingleLink" class="o-btn o-btn--primary o-btn--sm" id="subscriptionSingle">單筆申購</a>
-                </div>
-                <div class="l-action__item">
-                    <a href="@Model.SubcriptionRegularLink" class="o-btn o-btn--primary o-btn--sm" id="subscriptionRegular">定期定額</a>
-                </div>
+    </div>
+ </div>
+
+    <div class="c-notice" data-collapse="true">
+        @if (TemplateCanRender)
+        {
+            @Html.Sitecore().Field(Template.FundDetailsPage.Fields.Content.ToString(), Model.Item)
+        }
+    </div>
+
+    <div id="popupCurrency" class="c-modal c-modal--xs mfp-hide">
+        <div class="c-modal__wrap">
+            <header class="c-modal__header">
+                <h2 class="c-modal__title">幣別提示說明</h2>
+            </header>
+            <div class="c-modal__content">
+                @if (TemplateCanRender)
+                {
+                    @Html.Sitecore().Field(Template.FundDetailsPage.Fields.LightboxNote.ToString(), Model.Item)
+                }
             </div>
         </div>
     </div>
-</div>
-<div id="popupCurrency" class="c-modal c-modal--xs mfp-hide">
-    <div class="c-modal__wrap">
-        <header class="c-modal__header">
-            <h2 class="c-modal__title">幣別提示說明</h2>
-        </header>
-        <div class="c-modal__content">
-            @if (TemplateCanRender)
-            {
-                @Html.Sitecore().Field(Template.FundDetailsPage.Fields.LightboxNote.ToString(), Model.Item)
+    <div id="popupTradeRule" class="c-modal mfp-hide">
+        <div class="c-modal__wrap">
+            <header class="c-modal__header">
+                <h2 class="c-modal__title">短線交易規定</h2>
+            </header>
+            <div class="c-modal__content">
+                <p>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id="popupPriceMechanism" class="c-modal mfp-hide">
+        <div class="c-modal__wrap">
+            <header class="c-modal__header">
+                <h2 class="c-modal__title">公平價格調整機制</h2>
+            </header>
+            <div class="c-modal__content">
+                <p>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id="popupAntiDilution" class="c-modal mfp-hide">
+        <div class="c-modal__wrap">
+            <header class="c-modal__header">
+                <h2 class="c-modal__title">反稀釋機制</h2>
+            </header>
+            <div class="c-modal__content">
+                <p>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var getUrlString = location.href;
+        var url = new URL(getUrlString);
+        var fundId = url.searchParams.get('id');
+    </script>
+
+    <script defer>
+          (function ($, window, document, undefined) {
+
+        document.addEventListener('DOMContentLoaded', function () {
+              if (!jQuery) {
+                  return;
             }
-        </div>
-    </div>
-</div>
-<div id="popupCurrencyWebSite" class="c-modal mfp-hide">
-    <div class="c-modal__wrap">
-        <header class="c-modal__header">
-            <h2 class="c-modal__title">外匯匯率</h2>
-        </header>
-        <div class="c-modal__content">
-            <iframe src="https://mobiletest.firstbank.com.tw/c1/cheetah/zh/07/currency">
-            </iframe>
-        </div>
-    </div>
-</div>
-<div id="popupTradeRule" class="c-modal mfp-hide">
-    <div class="c-modal__wrap">
-        <header class="c-modal__header">
-            <h2 class="c-modal__title">短線交易規定</h2>
-        </header>
-        <div class="c-modal__content">
-            <p>
-            </p>
-        </div>
-    </div>
-</div>
-<div id="popupPriceMechanism" class="c-modal mfp-hide">
-    <div class="c-modal__wrap">
-        <header class="c-modal__header">
-            <h2 class="c-modal__title">公平價格調整機制</h2>
-        </header>
-        <div class="c-modal__content">
-            <p>
-            </p>
-        </div>
-    </div>
-</div>
-<div id="popupAntiDilution" class="c-modal mfp-hide">
-    <div class="c-modal__wrap">
-        <header class="c-modal__header">
-            <h2 class="c-modal__title">反稀釋機制</h2>
-        </header>
-        <div class="c-modal__content">
-            <p>
-            </p>
-        </div>
-    </div>
-</div>
+            $('body').addClass("has-bottomTool");
+            function checkItemExists(key, value) {
+                let existingEntries = JSON.parse(localStorage.getItem(key) || '[]');
+                if (!existingEntries.includes(value)) {
+                    return false;
+                } else
+                {
+                    return true;
+                }
+            }
+            function addItem(key,value) {
+                let existingEntries = JSON.parse(localStorage.getItem(key) || '[]');
+                if (!existingEntries.includes(value)) {
+                    existingEntries.push(value);
+                    localStorage.setItem(key, JSON.stringify(existingEntries));
+                }
+            }
+            function removeItem(key, value) {
+                let existingEntries = JSON.parse(localStorage.getItem(key) || '[]');
+                if (existingEntries.includes(value)) {
+                    existingEntries.splice(existingEntries.indexOf(value),1);
+                    localStorage.setItem(key, JSON.stringify(existingEntries));
+                }
+            }
 
-<script>
-    var getUrlString = location.href;
-    var url = new URL(getUrlString);
-    var fundId = url.searchParams.get('id');
-</script>
 
-<script defer>
-    (function ($, window, document, undefined) {
-
-  document.addEventListener('DOMContentLoaded', function () {
-        if (!jQuery) {
-            return;
-      }
-      function checkItemExists(key, value) {
-          let existingEntries = JSON.parse(localStorage.getItem(key) || '[]');
-          if (!existingEntries.includes(value)) {
-              return false;
-          } else
-          {
-              return true;
-          }
-      }
-      function addItem(key,value) {
-          let existingEntries = JSON.parse(localStorage.getItem(key) || '[]');
-          if (!existingEntries.includes(value)) {
-              existingEntries.push(value);
-              localStorage.setItem(key, JSON.stringify(existingEntries));
-          }
-      }
-      function removeItem(key, value) {
-          let existingEntries = JSON.parse(localStorage.getItem(key) || '[]');
-          if (existingEntries.includes(value)) {
-              existingEntries.splice(existingEntries.indexOf(value),1);
-              localStorage.setItem(key, JSON.stringify(existingEntries));
-          }
-      }
-      if ($(window).width() < 768){
-            $('input[name="platform"]').on('click', function () {
-                let val = $(this).data('name');
-                if (val == "firste") {
-                    $('#subscriptionSingle').attr("href", "@Model.MobileESingleLink");
-                    $('#subscriptionRegular').attr("href", "@Model.MobileERegularLink");
+            $('#closeFiveYearsLink').attr("href", $('#closeFiveYearsLink').attr("href") + "?id=" + fundId);
+            if (checkItemExists("FocusFundId",fundId)  ) {
+                $('#focusBtn').addClass('is-active');
+                $('#focusBtn').data('add',"true");
+            }
+            if (checkItemExists("CompareFundId", fundId)) {
+                $('#compareBtn').addClass('is-active');
+                $('#compareBtn').data('add',"true");
+            }
+            $('#focusBtn').on('click', function () {
+                if ($(this).data('add') == "false")
+                {
+                    addItem('FocusFundId', fundId);
+                    $(this).data('add',"true");
                 } else {
-                    $('#subscriptionSingle').attr("href", "@Model.MobileIleoSingleLink");
-                    $('#subscriptionRegular').attr("href", "@Model.MobileIleoRegularLink");
+                    removeItem('FocusFundId', fundId);
+                     $(this).data('add',"false");
                 }
-                localStorage.setItem("MobilePlatform", val);
             });
-        }
+            $('#compareBtn').on('click', function () {
 
-      if (localStorage.getItem('MobilePlatform') !== 'undefined')
-      {
-          let val = localStorage.getItem('MobilePlatform');
-          if (val == "firste") {
-              $('input[data-name="firste"]').prop('checked', true);
-              $('input[data-name="firste"]').click();
-          } else {
-              $('input[data-name="ileo"]').prop('checked', true);
+                if ($(this).data('add') == "false") {
+                    addItem('CompareFundId', fundId);
+               $(this).data('add',"true");
 
-              $('input[data-name="ileo"]').click();
-          }
-
-      }
-
-
-      $('#closeFiveYearsLink').attr("href", $('#closeFiveYearsLink').attr("href") + "?id=" + fundId);
-      if (checkItemExists("FocusFundId",fundId)  ) {
-          $('#focusBtn').addClass('is-active');
-          $('#focusBtn').data('add',"true");
-      }
-      if (checkItemExists("CompareFundId", fundId)) {
-          $('#compareBtn').addClass('is-active');
-          $('#compareBtn').data('add',"true");
-      }
-      $('#focusBtn').on('click', function () {
-          if ($(this).data('add') == "false")
-          {
-              addItem('FocusFundId', fundId);
-              $(this).data('add',"true");
-          } else {
-              removeItem('FocusFundId', fundId);
+                } else {
+                    removeItem('CompareFundId', fundId);
                $(this).data('add',"false");
-          }
-      });
-      $('#compareBtn').on('click', function () {
 
-          if ($(this).data('add') == "false") {
-              addItem('CompareFundId', fundId);
-         $(this).data('add',"true");
+                }
+            });
+              function emptyValueToDash (str)
+              {
+              if(str == null || str.trim().length == 0) {
+                  return "-"
+                  }
+              else{
+              return str;
+              }
+              }
 
-          } else {
-              removeItem('CompareFundId', fundId);
-         $(this).data('add',"false");
-
-          }
-      });
-        function emptyValueToDash (str)
-        {
-        if(str == null || str.trim().length == 0) {
-            return "-"
-            }
-        else{
-        return str;
+            //報酬率切換
+         $('[name="currency1"]').on('change',function(){
+              switch($(this).val()) {
+          case '原幣':
+              $('#originReturnTable').removeClass('u-hidden');
+              $('#twdReturnTable').addClass('u-hidden');
+               $('#annualReturnTable').addClass('u-hidden');
+            break;
+          case '台幣':
+              $('#originReturnTable').addClass('u-hidden');
+              $('#twdReturnTable').removeClass('u-hidden');
+               $('#annualReturnTable').addClass('u-hidden');
+            break;
+          case '年化':
+              $('#originReturnTable').addClass('u-hidden');
+              $('#twdReturnTable').addClass('u-hidden');
+               $('#annualReturnTable').removeClass('u-hidden');
+            break;
         }
-        }
-
-      //報酬率切換
-   $('[name="currency1"]').on('change',function(){
-        switch($(this).val()) {
-    case '原幣':
-        $('#originReturnTable').removeClass('u-hidden');
-        $('#twdReturnTable').addClass('u-hidden');
-         $('#annualReturnTable').addClass('u-hidden');
-      break;
-    case '台幣':
-        $('#originReturnTable').addClass('u-hidden');
-        $('#twdReturnTable').removeClass('u-hidden');
-         $('#annualReturnTable').addClass('u-hidden');
-      break;
-    case '年化':
-        $('#originReturnTable').addClass('u-hidden');
-        $('#twdReturnTable').addClass('u-hidden');
-         $('#annualReturnTable').removeClass('u-hidden');
-      break;
-  }
-   });
-      $('[name="currency1"]').trigger('change');
-      //配息紀錄
-  let dividendData = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundDividendRecords));
-    if(dividendData.length > 0){
-        $('#dividendCurrency').html(`每單位配息<br class="u-hidden@dt-only">金額(${dividendData[0].Currency.trim()})`);
-  const dividendYearData = dividendData.map((item) => new Date(item.BaseDate).getFullYear()).filter(function (element, index, arr) {
-                        return arr.indexOf(element) === index;
-                    });
-                  $.each(dividendYearData, function( index, value )
-                  {
-                    $('#dividend_Select').append($('<option>', {
-                    value: value,
-                    text: value
-                        }));
-                  });
-                   let dividendTableHtml = "";
-                    $('#dividend_Select').on('change',function(){
-                    let dividendTableHtml = "";
-                     let year = $(this).val();
-                     let yearData = dividendData.filter(function (element, index, arr) {
-                        return element.ExDividendDate.indexOf(year) >= 0;
-                    });
-                    for(let i = 0; i < yearData.length ;i++)
-                    {
-                     dividendTableHtml += `<tr>
-                     <td>${emptyValueToDash(yearData[i].BaseDate)}</td>
-                     <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
-                     <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
-                     <td>配息</td>
-                     <td>${yearData[i].Dividend}</td>
-                     <td>${yearData[i].AnnualizedDividendRate}%</td>
-                           </tr>`
-                    }
-                    $('#dividendTable').html(dividendTableHtml);
-
+         });
+            $('[name="currency1"]').trigger('change');
+            //配息紀錄
+        let dividendData = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundDividendRecords));
+          if(dividendData.length > 0){
+              $('#dividendCurrency').html(`每單位配息<br class="u-hidden@dt-only">金額(${dividendData[0].Currency.trim()})`);
+        const dividendYearData = dividendData.map((item) => new Date(item.BaseDate).getFullYear()).filter(function (element, index, arr) {
+                              return arr.indexOf(element) === index;
+                          });
+                        $.each(dividendYearData, function( index, value )
+                        {
+                          $('#dividend_Select').append($('<option>', {
+                          value: value,
+                          text: value
+                              }));
                         });
-            $('#dividend_Select').trigger('change');
-      }
-      //切換基金級別Select
-      $.ajax({
-          url: `@FundSameLevelApiUrl`,
-          method: 'post',
-          data:
-          {
-              fundId : fundId
-          },
-          success: function (result) {
-              if (result && result.resultSet.result.length > 0) {
-                  const set = new Set();
-                  const filterData = result.resultSet.result.filter(item => !set.has(item.v5) ? set.add(item.v5) : false);
-                  $.each(filterData, function (index, value) {
-                      if (value.v5  !== fundId) {
-                          $('#fundSelect').append($('<option>', {
-                              value: value.v5,
-                              text: value.v5
-                          }));
-                      }
-                  });
-                  $('#fundSelect').on('change', function () {
-                      let value = $(this).val();
-                      window.location.href = location.pathname + "?id=" + value;
-                  });
-              } else {
+                         let dividendTableHtml = "";
+                          $('#dividend_Select').on('change',function(){
+                          let dividendTableHtml = "";
+                           let year = $(this).val();
+                           let yearData = dividendData.filter(function (element, index, arr) {
+                              return element.ExDividendDate.indexOf(year) >= 0;
+                          });
+                          for(let i = 0; i < yearData.length ;i++)
+                          {
+                           dividendTableHtml += `<tr>
+                           <td>${emptyValueToDash(yearData[i].BaseDate)}</td>
+                           <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
+                           <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
+                           <td>配息</td>
+                           <td>${yearData[i].Dividend}</td>
+                           <td>${yearData[i].AnnualizedDividendRate}%</td>
+                                 </tr>`
+                          }
+                          $('#dividendTable').html(dividendTableHtml);
 
-              }
-          },
-          error: function (err) {
-            console.log(err) },
-      });
-
-      //國內外基金-PDF
-      $.ajax({
-          url: `@FundDocLinkApiUrl`,
-          method: 'post',
-          data:
-          {
-              fundId: fundId,
-              idx : '1'
-          },
-          success: function (result)
-          {
-              if (result && result.resultSet.result[0].v1)
-              {
-                  //公開說明書
-                  $('#openDoc').removeClass("u-hidden")
-                  $('#openDoc').find('a').attr("href", result.resultSet.result[0].v1);
-              } else
-              {
-                  $('#openDoc').addClass("u-hidden")
-                  $('#openDoc').find('a').attr("href", "");
-              }
-          },
-          error: function (err) {  console.log(err) },
-      });
-      $.ajax({
-          url: `@FundDocLinkApiUrl`,
-          method: 'post',
-          data:
-          {
-              fundId: fundId,
-              idx : '2'
-          },
-          success: function (result) {
-              if (result && result.resultSet.result[0].v1) {
-                  //財務報告書
-                  $('#financialReportDoc').removeClass("u-hidden")
-                  $('#financialReportDoc').find('a').attr("href",  result.resultSet.result[0].v1);
-              } else {
-                  $('#financialReportDoc').addClass("u-hidden")
-                  $('#financialReportDoc').find('a').attr("href", "");
-              }
-          },
-          error: function (err) { console.log(err) },
-      });
-      $.ajax({
-          url: `@FundDocLinkApiUrl`,
-          method: 'post',
-          data:
-          {
-              fundId: fundId,
-              idx : '5'
-          },
-          success: function (result) {
-              if (result &&  result.resultSet.result[0].v1) {
-                  //基金月報
-                  $('#monthReportDoc').removeClass("u-hidden")
-                  $('#monthReportDoc').find('a').attr("href",  result.resultSet.result[0].v1);
-              } else {
-                  $('#monthReportDoc').addClass("u-hidden")
-                  $('#monthReportDoc').find('a').attr("href", "");
-              }
-          },
-          error: function (err) { console.log(err) },
-      });
-      $.ajax({
-          url: `@FundDocLinkApiUrl`,
-          method: 'post',
-          data:
-          {
-              fundId: fundId,
-              idx : '6'
-          },
-          success: function (result) {
-              //投資人專屬
-              if (result &&  result.resultSet.result[0].v1) {
-                  $('#investExclusiveDoc').removeClass("u-hidden")
-                  $('#investExclusiveDoc').find('a').attr("href",  result.resultSet.result[0].v1);
-              } else {
-                  $('#investExclusiveDoc').addClass("u-hidden")
-                  $('#investExclusiveDoc').find('a').attr("href", "");
-              }
-          },
-          error: function (err) { console.log(err) },
-      });
-      $.ajax({
-         url: `@FundDocLinkApiUrl`,
-          method: 'post',
-          data:
-          {
-              fundId: fundId,
-              idx : '7'
-          },
-          success: function (result) {
-              //投資人一般
-              if (result &&  result.resultSet.result[0].v1) {
-                  $('#investNomnalDoc').removeClass("u-hidden")
-                  $('#investNomnalDoc').find('a').attr("href",  result.resultSet.result[0].v1);
-              } else {
-                  $('#investNomnalDoc').addClass("u-hidden")
-                  $('#investNomnalDoc').find('a').attr("href", "");
-              }
-          },
-          error: function (err) { console.log(err) },
-      });
-
-      $.ajax({
-          url: `@FundRuleTextApiUrl`,
-          method: 'post',
-          data:
-          {
-              fundId: fundId,
-              type: 'SwingTrade'
-          },
-          success: function (result) {
-              if (result &&  result.resultSet.result[0].v3) {
-                  //短線交易
-                  $('#popupTradeRuleClick').removeClass('u-hidden');
-                  $('#popupTradeRule').find('p').text(result.resultSet.result[0].v3)
-              } else {
-                  $('#popupTradeRuleClick').addClass('u-hidden');
-                   $('#popupTradeRule').find('p').text("")
-              }
-          },
-          error: function (err) {console.log(err) },
-      });
-      $.ajax({
-          url: `@FundRuleTextApiUrl`,
-          method: 'post',
-          data:
-          {
-              fundId: fundId,
-              type: 'Fair'
-          },
-          success: function (result) {
-              if (result && result.resultSet.result[0].v3) {
-                  //公平價格調整機制
-                  $('#popupPriceMechanismClick').removeClass('u-hidden');
-
-                  $('#popupPriceMechanism').find('p').text(result.resultSet.result[0].v3)
-              } else {
-                  $('#popupPriceMechanismClick').addClass('u-hidden');
-
-                  $('#popupPriceMechanism').find('p').text("")
-              }
-          },
-          error: function (err) { console.log(err) },
-      });
-      $.ajax({
-          url: `@FundRuleTextApiUrl`,
-          method: 'post',
-          data:
-          {
-              fundId: fundId,
-              type: 'AntiDilute'
-          },
-          success: function (result) {
-              if (result && result.resultSet.result[0].v3) {
-                  $('#popupAntiDilutionClick').removeClass('u-hidden');
-
-                  $('#popupAntiDilution').find('p').text(result.resultSet.result[0].v3)
-              } else {
-                  $('#popupAntiDilutionClick').addClass('u-hidden');
-                  $('#popupAntiDilution').find('p').text("")
-              }
-          },
-          error: function (err) { console.log(err) },
-      });
-  });
-
-
-    })(jQuery, window, document);
-
-</script>
-
-
-<script defer>
-        (function ($, window, document, undefined) {
-
-    // 基金詳細頁 – 基金概況 – 近一年績效表現
-    // 基金詳細頁 – 基金概況 – 近一年淨值表現
-    document.addEventListener('DOMContentLoaded', function () {
-        if (!jQuery) {
-            return;
-        }
-        var nearlySetting = {
-            chart: {
-                zooming: {
-                    mouseWheel: {
-                        enabled: false
-                    }
-                },
-                height: 280
-            },
-            credits: {
-                enabled: false
-            },
-            title: {
-                text: ''
-            },
-            scrollbar: {
-                enabled: false
-            },
-            navigator: {
-                enabled: false
-            },
-            rangeSelector: {
-                enabled: false
-            },
-            legend: {
-                enabled: true,
-                align: 'left',
-                floating: false,
-                y: 20,
-                itemStyle: {
-                    fontSize: '1em',
-                    color: '#222',
-                    cursor: 'default'
-                },
-                itemHoverStyle: {
-                    color: '#222'
-                },
-                symbolHeight: 12,
-                symbolWidth: 12
-            },
-            plotOptions: {
-                series: {
-                    dataGrouping: {
-                        enabled: false
-                    },
-                    states: {
-                        hover: {
-                            enabled: true,
-                            lineWidth: 2,
-                            halo: {
-                                size: 8
-                            }
-                        }
-                    },
-                    events: {
-                        legendItemClick: function () {
-                            return false;
-                        }
-                    }
-                }
-            },
-            xAxis: {
-                type: 'datetime',
-                tickPosition: 'inside',
-                tickWidth: 0.5,
-                tickLength: 7,
-                labels: {
-                    formatter: function () {
-                        const format = {
-                            day: '%Y/%m',
-                            week: '%Y/%m',
-                            month: '%Y/%m'
-                        }[this.tickPositionInfo.unitName];
-                        return Highcharts.dateFormat(format, this.value);
-                    },
-                    style: {
-                        color: '#6e6e6e'
-                    }
-                },
-                crosshair: {
-                    width: 1,
-                    color: '#c3c3c3'
-                },
-                lineColor: '#ebebeb',
-                tickColor: '#ebebeb'
+                              });
+                  $('#dividend_Select').trigger('change');
             }
-        };
-        var chart =  Highcharts.stockChart('performanceChart', {
-                        ...nearlySetting,
-                        tooltip: {
-                            split: false,
-                            useHTML: true,
-                            formatter: function () {
-                                const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '%' + '</div>';
-                                return tooltip;
-                            },
-                            shadow: {
-                                color: 'rgba(0, 0, 0, 0.1)'
+            //切換基金級別Select
+            $.ajax({
+                url: `@FundSameLevelApiUrl`,
+                method: 'post',
+                data:
+                {
+                    fundId : fundId
+                },
+                success: function (result) {
+                    if (result && result.resultSet.result.length > 0) {
+                        const set = new Set();
+                        const filterData = result.resultSet.result.filter(item => !set.has(item.v5) ? set.add(item.v5) : false);
+                        $.each(filterData, function (index, value) {
+                            if (value.v5  !== fundId) {
+                                $('#fundSelect').find("select").append($('<option>', {
+                                    value: value.v5,
+                                    text: value.v6
+                                }));
                             }
-                        },
-                        series: [{
-                            name: '績效',
-                            data: [],
-                            legendSymbol: 'rectangle',
-                            color: '#238C6C'
-                        }],
-                        yAxis: {
-                            showLastLabel: true,
-                            opposite: false,
-                            labels: {
-                                y: 4,
-                                formatter: function (value) {
-                                    return value.value + '%';
-                                },
-                                style: {
-                                    color: '#6e6e6e'
-                                }
-                            },
-                            plotLines: [{
-                                color: '#c3c3c3'
-                            }]
-                        }
-                    });
-                            if (chart) {
-                    chart.showLoading();
-                }
-        async function initPerformance() {
-            try {
-                    $('[data-chart="performance"]').find('.c-empty').addClass('u-hidden');
-                    $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
-                /*
-                 * API參數
-                 * id: 基金代號：請替換成實際基金的id
-                 */
-                const params = {
-                    id: fundId
-                };
+                        });
+                        $('#fundSelect').find("select").on('change', function () {
+                            let value = $(this).val();
+                            window.location.href = location.pathname + "?id=" + value;
+                        });
+                    } else {
+                          $('#fundSelect').find("select").addClass('u-hidden');
+                    }
+                },
+                error: function (err) {
+                  console.log(err) },
+            });
 
-                let data = {};
-               function roundToTwoNum(num) {
-                    return +(Math.round(num + 'e+2') + 'e-2');
-                }
-                $.ajax({
-                    url: '@FundCloseYearPerformanceApiUrl',
-                    method: 'post',
-                    data:
+            //國內外基金-PDF
+            $.ajax({
+                url: `@FundDocLinkApiUrl`,
+                method: 'post',
+                data:
+                {
+                    fundId: fundId,
+                    idx : '1'
+                },
+                success: function (result)
+                {
+                    if (result && result.resultSet.result[0].v1)
                     {
-                        fundId : fundId
-                    },
-
-                    success: function (res) {
-                        data = res;
-              if (Object.keys(data.resultSet.result).length != 0) {
-                    //const updateDate = data.body.updateDate.replaceAll('-', '/');
-                    // 資料日期
-                    //$('[data-update-date="performance"]').text(updateDate);
-                    const mapData = data.resultSet.result.map(item => {
-                        return {
-                            x: new Date(item.v1.replaceAll('/', '-')).getTime(),
-                            name: item.v1.replaceAll('/', '-'),
-                            y: roundToTwoNum(item.v2)
-                        };
-                    });
-                    mapData.reverse();
-                    Highcharts.stockChart('performanceChart', {
-                        ...nearlySetting,
-                        tooltip: {
-                            split: false,
-                            useHTML: true,
-                            formatter: function () {
-                                const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '%' + '</div>';
-                                return tooltip;
-                            },
-                            shadow: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        series: [{
-                            name: '績效',
-                            data: mapData,
-                            legendSymbol: 'rectangle',
-                            color: '#238C6C'
-                        }],
-                        yAxis: {
-                            showLastLabel: true,
-                            opposite: false,
-                            labels: {
-                                y: 4,
-                                formatter: function (value) {
-                                    return value.value + '%';
-                                },
-                                style: {
-                                    color: '#6e6e6e'
-                                }
-                            },
-                            plotLines: [{
-                                color: '#c3c3c3'
-                            }]
-                        }
-                    });
-                    $('[data-chart="performance"]').find('.c-empty').addClass('u-hidden');
-                    $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
-                }else
+                        //公開說明書
+                        $('#openDoc').removeClass("u-hidden")
+                        $('#openDoc').find('a').attr("href", result.resultSet.result[0].v1);
+                    } else
+                    {
+                        $('#openDoc').addClass("u-hidden")
+                        $('#openDoc').find('a').attr("href", "");
+                    }
+                },
+                error: function (err) {  console.log(err) },
+            });
+            $.ajax({
+                url: `@FundDocLinkApiUrl`,
+                method: 'post',
+                data:
                 {
-                    $('[data-chart="performance"]').find('.c-empty').removeClass('u-hidden');
-                    $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
-                }
-                        },
-                    error: function (err) {
-                        $('[data-chart="performance"]').find('.c-empty').removeClass('u-hidden');
-                        $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
-                        console.log(err)
-                    },
-                });
-
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        async function initNetWorth() {
-            try {
-
-                const data = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundCloseYearsNetValue));
-                function roundToFourString(num) {
-                    return num.toFixed(4);
-                }
-                function roundToFourNum(num) {
-                    return +(Math.round(num + 'e+4') + 'e-4');
-                }
-
-                if (Object.keys(data).length != 0) {
-                    const mapData = data.map(item => {
-                        return {
-                            x: new Date(item.NetAssetValueDate).getTime(),
-                            name: item.NetAssetValueDate,
-                            y: roundToFourNum(item.NetAssetValue)
-                        };
-                    });
-
-                    $('#maxNetValue').text(roundToFourString(Math.max(...data.map(p => p.NetAssetValue))));
-                    $('#minNetValue').text(roundToFourString(Math.min(...data.map(p => p.NetAssetValue))));
-
-                    mapData.reverse();
-                    //const updateDate = data.body.updateDate.replaceAll('-', '/');
-                    // 資料日期
-                    // $('[data-update-date="netWorth"]').text(updateDate);
-                    Highcharts.stockChart('netWorthChart', {
-                        ...nearlySetting,
-                        tooltip: {
-                            split: false,
-                            useHTML: true,
-                            formatter: function () {
-                                const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '</div>';
-                                return tooltip;
-                            },
-                            shadow: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        series: [{
-                            name: '淨值',
-                            data: mapData,
-                            legendSymbol: 'rectangle',
-                            color: '#A4844E'
-                        }],
-                        yAxis: {
-                            showLastLabel: true,
-                            opposite: false,
-                            labels: {
-                                y: 4,
-                                formatter: function (value) {
-                                    return value.value;
-                                },
-                                style: {
-                                    color: '#6e6e6e'
-                                }
-                            },
-                            plotLines: [{
-                                color: '#c3c3c3'
-                            }]
-                        }
-                    });
-                    $('[data-chart="netWorth"]').find('.c-empty').addClass('u-hidden');
-                    $('[data-chart="netWorth"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
-                }else
+                    fundId: fundId,
+                    idx : '2'
+                },
+                success: function (result) {
+                    if (result && result.resultSet.result[0].v1) {
+                        //財務報告書
+                        $('#financialReportDoc').removeClass("u-hidden")
+                        $('#financialReportDoc').find('a').attr("href",  result.resultSet.result[0].v1);
+                    } else {
+                        $('#financialReportDoc').addClass("u-hidden")
+                        $('#financialReportDoc').find('a').attr("href", "");
+                    }
+                },
+                error: function (err) { console.log(err) },
+            });
+            $.ajax({
+                url: `@FundDocLinkApiUrl`,
+                method: 'post',
+                data:
                 {
-                    $('[data-chart="performance"]').find('.c-empty').removeClass('u-hidden');
-                    $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
-                }
-            } catch (error) {
-                $('[data-chart="performance"]').find('.c-empty').removeClass('u-hidden');
-                $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
-                console.error('Error:', error);
-            }
-        }
+                    fundId: fundId,
+                    idx : '5'
+                },
+                success: function (result) {
+                    if (result &&  result.resultSet.result[0].v1) {
+                        //基金月報
+                        $('#monthReportDoc').removeClass("u-hidden")
+                        $('#monthReportDoc').find('a').attr("href",  result.resultSet.result[0].v1);
+                    } else {
+                        $('#monthReportDoc').addClass("u-hidden")
+                        $('#monthReportDoc').find('a').attr("href", "");
+                    }
+                },
+                error: function (err) { console.log(err) },
+            });
+            $.ajax({
+                url: `@FundDocLinkApiUrl`,
+                method: 'post',
+                data:
+                {
+                    fundId: fundId,
+                    idx : '6'
+                },
+                success: function (result) {
+                    //投資人專屬
+                    if (result &&  result.resultSet.result[0].v1) {
+                        $('#investExclusiveDoc').removeClass("u-hidden")
+                        $('#investExclusiveDoc').find('a').attr("href",  result.resultSet.result[0].v1);
+                    } else {
+                        $('#investExclusiveDoc').addClass("u-hidden")
+                        $('#investExclusiveDoc').find('a').attr("href", "");
+                    }
+                },
+                error: function (err) { console.log(err) },
+            });
+            $.ajax({
+               url: `@FundDocLinkApiUrl`,
+                method: 'post',
+                data:
+                {
+                    fundId: fundId,
+                    idx : '7'
+                },
+                success: function (result) {
+                    //投資人一般
+                    if (result &&  result.resultSet.result[0].v1) {
+                        $('#investNomnalDoc').removeClass("u-hidden")
+                        $('#investNomnalDoc').find('a').attr("href",  result.resultSet.result[0].v1);
+                    } else {
+                        $('#investNomnalDoc').addClass("u-hidden")
+                        $('#investNomnalDoc').find('a').attr("href", "");
+                    }
+                },
+                error: function (err) { console.log(err) },
+            });
 
-        initPerformance();
-        initNetWorth();
-    });
-        })(jQuery, window, document);
-</script>
+            $.ajax({
+                url: `@FundRuleTextApiUrl`,
+                method: 'post',
+                data:
+                {
+                    fundId: fundId,
+                    type: 'SwingTrade'
+                },
+                success: function (result) {
+                    if (result &&  result.resultSet.result[0].v3) {
+                        //短線交易
+                        $('#popupTradeRuleClick').removeClass('u-hidden');
+                        $('#popupTradeRule').find('p').text(result.resultSet.result[0].v3)
+                    } else {
+                        $('#popupTradeRuleClick').addClass('u-hidden');
+                         $('#popupTradeRule').find('p').text("")
+                    }
+                },
+                error: function (err) {console.log(err) },
+            });
+            $.ajax({
+                url: `@FundRuleTextApiUrl`,
+                method: 'post',
+                data:
+                {
+                    fundId: fundId,
+                    type: 'Fair'
+                },
+                success: function (result) {
+                    if (result && result.resultSet.result[0].v3) {
+                        //公平價格調整機制
+                        $('#popupPriceMechanismClick').removeClass('u-hidden');
+
+                        $('#popupPriceMechanism').find('p').text(result.resultSet.result[0].v3)
+                    } else {
+                        $('#popupPriceMechanismClick').addClass('u-hidden');
+
+                        $('#popupPriceMechanism').find('p').text("")
+                    }
+                },
+                error: function (err) { console.log(err) },
+            });
+            $.ajax({
+                url: `@FundRuleTextApiUrl`,
+                method: 'post',
+                data:
+                {
+                    fundId: fundId,
+                    type: 'AntiDilute'
+                },
+                success: function (result) {
+                    if (result && result.resultSet.result[0].v3) {
+                        $('#popupAntiDilutionClick').removeClass('u-hidden');
+
+                        $('#popupAntiDilution').find('p').text(result.resultSet.result[0].v3)
+                    } else {
+                        $('#popupAntiDilutionClick').addClass('u-hidden');
+                        $('#popupAntiDilution').find('p').text("")
+                    }
+                },
+                error: function (err) { console.log(err) },
+            });
+        });
 
 
+          })(jQuery, window, document);
 
-<script defer>
+    </script>
+
+
+    <script defer>
             (function ($, window, document, undefined) {
 
-    // 基金詳細頁 – 績效 – 績效走勢圖
-    // 基金詳細頁 – 淨值 – 淨值走勢圖
-    document.addEventListener('DOMContentLoaded', function () {
-        if (!jQuery) {
-            return;
-        }
-        $('[data-trend-filter="trend"]').on('change', function () {
-            getParams();
-        });
-        $('[data-trend-filter="dateRange"]').on('change', function () {
-            $('[data-trend-filter="inputStart"], [data-trend-filter="inputEnd"]').val('');
-            $('[data-chart="trend"] .l-form').removeClass('is-error');
-            getParams();
-        });
-        $('[data-trend-filter="submit"]').on('click', function (e) {
-            if (required($('[data-trend-filter="inputStart"]')) && required($('[data-trend-filter="inputEnd"]')) && dateRange()) {
-                $('[data-trend-filter="dateRange"]').prop('checked', false);
-                getParams();
+        // 基金詳細頁 – 基金概況 – 近一年績效表現
+        // 基金詳細頁 – 基金概況 – 近一年淨值表現
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
             }
-        });
-        $('[data-trend-filter="trend"]:checked').trigger('change');
-        var chart;
-
-        function required($element) {
-            const requiredMsg = '欄位必填';
-            let $parents = $element.closest('.l-form');
-            let $msg = $parents.find('.o-errorText');
-            let isEmpty = $element.val().trim() == '';
-            $parents.toggleClass('is-error', isEmpty);
-            $msg.text(isEmpty ? requiredMsg : '');
-            return !isEmpty;
-        }
-
-        function dateRange() {
-            const dateRangeMsg = '起訖日期區間錯誤';
-            let $inputStart = $('[data-trend-filter="inputStart"]');
-            let $inputEnd = $('[data-trend-filter="inputEnd"]');
-            let startDate = new Date($inputStart.val());
-            let endDate = new Date($inputEnd.val());
-            let $startParents = $inputStart.closest('.l-form');
-            let $endParents = $inputEnd.closest('.l-form');
-            if (endDate < startDate) {
-                $startParents.addClass('is-error');
-                $endParents.addClass('is-error');
-                $startParents.find('.o-errorText').text(dateRangeMsg);
-                return false;
-            } else {
-                $startParents.removeClass('is-error');
-                $endParents.removeClass('is-error');
-                $startParents.find('.o-errorText').text('');
-                return true;
-            }
-        }
-
-        function getParams() {
-            const obj = {
-                trend: $('[data-trend-filter="trend"]:checked').val(),
-                range: $('[data-trend-filter="dateRange"]:checked').val(),
-                startdate: $('[data-trend-filter="inputStart"]').val(),
-                enddate: $('[data-trend-filter="inputEnd"]').val(),
-            };
-
-            let today = new Date();
-            function CalDateRange(month) {
-                let set = new Date().setMonth(new Date().getMonth() - month);
-                let setDate = new Date(set);
-                return setDate.getFullYear() + "-" + ((setDate.getMonth()  + 1) < 10 ? "0"+ (setDate.getMonth()  + 1) : (setDate.getMonth()  + 1))+ "-" + setDate.getDate();
-            }
-            if (!obj.startdate && !obj.enddate) {
-                switch (obj.range) {
-                    case 'sinceYear':
-                        obj.startdate = today.getFullYear() + "-" + "01-01";
-                        obj.enddate = today.toISOString().split('T')[0];
-                        break;
-                    case '3m':
-                        obj.startdate = CalDateRange(3)
-                        obj.enddate = today.toISOString().split('T')[0];
-                        break;
-                    case '6m':
-                        obj.startdate = CalDateRange(6)
-                        obj.enddate = today.toISOString().split('T')[0];
-                        break;
-                    case '12m':
-                        obj.startdate = CalDateRange(12);
-                        obj.enddate = today.toISOString().split('T')[0];
-                        break;
-                    case '24m':
-                        obj.startdate = CalDateRange(24);
-                        obj.enddate = today.toISOString().split('T')[0];
-                        break;
-                        case '36m':
-                        obj.startdate = CalDateRange(36);
-                        obj.enddate = today.toISOString().split('T')[0];
-                        break;
-                    case '60m':
-                        obj.startdate = CalDateRange(60);
-                        obj.enddate = today.toISOString().split('T')[0];
-                        break;
-                    case 'establishment':
-                        obj.startdate = $('span[data-establishmentDate]').text().replace('/', '-');
-                        obj.enddate = today.toISOString().split('T')[0];
-                        break;
-                }
-            } else {
-                obj.startdate = obj.startdate.replace('/', '-');
-                obj.enddate = obj.enddate.replace('/', '-');
-            }
-            if (chart) {
-                chart.showLoading();
-            }
-            let text = "";
-            switch (obj.trend) {
-
-                case "ori":
-                    text = "績效(原幣)"
-                    break;
-                case "twd":
-                    text = "績效(台幣)"
-                    break;
-                case "netWorth":
-                    text = "淨值"
-                    break;
-            }
-            initTrendChart(obj, text);
-        }
-          function roundToTwo(num) {
-            return +(Math.round(num + 'e+2') + 'e-2');
-            }
-        async function initTrendChart(obj, text) {
-            try {
-                /*
-                 * API參數
-                 * id: 基金代號：請替換成實際基金的id
-                 * trend: 績效(原幣)、(台幣)、淨值
-                 * range: 區間
-                 * startDate: 自訂開始日期
-                 * endDate: 自訂結束日期
-                 */
-                const params = {
-                    fundId: fundId,
-                    ...obj
-                };
-                $.ajax({
-                    url: '@FundReturnAndNetValueApiUrl',
-                    method: 'post',
-                    data: params,
-                    success: function (data) {
-                        if (Object.keys(data.resultSet.result).length != 0) {
-                            const mapData = data.resultSet.result.map(item => {
-                                return {
-                                    x: new Date(item.v1).getTime(),
-                                    name: item.v1,
-                                    y: roundToTwo(item.v2)
-                                };
-                            });
-                            //const updateDate = data.body.updateDate.replaceAll('-', '/');
-                            //// 資料日期
-                            //$('[data-update-date="trend"]').text(updateDate);
-                            mapData.reverse();
-                            let series = {
-                                name: text,
-                                data: mapData,
-                                legendSymbol: 'rectangle',
-                                color: obj.netWorth ? '#A4844E' : '#238C6C',
-                                turboThreshold: 0,
-                            };
-                            chart = Highcharts.stockChart('trendChart', {
-                                chart: {
-                                    zooming: {
-                                        mouseWheel: {
-                                            enabled: false
-                                        }
-                                    },
-                                    height: 280
-                                },
-                                credits: {
-                                    enabled: false
-                                },
-                                title: {
-                                    text: ''
-                                },
-                                scrollbar: {
-                                    enabled: false
-                                },
-                                navigator: {
-                                    enabled: false
-                                },
-                                rangeSelector: {
-                                    enabled: false
-                                },
-                                legend: {
-                                    enabled: true,
-                                    align: 'left',
-                                    floating: false,
-                                    y: 20,
-                                    itemStyle: {
-                                        fontSize: '1em',
-                                        color: '#222',
-                                        cursor: 'default'
-                                    },
-                                    itemHoverStyle: {
-                                        color: '#222'
-                                    },
-                                    symbolHeight: 12,
-                                    symbolWidth: 12
-                                },
-                                plotOptions: {
-                                    series: {
-                                        dataGrouping: {
-                                            enabled: false
-                                        },
-                                        states: {
-                                            hover: {
-                                                enabled: true,
-                                                lineWidth: 2,
-                                                halo: {
-                                                    size: 8
-                                                }
-                                            }
-                                        },
-                                        events: {
-                                            legendItemClick: function () {
-                                                return false;
-                                            }
-                                        }
-                                    }
-                                },
-                                tooltip: {
-                                    split: false,
-                                    useHTML: true,
-                                    formatter: function () {
-                                        var percentage = obj.trend =="netWorth" ? '' : '%';
-                                        const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + percentage + '</div>';
-                                        return tooltip;
-                                    },
-                                    shadow: {
-                                        color: 'rgba(0, 0, 0, 0.1)'
-                                    }
-                                },
-                                xAxis: {
-                                    type: 'datetime',
-                                    tickPosition: 'inside',
-                                    tickWidth: 0.5,
-                                    tickLength: 7,
-                                    labels: {
-                                        formatter: function () {
-                                            const format = {
-                                                day: '%Y/%m',
-                                                week: '%Y/%m',
-                                                month: '%Y/%m',
-                                                year:'%Y/%m'
-                                            }[this.tickPositionInfo.unitName];
-                                            return Highcharts.dateFormat(format, this.value);
-                                        },
-                                        style: {
-                                            color: '#6e6e6e'
-                                        }
-                                    },
-                                    crosshair: {
-                                        width: 1,
-                                        color: '#c3c3c3'
-                                    },
-                                    lineColor: '#ebebeb',
-                                    tickColor: '#ebebeb'
-                                },
-                                yAxis: {
-                                    showLastLabel: true,
-                                    opposite: false,
-                                    labels: {
-                                        y: 4,
-                                        formatter: function (value) {
-                                            let percentage = obj.trend == "netWorth" ? '' : '%';
-                                            return value.value + percentage;
-                                        },
-                                        style: {
-                                            color: '#6e6e6e'
-                                        }
-                                    },
-                                    plotLines: [{
-                                        color: '#c3c3c3'
-                                    }]
-                                },
-                                series: [series]
-                            });
-                            $('[data-chart="trend"]').find('.c-empty').addClass('u-hidden');
-                            $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
-                        } else {
-                            $('[data-chart="trend"]').find('.c-empty').removeClass('u-hidden');
-                            $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+            var nearlySetting = {
+                chart: {
+                    zooming: {
+                        mouseWheel: {
+                            enabled: false
                         }
                     },
-                    error: function (err) {
-                        $('[data-chart="trend"]').find('.c-empty').removeClass('u-hidden');
-                        $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
-                        console.log(err)
-                    },
-                });
-
-
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-    });
-            })(jQuery, window, document);
-</script>
-
-<script defer>
-                (function ($, window, document, undefined) {
-
-    // 基金詳細頁 – 持股狀況 - 產業
-    // 基金詳細頁 – 持股狀況 - 區域
-    document.addEventListener('DOMContentLoaded', function () {
-        if (!jQuery) {
-            return;
-        }
-        var chart = Highcharts.chart('soChart', {
-            credits: {
-                enabled: false
-            },
-            title: {
-                text: ''
-            },
-            legend: {
-                enabled: false
-            },
-            xAxis: {
-                type: 'category',
-                lineColor: '#ebebeb',
-                labels: {
-                    style: {
-                        color: '#6e6e6e',
-                        fontSize: '1em'
-                    }
-                }
-            },
-            yAxis: {
-                tickPixelInterval: 150,
-                max: 100,
-                lineColor: '#ebebeb',
-                title: {
-                    text: null
+                    height: 280
                 },
-                labels: {
-                    style: {
-                        color: '#6e6e6e'
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: ''
+                },
+                scrollbar: {
+                    enabled: false
+                },
+                navigator: {
+                    enabled: false
+                },
+                rangeSelector: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: true,
+                    align: 'left',
+                    floating: false,
+                    y: 20,
+                    itemStyle: {
+                        fontSize: '1em',
+                        color: '#222',
+                        cursor: 'default'
                     },
-                    formatter: function () {
-                        return this.value + '%';
-                    }
-                }
-            },
-            tooltip: {
-                enabled: false
-            },
-            plotOptions: {
-                series: {
-                    animation: false,
-                    groupPadding: 0,
-                    pointPadding: 0.2,
-                    borderWidth: 0,
-                    colorByPoint: true,
-                    type: 'bar',
-                    dataLabels: [{
-                        enabled: true,
-                        useHTML: true,
-                        formatter: function () {
-                            return '<div style="color:#6e6e6e; font-weight: 400;">' + this.point.y + '%</div>';
-                        }
-                    }],
-                    states: {
-                        hover: {
-                            brightness: 0,
-                            halo: {
-                                size: 0
-                            }
-                        },
-                        inactive: {
-                            opacity: 1
-                        }
+                    itemHoverStyle: {
+                        color: '#222'
                     },
-                    events: {
-                        legendItemClick: function () {
-                            return false;
-                        }
-                    }
-                }
-            },
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 375
-                    },
-                    chartOptions: {
-                        xAxis: {
-                            visible: false
-                        },
-                        yAxis: {
-                            showFirstLabel: true,
-                            tickPixelInterval: 80
-                        },
-                        plotOptions: {
-                            series: {
-                                pointPadding: 0.1,
-                                dataLabels: [{
-                                    enabled: true,
-                                    useHTML: false,
-                                    format: '{point.y}%',
-                                    y: 8,
-                                    style: {
-                                        fontWeight: 400,
-                                        opacity: 0.7
-                                    }
-                                }, {
-                                    enabled: true,
-                                    useHTML: false,
-                                    format: '{point.name}',
-                                    y: -8,
-                                    style: {
-                                        fontWeight: 400,
-                                        opacity: 0.7
-                                    }
-                                }]
-                            }
-                        }
-                    }
-                }]
-            },
-            series: [{
-                type: 'bar',
-                colorByPoint: true
-            }]
-        });
-        let mapIndustryData = [];
-        let industryUpdateDate =[];
-        let mapAreaData=[];
-        let areaUpdateDate=[];
-        async function initShareholding() {
-            try {
-
-
-                const industryData =  @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundStockHoldings));
-                if(industryData.length > 0){
-                mapIndustryData = industryData.map((item, index) => {
-                    return {
-                        ...item,
-                        name: item.Category,
-                        y: item.Holding
-                    };
-                });
-
-                industryUpdateDate = industryData[0].Date;
-                }
-
-                const areaData = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundStockAreaHoldings));
-                if(areaData.length > 0){
-                mapAreaData = areaData.map((item, index) => {
-                    return {
-                        ...item,
-                        name: item.Category,
-                        y: item.Holding
-                    };
-                });
-                areaUpdateDate = areaData[0].Date;
-                }
-                $('[name="so1"]:checked').trigger('change');
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        $('[name="so1"]').on('change', function () {
-            let data = [],
-                updateDate = '';
-            if (this.value == 'industry') {
-                data = JSON.parse(JSON.stringify(mapIndustryData));
-                updateDate = industryUpdateDate;
-            } else if (this.value == 'area') {
-                data = JSON.parse(JSON.stringify(mapAreaData));
-                updateDate = areaUpdateDate;
-            }
-            if (data.length != 0) {
-                chart.series[0].update({
-                    type: 'bar',
-                    colorByPoint: true,
-                    data: data
-                });
-                $('[data-update-date="so1"]').text(updateDate);
-                $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
-                $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
-            }else
-            {
-                $('[data-update-date="so1"]').text('-');
-                $('[data-chart="so1"]').find('.c-empty').removeClass('u-hidden');
-                $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
-
-            }
-        });
-                initShareholding();
-
-    });
-                })(jQuery, window, document);
-</script>
-
-
-
-<script defer>
-                    (function ($, window, document, undefined) {
-
-    // 基金詳細頁 – 風險指標 - 風險象限圖
-    document.addEventListener('DOMContentLoaded', function () {
-
-        if (!jQuery) {
-            return;
-        }
-        $('[data-quadrant="type"]').on('change', function () {
-            let type = this.value;
-            let year = $('[data-quadrant="year"]').val();
-            initRisk(type, year);
-        });
-        $('[data-quadrant="year"]').on('change', function () {
-            let type = $('[data-quadrant="type"]').val();
-            let year = this.value;
-            initRisk(type, year);
-        });
-        let type = $('[data-quadrant="type"]').val();
-        let year = $('[data-quadrant="year"]').val();
-        initRisk(type, year);
-        var chart;
-        function ConvertNaNToZero(num) {
-            return isNaN(num) ? 0 : num;
-        }
-            function roundToTwo(num) {
-            return +(Math.round(num + 'e+2') + 'e-2');
-            }
-        // 風險象限圖
-        async function initRisk(type, year) {
-            try {
-                const params = {
-                    fundId: fundId,
-                    selectType: type,
-                };
-                if (chart) {
-                    chart.showLoading();
-                }
-
-                // 呼叫 API 基金詳細頁 – 風險指標 - 風險象限圖
-                let data = [];
-                $.ajax({
-                    url: '@FundRiskApiUrl',
-                    method: 'post',
-                    data: params,
-                    success: function (res) {
-                       data = res;
-                       let rateField = "";
-                       let standardField="";
-                       switch(year)
-                       {
-                           case "1":
-                            rateField = "oneYearReturnOriginalCurrency";
-                            standardField ="oneYearStandardDeviation";
-                            break;
-                           case "2":
-                            rateField = "twoYearReturnOriginalCurrency";
-                            standardField ="twoYearStandardDeviation";
-                            break;
-                           case "3":
-                            rateField = "threeYearReturnOriginalCurrency";
-                            standardField ="threeYearStandardDeviation";
-                            break;
-                       }
-                     if (Object.keys(data.body).length != 0) {
-                         let mapData = data.body.map((item, index) => {
-                        return {
-                            id: item.firstBankCode,
-                            name: item.firstBankCode + item.fundName,
-                            x: roundToTwo(item[standardField]),
-                            y: roundToTwo(item[rateField])
-                        };
-                    });
-                    //刪除自己基金資料
-                         mapData.splice(mapData.findIndex(x => x.id == fundId),1);
-                         const selfData = data.body.filter((item) => item.firstBankCode == fundId);
-                    const otherData = {
-                        id: 'group',
-                        name: '同類型基金',
-                        color: '#A4844E',
-                        data: mapData
-                    };
-
-                    // 同類型基金標準差, 報酬率總和
-                    const total = mapData.reduce((curr, prev) => {
-                        return {
-                            x: curr.x + ConvertNaNToZero(prev.x),
-                            y: curr.y + ConvertNaNToZero(prev.y)
-                        };
-                    }, {
-                        x: 0,
-                        y: 0
-                    });
-
-                    // 本基金 + 同類型基金平均值
-                         total.x = (total.x + selfData[0][standardField]) / data.body.length + 1;
-                         total.y = (total.y + selfData[0][rateField]) / data.body.length + 1;
-                    const zh = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
-                    chart = Highcharts.chart('riskChart', {
-                        chart: {
-                            type: "scatter",
-                            zooming: {
-                                mouseWheel: {
-                                    enabled: false
-                                }
-                            },
-                            height: 446
-                        },
-                        credits: {
+                    symbolHeight: 12,
+                    symbolWidth: 12
+                },
+                plotOptions: {
+                    series: {
+                        dataGrouping: {
                             enabled: false
                         },
-                        title: {
-                            text: ''
-                        },
-                        subtitle: {
-                            text: ''
-                        },
-                        xAxis: {
-                            title: {
-                                text: '標準差%'
-                            },
-                            startOnTick: true,
-                            endOnTick: true,
-                            showLastLabel: true,
-                            crosshair: {
-                                snap: false,
-                                label: {
-                                    enabled: false
-                                }
-                            },
-                            plotLines: [{
-                                value: total.x,
-                                width: 1,
-                                color: "red",
-                                acrossPanes: false
-                            }],
-                            gridLineWidth: 1,
-                            lineColor: '#ebebeb',
-                            tickColor: '#ebebeb',
-                            tickPosition: 'inside',
-                            labels: {
-                                style: {
-                                    color: '#6e6e6e'
+                        states: {
+                            hover: {
+                                enabled: true,
+                                lineWidth: 2,
+                                halo: {
+                                    size: 8
                                 }
                             }
                         },
-                        yAxis: {
-                            title: {
-                                text: `${zh[year]} 年 報 酬 率`,
-                                offset: 0,
-                                margin: 0,
-                                style: {
-                                    writingMode: 'vertical-lr',
-                                    transform: 'rotate(0deg)'
-                                }
-                            },
-                            crosshair: {
-                                snap: false,
-                                label: {
-                                    enabled: false
-                                }
-                            },
-                            plotLines: [{
-                                value: total.y,
-                                width: 1,
-                                color: "red",
-                                acrossPanes: false
-                            }],
-                            gridLineWidth: 1,
-                            lineColor: '#ebebeb',
-                            tickColor: '#ebebeb',
-                            labels: {
-                                y: 4,
-                                style: {
-                                    color: '#6e6e6e'
-                                }
+                        events: {
+                            legendItemClick: function () {
+                                return false;
                             }
-                        },
-                        legend: {
-                            enabled: true,
-                            align: 'left',
-                            itemStyle: {
-                                fontSize: '1em',
-                                color: '#222',
-                                cursor: 'default'
-                            },
-                            itemHoverStyle: {
-                                color: '#222'
-                            }
-                        },
-                        plotOptions: {
-                            scatter: {
-                                marker: {
-                                    symbol: 'circle',
-                                    states: {
-                                        hover: {
-                                            enabled: true,
-                                            fillColor: '#F58220',
-                                            radius: 5
-                                        }
-                                    }
-                                },
-                                states: {
-                                    hover: {
-                                        enabled: true,
-                                        halo: {
-                                            attributes: {
-                                                fill: '#F58220'
-                                            },
-                                            opacity: 0.2,
-                                            size: 8
-                                        }
-                                    },
-                                    inactive: {
-                                        enabled: false
-                                    }
-                                }
-                            },
-                            series: {
-                                events: {
-                                    legendItemClick: function () {
-                                        return false;
-                                    }
-                                }
-                            }
-                        },
-                        tooltip: {
-                            split: false,
-                            useHTML: true,
-                            formatter: function () {
-                                const tooltip = '<div style="font-size: 14px">' + '<div style="font-weight: 700; margin-bottom: 8px;">' + this.point.name + '</div>' + '<div style="font-weight: 400; margin-bottom: 8px;">標準差：' + this.point.x + '%</div>' + '<div style="font-weight: 400;">' + zh[year] + '年報酬率：' + this.point.y + '%</div>' + '</div>';
-                                return tooltip;
-                            },
-                            shadow: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            style: {
-                                zIndex: 5
-                            }
-                        },
-                        series: [{
-                            id: selfData[0].firstBankCode,
-                            name: selfData[0].firstBankCode + selfData[0].fundName,
-                            color: '#238C6C',
-                            showInLegend: true,
-                            data: [{
-                                id: selfData[0].firstBankCode,
-                                name: selfData[0].firstBankCode + selfData[0].fundName,
-                                x: selfData[0][standardField],
-                                y: selfData[0][rateField]
-                            }]
-                        }, otherData]
-                    });
-
-                    $('[data-chart="risk"]').find('.c-empty').addClass('u-hidden');
-                    $('[data-chart="risk"]').find('#riskChart').removeClass('u-hidden');
-                } else {
-                    $('[data-chart="risk"]').find('.c-empty').removeClass('u-hidden');
-                    $('[data-chart="risk"]').find('#riskChart').addClass('u-hidden');
-                }
-                        },
-                    error: function (err) {
-                        $('[data-chart="risk"]').find('.c-empty').removeClass('u-hidden');
-                        $('[data-chart="risk"]').find('#riskChart').addClass('u-hidden');
-                         console.log(err)
-                         },
-                });
-
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-    });
-                    })(jQuery, window, document);
-</script>
-
-
-
-<script defer>
-                        (function ($, window, document, undefined) {
-
-        // 基金詳細頁 – 規模變動 – 規模變動圖
-    document.addEventListener('DOMContentLoaded', function () {
-        if (!jQuery) {
-            return;
-        }
-        async function initRate() {
-            try {
-                //千分位正規式
-                  function numberComma(num){
-                    let comma=/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g
-                    return num.toString().replace(comma, ',')
+                        }
                     }
-                const data = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundScaleRecords));
-                if (Object.keys(data).length != 0) {
-                    let mapData = data.map((item, index) => {
-                            return {
-                                x: new Date(item.ScaleDate).getTime(),
-                                name: item.ScaleDate,
-                                y: item.Scale
-                            };
-                    });
-
-                    mapData.reverse();
-                    const mapYearData = data.map((item) => new Date(item.ScaleDate).getFullYear()).filter(function (element, index, arr) {
-                        return arr.indexOf(element) === index;
-                    });
-                    mapYearData.unshift("近一年");
-                  $.each(mapYearData, function( index, value )
-                  {
-                    $('#scale_select').append($('<option>', {
-                    value: value,
-                    text: value
-                        }));
-                  });
-
-            $('#scale_select').on('change', function ()
-            {
-                let rangeData = [];
-                let range = this.value;
-                if( range != "近一年")
-                {
-                    rangeData = data.filter(function (item, index, arr) {
-                        return item.ScaleDate.indexOf(range) >= 0;
-                    });
-                }else
-                {
-                    let now = new Date();
-                    now.setFullYear(now.getFullYear() - 1);
-                    let yearsAgo= `${now.getFullYear()}/${now.getMonth() +1}/${now.getDate()}`;
-                    yearsAgo = Date.parse(new Date(yearsAgo))
-                    rangeData = data.filter(function (item, index, arr) {
-                        return Date.parse(new Date(item.ScaleDate)) >= yearsAgo;
-                    });
+                },
+                xAxis: {
+                    type: 'datetime',
+                    tickPosition: 'inside',
+                    tickWidth: 0.5,
+                    tickLength: 7,
+                    labels: {
+                        formatter: function () {
+                            const format = {
+                                day: '%Y/%m',
+                                week: '%Y/%m',
+                                month: '%Y/%m'
+                            }[this.tickPositionInfo.unitName];
+                            return Highcharts.dateFormat(format, this.value);
+                        },
+                        style: {
+                            color: '#6e6e6e'
+                        }
+                    },
+                    crosshair: {
+                        width: 1,
+                        color: '#c3c3c3'
+                    },
+                    lineColor: '#ebebeb',
+                    tickColor: '#ebebeb'
                 }
-                 let tbHtml = "";
-
-                 for(let i = 0;i <rangeData.length;i++)
-                 {
-
-                     if (i === 0) {
-                         tbHtml += `<div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>`;
-                     }
-                     if (i === 0 || i === 6)
-                     {
-                         tbHtml += `<div class="l-flex__item">
-                                    <div class="l-table">
-                                        <table class="c-table u-center">
-                                            <colgroup>
-                                                <col style="width: 33.33%;">
-                                                <col style="width: 33.33%;">
-                                                <col style="width: 33.33%;">
-                                            </colgroup>
-                                            <thead>
-                                                <tr>
-                                                    <th>
-                                                        <div class="c-table__title">
-                                                            <span>規模日期</span>
-                                                        </div>
-                                                    </th>
-                                                    <th>
-                                                        <div class="c-table__title">
-                                                            <span>規模(百萬)</span>
-                                                        </div>
-                                                    </th>
-                                                    <th>
-                                                        <div class="c-table__title">
-                                                            <span>幣別</span>
-                                                        </div>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>`;
-                     }
-                     tbHtml += ` <tr>
-                                      <td>
-                                           ${rangeData[i].ScaleDate}
-                                                    </td>
-                                                    <td>
-                                                         ${numberComma(rangeData[i].Scale)}
-                                                    </td>
-                                                    <td>
-                                                         ${rangeData[i].Currency}
-                                                    </td>
-                                                </tr>`;
-                     if (i === 5 || i === rangeData - 1) {
-                         tbHtml += `   </tbody>
-                                        </table>
-                                    </div> </div>`;
-                     }
-
-
-                     if (i === rangeData - 1) {
-                         tbHtml += `</div >`;
-                     }
-                }
-                $('#scale_table').html(tbHtml);
-            });
-            $('#scale_select').trigger('change');
-                        Highcharts.chart("scale", {
-                            chart: {
-                                type: 'column'
-                            },
-                            credits: {
-                                enabled: false
-                            },
-                            title: {
-                                text: ''
-                            },
-                            legend: {
-                                enabled: false
-                            },
-                            xAxis: {
-                                type: 'datetime',
-                                tickPosition: 'inside',
-                                tickWidth: 0.5,
-                                tickLength: 7,
-                                labels: {
-                                    formatter: function() {
-                                        const format = {
-                                            day: '%Y/%m',
-                                            week: '%Y/%m',
-                                            month: '%Y/%m'
-                                        } [this.tickPositionInfo.unitName];
-                                        return Highcharts.dateFormat(format, this.value);
-                                    },
-                                    style: {
-                                        color: '#6e6e6e'
-                                    }
-                                },
-                                lineColor: '#ebebeb',
-                                tickColor: '#ebebeb'
-                            },
-                            yAxis: {
-                                title: {
-                                    text: '(百萬元)',
-                                    align: 'low',
-                                    rotation: 0,
-                                    offset: 0,
-                                    y: 30,
-                                    x: -50
-                                },
-                                showLastLabel: true,
-                                plotLines: [{
-                                    color: '#c3c3c3'
-                                }]
-                            },
-                            plotOptions: {
-                                series: {
-                                    pointPadding: 0.1,
-                                    groupPadding: 0.05,
-                                    colorByPoint: false,
-                                    states: {
-                                        hover: {
-                                            color: '#238C6C',
-                                            opacity: 1
-                                        }
-                                    }
-                                }
-                            },
+            };
+            var chart =  Highcharts.stockChart('performanceChart', {
+                            ...nearlySetting,
                             tooltip: {
                                 split: false,
                                 useHTML: true,
-                                formatter: function() {
-                                    const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + this.point.y + '百萬元' + '</div>';
+                                formatter: function () {
+                                    const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '%' + '</div>';
                                     return tooltip;
                                 },
                                 shadow: {
@@ -4329,19 +3114,1208 @@
                                 }
                             },
                             series: [{
-                                data: mapData,
-                                color: '#A4844E',
-                                opacity: 0.9
-                            }]
+                                name: '績效',
+                                data: [],
+                                legendSymbol: 'rectangle',
+                                color: '#238C6C'
+                            }],
+                            yAxis: {
+                                showLastLabel: true,
+                                opposite: false,
+                                labels: {
+                                    y: 4,
+                                    formatter: function (value) {
+                                        return value.value + '%';
+                                    },
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                },
+                                plotLines: [{
+                                    color: '#c3c3c3'
+                                }]
+                            }
                         });
-                        $('[data-chart="scale"]').find('.c-empty').addClass('u-hidden');
-                        $('[data-chart="scale"]').find('.c-chartBox').removeClass('u-hidden');
+                                if (chart) {
+                        chart.showLoading();
                     }
+            async function initPerformance() {
+                try {
+                        $('[data-chart="performance"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                    /*
+                     * API參數
+                     * id: 基金代號：請替換成實際基金的id
+                     */
+                    const params = {
+                        id: fundId
+                    };
+
+                    let data = {};
+                   function roundToTwoNum(num) {
+                        return +(Math.round(num + 'e+2') + 'e-2');
+                    }
+                    $.ajax({
+                        url: '@FundCloseYearPerformanceApiUrl',
+                        method: 'post',
+                        data:
+                        {
+                            fundId : fundId
+                        },
+
+                        success: function (res) {
+                            data = res;
+                  if (Object.keys(data.resultSet.result).length != 0) {
+                        //const updateDate = data.body.updateDate.replaceAll('-', '/');
+                        // 資料日期
+                        //$('[data-update-date="performance"]').text(updateDate);
+                        const mapData = data.resultSet.result.map(item => {
+                            return {
+                                x: new Date(item.v1.replaceAll('/', '-')).getTime(),
+                                name: item.v1.replaceAll('/', '-'),
+                                y: roundToTwoNum(item.v2)
+                            };
+                        });
+                        mapData.reverse();
+                        Highcharts.stockChart('performanceChart', {
+                            ...nearlySetting,
+                            tooltip: {
+                                split: false,
+                                useHTML: true,
+                                formatter: function () {
+                                    const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '%' + '</div>';
+                                    return tooltip;
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            series: [{
+                                name: '績效',
+                                data: mapData,
+                                legendSymbol: 'rectangle',
+                                color: '#238C6C'
+                            }],
+                            yAxis: {
+                                showLastLabel: true,
+                                opposite: false,
+                                labels: {
+                                    y: 4,
+                                    formatter: function (value) {
+                                        return value.value + '%';
+                                    },
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                },
+                                plotLines: [{
+                                    color: '#c3c3c3'
+                                }]
+                            }
+                        });
+                        $('[data-chart="performance"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                    }else
+                    {
+                        $('[data-chart="performance"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                    }
+                            },
+                        error: function (err) {
+                            $('[data-chart="performance"]').find('.c-empty').removeClass('u-hidden');
+                            $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                            console.log(err)
+                        },
+                    });
+
                 } catch (error) {
                     console.error('Error:', error);
                 }
             }
-            initRate();
-    });
+
+            async function initNetWorth() {
+                try {
+
+                    const data = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundCloseYearsNetValue));
+                    function roundToFourString(num) {
+                        return num.toFixed(4);
+                    }
+                    function roundToFourNum(num) {
+                        return +(Math.round(num + 'e+4') + 'e-4');
+                    }
+
+                    if (Object.keys(data).length != 0) {
+                        const mapData = data.map(item => {
+                            return {
+                                x: new Date(item.NetAssetValueDate).getTime(),
+                                name: item.NetAssetValueDate,
+                                y: roundToFourNum(item.NetAssetValue)
+                            };
+                        });
+
+                        $('#maxNetValue').text(roundToFourString(Math.max(...data.map(p => p.NetAssetValue))));
+                        $('#minNetValue').text(roundToFourString(Math.min(...data.map(p => p.NetAssetValue))));
+
+                        mapData.reverse();
+                        //const updateDate = data.body.updateDate.replaceAll('-', '/');
+                        // 資料日期
+                        // $('[data-update-date="netWorth"]').text(updateDate);
+                        Highcharts.stockChart('netWorthChart', {
+                            ...nearlySetting,
+                            tooltip: {
+                                split: false,
+                                useHTML: true,
+                                formatter: function () {
+                                    const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '</div>';
+                                    return tooltip;
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            series: [{
+                                name: '淨值',
+                                data: mapData,
+                                legendSymbol: 'rectangle',
+                                color: '#A4844E'
+                            }],
+                            yAxis: {
+                                showLastLabel: true,
+                                opposite: false,
+                                labels: {
+                                    y: 4,
+                                    formatter: function (value) {
+                                        return value.value;
+                                    },
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                },
+                                plotLines: [{
+                                    color: '#c3c3c3'
+                                }]
+                            }
+                        });
+                        $('[data-chart="netWorth"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="netWorth"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                    }else
+                    {
+                        $('[data-chart="performance"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                    }
+                } catch (error) {
+                    $('[data-chart="performance"]').find('.c-empty').removeClass('u-hidden');
+                    $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                    console.error('Error:', error);
+                }
+            }
+
+            initPerformance();
+            initNetWorth();
+        });
+            })(jQuery, window, document);
+    </script>
+
+
+
+    <script defer>
+                (function ($, window, document, undefined) {
+
+        // 基金詳細頁 – 績效 – 績效走勢圖
+        // 基金詳細頁 – 淨值 – 淨值走勢圖
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+            $('[data-trend-filter="trend"]').on('change', function () {
+                getParams();
+            });
+            $('[data-trend-filter="dateRange"]').on('change', function () {
+                $('[data-trend-filter="inputStart"], [data-trend-filter="inputEnd"]').val('');
+                $('[data-chart="trend"] .l-form').removeClass('is-error');
+                getParams();
+            });
+            $('[data-trend-filter="submit"]').on('click', function (e) {
+                if (required($('[data-trend-filter="inputStart"]')) && required($('[data-trend-filter="inputEnd"]')) && dateRange()) {
+                    $('[data-trend-filter="dateRange"]').prop('checked', false);
+                    getParams();
+                }
+            });
+            $('[data-trend-filter="trend"]:checked').trigger('change');
+            var chart;
+
+            function required($element) {
+                const requiredMsg = '欄位必填';
+                let $parents = $element.closest('.l-form');
+                let $msg = $parents.find('.o-errorText');
+                let isEmpty = $element.val().trim() == '';
+                $parents.toggleClass('is-error', isEmpty);
+                $msg.text(isEmpty ? requiredMsg : '');
+                return !isEmpty;
+            }
+
+            function dateRange() {
+                const dateRangeMsg = '起訖日期區間錯誤';
+                let $inputStart = $('[data-trend-filter="inputStart"]');
+                let $inputEnd = $('[data-trend-filter="inputEnd"]');
+                let startDate = new Date($inputStart.val());
+                let endDate = new Date($inputEnd.val());
+                let $startParents = $inputStart.closest('.l-form');
+                let $endParents = $inputEnd.closest('.l-form');
+                if (endDate < startDate) {
+                    $startParents.addClass('is-error');
+                    $endParents.addClass('is-error');
+                    $startParents.find('.o-errorText').text(dateRangeMsg);
+                    return false;
+                } else {
+                    $startParents.removeClass('is-error');
+                    $endParents.removeClass('is-error');
+                    $startParents.find('.o-errorText').text('');
+                    return true;
+                }
+            }
+
+            function getParams() {
+                const obj = {
+                    trend: $('[data-trend-filter="trend"]:checked').val(),
+                    range: $('[data-trend-filter="dateRange"]:checked').length > 0 ? $('[data-trend-filter="dateRange"]:checked').val() : "custom",
+                    startdate: $('[data-trend-filter="inputStart"]').val(),
+                    enddate: $('[data-trend-filter="inputEnd"]').val(),
+                };
+
+                let today = new Date();
+                function CalDateRange(month) {
+                    let set = new Date().setMonth(new Date().getMonth() - month);
+                    let setDate = new Date(set);
+                    return setDate.getFullYear() + "-" + ((setDate.getMonth()  + 1) < 10 ? "0"+ (setDate.getMonth()  + 1) : (setDate.getMonth()  + 1))+ "-" + setDate.getDate();
+                }
+                if (!obj.startdate && !obj.enddate) {
+                    switch (obj.range) {
+                        case 'sinceYear':
+                            obj.startdate = today.getFullYear() + "-" + "01-01";
+                            obj.enddate = today.toISOString().split('T')[0];
+                            break;
+                        case '3m':
+                            obj.startdate = CalDateRange(3)
+                            obj.enddate = today.toISOString().split('T')[0];
+                            break;
+                        case '6m':
+                            obj.startdate = CalDateRange(6)
+                            obj.enddate = today.toISOString().split('T')[0];
+                            break;
+                        case '12m':
+                            obj.startdate = CalDateRange(12);
+                            obj.enddate = today.toISOString().split('T')[0];
+                            break;
+                        case '24m':
+                            obj.startdate = CalDateRange(24);
+                            obj.enddate = today.toISOString().split('T')[0];
+                            break;
+                            case '36m':
+                            obj.startdate = CalDateRange(36);
+                            obj.enddate = today.toISOString().split('T')[0];
+                            break;
+                        case '60m':
+                            obj.startdate = CalDateRange(60);
+                            obj.enddate = today.toISOString().split('T')[0];
+                            break;
+                        case 'establishment':
+                            obj.startdate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                            obj.enddate = today.toISOString().split('T')[0];
+                            break;
+                    }
+                     $('[data-trend-filter="inputStart"]').val(obj.startdate.replaceAll('-', '/'));
+                     $('[data-trend-filter="inputEnd"]').val(obj.enddate.replaceAll('-', '/'));
+                     $('[data-trend-filter="inputStart"]').datepicker('setDate',obj.startdate.replaceAll('-', '/'));
+                     $('[data-trend-filter="inputEnd"]').datepicker('setDate',obj.enddate.replaceAll('-', '/'));
+                } else {
+                    obj.startdate = obj.startdate.replaceAll('/', '-');
+                    obj.enddate = obj.enddate.replaceAll('/', '-');
+                }
+                if (chart) {
+                    chart.showLoading();
+                }
+                let text = "";
+                switch (obj.trend) {
+
+                    case "ori":
+                        text = "績效(原幣)"
+                        break;
+                    case "twd":
+                        text = "績效(台幣)"
+                        break;
+                    case "netWorth":
+                        text = "淨值"
+                        break;
+                }
+                initTrendChart(obj, text);
+            }
+              function roundToTwo(num) {
+                return +(Math.round(num + 'e+2') + 'e-2');
+                }
+            async function initTrendChart(obj, text) {
+                try {
+                    /*
+                     * API參數
+                     * id: 基金代號：請替換成實際基金的id
+                     * trend: 績效(原幣)、(台幣)、淨值
+                     * range: 區間
+                     * startDate: 自訂開始日期
+                     * endDate: 自訂結束日期
+                     */
+                    const params = {
+                        fundId: fundId,
+                        ...obj
+                    };
+                    $.ajax({
+                        url: '@FundReturnAndNetValueApiUrl',
+                        method: 'post',
+                        data: params,
+                        success: function (data) {
+                            if (Object.keys(data.resultSet.result).length != 0) {
+                                const mapData = data.resultSet.result.map(item => {
+                                    return {
+                                        x: new Date(item.v1).getTime(),
+                                        name: item.v1,
+                                        y: roundToTwo(item.v2)
+                                    };
+                                });
+                                //const updateDate = data.body.updateDate.replaceAll('-', '/');
+                                //// 資料日期
+                                //$('[data-update-date="trend"]').text(updateDate);
+                                mapData.reverse();
+                                let series = {
+                                    name: text,
+                                    data: mapData,
+                                    legendSymbol: 'rectangle',
+                                    color: obj.netWorth ? '#A4844E' : '#238C6C',
+                                    turboThreshold: 0,
+                                };
+                                chart = Highcharts.stockChart('trendChart', {
+                                    chart: {
+                                        zooming: {
+                                            mouseWheel: {
+                                                enabled: false
+                                            }
+                                        },
+                                        height: 280
+                                    },
+                                    credits: {
+                                        enabled: false
+                                    },
+                                    title: {
+                                        text: ''
+                                    },
+                                    scrollbar: {
+                                        enabled: false
+                                    },
+                                    navigator: {
+                                        enabled: false
+                                    },
+                                    rangeSelector: {
+                                        enabled: false
+                                    },
+                                    legend: {
+                                        enabled: true,
+                                        align: 'left',
+                                        floating: false,
+                                        y: 20,
+                                        itemStyle: {
+                                            fontSize: '1em',
+                                            color: '#222',
+                                            cursor: 'default'
+                                        },
+                                        itemHoverStyle: {
+                                            color: '#222'
+                                        },
+                                        symbolHeight: 12,
+                                        symbolWidth: 12
+                                    },
+                                    plotOptions: {
+                                        series: {
+                                            dataGrouping: {
+                                                enabled: false
+                                            },
+                                            states: {
+                                                hover: {
+                                                    enabled: true,
+                                                    lineWidth: 2,
+                                                    halo: {
+                                                        size: 8
+                                                    }
+                                                }
+                                            },
+                                            events: {
+                                                legendItemClick: function () {
+                                                    return false;
+                                                }
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        split: false,
+                                        useHTML: true,
+                                        formatter: function () {
+                                            var percentage = obj.trend =="netWorth" ? '' : '%';
+                                            const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + percentage + '</div>';
+                                            return tooltip;
+                                        },
+                                        shadow: {
+                                            color: 'rgba(0, 0, 0, 0.1)'
+                                        }
+                                    },
+                                    xAxis: {
+                                        type: 'datetime',
+                                        tickPosition: 'inside',
+                                        tickWidth: 0.5,
+                                        tickLength: 7,
+                                        labels: {
+                                            formatter: function () {
+                                                const format = {
+                                                    day: '%Y/%m',
+                                                    week: '%Y/%m',
+                                                    month: '%Y/%m',
+                                                    year:'%Y/%m'
+                                                }[this.tickPositionInfo.unitName];
+                                                return Highcharts.dateFormat(format, this.value);
+                                            },
+                                            style: {
+                                                color: '#6e6e6e'
+                                            }
+                                        },
+                                        crosshair: {
+                                            width: 1,
+                                            color: '#c3c3c3'
+                                        },
+                                        lineColor: '#ebebeb',
+                                        tickColor: '#ebebeb'
+                                    },
+                                    yAxis: {
+                                        showLastLabel: true,
+                                        opposite: false,
+                                        labels: {
+                                            y: 4,
+                                            formatter: function (value) {
+                                                let percentage = obj.trend == "netWorth" ? '' : '%';
+                                                return value.value + percentage;
+                                            },
+                                            style: {
+                                                color: '#6e6e6e'
+                                            }
+                                        },
+                                        plotLines: [{
+                                            color: '#c3c3c3'
+                                        }]
+                                    },
+                                    series: [series]
+                                });
+                                $('[data-chart="trend"]').find('.c-empty').addClass('u-hidden');
+                                $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                            } else {
+                                $('[data-chart="trend"]').find('.c-empty').removeClass('u-hidden');
+                                $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                            }
+                        },
+                        error: function (err) {
+                            $('[data-chart="trend"]').find('.c-empty').removeClass('u-hidden');
+                            $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                            console.log(err)
+                        },
+                    });
+
+
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        });
+                })(jQuery, window, document);
+    </script>
+
+    <script defer>
+                    (function ($, window, document, undefined) {
+
+        // 基金詳細頁 – 持股狀況 - 產業
+        // 基金詳細頁 – 持股狀況 - 區域
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+            var chart = Highcharts.chart('soChart', {
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: ''
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                    type: 'category',
+                    lineColor: '#ebebeb',
+                    labels: {
+                        style: {
+                            color: '#6e6e6e',
+                            fontSize: '1em'
+                        }
+                    }
+                },
+                yAxis: {
+                    tickPixelInterval: 150,
+                    max: 100,
+                    lineColor: '#ebebeb',
+                    title: {
+                        text: null
+                    },
+                    labels: {
+                        style: {
+                            color: '#6e6e6e'
+                        },
+                        formatter: function () {
+                            return this.value + '%';
+                        }
+                    }
+                },
+                tooltip: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        animation: false,
+                        groupPadding: 0,
+                        pointPadding: 0.2,
+                        borderWidth: 0,
+                        colorByPoint: true,
+                        type: 'bar',
+                        dataLabels: [{
+                            enabled: true,
+                            useHTML: true,
+                            formatter: function () {
+                                return '<div style="color:#6e6e6e; font-weight: 400;">' + this.point.y + '%</div>';
+                            }
+                        }],
+                        states: {
+                            hover: {
+                                brightness: 0,
+                                halo: {
+                                    size: 0
+                                }
+                            },
+                            inactive: {
+                                opacity: 1
+                            }
+                        },
+                        events: {
+                            legendItemClick: function () {
+                                return false;
+                            }
+                        }
+                    }
+                },
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 375
+                        },
+                        chartOptions: {
+                            xAxis: {
+                                visible: false
+                            },
+                            yAxis: {
+                                showFirstLabel: true,
+                                tickPixelInterval: 80
+                            },
+                            plotOptions: {
+                                series: {
+                                    pointPadding: 0.1,
+                                    dataLabels: [{
+                                        enabled: true,
+                                        useHTML: false,
+                                        format: '{point.y}%',
+                                        y: 8,
+                                        style: {
+                                            fontWeight: 400,
+                                            opacity: 0.7
+                                        }
+                                    }, {
+                                        enabled: true,
+                                        useHTML: false,
+                                        format: '{point.name}',
+                                        y: -8,
+                                        style: {
+                                            fontWeight: 400,
+                                            opacity: 0.7
+                                        }
+                                    }]
+                                }
+                            }
+                        }
+                    }]
+                },
+                series: [{
+                    type: 'bar',
+                    colorByPoint: true
+                }]
+            });
+            let mapIndustryData = [];
+            let industryUpdateDate =[];
+            let mapAreaData=[];
+            let areaUpdateDate=[];
+            async function initShareholding() {
+                try {
+
+
+                    const industryData =  @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundStockHoldings));
+                    if(industryData.length > 0){
+                    mapIndustryData = industryData.map((item, index) => {
+                        return {
+                            ...item,
+                            name: item.Category,
+                            y: item.Holding
+                        };
+                    });
+
+                    industryUpdateDate = industryData[0].Date;
+                    }
+
+                    const areaData = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundStockAreaHoldings));
+                    if(areaData.length > 0){
+                    mapAreaData = areaData.map((item, index) => {
+                        return {
+                            ...item,
+                            name: item.Category,
+                            y: item.Holding
+                        };
+                    });
+                    areaUpdateDate = areaData[0].Date;
+                    }
+                    $('[name="so1"]:checked').trigger('change');
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+            $('[name="so1"]').on('change', function () {
+                let data = [],
+                    updateDate = '';
+                if (this.value == 'industry') {
+                    data = JSON.parse(JSON.stringify(mapIndustryData));
+                    updateDate = industryUpdateDate;
+                } else if (this.value == 'area') {
+                    data = JSON.parse(JSON.stringify(mapAreaData));
+                    updateDate = areaUpdateDate;
+                }
+                if (data.length != 0) {
+                    chart.series[0].update({
+                        type: 'bar',
+                        colorByPoint: true,
+                        data: data
+                    });
+                    $('[data-update-date="so1"]').text(updateDate);
+                    $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
+                    $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                }else
+                {
+                    $('[data-update-date="so1"]').text('-');
+                    $('[data-chart="so1"]').find('.c-empty').removeClass('u-hidden');
+                    $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+
+                }
+            });
+                    initShareholding();
+
+        });
+                    })(jQuery, window, document);
+    </script>
+
+
+
+    <script defer>
+                        (function ($, window, document, undefined) {
+
+        // 基金詳細頁 – 風險指標 - 風險象限圖
+        document.addEventListener('DOMContentLoaded', function () {
+
+            if (!jQuery) {
+                return;
+            }
+            $('[data-quadrant="type"]').on('change', function () {
+                let type = this.value;
+                let year = $('[data-quadrant="year"]').val();
+                initRisk(type, year);
+            });
+            $('[data-quadrant="year"]').on('change', function () {
+                let type = $('[data-quadrant="type"]').val();
+                let year = this.value;
+                initRisk(type, year);
+            });
+            let type = $('[data-quadrant="type"]').val();
+            let year = $('[data-quadrant="year"]').val();
+            initRisk(type, year);
+            var chart;
+            function ConvertNaNToZero(num) {
+                return isNaN(num) ? 0 : num;
+            }
+                function roundToTwo(num) {
+                return +(Math.round(num + 'e+2') + 'e-2');
+                }
+            // 風險象限圖
+            async function initRisk(type, year) {
+                try {
+                    const params = {
+                        fundId: fundId,
+                        selectType: type,
+                    };
+                    if (chart) {
+                        chart.showLoading();
+                    }
+
+                    // 呼叫 API 基金詳細頁 – 風險指標 - 風險象限圖
+                    let data = [];
+                    $.ajax({
+                        url: '@FundRiskApiUrl',
+                        method: 'post',
+                        data: params,
+                        success: function (res) {
+                           data = res;
+                           let rateField = "";
+                           let standardField="";
+                           switch(year)
+                           {
+                               case "1":
+                                rateField = "oneYearReturnOriginalCurrency";
+                                standardField ="oneYearStandardDeviation";
+                                break;
+                               case "2":
+                                rateField = "twoYearReturnOriginalCurrency";
+                                standardField ="twoYearStandardDeviation";
+                                break;
+                               case "3":
+                                rateField = "threeYearReturnOriginalCurrency";
+                                standardField ="threeYearStandardDeviation";
+                                break;
+                           }
+                         if (Object.keys(data.body).length != 0) {
+                             let mapData = data.body.map((item, index) => {
+                            return {
+                                id: item.firstBankCode,
+                                name: item.firstBankCode + item.fundName,
+                                x: roundToTwo(item[standardField]),
+                                y: roundToTwo(item[rateField])
+                            };
+                        });
+                        //刪除自己基金資料
+                             mapData.splice(mapData.findIndex(x => x.id == fundId),1);
+                             const selfData = data.body.filter((item) => item.firstBankCode == fundId);
+                        const otherData = {
+                            id: 'group',
+                            name: '同類型基金',
+                            color: '#A4844E',
+                            data: mapData
+                        };
+
+                        // 同類型基金標準差, 報酬率總和
+                        const total = mapData.reduce((curr, prev) => {
+                            return {
+                                x: curr.x + ConvertNaNToZero(prev.x),
+                                y: curr.y + ConvertNaNToZero(prev.y)
+                            };
+                        }, {
+                            x: 0,
+                            y: 0
+                        });
+
+                        // 本基金 + 同類型基金平均值
+                             total.x = (total.x + selfData[0][standardField]) / data.body.length + 1;
+                             total.y = (total.y + selfData[0][rateField]) / data.body.length + 1;
+                        const zh = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+                        chart = Highcharts.chart('riskChart', {
+                            chart: {
+                                type: "scatter",
+                                zooming: {
+                                    mouseWheel: {
+                                        enabled: false
+                                    }
+                                },
+                                height: 446
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: ''
+                            },
+                            subtitle: {
+                                text: ''
+                            },
+                            xAxis: {
+                                title: {
+                                    text: '標準差%'
+                                },
+                                startOnTick: true,
+                                endOnTick: true,
+                                showLastLabel: true,
+                                crosshair: {
+                                    snap: false,
+                                    label: {
+                                        enabled: false
+                                    }
+                                },
+                                plotLines: [{
+                                    value: total.x,
+                                    width: 1,
+                                    color: "red",
+                                    acrossPanes: false
+                                }],
+                                gridLineWidth: 1,
+                                lineColor: '#ebebeb',
+                                tickColor: '#ebebeb',
+                                tickPosition: 'inside',
+                                labels: {
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: `${zh[year]} 年 報 酬 率`,
+                                    offset: 0,
+                                    margin: 0,
+                                    style: {
+                                        writingMode: 'vertical-lr',
+                                        transform: 'rotate(0deg)'
+                                    }
+                                },
+                                crosshair: {
+                                    snap: false,
+                                    label: {
+                                        enabled: false
+                                    }
+                                },
+                                plotLines: [{
+                                    value: total.y,
+                                    width: 1,
+                                    color: "red",
+                                    acrossPanes: false
+                                }],
+                                gridLineWidth: 1,
+                                lineColor: '#ebebeb',
+                                tickColor: '#ebebeb',
+                                labels: {
+                                    y: 4,
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                }
+                            },
+                            legend: {
+                                enabled: true,
+                                align: 'left',
+                                itemStyle: {
+                                    fontSize: '1em',
+                                    color: '#222',
+                                    cursor: 'default'
+                                },
+                                itemHoverStyle: {
+                                    color: '#222'
+                                }
+                            },
+                            plotOptions: {
+                                scatter: {
+                                    marker: {
+                                        symbol: 'circle',
+                                        states: {
+                                            hover: {
+                                                enabled: true,
+                                                fillColor: '#F58220',
+                                                radius: 5
+                                            }
+                                        }
+                                    },
+                                    states: {
+                                        hover: {
+                                            enabled: true,
+                                            halo: {
+                                                attributes: {
+                                                    fill: '#F58220'
+                                                },
+                                                opacity: 0.2,
+                                                size: 8
+                                            }
+                                        },
+                                        inactive: {
+                                            enabled: false
+                                        }
+                                    }
+                                },
+                                series: {
+                                    events: {
+                                        legendItemClick: function () {
+                                            return false;
+                                        }
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                split: false,
+                                useHTML: true,
+                                formatter: function () {
+                                    const tooltip = '<div style="font-size: 14px">' + '<div style="font-weight: 700; margin-bottom: 8px;">' + this.point.name + '</div>' + '<div style="font-weight: 400; margin-bottom: 8px;">標準差：' + this.point.x + '%</div>' + '<div style="font-weight: 400;">' + zh[year] + '年報酬率：' + this.point.y + '%</div>' + '</div>';
+                                    return tooltip;
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                style: {
+                                    zIndex: 5
+                                }
+                            },
+                            series: [{
+                                id: selfData[0].firstBankCode,
+                                name: selfData[0].firstBankCode + selfData[0].fundName,
+                                color: '#238C6C',
+                                showInLegend: true,
+                                data: [{
+                                    id: selfData[0].firstBankCode,
+                                    name: selfData[0].firstBankCode + selfData[0].fundName,
+                                    x: selfData[0][standardField],
+                                    y: selfData[0][rateField]
+                                }]
+                            }, otherData]
+                        });
+
+                        $('[data-chart="risk"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="risk"]').find('#riskChart').removeClass('u-hidden');
+                    } else {
+                        $('[data-chart="risk"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="risk"]').find('#riskChart').addClass('u-hidden');
+                    }
+                            },
+                        error: function (err) {
+                            $('[data-chart="risk"]').find('.c-empty').removeClass('u-hidden');
+                            $('[data-chart="risk"]').find('#riskChart').addClass('u-hidden');
+                             console.log(err)
+                             },
+                    });
+
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        });
                         })(jQuery, window, document);
-</script>
+    </script>
+
+
+
+    <script defer>
+                            (function ($, window, document, undefined) {
+
+            // 基金詳細頁 – 規模變動 – 規模變動圖
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+            async function initRate() {
+                try {
+                    //千分位正規式
+                      function numberComma(num){
+                        let comma=/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g
+                        return num.toString().replace(comma, ',')
+                        }
+                    const data = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundScaleRecords));
+                    if (Object.keys(data).length != 0) {
+                        let mapData = data.map((item, index) => {
+                                return {
+                                    x: new Date(item.ScaleDate).getTime(),
+                                    name: item.ScaleDate,
+                                    y: item.Scale
+                                };
+                        });
+
+                        mapData.reverse();
+                        const mapYearData = data.map((item) => new Date(item.ScaleDate).getFullYear()).filter(function (element, index, arr) {
+                            return arr.indexOf(element) === index;
+                        });
+                        mapYearData.unshift("近一年");
+                      $.each(mapYearData, function( index, value )
+                      {
+                        $('#scale_select').append($('<option>', {
+                        value: value,
+                        text: value
+                            }));
+                      });
+
+                $('#scale_select').on('change', function ()
+                {
+                    let rangeData = [];
+                    let range = this.value;
+                    if( range != "近一年")
+                    {
+                        rangeData = data.filter(function (item, index, arr) {
+                            return item.ScaleDate.indexOf(range) >= 0;
+                        });
+                    }else
+                    {
+                        let now = new Date();
+                        now.setFullYear(now.getFullYear() - 1);
+                        let yearsAgo= `${now.getFullYear()}/${now.getMonth() +1}/${now.getDate()}`;
+                        yearsAgo = Date.parse(new Date(yearsAgo))
+                        rangeData = data.filter(function (item, index, arr) {
+                            return Date.parse(new Date(item.ScaleDate)) >= yearsAgo;
+                        });
+                    }
+                     let tbHtml = "";
+                     for(let i = 0;i <rangeData.length;i++)
+                     {
+
+                         if (i === 0) {
+                             tbHtml += `<div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>`;
+                         }
+                         if (i === 0 || i === 6)
+                         {
+                             let hiddenHeadClass = i===6? "u-hidden@lt":"";
+                             tbHtml += `<div class="l-flex__item">
+                                        <div class="l-table">
+                                            <table class="c-table u-center">
+                                                <colgroup>
+                                                    <col style="width: 33.33%;">
+                                                    <col style="width: 33.33%;">
+                                                    <col style="width: 33.33%;">
+                                                </colgroup>
+                                                <thead class="${hiddenHeadClass}">
+                                                    <tr>
+                                                        <th>
+                                                            <div class="c-table__title">
+                                                                <span>規模日期</span>
+                                                            </div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="c-table__title">
+                                                                <span>規模(百萬)</span>
+                                                            </div>
+                                                        </th>
+                                                        <th>
+                                                            <div class="c-table__title">
+                                                                <span>幣別</span>
+                                                            </div>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>`;
+                         }
+                         tbHtml += ` <tr>
+                                          <td>
+                                               ${rangeData[i].ScaleDate}
+                                                        </td>
+                                                        <td>
+                                                             ${numberComma(rangeData[i].Scale)}
+                                                        </td>
+                                                        <td>
+                                                             ${rangeData[i].Currency}
+                                                        </td>
+                                                    </tr>`;
+                         if (i === 5 || i === rangeData - 1) {
+                             tbHtml += `   </tbody>
+                                            </table>
+                                        </div> </div>`;
+                         }
+
+
+                         if (i === rangeData - 1) {
+                             tbHtml += `</div >`;
+                         }
+                    }
+                    $('#scale_table').html(tbHtml);
+                });
+                $('#scale_select').trigger('change');
+                            Highcharts.chart("scale", {
+                                chart: {
+                                    type: 'column'
+                                },
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                legend: {
+                                    enabled: false
+                                },
+                                xAxis: {
+                                    type: 'datetime',
+                                    tickPosition: 'inside',
+                                    tickWidth: 0.5,
+                                    tickLength: 7,
+                                    labels: {
+                                        formatter: function() {
+                                            const format = {
+                                                day: '%Y/%m',
+                                                week: '%Y/%m',
+                                                month: '%Y/%m'
+                                            } [this.tickPositionInfo.unitName];
+                                            return Highcharts.dateFormat(format, this.value);
+                                        },
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    },
+                                    lineColor: '#ebebeb',
+                                    tickColor: '#ebebeb'
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: '(百萬元)',
+                                        align: 'low',
+                                        rotation: 0,
+                                        offset: 0,
+                                        y: 30,
+                                        x: -50
+                                    },
+                                    showLastLabel: true,
+                                    plotLines: [{
+                                        color: '#c3c3c3'
+                                    }]
+                                },
+                                plotOptions: {
+                                    series: {
+                                        pointPadding: 0.1,
+                                        groupPadding: 0.05,
+                                        colorByPoint: false,
+                                        states: {
+                                            hover: {
+                                                color: '#238C6C',
+                                                opacity: 1
+                                            }
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    split: false,
+                                    useHTML: true,
+                                    formatter: function() {
+                                        const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + this.point.y + '百萬元' + '</div>';
+                                        return tooltip;
+                                    },
+                                    shadow: {
+                                        color: 'rgba(0, 0, 0, 0.1)'
+                                    }
+                                },
+                                series: [{
+                                    data: mapData,
+                                    color: '#A4844E',
+                                    opacity: 0.9
+                                }]
+                            });
+                            $('[data-chart="scale"]').find('.c-empty').addClass('u-hidden');
+                            $('[data-chart="scale"]').find('.c-chartBox').removeClass('u-hidden');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+                initRate();
+        });
+                            })(jQuery, window, document);
+    </script>

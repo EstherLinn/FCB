@@ -8,4 +8,7 @@
   <ItemGroup>
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Component\platform\Feature.Wealth.Component.csproj" />
+  </ItemGroup>
 </Project>

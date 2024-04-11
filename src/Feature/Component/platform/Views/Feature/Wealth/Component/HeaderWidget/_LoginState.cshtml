@@ -1,4 +1,12 @@
-﻿<div class="l-header__tools">
+﻿@using Foundation.Wealth.Helper;
+@using Newtonsoft.Json
+@using Sitecore.Web;
+@using Feature.Wealth.Component.Models.HeaderWidget;
+@{
+    //var logoutUrl = ClientRoute.GenerateUrl(this, "Accounts", "Logout");
+    //var member = JsonConvert.DeserializeObject<FcbMemberModel>(WebUtil.GetCookieValue("MemberInfo"));
+}
+<div class="l-header__tools">
     <div class="l-topbar">
         <!-- 登入狀態 -->
         <div class="l-topbar__list">
@@ -95,7 +103,7 @@
                     <header class="c-popover__header">
                         <span class="c-popover__title">Hi 林嘉欣</span>
                         <div class="c-popover__tools">
-                            <a href="./anonymous.html" class="o-btn o-btn--secondary o-btn--auto o-btn--thin">登出</a>
+                            <a href="#" class="o-btn o-btn--secondary o-btn--auto o-btn--thin">登出</a>
                         </div>
                     </header>
                     <nav class="c-popover__content">

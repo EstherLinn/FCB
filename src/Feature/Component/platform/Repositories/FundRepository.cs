@@ -51,8 +51,8 @@ namespace Feature.Wealth.Component.Repositories
             {
                 fundViewModel.FundBaseData = this.GetOverseasFundBasic(fundId);
             }
-            fundViewModel.HotTagList = this.GetHotTagList(fundId);
-            fundViewModel.MarketTagList = this.GetMarketTagList(fundId);
+            //fundViewModel.HotTagList = this.GetHotTagList(fundId);
+            //fundViewModel.MarketTagList = this.GetMarketTagList(fundId);
             fundViewModel.FundCloseYearsNetValue = this.GetNetAssetValueWithCloseYear(fundId);
             fundViewModel.FundTypeRanks = this.GetSameTypeFundRank(fundId);
             fundViewModel.FundRateOfReturn = this.GetRateOfReturn(fundId);
