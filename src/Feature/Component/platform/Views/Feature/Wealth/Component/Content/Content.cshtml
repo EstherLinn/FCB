@@ -1,0 +1,16 @@
+﻿@using Feature.Wealth.Component.Models.Notice
+@model NoticeModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<section class="c-section" data-aos="fade-up" data-aos-once="true">
+    <div class="l-wrap">
+        <div class="c-section__title u-left">@Html.Sitecore().Field(Templates.Notice.Fields.MainTitle.ToString(), Model.Item)</div>
+        <div class="c-section__content">
+            @Html.Sitecore().Field(Templates.Notice.Fields.Content.ToString(), Model.Item)
+        </div>
+    </div>
+</section>
