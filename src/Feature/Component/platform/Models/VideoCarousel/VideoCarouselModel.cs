@@ -20,7 +20,6 @@ namespace Feature.Wealth.Component.Models.VideoCarousel
             }
             public Item Item { get; set; }
             public string ImageUrl { get; set; }
-            public string Image3xUrl { get; set; }
             public bool CheckedShowIcon { get; set; }
             public bool CheckedOpenVideoLinkinLightBox { get; set; }
             public string LinkUrl { get; set; }
@@ -77,11 +76,6 @@ namespace Feature.Wealth.Component.Models.VideoCarousel
                 /// 圖片
                 /// </summary>
                 public static readonly ID Image = new ID("{DAFE20A0-FCC7-4BD6-80B1-19263BBBEC43}");
-
-                /// <summary>
-                /// 圖片
-                /// </summary>
-                public static readonly ID Image3x = new ID("{F3C2E43F-7B55-4698-B78A-E2F23BFFED48}");
 
                 /// <summary>
                 /// 以燈箱開啟影片連結
