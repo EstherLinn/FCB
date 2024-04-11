@@ -25,7 +25,7 @@ namespace Feature.Wealth.Component.Repositories
 
                 foreach (var listSubItem in listItem.Children.Where(child => child.TemplateID == Templates.MultipleFileDownloadListSubItem.Id))
                 {
-                    DateTime date = (DateTime)ItemUtils.GetDateTimeFieldValue(listSubItem, Templates.MultipleFileDownloadListSubItem.Fields.Date);
+                    DateTime date = ItemUtils.GetLocalDateFieldValue(listSubItem, Templates.MultipleFileDownloadListSubItem.Fields.Date) ?? DateTime.MinValue;
 
                     listSubItems.Add(new DownloadListSubItemModel
                     {
