@@ -213,6 +213,9 @@
             // 搜尋(代碼或名稱) 確認商品存在 回傳productCode或空值
             function SearchProduct(query) {
                 let data = SearchData;
+                if(!data){
+                    return;
+                }
 
                 if (!!query && !!query.length) {
                     query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
@@ -320,6 +323,10 @@
             // 還原篩選選單
             function ResetFirst() {
                 let data = FilterData;
+
+                if(!data){
+                    return;
+                }
 
                 // 清空第一層並加上預設選項
                 $IndicatorSelector.empty();
