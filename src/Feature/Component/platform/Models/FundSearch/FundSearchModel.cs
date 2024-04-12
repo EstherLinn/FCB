@@ -6,8 +6,8 @@ namespace Feature.Wealth.Component.Models.FundSearch
 {
     public class FundItem
     {
-        public string Value { get; set; }
-        public FundData Data { get; set; }
+        public string value { get; set; }
+        public FundData data { get; set; }
     }
 
     public class FundData
@@ -15,11 +15,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// autocomplete回傳內容
         /// </summary>
-        public string Type { get; set; }
-        public bool IsLogin { get; set; }
-        public bool IsLike { get; set; }
-        public string DetailUrl { get; set; }
-        public bool Purchase { get; set; }
+        public string type { get; set; }
+        public bool isLogin { get; set; }
+        public bool isLike { get; set; }
+        public string detailUrl { get; set; }
+        public bool purchase { get; set; }
     }
 
     /// <summary>
@@ -208,6 +208,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// 投資地區-排序用
         /// </summary>
         public string InvestmentRegionID { get; set; }
+
+        /// <summary>
+        /// 基金評等
+        /// </summary>
+        public string FundRating { get; set; }
     }
 
     /// <summary>
@@ -235,7 +240,6 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public KeyValuePair<bool, decimal?> SixMonthReturnTWD { get; set; }
         public KeyValuePair<bool, decimal?> OneYearReturnTWD { get; set; }
 
-        ///基本資料
         public KeyValuePair<string, string> FundCurrency { get; set; }
 
         public decimal? FundSizeMillionOriginalCurrency { get; set; }
@@ -244,57 +248,33 @@ namespace Feature.Wealth.Component.Models.FundSearch
 
         public KeyValuePair<bool, decimal?> PercentageChangeInFundPrice { get; set; }
 
-        /// <summary>
-        /// 基金類型
-        /// </summary>
         public string FundTypeName { get; set; }
 
-        /// <summary>
-        /// 配息頻率
-        /// </summary>
         public string DividendFrequencyName { get; set; }
 
-        ///風險指標
-        /// <summary>
-        /// 風險屬性
-        /// </summary>
         public string RiskRewardLevel { get; set; }
 
-        /// <summary>
-        /// Sharpe
-        /// </summary>
         public decimal? Sharpe { get; set; }
 
-        /// <summary>
-        /// Beta
-        /// </summary>
         public decimal? Beta { get; set; }
 
-        /// <summary>
-        /// Alpha
-        /// </summary>
         public decimal? OneYearAlpha { get; set; }
 
-        /// <summary>
-        /// 年化標準差
-        /// </summary>
         public decimal? AnnualizedStandardDeviation { get; set; }
 
-        /// <summary>
-        /// 是否可於網路申購
-        /// </summary>
         public bool IsOnlineSubscriptionAvailability { get; set; }
 
-        /// <summary>
-        /// tags 標籤列
-        /// </summary>
         public List<string> Tags { get; set; }
 
-        /// <summary>
-        /// 詳細頁連結
-        /// </summary>
         public string DetailLink { get; set; }
 
+        public string FundCompanyName { get; set; }
+
+        public string InvestmentTargetName { get; set; }
+
+        public List<string> InvestmentRegionName { get; set; }
+
+        public string FundRating { get; set; }
     }
 
     public class SearchBarData

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Feature.Wealth.Component.Models.FundSearch;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.FundDetail;
+using System.Linq;
 
 
 namespace Feature.Wealth.Component.Repositories
@@ -13,7 +14,10 @@ namespace Feature.Wealth.Component.Repositories
     {
         public IList<FundSearchModel> GetFundSearchData()
         {
-            string sql = "SELECT * FROM [vw_BasicFund]";
+            string sql = """
+                SELECT * FROM [vw_BasicFund]
+                ORDER BY SixMonthReturnOriginalCurrency DESC
+                """;
             var results = DbManager.Custom.ExecuteIList<FundSearchModel>(sql, null, CommandType.Text);
             return results;
         }
@@ -35,7 +39,7 @@ namespace Feature.Wealth.Component.Repositories
                 }
                 vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator;
                 vm.ProductCode = f.ProductCode;
-                vm.ProductName = f.ProductName;
+                vm.ProductName = FullWidthToHalfWidth(f.ProductName);
                 vm.NetAssetValue = Round4(f.NetAssetValue);
                 vm.NetAssetValueDate = f.NetAssetValueDateFormat;
                 vm.IsOnlineSubscriptionAvailability = Extender.ToBoolean(f.OnlineSubscriptionAvailability);
@@ -55,7 +59,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.FundSizeMillionOriginalCurrency = RoundFundSize(f.FundSizeMillionOriginalCurrency);
                 vm.FundSizeMillionTWD = RoundFundSize(f.FundSizeMillionTWD);
                 vm.FundTypeName = f.FundTypeName;
-
+               
                 if(f.DividendFrequencyName =="無" || f.DividendFrequencyName == null)
                 {
                     vm.DividendFrequencyName = "不配息";
@@ -72,6 +76,24 @@ namespace Feature.Wealth.Component.Repositories
                 vm.OneYearAlpha = Round4(f.OneYearAlpha);
                 vm.AnnualizedStandardDeviation = Round4(f.AnnualizedStandardDeviation);
                 vm.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
+
+                //篩選用
+                vm.FundCompanyName = f.FundCompanyName;
+                if (!string.IsNullOrEmpty(f.InvestmentRegionName))
+                {
+                    vm.InvestmentRegionName = f.InvestmentRegionName.Split(',')
+                        .Select(region => region.Trim()) 
+                        .ToList();
+                }
+                else
+                {
+                    vm.InvestmentRegionName = [null];
+                }
+
+
+                vm.InvestmentTargetName = f.InvestmentTargetName;
+                vm.FundRating = f.FundRating;
+
                 result.Add(vm);
             }
             return result;
@@ -124,7 +146,11 @@ namespace Feature.Wealth.Component.Repositories
         {
             List<FundItem> fundItems = new List<FundItem>();
 
-            string sql = "SELECT * FROM [vw_BasicFund]";
+            string sql = """
+                         SELECT * FROM [vw_BasicFund]
+                         ORDER BY SixMonthReturnOriginalCurrency DESC
+                        """;
+
             var results = DbManager.Custom.ExecuteIList<FundSearchModel>(sql, null, CommandType.Text);
 
 
@@ -132,14 +158,14 @@ namespace Feature.Wealth.Component.Repositories
             {
                 FundItem fundItem = new FundItem
                 {
-                    Value = FullWidthToHalfWidth(item.ProductName),
-                    Data = new FundData
+                    value = FullWidthToHalfWidth(item.ProductName),
+                    data = new FundData
                     {
-                        Type = item.FundTypeName,
-                        IsLogin = true,
-                        IsLike = true,
-                        DetailUrl = "",
-                        Purchase = true
+                        type = item.FundTypeName,
+                        isLogin = false,
+                        isLike = false,
+                        detailUrl = FundRelatedSettingModel.GetFundDetailsUrl()+"?id="+item.ProductCode,
+                        purchase = item.OnlineSubscriptionAvailability == "Y" ? true : false
                     }
                 };
 
