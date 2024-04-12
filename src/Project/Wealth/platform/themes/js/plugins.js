@@ -846,7 +846,6 @@
     prev: '.o-pagination__prev',
     next: '.o-pagination__next',
     input: '.o-pagination__no',
-    wrapper: '.l-table, .l-scrolltop',
     total: 1,
     onchange: function (page) {}
     // onchange: function (page) { console.log(page); }
@@ -876,14 +875,14 @@
       this.$element.find(this.options.next).off('click.pagination').on('click.pagination', function (e) {
         e.preventDefault();
         var page = parseInt(that.$element.find(that.options.input).val());
-        if (page < that.options.total) {
+        if (page < $(this).closest('[data-total]').attr('data-total')) {
           that.goto.call(that, page + 1);
         }
       });
       this.$element.find(this.options.input).off('keypress.pagination').on('keypress.pagination', function (e) {
         if (e.which === 13) {
           var page = parseInt($(this).val());
-          if (!isNaN(page) && page >= 1 && page <= that.options.total) {
+          if (!isNaN(page) && page >= 1 && page <= $(this).closest('[data-total]').attr('data-total')) {
             that.goto.call(that, page);
           } else {
             $(this).val(that.original);
@@ -891,24 +890,6 @@
         }
       }).off('blur.pagination').on('blur.pagination', function () {
         $(this).val(that.original);
-      }).off('scrolltop.pagination').on('scrolltop.pagination', function (e) {
-        var $table = $(this).closest(that.options.wrapper).find(':first-child');
-        if (!$table.length) {
-          return;
-        }
-        var top = $table.offset().top;
-        // 扣除 header docking 高度
-        if (!$('html').hasClass('is-embed')) {
-          top -= $('.l-header').outerHeight(true) || 0;
-        }
-
-        // 扣除 tab docking 高度
-        // top -= $(this).closest('[data-tab]:not([data-docking="false"])').find('.c-tab__header').outerHeight(true) || 0;
-        // 移除 tab docking 狀態
-        $(this).closest('[data-tab]:not([data-docking="false"])').find('.c-tab__header').removeClass('scroll-to-fixed-fixed is-docking');
-        $('html, body').animate({
-          scrollTop: top
-        }, 300);
       });
       this.update.call(this, 1);
       this.$element.attr('data-pagination', 'true');
@@ -921,7 +902,7 @@
     },
     update: function (page) {
       this.$element.find(this.options.prev).toggleClass('is-disabled', page === 1);
-      this.$element.find(this.options.next).toggleClass('is-disabled', page === this.options.total);
+      this.$element.find(this.options.next).toggleClass('is-disabled', page === parseInt(this.$element.attr('data-total')));
       this.$element.find(this.options.input).val(page);
     }
   });
@@ -934,6 +915,46 @@
     });
   };
   $('[data-pagination="true"]').pagination();
+})(jQuery);
+
+// Scroll Top
+(function ($, undefined) {
+  'use strict';
+
+  var pluginName = 'scrollPosition';
+  var defaults = {};
+  function Plugin(element, options) {
+    this.element = element;
+    this.$element = $(element);
+    this.options = $.extend(true, {}, defaults, options, this.$element.data());
+    delete this.options[pluginName];
+    this._defaults = defaults;
+    this._name = pluginName;
+    this.$element.data('plugin_' + pluginName, this);
+  }
+  $.extend(Plugin.prototype, {
+    scroll: function () {
+      var top = this.$element.offset().top;
+      // 扣除 header docking 高度
+      if (!$('html').hasClass('is-embed')) {
+        top -= $('.l-header').outerHeight(true) || 0;
+      }
+
+      // 移除 tab docking 狀態
+      this.$element.closest('[data-tab]:not([data-docking="false"])').find('.c-tab__header').removeClass('scroll-to-fixed-fixed is-docking');
+      $('html, body').animate({
+        scrollTop: top
+      }, 300);
+    }
+  });
+  $.fn[pluginName] = function (methodOrOptions) {
+    return this.each(function () {
+      var plugin = $.data(this, 'plugin_' + pluginName) || new Plugin(this, methodOrOptions);
+      if (typeof methodOrOptions === 'string' && plugin[methodOrOptions]) {
+        plugin[methodOrOptions].apply(plugin, Array.prototype.slice.call(arguments, 1));
+      }
+    });
+  };
 })(jQuery);
 
 // mergeTable

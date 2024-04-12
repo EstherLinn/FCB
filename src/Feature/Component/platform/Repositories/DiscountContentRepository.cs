@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.DiscountContent;
 using Sitecore;
+using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using System;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -10,8 +11,8 @@ namespace Feature.Wealth.Component.Repositories
     {
         public static string GetDisplayDate(Item item)
         {
-            DateTime startDate = (DateTime)ItemUtils.GetDateTimeFieldValue(item, Templates.DiscountContentDatasource.Fields.StartDate);
-            DateTime endDate = (DateTime)ItemUtils.GetDateTimeFieldValue(item, Templates.DiscountContentDatasource.Fields.EndDate);
+            DateTime startDate = ItemUtils.GetLocalDateFieldValue(item, Templates.DiscountContentDatasource.Fields.StartDate) ?? DateTime.MinValue;
+            DateTime endDate = ItemUtils.GetLocalDateFieldValue(item, Templates.DiscountContentDatasource.Fields.EndDate) ?? DateTime.MinValue;
             DateTime today = DateUtil.ToServerTime(DateTime.UtcNow).Date;
 
             if (startDate == DateTime.MinValue || endDate == DateTime.MinValue || endDate < startDate)
@@ -30,11 +31,11 @@ namespace Feature.Wealth.Component.Repositories
 
         public static string GetDisplayTag(Item item)
         {
-            DateTime startDate = (DateTime)ItemUtils.GetDateTimeFieldValue(item, Templates.DiscountContentDatasource.Fields.StartDate);
-            DateTime endDate = (DateTime)ItemUtils.GetDateTimeFieldValue(item, Templates.DiscountContentDatasource.Fields.EndDate);
+            DateTime startDate = ItemUtils.GetLocalDateFieldValue(item, Templates.DiscountContentDatasource.Fields.StartDate) ?? DateTime.MinValue;
+            DateTime endDate = ItemUtils.GetLocalDateFieldValue(item, Templates.DiscountContentDatasource.Fields.EndDate) ?? DateTime.MinValue;
             DateTime today = DateUtil.ToServerTime(DateTime.UtcNow).Date;
 
-            TimeSpan duration = endDate.AddDays(1) - startDate; 
+            TimeSpan duration = endDate.AddDays(1) - startDate;
 
             if (startDate == DateTime.MinValue || endDate == DateTime.MinValue)
             {
