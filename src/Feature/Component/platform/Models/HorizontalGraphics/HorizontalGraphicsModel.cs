@@ -53,6 +53,11 @@ namespace Feature.Wealth.Component.Models.HorizontalGraphics
             public struct Fields
             {
                 /// <summary>
+                /// 標籤
+                /// </summary>
+                public static readonly ID Label = new ID("{C3C6337D-36BC-4876-A555-CFB9B5A3DF72}");
+
+                /// <summary>
                 /// 標題
                 /// </summary>
                 public static readonly ID Title = new ID("{20008C0F-AA09-478D-9B23-447BC947971D}");
