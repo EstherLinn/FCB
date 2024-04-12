@@ -1,0 +1,71 @@
+﻿@using Sitecore.Configuration;
+@using Sitecore.Data;
+@using Sitecore.Data.Items;
+@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+@{
+    var SubcriptionSingleLink = Settings.GetSetting("WebSubscriptionSingle");
+    var SubcriptionRegularLink = Settings.GetSetting("WebSubscriptionRegular");
+    var MobileESingleLink = Settings.GetSetting("MobileESingle");
+    var MobileERegularLink = Settings.GetSetting("MobileERegular");
+    var MobileIleoSingleLink = Settings.GetSetting("MobileIleoSingle");
+    var MobileIleoRegularLink = Settings.GetSetting("MobileIleoRegular");
+}
+
+<script>
+        (function ($, window, document, undefined) {
+         document.cookie = 'NowUrl=@System.Web.HttpContext.Current.Request.Url.PathAndQuery;path=/;samesite=lax;secure;';
+          EventHandler.AddAction('subscription-init',function(event,self){
+
+    @if (!Sitecore.Context.IsLoggedIn)
+    {
+        @: $('a[eh-subscription-init]').attr("href","#popupLogin");
+    }
+    else
+    {
+        @: $('a[eh-subscription-init]').attr("href","#popupPurchase");
+    } 
+            let fundid = $('a[eh-subscription-init]').data('fundid');
+               if ($(window).width() < 768)
+            {
+                $('input[name="platform"]').on('click', function () {
+                    let val = $(this).data('name');
+                    if (val == "firste") {
+                        $('#subscriptionSingle').attr("href", "@MobileESingleLink");
+                        $('#subscriptionRegular').attr("href", "@MobileERegularLink");
+
+                    } else {
+                        $('#subscriptionSingle').attr("href", "@MobileIleoSingleLink");
+                        $('#subscriptionRegular').attr("href", "@MobileIleoRegularLink");
+                    }
+                    localStorage.setItem("MobilePlatform", val);
+            $('#subscriptionSingle').attr("href", $('#subscriptionSingle').attr("href").replace("{}",fundid));
+            $('#subscriptionRegular').attr("href", $('#subscriptionRegular').attr("href").replace("{}",fundid));
+                });
+            }else
+            {
+             $('#subscriptionSingle').attr("href", "@SubcriptionSingleLink");
+             $('#subscriptionRegular').attr("href", "@SubcriptionRegularLink");
+            }
+                  if (localStorage.getItem('MobilePlatform') !== 'undefined')
+          {
+              let val = localStorage.getItem('MobilePlatform');
+              if (val == "firste") {
+                  $('input[data-name="firste"]').prop('checked', true);
+                  $('input[data-name="firste"]').click();
+              } else {
+                  $('input[data-name="ileo"]').prop('checked', true);
+
+                  $('input[data-name="ileo"]').click();
+              }
+          }else{
+                  $('input[data-name="firste"]').click();
+          }
+            });
+    EventHandler.AddClick('subscription-click',function(event,self){
+            let $this = $(self);
+             let fundid = $this.data('fundid');
+             $('#subscriptionSingle').attr("href", $('#subscriptionSingle').attr("href").replace("{}",fundid));
+            $('#subscriptionRegular').attr("href", $('#subscriptionRegular').attr("href").replace("{}",fundid));
+            });
+            })(jQuery, window, document);
+</script>

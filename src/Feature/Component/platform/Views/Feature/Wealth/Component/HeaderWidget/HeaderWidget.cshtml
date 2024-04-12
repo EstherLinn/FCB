@@ -1,5 +1,7 @@
-﻿@if (Sitecore.Context.IsLoggedIn)
-{
+﻿@using Sitecore.Web;
+@*@if (!string.IsNullOrEmpty(WebUtil.GetCookieValue("MemberInfo")))
+*@
+@if(Sitecore.Context.IsLoggedIn){
     Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LoginState.cshtml");
 }
 else

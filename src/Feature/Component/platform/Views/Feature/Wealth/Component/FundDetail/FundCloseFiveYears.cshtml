@@ -159,7 +159,9 @@
                         let fund = result.resultSet.result.filter(item => !set.has(item.v5) ? set.add(item.v5) : false);
                         mapData = fund.map((item, index) => {
                             return {
-                                name: item.v5 ,
+                                id : item.v5,
+                                name: item.v6,
+                                date: item.v7,
                                 // data: item.rate
                             };
                         });
@@ -241,10 +243,10 @@
                             series: mapData
                         });
                         $.each(years, function (index, value) {
-                            $('#rateSelect').append(`<option value="${value}報酬率高到低" data-sorting-column="${value}" data-sorting-class="is-desc">${value}報酬率高到低</option>`);
-                            $('#rateSelect').append(`<option value="${value}報酬率低到高" data-sorting-column="${value}" data-sorting-class="is-asc">${value}報酬率低到高</option>`);
-                            $('#feeSelect').append(`<option value="${value}費用率高到低" data-sorting-column="${value}" data-sorting-class="is-desc">${value}費用率高到低</option>`);
-                            $('#feeSelect').append(`<option value="${value}費用率低到高" data-sorting-column="${value}" data-sorting-class="is-asc">${value}費用率低到高</option>`);
+                            $('#rateSelect').append(`<option value="${value}報酬率高到低" data-sorting-column="${value}" data-sorting-class="is-desc" data-idx=${index}>${value}報酬率高到低</option>`);
+                            $('#rateSelect').append(`<option value="${value}報酬率低到高" data-sorting-column="${value}" data-sorting-class="is-asc"data-idx=${index}>${value}報酬率低到高</option>`);
+                            $('#feeSelect').append(`<option value="${value}費用率高到低" data-sorting-column="${value}" data-sorting-class="is-desc" data-idx=${index}>${value}費用率高到低</option>`);
+                            $('#feeSelect').append(`<option value="${value}費用率低到高" data-sorting-column="${value}" data-sorting-class="is-asc" data-idx=${index}>${value}費用率低到高</option>`);
                         });
                         ShowRateTable(mapData, years);
                         ShowFeeTable(mapData, years);
@@ -267,10 +269,10 @@
                             var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
                             var sortingColumn = $this.data('sorting-column');
                             var sortingYearsIdx = $this.data('idx');
-
                             $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
-                            $sortingbox.trigger('change');
-                            SortingTable(mapData,sortingColumn, orderby, tableName, sortingYearsIdx,years)
+                            //$sortingbox.trigger('change');
+                            SortingTable(mapData,sortingColumn, orderby, tableName, sortingYearsIdx);
+                            
                             $('#rateTb').html('');
                             // 因展示，使用 setTimeout 延遲關閉 loading
                             setTimeout(() => {
@@ -280,17 +282,18 @@
                         });
                         // 手機版分頁筆數功能
                         $('[data-sortingbox="true"]').on('change.sorting', function (e) {
+                            var $this = $(this);
                             // 呼叫 loading
                             window.loading('show');
-                            var sorting = $(this).val();
-                            var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+                            var sorting = $this.val();
+                            var $linkTable = $(`[data-table-name="${$this.data('sorting-linkto')}"]`);
                             var sortingColumn = $('option:selected', this).data('sorting-column');
                             var orderby = $('option:selected', this).data('sorting-class');
-
+                            var sortingYearsIdx = $this.find('option:selected').data('idx');
+                            SortingTable(mapData,sortingColumn, orderby, $this.data('sorting-linkto'), sortingYearsIdx);
                             // 連動 table
                             $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
                             $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
-
                             // 因展示，使用 setTimeout 延遲關閉 loading
                             setTimeout(() => {
                                 // 關閉loading
@@ -347,11 +350,11 @@
         $.each(data, function(index, value) {
             midHtml += ` <tr>
                                                 <td class="u-left">
-                                                    <a href="${detailsUrl}?id=${data[index].name}" class="c-legend c-legend--link" style="--legend-color:${data[index].color}">
-                                                        <span class="c-legend__name">${data[index].name}</span>
+                                                    <a href="${detailsUrl}?id=${data[index].id}" class="c-legend c-legend--link" style="--legend-color:${data[index].color}">
+                                                        <span class="c-legend__name">${data[index].id + " " +data[index].name}</span>
                                                     </a>
                                                 </td>
-                                                <td>1999/07/01</td>
+                                                <td>${data[index].date}</td>
                                                 <td><span class="${GiveStyle(data[index].rate[0])}">${GivePercent(data[index].rate[0])}</span></td>
                                                 <td><span class="${GiveStyle(data[index].rate[1])}">${GivePercent(data[index].rate[1])}</span></td>
                                                 <td><span class="${GiveStyle(data[index].rate[2])}">${GivePercent(data[index].rate[2])}</span></td>
@@ -401,11 +404,11 @@
             $.each(data, function (index, value) {
                 midHtml += ` <tr>
                                                 <td class="u-left">
-                                                    <a href="${detailsUrl}?id=${data[index].name}" class="c-legend c-legend--link" style="--legend-color:${data[index].color}">
-                                                        <span class="c-legend__name">${data[index].name}</span>
+                                                    <a href="${detailsUrl}?id=${data[index].id}" class="c-legend c-legend--link" style="--legend-color:${data[index].color}">
+                                                        <span class="c-legend__name">${data[index].id + " " + data[index].name}</span>
                                                     </a>
                                                 </td>
-                                                <td>1999/07/01</td>
+                                                <td>${data[index].date}</td>
                                                 <td><span class="${GiveStyle(data[index].fee[0])}">${GivePercent(data[index].fee[0])}</span></td>
                                                 <td><span class="${GiveStyle(data[index].fee[1])}">${GivePercent(data[index].fee[1])}</span></td>
                                                 <td><span class="${GiveStyle(data[index].fee[2])}">${GivePercent(data[index].fee[2])}</span></td>
@@ -420,35 +423,49 @@
 
         function SortingTable(data, column, orderby, table, yearsidx) {
             let sortingData = [];
+            let field = table== "rateTable" ?  "rate" : "fee";
             if (column == 'name') {
                 sortingData = data.sort((a, b) => orderby == "is-asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
             } else if (column == 'establishmentDay') {
                 if (orderby == "is-desc") {
-             @* sortingData = data.sort(fucntion(a,b)
+              sortingData = data.sort(function (a,b)
              {
-                 let dateA = new Date(a);
-                let dateB = new Date(b);
-                return dateA - dateB;
-             }); *@
+                let dateA = new Date(a.date);
+                let dateB = new Date(b.date);
+                return new Date(a.date) - new Date(b.date);
+             }); 
                 } else {
-            @* sortingData = data.sort(fucntion(a,b)
+             sortingData = data.sort(function (a,b)
              {
-                    let dateA = new Date(a);
-                let dateB = new Date(b);
+                 let dateA = new Date(a.date);
+                let dateB = new Date(b.date);
                 return dateB - dateA;
-             }); *@
+             }); 
                 }
 
             } else {
                 let rateData = [];
                 $.each(data, function (idx, item) {
-                    rateData.push(item.rate[Number(yearsidx)])
+                    rateData.push(item[field][Number(yearsidx)])
                 });
                 rateData = rateData.sort(function (a, b) { return orderby == "is-asc" ? a - b : b - a; });
                 $.each(rateData, function (idx, item) {
                     for (let x = 0; x < rateData.length; x++) {
-                        if (data[x].rate[Number(yearsidx)] == item) {
+                        if (data[x][field][Number(yearsidx)] == item) {
+                            if(sortingData.length == 0)
+                            {
                             sortingData.push(data[x]);
+                            }else
+                            {
+                                let exists = 0;
+                                 $.each(sortingData,function(idx,item){
+                                    if(item.name === data[x].name)
+                                    {
+                                        exists++;
+                                    }
+                                 })
+                            if(exists ===0 ){  sortingData.push(data[x]);}
+                            }
                         }
                     }
 
@@ -465,11 +482,11 @@
               $.each(data, function (index, value) {
                 html += ` <tr>
                                                 <td class="u-left">
-                                                    <a href="${detailsUrl}?id=${data[index].name}" class="c-legend c-legend--link" style="--legend-color:${data[index].color}">
-                                                        <span class="c-legend__name">${data[index].name}</span>
+                                                    <a href="${detailsUrl}?id=${data[index].id}" class="c-legend c-legend--link" style="--legend-color:${data[index].color}">
+                                                        <span class="c-legend__name">${data[index].id + " " + data[index].name}</span>
                                                     </a>
                                                 </td>
-                                                <td>1999/07/01</td>
+                                                <td>${data[index].date}</td>
                                                 <td><span class="${GiveStyle(data[index][field][0])}">${GivePercent(data[index][field][0])}</span></td>
                                                 <td><span class="${GiveStyle(data[index][field][1])}">${GivePercent(data[index][field][1])}</span></td>
                                                 <td><span class="${GiveStyle(data[index][field][2])}">${GivePercent(data[index][field][2])}</span></td>

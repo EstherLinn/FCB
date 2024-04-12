@@ -107,7 +107,7 @@ namespace Feature.Wealth.Component.Repositories
                     route = "nav-duringdate";
                     break;
             }
-            if (range.Equals("60m", StringComparison.OrdinalIgnoreCase) || range.Equals("establishment", StringComparison.OrdinalIgnoreCase))
+            if (range.Equals("60m", StringComparison.OrdinalIgnoreCase) || range.Equals("establishment", StringComparison.OrdinalIgnoreCase) || range.Equals("custom", StringComparison.OrdinalIgnoreCase))
             {
                 route += "-all";
             }

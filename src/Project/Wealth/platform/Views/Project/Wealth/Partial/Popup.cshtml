@@ -1,4 +1,11 @@
-﻿<div id="popupLogin" class="c-modal mfp-hide">
+﻿@*@using Feature.Wealth.Account.Services;
+@using Feature.Wealth.Account.Models.OAuth;*@
+
+@{
+    //string fbAuthUrl = OAuthFactory.GetAuthUrl(PlatFormEunm.FaceBook);
+    //string lineAuthUrl = OAuthFactory.GetAuthUrl(PlatFormEunm.Line);
+}
+<div id="popupLogin" class="c-modal mfp-hide">
     <div class="c-modal__wrap">
         <div class="c-loginModal">
             <div class="c-loginModal__item">
@@ -14,9 +21,6 @@
                         <div class="c-socialBox">
                             <div class="c-socialBox__title">社群登入</div>
                             <ul class="c-socialBox__list">
-                                <li class="c-socialBox__item">
-                                    <a href="#" class="o-social o-social--google"></a>
-                                </li>
                                 <li class="c-socialBox__item">
                                     <a href="#" class="o-social o-social--fb"></a>
                                 </li>
@@ -57,7 +61,7 @@
                         <div class="l-pickGroup">
                             <div class="l-pickGroup__item">
                                 <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform" checked>
+                                    <input class="o-btnRadio__input" type="radio" name="platform" data-name="firste" checked>
                                     <div class="o-btnRadio__text">
                                         <span>第e行動</span>
                                     </div>
@@ -65,7 +69,7 @@
                             </div>
                             <div class="l-pickGroup__item">
                                 <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform">
+                                    <input class="o-btnRadio__input" type="radio" name="platform"  data-name="ileo">
                                     <div class="o-btnRadio__text">
                                         <span>iLEO</span>
                                     </div>
@@ -79,10 +83,10 @@
         <div class="c-modal__action">
             <div class="l-action l-action--inline">
                 <div class="l-action__item">
-                    <a href="#" class="o-btn o-btn--primary o-btn--sm">單筆申購</a>
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionSingle" data-type="Single">單筆申購</a>
                 </div>
                 <div class="l-action__item">
-                    <a href="#" class="o-btn o-btn--primary o-btn--sm">定期定額</a>
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionRegular"  data-type="Regular">定期定額</a>
                 </div>
             </div>
         </div>
@@ -95,6 +99,17 @@
         </header>
         <div class="c-modal__content">
             <p>點擊幣別可查詢相關匯率</p>
+        </div>
+    </div>
+</div>
+<div id="popupCurrencyWebSite" class="c-modal mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">外匯匯率</h2>
+        </header>
+        <div class="c-modal__content">
+            <iframe src="https://mobiletest.firstbank.com.tw/c1/cheetah/zh/07/currency">
+            </iframe>
         </div>
     </div>
 </div>
