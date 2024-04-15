@@ -1,0 +1,22 @@
+﻿@model Feature.Wealth.Component.Models.Paginator.PaginatorModel
+
+<section class="c-section">
+    <div class="l-wrap">
+        <div class="o-record">
+            @if (Model.PreviousPage.Item != null)
+            {
+                <a href="@Model.PreviousPage.Link" class="o-record__nav o-record__nav--prev">
+                    <span class="o-record__prev"></span>
+                    <span class="o-record__title">@Model.PreviousPage.Title</span>
+                </a>
+            }
+            @if (Model.NextPage.Item != null)
+            {
+                <a href="@Model.NextPage.Link" class="o-record__nav o-record__nav--next">
+                    <span class="o-record__title">@Model.NextPage.Title</span>
+                    <span class="o-record__next"></span>
+                </a>
+            }
+        </div>
+    </div>
+</section>
