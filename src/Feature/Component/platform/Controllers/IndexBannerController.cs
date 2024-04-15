@@ -24,12 +24,12 @@ namespace Feature.Wealth.Component.Controllers
                 string imageUrlPC = ItemUtils.ImageUrl(childItem, Template.IndexBanner.Fields.ImagePC);
                 string imageUrlMB = ItemUtils.ImageUrl(childItem, Template.IndexBanner.Fields.ImageMB);
                 string btnLink = ItemUtils.GeneralLink(childItem, Template.IndexBanner.Fields.ButtonLink)?.Url;
-                bool checkedDarkMode = ItemUtils.IsChecked(childItem, Template.IndexBanner.Fields.DarkMode);
+                bool checkedLightMode = ItemUtils.IsChecked(childItem, Template.IndexBanner.Fields.LightMode);
                 string btnText = ItemUtils.GetFieldValue(childItem, Template.IndexBanner.Fields.ButtonText);
 
                 items.Add(new Banner(childItem)
                 {
-                    IsDark = checkedDarkMode,
+                    IsLight = checkedLightMode,
                     ImageUrlPC = imageUrlPC,
                     ImageUrlMB = imageUrlMB,
                     ButtonLink = btnLink,
