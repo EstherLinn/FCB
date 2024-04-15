@@ -57,22 +57,22 @@
                                             <div class="l-pickCollapse" data-overflow-hide="area">
                                                 <!-- 高度過高內容區[data-overflow-content="相對應ID"] -->
                                                 <div class="l-pickCollapse__content" data-overflow-content="area">
-                                                    <div class="l-pickGroup">
+                                                    <div class="l-pickGroup" id="ProductIdentifierName">
                                                         <div class="l-pickGroup__item">
                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="國內">
                                                                 <div class="o-btnCheckBox__text" data-filter-value="國內"></div>
                                                             </label>
                                                         </div>
                                                         <div class="l-pickGroup__item">
                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="境外">
                                                                 <div class="o-btnCheckBox__text" data-filter-value="境外"></div>
                                                             </label>
                                                         </div>
                                                         <div class="l-pickGroup__item">
                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="金融債券">
                                                                 <div class="o-btnCheckBox__text" data-filter-value="金融債券"></div>
                                                             </label>
                                                         </div>
@@ -122,7 +122,7 @@
                                                     <span>熱門關鍵字</span>
                                                 </div>
                                                 <div class="c-filterForm__value">
-                                                    <div class="l-pickGroup">
+                                                    <div class="l-pickGroup" id="KeywordTags">
 
                                                         @foreach (var item in Model.KeywordOptions)
                                                         {
@@ -130,7 +130,7 @@
                                                                 <!-- 篩選checkbox外層[data-filter-checkbox] -->
                                                                 <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
                                                                 <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                                    <input class="o-btnCheckBox__input" type="checkbox">
+                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagTitle">
                                                                     <div class="o-btnCheckBox__text" data-filter-value="@item.TagTitle"></div>
                                                                 </label>
                                                             </div>
@@ -148,8 +148,7 @@
                                                     <span>熱門主題</span>
                                                 </div>
                                                 <div class="c-filterForm__value">
-                                                    <div class="l-pickGroup">
-
+                                                    <div class="l-pickGroup" id="TopicTags">
 
                                                         @foreach (var item in Model.TopicOptions)
                                                         {
@@ -157,7 +156,7 @@
                                                                 <!-- 篩選checkbox外層[data-filter-checkbox] -->
                                                                 <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
                                                                 <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                                    <input class="o-btnCheckBox__input" type="checkbox">
+                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagTitle">
                                                                     <div class="o-btnCheckBox__text" data-filter-value="@item.TagTitle"></div>
                                                                 </label>
                                                             </div>
@@ -173,7 +172,7 @@
                             <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                             <div class="c-filter__total" data-filter-collapse>
                                 <div class="o-total o-total--wt">
-                                    搜尋<span>9999</span>筆
+                                    搜尋<span id="uid-total">9999</span>筆
                                 </div>
                             </div>
                         </div>
@@ -211,7 +210,7 @@
                 <div class="l-filter__tool">
                     <div class="l-filter__total">
                         <div class="o-total">
-                            共<span>9999</span>項結構型商品
+                            共<span id="uid-total">9999</span>項結構型商品
                         </div>
                     </div>
                     <div class="l-filter__reset">
@@ -268,542 +267,44 @@
                                         <span>商品名稱</span>
                                         <!-- .is-asc: 升冪 -->
                                         <!-- .is-desc: 降冪 -->
-                                        <a href="#" class="o-sorting" data-sorting-column="stockName"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="stockName" id="uid-sort-name"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>發行機構</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="agency"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="agency" id="uid-sort-issuingInstitution"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>幣別</span>
                                         <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                        <a href="#" class="o-sorting" data-sorting-column="currency"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="currency" id="uid-sort-currencyCode"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>到期日</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="expire"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="expire" id="uid-sort-productMaturityDate"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>參考贖回價</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="redemption"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="redemption" id="uid-sort-bankSellPrice"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>價格日期</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="price"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="price" id="uid-sort-priceBaseDate"></a>
                                     </div>
                                 </th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- 表格內文字對齊樣式，可於tr/td標籤上使用(若內容物為flexbox將不會發生作用)：
-                            .u-center: 置中
-                            .u-center@lt: pad(含)以下版本(<= 1199px)置中
-                            .u-center@lt-up: pad(含)以上版本(>= 768px)置中
-                            .u-center@dt-only: 僅桌機版本(>= 1200px)置中
-                            .u-center@lt-only: 僅pad版本(>= 768px and <= 1199px)置中
-                            .u-center@mb-only: 僅手機版本(<= 767px)置中
-                            .u-left/.u-right: 置左/置右，比照置中模式 -->
-                            <!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                            <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                <td class="c-cardTable__top"></td>
-                                <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                                <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                    <div class="c-cardTable__content">
-                                        <a href="./detail.html" class="o-contentLink t-bold u-ellipsis-2">PN28 法巴銀行5年期紅利型保本結構型商品</a>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                    <div class="c-cardTable__title" data-length="5">發行機構</div>
-                                    <div class="c-cardTable__content">BNP Paribas Issuance B.V.</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">
-                                        幣別
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                    </div>
-                                    <div class="c-cardTable__content">
-                                        <a href="#" class="o-link">美元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">到期日</div>
-                                    <div class="c-cardTable__content">
-                                        2024/03/29
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                    <div class="c-cardTable__content">
-                                        0.9201
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">價格日期</div>
-                                    <div class="c-cardTable__content">
-                                        2023/10/17
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                            </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                            <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                <td class="c-cardTable__top"></td>
-                                <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                                <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                    <div class="c-cardTable__content">
-                                        <a href="./detail.html" class="o-contentLink t-bold u-ellipsis-2">PN29 法巴銀行5年期紅利型保本結構型商品</a>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                    <div class="c-cardTable__title" data-length="5">發行機構</div>
-                                    <div class="c-cardTable__content">BNP Paribas Issuance B.V.</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">
-                                        幣別
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                    </div>
-                                    <div class="c-cardTable__content">
-                                        <a href="#" class="o-link">美元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">到期日</div>
-                                    <div class="c-cardTable__content">
-                                        2024/03/29
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                    <div class="c-cardTable__content">
-                                        0.9201
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">價格日期</div>
-                                    <div class="c-cardTable__content">
-                                        2023/10/17
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                            </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                            <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                <td class="c-cardTable__top"></td>
-                                <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                                <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                    <div class="c-cardTable__content">
-                                        <a href="./detail.html" class="o-contentLink t-bold u-ellipsis-2">PN35 法巴銀行5年期紅利型保本結構型商品</a>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                    <div class="c-cardTable__title" data-length="5">發行機構</div>
-                                    <div class="c-cardTable__content">BNP Paribas Issuance B.V.</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">
-                                        幣別
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                    </div>
-                                    <div class="c-cardTable__content">
-                                        <a href="#" class="o-link">美元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">到期日</div>
-                                    <div class="c-cardTable__content">
-                                        2024/03/29
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                    <div class="c-cardTable__content">
-                                        0.9201
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">價格日期</div>
-                                    <div class="c-cardTable__content">
-                                        2023/10/17
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                            </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                            <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                <td class="c-cardTable__top"></td>
-                                <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                                <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                    <div class="c-cardTable__content">
-                                        <a href="./detail.html" class="o-contentLink t-bold u-ellipsis-2">PN38 法巴銀行5年期紅利型保本結構型商品</a>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                    <div class="c-cardTable__title" data-length="5">發行機構</div>
-                                    <div class="c-cardTable__content">BNP Paribas Issuance B.V.</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">
-                                        幣別
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                    </div>
-                                    <div class="c-cardTable__content">
-                                        <a href="#" class="o-link">美元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">到期日</div>
-                                    <div class="c-cardTable__content">
-                                        2024/03/29
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                    <div class="c-cardTable__content">
-                                        0.9201
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">價格日期</div>
-                                    <div class="c-cardTable__content">
-                                        2023/10/17
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                            </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                            <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                <td class="c-cardTable__top"></td>
-                                <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                                <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                    <div class="c-cardTable__content">
-                                        <a href="./detail.html" class="o-contentLink t-bold u-ellipsis-2">PN56 法巴銀行5年期紅利型保本結構型商品</a>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                    <div class="c-cardTable__title" data-length="5">發行機構</div>
-                                    <div class="c-cardTable__content">SG ISSUER</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">
-                                        幣別
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                    </div>
-                                    <div class="c-cardTable__content">
-                                        <a href="#" class="o-link">美元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">到期日</div>
-                                    <div class="c-cardTable__content">
-                                        2024/03/29
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                    <div class="c-cardTable__content">
-                                        0.9201
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">價格日期</div>
-                                    <div class="c-cardTable__content">
-                                        2023/10/17
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                            </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                            <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                <td class="c-cardTable__top"></td>
-                                <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                                <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                    <div class="c-cardTable__content">
-                                        <a href="./detail.html" class="o-contentLink t-bold u-ellipsis-2">PN57 法巴銀行5年期紅利型保本結構型商品</a>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                    <div class="c-cardTable__title" data-length="5">發行機構</div>
-                                    <div class="c-cardTable__content">SG ISSUER</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">
-                                        幣別
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                    </div>
-                                    <div class="c-cardTable__content">
-                                        <a href="#" class="o-link">美元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">到期日</div>
-                                    <div class="c-cardTable__content">
-                                        2024/03/29
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                    <div class="c-cardTable__content">
-                                        0.9201
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">價格日期</div>
-                                    <div class="c-cardTable__content">
-                                        2023/10/17
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                            </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                            <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                <td class="c-cardTable__top"></td>
-                                <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                                <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                    <div class="c-cardTable__content">
-                                        <a href="./detail.html" class="o-contentLink t-bold u-ellipsis-2">PN01 法巴銀行5年期紅利型保本結構型商品</a>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                    <div class="c-cardTable__title" data-length="5">發行機構</div>
-                                    <div class="c-cardTable__content">SG ISSUER</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">
-                                        幣別
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                    </div>
-                                    <div class="c-cardTable__content">
-                                        <a href="#" class="o-link">美元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">到期日</div>
-                                    <div class="c-cardTable__content">
-                                        2024/03/29
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                    <div class="c-cardTable__content">
-                                        0.9201
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">價格日期</div>
-                                    <div class="c-cardTable__content">
-                                        2023/10/17
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                            </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                            <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                <td class="c-cardTable__top"></td>
-                                <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                                <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                    <div class="c-cardTable__content">
-                                        <a href="./detail.html" class="o-contentLink t-bold u-ellipsis-2">PN02 法巴銀行5年期紅利型保本結構型商品</a>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                    <div class="c-cardTable__title" data-length="5">發行機構</div>
-                                    <div class="c-cardTable__content">SG ISSUER</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">
-                                        幣別
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                    </div>
-                                    <div class="c-cardTable__content">
-                                        <a href="#" class="o-link">美元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">到期日</div>
-                                    <div class="c-cardTable__content">
-                                        2024/03/29
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                    <div class="c-cardTable__content">
-                                        0.9201
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">價格日期</div>
-                                    <div class="c-cardTable__content">
-                                        2023/10/17
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                            </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                            <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                <td class="c-cardTable__top"></td>
-                                <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                                <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                    <div class="c-cardTable__content">
-                                        <a href="./detail.html" class="o-contentLink t-bold u-ellipsis-2">PN04 法巴銀行5年期紅利型保本結構型商品</a>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                    <div class="c-cardTable__title" data-length="5">發行機構</div>
-                                    <div class="c-cardTable__content">SG ISSUER</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">
-                                        幣別
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                    </div>
-                                    <div class="c-cardTable__content">
-                                        <a href="#" class="o-link">美元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">到期日</div>
-                                    <div class="c-cardTable__content">
-                                        2024/03/29
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                    <div class="c-cardTable__content">
-                                        0.9201
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">價格日期</div>
-                                    <div class="c-cardTable__content">
-                                        2023/10/17
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                            </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                            <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                <td class="c-cardTable__top"></td>
-                                <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                                <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                    <div class="c-cardTable__content">
-                                        <a href="./detail.html" class="o-contentLink t-bold u-ellipsis-2">PN22 法巴銀行5年期紅利型保本結構型商品</a>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                    <div class="c-cardTable__title" data-length="5">發行機構</div>
-                                    <div class="c-cardTable__content">SG ISSUE R</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">
-                                        幣別
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                    </div>
-                                    <div class="c-cardTable__content">
-                                        <a href="#" class="o-link">美元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">到期日</div>
-                                    <div class="c-cardTable__content">
-                                        2024/03/29
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                    <div class="c-cardTable__content">
-                                        0.9201
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__title" data-length="4">價格日期</div>
-                                    <div class="c-cardTable__content">
-                                        2023/10/17
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                            </tr>
+                        <tbody id="uid-fjs">
+                            
                         </tbody>
                     </table>
                     @{
@@ -817,13 +318,64 @@
 <template id="tmplKeywordNotFound">
     <div class="c-empty">
         <div class="c-empty__img">
-            <img src="./~/themes/images/lions/lion-keyword.svg" alt="">
+            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
         </div>
         <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
     </div>
 </template>
 
 <script src="~/themes/js/filter.min.js"></script>
+
+
+<script id="uid-template" type="text/html">
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+        <td class="c-cardTable__top"></td>
+        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+            <div class="c-cardTable__content">
+                <a href="<%= ProductDetailUrl %>" class="o-contentLink t-bold u-ellipsis-2">
+                    <%= ProductDisplayName %>
+                </a>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">發行機構</div>
+            <div class="c-cardTable__content">
+                <%= IssuingInstitution %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">
+                幣別
+                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+            </div>
+            <div class="c-cardTable__content">
+                <a href="#" class="o-link">
+                    <%= CurrencyName %>
+                </a>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">到期日</div>
+            <div class="c-cardTable__content">
+                 <%= ProductMaturityDate %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">參考贖回價</div>
+            <div class="c-cardTable__content">
+                 <%= BankSellPrice %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">價格日期</div>
+            <div class="c-cardTable__content">
+                <%= PriceBaseDate %>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+    </tr>
+</script>
 
 
 <script>
@@ -833,13 +385,13 @@
                 return;
             }
 
-            var modelData = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
+            let modelData = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
 
             // 詳細頁頁面節點Url
-            var DetailPageItemUrl = JSON.parse(JSON.stringify(modelData.DetailPageItemUrl));
+            let DetailPageItemUrl = JSON.parse(JSON.stringify(modelData.DetailPageItemUrl));
 
             // 資料源Id
-            var datasourceId = JSON.parse(JSON.stringify(modelData.DatasourceId));
+            let datasourceId = JSON.parse(JSON.stringify(modelData.DatasourceId));
 
             // 商品列表
             $.ajax({
@@ -848,7 +400,79 @@
                 data: { datasourceIdStr : datasourceId },
                 success: function (data) {
                     console.log(data);
-                    StructuredProducts = data;
+
+                    $.each(data, function (index, item) {
+                        // 新增 ProductDisplayName 欄位
+                        item.ProductDisplayName = item.ProductCode + " " + item.ProductName;
+
+                        // 新增 ProductDetailUrl 欄位
+                        item.ProductDetailUrl = DetailPageItemUrl + "?id=" + item.ProductCode;
+                    });
+
+
+                    var template = document.getElementById('uid-template').innerHTML;
+                    var container = document.getElementById('uid-fjs');
+
+                    for (var i = 0; i < data.length; i++) {
+
+                        var filledTemplate = template
+                            .replace(/<%= ProductDisplayName %>/g, data[i].ProductDisplayName)
+                            .replace(/<%= ProductDetailUrl %>/g, data[i].ProductDetailUrl)
+                            .replace(/<%= IssuingInstitution %>/g, data[i].IssuingInstitution)
+                            .replace(/<%= CurrencyName %>/g, data[i].CurrencyName)
+                            .replace(/<%= ProductMaturityDate %>/g, data[i].ProductMaturityDate)
+                            .replace(/<%= BankSellPrice %>/g, data[i].BankSellPrice)
+                            .replace(/<%= PriceBaseDate %>/g, data[i].PriceBaseDate);
+
+                        container.innerHTML += filledTemplate;
+                    }
+
+
+
+                    var fjs = FilterJS(data, '#uid-fjs', {
+                        template: '#uid-template',
+                        callbacks: {
+                            afterFilter: function(result){
+                                window.loading('hide');
+                                $('[id="uid-total"]').text(result.length);
+                            }
+                        },
+                        search: { ele: '#uid-searchbox' },
+                        order: {
+                            onSortEvent: function (f) {
+                            },
+                            default_sort: 'asc',
+                            sorts: [{ field: 'ProductDisplayName', ele: '#uid-sort-name', toggle: true },
+                            { field: 'ProductDetailUrl'},
+                            { field: 'IssuingInstitution', ele: '#uid-sort-issuingInstitution', toggle: true },
+                            { field: 'CurrencyCode', ele: '#uid-sort-currencyCode', toggle: true },
+                            { field: 'ProductMaturityDate', ele: '#uid-sort-productMaturityDate', toggle: true },
+                            { field: 'BankSellPrice', ele: '#uid-sort-bankSellPrice', toggle: true },
+                            { field: 'PriceBaseDate', ele: '#uid-sort-priceBaseDate', toggle: true }
+                            ]
+                        },
+                        pagination: {
+                            //headerView: '#uid-filter-header',
+                            container: '#uid-pagination',
+                            paginationView: '#uid-template-pagination',
+                            visiblePages: 5,
+                            perPage: {
+                                values: [10, 50, 100, data.length],
+                                container: '#uid-perPage',
+                                perPageView: '#uid-template-perPage'
+                            }
+                        }
+                    });
+
+                    // 加入篩選
+                    fjs.addCriteria({ field: 'ProductIdentifierName', ele: '#ProductIdentifierName input:checkbox'});
+                    fjs.addCriteria({ field: 'KeywordTags', ele: '#KeywordTags input:checkbox' });
+                    fjs.addCriteria({ field: 'TopicTags', ele: '#TopicTags input:checkbox' });
+
+
+                     //fjs.forceBindEvent('#uid-btn-search', 'click');
+
+
                 }
             });
 
@@ -889,27 +513,6 @@
                 欄位-價格日期
                 "PriceBaseDate": "2024/04/02"
             */
-
-
-
-            var fjs = FilterJS(data, '#uid-fjs', {
-                template: '#uid-template',
-                search: { ele: '#uid-searchbox' },
-                pagination: {
-                    //headerView: '#uid-filter-header',
-                    container: '#uid-pagination',
-                    paginationView: '#uid-template-pagination',
-                    visiblePages: 0,
-                    perPage: {
-                        values: [10, 50, 100, data.length],
-                        container: '#uid-perPage',
-                        perPageView: '#uid-template-perPage'
-                    }
-                }
-            });
-
-
-
 
 
 
