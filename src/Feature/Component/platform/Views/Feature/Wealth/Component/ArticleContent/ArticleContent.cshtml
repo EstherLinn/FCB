@@ -1,0 +1,69 @@
+﻿@model Feature.Wealth.Component.Models.ArticleContent.ArticleContentModel
+@using Feature.Wealth.Component.Models.ArticleContent
+
+@if (Model == null)
+{
+    return;
+}
+
+<section class="c-section">
+    <div class="l-wrap">
+        <div class="c-article">
+
+            @if (!string.IsNullOrEmpty(Model.MainTitle))
+            {
+                <div class="c-article__head">
+                    <h1 class="c-article__title">@Model.MainTitle</h1>
+                </div>
+            }
+
+            <div class="c-article__extra">
+                <div class="c-minorInfo s4">
+                    <div class="c-minorInfo__main">
+
+                        @if (!string.IsNullOrEmpty(Model.Date))
+                        {
+                            <span class="t-date">@Model.Date</span>
+                        }
+
+                    </div>
+                    <div class="c-minorInfo__main">
+                        @*<span class="o-views o-views--xs">888,888,888</span>*@
+                    </div>
+                </div>
+            </div>
+            <div class="c-article__content">
+
+                @if (!string.IsNullOrEmpty(Model.Image))
+                {
+                    <div class="c-section">
+                        <figure class="o-figure">
+                            <img src="@Model.Image" class="o-figure__img" alt="">
+                            <figcaption class="o-figure__caption">(圖片來源：資料庫)</figcaption>
+                        </figure>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Content1))
+                {
+                    @Html.Sitecore().Field(Templates.ArticleContentDatasource.Fields.Content1.ToString(), Model.DataSource)
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Introduction))
+                {
+                    <div class="c-section">
+                        <div class="c-quotes">
+                            @Model.Introduction
+                        </div>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Content2))
+                {
+                    @Html.Sitecore().Field(Templates.ArticleContentDatasource.Fields.Content2.ToString(), Model.DataSource)
+                }
+
+            </div>
+        </div>
+    </div>
+</section>

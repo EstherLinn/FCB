@@ -1,0 +1,79 @@
+﻿@model Feature.Wealth.Component.Models.ArticleCardList.ArticleCardListModel
+@using Feature.Wealth.Component.Models.ArticleCardList
+
+@if (Model == null || !Model.CardList.Any())
+{
+    return;
+}
+
+<section class="c-block" data-aos="fade-up" data-aos-once="true">
+    <div class="c-block__wrap">
+
+        @if (!string.IsNullOrEmpty(Model.MainTitle))
+        {
+            <div class="c-block__header">
+                <h2 class="c-block__title">@Model.MainTitle</h2>
+            </div>
+        }
+
+        <div class="c-block__content">
+            <div class="l-flex u-flex-col u-flex-gap-md">
+
+                @foreach (var item in Model.CardList)
+                {
+                    <div class="l-flex__item">
+                        @Html.Sitecore().BeginField(Templates.ArticleCardItem.Fields.Link.ToString(), item.Item, new { haschildren = true, @class = "c-box c-box--gapless u-shadow-animation" })
+
+                        <div class="c-box c-box--gapless u-shadow-animation">
+                            <div class="c-gridview c-gridview--list">
+
+                                @if (!string.IsNullOrEmpty(item.PCImage) && !string.IsNullOrEmpty(item.MobileImage))
+                                {
+                                    <div class="c-gridview__media">
+                                        <picture>
+                                            <source media="(min-width: 1200px)" srcset="@item.PCImage" />
+                                            <source media="(max-width: 1199px)" srcset="@item.MobileImage" />
+                                            <img src="@item.PCImage" class="c-gridview__img" alt="">
+                                        </picture>
+                                    </div>
+                                }
+
+                                <div class="c-gridview__content">
+                                    <div class="c-gridview__main">
+                                        @if (!string.IsNullOrEmpty(item.Title))
+                                        {
+                                            <div class="c-gridview__title t2@dt-only u-ellipsis-2 u-ellipsis-3@mb-only">@item.Title</div>
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(item.Content))
+                                        {
+                                            <div class="c-gridview__desc u-ellipsis-2 u-hidden@lt u-important">@item.Content</div>
+                                        }
+                                    </div>
+
+                                    <div class="c-gridview__minor">
+                                        <div class="c-minorInfo s4">
+                                            <div class="c-minorInfo__main">
+
+                                                @if (!string.IsNullOrEmpty(item.Date))
+                                                {
+                                                    <span class="t-date">@item.Date</span>
+                                                }
+
+                                            </div>
+                                            <div class="c-minorInfo__view">
+                                                @*<span class="o-views o-views--xs">888,888,888</span>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @Html.Sitecore().EndField()
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
