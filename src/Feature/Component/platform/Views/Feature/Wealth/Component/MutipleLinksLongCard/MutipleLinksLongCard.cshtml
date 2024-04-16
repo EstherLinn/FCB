@@ -1,0 +1,27 @@
+﻿@using Feature.Wealth.Component.Models.MutipleLinksLongCard
+@model MutipleLinksLongCardModel
+<div class="c-section">
+    <div class="c-section__content">
+        <div class="c-feature c-feature--join c-feature--personalize">
+            <div class="c-feature__content u-center">
+                <h3 class="c-feature__title">@Html.Sitecore().Field(Templates.MutipleLinksLongCardDataSource.Fields.MainTitle.ToString(), Model.DataSource)</h3>
+                <p class="c-feature__desc">@Html.Sitecore().Field(Templates.MutipleLinksLongCardDataSource.Fields.Description.ToString(), Model.DataSource)</p>
+                <div class="c-feature__links">
+                    @for (int i = 1; i < 5; i++)
+                    {
+                        var linkTitle = string.Format("Link Text {0}", i);
+                        var link = string.Format("Link {0}", i);
+                        <div>
+                            @Html.Sitecore().BeginField(link, Model.DataSource, new { haschildren = true, @class = "o-suffixLink o-suffixLink--right o-suffixLink--xs" })
+                            @Html.Sitecore().Field(linkTitle,Model.DataSource)
+                            @Html.Sitecore().EndField()
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="c-feature__plate">
+                @Html.Sitecore().Field(Templates.MutipleLinksLongCardDataSource.Fields.Image.ToString(), new { @class="c-feature__img" })
+            </div>
+        </div>
+    </div>
+</div>
