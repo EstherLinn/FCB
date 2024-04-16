@@ -11,42 +11,48 @@
         <div class="c-section__title u-left">@Html.Sitecore().Field(Templates.HorizontalGraphicsTitle.Fields.MainTitle.ToString(), Model.DataSource)</div>
         <div class="c-section__desc">@Html.Sitecore().Field(Templates.HorizontalGraphicsTitle.Fields.Description.ToString(), Model.DataSource)</div>
         <div class="c-section__content">
-            <div class="c-pictext">
-                @{
-                    var direction = Html.Sitecore().Field(Templates.HorizontalGraphicsTitle.Fields.FadeDirection.ToString(), Model.DataSource).ToString();
+            @{
+                var direction = Html.Sitecore().Field(Templates.HorizontalGraphicsTitle.Fields.FadeDirection.ToString(), Model.DataSource).ToString();
 
-                    if (direction == "Reverse")
+                if (direction == "Reverse")
+                {
+                    foreach (var item in Model.Items)
                     {
-                        foreach (var item in Model.Items)
-                        {
+                        <div class="c-pictext">
                             <div class="c-pictext__media">
                                 <img src="@item.ImageUrl" class="c-pictext__img" alt="">
                             </div>
                             <div class="c-pictext__main">
                                 <div class="c-pictext__head">
-                                    @Html.Sitecore().Field(Templates.HorizontalGraphics.Fields.Title.ToString(), item.Item)
-                                    @Html.Sitecore().Field(Templates.HorizontalGraphics.Fields.Content.ToString(), item.Item)
+                                    <span class="c-pictext__num">@Html.Sitecore().Field(Templates.HorizontalGraphics.Fields.Label.ToString(), item.Item)</span>
+                                    <span class="c-pictext__title">@Html.Sitecore().Field(Templates.HorizontalGraphics.Fields.Title.ToString(), item.Item)</span>
                                 </div>
+                                <div class="c-pictext__content">@Html.Sitecore().Field(Templates.HorizontalGraphics.Fields.Content.ToString(), item.Item)</div>
                             </div>
-                        }
-                    }
-                    else
-                    {
-                        foreach (var item in Model.Items)
-                        {
-                            <div class="c-pictext__main">
-                                <div class="c-pictext__head">
-                                    @Html.Sitecore().Field(Templates.HorizontalGraphics.Fields.Title.ToString(), item.Item)
-                                    @Html.Sitecore().Field(Templates.HorizontalGraphics.Fields.Content.ToString(), item.Item)
-                                </div>
-                            </div>
-                            <div class="c-pictext__media">
-                                <img src="@item.ImageUrl" class="c-pictext__img" alt="">
-                            </div>
-                        }
+                        </div>
                     }
                 }
-            </div>
+                else
+                {
+                    foreach (var item in Model.Items)
+                    {
+                        <div class="c-pictext">
+                            <div class="c-pictext__main">
+                                <div class="c-pictext__head">
+                                    <span class="c-pictext__num">@Html.Sitecore().Field(Templates.HorizontalGraphics.Fields.Label.ToString(), item.Item)</span>
+                                    <span class="c-pictext__title">@Html.Sitecore().Field(Templates.HorizontalGraphics.Fields.Title.ToString(), item.Item)</span>
+                                </div>
+                                <div class="c-pictext__content">
+                                    @Html.Sitecore().Field(Templates.HorizontalGraphics.Fields.Content.ToString(), item.Item)
+                                </div>
+                            </div>
+                            <div class="c-pictext__media">
+                                <img src="@item.ImageUrl" class="c-pictext__img" alt="">
+                            </div>
+                        </div>
+                    }
+                }
+            }
         </div>
     </div>
 </section>
