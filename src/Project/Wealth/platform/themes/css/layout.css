@@ -674,6 +674,9 @@ body.is-globalization {
 .l-main {
   flex: 1 1 auto;
 }
+.is-embed .l-main {
+  padding-bottom: 100px;
+}
 
 /* ==========================================================================
    Sidebar
@@ -1300,7 +1303,7 @@ body.is-globalization {
     height: 44px;
     background-size: 24px;
   }
-  .has-bottomTool .o-gotop {
+  html:not(.is-embed) .has-bottomTool .o-gotop {
     bottom: 60px;
   }
 }

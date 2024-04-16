@@ -13,30 +13,6 @@ namespace Feature.Wealth.Component.Models.FundDetail
         ///基金基本資料
         /// </summary>
         public FundBase FundBaseData { get; set; }
-        /// <summary>
-        /// 網頁版申購單筆
-        /// </summary>
-        public string SubcriptionSingleLink { get; set; }
-        /// <summary>
-        /// 網頁版申購定期定額
-        /// </summary>
-        public string SubcriptionRegularLink { get; set; }
-        /// <summary>
-        /// 行動版第e行動申購單筆
-        /// </summary>
-        public string MobileESingleLink { get; set; }
-        /// <summary>
-        /// 行動版第e行動申購定期定額
-        /// </summary>
-        public string MobileERegularLink { get; set; }
-        /// <summary>
-        /// 行動版iLeo申購單筆
-        /// </summary>
-        public string MobileIleoSingleLink { get; set; }
-        /// <summary>
-        /// 行動版iLeo申購定期定額
-        /// </summary>
-        public string MobileIleoRegularLink { get; set; }
         /// 近一年淨值
         /// </summary>
         public List<FundCloseYearNetValue> FundCloseYearsNetValue { get; set; }
@@ -104,15 +80,9 @@ namespace Feature.Wealth.Component.Models.FundDetail
         public List<FundScaleRecord> FundScaleRecords { get; set; }
 
         /// <summary>
-        /// 熱門標籤
+        /// 標籤
         /// </summary>
-        public List<string> HotTagList { get; set; }
-        /// <summary>
-        /// 行銷標籤
-        /// </summary>
-
-        public List<string> MarketTagList { get; set; }
-
+        public List<FundTagModel> TagsDic { get; set; }
 
     }
 }

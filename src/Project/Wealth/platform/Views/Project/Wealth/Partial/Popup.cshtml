@@ -1,9 +1,12 @@
 ﻿@*@using Feature.Wealth.Account.Services;
-@using Feature.Wealth.Account.Models.OAuth;*@
+    @using Feature.Wealth.Account.Models.OAuth;*@
+@using Sitecore.Configuration;
 
 @{
     //string fbAuthUrl = OAuthFactory.GetAuthUrl(PlatFormEunm.FaceBook);
     //string lineAuthUrl = OAuthFactory.GetAuthUrl(PlatFormEunm.Line);
+    var CurrencyWebSite = Settings.GetSetting("CurrencyWebSite");
+
 }
 <div id="popupLogin" class="c-modal mfp-hide">
     <div class="c-modal__wrap">
@@ -35,10 +38,10 @@
             <div class="c-loginModal__item">
                 <figure class="c-registerBox">
                     <div class="c-registerBox__wrap">
-                        <img src="./themes/images/layout/create.png" class="c-registerBox__img" alt="">
+                        <img src="@Url.Content("~/themes/images/layout/create.png")" class="c-registerBox__img" alt="">
                         <figcaption class="c-registerBox__content">
                             <span>還沒有第一銀行帳戶嗎？</span>
-                            <a href="#" class="o-link t-bold">立即開戶</a>
+                            <a href="https://ibank.firstbank.com.tw/NetBank/DigAMA/LandingPage/index.html?ch=&cp=&em=" class="o-link t-bold">立即開戶</a>
                         </figcaption>
                     </div>
                 </figure>
@@ -69,7 +72,7 @@
                             </div>
                             <div class="l-pickGroup__item">
                                 <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform"  data-name="ileo">
+                                    <input class="o-btnRadio__input" type="radio" name="platform" data-name="ileo">
                                     <div class="o-btnRadio__text">
                                         <span>iLEO</span>
                                     </div>
@@ -86,7 +89,7 @@
                     <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionSingle" data-type="Single">單筆申購</a>
                 </div>
                 <div class="l-action__item">
-                    <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionRegular"  data-type="Regular">定期定額</a>
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionRegular" data-type="Regular">定期定額</a>
                 </div>
             </div>
         </div>
@@ -108,7 +111,7 @@
             <h2 class="c-modal__title">外匯匯率</h2>
         </header>
         <div class="c-modal__content">
-            <iframe src="https://mobiletest.firstbank.com.tw/c1/cheetah/zh/07/currency">
+            <iframe src="@CurrencyWebSite">
             </iframe>
         </div>
     </div>
