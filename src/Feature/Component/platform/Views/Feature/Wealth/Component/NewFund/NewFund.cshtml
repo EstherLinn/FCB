@@ -115,7 +115,7 @@
 						<tbody id="result">
 						</tbody>
 					</table>
-					<div class="l-pagination">
+					<div class="l-pagination" data-length="@Model.TotalPages">
 						<div class="l-pagination__size">
 							<span>每頁顯示</span>
 							<!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
@@ -129,12 +129,12 @@
 						<div class="l-pagination__switch">
 							<!-- [data-pagination="true"]: 載入後自動綁定分頁功能 -->
 							<!-- [data-total="888"]: 總筆數，必要資訊，供分頁狀態判斷使用 -->
-							<div class="o-pagination" data-pagination="true" data-total="888">
+							<div class="o-pagination" data-pagination="true" data-total="@Math.Ceiling(Model.TotalPages / 10.0)">
 								<!-- .is-disabled: 停用狀態，無法點擊 -->
 								<a href="#" class="o-pagination__prev is-disabled"></a>
 								<span class="o-pagination__pager">
 									<input type="number" value="1" class="o-pagination__no">
-									<span class="o-pagination__total">888</span>
+									<span class="o-pagination__total">@Math.Ceiling(Model.TotalPages / 10.0)</span>
 								</span>
 								<!-- .is-disabled: 停用狀態，無法點擊 -->
 								<a href="#" class="o-pagination__next"></a>
@@ -165,26 +165,6 @@
 							$('#result').empty();
 							$('#result').html(data);
 
-							var totalPages = $('#totalPages', 'table').val();
-							var currentPage = $('#currentPage', 'table').val();
-							var pageSize = $('#currentPage', 'table').val();
-
-							$('.l-pagination__switch .o-pagination').attr('data-total', totalPages);
-							$('.o-pagination__total').text(totalPages);
-
-							if (totalPages <= 1) {
-								$('.o-pagination__prev').addClass('is-disabled');
-								$('.o-pagination__next').addClass('is-disabled');
-							} else if (totalPages === currentPage) {
-								$('.o-pagination__next').addClass('is-disabled');
-							} else if (page == 1) {
-								$('.o-pagination__prev').addClass('is-disabled');
-								$('.o-pagination__next').removeClass('is-disabled');
-							}
-							else {
-								$('.o-pagination__next').removeClass('is-disabled');
-							}
-
 							$('span.o-fall').each(function () {
 								var content = $(this).text();
 								if (content.startsWith('-')) {
@@ -214,13 +194,13 @@
 				window.loading('show');
 				var $this = $(this);
 				var orderby = '';
-				if ($this.hasClass('is-desc')) {
-					$this.removeClass('is-desc').addClass('is-asc');
-					orderby = 'is-asc';
+				if ($this.hasClass('is-asc')) {
+					$this.removeClass('is-asc').addClass('is-desc');
+					orderby = 'is-desc';
 				} else {
 					$this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
-					$this.addClass('is-desc');
-					orderby = 'is-desc';
+					$this.addClass('is-asc');
+					orderby = 'is-asc';
 				}
 
 				var pageSize = $('.o-selectbox--pagesize').val();
@@ -252,6 +232,15 @@
 				$('.o-sorting', $linkTable).removeClass('is-asc is-desc');
 				$(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
 				var page = $('.o-pagination__no').val(1);
+				var $parentWrap = $('.l-pagination');
+				var dataLength = parseInt($parentWrap.attr('data-length'));
+				var total = Math.ceil(dataLength / pageSize);
+				$parentWrap.find('[data-total]').attr('data-total', total);
+				$parentWrap.find('.o-pagination__total').text(total);
+				$parentWrap.find('.o-pagination__no').val(1);
+				$parentWrap.find('.o-pagination__prev').addClass('is-disabled');
+				$parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
+
 				loadData(1, pageSize, sortingColumn, orderby);
 
 				// 因展示，使用 setTimeout 延遲關閉 loading
@@ -298,21 +287,6 @@
 
 				loadData(page, pageSize, sortingColumnArray, sortingOrderArray);
 
-				// 更新分頁按鈕狀態
-				if (totalPages <= 1) {
-					$('.o-pagination__prev, .o-pagination__next').addClass('is-disabled');
-				} else {
-					if (page === 1) {
-						$('.o-pagination__prev').addClass('is-disabled');
-						$('.o-pagination__next').removeClass('is-disabled');
-					} else if (page === totalPages) {
-						$('.o-pagination__prev').removeClass('is-disabled');
-						$('.o-pagination__next').addClass('is-disabled');
-					} else {
-						$('.o-pagination__prev, .o-pagination__next').removeClass('is-disabled');
-					}
-				}
-
 				// scroll 到表頭
 				$(this).trigger('scrolltop');
 
@@ -336,11 +310,21 @@
 				var sortingColumnArray = sortingColumns.map(column => column.column);
 				var sortingOrderArray = sortingColumns.map(column => column.order);
 
+				// 調整分頁
+				var $parentWrap = $('.l-pagination');
+				var dataLength = parseInt($parentWrap.attr('data-length'));
+				$parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', size === 'all');
+				
 				if (size === 'all') {
 					loadData(1, 'all', sortingColumnArray, sortingOrderArray);
 				} else {
+					var total = Math.ceil(dataLength / size);
+					$parentWrap.find('[data-total]').attr('data-total', total);
+					$parentWrap.find('.o-pagination__total').text(total);
+					$parentWrap.find('.o-pagination__no').val(1);
+					$parentWrap.find('.o-pagination__prev').addClass('is-disabled');
+					$parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
 					loadData(1, pageSize, sortingColumnArray, sortingOrderArray);
-					$('.o-pagination__prev').addClass('is-disabled');
 				}
 
 				// 因展示，使用 setTimeout 延遲關閉 loading

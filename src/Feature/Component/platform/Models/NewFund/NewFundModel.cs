@@ -12,6 +12,7 @@ namespace Feature.Wealth.Component.Models.NewFund
         public int TotalPages { get; set; }
         public int CurrentPage { get; set; }
         public string PageSize { get; set; }
+        public string DetailLink { get; set; }
 
         /// <summary>
         /// 基金商品資訊

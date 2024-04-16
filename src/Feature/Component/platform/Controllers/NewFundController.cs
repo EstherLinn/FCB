@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Feature.Wealth.Component.Repositories;
 using Feature.Wealth.Component.Models.NewFund;
 using static Feature.Wealth.Component.Models.NewFund.NewFundModel;
+using Feature.Wealth.Component.Models.FundDetail;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -17,9 +18,11 @@ namespace Feature.Wealth.Component.Controllers
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
             var newFund = _repository.GetFundData();
+            var total = newFund.Count;
             var model = new NewFundModel()
             {
                 Item = dataSourceItem,
+                TotalPages = total,
                 NewFunds = newFund
             };
 
@@ -69,7 +72,8 @@ namespace Feature.Wealth.Component.Controllers
                 TotalPages = totalPages,
                 CurrentPage = page,
                 PageSize = pageSize,
-                NewFunds = renderDatas
+                NewFunds = renderDatas,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/NewFund/NewFundReturn.cshtml", model);
