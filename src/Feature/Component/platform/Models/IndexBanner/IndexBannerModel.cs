@@ -18,7 +18,7 @@ namespace Feature.Wealth.Component.Models.IndexBanner
             }
 
             public Item Item { get; set; }
-            public bool IsDark { get; set; }
+            public bool IsLight { get; set; }
             public string ImageUrlPC { get; set; }
             public string ImageUrlMB { get; set; }
             public string ButtonLink { get; set; }
@@ -48,7 +48,7 @@ namespace Feature.Wealth.Component.Models.IndexBanner
                 /// <summary>
                 /// 是否為暗黑模式
                 /// </summary>
-                public static readonly ID DarkMode = new ID("{FDC136D5-0AD4-47E0-B483-24637AD2F982}");
+                public static readonly ID LightMode = new ID("{FDC136D5-0AD4-47E0-B483-24637AD2F982}");
 
                 /// <summary>
                 /// 圖片-電腦版

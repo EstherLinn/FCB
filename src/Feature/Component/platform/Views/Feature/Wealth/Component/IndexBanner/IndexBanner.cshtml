@@ -3,42 +3,56 @@
 
 @if (Model == null)
 {
-    return;
+	return;
 }
 
 <section class="swiper c-swiper c-swiper--kv" data-carousel="true">
-    <div class="swiper-wrapper c-swiper__wrapper">
-        @foreach (var banner in Model.Items)
-        {
-            <div class="swiper-slide c-swiper__slide">
-                <div class="c-banner c-banner--kv c-banner--light">
-                    <img src="@banner.ImageUrlPC" class="c-banner__img c-banner__img--pc" loading="lazy" alt="聰明理財 快樂生活每一天">
-                    <img src="@banner.ImageUrlMB" class="c-banner__img c-banner__img--mb" loading="lazy" alt="聰明理財 快樂生活每一天">
-                    <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
-                    <div class="c-banner__content">
-                        <h3 class="c-banner__title">@Html.Sitecore().Field(Template.IndexBanner.Fields.Title.ToString(), banner.Item)</h3>
-                        <p class="c-banner__slogan">@Html.Sitecore().Field(Template.IndexBanner.Fields.Subtitle.ToString(), banner.Item)</p>
-                        <div class="c-banner__actions">
-                            @if (!string.IsNullOrEmpty(banner.ButtonLink) || !string.IsNullOrEmpty(banner.ButtonText))
-                            {
-                                if (banner.IsDark)
-                                {
-                                    <a href="@banner.ButtonLink" class="o-btn o-btn--wt o-btn--dark@dt o-btn--flat@lt">@banner.ButtonText</a>
-                                }
-                                else
-                                {
-                                    <a href="@banner.ButtonLink" class="o-btn o-btn--wt o-btn--flat@lt">@banner.ButtonText</a>
-                                }
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-    <div class="swiper-button-next c-swiper__next"></div>
-    <div class="swiper-button-prev c-swiper__prev"></div>
-    <div class="swiper-pagination c-swiper__pagination"></div>
+	<div class="swiper-wrapper c-swiper__wrapper">
+		@foreach (var banner in Model.Items)
+		{
+			<div class="swiper-slide c-swiper__slide">
+				@if (banner.IsLight)
+				{
+					<div class="c-banner c-banner--kv c-banner--dark">
+						<img src="@banner.ImageUrlPC" class="c-banner__img c-banner__img--pc" loading="lazy" alt="聰明理財 快樂生活每一天">
+						<img src="@banner.ImageUrlMB" class="c-banner__img c-banner__img--mb" loading="lazy" alt="聰明理財 快樂生活每一天">
+						<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+						<div class="c-banner__content">
+							<h3 class="c-banner__title">@Html.Sitecore().Field(Template.IndexBanner.Fields.Title.ToString(), banner.Item)</h3>
+							<p class="c-banner__slogan">@Html.Sitecore().Field(Template.IndexBanner.Fields.Subtitle.ToString(), banner.Item)</p>
+							<div class="c-banner__actions">
+								@if (!string.IsNullOrEmpty(banner.ButtonLink) || !string.IsNullOrEmpty(banner.ButtonText))
+								{
+									<a href="@banner.ButtonLink" class="o-btn o-btn--wt o-btn--dark@dt o-btn--flat@lt">@banner.ButtonText</a>
+								}
+							</div>
+						</div>
+					</div>
+				}
+				else
+				{
+					<div class="c-banner c-banner--kv c-banner--light">
+						<img src="@banner.ImageUrlPC" class="c-banner__img c-banner__img--pc" loading="lazy" alt="聰明理財 快樂生活每一天">
+						<img src="@banner.ImageUrlMB" class="c-banner__img c-banner__img--mb" loading="lazy" alt="聰明理財 快樂生活每一天">
+						<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+						<div class="c-banner__content">
+							<h3 class="c-banner__title">@Html.Sitecore().Field(Template.IndexBanner.Fields.Title.ToString(), banner.Item)</h3>
+							<p class="c-banner__slogan">@Html.Sitecore().Field(Template.IndexBanner.Fields.Subtitle.ToString(), banner.Item)</p>
+							<div class="c-banner__actions">
+								@if (!string.IsNullOrEmpty(banner.ButtonLink) || !string.IsNullOrEmpty(banner.ButtonText))
+								{
+									<a href="@banner.ButtonLink" class="o-btn o-btn--wt o-btn--flat@lt">@banner.ButtonText</a>
+								}
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		}
+	</div>
+	<div class="swiper-button-next c-swiper__next"></div>
+	<div class="swiper-button-prev c-swiper__prev"></div>
+	<div class="swiper-pagination c-swiper__pagination"></div>
 </section>
 
 
