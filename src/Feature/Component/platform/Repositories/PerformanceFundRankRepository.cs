@@ -2,6 +2,7 @@
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.PerformanceFundRank.PerformanceFundRankModel;
+using Feature.Wealth.Component.Models.FundDetail;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -62,6 +63,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.TargetName = f.TargetName;
                 vm.FundTypeName = f.FundTypeName;
                 vm.InvestmentTargetName = f.InvestmentTargetName;
+                
                 result.Add(vm);
             }
             return result;
