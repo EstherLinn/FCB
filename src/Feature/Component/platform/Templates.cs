@@ -1,29 +1,21 @@
-
+﻿
 using Sitecore.Data;
 
 namespace Feature.Wealth.Component
 {
     public class ComponentTemplates
     {
-        public struct FundHotTag
+        public struct FundTag
         {
-            public static readonly ID FundHotTagRoot = new ID("{D96319C4-EE3E-4C64-8596-655EA959C511}");
-            public static readonly ID FundHotTagItem = new ID("{7657C99F-3B86-487D-AE38-CDFE8A45CB51}");
-            public struct Fields
-            {
-                public static readonly ID HotTitle = new ID("{5927A7F8-1BEE-4B96-A0CD-86DDBF3B2AC9}");
-                public static readonly ID FundList = new ID("{B9241E3D-71A8-4009-865B-70614A3AD586}");
-            }
-        }
+            public static readonly ID FundTagRoot = new ID("{BBAF1962-669A-4A56-A4BC-974369FEDB1F}");
+            public static readonly ID FundTagItem = new ID("{E7C05C03-3A38-4186-A358-32A9253AD7DF}");
 
-        public struct FundMarketTag
-        {
-            public static readonly ID FundMarketTagRoot = new ID("{3369EF80-D8C6-4CF1-84C9-DE66AEC5E654}");
-            public static readonly ID FundMarketTagItem = new ID("{4BE995D0-CC91-4AC2-8142-2B3792F95591}");
             public struct Fields
             {
-                public static readonly ID MarketTitle = new ID("{2483B2F5-C2A8-42BB-8C3F-E47045DC3EDA}");
-                public static readonly ID FundList = new ID("{77E818EA-F489-4DCB-84DA-D2622D09D8E2}");
+                public static readonly ID FundTagTitle = new ID("{5361C9AE-E716-4127-A0A6-AF28CCE39134}");
+                public static readonly ID FundTagType = new ID("{9828043B-3665-4CC1-A66B-9D007791CF8B}");
+                public static readonly ID FundIdList = new ID("{0280C1D9-7E84-41AA-BD5E-2C8D94E59653}");
+
             }
         }
     }

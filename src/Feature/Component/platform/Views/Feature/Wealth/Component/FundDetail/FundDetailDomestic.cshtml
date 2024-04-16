@@ -46,20 +46,16 @@
                         <div class="c-pageHeader__main">
                             <h1 class="c-pageHeader__title">@BasicData.ProductCode @BasicData.FundName</h1>
                             <!-- 如果沒有tag，不要放 div.c-pageHeader__tags 區塊 -->
-                            @if (@BasicData.TargetName == "Y")
+                            @if (Model.TagsDic[FundTagEnum.DiscountTag].Any())
                             {
                                 <div class="c-pageHeader__tags">
                                     <ul class="l-tag">
-                                        <li class="l-tag__item">
-                                            @if (@BasicData.TargetName == "Y")
-                                            {
-                                                <a href="#" class="o-tag">百元基金</a>
-                                            }
-                                        </li>
-                                    @*    @foreach (var item in Model.MarketTagList)
+                                        @foreach (var item in Model.TagsDic[FundTagEnum.DiscountTag])
                                         {
-                                            <a href="#" class="o-tag">@item</a>
-                                        }*@
+                                            <li class="l-tag__item">
+                                                <a href="#" class="o-tag">@item.FundTagTitle</a>
+                                            </li>
+                                        }
                                     </ul>
                                 </div>
                             }
@@ -424,22 +420,22 @@
                     }
                 </div>
             </section>
-            @*@if (Model.HotTagList.Any())
+            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
                     <div class="c-hashTags__content">
                         <ul class="l-divideList l-divideList--sm">
-                            @foreach (var item in Model.HotTagList)
+                            @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
                                 </li>
                             }
                         </ul>
                     </div>
                 </div>
-            }*@
+            }
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-2">
             <section class="c-section u-printBreak">
@@ -604,7 +600,7 @@
                                             @Html.Raw("<div class='l-table'>")
                                             @Html.Raw("<table class='c-table u-center'>")
                                             @Html.Raw("<colgroup><col style = 'width: 25%;' ><col style ='width: 25%;'><col style = 'width: 25%;' ><col style ='width: 25%;'></colgroup>")
-                                            @Html.Raw(string.Format("<thead class='{0}'><tr><th><div class='c-table__title'><span>日期</span></div></th>",hiddenHeaderClass))
+                                            @Html.Raw(string.Format("<thead class='{0}'><tr><th><div class='c-table__title'><span>日期</span></div></th>", hiddenHeaderClass))
                                             @Html.Raw("<th><div class='c-table__title'><span>淨值</span></div></th>")
                                             @Html.Raw("<th><div class='c-table__title'><span>漲跌</span></div></th>")
                                             @Html.Raw("<th><div class='c-table__title'> <span>漲跌幅</span></div></th></tr></thead><tbody>")
@@ -1377,22 +1373,22 @@
 
                 </div>
             </section>
-            @*@if (Model.HotTagList.Any())
+            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
                     <div class="c-hashTags__content">
                         <ul class="l-divideList l-divideList--sm">
-                            @foreach (var item in Model.HotTagList)
+                            @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
                                 </li>
                             }
                         </ul>
                     </div>
                 </div>
-            }*@
+            }
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-3">
             <section class="c-section u-printBreak">
@@ -1675,22 +1671,22 @@
                     </div>
                 </div>
             </section>
-            @*@if (Model.HotTagList.Any())
+            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
                     <div class="c-hashTags__content">
                         <ul class="l-divideList l-divideList--sm">
-                            @foreach (var item in Model.HotTagList)
+                            @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
                                 </li>
                             }
                         </ul>
                     </div>
                 </div>
-            }*@
+            }
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-4">
             <section class="c-section u-printBreak">
@@ -1776,23 +1772,22 @@
                 </div>
 
             </section>
-
-            @*@if (Model.HotTagList.Any())
+            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
                     <div class="c-hashTags__content">
                         <ul class="l-divideList l-divideList--sm">
-                            @foreach (var item in Model.HotTagList)
+                            @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
                                 </li>
                             }
                         </ul>
                     </div>
                 </div>
-            }*@
+            }
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-5">
             <section class="c-section u-printBreak">
@@ -2264,7 +2259,7 @@
                                             <td>年化標準差</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].AnnualizedStandardDeviation.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].AnnualizedStandardDeviation.FormatDecimalNumber(4,needAbs: false)</td>
+                                                <td @Model.FundYearRateOfReturn[i].AnnualizedStandardDeviation.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].AnnualizedStandardDeviation.FormatDecimalNumber(4, needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2275,7 +2270,7 @@
                                             <td>Beta</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].Beta.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].Beta.FormatDecimalNumber(4,needAbs: false)</td>
+                                                <td @Model.FundYearRateOfReturn[i].Beta.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].Beta.FormatDecimalNumber(4, needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2286,7 +2281,7 @@
                                             <td>Sharpe Ratio</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].Sharpe.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].Sharpe.FormatDecimalNumber(4,needAbs: false)</td>
+                                                <td @Model.FundYearRateOfReturn[i].Sharpe.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].Sharpe.FormatDecimalNumber(4, needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2297,7 +2292,7 @@
                                             <td>Treynor Index</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].TreynorIndex.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].TreynorIndex.FormatDecimalNumber(4,needAbs: false)</td>
+                                                <td @Model.FundYearRateOfReturn[i].TreynorIndex.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].TreynorIndex.FormatDecimalNumber(4, needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2308,7 +2303,7 @@
                                             <td>Jensen Ratio</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].JensenIndex.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].JensenIndex.FormatDecimalNumber(4,needAbs: false)</td>
+                                                <td @Model.FundYearRateOfReturn[i].JensenIndex.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].JensenIndex.FormatDecimalNumber(4, needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2319,7 +2314,7 @@
                                             <td>Informaton Ratio</td>
                                             @for (int i = 0; i < yearCount; i++)
                                             {
-                                                <td @Model.FundYearRateOfReturn[i].InformationRatio.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].InformationRatio.FormatDecimalNumber(4,needAbs: false)</td>
+                                                <td @Model.FundYearRateOfReturn[i].InformationRatio.DecimalNegativeStyle()>@Model.FundYearRateOfReturn[i].InformationRatio.FormatDecimalNumber(4, needAbs: false)</td>
                                             }
                                             @for (int i = 0; i < 5 - yearCount; i++)
                                             {
@@ -2342,22 +2337,22 @@
                     }
                 </div>
             </section>
-            @*@if (Model.HotTagList.Any())
+            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
                     <div class="c-hashTags__content">
                         <ul class="l-divideList l-divideList--sm">
-                            @foreach (var item in Model.HotTagList)
+                            @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
                                 </li>
                             }
                         </ul>
                     </div>
                 </div>
-            }*@
+            }
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-6">
             <section class="c-section u-printBreak">
@@ -2460,22 +2455,22 @@
                     }
                 </div>
             </section>
-            @*@if (Model.HotTagList.Any())
+            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
                     <div class="c-hashTags__content">
                         <ul class="l-divideList l-divideList--sm">
-                            @foreach (var item in Model.HotTagList)
+                            @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
                                 </li>
                             }
                         </ul>
                     </div>
                 </div>
-            }*@
+            }
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-7">
             <section class="c-section u-printBreak">
@@ -2509,7 +2504,7 @@
                             </div>
                             <div class="l-flex__item" id='scale_table'>
                                 <!-- 左右表格 -->
-                        </div>
+                            </div>
                         </div>
                     }
                     else
@@ -2523,22 +2518,22 @@
                     }
                 </div>
             </section>
-            @*@if (Model.HotTagList.Any())
+            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
                     <div class="c-hashTags__content">
                         <ul class="l-divideList l-divideList--sm">
-                            @foreach (var item in Model.HotTagList)
+                            @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
                                 </li>
                             }
                         </ul>
                     </div>
                 </div>
-            }*@
+            }
         </div>
     </div>
 </div>
@@ -2801,12 +2796,17 @@
                     const set = new Set();
                     const filterData = result.resultSet.result.filter(item => !set.has(item.v5) ? set.add(item.v5) : false);
                     $.each(filterData, function (index, value) {
-                        if (value.v5  !== fundId) {
+                        if (filterData[index].v5 === fundId) {
+                            filterData.unshift(filterData[index]);
+                            filterData.splice(index + 1, 1);
+                            return false; //break
+                        }
+                    });
+                    $.each(filterData, function (index, value) {
                             $('#fundSelect').find("select").append($('<option>', {
                                 value: value.v5,
                                 text: value.v6
                             }));
-                        }
                     });
                     $('#fundSelect').find("select").on('change', function () {
                         let value = $(this).val();
@@ -3223,7 +3223,6 @@
                     $('#maxNetValue').text(roundToFourString(Math.max(...data.map(p => p.NetAssetValue))));
                     $('#minNetValue').text(roundToFourString(Math.min(...data.map(p => p.NetAssetValue))));
 
-                    mapData.reverse();
                     //const updateDate = data.body.updateDate.replaceAll('-', '/');
                     // 資料日期
                     // $('[data-update-date="netWorth"]').text(updateDate);
@@ -3439,18 +3438,21 @@
                     method: 'post',
                     data: params,
                     success: function (data) {
+                        let mapDate = [];
                         if (Object.keys(data.resultSet.result).length != 0) {
-                            const mapData = data.resultSet.result.map(item => {
+                             mapData = data.resultSet.result.map(item => {
                                 return {
                                     x: new Date(item.v1).getTime(),
                                     name: item.v1,
                                     y: roundToTwo(item.v2)
                                 };
-                            });
+                             });
+                            mapData.reverse();
+                        }
                             //const updateDate = data.body.updateDate.replaceAll('-', '/');
                             //// 資料日期
                             //$('[data-update-date="trend"]').text(updateDate);
-                            mapData.reverse();
+                          
                             let series = {
                                 name: text,
                                 data: mapData,
@@ -3578,10 +3580,6 @@
                             });
                             $('[data-chart="trend"]').find('.c-empty').addClass('u-hidden');
                             $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
-                        } else {
-                            $('[data-chart="trend"]').find('.c-empty').removeClass('u-hidden');
-                            $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
-                        }
                     },
                     error: function (err) {
                         $('[data-chart="trend"]').find('.c-empty').removeClass('u-hidden');

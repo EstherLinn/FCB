@@ -2331,13 +2331,11 @@ textarea {
 
 /*------------------------     collapse     ------------------------*/
 .c-notice {
+  margin-top: 100px;
+  margin-bottom: -100px;
   padding: 20px 0;
   font-size: 14px;
   background-color: #F6F6F6;
-}
-.l-main > .c-notice:last-child {
-  margin-top: 100px;
-  margin-bottom: -100px;
 }
 .c-notice__wrap {
   box-sizing: border-box;
@@ -6262,6 +6260,10 @@ ul.l-flex {
 .c-block--stage {
   background: url(../images/others/media-bg-pc.svg) no-repeat center center/cover;
 }
+.c-block--cardLecture {
+  margin-top: -60px;
+  padding-top: 20px;
+}
 @media only screen and (min-width: 1200px) {
   .c-block--stage .c-block__header {
     margin-left: 400px;
@@ -8597,7 +8599,7 @@ a.o-breadcrumb__link:hover {
 .o-record__nav:hover {
   color: var(--Secondary-Green-Hover, #30AF45);
 }
-.o-record__nav:last-of-type {
+.o-record__nav--next {
   justify-content: flex-end;
 }
 .o-record__title {
@@ -13677,6 +13679,10 @@ ul.l-tag {
   .u-right\@mb-only {
     text-align: right;
   }
+}
+
+.u-indent {
+  text-indent: 2em;
 }
 
 .u-middle {

@@ -1,12 +1,9 @@
 ﻿using Feature.Wealth.Component.Models.FundDetail;
 using Foundation.Wealth.Manager;
-using Sitecore.Data.Items;
-using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
-using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -51,8 +48,8 @@ namespace Feature.Wealth.Component.Repositories
             {
                 fundViewModel.FundBaseData = this.GetOverseasFundBasic(fundId);
             }
-            //fundViewModel.HotTagList = this.GetHotTagList(fundId);
-            //fundViewModel.MarketTagList = this.GetMarketTagList(fundId);
+
+            fundViewModel.TagsDic = this.GetTagsById(fundId);
             fundViewModel.FundCloseYearsNetValue = this.GetNetAssetValueWithCloseYear(fundId);
             fundViewModel.FundTypeRanks = this.GetSameTypeFundRank(fundId);
             fundViewModel.FundRateOfReturn = this.GetRateOfReturn(fundId);
@@ -95,63 +92,20 @@ namespace Feature.Wealth.Component.Repositories
             indicator = DbManager.Custom.Execute<string>(sql, para, commandType: System.Data.CommandType.Text);
             return indicator;
         }
-        /// <summary>
-        /// 取得熱門標籤
-        /// </summary>
-        /// <param name="fundId"></param>
-        /// <returns></returns>
-        public List<string> GetHotTagList (string fundId)
+
+        public Dictionary<FundTagEnum, List<FundTagModel>> GetTagsById(string fundId)
         {
-            List<string> tags = new List<string>();
-            var result = (Dictionary<string, List<string>>)_cache.AddOrGetExisting($"FundHotTagData", this.GetHotTagData(), DateTimeOffset.Now.AddMinutes(60));
-            if (result != null && result.Any())
+            var dic = new Dictionary<FundTagEnum, List<FundTagModel>>();
+            var data = FundTagsRespository.GetAllTagListFromCache();
+            if (data != null)
             {
-                tags = result.Where(x => x.Value.Contains(fundId)).Select(x => x.Key).ToList();
+                foreach (var item in data)
+                {
+                    dic.Add(item.Key, item.Value.Where(x => x.FundIdList.Contains(fundId)).ToList());
+                }
+               
             }
-            return tags;
-        }
-        /// <summary>
-        /// 取得行銷標籤
-        /// </summary>
-        /// <param name="fundId"></param>
-        /// <returns></returns>
-        public List<string> GetMarketTagList(string fundId)
-        {
-            List<string> tags = new List<string>();
-          var result = (Dictionary<string, List<string>>)_cache.AddOrGetExisting($"FundMarketTagData", this.GetMarketTagData(), DateTimeOffset.Now.AddMinutes(60));
-            if (result != null && result.Any())
-            {
-                tags = result.Where(x => x.Value.Contains(fundId)).Select(x => x.Key).ToList();
-            }
-            return tags;
-        }
-        /// <summary>
-        /// 取得熱門(分類)標籤資料
-        /// </summary>
-        /// <returns></returns>
-        private Dictionary<string, List<string>> GetHotTagData()
-        {
-            Dictionary<string, List<string>> hotTagData = new Dictionary<string, List<string>>();
-            Item hotTagsFolder = ItemUtils.GetItem(ComponentTemplates.FundHotTag.FundHotTagRoot);
-            foreach (var item in hotTagsFolder.GetChildren(ComponentTemplates.FundHotTag.FundHotTagItem))
-            {
-                hotTagData.Add(item[ComponentTemplates.FundHotTag.Fields.HotTitle], item[ComponentTemplates.FundHotTag.Fields.FundList].Split(';').ToList());
-            }
-            return hotTagData;
-        }
-        /// <summary>
-        /// 取得行銷標籤資料
-        /// </summary>
-        /// <returns></returns>
-        private  Dictionary<string, List<string>> GetMarketTagData()
-        {
-            Dictionary<string, List<string>> marketTagData = new Dictionary<string, List<string>>();
-            Item hotTagsFolder = ItemUtils.GetItem(ComponentTemplates.FundMarketTag.FundMarketTagRoot);
-            foreach (var item in hotTagsFolder.GetChildren(ComponentTemplates.FundMarketTag.FundMarketTagItem))
-            {
-                marketTagData.Add(item[ComponentTemplates.FundMarketTag.Fields.MarketTitle], item[ComponentTemplates.FundMarketTag.Fields.FundList].Split(';').ToList());
-            }
-            return marketTagData;
+            return dic;
         }
 
         /// <summary>
@@ -203,7 +157,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             List<FundCloseYearNetValue> fundCloseYearNetValue = new List<FundCloseYearNetValue>();
             string sql = @"SELECT Format([Date],'yyyy-MM-dd') NetAssetValueDate,[NetAssetValue] 
-                            FROM [Sysjust_FUNDNAV_HIS] where [FirstBankCode]=@fundid and Date >= DATEADD(year, -1, GETDATE())";
+                            FROM [Sysjust_FUNDNAV_HIS] where [FirstBankCode]=@fundid and Date >= DATEADD(year, -1, GETDATE()) ORDER BY [Date] ";
             var para = new { fundid = fundId };
             fundCloseYearNetValue = DbManager.Custom.ExecuteIList<FundCloseYearNetValue>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundCloseYearNetValue;

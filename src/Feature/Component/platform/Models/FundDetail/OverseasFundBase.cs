@@ -49,6 +49,26 @@ namespace Feature.Wealth.Component.Models.FundDetail
         /// </summary>
         public string OverseasIssuerWebsite { get; set; }
 
+        /// <summary>
+        /// 指標指數
+        /// </summary>
+        public string IndicatorIndexName { get; set; }
+        /// <summary>
+        /// 最高經理費
+        /// </summary>
+        public decimal? MaxManagerFee { get; set; }
+        /// <summary>
+        /// 最高保管費
+        /// </summary>
+        public decimal? MaxStorageFee { get; set; }
+        /// <summary>
+        /// 單一報價
+        /// </summary>
+        public string SingleQuote { get; set; }
+        /// <summary>
+        /// 費用備註
+        /// </summary>
+        public string FeeRemarks { get; set; }
 
     }
 }

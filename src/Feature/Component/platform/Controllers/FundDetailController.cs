@@ -42,13 +42,6 @@ namespace Feature.Wealth.Component.Controllers
             }
             fundViewModel = _fundRepository.GetOrSetFundDetailsCache(getfundid, fundIndicator);
             fundViewModel.FundBaseData.ViewCount = _fundRepository.GetFundViewCount(getfundid);
-            fundViewModel.SubcriptionSingleLink = Settings.GetSetting("WebSubscriptionSingle").Replace("{}", getfundid);
-            fundViewModel.SubcriptionRegularLink = Settings.GetSetting("WebSubscriptionRegular").Replace("{}", getfundid);
-            fundViewModel.MobileESingleLink = Settings.GetSetting("MobileESingle").Replace("{}", getfundid);
-            fundViewModel.MobileERegularLink = Settings.GetSetting("MobileERegular").Replace("{}", getfundid);
-            fundViewModel.MobileIleoSingleLink = Settings.GetSetting("MobileIleoSingle").Replace("{}", getfundid);
-            fundViewModel.MobileIleoRegularLink = Settings.GetSetting("MobileIleoRegular").Replace("{}", getfundid);
-
             fundViewModel.Item = RenderingContext.CurrentOrNull?.Rendering.Item;
             if (fundIndicator == nameof(FundEnum.D))
             {
