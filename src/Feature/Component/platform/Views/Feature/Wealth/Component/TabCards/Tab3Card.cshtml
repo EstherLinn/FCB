@@ -1,0 +1,174 @@
+﻿@using Feature.Wealth.Component.Models.TabCards
+@using System.Web.Script.Serialization
+@model Feature.Wealth.Component.Models.TabCards.Tab3CardModel
+
+@{
+    string pageview1 = "999,999,999,999", pageview2 = "999,999,999,999"; // TODO: 點閱率
+
+    var item = Model.Datasource;
+    var uid = string.Format("_{0}", Guid.NewGuid().ToString("N"));
+}
+
+<div class="l-flex__item">
+    <div class="l-trend">
+        @Html.Partial("~/Views/Feature/Wealth/Component/TabCards/_Carousel.cshtml", Model)
+
+        <div class="l-trend__main ">
+            <div class="l-trend__banner">
+                <!-- .u-shadow-animation: hover時陰影特效 -->
+                <div class="c-box c-box--gapless u-shadow-animation">
+                    <a href="@Model.ArticleLink1" class="c-cardArticle">
+                        <div class="c-cardArticle__media">
+                            <img src="@Model.CardImageUrl1" class="c-cardArticle__img" alt="">
+                        </div>
+                        <div class="c-cardArticle__content">
+                            <div class="c-cardArticle__header">
+                                <span class="c-cardArticle__date">@Model.CardDateTime1</span>
+                                <span class="c-cardArticle__views">
+                                    <div class="o-views o-views--xs">@pageview1</div>
+                                </span>
+                            </div>
+                            <div class="c-cardArticle__main">
+                                <h3 class="c-cardArticle__title u-ellipsis-3">@Html.Sitecore().Field(Tab3CardDatasource.Fields.Content1.ToString(), item)</h3>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="l-trend__banner">
+                <!-- .u-shadow-animation: hover時陰影特效 -->
+                <div class="c-box c-box--gapless u-shadow-animation">
+                    <a href="@Model.ArticleLink2" class="c-cardArticle">
+                        <div class="c-cardArticle__media">
+                            <img src="@Model.CardImageUrl2" class="c-cardArticle__img" alt="">
+                        </div>
+                        <div class="c-cardArticle__content">
+                            <div class="c-cardArticle__header">
+                                <span class="c-cardArticle__date">@Model.CardDateTime2</span>
+                                <span class="c-cardArticle__views">
+                                    <div class="o-views o-views--xs">@pageview2</div>
+                                </span>
+                            </div>
+                            <div class="c-cardArticle__main">
+                                <h3 class="c-cardArticle__title u-ellipsis-3">@Html.Sitecore().Field(Tab3CardDatasource.Fields.Content2.ToString(), item)</h3>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="l-flex__item">
+    <div class="l-flex u-flex-col@mb-only u-flex-gap-md u-flex-gap-sm@lt">
+
+        @foreach (var fundCard in Model.FundCardsInfos)
+        {
+            var fundCardName = fundCard.ProductCode + " " + fundCard.ProductName;
+            var fundCardUrl = Model.FundDetailLink + "?id=" + fundCard.ProductCode;
+            var chartStyle = fundCard.IsFall ? "fall" : "rise";
+            var rate = String.IsNullOrEmpty(fundCard.Rate) ? "" : (fundCard.Rate + "%");
+            var fundCardAttr = fundCard.ProductCode + uid;
+
+            <div class="l-flex__item">
+                <div class="c-box u-shadow-animation">
+                    <div class="c-cardFund">
+                        <a href="@fundCardUrl" class="c-cardFund__name u-ellipsis-2">
+                            @fundCardName
+                        </a>
+                        <div class="c-cardFund__trend">
+                            <div class="c-cardFund__rate">
+                                <span class="t-small">
+                                    <span class="t-@chartStyle">月報酬率</span>
+                                    <span class="o-@chartStyle o-@chartStyle--sm">@rate</span>
+                                </span>
+                            </div>
+                            <div class="c-cardFund__charts">
+                                <div class="o-charts o-charts--@chartStyle" data-chart="mini" fundCard-code="@fundCardAttr"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            };
+
+
+            var _fundCardsInfos = @Html.Raw(new JavaScriptSerializer().Serialize(Model.FundCardsInfos));
+            var _fundCardsNavs = @Html.Raw(new JavaScriptSerializer().Serialize(Model.FundCardsNavs));
+            var _fundIDList = @Html.Raw(new JavaScriptSerializer().Serialize(Model.FundIDList));
+
+
+            const fundCardsNavs = {};
+
+            _fundCardsNavs.forEach(item => {
+                if (!fundCardsNavs[item.ProductCode]) {
+                    fundCardsNavs[item.ProductCode] = [];
+                }
+
+                fundCardsNavs[item.ProductCode].push(item.NetAssetValue);
+            });
+
+            $.each(fundCardsNavs, function (key, value) {
+                fundCardsNavs[key].reverse();
+            });
+
+            var uid = "@uid";
+            _fundIDList.forEach(function (bankCode) {
+                if ($('[data-chart="mini"][fundCard-code="' + bankCode + uid + '"]').length <= 0 || !fundCardsNavs[bankCode]) {
+                    return;
+                }
+
+                $('[data-chart="mini"][fundCard-code="' + bankCode + uid + '"]').highcharts({
+                    chart: {
+                        type: 'area',
+                        margin: [0, 0, 0, 0]
+                    },
+                    title: {
+                        text: undefined
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            enableMouseTracking: false,
+                            marker: {
+                                enabled: false
+                            }
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    xAxis: {
+                        visible: false
+                    },
+                    yAxis: {
+                        visible: false,
+                        min: Math.min(...fundCardsNavs[bankCode])
+                    },
+                    series: [{
+                        //lineColor: '#FF0000',
+                        //color: '#FF0000',
+                        fillOpacity: 0.06,
+                        data: fundCardsNavs[bankCode]
+                    }]
+                });
+            });
+
+        });
+
+    })(jQuery, window, document);
+
+</script>
