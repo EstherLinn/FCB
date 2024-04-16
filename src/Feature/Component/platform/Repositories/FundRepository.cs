@@ -93,18 +93,17 @@ namespace Feature.Wealth.Component.Repositories
             return indicator;
         }
 
-        public List<FundTagModel> GetTagsById(string fundId)
+        public Dictionary<FundTagEnum, List<FundTagModel>> GetTagsById(string fundId)
         {
-            var dic = new List<FundTagModel>();
+            var dic = new Dictionary<FundTagEnum, List<FundTagModel>>();
             var data = FundTagsRespository.GetAllTagListFromCache();
             if (data != null)
             {
-                dic = data.Where(x => x.FundIdList.Contains(fundId))
-                    .Select(x=> new FundTagModel()
-                    {
-                        FundTagTitle = x.FundTagTitle,
-                        FundTagType = x.FundTagType
-                    }).ToList();
+                foreach (var item in data)
+                {
+                    dic.Add(item.Key, item.Value.Where(x => x.FundIdList.Contains(fundId)).ToList());
+                }
+               
             }
             return dic;
         }

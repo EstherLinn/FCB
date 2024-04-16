@@ -60,9 +60,13 @@ namespace Feature.Wealth.Component.Repositories
             }
             return data;
         }
-        public static List<FundTagModel> GetAllTagListFromCache()
+        public static Dictionary<FundTagEnum, List<FundTagModel>> GetAllTagListFromCache()
         {
-            return _cache.AddOrGetExisting($"FundTagsData",_=> GetTagData(), DateTimeOffset.Now.AddMinutes(60));
+            var data = _cache.AddOrGetExisting($"FundTagsData", _ => GetTagData(), DateTimeOffset.Now.AddMinutes(60));
+            Dictionary<FundTagEnum, List<FundTagModel>> dic = new Dictionary<FundTagEnum, List<FundTagModel>>();
+            dic.Add(FundTagEnum.DiscountTag, data.Where(x => x.FundTagType == FundTagEnum.DiscountTag).ToList());
+            dic.Add(FundTagEnum.SortTag, data.Where(x => x.FundTagType == FundTagEnum.SortTag).ToList());
+            return dic;
         }
     }
 }

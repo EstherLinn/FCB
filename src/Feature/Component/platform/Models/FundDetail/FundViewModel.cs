@@ -82,7 +82,7 @@ namespace Feature.Wealth.Component.Models.FundDetail
         /// <summary>
         /// 標籤
         /// </summary>
-        public List<FundTagModel> TagsDic { get; set; }
+        public Dictionary<FundTagEnum, List<FundTagModel>> TagsDic { get; set; }
 
     }
 }
