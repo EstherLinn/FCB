@@ -9,9 +9,12 @@ namespace Feature.Wealth.Component.Models.PerformanceFundRank
     {
         public Item Item { get; set; }
         public IList<Funds> PerformanceFunds { get; set; }
+        public int DTotalPages { get; set; }
+        public int FTotalPages { get; set; }
         public int TotalPages { get; set; }
         public int CurrentPage { get; set; }
         public string PageSize { get; set; }
+        public string DetailLink { get; set; }
 
         /// <summary>
         /// 基金商品資訊
@@ -92,13 +95,16 @@ namespace Feature.Wealth.Component.Models.PerformanceFundRank
             /// 百元標的
             /// </summary>
             public string TargetName { get; internal set; }
+
         }
     }
 
-    /// <summary>
-    /// 上稿內容
-    /// </summary>
-    public struct Template
+   
+
+/// <summary>
+/// 上稿內容
+/// </summary>
+public struct Template
     {
         public struct PerformanceFundRank
         {

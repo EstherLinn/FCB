@@ -5,6 +5,7 @@ using Sitecore.Mvc.Presentation;
 using System.Collections.Generic;
 using Feature.Wealth.Component.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.PerformanceFundRank;
 using static Feature.Wealth.Component.Models.PerformanceFundRank.PerformanceFundRankModel;
 
@@ -18,11 +19,17 @@ namespace Feature.Wealth.Component.Controllers
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
             var performanceFund = _performanceFundRankRepository.GetFundData();
+            var domesticfunds = performanceFund.Where(f => f.DomesticForeignFundIndicator == "D").ToList();
+            var foreignfunds = performanceFund.Where(f => f.DomesticForeignFundIndicator == "O").ToList();
+            var dtotal = domesticfunds.Count;
+            var ftotal = foreignfunds.Count;
             var model = new PerformanceFundRankModel()
             {
                 Item = dataSourceItem,
-                PerformanceFunds = performanceFund
-            };
+                PerformanceFunds = performanceFund,
+                DTotalPages = dtotal,
+                FTotalPages = ftotal
+        };
 
             return View("/Views/Feature/Wealth/Component/PerformanceFundRank/PerformanceFundRank.cshtml", model);
         }
@@ -90,7 +97,8 @@ namespace Feature.Wealth.Component.Controllers
                 TotalPages = totalPages,
                 CurrentPage = page,
                 PageSize = pageSize,
-                PerformanceFunds = renderDatas
+                PerformanceFunds = renderDatas,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/PerformanceFundRank/PerformanceFundReturn.cshtml", model);
