@@ -15,7 +15,15 @@
 				<div class="c-cardTable__content">
 					<div class="l-target">
 						<div class="l-target__name">
-							<a href="#" class="o-contentLink t-bold u-ellipsis-2">@item.ProductCode @item.ProductName</a>
+							@if (item.ProductCode != null)
+							{
+								<a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2">@item.ProductCode @item.ProductName</a>
+							}
+							else
+							{
+								<span>-</span>
+							}
+
 						</div>
 						@if (item.TargetName == "Y")
 						{
@@ -34,7 +42,14 @@
 			<td class="c-cardTable__space"></td>
 			<td class="c-cardTable__body" data-card-table-width="1/2">
 				<div class="c-cardTable__title" data-length="5">最新淨值<br>(淨值日)</div>
-				<div class="c-cardTable__content">@item.NetAssetValue <br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy/MM/dd")</span></div>
+				@if (item.NetAssetValue != null)
+				{
+					<div class="c-cardTable__content">@item.NetAssetValue <br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy/MM/dd")</span></div>
+				}
+				else
+				{
+					<span>-</span>
+				}
 			</td>
 			<td class="c-cardTable__body" data-card-table-width="1/2">
 				<div class="c-cardTable__title" data-length="5">
@@ -48,36 +63,64 @@
 			<td class="c-cardTable__body" data-card-table-width="1/2">
 				<div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
 				<div class="c-cardTable__content">
-					@if (item.PercentageChangeInFundPrice < 0)
+					@if (item.PercentageChangeInFundPrice != null)
 					{
-						<span class="o-fall">@item.PercentageChangeInFundPrice%</span>
+						if (item.PercentageChangeInFundPrice < 0)
+						{
+							<span class="o-fall">@item.PercentageChangeInFundPrice%</span>
+						}
+						else
+						{
+							<span class="o-rise">@item.PercentageChangeInFundPrice%</span>
+						}
 					}
 					else
 					{
-						<span class="o-rise">@item.PercentageChangeInFundPrice%</span>
+					<span>-</span>
 					}
 				</div>
 			</td>
 			<td class="c-cardTable__body" data-card-table-width="1/2">
 				<div class="c-cardTable__title" data-length="5">6個月績效</div>
 				<div class="c-cardTable__content">
-					@if (item.SixMonthReturnOriginalCurrency < 0)
+					@if (item.SixMonthReturnOriginalCurrency != null)
 					{
-						<span class="o-fall return-original">@item.SixMonthReturnOriginalCurrency%</span>
+						if (item.SixMonthReturnOriginalCurrency < 0)
+						{
+							<span class="o-fall">@item.SixMonthReturnOriginalCurrency%</span>
+						}
+						else
+						{
+							<span class="o-rise">@item.SixMonthReturnOriginalCurrency%</span>
+						}
 					}
 					else
 					{
-						<span class="o-rise return-original">@item.SixMonthReturnOriginalCurrency%</span>
+						<span>-</span>
 					}
 				</div>
 			</td>
 			<td class="c-cardTable__body" data-card-table-width="1/2">
 				<div class="c-cardTable__title" data-length="5">基金類型</div>
-				<div class="c-cardTable__content">@item.FundTypeName</div>
+				@if (@item.FundTypeName != null)
+				{
+					<div class="c-cardTable__content">@item.FundTypeName</div>
+				}
+				else
+				{
+					<div class="c-cardTable__content">-</div>
+				}
 			</td>
 			<td class="c-cardTable__body" data-card-table-width="1/2">
 				<div class="c-cardTable__title" data-length="5">風險屬性</div>
-				<div class="c-cardTable__content">@item.RiskRewardLevel</div>
+				@if (@item.RiskRewardLevel != null)
+				{
+					<div class="c-cardTable__content">@item.RiskRewardLevel</div>
+				}
+				else
+				{
+					<div class="c-cardTable__content">-</div>
+				}
 			</td>
 			<td class="c-cardTable__space"></td>
 			<td class="c-cardTable__footer" data-card-table-width="2/3">
@@ -110,7 +153,7 @@ else
 				<div class="c-section__content">
 					<div class="c-empty">
 						<div class="c-empty__img">
-							<img src="./../themes/images/lions/lion-compare.svg" alt="">
+							<img src="~/themes/images/lions/lion-compare.svg" alt="">
 						</div>
 						<div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
 					</div>
