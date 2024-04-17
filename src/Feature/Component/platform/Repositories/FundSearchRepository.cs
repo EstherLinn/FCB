@@ -37,6 +37,10 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     vm.Tags = ["百元基金"];
                 }
+                else
+                {
+                    vm.Tags = [];
+                }
                 vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator;
                 vm.ProductCode = f.ProductCode;
                 vm.ProductName = FullWidthToHalfWidth(f.ProductName);
