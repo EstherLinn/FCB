@@ -43,8 +43,6 @@
                         <option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-asc">6個月績效低至高</option>
                         <option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
                         <option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
-                        <option value="國人持有金額占基金規模比重" data-sorting-column="DomesticInvestmentRatio" data-sorting-class="is-desc">國人持有金額占基金規模比重高至低</option>
-                        <option value="國人持有金額占基金規模比重" data-sorting-column="DomesticInvestmentRatio" data-sorting-class="is-asc">國人持有金額占基金規模比重低至高</option>
                     </select>
                 </div>
             </div>
@@ -124,7 +122,7 @@
                                         <div class="c-cardTable__content">
                                             <div class="l-target">
                                                 <div class="l-target__name">
-                                                    <a href="#" class="o-contentLink t-bold u-ellipsis-2">@item.ProductCode @item.ProductName</a>
+                                                    <a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.ProductName</a>
                                                 </div>
                                                 @if (item.TargetName == "Y")
                                                 {
