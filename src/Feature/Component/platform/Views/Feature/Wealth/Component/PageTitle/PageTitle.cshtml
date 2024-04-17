@@ -1,0 +1,15 @@
+﻿@using Feature.Wealth.Component.Models.PageTitle
+@model PageTitleModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">@Html.Sitecore().Field(Templates.PageTitle.Fields.MainTitle.ToString(), Model.Item)</h1>
+        </div>
+    </div>
+</div>
