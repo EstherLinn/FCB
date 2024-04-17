@@ -9,6 +9,7 @@ namespace Feature.Wealth.Component.Models.EFirstChoice
     {
         public Item Item { get; set; }
         public string[] SelectedId { get; set; }
+        public string DetailLink { get; set; }
 
         public IList<Funds> EFirstFunds { get; set; }
 

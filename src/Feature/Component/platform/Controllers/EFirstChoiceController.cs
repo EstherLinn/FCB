@@ -8,6 +8,8 @@ using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.EFirstChoice;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.Models.EFirstChoice.EFirstChoiceModel;
+using Feature.Wealth.Component.Models.FundDetail;
+using Template = Feature.Wealth.Component.Models.EFirstChoice.Template;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -26,6 +28,7 @@ namespace Feature.Wealth.Component.Controllers
                 var eFirstFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
                 eFirstFunds = eFirstFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ToList();
                 viewModel.EFirstFunds = _repository.GetFundRenderData(eFirstFunds);
+                viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
             }
             return View("/Views/Feature/Wealth/Component/EFirstChoice/EFirstChoice.cshtml", viewModel);
         }
