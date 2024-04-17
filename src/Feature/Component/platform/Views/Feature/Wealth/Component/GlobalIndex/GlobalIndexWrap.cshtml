@@ -1,0 +1,2354 @@
+﻿@using Feature.Wealth.Component.Models.GlobalIndex
+@model GlobalIndexModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-wrap">
+    <div class="c-tab c-tab--wide" data-tab="true">
+        <div class="c-tab__header">
+            <ul class="c-tab__navs">
+                <!-- .is-active: 作用中的項目 -->
+                <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                <li><a href="#" class="c-tab__item is-active" target="_self" title="全球指數" data-tab-target="tab-1">全球指數</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="區域類股" data-tab-target="tab-2">區域類股</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="道瓊指數" data-tab-target="tab-3">道瓊指數</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="分類指數" data-tab-target="tab-4">分類指數</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="商品期貨" data-tab-target="tab-5">商品期貨</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="債券" data-tab-target="tab-6">債券</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="全球匯率" data-tab-target="tab-7">全球匯率</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="利率指數" data-tab-target="tab-8">利率指數</a></li>
+            </ul>
+            <div class="c-tab__collapse">
+                <a href="#" class="c-tab__switch"></a>
+                <div class="c-tab__dropdown">
+                    <a href="#" class="c-tab__clone is-active" target="_self" title="全球指數" data-tab-target="tab-1">全球指數</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="區域類股" data-tab-target="tab-2">區域類股</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="道瓊指數" data-tab-target="tab-3">道瓊指數</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="分類指數" data-tab-target="tab-4">分類指數</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="商品期貨" data-tab-target="tab-5">商品期貨</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="債券" data-tab-target="tab-6">債券</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="全球匯率" data-tab-target="tab-7">全球匯率</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="利率指數" data-tab-target="tab-8">利率指數</a>
+                </div>
+            </div>
+        </div>
+        <!-- is-active: 作用中的項目 -->
+        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+            <section class="c-section">
+                <div class="c-section__content">
+                    <div class="l-flex u-flex-col u-flex-gap-md" data-tab="true">
+                        <div class="l-flex__item">
+                            <div class="o-pelletbox">
+                                <label class="o-pelletbox__item">
+                                    <input type="radio" name="globalIndex" value="亞洲" checked class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">亞洲</span>
+                                </label>
+                                <label class="o-pelletbox__item">
+                                    <input type="radio" name="globalIndex" value="美洲" class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">美洲</span>
+                                </label>
+                                <label class="o-pelletbox__item">
+                                    <input type="radio" name="globalIndex" value="歐非中東" class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">歐非中東</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="亞洲">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("EB09999"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EB09999"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("EB18888"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EB18888"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000040"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000040"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000041"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000041"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000042"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000042"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000545"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000545"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000520"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000520"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000220"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000220"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000200"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000200"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000210"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000210"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000050"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000050"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000060"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000030"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000030"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000410"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000410"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000070"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000070"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000320"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000320"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000830"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000830"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ011659"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ011659"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ011658"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ011658"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000090"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000090"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000100"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000100"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000800"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000800"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="美洲" style="display: none;">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000010"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000010"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000020"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000020"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("SPY.US"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["SPY.US"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000140"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000140"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000285"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000285"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000280"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000280"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000275"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000275"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010690"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010690"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010691"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010691"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010692"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010692"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010218"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010218"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010778"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010778"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010779"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010779"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000460"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000460"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000440"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000440"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010695"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010695"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010696"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010696"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000270"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000270"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("EWC.US"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EWC.US"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000330"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000330"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000350"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000350"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000360"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000360"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ012773"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ012773"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GXG.US"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GXG.US"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="歐非中東" style="display: none;">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ011660"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ011660"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000170"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000170"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("EWG.US"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EWG.US"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000152"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000152"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000175"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000175"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000172"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000172"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000820"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000820"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000171"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000171"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000840"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000840"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010676"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010676"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010678"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010678"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010677"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010677"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000515"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000515"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000174"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000174"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010684"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010684"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010675"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010675"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI001006"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI001006"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010674"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010674"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010688"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010688"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ012137"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ012137"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI001048"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI001048"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010769"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010769"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-2">
+            <section class="c-section">
+                <div class="c-section__content">
+                    <!-- 左右表格 -->
+                    <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <table class="c-table u-center">
+                                    <colgroup>
+                                        <col style="width: 25%; min-width:92px">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>指數名稱</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>行情<br>(日期)</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌幅</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("URTH.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["URTH.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AAXJ.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AAXJ.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EPP.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EPP.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EZU.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EZU.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("IEUS.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["IEUS.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EUFN.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EUFN.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EEM.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EEM.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EEMA.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EEMA.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("BKF.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["BKF.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EFA.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EFA.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EWZ.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EWZ.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("TUR.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["TUR.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EZA.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EZA.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EIS.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EIS.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("KSA.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["KSA.US"])
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <table class="c-table u-center">
+                                    <colgroup>
+                                        <col style="width: 25%; min-width:92px">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                    </colgroup>
+                                    <thead class="u-hidden@lt">
+                                        <tr>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>指數名稱</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>行情<br>(日期)</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌幅</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EWT.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EWT.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("MCHI.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["MCHI.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("ERUS.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["ERUS.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("INDA.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["INDA.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EWM.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EWM.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EIDO.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EIDO.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("IXC.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["IXC.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("MXI.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["MXI.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("KXI.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["KXI.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("RXI.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["RXI.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("EXI.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EXI.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("IXG.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["IXG.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("IXN.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["IXN.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("JXI.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["JXI.US"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("IYH.US"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["IYH.US"])
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-3">
+            <section class="c-section">
+                <div class="c-section__content">
+                    <!-- 左右表格 -->
+                    <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <table class="c-table u-center">
+                                    <colgroup>
+                                        <col style="width: 25%; min-width:92px">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>指數名稱</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>行情<br>(日期)</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌幅</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010752"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010752"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010753"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010753"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010754"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010754"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010755"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010755"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010756"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010756"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010757"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010757"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010758"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010758"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010759"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010759"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010760"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010760"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010123"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010123"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010174"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010174"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010133"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010133"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010135"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010135"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010152"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010152"])
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <table class="c-table u-center">
+                                    <colgroup>
+                                        <col style="width: 25%; min-width:92px">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                    </colgroup>
+                                    <thead class="u-hidden@lt">
+                                        <tr>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>指數名稱</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>行情<br>(日期)</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌幅</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010138"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010138"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010132"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010132"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010807"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010807"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010150"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010150"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010761"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010761"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010168"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010168"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010171"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010171"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010762"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010762"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010763"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010763"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010140"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010140"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010764"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010764"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010766"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010766"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010767"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010767"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010808"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010808"])
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-4">
+            <section class="c-section">
+                <div class="c-section__content">
+                    <!-- 左右表格 -->
+                    <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <table class="c-table u-center">
+                                    <colgroup>
+                                        <col style="width: 25%; min-width:92px">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>指數名稱</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>行情<br>(日期)</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌幅</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AI000190"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000190"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010787"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010787"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010267"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010267"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AI001049"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI001049"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010785"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010785"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010786"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010786"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010794"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010794"])
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <table class="c-table u-center">
+                                    <colgroup>
+                                        <col style="width: 25%; min-width:92px">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                    </colgroup>
+                                    <thead class="u-hidden@lt">
+                                        <tr>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>指數名稱</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>行情<br>(日期)</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌幅</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010798"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010798"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010068"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010068"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("AJ010270"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010270"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("FM400007"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["FM400007"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("FM400006"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["FM400006"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("FM400008"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["FM400008"])
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-5">
+            <section class="c-section">
+                <div class="c-section__content">
+                    <div class="l-flex u-flex-col u-flex-gap-md">
+                        <div class="l-flex__item">
+                            <div class="o-pelletbox">
+                                <label class="o-pelletbox__item">
+                                    <input type="radio" name="products" value="能源" checked class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">能源</span>
+                                </label><label class="o-pelletbox__item">
+                                    <input type="radio" name="products" value="貴金屬" class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">貴金屬</span>
+                                </label><label class="o-pelletbox__item">
+                                    <input type="radio" name="products" value="農作物" class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">農作物</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="能源">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("856"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["856"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("FM200048"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["FM200048"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("FM200047"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["FM200047"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("FM200049"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["FM200049"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("586"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["586"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("869"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["869"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("857"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["857"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("587"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["587"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="貴金屬" style="display: none;">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000390"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000390"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AI000391"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000391"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("867"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["867"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("868"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["868"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("204"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["204"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("311"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["311"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("2072"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["2072"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("809"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["809"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("2013"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["2013"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("2092"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["2092"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("2042"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["2042"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("2082"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["2082"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("2052"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["2052"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("2062"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["2062"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="農作物" style="display: none;">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("413"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["413"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("412"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["412"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("409"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["409"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("2"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["2"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("4"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["4"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("20"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["20"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("7"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["7"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("10"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["10"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("3"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["3"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("310"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["310"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("411"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["411"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-6">
+            <section class="c-section">
+                <div class="c-section__content">
+                    <div class="l-flex u-flex-col u-flex-gap-md">
+                        <div class="l-flex__item">
+                            <div class="o-pelletbox">
+                                <label class="o-pelletbox__item">
+                                    <input type="radio" name="bonds" value="各國債券利率" checked class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">各國債券利率</span>
+                                </label><label class="o-pelletbox__item">
+                                    <input type="radio" name="bonds" value="債券指數行情" class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">債券指數行情</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="各國債券利率">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBUS060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBUS060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBUS120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBUS120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBCD060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBCD060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBCD120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBCD120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBUK060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBUK060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBUK120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBUK120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBFR060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBFR060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBFR120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBFR120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBDM060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBDM060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBDM120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBDM120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBIL036"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBIL036"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBIL060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBIL060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBIL120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBIL120"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBTW060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBTW060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBTW120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBTW120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBJP060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBJP060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBJP120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBJP120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBHK036"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBHK036"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBHK060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBHK060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBKR036"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBKR036"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBKR060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBKR060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBKR120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBKR120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBTH060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBTH060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBTH120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBTH120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBMR036"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBMR036"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBMR060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBMR060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBMR120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBMR120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBAU060"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBAU060"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("GBAU120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["GBAU120"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="債券指數行情" style="display: none;">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010780"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010780"])
+                                                }
+                                                @* TODO：AJ010781 這個號碼是猜的，確認中 *@
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010781"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010781"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010782"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010782"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AJ010783"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AJ010783"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-7">
+            <section class="c-section">
+                <div class="c-section__content">
+                    <div class="l-flex u-flex-col u-flex-gap-md">
+                        <div class="l-flex__item">
+                            <div class="o-pelletbox">
+                                <label class="o-pelletbox__item">
+                                    <input type="radio" name="exchangeRate" value="主要匯率" checked class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">主要匯率</span>
+                                </label><label class="o-pelletbox__item">
+                                    <input type="radio" name="exchangeRate" value="亞州匯率" class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">亞州匯率</span>
+                                </label><label class="o-pelletbox__item">
+                                    <input type="radio" name="exchangeRate" value="歐非中東匯率" class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">歐非中東匯率</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="主要匯率">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("EI0001"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["EI0001"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000090"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000090"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000040"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000040"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000030"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000030"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000100"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000100"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000240"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000240"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000070"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000070"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000080"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000080"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="亞州匯率" style="display: none;">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000010"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000010"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000250"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000250"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000110"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000110"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000300"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000300"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000140"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000140"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000200"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000200"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000120"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000120"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000210"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000210"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000220"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000220"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000065"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000065"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000360"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000360"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" id="歐非中東匯率" style="display: none;">
+                            <!-- 左右表格 -->
+                            <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000070"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000070"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000080"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000080"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000180"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000180"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000340"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000340"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000380"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000380"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="l-table">
+                                        <table class="c-table u-center">
+                                            <colgroup>
+                                                <col style="width: 25%; min-width:92px">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                                <col style="width: 25%;">
+                                            </colgroup>
+                                            <thead class="u-hidden@lt">
+                                                <tr>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>指數名稱</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>行情<br>(日期)</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌</span>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="c-table__title">
+                                                            <span>漲跌幅</span>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000260"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000260"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000280"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000280"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000290"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000290"])
+                                                }
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("AX000270"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AX000270"])
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-8">
+            <section class="c-section">
+                <div class="c-section__content">
+                    <!-- 左右表格 -->
+                    <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <table class="c-table u-center">
+                                    <colgroup>
+                                        <col style="width: 25%; min-width:92px">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>指數名稱</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>行情<br>(日期)</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌幅</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USSOFR1D"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USSOFR1D"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USESTR1D"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USESTR1D"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USSONI1D"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USSONI1D"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USSARO1D"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USSARO1D"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USTONA1D"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USTONA1D"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USTAI01M"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USTAI01M"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USTAI03M"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USTAI03M"])
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <table class="c-table u-center">
+                                    <colgroup>
+                                        <col style="width: 25%; min-width:92px">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                        <col style="width: 25%;">
+                                    </colgroup>
+                                    <thead class="u-hidden@lt">
+                                        <tr>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>指數名稱</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>行情<br>(日期)</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>漲跌幅</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USTAI06M"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USTAI06M"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USSHI01D"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USSHI01D"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USSHI01M"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USSHI01M"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USSHI03M"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USSHI03M"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USHIB01M"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USHIB01M"])
+                                        }
+                                        @if (Model.GlobalIndexDictionary.ContainsKey("USHIB03M"))
+                                        {
+                                            @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["USHIB03M"])
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.o-pelletbox__input').each(function (i, el) {
+            var val = $(el).val();
+
+            if (val == '亞洲' || val == '美洲' || val == '歐非中東') {
+                $(el).on("click", function () {
+                    $('#亞洲').hide();
+                    $('#美洲').hide();
+                    $('#歐非中東').hide();
+
+                    $('#' + $(this).val()).show();
+                });
+            }
+            else if (val == '能源' || val == '貴金屬' || val == '農作物') {
+                $(el).on("click", function () {
+                    $('#能源').hide();
+                    $('#貴金屬').hide();
+                    $('#農作物').hide();
+
+                    $('#' + $(this).val()).show();
+                });
+            }
+            else if (val == '各國債券利率' || val == '債券指數行情') {
+                $(el).on("click", function () {
+                    $('#各國債券利率').hide();
+                    $('#債券指數行情').hide();
+
+                    $('#' + $(this).val()).show();
+                });
+            }
+            else if (val == '主要匯率' || val == '亞州匯率' || val == '歐非中東匯率') {
+                $(el).on("click", function () {
+                    $('#主要匯率').hide();
+                    $('#亞州匯率').hide();
+                    $('#歐非中東匯率').hide();
+
+                    $('#' + $(this).val()).show();
+                });
+            }
+        });
+    });
+</script>

@@ -1,0 +1,31 @@
+﻿@using Feature.Wealth.Component.Models.GlobalIndex
+@model GlobalIndex
+
+<tr>
+    <td>
+        <a href="@Model.DetailLink" class="o-contentLink">@Model.IndexName</a>
+    </td>
+    <td>
+        @Model.MarketPriceText<br><span class="t-date">@Model.DataDate</span>
+    </td>
+    <td>
+        @if (Model.UpOrDown)
+        {
+            <span class="o-rise">@Model.Change</span>
+        }
+        @if (!Model.UpOrDown)
+        {
+            <span class="o-fall">@Model.Change</span>
+        }
+    </td>
+    <td>
+        @if (Model.UpOrDown)
+        {
+            <span class="o-rise">@Model.ChangePercentage</span>
+        }
+        @if (!Model.UpOrDown)
+        {
+            <span class="o-fall">@Model.ChangePercentage</span>
+        }
+    </td>
+</tr>
