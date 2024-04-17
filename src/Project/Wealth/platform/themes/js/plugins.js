@@ -906,11 +906,11 @@
       this.$element.find(this.options.input).val(page);
     }
   });
-  $.fn[pluginName] = function (methodOrOptions) {
+  $.fn[pluginName] = function (methodOrOptions, page) {
     return this.each(function () {
       var plugin = $.data(this, 'plugin_' + pluginName) || new Plugin(this, methodOrOptions);
       if (typeof methodOrOptions === 'string' && plugin[methodOrOptions]) {
-        plugin[methodOrOptions].apply(plugin, Array.prototype.slice.call(arguments, 1));
+        plugin[methodOrOptions].call(plugin, page);
       }
     });
   };
