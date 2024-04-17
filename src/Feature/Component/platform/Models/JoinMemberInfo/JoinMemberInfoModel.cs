@@ -16,11 +16,11 @@ namespace Feature.Wealth.Component.Models.JoinMemberInfo
 
     public struct Template
     {
-        public struct JoinMemberInfo
+        public readonly struct JoinMemberInfo
         {
             public static readonly ID Id = new ID("{547F4A24-EFCD-4C74-AA66-3D460A0BFC88}");
 
-            public struct Fields
+            public readonly struct Fields
             {
                 public static readonly ID Title = new ID("{E2AACFDA-687D-4586-BFAE-E023E73CCAF3}");
                 public static readonly ID Subtitle = new ID("{9A842C98-5FB2-4902-8475-B24BEAE14831}");

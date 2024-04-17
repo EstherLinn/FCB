@@ -1,0 +1,41 @@
+﻿@using Feature.Wealth.Component.Models.GlobalIndex
+@model GlobalIndex
+
+<div class="l-cardFund__item">
+    <div class="c-box u-shadow-animation">
+        <div class="c-cardFund c-cardFund--half">
+            <a href="@Model.DetailLink" class="c-cardFund__name u-center">
+                <div class="u-ellipsis-2">@Model.IndexName</div>
+                <div class="u-ellipsis-1">@Model.MarketPriceText</div>
+            </a>
+            <div class="c-cardFund__trend">
+                <div class="c-cardFund__rate">
+                    <span class="t-small">
+                        @if (Model.UpOrDown)
+                        {
+                            <span class="t-rise">漲跌幅</span>
+                            <span class="o-rise">@Model.ChangePercentage</span>
+                        }
+                        @if (!Model.UpOrDown)
+                        {
+                            <span class="t-fall">漲跌幅</span>
+                            <span class="o-fall">@Model.ChangePercentage</span>
+                        }
+                    </span>
+                </div>
+                <div class="c-cardFund__charts">
+                    <!-- .o-charts--rise: 漲, .o-charts--fall: 跌，會透過css處理漲跌顏色設定 -->
+                    <!-- [data-chart="mini"]: charts圖表，參考下方script邏輯 -->
+                    @if (Model.UpOrDown)
+                    {
+                        <div id="@Model.IndexCode" class="o-charts o-charts--rise" data-chart="mini"></div>
+                    }
+                    @if (!Model.UpOrDown)
+                    {
+                        <div id="@Model.IndexCode" class="o-charts o-charts--fall" data-chart="mini"></div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

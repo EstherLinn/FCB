@@ -1,0 +1,203 @@
+﻿@using Feature.Wealth.Component.Models.GlobalIndex
+@model GlobalIndexModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">全球指數</h1>
+        </div>
+        <div class="l-mainstage__content">
+            <div class="swiper c-swiper c-swiper--minor has-shadow" data-carousel="true" data-swiper='{"spaceBetween":16}' style="--shadowWidth: 8px;">
+                <div class="swiper-wrapper c-swiper__wrapper">
+                    <div class="swiper-slide c-swiper__slide">
+                        <div class="l-cardFund">
+                            @if (Model.GlobalIndexDictionary.ContainsKey("EB09999"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["EB09999"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000040"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000040"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000041"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000041"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000220"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000220"])
+                            }
+                        </div>
+                    </div>
+                    <div class="swiper-slide c-swiper__slide">
+                        <div class="l-cardFund">
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000545"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000545"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000030"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000030"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000410"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000410"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000070"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000070"])
+                            }
+                        </div>
+                    </div>
+                    <div class="swiper-slide c-swiper__slide">
+                        <div class="l-cardFund">
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000800"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000800"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000010"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000010"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000020"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000020"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000140"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000140"])
+                            }
+                        </div>
+                    </div>
+                    <div class="swiper-slide c-swiper__slide">
+                        <div class="l-cardFund">
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000280"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000280"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000360"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000360"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000170"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000170"])
+                            }
+                            @if (Model.GlobalIndexDictionary.ContainsKey("AI000515"))
+                            {
+                                @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexMainstagePartial.cshtml", Model.GlobalIndexDictionary["AI000515"])
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-button-next c-swiper__next u-hidden@dt-only"></div>
+                <div class="swiper-button-prev c-swiper__prev u-hidden@dt-only"></div>
+                <div class="swiper-pagination c-swiper__pagination"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        // highchart
+        $('[data-chart="mini"]').each(function (i, el) {
+            var data = [];
+
+            if ($(el).attr('id') == 'EB09999') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["EB09999"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000040') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000040"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000041') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000041"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000220') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000220"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000545') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000545"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000030') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000030"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000410') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000410"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000070') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000070"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000800') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000800"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000010') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000010"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000020') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000020"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000140') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000140"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000280') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["EB09999"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000360') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000360"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000170') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000170"].GlobalIndexHistoryJson);
+            }
+            else if ($(el).attr('id') == 'AI000515') {
+                data = @Html.Raw(Model.GlobalIndexDictionary["AI000515"].GlobalIndexHistoryJson);
+            }
+
+            // 為了凸顯數據對比，y軸最小值設定成30日內最小值
+            var min = Math.min(...data);
+
+            $(el).highcharts({
+                chart: {
+                    type: 'area',
+                    margin: [0, 0, 0, 0],
+                    backgroundColor: 'transparent'
+                },
+                title: {
+                    text: undefined
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        enableMouseTracking: false,
+                        marker: {
+                            enabled: false
+                        }
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                xAxis: {
+                    visible: false
+                },
+                yAxis: {
+                    visible: false,
+                    min: min
+                },
+                series: [{
+                    //lineColor: '#FF0000',
+                    //color: '#FF0000',
+                    fillOpacity: 0.06,
+                    data: data
+                }]
+            });
+        });
+    });
+</script>
