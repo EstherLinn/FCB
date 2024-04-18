@@ -11,6 +11,7 @@ namespace Feature.Wealth.Component.Models.HotFund
         public string[] SelectedId { get; set; }
 
         public IList<Funds> HotFunds { get; set; }
+        public string DetailLink { get; set; }
 
         /// <summary>
         /// 基金商品資訊
