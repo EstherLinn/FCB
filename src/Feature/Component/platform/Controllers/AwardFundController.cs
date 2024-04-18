@@ -8,6 +8,7 @@ using Feature.Wealth.Component.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.AwardFund;
 using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
+using Feature.Wealth.Component.Models.FundDetail;
 
 
 namespace Feature.Wealth.Component.Controllers
@@ -24,6 +25,7 @@ namespace Feature.Wealth.Component.Controllers
             Task<List<Funds>> award12024 = Task.Run(() => _repository.JsonPostAsync());
 
             viewModel.AwardFunds = award12024.Result;
+            viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
 
             return View("/Views/Feature/Wealth/Component/AwardFund/AwardFund.cshtml", viewModel);
         }

@@ -10,6 +10,8 @@ namespace Feature.Wealth.Component.Models.AwardFund
         public Item Item { get; set; }
 
         public IList<Funds> AwardFunds { get; set; }
+        public string DetailLink { get; set; }
+
 
         /// <summary>
         /// 基金商品資訊
