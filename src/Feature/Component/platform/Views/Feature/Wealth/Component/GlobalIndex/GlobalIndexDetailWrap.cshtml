@@ -660,7 +660,7 @@
                 return;
             }
 
-            var fjs = FilterJS(RelevantGlobalIndex, '#globalindexTBody', {
+            var fjs1 = FilterJS(RelevantGlobalIndex, '#globalindexTBody', {
                 template: '#template',
                 callbacks: {
                     afterFilter: function (result) {
@@ -696,7 +696,7 @@
                 }
             });
 
-            var fjs = FilterJS(RelevantFund, '#fundPriceTBody', {
+            var fjs2 = FilterJS(RelevantFund, '#fundPriceTBody', {
                 template: '#template',
                 callbacks: {
                     afterFilter: function (result) {
@@ -732,7 +732,7 @@
                 }
             });
 
-            var fjs = FilterJS(RelevantETF, '#ETFPriceTBody', {
+            var fjs3 = FilterJS(RelevantETF, '#ETFPriceTBody', {
                 template: '#template',
                 callbacks: {
                     afterFilter: function (result) {
