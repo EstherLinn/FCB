@@ -8,6 +8,8 @@ using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.PopularityFund;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.Models.PopularityFund.PopularityFundModel;
+using Feature.Wealth.Component.Models.FundDetail;
+using Template = Feature.Wealth.Component.Models.PopularityFund.Template;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -29,6 +31,7 @@ namespace Feature.Wealth.Component.Controllers
                 var popularFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
                 popularFunds=popularFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ToList();
                 viewModel.PopularFunds = _popularityFundRepository.GetFundRenderData(popularFunds);
+                viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
             }
 
             return View("/Views/Feature/Wealth/Component/PopularityFund/PopularityFund.cshtml", viewModel);

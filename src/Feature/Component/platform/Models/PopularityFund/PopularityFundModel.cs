@@ -10,6 +10,7 @@ namespace Feature.Wealth.Component.Models.PopularityFund
         public Item Item { get; set; }
         public string[] SelectedId { get; set; }
         public List<Funds> PopularFunds { get; set; }
+        public string DetailLink { get; set; }
 
         /// <summary>
         /// 基金商品資訊
