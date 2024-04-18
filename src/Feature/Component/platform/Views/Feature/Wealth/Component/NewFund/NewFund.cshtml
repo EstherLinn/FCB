@@ -237,9 +237,7 @@
 				var total = Math.ceil(dataLength / pageSize);
 				$parentWrap.find('[data-total]').attr('data-total', total);
 				$parentWrap.find('.o-pagination__total').text(total);
-				$parentWrap.find('.o-pagination__no').val(1);
-				$parentWrap.find('.o-pagination__prev').addClass('is-disabled');
-				$parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
+				$parentWrap.find('[data-pagination="true"]').pagination('goto', 1);
 
 				loadData(1, pageSize, sortingColumn, orderby);
 
@@ -321,9 +319,7 @@
 					var total = Math.ceil(dataLength / size);
 					$parentWrap.find('[data-total]').attr('data-total', total);
 					$parentWrap.find('.o-pagination__total').text(total);
-					$parentWrap.find('.o-pagination__no').val(1);
-					$parentWrap.find('.o-pagination__prev').addClass('is-disabled');
-					$parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
+					$parentWrap.find('[data-pagination="true"]').pagination('goto', 1);
 					loadData(1, pageSize, sortingColumnArray, sortingOrderArray);
 				}
 
