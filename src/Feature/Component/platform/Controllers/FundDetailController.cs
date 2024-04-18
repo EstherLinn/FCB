@@ -33,7 +33,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
             }
-
+            getfundid = getfundid.ToUpper();
             var fundIndicator = _fundRepository.GetDometicOrOverseas(getfundid);
 
             if (!_fundRepository.TriggerViewCountRecord(getfundid))
@@ -64,7 +64,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             selectType = string.IsNullOrEmpty(selectType) ? "Type" : selectType;
             var resp = new FundRiskGraphRespModel() {Body = Enumerable.Empty<FundRiskGraph>() };
-            resp.Body = _fundRepository.GetRiskindicatorsGraph(fundId, selectType);
+            resp.Body = _fundRepository.GetRiskindicatorsGraph(fundId.ToUpper(), selectType);
 
             resp.StatusCode = HttpStatusCode.OK;
             resp.Message = "Success";
@@ -78,7 +78,8 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetSameLevelFund(string fundId)
         {
-            var resp = await _djMoneyApiRespository.GetSameLevelFund(fundId);
+            
+            var resp = await _djMoneyApiRespository.GetSameLevelFund(fundId.ToUpper());
             return new JsonNetResult(resp);
 
         }
@@ -86,7 +87,7 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetCloseYearPerformance(string fundId)
         {
-            var resp = await _djMoneyApiRespository.GetGetCloseYearPerformance(fundId);
+            var resp = await _djMoneyApiRespository.GetGetCloseYearPerformance(fundId.ToUpper());
 
             return new JsonNetResult(resp);
 
@@ -95,7 +96,7 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetDocLink(string fundId, string idx)
         {
-            var resp = await _djMoneyApiRespository.GetDocLink(fundId, idx);
+            var resp = await _djMoneyApiRespository.GetDocLink(fundId.ToUpper(), idx);
 
             return new JsonNetResult(resp);
 
@@ -104,7 +105,7 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetRuleText(string fundId, string type, string indicator)
         {
-            var resp = await _djMoneyApiRespository.GetRuleText(fundId, type, indicator);
+            var resp = await _djMoneyApiRespository.GetRuleText(fundId.ToUpper(), type, indicator);
 
             return new JsonNetResult(resp);
 
@@ -113,7 +114,7 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetReturnAndNetValueTrend(string fundId, string trend, string range, string startdate, string enddate)
         {
-            var resp = await _djMoneyApiRespository.GetReturnAndNetValueTrend(fundId, trend, range, startdate, enddate);
+            var resp = await _djMoneyApiRespository.GetReturnAndNetValueTrend(fundId.ToUpper(), trend, range, startdate, enddate);
             return new JsonNetResult(resp);
         }
 

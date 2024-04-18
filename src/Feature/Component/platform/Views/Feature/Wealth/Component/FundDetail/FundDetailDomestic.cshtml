@@ -227,38 +227,39 @@
                             <div class="c-zebraList__content">
                                 <div class="o-starLevel o-starLevel--sm">
                                     @{
-                                        if (BasicData.FundRating.IndexOf('.') > 0)
+                                        if (BasicData.FundRating != null && BasicData.FundRating.IndexOf('.') > 0)
                                         {
                                             string[] spilt = BasicData.FundRating.Split('.');
-                                            int star = Int16.Parse(BasicData.FundRating.Substring(0, 1));
+                                            int star = Int16.Parse(spilt[0]);
                                             for (int i = 0; i < star; i++)
                                             {
                                                 <div class="o-starLevel__item o-starLevel__item--active"></div>
 
                                             }
-                                            <div class="o-starLevel__item o-starLevel__item--half"></div>
-                                            for (int i = 0; i < 5 - (star + 1); i++)
+                                            if (spilt[1] == "5")
                                             {
-                                                <div class="o-starLevel__item"></div>
+                                                <div class="o-starLevel__item o-starLevel__item--half"></div>
+                                                for (int i = 0; i < 5 - (star + 1); i++)
+                                                {
+                                                    <div class="o-starLevel__item"></div>
+                                                }
                                             }
-
+                                            else
+                                            {
+                                                for (int i = 0; i < 5 - star; i++)
+                                                {
+                                                    <div class="o-starLevel__item"></div>
+                                                }
+                                            }
                                         }
                                         else
                                         {
-                                            int star = Int16.Parse(BasicData.FundRating);
-                                            for (int i = 0; i < star; i++)
-                                            {
-                                                <div class="o-starLevel__item o-starLevel__item--active"></div>
-
-                                            }
-                                            for (int i = 0; i < 5 - (star + 1); i++)
+                                            for (int i = 0; i < 5 ; i++)
                                             {
                                                 <div class="o-starLevel__item"></div>
                                             }
                                         }
-
                                     }
-
                                 </div>
                             </div>
                         </div>
@@ -681,7 +682,7 @@
                                 </div>
                             </div>
                             @*原幣*@
-                            <div class="l-flex__item" id="originReturnTable">
+                            <div class="l-flex__item" data-id="originReturnTable">
                                 <div class="l-table">
                                     <table class="c-table u-center u-nowrap" data-fixed-columns="true">
                                         <colgroup>
@@ -815,7 +816,7 @@
                                 <div class="l-dataNotes"><span class="t-date">資料日期：@Model.FundRateOfReturn.ReturnDataDate</span></div>
                             </div>
                             @*台幣*@
-                            <div class="l-flex__item " id="twdReturnTable">
+                            <div class="l-flex__item " data-id="twdReturnTable">
                                 <div class="l-table">
                                     <table class="c-table u-center u-nowrap" data-fixed-columns="true">
                                         <colgroup>
@@ -949,7 +950,7 @@
                                 <div class="l-dataNotes"><span class="t-date">資料日期：@Model.FundRateOfReturn.ReturnDataDate</span></div>
                             </div>
                             @*年化*@
-                            <div class="l-flex__item " id="annualReturnTable">
+                            <div class="l-flex__item " data-id="annualReturnTable">
                                 <div class="l-table">
                                     <table class="c-table u-center u-nowrap" data-fixed-columns="true">
                                         <colgroup>
@@ -1599,14 +1600,22 @@
                                 </span>
                             </div>
                         </div>
+                        <div class="c-zebraList__item">
+                            <div class="c-zebraList__title">銀行相關說明</div>
+                            <div class="c-zebraList__content">
+                                <span class="t-bold">
+                                    @BasicData.BankRelatedInstructions.CheckNullOrEmptyString()
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <div class="l-dataNotes">
                         <div class="l-flex u-flex-col u-flex-gap-xs u-left">
                             <div class="l-flex__item">
-                                <div class="t-tip s4">@BasicData.BankRelatedInstructions</div>
+                                <div class="t-tip s4">註1：「T日」表示「交易生效日」，可能會受到基金投資地/本國非營業日影響而非等同「交易申請日」，即「交易生效日」可能晚於「交易申請日」；入款天數係以實際基金營業日計算，實際入款日將可能提前或延後，其中如有暫停報價日或外匯市場休市或其他因素，入款日將往後順延，上述日程僅提供參考，實際作業須依各基金公司之公告及作業為準。</div>
                             </div>
                             <div class="l-flex__item">
-                                <div class="t-tip s4">註 : 如iLEO另有規定，從其規定。</div>
+                                <div class="t-tip s4">註2：如iLEO APP另有規定，從其規定。</div>
                             </div>
                         </div>
                     </div>
@@ -2729,19 +2738,19 @@
      $('[name="currency1"]').on('change',function(){
           switch($(this).val()) {
       case '原幣':
-          $('#originReturnTable').removeClass('u-hidden');
-          $('#twdReturnTable').addClass('u-hidden');
-           $('#annualReturnTable').addClass('u-hidden');
+          $('[data-id=originReturnTable]').removeClass('u-hidden');
+                  $('[data-id=twdReturnTable]').addClass('u-hidden');
+                  $('[data-id=annualReturnTable]').addClass('u-hidden');
         break;
       case '台幣':
-          $('#originReturnTable').addClass('u-hidden');
-          $('#twdReturnTable').removeClass('u-hidden');
-           $('#annualReturnTable').addClass('u-hidden');
+                  $('[data-id=originReturnTable]').addClass('u-hidden');
+                  $('[data-id=twdReturnTable]').removeClass('u-hidden');
+                  $('[data-id=annualReturnTable]').addClass('u-hidden');
         break;
       case '年化':
-          $('#originReturnTable').addClass('u-hidden');
-          $('#twdReturnTable').addClass('u-hidden');
-           $('#annualReturnTable').removeClass('u-hidden');
+                  $('[data-id=originReturnTable]').addClass('u-hidden');
+                  $('[data-id=twdReturnTable]').addClass('u-hidden');
+                  $('[data-id=annualReturnTable]').removeClass('u-hidden');
         break;
     }
      });
@@ -4106,12 +4115,14 @@
                 if (Object.keys(data).length != 0) {
                     let mapData = data.map((item, index) => {
                         return {
-                            x: new Date(item.ScaleDate).getTime(),
-                            name: item.ScaleDate,
+                            x: new Date(item.ScaleDate.replaceAll('/', '-')).getTime(),
+                            name: item.ScaleDate.replaceAll('/', '-'),
                             y: item.Scale
                         };
                     });
-
+                    mapData = mapData.filter(function (item, index, arr) {
+                        return index < 12;
+                    });
                     mapData.reverse();
                     const mapYearData = data.map((item) => new Date(item.ScaleDate).getFullYear()).filter(function (element, index, arr) {
                         return arr.indexOf(element) === index;
@@ -4136,12 +4147,8 @@
                     });
                 }else
                 {
-                    let now = new Date();
-                    now.setFullYear(now.getFullYear() - 1);
-                    let yearsAgo= `${now.getFullYear()}/${now.getMonth() +1}/${now.getDate()}`;
-                    yearsAgo = Date.parse(new Date(yearsAgo))
                     rangeData = data.filter(function (item, index, arr) {
-                        return Date.parse(new Date(item.ScaleDate)) >= yearsAgo;
+                        return index < 12;
                     });
                 }
                  let tbHtml = "";
