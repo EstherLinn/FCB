@@ -554,7 +554,7 @@
             value[index] = 'max';
           }
         });
-        $parent.find('[data-slider-val]').val(value).trigger('change');
+        $parent.find('[data-slider-val]').val(value).attr('value', value).trigger('change');
       });
       this.element.noUiSlider.set();
       this.$element.closest('.c-sliderBar').find('[data-slider-val]').on('input.reset', function () {

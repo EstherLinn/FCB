@@ -1,10 +1,10 @@
-// Global site event binding
+﻿// Global site event binding
 (function ($, document, window, undefined) {
   // 頁面loading
   $(window).on('load', function () {
     window.loading('hide');
   });
-
+  
   // viewport
   (function (targetWidth, document, window, undefined) {
     var deviceWidth = window.screen.width;
