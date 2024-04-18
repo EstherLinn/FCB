@@ -54,10 +54,7 @@
                                 </div>
                             </div>
                             <div class="l-flex__item">
-                                <div class="l-table">
-
-                                    <table class="c-table u-center" data-fixed-columns="true" data-table-name="rateTable" id="rateTable">
-                                    </table>
+                                <div class="l-table" data-tablediv-name="rateTable">
                                 </div>
                                 <div class="l-dataNotes"><span class="t-date">單位：%　❘　資料來源：基金公司</span></div>
                             </div>
@@ -84,9 +81,7 @@
                                 </div>
                             </div>
                             <div class="l-flex__item">
-                                <div class="l-table">
-                                    <table class="c-table u-center" data-fixed-columns="true" data-table-name="feeTable" id="feeTable">
-                                    </table>
+                                <div class="l-table" data-tablediv-name="feeTable">
                                 </div>
                                 <div class="l-dataNotes"><span class="t-date">單位：%　❘　資料來源：基金公司</span></div>
                             </div>
@@ -250,6 +245,7 @@
                         });
                         ShowRateTable(mapData, years);
                         ShowFeeTable(mapData, years);
+                        $('[data-fixed-columns]').fixedColumns(); //組完table後 init datatable事件
                         $('.o-sorting').on('click.sorting', function (e) {
                             e.preventDefault();
                             // 呼叫 loading
@@ -272,7 +268,7 @@
                             $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
                             //$sortingbox.trigger('change');
                             SortingTable(mapData,sortingColumn, orderby, tableName, sortingYearsIdx);
-                            
+
                             $('#rateTb').html('');
                             // 因展示，使用 setTimeout 延遲關閉 loading
                             setTimeout(() => {
@@ -314,7 +310,8 @@
     initRate();
 
     function ShowRateTable(data, years) {
-        let firstHtml = `<colgroup>
+        let firstHtml = `<table class="c-table u-center" data-fixed-columns="true" data-table-name="rateTable">
+                                            <colgroup>
                                             <col style="width: 35%; min-width: 200px;">
                                             <col>
                                             <col>
@@ -363,13 +360,13 @@
                                             </tr>`;
         });
 
-        let endHtml = "</tbody>";
-        $('#rateTable').html(firstHtml + midHtml + endHtml);
-
+        let endHtml = "</tbody></table>";
+        $('[data-tablediv-name="rateTable"]').html(firstHtml + midHtml + endHtml);
     }
         function ShowFeeTable(data,years)
         {
-            let firstHtml = `<colgroup>
+            let firstHtml = `<table class="c-table u-center" data-fixed-columns="true" data-table-name="feeTable">
+                                            <colgroup>
                                             <col style="width: 35%; min-width: 200px;">
                                             <col>
                                             <col>
@@ -417,8 +414,8 @@
                                             </tr>`;
             });
 
-            let endHtml = "</tbody>";
-            $('#feeTable').html(firstHtml + midHtml + endHtml);
+            let endHtml = "</tbody></table>";
+            $('[data-tablediv-name="feeTable"]').html(firstHtml + midHtml + endHtml);
         }
 
         function SortingTable(data, column, orderby, table, yearsidx) {
@@ -433,14 +430,14 @@
                 let dateA = new Date(a.date);
                 let dateB = new Date(b.date);
                 return new Date(a.date) - new Date(b.date);
-             }); 
+             });
                 } else {
              sortingData = data.sort(function (a,b)
              {
                  let dateA = new Date(a.date);
                 let dateB = new Date(b.date);
                 return dateB - dateA;
-             }); 
+             });
                 }
 
             } else {
@@ -472,7 +469,7 @@
                 });
 
             }
-            
+
            ShowSortingTable(sortingData, table);
         }
         function ShowSortingTable(data,table)
