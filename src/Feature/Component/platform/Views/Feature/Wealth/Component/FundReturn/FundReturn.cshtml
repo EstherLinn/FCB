@@ -108,6 +108,17 @@
                 return;
             }
 
+            //querystring (key:id，查詢productcode)
+            var currentUrl = window.location.href;
+            let id = '';
+            if (currentUrl.indexOf('?') !== -1) {
+                var params = new URLSearchParams(window.location.search);
+                id = params.get('id');
+                if (id) {
+                    $('#keyword').val(id);
+                }
+            }
+
             var FilterData, SearchData, SelectedFund;
 
             // 快速搜尋及基金篩選 取得資料及渲染畫面
@@ -121,6 +132,9 @@
                     GenerateFilter(FilterData);
                     GenerateSearch(SearchData);
 
+                    if (id) {
+                        $('[data-search-submit]').click();
+                    }
                 },
                 error: function () {
 
@@ -202,10 +216,10 @@
                     },
                     formatResult: function (suggestion, currentValue) {
                         return `<div class="c-itemKeyword">
-                                                                                <a href="#" class="c-itemKeyword__content" data-fund data-fundcode="${suggestion.fundcode}">
-                                                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                                                    </a>
-                                                                </div>`;
+                                                                                        <a href="#" class="c-itemKeyword__content" data-fund data-fundcode="${suggestion.fundcode}">
+                                                                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                                                            </a>
+                                                                        </div>`;
                     }
                 });
             }
@@ -213,7 +227,7 @@
             // 搜尋(代碼或名稱) 確認商品存在 回傳productCode或空值
             function SearchProduct(query) {
                 let data = SearchData;
-                if(!data){
+                if (!data) {
                     return;
                 }
 
@@ -324,7 +338,7 @@
             function ResetFirst() {
                 let data = FilterData;
 
-                if(!data){
+                if (!data) {
                     return;
                 }
 
@@ -401,7 +415,7 @@
             });
             $('[data-search-submit]').on('click.fund', function (e) {
                 e.preventDefault();
-                HandleSearch()
+                HandleSearch();
             });
             $('[data-fund-select]').on('change.fund', function (e) {
                 if (!!e.target.value) {

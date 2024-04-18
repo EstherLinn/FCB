@@ -30,6 +30,11 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetFundReturnDetail(string productCode)
         {
+            if (productCode == null)
+            {
+                return new EmptyResult();
+            }
+
             var fundReturnDetail = _fundReturnRepository.GetFundReturnDetail(productCode);
             return new JsonNetResult(this.RenderRazorViewToString("/Views/Feature/Wealth/Component/FundReturn/_FundReturnDetail.cshtml", fundReturnDetail).Replace(Environment.NewLine, string.Empty));
         }
