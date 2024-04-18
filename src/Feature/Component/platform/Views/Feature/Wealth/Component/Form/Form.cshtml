@@ -20,6 +20,37 @@
     string title4 = Html.Sitecore().Field(Templates.Form.Fields.Title4.ToString(), Model.DataSource).ToString();
     string title5 = Html.Sitecore().Field(Templates.Form.Fields.Title5.ToString(), Model.DataSource).ToString();
     string title6 = Html.Sitecore().Field(Templates.Form.Fields.Title6.ToString(), Model.DataSource).ToString();
+
+    int nonNullCount = 0;
+    if (!string.IsNullOrEmpty(title1))
+    {
+        nonNullCount++;
+    }
+
+    if (!string.IsNullOrEmpty(title2))
+    {
+        nonNullCount++;
+    }
+
+    if (!string.IsNullOrEmpty(title3))
+    {
+        nonNullCount++;
+    }
+
+    if (!string.IsNullOrEmpty(title4))
+    {
+        nonNullCount++;
+    }
+
+    if (!string.IsNullOrEmpty(title5))
+    {
+        nonNullCount++;
+    }
+
+    if (!string.IsNullOrEmpty(title6))
+    {
+        nonNullCount++;
+    }
 }
 
 <section class="c-section" data-aos="fade-up" data-aos-once="true">
@@ -33,12 +64,16 @@
                     <div class="l-table">
                         <table class="c-table u-center">
                             <colgroup>
-                                <col style="width: 20%;">
-                                <col style="width: 20%;">
-                                <col style="width: 20%;">
-                                <col style="width: 20%;">
-                                <col style="width: 20%;">
-                                <col style="width: 20%;">
+                                @{
+                                    int percent = 100 / nonNullCount;
+
+                                    <col style="width: @percent%;">
+                                    <col style="width: @percent%;">
+                                    <col style="width: @percent%;">
+                                    <col style="width: @percent%;">
+                                    <col style="width: @percent%;">
+                                    <col style="width: @percent%;">
+                                }
                             </colgroup>
                             <thead>
                                 <tr>
