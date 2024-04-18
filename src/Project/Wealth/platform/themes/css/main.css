@@ -9997,6 +9997,11 @@ button.mfp-close:active {
 .c-sliderBar .noUi-marker {
   display: none;
 }
+.c-sliderBar .noUi-value {
+  font-size: 14px;
+  color: #222;
+}
+
 /*------------------------     tab     ------------------------*/
 .c-tab__header {
   position: relative;
