@@ -6,6 +6,7 @@ using Feature.Wealth.Component.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.HighRatedFund;
 using static Feature.Wealth.Component.Models.HighRatedFund.HighRatedFundModel;
+using Feature.Wealth.Component.Models.FundDetail;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -21,7 +22,8 @@ namespace Feature.Wealth.Component.Controllers
             var viewModel = new HighRatedFundModel
             {
                 Item = dataSourceItem,
-                HighRatedFunds = funds
+                HighRatedFunds = funds,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/HighRatedFund/HighRatedFund.cshtml", viewModel);

@@ -9,6 +9,7 @@ namespace Feature.Wealth.Component.Models.HighRatedFund
     {
         public Item Item { get; set; }
         public IList<Funds> HighRatedFunds { get; set; }
+        public string DetailLink { get; set; }
 
         /// <summary>
         /// 基金商品資訊
