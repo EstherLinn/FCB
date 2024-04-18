@@ -1,0 +1,159 @@
+﻿@using Feature.Wealth.Component.Models.Form
+@model FormModel
+
+@if (Model == null)
+{
+    return;
+}
+
+@{
+    //表格類型
+    var position = "u-center";
+    var formType = Html.Sitecore().Field(Templates.Form.Fields.FormType.ToString(), Model.DataSource).ToString();
+    if (formType == "Left")  {  position = "u-left";  }
+    else if (formType == "Right")  {  position = "u-right";  }
+    else  { position = "u-center";  }
+
+    string title1 = Html.Sitecore().Field(Templates.Form.Fields.Title1.ToString(), Model.DataSource).ToString();
+    string title2 = Html.Sitecore().Field(Templates.Form.Fields.Title2.ToString(), Model.DataSource).ToString();
+    string title3 = Html.Sitecore().Field(Templates.Form.Fields.Title3.ToString(), Model.DataSource).ToString();
+    string title4 = Html.Sitecore().Field(Templates.Form.Fields.Title4.ToString(), Model.DataSource).ToString();
+    string title5 = Html.Sitecore().Field(Templates.Form.Fields.Title5.ToString(), Model.DataSource).ToString();
+    string title6 = Html.Sitecore().Field(Templates.Form.Fields.Title6.ToString(), Model.DataSource).ToString();
+}
+
+<section class="c-section" data-aos="fade-up" data-aos-once="true">
+    <div class="l-wrap">
+        <div class="c-section__title u-left">@Html.Sitecore().Field(Templates.Form.Fields.MainTitle.ToString(), Model.DataSource)</div>
+        <div class="c-section__desc">@Html.Sitecore().Field(Templates.Form.Fields.Description.ToString(), Model.DataSource)</div>
+        <div class="c-section__content">
+            <div class="l-paragraph">
+                <div class="l-paragraph__title">@Html.Sitecore().Field(Templates.Form.Fields.Subtitle.ToString(), Model.DataSource)</div>
+                <div class="l-paragraph__content">
+                    <div class="l-table">
+                        <table class="c-table u-center">
+                            <colgroup>
+                                <col style="width: 20%;">
+                                <col style="width: 20%;">
+                                <col style="width: 20%;">
+                                <col style="width: 20%;">
+                                <col style="width: 20%;">
+                                <col style="width: 20%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    @if (!string.IsNullOrEmpty(title1))
+                                    {
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>
+                                                    @title1
+                                                </span>
+                                            </div>
+                                        </th>
+                                    }
+                                    @if (!string.IsNullOrEmpty(title2))
+                                    {
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>
+                                                    @title2
+                                                </span>
+                                            </div>
+                                        </th>
+                                    }
+                                    @if (!string.IsNullOrEmpty(title3))
+                                    {
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>
+                                                    @title3
+                                                </span>
+                                            </div>
+                                        </th>
+                                    }
+                                    @if (!string.IsNullOrEmpty(title4))
+                                    {
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>
+                                                    @title4
+                                                </span>
+                                            </div>
+                                        </th>
+                                    }
+                                    @if (!string.IsNullOrEmpty(title5))
+                                    {
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>
+                                                    @title5
+                                                </span>
+                                            </div>
+                                        </th>
+                                    }
+                                    @if (!string.IsNullOrEmpty(title6))
+                                    {
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>
+                                                    @title6
+                                                </span>
+                                            </div>
+                                        </th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr class="@position">
+                                        @if (!string.IsNullOrEmpty(title1))
+                                        {
+                                            <td>
+                                                @Html.Sitecore().Field(Templates.FormData.Fields.column1.ToString(), item.Item)
+                                            </td>  
+                                        }
+                                        @if (!string.IsNullOrEmpty(title2))
+                                        {
+                                            <td>
+                                                @Html.Sitecore().Field(Templates.FormData.Fields.column2.ToString(), item.Item)
+                                            </td>
+                                        }
+                                        @if (!string.IsNullOrEmpty(title3))
+                                        {
+                                            <td>
+                                                @Html.Sitecore().Field(Templates.FormData.Fields.column3.ToString(), item.Item)
+                                            </td>
+                                        }
+                                        @if (!string.IsNullOrEmpty(title4))
+                                        {
+                                            <td>
+                                                @Html.Sitecore().Field(Templates.FormData.Fields.column4.ToString(), item.Item)
+                                            </td>
+                                        }
+                                        @if (!string.IsNullOrEmpty(title5))
+                                        {
+                                            <td>
+                                                @Html.Sitecore().Field(Templates.FormData.Fields.column5.ToString(), item.Item)
+                                            </td>
+                                        }
+                                        @if (!string.IsNullOrEmpty(title6))
+                                        {
+                                            <td>
+                                                @Html.Sitecore().Field(Templates.FormData.Fields.column6.ToString(), item.Item)
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="l-dataNotes u-left">
+                        @Html.Sitecore().Field(Templates.Form.Fields.Notes.ToString(), Model.DataSource)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
