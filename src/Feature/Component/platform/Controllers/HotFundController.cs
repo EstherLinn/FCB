@@ -8,6 +8,8 @@ using Feature.Wealth.Component.Models.HotFund;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.Models.HotFund.HotFundModel;
+using Feature.Wealth.Component.Models.FundDetail;
+using Template = Feature.Wealth.Component.Models.HotFund.Template;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -27,6 +29,7 @@ namespace Feature.Wealth.Component.Controllers
                 var hotFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
                 hotFunds = hotFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ToList();
                 viewModel.HotFunds = _HotFundRepository.GetFundRenderData(hotFunds);
+                viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
             }
             return View("/Views/Feature/Wealth/Component/HotFund/HotFund.cshtml", viewModel);
         }

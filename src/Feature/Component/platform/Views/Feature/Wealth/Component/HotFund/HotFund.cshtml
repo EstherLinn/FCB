@@ -130,7 +130,7 @@
                                         <div class="c-cardTable__content">
                                             <div class="l-target">
                                                 <div class="l-target__name">
-                                                    <a href="#" class="o-contentLink t-bold u-ellipsis-2">@item.ProductCode @item.ProductName</a>
+                                                    <a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.ProductName</a>
                                                 </div>
                                                 @if (item.TargetName == "Y")
                                                 {
