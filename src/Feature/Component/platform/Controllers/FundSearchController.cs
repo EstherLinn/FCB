@@ -18,6 +18,10 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult Index()
         {
+            var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
+            var hotkeywordtags = ItemUtils.GetMultiListValueItems(dataSourceItem, Template.FundSearch.Fields.HotKeywordtags).ToList();
+            var hotproducttags = ItemUtils.GetMultiListValueItems(dataSourceItem, Template.FundSearch.Fields.HotProductags).ToList();
+            
             var items = _repository.GetFundSearchData();
 
             var regions = items
@@ -45,13 +49,15 @@ namespace Feature.Wealth.Component.Controllers
                 FundCompanies = items.Where(f => f.FundCompanyName != null).OrderBy(f=>f.FundCompanyName).Select(f => f.FundCompanyName).Distinct().ToList(),
                 InvestmentRegions = regions,
                 InvestmentTargets = items.OrderBy(t => t.InvestmentTargetID).Select(f => f.InvestmentTargetName).Distinct().ToList(),
-                FundTypeNames = items.OrderBy(f=>f.FundTypeName).Select(f => f.FundTypeName).Distinct().ToList()
+                FundTypeNames = items.OrderBy(f=>f.FundType).Select(f => f.FundType).Distinct().ToList()
             };
 
             var viewModel = new FundSearchViewModel
             {
                 FundSearchData = items,
-                SearchBarData = searchbar
+                SearchBarData = searchbar,
+                HotKeywordTags = hotkeywordtags,
+                HotProductTags = hotproducttags
             };
 
             return View("/Views/Feature/Wealth/Component/FundSearch/FundSearch.cshtml", viewModel);
