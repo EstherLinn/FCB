@@ -1,0 +1,61 @@
+﻿@using Feature.Wealth.Component.Models.GlobalIndex
+@model GlobalIndexDetailModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__content">
+            <div class="l-pageHeader">
+                <div class="l-pageHeader__title">
+                    <div class="c-pageHeader">
+                        <div class="c-pageHeader__main">
+                            <h1 class="c-pageHeader__title">@Model.GlobalIndexDetail.IndexName</h1>
+                        </div>
+                        <div class="c-pageHeader__views">
+                            <div class="o-views o-views--bk">@Model.GlobalIndexDetail.ViewCount</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-pageHeader__content">
+                    <div class="l-pageHeader__info">
+                        <div class="l-detailInfo">
+                            <div class="l-detailInfo__major">
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical">
+                                        <div class="c-numerical__title u-left@dt-only"><span>行情</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@Model.GlobalIndexDetail.MarketPriceText</span></div>
+                                    </div>
+                                </div>
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical">
+                                        <div class="c-numerical__title u-left@dt-only"><span>漲跌 / 漲跌幅</span></div>
+                                        @if (Model.GlobalIndexDetail.UpOrDown)
+                                        {
+                                            <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span class="o-rise"> @(Model.GlobalIndexDetail.Change) / @(Model.GlobalIndexDetail.ChangePercentage)</span></div>
+                                        }
+                                        @if (!Model.GlobalIndexDetail.UpOrDown)
+                                        {
+                                            <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span class="o-fall">@(Model.GlobalIndexDetail.Change) / @(Model.GlobalIndexDetail.ChangePercentage)</span></div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="l-detailInfo__lower">
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical c-numerical--horiz@lt">
+                                        <div class="c-numerical__title u-left@dt-only"><span>日期</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only"><span>@Model.GlobalIndexDetail.DataDate</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

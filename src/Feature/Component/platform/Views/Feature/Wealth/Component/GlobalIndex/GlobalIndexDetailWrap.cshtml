@@ -1,0 +1,1377 @@
+﻿@using Feature.Wealth.Component.Models.GlobalIndex
+@model GlobalIndexDetailModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-wrap">
+    <div class="c-tab c-tab--wide" data-tab="true">
+        <div class="c-tab__header">
+            <ul class="c-tab__navs">
+                <!-- .is-active: 作用中的項目 -->
+                <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                <li><a href="#" class="c-tab__item is-active" target="_self" title="指數概要" data-tab-target="tab-1">指數概要</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="相關標的" data-tab-target="tab-2">相關標的</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="相關指數" data-tab-target="tab-3">相關指數</a></li>
+            </ul>
+            <div class="c-tab__collapse">
+                <a href="#" class="c-tab__switch"></a>
+                <div class="c-tab__dropdown"><a href="#" class="c-tab__clone is-active" target="_self" title="指數概要" data-tab-target="tab-1">指數概要</a><a href="#" class="c-tab__clone " target="_self" title="相關標的" data-tab-target="tab-2">相關標的</a><a href="#" class="c-tab__clone " target="_self" title="相關指數" data-tab-target="tab-3">相關指數</a></div>
+            </div>
+        </div>
+        <!-- is-active: 作用中的項目 --> @* TODO 尚在確認資料源 *@
+        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+            <section class="c-section">
+                <div class="c-section__title">漲跌幅</div>
+                <div class="c-section__content">
+                    <div class="c-borderBox">
+                        <div class="l-divideList l-divideList--col2@mb-only">
+                            <div class="l-divideList__item">
+                                <div class="c-numerical">
+                                    <div class="c-numerical__title c-numerical__title--dk"><span>一日</span></div>
+                                    <div class="c-numerical__content"><span class="o-rise">11.56%</span></div>
+                                </div>
+                            </div>
+                            <div class="l-divideList__item">
+                                <div class="c-numerical">
+                                    <div class="c-numerical__title c-numerical__title--dk"><span>一週</span></div>
+                                    <div class="c-numerical__content"><span class="o-rise">5.22%</span></div>
+                                </div>
+                            </div>
+                            <div class="l-divideList__item">
+                                <div class="c-numerical">
+                                    <div class="c-numerical__title c-numerical__title--dk"><span>一個月</span></div>
+                                    <div class="c-numerical__content"><span class="o-rise">38.49%</span></div>
+                                </div>
+                            </div>
+                            <div class="l-divideList__item">
+                                <div class="c-numerical">
+                                    <div class="c-numerical__title c-numerical__title--dk"><span>三個月</span></div>
+                                    <div class="c-numerical__content"><span class="o-rise">19.76%</span></div>
+                                </div>
+                            </div>
+                            <div class="l-divideList__item">
+                                <div class="c-numerical">
+                                    <div class="c-numerical__title c-numerical__title--dk"><span>六個月</span></div>
+                                    <div class="c-numerical__content"><span class="o-fall">3.07%</span></div>
+                                </div>
+                            </div>
+                            <div class="l-divideList__item">
+                                <div class="c-numerical">
+                                    <div class="c-numerical__title c-numerical__title--dk"><span>一年</span></div>
+                                    <div class="c-numerical__content"><span class="o-fall">37.93%</span></div>
+                                </div>
+                            </div>
+                            <div class="l-divideList__item">
+                                <div class="c-numerical">
+                                    <div class="c-numerical__title c-numerical__title--dk"><span>今年以來</span></div>
+                                    <div class="c-numerical__content"><span class="o-fall">16.86%</span></div>
+                                </div>
+                            </div>
+                            <div class="l-divideList__item">
+                                <div class="c-numerical">
+                                    <div class="c-numerical__title c-numerical__title--dk"><span>三年</span></div>
+                                    <div class="c-numerical__content"><span class="o-fall">41.57%</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="c-section">
+                <div class="c-section__title">K線圖</div>
+                <div class="c-section__content">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        <div class="l-flex__item">
+                            <div class="o-capsulebox">
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="ma" value="day" data-trend-filter="ma" checked class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">日線</span>
+                                </label>
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="ma" value="week" data-trend-filter="ma" class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">週線</span>
+                                </label>
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="ma" value="month" data-trend-filter="ma" class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">月線</span>
+                                </label>
+                                <label class="o-capsulebox__item">
+                                    <input type="radio" name="ma" value="season" data-trend-filter="ma" class="o-capsulebox__input">
+                                    <span class="o-capsulebox__text">季線</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" data-chart="kLine">
+                            <div class="c-empty">
+                                <div class="c-empty__img">
+                                    <img src="./../../themes/images/lions/lion-keyword.svg" alt="">
+                                </div>
+                                <div class="c-empty__desc">沒有資料</div>
+                            </div>
+                            <div class="c-chartBox">
+                                <div class="c-chartBox__info">
+                                    <div class="l-slash l-slash--gy">
+                                        <div class="l-slash__item">資料日期：<b data-id="date"></b></div>
+                                        <div class="l-slash__item">開盤：<b data-id="open"></b></div>
+                                        <div class="l-slash__item">最高：<b data-id="highest"></b></div>
+                                        <div class="l-slash__item">最低：<b data-id="lowest"></b></div>
+                                        <div class="l-slash__item">收盤：<b data-id="close"></b></div>
+                                        <div class="l-slash__item">量：<b data-id="volume"></b></div>
+                                        <div class="l-slash__item">漲跌幅：<b data-id="extent"></b></div>
+                                    </div>
+                                </div>
+                                <div class="c-chartBox__info">
+                                    <div class="l-slash__item" data-id="tooltip-SMA5"></div>
+                                    <div class="l-slash__item" data-id="tooltip-SMA20"></div>
+                                    <div class="l-slash__item" data-id="tooltip-SMA60"></div>
+                                    <div class="l-slash__item" data-id="tooltip-SMA120"></div>
+                                    <div class="l-slash__item" data-id="tooltip-SMA240"></div>
+                                </div>
+                                <div class="c-chartBox__chart">
+                                    <div id="kLineChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-2">
+            <div class="c-section">
+                <div class="c-section__title">基金績效</div>
+                <div class="c-section__content">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        <div class="l-flex__item u-right u-hidden@dt-only">
+                            <div class="o-sortingbox">
+                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="fundPriceTable">
+                                    <option value="">排序</option>
+                                    <option value="基金名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">基金名稱高至低</option>
+                                    <option value="基金名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">基金名稱低至高</option>
+                                    <option value="1日績效高至低" data-sorting-column="d1" data-sorting-class="is-desc">1日績效高至低</option>
+                                    <option value="1日績效低至高" data-sorting-column="d1" data-sorting-class="is-asc">1日績效低至高</option>
+                                    <option value="1週績效高至低" data-sorting-column="d7" data-sorting-class="is-desc">1週績效高至低</option>
+                                    <option value="1週績效低至高" data-sorting-column="d7" data-sorting-class="is-asc">1週績效低至高</option>
+                                    <option value="1個月績效高至低" data-sorting-column="m1" data-sorting-class="is-desc">1個月績效高至低</option>
+                                    <option value="1個月績效低至高" data-sorting-column="m1" data-sorting-class="is-asc">1個月績效低至高</option>
+                                    <option value="3個月績效高至低" data-sorting-column="m3" data-sorting-class="is-desc">3個月績效高至低</option>
+                                    <option value="3個月績效低至高" data-sorting-column="m3" data-sorting-class="is-asc">3個月績效低至高</option>
+                                    <option value="6個月績效高至低" data-sorting-column="m6" data-sorting-class="is-desc">6個月績效高至低</option>
+                                    <option value="6個月績效低至高" data-sorting-column="m6" data-sorting-class="is-asc">6個月績效低至高</option>
+                                    <option value="1年績效高至低" data-sorting-column="y1" data-sorting-class="is-desc">1年績效高至低</option>
+                                    <option value="1年績效低至高" data-sorting-column="y1" data-sorting-class="is-asc">1年績效低至高</option>
+                                    <option value="今年以來績效高至低" data-sorting-column="ytd" data-sorting-class="is-desc">今年以來績效高至低</option>
+                                    <option value="今年以來績效低至高" data-sorting-column="ytd" data-sorting-class="is-asc">今年以來績效低至高</option>
+                                    <option value="3年績效高至低" data-sorting-column="y3" data-sorting-class="is-desc">3年績效高至低</option>
+                                    <option value="3年績效低至高" data-sorting-column="y3" data-sorting-class="is-asc">3年績效低至高</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <!-- 色碼順序: [
+                                    '#238C6C',
+                                    '#D0A66C',
+                                    '#F58220',
+                                    '#A4844E',
+                                    '#948BF2',
+                                    '#FFAD04',
+                                    '#FF77C0',
+                                    '#C16FE8',
+                                    '#DD7676',
+                                    '#ABA1E4',
+                                    '#86BDDD',
+                                    '#60A6E2',
+                                    '#3AAB68',
+                                    '#D0AD72',
+                                    '#FDAA5E',
+                                    '#63C98D',
+                                    '#665DCC',
+                                    '#E7465A'
+                                ] -->
+                                <table class="c-table u-center u-nowrap" data-table-name="fundPriceTable">
+                                    <colgroup>
+                                        <col style="width: 50%; min-width: 200px;">
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 200px;">
+                                                <div class="c-table__title">
+                                                    <span>基金名稱</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="name"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1日</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="d1"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1週</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="d7"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="m1"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>3個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="m3"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>6個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="m6"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1年</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="y1"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>今年以來</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="ytd"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>3年</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="y3"></a>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="fundPriceTBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="c-section">
+                <div class="c-section__title">ETF績效</div>
+                <div class="c-section__content">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        <div class="l-flex__item u-right u-hidden@dt-only">
+                            <div class="o-sortingbox">
+                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="ETFPriceTable">
+                                    <option value="">排序</option>
+                                    <option value="ETF名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">ETF名稱高至低</option>
+                                    <option value="ETF名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="1日績效高至低" data-sorting-column="d1" data-sorting-class="is-desc">1日績效高至低</option>
+                                    <option value="1日績效低至高" data-sorting-column="d1" data-sorting-class="is-asc">1日績效低至高</option>
+                                    <option value="1週績效高至低" data-sorting-column="d7" data-sorting-class="is-desc">1週績效高至低</option>
+                                    <option value="1週績效低至高" data-sorting-column="d7" data-sorting-class="is-asc">1週績效低至高</option>
+                                    <option value="1個月績效高至低" data-sorting-column="m1" data-sorting-class="is-desc">1個月績效高至低</option>
+                                    <option value="1個月績效低至高" data-sorting-column="m1" data-sorting-class="is-asc">1個月績效低至高</option>
+                                    <option value="3個月績效高至低" data-sorting-column="m3" data-sorting-class="is-desc">3個月績效高至低</option>
+                                    <option value="3個月績效低至高" data-sorting-column="m3" data-sorting-class="is-asc">3個月績效低至高</option>
+                                    <option value="6個月績效高至低" data-sorting-column="m6" data-sorting-class="is-desc">6個月績效高至低</option>
+                                    <option value="6個月績效低至高" data-sorting-column="m6" data-sorting-class="is-asc">6個月績效低至高</option>
+                                    <option value="1年績效高至低" data-sorting-column="y1" data-sorting-class="is-desc">1年績效高至低</option>
+                                    <option value="1年績效低至高" data-sorting-column="y1" data-sorting-class="is-asc">1年績效低至高</option>
+                                    <option value="今年以來績效高至低" data-sorting-column="ytd" data-sorting-class="is-desc">今年以來績效高至低</option>
+                                    <option value="今年以來績效低至高" data-sorting-column="ytd" data-sorting-class="is-asc">今年以來績效低至高</option>
+                                    <option value="3年績效高至低" data-sorting-column="y3" data-sorting-class="is-desc">3年績效高至低</option>
+                                    <option value="3年績效低至高" data-sorting-column="y3" data-sorting-class="is-asc">3年績效低至高</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <!-- 色碼順序: [
+                                    '#238C6C',
+                                    '#D0A66C',
+                                    '#F58220',
+                                    '#A4844E',
+                                    '#948BF2',
+                                    '#FFAD04',
+                                    '#FF77C0',
+                                    '#C16FE8',
+                                    '#DD7676',
+                                    '#ABA1E4',
+                                    '#86BDDD',
+                                    '#60A6E2',
+                                    '#3AAB68',
+                                    '#D0AD72',
+                                    '#FDAA5E',
+                                    '#63C98D',
+                                    '#665DCC',
+                                    '#E7465A'
+                                ] -->
+                                <table class="c-table u-center u-nowrap" data-table-name="ETFPriceTable">
+                                    <colgroup>
+                                        <col style="width: 50%; min-width: 200px;">
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 200px;">
+                                                <div class="c-table__title">
+                                                    <span>ETF名稱</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="name"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1日</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="d1"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1週</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="d7"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="m1"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>3個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="m3"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>6個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="m6"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1年</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="y1"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>今年以來</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="ytd"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>3年</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="y3"></a>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ETFPriceTBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-3">
+            <div class="c-section">
+                <div class="c-section__title">漲跌幅</div>
+                <div class="c-section__content">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        <div class="l-flex__item u-right u-hidden@dt-only">
+                            <div class="o-sortingbox">
+                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="globalIndexTable">
+                                    <option value="">排序</option>
+                                    <option value="指數名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">指數名稱高至低</option>
+                                    <option value="指數名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">指數名稱低至高</option>
+                                    <option value="1日績效高至低" data-sorting-column="d1" data-sorting-class="is-desc">1日績效高至低</option>
+                                    <option value="1日績效低至高" data-sorting-column="d1" data-sorting-class="is-asc">1日績效低至高</option>
+                                    <option value="1週績效高至低" data-sorting-column="d7" data-sorting-class="is-desc">1週績效高至低</option>
+                                    <option value="1週績效低至高" data-sorting-column="d7" data-sorting-class="is-asc">1週績效低至高</option>
+                                    <option value="1個月績效高至低" data-sorting-column="m1" data-sorting-class="is-desc">1個月績效高至低</option>
+                                    <option value="1個月績效低至高" data-sorting-column="m1" data-sorting-class="is-asc">1個月績效低至高</option>
+                                    <option value="3個月績效高至低" data-sorting-column="m3" data-sorting-class="is-desc">3個月績效高至低</option>
+                                    <option value="3個月績效低至高" data-sorting-column="m3" data-sorting-class="is-asc">3個月績效低至高</option>
+                                    <option value="6個月績效高至低" data-sorting-column="m6" data-sorting-class="is-desc">6個月績效高至低</option>
+                                    <option value="6個月績效低至高" data-sorting-column="m6" data-sorting-class="is-asc">6個月績效低至高</option>
+                                    <option value="1年績效高至低" data-sorting-column="y1" data-sorting-class="is-desc">1年績效高至低</option>
+                                    <option value="1年績效低至高" data-sorting-column="y1" data-sorting-class="is-asc">1年績效低至高</option>
+                                    <option value="今年以來績效高至低" data-sorting-column="ytd" data-sorting-class="is-desc">今年以來績效高至低</option>
+                                    <option value="今年以來績效低至高" data-sorting-column="ytd" data-sorting-class="is-asc">今年以來績效低至高</option>
+                                    <option value="3年績效高至低" data-sorting-column="y3" data-sorting-class="is-desc">3年績效高至低</option>
+                                    <option value="3年績效低至高" data-sorting-column="y3" data-sorting-class="is-asc">3年績效低至高</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <!-- 色碼順序: [
+                                    '#238C6C',
+                                    '#D0A66C',
+                                    '#F58220',
+                                    '#A4844E',
+                                    '#948BF2',
+                                    '#FFAD04',
+                                    '#FF77C0',
+                                    '#C16FE8',
+                                    '#DD7676',
+                                    '#ABA1E4',
+                                    '#86BDDD',
+                                    '#60A6E2',
+                                    '#3AAB68',
+                                    '#D0AD72',
+                                    '#FDAA5E',
+                                    '#63C98D',
+                                    '#665DCC',
+                                    '#E7465A'
+                                ] -->
+                                <table class="c-table u-center u-nowrap" data-table-name="globalIndexTable">
+                                    <colgroup>
+                                        <col style="width: auto; min-width: 200px;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th style="min-width: 200px;">
+                                                <div class="c-table__title">
+                                                    <span>指數名稱</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="name"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1日</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="d1"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1週</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="d7"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="m1"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>3個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="m3"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>6個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="m6"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1年</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="y1"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>今年以來</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="ytd"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>3年</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="y3"></a>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="globalindexTBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="template" type="text/html">
+    <tr>
+        <td class="u-left u-wrap">
+            <div class="u-ellipsis-1lt">
+                <% if (DetailLink) { %>
+                    <a href="<%= DetailLink %>" class="o-contentLink t-bold"><%= name %></a>
+                <% } else { %>
+                    <span class="t-bold"><%= name %></span>
+                <% } %>
+            </div>
+        </td>
+        <td>
+            <% if (!d1) { %>
+                <span>-</span>
+            <% } %>
+            <% if (typeof d1 == "number" && !isNaN(d1) && d1 > 0) { %>
+                <span class="o-rise"><%= d1 %>%</span>
+            <% } %>
+            <% if (typeof d1 == "number" && !isNaN(d1) && d1 < 0) { %>
+                <span class="o-fall"><%= d1 %>%</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (!d7) { %>
+                <span>-</span>
+            <% } %>
+            <% if (typeof d7 == "number" && !isNaN(d7) && d7 > 0) { %>
+                <span class="o-rise"><%= d7 %>%</span>
+            <% } %>
+            <% if (typeof d7 == "number" && !isNaN(d7) && d7 < 0) { %>
+                <span class="o-fall"><%= d7 %>%</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (!m1) { %>
+                <span>-</span>
+            <% } %>
+            <% if (typeof m1 == "number" && !isNaN(m1) && m1 > 0) { %>
+                <span class="o-rise"><%= m1 %>%</span>
+            <% } %>
+            <% if (typeof m1 == "number" && !isNaN(m1) && m1 < 0) { %>
+                <span class="o-fall"><%= m1 %>%</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (!m3) { %>
+                <span>-</span>
+            <% } %>
+            <% if (typeof m3 == "number" && !isNaN(m3) && m3 > 0) { %>
+                <span class="o-rise"><%= m3 %>%</span>
+            <% } %>
+            <% if (typeof m3 == "number" && !isNaN(m3) && m3 < 0) { %>
+                <span class="o-fall"><%= m3 %>%</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (!m6) { %>
+                <span>-</span>
+            <% } %>
+            <% if (typeof m6 == "number" && !isNaN(m6) && m6 > 0) { %>
+                <span class="o-rise"><%= m6 %>%</span>
+            <% } %>
+            <% if (typeof m6 == "number" && !isNaN(m6) && m6 < 0) { %>
+                <span class="o-fall"><%= m6 %>%</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (!y1) { %>
+                <span>-</span>
+            <% } %>
+            <% if (typeof y1 == "number" && !isNaN(y1) && y1 > 0) { %>
+                <span class="o-rise"><%= y1 %>%</span>
+            <% } %>
+            <% if (typeof y1 == "number" && !isNaN(y1) && y1 < 0) { %>
+                <span class="o-fall"><%= y1 %>%</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (!ytd) { %>
+                <span>-</span>
+            <% } %>
+            <% if (typeof ytd == "number" && !isNaN(ytd) && ytd > 0) { %>
+                <span class="o-rise"><%= ytd %>%</span>
+            <% } %>
+            <% if (typeof ytd == "number" && !isNaN(ytd) && ytd < 0) { %>
+                <span class="o-fall"><%= ytd %>%</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (!y3) { %>
+                <span>-</span>
+            <% } %>
+            <% if (typeof y3 == "number" && !isNaN(y3) && y3 > 0) { %>
+                <span class="o-rise"><%= y3 %>%</span>
+            <% } %>
+            <% if (typeof y3 == "number" && !isNaN(y3) && y3 < 0) { %>
+                <span class="o-fall"><%= y3 %>%</span>
+            <% } %>
+        </td>
+    </tr>
+</script>
+
+<script id="uid-template-perPage" type="text/html">
+    <span hidden>每頁顯示</span>
+    <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+    <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize" hidden>
+        <% for(var i = 0; i < values.length - 1; i++ ) { %>
+        <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+        <% } %>
+        <option value="<%= values[values.length - 1] %>">全部</option>
+    </select>
+</script>
+
+<script src="/themes/js/filter.min.js"></script>
+
+<script>
+    const RelevantGlobalIndex = @Html.Raw(Model.RelevantGlobalIndex);
+    const RelevantFund = @Html.Raw(Model.RelevantFund);
+    const RelevantETF = @Html.Raw(Model.RelevantETF);
+
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            var fjs = FilterJS(RelevantGlobalIndex, '#globalindexTBody', {
+                template: '#template',
+                callbacks: {
+                    afterFilter: function (result) {
+                        window.loading('hide');
+                    }
+                },
+                search: {},
+                order: {
+                    default_sort: 'asc',
+                    sorts: [
+                        { field: 'group1', ele: 'select[data-sorting-linkto="globalIndexTable"]' },
+                    ],
+                    onSortEvent: function (f, e) {
+                        let $self = $(this);
+                        if (e.type === 'click') {
+
+                        } else if (e.type === 'change') {
+                            let $selected = $self.find(':selected');
+                            let field = $selected.data('sorting-column');
+                            let order = $selected.data('sorting-class');
+                            f.field = field;
+                            if (!!order) {
+                                if (order === 'is-desc') {
+                                    f.order = 'desc';
+                                } else if (order === 'is-asc') {
+                                    f.order = 'asc';
+                                }
+                            } else {
+                                f.order = f.order === 'desc' ? 'asc' : 'desc';
+                            }
+                        }
+                    },
+                }
+            });
+
+            var fjs = FilterJS(RelevantFund, '#fundPriceTBody', {
+                template: '#template',
+                callbacks: {
+                    afterFilter: function (result) {
+                        window.loading('hide');
+                    }
+                },
+                search: {},
+                order: {
+                    default_sort: 'asc',
+                    sorts: [
+                        { field: 'group1', ele: 'select[data-sorting-linkto="fundPriceTable"]' },
+                    ],
+                    onSortEvent: function (f, e) {
+                        let $self = $(this);
+                        if (e.type === 'click') {
+
+                        } else if (e.type === 'change') {
+                            let $selected = $self.find(':selected');
+                            let field = $selected.data('sorting-column');
+                            let order = $selected.data('sorting-class');
+                            f.field = field;
+                            if (!!order) {
+                                if (order === 'is-desc') {
+                                    f.order = 'desc';
+                                } else if (order === 'is-asc') {
+                                    f.order = 'asc';
+                                }
+                            } else {
+                                f.order = f.order === 'desc' ? 'asc' : 'desc';
+                            }
+                        }
+                    },
+                }
+            });
+
+            var fjs = FilterJS(RelevantETF, '#ETFPriceTBody', {
+                template: '#template',
+                callbacks: {
+                    afterFilter: function (result) {
+                        window.loading('hide');
+                    }
+                },
+                search: {},
+                order: {
+                    default_sort: 'asc',
+                    sorts: [
+                        { field: 'group1', ele: 'select[data-sorting-linkto="ETFPriceTable"]' },
+                    ],
+                    onSortEvent: function (f, e) {
+                        let $self = $(this);
+                        if (e.type === 'click') {
+
+                        } else if (e.type === 'change') {
+                            let $selected = $self.find(':selected');
+                            let field = $selected.data('sorting-column');
+                            let order = $selected.data('sorting-class');
+                            f.field = field;
+                            if (!!order) {
+                                if (order === 'is-desc') {
+                                    f.order = 'desc';
+                                } else if (order === 'is-asc') {
+                                    f.order = 'asc';
+                                }
+                            } else {
+                                f.order = f.order === 'desc' ? 'asc' : 'desc';
+                            }
+                        }
+                    },
+                }
+            });
+
+            // table 排序功能
+            $('.o-sorting').on('click.sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                window.loading('show');
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                var tableName = $(this).closest('[data-table-name]').data('table-name');
+                var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+                var sortingColumn = $(this).data('sorting-column');
+                $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+                $sortingbox.trigger('change');
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
+            });
+
+            // 手機版分頁筆數功能
+            $('[data-sortingbox="true"]').on('change.sorting', function (e) {
+                // 呼叫 loading
+                window.loading('show');
+                var sorting = $(this).val();
+                var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+                var sortingColumn = $('option:selected', this).data('sorting-column');
+                var orderby = $('option:selected', this).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                console.log(`排序：${sorting}`);
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
+            });
+        });
+    })(jQuery, window, document);
+</script>
+
+@* highcharts K線要的額外模組，不知道要不要搬到外層 *@
+<script src="~/themes/vendor/highcharts/indicators/indicators-all.js" defer></script>
+<script src="~/themes/vendor/highcharts/modules/accessibility.js" defer></script>
+
+<script>
+    const data_D = @Html.Raw(Model.PriceData_D);
+    const data_W = @Html.Raw(Model.PriceData_W);
+    const data_M = @Html.Raw(Model.PriceData_M);
+
+    // 技術分析
+    $(function () {
+        $('[data-trend-filter="ma"]').on('change', function () {
+            getParams();
+        });
+        $('[data-trend-filter="ma"]:checked').trigger('change');
+        var chart;
+        var initPointFormatter = false;
+
+        function getParams() {
+            const obj = {
+                type: $('[data-trend-filter="ma"]:checked').val()
+            };
+            if (chart) {
+                chart.showLoading();
+            }
+            initKLine(obj);
+        }
+
+        async function initKLine(obj) {
+            try {
+
+                var data = [];
+
+                if (obj.type == 'day') {
+                    data = data_D;
+                }
+                else if (obj.type == 'week') {
+                    data = data_W;
+                }
+                else if (obj.type == 'month') {
+                    data = data_M;
+                }
+
+                initPointFormatter = false;
+                if (data.length != 0) {
+                    let ohlc = [],
+                        volume = [];
+
+                    // 重新組織 API dataSource 給 技術分析圖使用
+                    data.forEach(item => {
+                        ohlc.push([item.date, item.open, item.high, item.low, item.close]);
+                        volume.push({
+                            x: item.date,
+                            y: item.value,
+                            color: item.open > item.close ? '#97BA15' : '#F98282'
+                        });
+                    });
+                    let highChartId = '';
+
+                    // K線圖 SMA5、SMA20、SMA60、SMA120、SMA240
+                    let kLineSmaData = [{
+                        unit: 5,
+                        color: '#F58220'
+                    }, {
+                        unit: 20,
+                        color: '#A4844E'
+                    }, {
+                        unit: 60,
+                        color: '#948BF2'
+                    }, {
+                        unit: 120,
+                        color: '#FFAD04'
+                    }, {
+                        unit: 240,
+                        color: '#FF77C0'
+                    }];
+
+                    // 成交 MA5、MA10
+                    let volumeSmaData = [{
+                        unit: 5,
+                        color: '#DD7676'
+                    }, {
+                        unit: 10,
+                        color: '#ABA1E4'
+                    }];
+                    chart = Highcharts.stockChart('kLineChart', {
+                        chart: {
+                            height: 964,
+                            spacing: [1, 1, 18, 5],
+                            events: {
+                                load: function () {
+                                    var $container = $(this.container);
+                                    highChartId = this.container.id;
+                                    $('<div class="l-slash" data-id="' + highChartId + '-tooltips-yAxis1" style="position: absolute; top: 316px; left: 5px;"></div>').appendTo($container);
+                                    $('<div class="l-slash" data-id="' + highChartId + '-tooltips-yAxis2" style="position: absolute; top: 612px; left: 5px;"></div>').appendTo($container);
+                                },
+                                addSeries: function (event) {
+                                    var $tooltipContainer = $('[data-id="' + highChartId + "-tooltips-yAxis" + event.options.yAxis + '"]'),
+                                        id = 'tooltip-' + event.options.name;
+                                    if ($tooltipContainer.find('[data-id="' + id + '"]').length === 0) {
+                                        $('<div class="l-slash__item" data-id="' + id + '"></div>').appendTo($tooltipContainer);
+                                    }
+                                },
+                                render: function () {
+                                    const seriesCount = 11; //共要繪製11個Series
+                                    let renderedSeriesCount = 0;
+                                    this.series.forEach(function (series) {
+                                        renderedSeriesCount++;
+                                        if (renderedSeriesCount === seriesCount) {
+                                            //console.log('All series have been rendered.');
+                                            loadTooltip(chart);
+                                        }
+                                    });
+                                }
+                            },
+                            animation: false,
+                            rendererType: 'webgl'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        rangeSelector: false,
+                        xAxis: {
+                            type: 'datetime',
+                            scrollbar: {
+                                enabled: false
+                            },
+                            labels: {
+                                y: 20,
+                                formatter: function () {
+                                    const format = {
+                                        day: '%Y/%m',
+                                        week: '%Y/%m',
+                                        month: '%Y/%m'
+                                    }[this.tickPositionInfo.unitName];
+                                    return Highcharts.dateFormat(format, this.value);
+                                },
+                                style: {
+                                    color: '#6E6E6E',
+                                    fontSize: 12
+                                }
+                            },
+                            tickPosition: 'inside',
+                            lineColor: '#ebebeb',
+                            tickColor: '#ebebeb',
+                            // gridLineWidth: 1,
+                            crosshair: {
+                                width: 1,
+                                color: '#c3c3c3'
+                            }
+                        },
+                        yAxis: [{
+                            labels: {
+                                align: 'left',
+                                reserveSpace: true,
+                                x: 8,
+                                y: 4,
+                                style: {
+                                    color: '#6E6E6E',
+                                    fontSize: 12
+                                }
+                            },
+                            top: '54px',
+                            height: '236px',
+                            lineWidth: 2,
+                            resize: {
+                                enabled: true
+                            },
+                            // opposite: false,
+                            lineColor: 'transparent',
+                            showLastLabel: true
+                        }, {
+                            labels: {
+                                align: 'left',
+                                reserveSpace: true,
+                                x: 8,
+                                y: 4,
+                                style: {
+                                    color: '#6E6E6E',
+                                    fontSize: 12
+                                }
+                            },
+                            //top: '384px',
+                            top: '384px',
+                            height: '202px',
+                            offset: 0,
+                            lineWidth: 2,
+                            resize: {
+                                enabled: true
+                            },
+                            // opposite: false,
+                            lineColor: 'transparent',
+                            showLastLabel: true
+                        }, {
+                            labels: {
+                                align: 'left',
+                                reserveSpace: true,
+                                x: 8,
+                                y: 4,
+                                style: {
+                                    color: '#6E6E6E',
+                                    fontSize: 12
+                                }
+                            },
+                            top: '680px',
+                            height: '135px',
+                            offset: 0,
+                            lineWidth: 2,
+                            resize: {
+                                enabled: true
+                            },
+                            // opposite: false,
+                            lineColor: 'transparent',
+                            showLastLabel: true
+                        }],
+                        tooltip: {
+                            split: true,
+                            xDateFormat: '%Y-%m-%d',
+                            headerFormat: '{point.key}',
+                            borderColor: 'transparent',
+                            shadow: {
+                                offsetX: 0,
+                                offsetY: 0,
+                                width: 6,
+                                color: 'rgba(0, 0, 0, 0.2)'
+                            },
+                            style: {
+                                zIndex: 5,
+                                color: '#9C9C9C'
+                            },
+                            useHTML: true
+                        },
+                        plotOptions: {
+                            series: {
+                                dataGrouping: {
+                                    enabled: false
+                                },
+                                marker: {
+                                    symbol: 'circle',
+                                    states: {
+                                        hover: {
+                                            radius: 3
+                                        }
+                                    },
+                                    lineColor: 'transparent'
+                                },
+                                states: {
+                                    hover: {
+                                        halo: {
+                                            size: 6
+                                        },
+                                        lineWidthPlus: 0
+                                    }
+                                }
+                            }
+                        },
+                        series: [],
+                        navigator: {
+                            height: 80,
+                            margin: 28,
+                            handles: {
+                                backgroundColor: '#D9D9D9',
+                                borderColor: '#9C9C9C',
+                                height: 16,
+                                width: 8
+                            },
+                            maskFill: 'rgba(35, 140, 108, 0.4)',
+                            outlineColor: '#EBEBEB',
+                            series: {
+                                lineColor: '#238C6C',
+                                lineWidth: 2,
+                                fillOpacity: 0
+                            },
+                            xAxis: {
+                                labels: {
+                                    align: 'center',
+                                    x: 0,
+                                    y: 18,
+                                    formatter: function () {
+                                        const format = {
+                                            day: '%Y/%m',
+                                            week: '%Y/%m',
+                                            month: '%Y/%m',
+                                            year: '%Y'
+                                        }[this.tickPositionInfo.unitName];
+                                        return Highcharts.dateFormat(format, this.value);
+                                    },
+                                    style: {
+                                        color: '#6E6E6E',
+                                        fontSize: 12,
+                                        opacity: 1
+                                    }
+                                }
+                            }
+                        },
+                        scrollbar: {
+                            height: 1,
+                            margin: 0,
+                            barBackgroundColor: 'transparent',
+                            trackBackgroundColor: '#EBEBEB',
+                            trackBorderRadius: 0,
+                            trackBorderWidth: 0
+                        }
+                    });
+
+                    // K線圖
+                    chart.addSeries({
+                        type: 'candlestick',
+                        name: 'AAPL',
+                        id: 'aapl',
+                        zIndex: 6,
+                        data: ohlc,
+                        color: '#97BA15',
+                        upColor: '#F98282',
+                        tooltip: {
+                            pointFormatter: function (tooltip) {
+                                var current = this.series.data[this.index];
+                                var prev = this.series.data[this.index - 1] || current;
+                                if (current === undefined || prev === undefined) {
+                                    return false;
+                                }
+                                var extent = current.close - prev.close;
+                                var extentPercentage = extent / current.close * 100;
+
+                                // 日期
+                                $('[data-id="date"]').text(Highcharts.dateFormat('%Y/%m/%d', new Date(this.x)));
+                                // 最高
+                                $('[data-id="highest"]').text(this.high);
+                                // 最低
+                                $('[data-id="lowest"]').text(this.low);
+                                // 開盤
+                                $('[data-id="open"]').text(this.open);
+                                // 收盤
+                                $('[data-id="close"]').text(this.close);
+                                // 漲跌幅
+                                $('[data-id="extent"]').html(extent.toFixed(2) + '(' + extentPercentage.toFixed(2) + '%)');
+                                if (initPointFormatter) {
+                                    // 初始化 K線圖-SMA Points
+                                    initSMAPointFormatter.call(this, 0, kLineSmaData);
+
+                                    // 初始化 成交-MA Points
+                                    initMAPointFormatter.call(this, 1, volumeSmaData);
+
+                                    // 初始化 KD Points
+                                    initKDPointFormatter.call(this, 2);
+                                }
+                                return false;
+                            }
+                        },
+                        enableMouseTracking: true,
+                        marker: {
+                            enabled: false,
+                            states: {
+                                hover: {
+                                    enabled: false
+                                }
+                            }
+                        }
+                    });
+                    kLineSmaData.forEach(item => {
+                        setTimeout(() => {
+                            chart.addSeries({
+                                type: 'sma',
+                                name: `SMA${item.unit}`,
+                                linkedTo: 'aapl',
+                                id: `sma${item.unit}`,
+                                zIndex: 10,
+                                yAxis: 0,
+                                color: item.color,
+                                params: {
+                                    period: item.unit
+                                },
+                                marker: {
+                                    enabled: false
+                                },
+                                tooltip: {
+                                    pointFormatter: function (tooltip) {
+                                        smaPointFormatter.call(this, tooltip, 0);
+                                        return false;
+                                    }
+                                },
+                                animation: false,
+                                rendererType: 'webgl'
+                            });
+                        }, 50);
+                    });
+
+                    // 柱狀圖
+                    chart.addSeries({
+                        type: 'column',
+                        name: '成交量',
+                        id: 'volume',
+                        zIndex: 3,
+                        data: volume,
+                        yAxis: 1,
+                        marker: {
+                            enabled: false,
+                            states: {
+                                hover: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        states: {
+                            hover: {
+                                enabled: false
+                            }
+                        },
+                        tooltip: {
+                            pointFormatter: function (tooltip) {
+                                smaPointFormatter.call(this, tooltip, 1, 0, false);
+                                $('[data-id="volume"]').text(this.y.toLocaleString());
+                                return false;
+                            }
+                        },
+                        animation: false,
+                        rendererType: 'webgl'
+                    });
+                    volumeSmaData.forEach(item => {
+                        setTimeout(() => {
+                            chart.addSeries({
+                                type: 'sma',
+                                name: `MA${item.unit}`,
+                                linkedTo: 'volume',
+                                zIndex: 10,
+                                yAxis: 1,
+                                color: item.color,
+                                params: {
+                                    period: item.unit
+                                },
+                                marker: {
+                                    enabled: false
+                                },
+                                tooltip: {
+                                    pointFormatter: function (tooltip) {
+                                        smaPointFormatter.call(this, tooltip, 1, 0);
+                                        return false;
+                                    }
+                                },
+                                animation: false,
+                                rendererType: 'webgl'
+                            });
+                        }, 100);
+                    });
+
+                    // 折線圖-KD值
+                    chart.addSeries({
+                        type: 'slowstochastic',
+                        name: 'K(9,3)',
+                        id: 'kdValue',
+                        linkedTo: 'aapl',
+                        marker: {
+                            enabled: false,
+                            states: {
+                                hover: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        color: '#238C6C',
+                        smoothedLine: {
+                            styles: {
+                                lineColor: '#D0A66C',
+                                lineWidth: '2'
+                            }
+                        },
+                        yAxis: 2,
+                        params: {
+                            periods: [9, 3, 3],
+                            visible: true
+                        },
+                        tooltip: {
+                            pointFormatter: function () {
+                                const $tooltipContainer = $('[data-id="' + this.series.chart.container.id + "-tooltips-yAxis" + 2 + '"]'),
+                                    id = "tooltip-" + this.series.name;
+                                let kValue = this.y != null ? this.y.toFixed(2) : 'N/A';
+                                let dValue = this.smoothed != null ? this.smoothed.toFixed(2) : 'N/A';
+                                let html = '<div class="l-slash__item">' + '<span style="color:' + this.color + '">●</span>' + this.series.name + ': <b>' + kValue + '</b>' + '</div>' + '<div class="l-slash__item">' + '<span style="color:' + '#D0A66C' + '">●</span>' + 'D(9,3)' + ': <b>' + dValue + '</b>' + '</div>';
+                                $tooltipContainer.find('[data-id="' + id + '"]').html(html);
+                                return false;
+                            }
+                        },
+                        animation: false,
+                        rendererType: 'webgl'
+                    });
+                    $('[data-chart="kLine"]').find('.c-empty').addClass('u-hidden');
+                    $('[data-chart="kLine"]').find('.c-chartBox').removeClass('u-hidden');
+                } else {
+                    $('[data-chart="kLine"]').find('.c-empty').removeClass('u-hidden');
+                    $('[data-chart="kLine"]').find('.c-chartBox').addClass('u-hidden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function initSMAPointFormatter(yAxis, smaDatas) {
+            smaDatas.forEach(function (item) {
+                var html = '<span style="color:' + item.color + '; margin-right: 2px">\u25CF</span>' + 'SMA' + item.unit + ': <b>N/A</b>';
+                $('[data-id="tooltip-SMA' + item.unit + '"]').html(html);
+            });
+        }
+
+        function initMAPointFormatter(yAxis, smaDatas) {
+            var $tooltipContainer = $('[data-id="' + this.series.chart.container.id + '-tooltips-yAxis' + yAxis + '"]');
+            smaDatas.forEach(function (item) {
+                var html = '<span style="color:' + item.color + '; margin-right: 2px">\u25CF</span>' + 'SMA' + item.unit + ': <b>N/A</b>';
+                $tooltipContainer.find('[data-id="tooltip-MA' + item.unit + '"]').html(html);
+            });
+        }
+
+        function initKDPointFormatter(yAxis) {
+            var $tooltipContainer = $('[data-id="' + this.series.chart.container.id + '-tooltips-yAxis' + yAxis + '"]');
+            let html = '<div class="l-slash__item"><span style="color:#238C6C">●</span>K(9,3): <b>N/A</b></div>' + '<div class="l-slash__item"><span style="color:#D0A66C">●</span>D(9,3): <b>N/A</b></div>';
+            $tooltipContainer.find('[data-id="tooltip-K(9,3)"]').html(html);
+        }
+
+        function smaPointFormatter(tooltip, yAxis) {
+            let decimal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
+            let showDots = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+            let value = this.y.toFixed(decimal);
+            let id = "tooltip-" + this.series.name;
+            let html = '';
+            if (showDots) {
+                html = '<span style="color:' + this.color + '; margin-right: 2px">\u25CF</span>';
+            }
+            html += this.series.name + ": <b>" + Number(value).toLocaleString() + '</b>';
+            $('[data-id="' + id + '"]').html(html);
+        };
+
+        function loadTooltip(chart) {
+            var points = [];
+            chart.series.forEach(function (el, i) {
+                points.push(el.points[el.points.length - 1]);
+            });
+            chart.tooltip.refresh(points);
+
+            // 預先計算最後一筆資料的漲跌幅
+            let kLineData = chart.series[0].data;
+            let kLineCount = kLineData.length;
+            let current = kLineData[kLineCount - 1].options;
+            let prev = kLineData[kLineCount - 2].options || current;
+            if (current !== undefined || prev !== undefined) {
+                let extent = current.close - prev.close;
+                let extentPercentage = extent / current.close * 100;
+                $('[data-id="extent"]').html(extent.toFixed(2) + '(' + extentPercentage.toFixed(2) + '%)');
+            } else {
+                $('[data-id="extent"]').html('N/A(N/A%)');
+            }
+            initPointFormatter = true;
+        };
+    });
+</script>
