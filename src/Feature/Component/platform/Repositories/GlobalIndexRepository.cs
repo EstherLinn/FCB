@@ -21,7 +21,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,REPLACE(CONVERT(char(10), [DataDate],126),'-','/') [DataDate]
                            ,[MarketPrice]
                            ,CONVERT(nvarchar, CONVERT(MONEY, [MarketPrice]), 1) [MarketPriceText]
-                           ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1)　[Change]
+                           ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1) [Change]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), [ChangePercentage])) + '%' [ChangePercentage]
                            ,CONVERT(bit, IIF([Change] >= 0, 1, 0)) [UpOrDown]
                            FROM [Sysjust_GlobalIndex] WITH (NOLOCK)
@@ -42,7 +42,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,REPLACE(CONVERT(char(10), [DataDate],126),'-','/') [DataDate]
                            ,[MarketPrice]
                            ,CONVERT(nvarchar, CONVERT(MONEY, [MarketPrice]), 1) [MarketPriceText]
-                           ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1)　[Change]
+                           ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1) [Change]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), [ChangePercentage])) + '%' [ChangePercentage]
                            ,CONVERT(bit, IIF([Change] >= 0, 1, 0)) [UpOrDown]
                            FROM [Sysjust_GlobalIndex] WITH (NOLOCK)
@@ -71,7 +71,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,REPLACE(CONVERT(char(10), [DataDate],126),'-','/') [DataDate]
                            ,[MarketPrice]
                            ,CONVERT(nvarchar, CONVERT(MONEY, [MarketPrice]), 1) [MarketPriceText]
-                           ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1)　[Change]
+                           ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1) [Change]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), [ChangePercentage])) + '%' [ChangePercentage]
                            ,CONVERT(bit, IIF([Change] >= 0, 1, 0)) [UpOrDown]
                            FROM [Sysjust_GlobalIndex_History] WITH (NOLOCK)
@@ -93,7 +93,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,REPLACE(CONVERT(char(10), [DataDate],126),'-','/') [DataDate]
                            ,[MarketPrice]
                            ,CONVERT(nvarchar, CONVERT(MONEY, [MarketPrice]), 1) [MarketPriceText]
-                           ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1)　[Change]
+                           ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1) [Change]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), [ChangePercentage])) + '%' [ChangePercentage]
                            ,CONVERT(bit, IIF([Change] >= 0, 1, 0)) [UpOrDown]
                            ,B.[ViewCount]
