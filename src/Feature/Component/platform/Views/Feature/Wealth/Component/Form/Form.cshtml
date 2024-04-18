@@ -21,36 +21,14 @@
     string title5 = Html.Sitecore().Field(Templates.Form.Fields.Title5.ToString(), Model.DataSource).ToString();
     string title6 = Html.Sitecore().Field(Templates.Form.Fields.Title6.ToString(), Model.DataSource).ToString();
 
+    //計算表格欄位數 => for 欄寬計算
     int nonNullCount = 0;
-    if (!string.IsNullOrEmpty(title1))
-    {
-        nonNullCount++;
-    }
-
-    if (!string.IsNullOrEmpty(title2))
-    {
-        nonNullCount++;
-    }
-
-    if (!string.IsNullOrEmpty(title3))
-    {
-        nonNullCount++;
-    }
-
-    if (!string.IsNullOrEmpty(title4))
-    {
-        nonNullCount++;
-    }
-
-    if (!string.IsNullOrEmpty(title5))
-    {
-        nonNullCount++;
-    }
-
-    if (!string.IsNullOrEmpty(title6))
-    {
-        nonNullCount++;
-    }
+    if (!string.IsNullOrEmpty(title1))  { nonNullCount++; }
+    if (!string.IsNullOrEmpty(title2))  { nonNullCount++; }
+    if (!string.IsNullOrEmpty(title3))  { nonNullCount++; }
+    if (!string.IsNullOrEmpty(title4))  { nonNullCount++; }
+    if (!string.IsNullOrEmpty(title5))  { nonNullCount++; }
+    if (!string.IsNullOrEmpty(title6))  { nonNullCount++; }
 }
 
 <section class="c-section" data-aos="fade-up" data-aos-once="true">
@@ -65,7 +43,9 @@
                         <table class="c-table u-center">
                             <colgroup>
                                 @{
-                                    int percent = 100 / nonNullCount;
+                                    int percent;
+                                    if (nonNullCount != 0)  { percent = 100 / nonNullCount; }
+                                    else { percent = 20; }
 
                                     <col style="width: @percent%;">
                                     <col style="width: @percent%;">
