@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sitecore.Data;
 using Sitecore.Data.Items;
 
 namespace Feature.Wealth.Component.Models.FundSearch
@@ -15,11 +16,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// autocomplete回傳內容
         /// </summary>
-        public string type { get; set; }
-        public bool isLogin { get; set; }
-        public bool isLike { get; set; }
-        public string detailUrl { get; set; }
-        public bool purchase { get; set; }
+        public string Type { get; set; }
+        public bool IsLogin { get; set; }
+        public bool IsLike { get; set; }
+        public string DetailUrl { get; set; }
+        public bool Purchase { get; set; }
     }
 
     /// <summary>
@@ -141,7 +142,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// 基金類型
         /// </summary>
-        public string FundTypeName { get; set; }
+        public string FundType { get; set; }
 
         /// <summary>
         /// 配息頻率
@@ -248,7 +249,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
 
         public KeyValuePair<bool, decimal?> PercentageChangeInFundPrice { get; set; }
 
-        public string FundTypeName { get; set; }
+        public string FundType { get; set; }
 
         public string DividendFrequencyName { get; set; }
 
@@ -266,8 +267,6 @@ namespace Feature.Wealth.Component.Models.FundSearch
 
         public List<string> Tags { get; set; }
 
-        public string DetailLink { get; set; }
-
         public string FundCompanyName { get; set; }
 
         public string InvestmentTargetName { get; set; }
@@ -275,6 +274,13 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public List<string> InvestmentRegionName { get; set; }
 
         public string FundRating { get; set; }
+
+        public string DetailUrl { get; set; }
+
+        public string value { get; set; }
+
+        public FundData Data { get; set; }
+
     }
 
     public class SearchBarData
@@ -305,27 +311,36 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public List<string> FundTypeNames { get; set; }
     }
 
-
-    public class Template
+    public struct Template
     {
-        /// <summary>
-        /// 基金評等內容
-        /// </summary>
-        public static readonly string Content = "{587133C2-172C-4AA9-A7B5-44E1D7E41B34}";
+        public struct FundSearch
+        {
+            public static readonly ID Id = new ID("{1B968584-1109-4CD2-96F9-0C084A86D001}");
 
-        /// <summary>
-        /// Tag的名稱
-        /// </summary>
-        public static readonly string tagName = "{E5B26CC0-95C1-4C79-A141-FFDFA762434F}";
+            public struct Fields
+            {
+                /// <summary>
+                /// 基金評等內容
+                /// </summary>
+                public static readonly string Content = "{587133C2-172C-4AA9-A7B5-44E1D7E41B34}";
 
-        /// <summary>
-        /// 熱門關鍵字
-        /// </summary>
-        public static readonly string hotKeywordtags = "{CB6896B6-440A-43B4-9937-41E1DBF3D8BF}";
+                ///// <summary>
+                /// Tag的名稱
+                /// </summary>
+                public static readonly string TagName = "{E5B26CC0-95C1-4C79-A141-FFDFA762434F}";
 
-        /// <summary>
-        /// 熱門商品
-        /// </summary>
-        public static readonly string hotProductags = "{B72C2E97-EB7B-48E3-9268-E9260E0BFE9A}";
+                /// <summary>
+                /// 熱門關鍵字
+                /// </summary>
+                public static readonly string HotKeywordtags = "{CB6896B6-440A-43B4-9937-41E1DBF3D8BF}";
+
+                /// <summary>
+                /// 熱門商品
+                /// </summary>
+                public static readonly string HotProductags = "{B72C2E97-EB7B-48E3-9268-E9260E0BFE9A}";
+            }
+        }
+
     }
+   
 }

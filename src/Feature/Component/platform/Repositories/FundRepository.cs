@@ -215,7 +215,7 @@ namespace Feature.Wealth.Component.Repositories
                       ,[AnnualReturnRateOriginalCurrency]
                       ,[AnnualReturnRateTWD]
                       ,[IndicatorIndexPriceChange]
-	                  ,[AnnualReturnRateOriginalCurrency] - [IndicatorIndexPriceChange] as Difference
+                      ,[AnnualReturnRateOriginalCurrency] - [IndicatorIndexPriceChange] as Difference
                   FROM [Sysjust_Return_Fund_2] 
                   where [FirstBankCode] = @fundId 
                   ORDER BY [Year] DESC";
@@ -262,7 +262,7 @@ namespace Feature.Wealth.Component.Repositories
                           ,FORMAT(CAST([Date] as date),'yyyy/MM')  [Date]
                           ,[MonthlyReturnRate]
                           ,[IndicatorIndexPriceChange]
-	                      ,[MonthlyReturnRate] - [IndicatorIndexPriceChange] as Difference
+                          ,[MonthlyReturnRate] - [IndicatorIndexPriceChange] as Difference
                       FROM [Sysjust_Return_Fund_3]
                       WHERE [FirstBankCode] = @fundid";
             var para = new { fundid = fundId };
@@ -510,9 +510,9 @@ namespace Feature.Wealth.Component.Repositories
                              WHERE [FirstBankCode]=@fundid
                             )
                             SELECT [FirstBankCode]
-	                            ,FORMAT([ScaleDate],'yyyy/MM/dd') [ScaleDate]
-	                             , {field}
-	                             ,[Currency]
+                                ,FORMAT([ScaleDate],'yyyy/MM/dd') [ScaleDate]
+                                 , {field}
+                                 ,[Currency]
                               FROM CTE
                               WHERE [ScaleDate] >= CAST(CAST(YEAR(DATEADD(YEAR,-2,(SELECT MAX([ScaleDate]) FROM CTE))) AS varchar(4))+'-01-01' AS smalldatetime)
                               ORDER BY [ScaleDate] DESC";

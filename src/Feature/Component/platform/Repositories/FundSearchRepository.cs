@@ -6,6 +6,7 @@ using Feature.Wealth.Component.Models.FundSearch;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.FundDetail;
 using System.Linq;
+using JSNLog.Infrastructure;
 
 
 namespace Feature.Wealth.Component.Repositories
@@ -48,6 +49,11 @@ namespace Feature.Wealth.Component.Repositories
                 vm.NetAssetValueDate = f.NetAssetValueDateFormat;
                 vm.IsOnlineSubscriptionAvailability = Extender.ToBoolean(f.OnlineSubscriptionAvailability);
                 //績效表現
+                if (f.CurrencyCode == null || f.FundCurrency == "TWD")
+                {
+                    f.CurrencyCode = "00";
+                    f.CurrencyName = "新台幣";
+                }
                 vm.Currency = new KeyValuePair<string, string>(f.CurrencyCode, f.CurrencyName);
                 vm.SixMonthReturnOriginalCurrency = CreateReturnDictionary(f.SixMonthReturnOriginalCurrency);
                 vm.OneMonthReturnOriginalCurrency = CreateReturnDictionary( f.OneMonthReturnOriginalCurrency);
@@ -62,7 +68,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.PercentageChangeInFundPrice = Percentage(f.PercentageChangeInFundPrice);
                 vm.FundSizeMillionOriginalCurrency = RoundFundSize(f.FundSizeMillionOriginalCurrency);
                 vm.FundSizeMillionTWD = RoundFundSize(f.FundSizeMillionTWD);
-                vm.FundTypeName = f.FundTypeName;
+                vm.FundType = f.FundType;
                
                 if(f.DividendFrequencyName =="無" || f.DividendFrequencyName == null)
                 {
@@ -79,7 +85,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.Beta = Round4(f.Beta);
                 vm.OneYearAlpha = Round4(f.OneYearAlpha);
                 vm.AnnualizedStandardDeviation = Round4(f.AnnualizedStandardDeviation);
-                vm.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
+                vm.DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl();
 
                 //篩選用
                 vm.FundCompanyName = f.FundCompanyName;
@@ -94,6 +100,16 @@ namespace Feature.Wealth.Component.Repositories
                     vm.InvestmentRegionName = [null];
                 }
 
+                vm.value = FullWidthToHalfWidth(f.ProductName);
+
+                vm.Data = new FundData
+                {
+                    Type = f.FundType,
+                    IsLogin = false,
+                    IsLike = false,
+                    DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl() + "?id=" + f.ProductCode,
+                    Purchase = f.OnlineSubscriptionAvailability == "Y" ? true : false
+                };
 
                 vm.InvestmentTargetName = f.InvestmentTargetName;
                 vm.FundRating = f.FundRating;
@@ -165,11 +181,11 @@ namespace Feature.Wealth.Component.Repositories
                     value = FullWidthToHalfWidth(item.ProductName),
                     data = new FundData
                     {
-                        type = item.FundTypeName,
-                        isLogin = false,
-                        isLike = false,
-                        detailUrl = FundRelatedSettingModel.GetFundDetailsUrl()+"?id="+item.ProductCode,
-                        purchase = item.OnlineSubscriptionAvailability == "Y" ? true : false
+                        Type = item.FundType,
+                        IsLogin = false,
+                        IsLike = false,
+                        DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl()+"?id="+item.ProductCode,
+                        Purchase = item.OnlineSubscriptionAvailability == "Y" ? true : false
                     }
                 };
 
