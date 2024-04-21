@@ -19,9 +19,13 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
-            var hotkeywordtags = ItemUtils.GetMultiListValueItems(dataSourceItem, Template.FundSearch.Fields.HotKeywordtags).ToList();
-            var hotproducttags = ItemUtils.GetMultiListValueItems(dataSourceItem, Template.FundSearch.Fields.HotProductags).ToList();
-            
+            var hotkeywordtags = ItemUtils.GetMultiListValueItems(dataSourceItem, Template.FundSearch.Fields.HotKeywordtags);
+            var keyword = hotkeywordtags.Select(f => f.DisplayName).ToList();
+            var hotproducttags = ItemUtils.GetMultiListValueItems(dataSourceItem, Template.FundSearch.Fields.HotProductags);
+            var product = hotproducttags.Select(f => f.DisplayName).ToList();
+            string content = ItemUtils.GetFieldValue(dataSourceItem, Template.FundSearch.Fields.Content);
+
+
             var items = _repository.GetFundSearchData();
 
             var regions = items
@@ -54,10 +58,12 @@ namespace Feature.Wealth.Component.Controllers
 
             var viewModel = new FundSearchViewModel
             {
+                Item = dataSourceItem,
                 FundSearchData = items,
                 SearchBarData = searchbar,
-                HotKeywordTags = hotkeywordtags,
-                HotProductTags = hotproducttags
+                HotKeywordTags = keyword,
+                HotProductTags = product,
+                Content = content
             };
 
             return View("/Views/Feature/Wealth/Component/FundSearch/FundSearch.cshtml", viewModel);
