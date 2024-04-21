@@ -8,7 +8,8 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public Item Item { get; set; }
         public IList<FundSearchModel> FundSearchData { get; set; }
         public SearchBarData SearchBarData { get; set; }
-        public List<Item> HotKeywordTags { get; set; }
-        public List<Item> HotProductTags { get; set; }
+        public List<string> HotKeywordTags { get; set; }
+        public List<string> HotProductTags { get; set; }
+        public string Content { get; set; }
     }
 }
