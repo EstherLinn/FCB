@@ -10,9 +10,14 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// </summary>
         /// <param name="number">數值</param>
         /// <param name="decimalPlaces">保留小數點後幾位，預設 2</param>
-        public static string FormatNumber(this decimal number, int decimalPlaces = 2)
+        public static string FormatNumber(this decimal? number, int decimalPlaces = 2)
         {
-            string numberStr = number.ToString();
+            if (!number.HasValue)
+            {
+                return default;
+            }
+
+            string numberStr = number.Value.ToString();
 
             foreach (NumberSuffix suffix in EnumUtil.ToEnumerable<NumberSuffix>())
             {
@@ -24,9 +29,9 @@ namespace Feature.Wealth.Component.Models.ETF.Search
                     suffixValue = string.Empty;
                 }
 
-                if (Math.Abs(number) >= currentValue)
+                if (Math.Abs(number.Value) >= currentValue)
                 {
-                    numberStr = $"{Math.Round(number / currentValue, decimalPlaces, MidpointRounding.AwayFromZero)}{suffixValue}";
+                    numberStr = $"{Math.Round(number.Value / currentValue, decimalPlaces, MidpointRounding.AwayFromZero)}{suffixValue}";
                 }
             }
 

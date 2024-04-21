@@ -1,6 +1,8 @@
 ﻿using Feature.Wealth.Component.Repositories;
+using Sitecore.Mvc.Presentation;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -9,7 +11,8 @@ namespace Feature.Wealth.Component.Controllers
         private readonly EtfSearchRepository _searchRepository = new EtfSearchRepository();
         public ActionResult Index()
         {
-            var model = _searchRepository.GetETFSearchModel();
+            var datasource = ItemUtils.GetItem(RenderingContext.Current.Rendering.DataSource);
+            var model = _searchRepository.GetETFSearchModel(datasource);
             return View("/Views/Feature/Wealth/Component/ETFSearch/EtfSearchIndex.cshtml", model);
         }
 

@@ -2,11 +2,15 @@
 using Feature.Wealth.Component.Models.ETF.Search;
 using Foundation.Wealth.Manager;
 using Mapster;
+using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
+using System.Text;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -14,7 +18,7 @@ namespace Feature.Wealth.Component.Repositories
     {
         private IEnumerable<EtfSearchResult> SearchResults { get; set; }
 
-        public EtfSearchModel GetETFSearchModel()
+        public EtfSearchModel GetETFSearchModel(Item dataSource)
         {
             EtfSearchModel model = new EtfSearchModel();
             var result = MapperResult();
@@ -25,6 +29,17 @@ namespace Feature.Wealth.Component.Repositories
                 ResultProducts = result?.ToList()
             };
 
+            string detailPageLink = string.Empty;
+            if (dataSource != null)
+            {
+                Item linkItem = ItemUtils.TargetItem(dataSource, Templates.EtfSearchDatasource.Fields.DetailPageLink);
+                if (linkItem != null)
+                {
+                    detailPageLink = ItemUtils.Url(linkItem);
+                }
+            }
+
+            model.SearchResultModel.DetailPageLink = detailPageLink;
             model.FilterModel = SetFilterOptions();
 
             return model;
@@ -36,18 +51,24 @@ namespace Feature.Wealth.Component.Repositories
             return result;
         }
 
-        public IEnumerable<EtfSearchResult> MapperResult()
+        private IList<BasicEtfDto> QueryBasicData()
         {
             string sqlQuery = """
                 SELECT *
-                    FROM [vw_BasicETF]
+                  FROM [vw_BasicETF]
                 """;
             var collection = DbManager.Custom.ExecuteIList<BasicEtfDto>(sqlQuery, null, CommandType.Text);
+            return collection;
+        }
 
+        public IEnumerable<EtfSearchResult> MapperResult()
+        {
+            var collection = QueryBasicData();
             var config = new TypeAdapterConfig();
             config.ForType<BasicEtfDto, EtfSearchResult>()
                 .AfterMapping((src, dest) =>
                 {
+                    dest.ETFName = src.ETFName.Normalize(NormalizationForm.FormKC);
                     dest.RegionType = IdentifyRegion(src.SysjustCode);
                     dest.CurrencyPair = new KeyValuePair<string, string>(src.CurrencyCode, src.CurrencyName);
                     dest.NetAssetValueDate = DateTimeFormat(src.NetAssetValueDate);
@@ -144,7 +165,7 @@ namespace Feature.Wealth.Component.Repositories
                 InvestmentRegionList = this.SearchResults.OrderBy(i => i.InvestmentRegion.Key).Select(i => i.InvestmentRegion.Value).Where(i => !string.IsNullOrWhiteSpace(i)).Distinct(),
                 InvestmentStyleList = this.SearchResults.OrderBy(i => i.InvestmentStyle.Key).Select(i => i.InvestmentStyle.Value).Where(i => !string.IsNullOrWhiteSpace(i)).Distinct(),
                 PublicLimitedCompanyList = this.SearchResults.OrderBy(i => i.PublicLimitedCompany.Key).Select(i => i.PublicLimitedCompany.Value).Where(i => !string.IsNullOrWhiteSpace(i)).Distinct(),
-                DividendDistributionFrequencyList = this.SearchResults.Select(i => { if (i.DividendDistributionFrequency == "無") { i.DividendDistributionFrequency = "不配息"; } return i.DividendDistributionFrequency; }).Where(i => !string.IsNullOrWhiteSpace(i)).Distinct(),
+                DividendDistributionFrequencyList = this.SearchResults.OrderBy(i => i.DividendDistributionFrequency).Select(i => i.DividendDistributionFrequency).Where(i => !string.IsNullOrWhiteSpace(i)).Distinct(),
                 ExchangeList = this.SearchResults.Select(i => i.ExchangeID).OrderBy(i => i).Distinct()
             };
 
@@ -153,20 +174,30 @@ namespace Feature.Wealth.Component.Repositories
 
         #region Method
 
-        private decimal RoundingPrice(decimal value)
+        private decimal? RoundingPrice(decimal? number)
         {
-            return Math.Round(value, 4, MidpointRounding.AwayFromZero);
+            if (!number.HasValue)
+            {
+                return null;
+            }
+
+            return Math.Round(number.Value, 4, MidpointRounding.AwayFromZero);
         }
 
-        private decimal RoundingPercentage(decimal value)
+        private decimal? RoundingPercentage(decimal? number)
         {
-            return Math.Round(value, 2, MidpointRounding.AwayFromZero);
+            if (!number.HasValue)
+            {
+                return null;
+            }
+
+            return Math.Round(number.Value, 2, MidpointRounding.AwayFromZero);
         }
 
-        private bool IsUpPercentage(decimal value)
+        private bool IsUpPercentage(decimal? number)
         {
             bool isIncreased = true;
-            if (value < 0)
+            if (number.HasValue && number < 0)
             {
                 isIncreased = false;
             }
@@ -183,15 +214,15 @@ namespace Feature.Wealth.Component.Repositories
             return dateTime?.ToString(format);
         }
 
-        private KeyValuePair<bool, decimal> ParsePercentageChangeToKeyValue(decimal value)
+        private KeyValuePair<bool, decimal?> ParsePercentageChangeToKeyValue(decimal? value)
         {
-            var keyValuePair = new KeyValuePair<bool, decimal> ( IsUpPercentage(value), RoundingPercentage(value) );
+            var keyValuePair = new KeyValuePair<bool, decimal?> ( IsUpPercentage(value), RoundingPercentage(value) );
             return keyValuePair;
         }
 
-        private KeyValuePair<decimal, string> ParseTradingVolumeToKeyValue(decimal value)
+        private KeyValuePair<decimal?, string> ParseTradingVolumeToKeyValue(decimal? value)
         {
-            var keyValuePair = new KeyValuePair<decimal, string>(value, NumberExtensions.FormatNumber(value));
+            var keyValuePair = new KeyValuePair<decimal?, string>(value, NumberExtensions.FormatNumber(value));
             return keyValuePair;
         }
 

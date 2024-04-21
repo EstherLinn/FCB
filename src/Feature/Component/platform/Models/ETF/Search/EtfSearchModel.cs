@@ -1,9 +1,12 @@
-﻿using System.ComponentModel;
+﻿using Sitecore.Data.Items;
+using System.ComponentModel;
 
 namespace Feature.Wealth.Component.Models.ETF.Search
 {
     public class EtfSearchModel
     {
+        public string DatasourceId { get; set; }
+
         public EtfSearchResultModel SearchResultModel { get; set; }
 
         public EtfSearchFilterModel FilterModel { get; set; }

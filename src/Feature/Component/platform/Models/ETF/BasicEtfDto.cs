@@ -179,7 +179,7 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// ETF規模(百萬)
         /// </summary>
-        public decimal ScaleMillions { get; set; }
+        public decimal? ScaleMillions { get; set; }
 
         /// <summary>
         /// 成立日期
@@ -239,47 +239,47 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 總管理費用(%)
         /// </summary>
-        public decimal TotalManagementFee { get; set; }
+        public decimal? TotalManagementFee { get; set; }
 
         /// <summary>
         /// 市價漲跌
         /// </summary>
-        public decimal MarketPriceChange { get; set; }
+        public decimal? MarketPriceChange { get; set; }
 
         /// <summary>
         /// 市價漲跌幅
         /// </summary>
-        public decimal MarketPriceChangePercentage { get; set; }
+        public decimal? MarketPriceChangePercentage { get; set; }
 
         /// <summary>
         /// 淨值漲跌
         /// </summary>
-        public decimal NetAssetValueChange { get; set; }
+        public decimal? NetAssetValueChange { get; set; }
 
         /// <summary>
         /// 淨值漲跌幅
         /// </summary>
-        public decimal NetAssetValueChangePercentage { get; set; }
+        public decimal? NetAssetValueChangePercentage { get; set; }
 
         /// <summary>
         /// 最高市價(年)
         /// </summary>
-        public decimal HighestMarketPrice { get; set; }
+        public decimal? HighestMarketPrice { get; set; }
 
         /// <summary>
         /// 最低市價(年)
         /// </summary>
-        public decimal LowestMarketPrice { get; set; }
+        public decimal? LowestMarketPrice { get; set; }
 
         /// <summary>
         /// 最高淨值(年)
         /// </summary>
-        public decimal HighestNetAssetValue { get; set; }
+        public decimal? HighestNetAssetValue { get; set; }
 
         /// <summary>
         /// 最低淨值(年)
         /// </summary>
-        public decimal LowestNetAssestValue { get; set; }
+        public decimal? LowestNetAssestValue { get; set; }
 
         #endregion Basic
 
@@ -288,12 +288,12 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 價格(市價)
         /// </summary>
-        public decimal MarketPrice { get; set; }
+        public decimal? MarketPrice { get; set; }
 
         /// <summary>
         /// 價格(淨值)
         /// </summary>
-        public decimal NetAssetValue { get; set; }
+        public decimal? NetAssetValue { get; set; }
 
         /// <summary>
         /// 淨值日期
@@ -310,67 +310,67 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 成立至今 報酬率 (淨值原幣)
         /// </summary>
-        public decimal InceptionDateNetValueOriginalCurrency { get; set; }
+        public decimal? InceptionDateNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 月初至今 報酬率 (淨值原幣)
         /// </summary>
-        public decimal MonthtoDateNetValueOriginalCurrency { get; set; }
+        public decimal? MonthtoDateNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 年初至今 報酬率 (淨值原幣)
         /// </summary>
-        public decimal YeartoDateReturnNetValueOriginalCurrency { get; set; }
+        public decimal? YeartoDateReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一日 報酬率 (淨值原幣)
         /// </summary>
-        public decimal DailyReturnNetValueOriginalCurrency { get; set; }
+        public decimal? DailyReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一週 報酬率 (淨值原幣)
         /// </summary>
-        public decimal WeeklyReturnNetValueOriginalCurrency { get; set; }
+        public decimal? WeeklyReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一個月 報酬率 (淨值原幣)
         /// </summary>
-        public decimal MonthlyReturnNetValueOriginalCurrency { get; set; }
+        public decimal? MonthlyReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三個月 報酬率 (淨值原幣)
         /// </summary>
-        public decimal ThreeMonthReturnNetValueOriginalCurrency { get; set; }
+        public decimal? ThreeMonthReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 六個月 報酬率 (淨值原幣)
         /// </summary>
-        public decimal SixMonthReturnNetValueOriginalCurrency { get; set; }
+        public decimal? SixMonthReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年 報酬率 (淨值原幣)
         /// </summary>
-        public decimal OneYearReturnNetValueOriginalCurrency { get; set; }
+        public decimal? OneYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 二年 報酬率 (淨值原幣)
         /// </summary>
-        public decimal TwoYearReturnNetValueOriginalCurrency { get; set; }
+        public decimal? TwoYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年 報酬率 (淨值原幣)
         /// </summary>
-        public decimal ThreeYearReturnNetValueOriginalCurrency { get; set; }
+        public decimal? ThreeYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 五年 報酬率 (淨值原幣)
         /// </summary>
-        public decimal FiveYearReturnNetValueOriginalCurrency { get; set; }
+        public decimal? FiveYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 十年 報酬率 (淨值原幣)
         /// </summary>
-        public decimal TenYearReturnNetValueOriginalCurrency { get; set; }
+        public decimal? TenYearReturnNetValueOriginalCurrency { get; set; }
 
         #endregion 報酬率 (淨值原幣)
 
@@ -379,67 +379,67 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 成立至今 報酬率 (市價原幣)
         /// </summary>
-        public decimal InceptionDateMarketPriceOriginalCurrency { get; set; }
+        public decimal? InceptionDateMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 月初至今 報酬率 (市價原幣)
         /// </summary>
-        public decimal MonthtoDateMarketPriceOriginalCurrency { get; set; }
+        public decimal? MonthtoDateMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 年初至今 報酬率 (市價原幣)
         /// </summary>
-        public decimal YeartoDateReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? YeartoDateReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一日 報酬率 (市價原幣)
         /// </summary>
-        public decimal DailyReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? DailyReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一週 報酬率 (市價原幣)
         /// </summary>
-        public decimal WeeklyReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? WeeklyReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一個月 報酬率 (市價原幣)
         /// </summary>
-        public decimal MonthlyReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? MonthlyReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三個月 報酬率 (市價原幣)
         /// </summary>
-        public decimal ThreeMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? ThreeMonthReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 六個月 報酬率 (市價原幣)
         /// </summary>
-        public decimal SixMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? SixMonthReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年 報酬率 (市價原幣)
         /// </summary>
-        public decimal OneYearReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? OneYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 二年 報酬率 (市價原幣)
         /// </summary>
-        public decimal TwoYearReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? TwoYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年 報酬率 (市價原幣)
         /// </summary>
-        public decimal ThreeYearReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? ThreeYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 五年 報酬率 (市價原幣)
         /// </summary>
-        public decimal FiveYearReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? FiveYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 十年 報酬率 (市價原幣)
         /// </summary>
-        public decimal TenYearReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? TenYearReturnMarketPriceOriginalCurrency { get; set; }
 
         #endregion 報酬率 (市價原幣)
 
@@ -448,67 +448,67 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 成立至今 報酬率 (淨值台幣)
         /// </summary>
-        public decimal InceptionDateNetValueTWD { get; set; }
+        public decimal? InceptionDateNetValueTWD { get; set; }
 
         /// <summary>
         /// 月初至今 報酬率 (淨值台幣)
         /// </summary>
-        public decimal MonthtoDateNetValueTWD { get; set; }
+        public decimal? MonthtoDateNetValueTWD { get; set; }
 
         /// <summary>
         /// 年初至今 報酬率 (淨值台幣)
         /// </summary>
-        public decimal YeartoDateReturnNetValueTWD { get; set; }
+        public decimal? YeartoDateReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 一日 報酬率 (淨值台幣)
         /// </summary>
-        public decimal DailyReturnNetValueTWD { get; set; }
+        public decimal? DailyReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 一週 報酬率 (淨值台幣)
         /// </summary>
-        public decimal WeeklyReturnNetValueTWD { get; set; }
+        public decimal? WeeklyReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 一個月 報酬率 (淨值台幣)
         /// </summary>
-        public decimal MonthlyReturnNetValueTWD { get; set; }
+        public decimal? MonthlyReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 三個月 報酬率 (淨值台幣)
         /// </summary>
-        public decimal ThreeMonthReturnNetValueTWD { get; set; }
+        public decimal? ThreeMonthReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 六個月 報酬率 (淨值台幣)
         /// </summary>
-        public decimal SixMonthReturnNetValueTWD { get; set; }
+        public decimal? SixMonthReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 一年 報酬率 (淨值台幣)
         /// </summary>
-        public decimal OneYearReturnNetValueTWD { get; set; }
+        public decimal? OneYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 二年 報酬率 (淨值台幣)
         /// </summary>
-        public decimal TwoYearReturnNetValueTWD { get; set; }
+        public decimal? TwoYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 三年 報酬率 (淨值台幣)
         /// </summary>
-        public decimal ThreeYearReturnNetValueTWD { get; set; }
+        public decimal? ThreeYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 五年 報酬率 (淨值台幣)
         /// </summary>
-        public decimal FiveYearReturnNetValueTWD { get; set; }
+        public decimal? FiveYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 十年 報酬率 (淨值台幣)
         /// </summary>
-        public decimal TenYearReturnNetValueTWD { get; set; }
+        public decimal? TenYearReturnNetValueTWD { get; set; }
 
         #endregion 報酬率 (淨值台幣)
 
@@ -517,67 +517,67 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 成立至今 報酬率 (市價台幣)
         /// </summary>
-        public decimal InceptionDateMarketPriceTWD { get; set; }
+        public decimal? InceptionDateMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 月初至今 報酬率 (市價台幣)
         /// </summary>
-        public decimal MonthtoDateMarketPriceTWD { get; set; }
+        public decimal? MonthtoDateMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 年初至今 報酬率 (市價台幣)
         /// </summary>
-        public decimal YeartoDateReturnMarketPriceTWD { get; set; }
+        public decimal? YeartoDateReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 一日 報酬率 (市價台幣)
         /// </summary>
-        public decimal DailyReturnMarketPriceTWD { get; set; }
+        public decimal? DailyReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 一週 報酬率 (市價台幣)
         /// </summary>
-        public decimal WeeklyReturnMarketPriceTWD { get; set; }
+        public decimal? WeeklyReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 一個月 報酬率 (市價台幣)
         /// </summary>
-        public decimal MonthlyReturnMarketPriceTWD { get; set; }
+        public decimal? MonthlyReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 三個月 報酬率 (市價台幣)
         /// </summary>
-        public decimal ThreeMonthReturnMarketPriceTWD { get; set; }
+        public decimal? ThreeMonthReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 六個月 報酬率 (市價台幣)
         /// </summary>
-        public decimal SixMonthReturnMarketPriceTWD { get; set; }
+        public decimal? SixMonthReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 一年 報酬率 (市價台幣)
         /// </summary>
-        public decimal OneYearReturnMarketPriceTWD { get; set; }
+        public decimal? OneYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 二年 報酬率 (市價台幣)
         /// </summary>
-        public decimal TwoYearReturnMarketPriceTWD { get; set; }
+        public decimal? TwoYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 三年 報酬率 (市價台幣)
         /// </summary>
-        public decimal ThreeYearReturnMarketPriceTWD { get; set; }
+        public decimal? ThreeYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 五年 報酬率 (市價台幣)
         /// </summary>
-        public decimal FiveYearReturnMarketPriceTWD { get; set; }
+        public decimal? FiveYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 十年 報酬率 (市價台幣)
         /// </summary>
-        public decimal TenYearReturnMarketPriceTWD { get; set; }
+        public decimal? TenYearReturnMarketPriceTWD { get; set; }
 
         #endregion 報酬率 (市價台幣)
 
@@ -586,17 +586,17 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// Sharpe (淨值風險)
         /// </summary>
-        public decimal SharpeNetValueRisk { get; set; }
+        public decimal? SharpeNetValueRisk { get; set; }
 
         /// <summary>
         /// Beta (淨值風險)
         /// </summary>
-        public decimal BetaNetValueRisk { get; set; }
+        public decimal? BetaNetValueRisk { get; set; }
 
         /// <summary>
         /// 年化標準差 (淨值風險)
         /// </summary>
-        public decimal AnnualizedStandardDeviationNetValueRisk { get; set; }
+        public decimal? AnnualizedStandardDeviationNetValueRisk { get; set; }
 
         #endregion 淨值風險
 
@@ -605,17 +605,17 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// Sharpe (市價風險)
         /// </summary>
-        public decimal SharpeRatioMarketPriceRisk { get; set; }
+        public decimal? SharpeRatioMarketPriceRisk { get; set; }
 
         /// <summary>
         /// Beta (市價風險)
         /// </summary>
-        public decimal BetaMarketPriceRisk { get; set; }
+        public decimal? BetaMarketPriceRisk { get; set; }
 
         /// <summary>
         /// 年化標準差 (市價風險)
         /// </summary>
-        public decimal AnnualizedStandardDeviationMarketPriceRisk { get; set; }
+        public decimal? AnnualizedStandardDeviationMarketPriceRisk { get; set; }
 
         #endregion 市價風險
 
@@ -624,22 +624,22 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 折溢價
         /// </summary>
-        public decimal DiscountPremium { get; set; }
+        public decimal? DiscountPremium { get; set; }
 
         /// <summary>
         /// 最新量(成交量)
         /// </summary>
-        public decimal LatestVolumeTradingVolume { get; set; }
+        public decimal? LatestVolumeTradingVolume { get; set; }
 
         /// <summary>
         /// 十日均量
         /// </summary>
-        public decimal TenDayAverageVolume { get; set; }
+        public decimal? TenDayAverageVolume { get; set; }
 
         /// <summary>
         /// 最新量(成交量) – 十日均量
         /// </summary>
-        public decimal LatestVolumeTradingVolumeTenDayAverageVolume { get; set; }
+        public decimal? LatestVolumeTradingVolumeTenDayAverageVolume { get; set; }
 
         #endregion 交易狀況
 

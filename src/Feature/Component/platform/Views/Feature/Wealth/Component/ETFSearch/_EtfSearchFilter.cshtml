@@ -1,10 +1,11 @@
-﻿@model Feature.Wealth.Component.Models.ETF.Search.EtfSearchFilterModel
+﻿@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+@model Feature.Wealth.Component.Models.ETF.Search.EtfSearchFilterModel
 @{
     if (Model == null)
     {
         return;
     }
-    var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId();
+    var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId().ToSearchId();
 }
 
 <div class="l-mainstage" data-section="@(uid)-filter">
@@ -29,8 +30,8 @@
                                     <div class="o-actionbox o-actionbox--lg" data-clear="true">
                                         <!-- #keyword: 請見頁面下方的script邏輯，套用jquery.autocomplete套件 -->
                                         <!-- [data-clear="textbox"]: 套用清除按鈕功能，標示此為文字輸入框 -->
-                                        <input id="keyword" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入代碼或名稱" data-keyword-input>
-                                        <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit></button>
+                                        <input id="uid-searchbox" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入代碼或名稱" data-keyword-input>
+                                        <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit id="uid-btn-search"></button>
                                         <!-- [data-clear="button"]: 套用清除按鈕功能，標示此為清除按鈕 -->
                                         <button type="button" class="o-actionbox__clear" data-clear="button">清除</button>
                                     </div>
@@ -192,7 +193,7 @@
                                     <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-max@mb-only">
                                         <div class="l-flex__item">
                                             <!-- 條件群組[data-filter-group] -->
-                                            <div class="c-filterForm" data-filter-group>
+                                            <div class="c-filterForm" id="uid-criteria-regionType" data-filter-group>
                                                 <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
                                                 <div class="c-filterForm__title" data-filter-title>
                                                     <span>國內/境外</span>@*對應JSON欄位【RegionType】*@
@@ -202,11 +203,11 @@
                                                         <div class="l-pickGroup__all">
                                                             <!-- 全部checkbox[data-filter-checkall] -->
                                                             <label class="o-btnCheckBox">
-                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
+                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
                                                                 <div class="o-btnCheckBox__text">全部</div>
                                                             </label>
                                                         </div>
-                                                        <div class="l-pickGroup__wrap">
+                                                        <div class="l-pickGroup__wrap" id="uid-criteria-regionType">
                                                             <!-- 展開收合功能最外層[data-overflow-hide="相對應ID"] -->
                                                             <div class="l-pickCollapse" data-overflow-hide="area">
                                                                 <!-- 高度過高內容區[data-overflow-content="相對應ID"] -->
@@ -214,13 +215,13 @@
                                                                     <div class="l-pickGroup">
                                                                         <div class="l-pickGroup__item">
                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="國內">
                                                                                 <div class="o-btnCheckBox__text" data-filter-value="國內"></div>
                                                                             </label>
                                                                         </div>
                                                                         <div class="l-pickGroup__item">
                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="境外">
                                                                                 <div class="o-btnCheckBox__text" data-filter-value="境外"></div>
                                                                             </label>
                                                                         </div>
@@ -253,7 +254,7 @@
                                             </div>
                                         </div>
                                         <div class="l-flex__item">
-                                            <div class="c-filterForm" data-filter-group>
+                                            <div class="c-filterForm" id="uid-criteria-currencyPair" data-filter-group>
                                                 <div class="c-filterForm__title" data-filter-title>
                                                     <span>計價幣別</span>@*對應JSON欄位【CurrencyPair】*@
                                                 </div>
@@ -261,7 +262,7 @@
                                                     <div class="l-pickGroup">
                                                         <div class="l-pickGroup__all">
                                                             <label class="o-btnCheckBox">
-                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
+                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
                                                                 <div class="o-btnCheckBox__text">全部</div>
                                                             </label>
                                                         </div>
@@ -273,7 +274,7 @@
                                                                         {
                                                                             <div class="l-pickGroup__item">
                                                                                 <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@currency">
                                                                                     <div class="o-btnCheckBox__text" data-filter-value="@currency"></div>
                                                                                 </label>
                                                                             </div>
@@ -303,7 +304,7 @@
                                             </div>
                                         </div>
                                         <div class="l-flex__item">
-                                            <div class="c-filterForm" data-filter-group>
+                                            <div class="c-filterForm" id="uid-criteria-dividend" data-filter-group>
                                                 <div class="c-filterForm__title" data-filter-title>
                                                     <span>是否配息</span>@*對應JSON欄位【DividendDistributionFrequency】*@
                                                 </div>
@@ -311,7 +312,7 @@
                                                     <div class="l-pickGroup">
                                                         <div class="l-pickGroup__all">
                                                             <label class="o-btnCheckBox">
-                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
+                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
                                                                 <div class="o-btnCheckBox__text">全部</div>
                                                             </label>
                                                         </div>
@@ -321,10 +322,13 @@
                                                                     <div class="l-pickGroup">
                                                                         @foreach (var frequency in Model.DividendDistributionFrequencyList)
                                                                         {
+                                                                            string distribution = string.Empty;
+                                                                            distribution = frequency == "無" ? "不配息" : frequency;
+
                                                                             <div class="l-pickGroup__item">
                                                                                 <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@frequency"></div>
+                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@frequency">
+                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@distribution"></div>
                                                                                 </label>
                                                                             </div>
                                                                         }
@@ -382,12 +386,13 @@
                                                                     <div class="c-sliderBar__main" data-slider-bar="size"></div>
                                                                     <!-- 篩選拉霸值[data-filter-bar] -->
                                                                     <input type="text" class="c-sliderBar__value" data-slider-val data-slider-suffix="百萬" data-filter-bar>
+                                                                    <input type="hidden" id="uid-criteria-scaleMillions">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="l-flex__item">
-                                                        <div class="c-filterForm" data-filter-group>
+                                                        <div class="c-filterForm" id="uid-criteria-investmentTarget" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
                                                                 <span>投資標的</span>@*對應JSON欄位【InvestmentTarget】*@
                                                             </div>
@@ -395,7 +400,7 @@
                                                                 <div class="l-pickGroup">
                                                                     <div class="l-pickGroup__all">
                                                                         <label class="o-btnCheckBox">
-                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
                                                                             <div class="o-btnCheckBox__text">全部</div>
                                                                         </label>
                                                                     </div>
@@ -407,7 +412,7 @@
                                                                                     {
                                                                                         <div class="l-pickGroup__item">
                                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@investmentTarget">
                                                                                                 <div class="o-btnCheckBox__text" data-filter-value="@investmentTarget"></div>
                                                                                             </label>
                                                                                         </div>
@@ -437,7 +442,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="l-flex__item">
-                                                        <div class="c-filterForm" data-filter-group>
+                                                        <div class="c-filterForm" id="uid-criteria-investmentRegion" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
                                                                 <span>投資地區</span>@*對應JSON欄位【InvestmentRegion】*@
                                                             </div>
@@ -445,7 +450,7 @@
                                                                 <div class="l-pickGroup">
                                                                     <div class="l-pickGroup__all">
                                                                         <label class="o-btnCheckBox">
-                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
                                                                             <div class="o-btnCheckBox__text">全部</div>
                                                                         </label>
                                                                     </div>
@@ -457,7 +462,7 @@
                                                                                     {
                                                                                         <div class="l-pickGroup__item">
                                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@investmentRegion">
                                                                                                 <div class="o-btnCheckBox__text" data-filter-value="@investmentRegion"></div>
                                                                                             </label>
                                                                                         </div>
@@ -487,7 +492,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="l-flex__item">
-                                                        <div class="c-filterForm" data-filter-group>
+                                                        <div class="c-filterForm" id="uid-criteria-publicLimitedCompany" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
                                                                 <span>發行公司</span>@*對應JSON欄位【PublicLimitedCompany】*@
                                                             </div>
@@ -495,7 +500,7 @@
                                                                 <div class="l-pickGroup">
                                                                     <div class="l-pickGroup__all">
                                                                         <label class="o-btnCheckBox">
-                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
                                                                             <div class="o-btnCheckBox__text">全部</div>
                                                                         </label>
                                                                     </div>
@@ -507,7 +512,7 @@
                                                                                     {
                                                                                         <div class="l-pickGroup__item">
                                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@company">
                                                                                                 <div class="o-btnCheckBox__text" data-filter-value="@company"></div>
                                                                                             </label>
                                                                                         </div>
@@ -537,7 +542,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="l-flex__item">
-                                                        <div class="c-filterForm" data-filter-group>
+                                                        <div class="c-filterForm" id="uid-criteria-exchangeid" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
                                                                 <span>交易所</span>@*對應JSON欄位【ExchangeID】*@
                                                             </div>
@@ -545,7 +550,7 @@
                                                                 <div class="l-pickGroup">
                                                                     <div class="l-pickGroup__all">
                                                                         <label class="o-btnCheckBox">
-                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
                                                                             <div class="o-btnCheckBox__text">全部</div>
                                                                         </label>
                                                                     </div>
@@ -557,7 +562,7 @@
                                                                                     {
                                                                                         <div class="l-pickGroup__item">
                                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@exchange">
                                                                                                 <div class="o-btnCheckBox__text" data-filter-value="@exchange"></div>
                                                                                             </label>
                                                                                         </div>
@@ -587,7 +592,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="l-flex__item">
-                                                        <div class="c-filterForm" data-filter-group>
+                                                        <div class="c-filterForm" id="uid-criteria-investmentStyle" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
                                                                 <span>投資風格</span>@*對應JSON欄位【InvestmentStyle】*@
                                                             </div>
@@ -595,7 +600,7 @@
                                                                 <div class="l-pickGroup">
                                                                     <div class="l-pickGroup__all">
                                                                         <label class="o-btnCheckBox">
-                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
                                                                             <div class="o-btnCheckBox__text">全部</div>
                                                                         </label>
                                                                     </div>
@@ -607,7 +612,7 @@
                                                                                     {
                                                                                         <div class="l-pickGroup__item">
                                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@investmentStyle">
                                                                                                 <div class="o-btnCheckBox__text" data-filter-value="@investmentStyle"></div>
                                                                                             </label>
                                                                                         </div>
@@ -665,20 +670,20 @@
                                                                             <!-- 若radio搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
                                                                             <label class="o-capsulebox__item" data-filter-radio>
                                                                                 <!-- [data-currency]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                <input type="radio" name="currency" class="o-capsulebox__input" checked data-currency>
+                                                                                <input type="radio" name="currency" class="o-capsulebox__input" checked data-currency value="原幣">
                                                                                 <span class="o-capsulebox__text" data-filter-value="原幣">原幣</span>
                                                                             </label>
                                                                             <!-- 篩選radio外層[data-filter-radio] -->
                                                                             <!-- 若radio搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
                                                                             <label class="o-capsulebox__item" data-filter-radio>
                                                                                 <!-- [data-currency]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                <input type="radio" name="currency" class="o-capsulebox__input" data-currency>
+                                                                                <input type="radio" name="currency" class="o-capsulebox__input" data-currency value="台幣">
                                                                                 <span class="o-capsulebox__text" data-filter-value="台幣">台幣</span>
                                                                             </label>
                                                                         </div>
                                                                     </div>
                                                                     <!-- 組合之一[data-part-id="相對應組合ID"] -->
-                                                                    <div class="l-flex__item" data-part-id="returnRate">
+                                                                    <div class="l-flex__item" data-part-id="returnRate" data-filter-section="returnRate">
                                                                         <div class="l-pickGroup">
 
                                                                             <div class="l-pickGroup__item">
@@ -686,6 +691,10 @@
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
                                                                                     <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
                                                                                     <div class="o-btnRadio__text" data-filter-value="三個月"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeMonthReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeMonthReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeMonthReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeMonthReturnNetValueTWD">
                                                                                 </label>
                                                                             </div>
 
@@ -694,6 +703,10 @@
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
                                                                                     <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
                                                                                     <div class="o-btnRadio__text" data-filter-value="六個月"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="SixMonthReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="SixMonthReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="SixMonthReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="SixMonthReturnNetValueTWD">
                                                                                 </label>
                                                                             </div>
 
@@ -702,6 +715,10 @@
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
                                                                                     <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
                                                                                     <div class="o-btnRadio__text" data-filter-value="一年"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="OneYearReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="OneYearReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="OneYearReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="OneYearReturnNetValueTWD">
                                                                                 </label>
                                                                             </div>
 
@@ -710,6 +727,10 @@
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
                                                                                     <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
                                                                                     <div class="o-btnRadio__text" data-filter-value="二年"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="TwoYearReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="TwoYearReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="TwoYearReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="TwoYearReturnNetValueTWD">
                                                                                 </label>
                                                                             </div>
 
@@ -718,6 +739,10 @@
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
                                                                                     <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
                                                                                     <div class="o-btnRadio__text" data-filter-value="三年"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeYearReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeYearReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeYearReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeYearReturnNetValueTWD">
                                                                                 </label>
                                                                             </div>
 
@@ -726,6 +751,10 @@
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
                                                                                     <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
                                                                                     <div class="o-btnRadio__text" data-filter-value="年初至今"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="YeartoDateReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="YeartoDateReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="YeartoDateReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="YeartoDateReturnNetValueTWD">
                                                                                 </label>
                                                                             </div>
 
@@ -734,6 +763,10 @@
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
                                                                                     <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
                                                                                     <div class="o-btnRadio__text" data-filter-value="成立至今"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="InceptionDateMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="InceptionDateMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="InceptionDateNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="InceptionDateNetValueTWD">
                                                                                 </label>
                                                                             </div>
                                                                         </div>
@@ -743,7 +776,7 @@
                                                                         <div class="c-sliderBar">
                                                                             <div class="c-sliderBar__main" data-slider-bar="returnRate"></div>
                                                                             <!-- [data-return-rate-money]此拉霸為頁面特殊處理，可參考頁面下方script -->
-                                                                            <input type="text" class="c-sliderBar__value" data-slider-val data-slider-suffix="%" data-filter-bar data-return-rate-money>
+                                                                            <input type="text" class="c-sliderBar__value" id="uid-criteria-returnRate" data-slider-val data-slider-suffix="%" data-filter-bar data-return-rate-money>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -762,7 +795,7 @@
                                             <div class="c-filter__items">
                                                 <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-max@mb-only">
                                                     <div class="l-flex__item">
-                                                        <div class="c-filterForm" data-filter-group>
+                                                        <div class="c-filterForm" id="uid-criteria-riskLevel" data-filter-group>
                                                             <div class="c-filterForm__title" data-filter-title>
                                                                 <span>風險屬性</span>@*對應JSON欄位【RiskLevel】*@
                                                             </div>
@@ -770,7 +803,7 @@
                                                                 <div class="l-pickGroup">
                                                                     <div class="l-pickGroup__all">
                                                                         <label class="o-btnCheckBox">
-                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
                                                                             <div class="o-btnCheckBox__text">全部</div>
                                                                         </label>
                                                                     </div>
@@ -781,35 +814,35 @@
 
                                                                                     <div class="l-pickGroup__item">
                                                                                         <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="RR5">
                                                                                             <div class="o-btnCheckBox__text" data-filter-value="RR5"></div>
                                                                                         </label>
                                                                                     </div>
 
                                                                                     <div class="l-pickGroup__item">
                                                                                         <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="RR4">
                                                                                             <div class="o-btnCheckBox__text" data-filter-value="RR4"></div>
                                                                                         </label>
                                                                                     </div>
 
                                                                                     <div class="l-pickGroup__item">
                                                                                         <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="RR3">
                                                                                             <div class="o-btnCheckBox__text" data-filter-value="RR3"></div>
                                                                                         </label>
                                                                                     </div>
 
                                                                                     <div class="l-pickGroup__item">
                                                                                         <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="RR2">
                                                                                             <div class="o-btnCheckBox__text" data-filter-value="RR2"></div>
                                                                                         </label>
                                                                                     </div>
 
                                                                                     <div class="l-pickGroup__item">
                                                                                         <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox">
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="RR1">
                                                                                             <div class="o-btnCheckBox__text" data-filter-value="RR1"></div>
                                                                                         </label>
                                                                                     </div>
@@ -847,6 +880,7 @@
                                                                 <div class="c-sliderBar">
                                                                     <div class="c-sliderBar__main" data-slider-bar="sharpe"></div>
                                                                     <input type="text" class="c-sliderBar__value" data-slider-val data-filter-bar>
+                                                                    <input type="hidden" id="uid-criteria-sharpe">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -861,6 +895,7 @@
                                                                 <div class="c-sliderBar">
                                                                     <div class="c-sliderBar__main" data-slider-bar="beta"></div>
                                                                     <input type="text" class="c-sliderBar__value" data-slider-val data-filter-bar>
+                                                                    <input type="hidden" id="uid-criteria-beta">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -874,6 +909,7 @@
                                                                 <div class="c-sliderBar">
                                                                     <div class="c-sliderBar__main" data-slider-bar="standardDeviation"></div>
                                                                     <input type="text" class="c-sliderBar__value" data-slider-val data-slider-suffix="%" data-filter-bar>
+                                                                    <input type="hidden" id="uid-criteria-standard">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -887,7 +923,7 @@
                             <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                             <div class="c-filter__total" data-filter-collapse>
                                 <div class="o-total o-total--wt">
-                                    搜尋<span>9999</span>筆
+                                    搜尋<span data-uid-total>9999</span>筆
                                 </div>
                             </div>
                         </div>
@@ -923,8 +959,7 @@
                 <div class="l-filter__tool">
                     <div class="l-filter__total">
                         <div class="o-total">
-                            @*TODO:ETF數量*@
-                            共<span>9999</span>檔ETF
+                            共<span data-uid-total>9999</span>檔ETF
                         </div>
                     </div>
                     <div class="l-filter__reset">
