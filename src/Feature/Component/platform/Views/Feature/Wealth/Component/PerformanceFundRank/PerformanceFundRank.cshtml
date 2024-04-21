@@ -437,6 +437,7 @@
 									$(this).text(number);
 								}
 							});
+
 							setTimeout(() => {
 								// 關閉loading
 								window.loading('hide');
@@ -684,7 +685,7 @@
 				var page = tabPanel.find('.o-pagination__no').val(page);
 
 				// scroll 到表頭
-				$(this).closest('.l-table').scrollPosition('scroll');
+				tabPanel.find('.l-table').scrollPosition('scroll');
 
 				// 因展示，故使用 setTimeout 延遲關閉 loading
 				setTimeout(() => {
@@ -710,6 +711,9 @@
 				var $parentWrap = $(this).closest('.l-pagination');
 				var dataLength = parseInt(totalPages) * 10;
 				$parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', size === 'all');
+
+				// scroll 到表頭
+				tabPanel.find('.l-table').scrollPosition('scroll');
 
 				if (size === 'all') {
 					var sortingColumns = findSortingColumns();
