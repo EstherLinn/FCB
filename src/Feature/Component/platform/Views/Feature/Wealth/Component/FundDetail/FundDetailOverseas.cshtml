@@ -685,8 +685,8 @@
                         </div>
                         @*原幣*@
                         <div class="l-flex__item" data-id="originReturnTable">
-                            <div class="l-table">
-                                <table class="c-table u-center u-nowrap" data-fixed-columns="true">
+                            <div class="l-table" data-id="originReturnTable">
+                                <table class="c-table u-center u-nowrap" data-fixed-columns="true" data-table="originReturnTable">
                                     <colgroup>
                                         <col style="width: 14.5%;">
                                         <col style="width: 9.5%;">
@@ -819,8 +819,8 @@
                         </div>
                         @*台幣*@
                         <div class="l-flex__item " data-id="twdReturnTable">
-                            <div class="l-table">
-                                <table class="c-table u-center u-nowrap" data-fixed-columns="true">
+                            <div class="l-table" data-id="twdReturnTable">
+                                <table class="c-table u-center u-nowrap" data-fixed-columns="true" data-table="twdReturnTable">
                                     <colgroup>
                                         <col style="width: 14.5%;">
                                         <col style="width: 9.5%;">
@@ -953,8 +953,8 @@
                         </div>
                         @*年化*@
                         <div class="l-flex__item " data-id="annualReturnTable">
-                            <div class="l-table">
-                                <table class="c-table u-center u-nowrap" data-fixed-columns="true">
+                            <div class="l-table" data-id="annualReturnTable">
+                                <table class="c-table u-center u-nowrap" data-fixed-columns="true" data-table="annualReturnTable">
                                     <colgroup>
                                         <col style="width: 14.5%;">
                                         <col style="width: 9.5%;">
@@ -2785,18 +2785,21 @@
                 switch ($(this).val()) {
                     case '原幣':
                         $('[data-id=originReturnTable]').removeClass('u-hidden');
+                        $('[data-table=originReturnTable]').DataTable().columns.adjust();//切換後標題對齊
                         $('[data-id=twdReturnTable]').addClass('u-hidden');
                         $('[data-id=annualReturnTable]').addClass('u-hidden');
                         break;
                     case '台幣':
                         $('[data-id=originReturnTable]').addClass('u-hidden');
                         $('[data-id=twdReturnTable]').removeClass('u-hidden');
+                        $('[data-table=twdReturnTable]').DataTable().columns.adjust();//切換後標題對齊
                         $('[data-id=annualReturnTable]').addClass('u-hidden');
                         break;
                     case '年化':
                         $('[data-id=originReturnTable]').addClass('u-hidden');
                         $('[data-id=twdReturnTable]').addClass('u-hidden');
                         $('[data-id=annualReturnTable]').removeClass('u-hidden');
+                        $('[data-table=annualReturnTable]').DataTable().columns.adjust();//切換後標題對齊
                         break;
                 }
             });
@@ -4165,11 +4168,10 @@
             }
             async function initRate() {
                 try {
-                    //千分位正規式
-                      function numberComma(num){
-                        let comma=/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g
-                        return num.toString().replace(comma, ',')
-                        }
+                    //千分位正規式 
+                    function numberComma(num) {
+                        return num.toLocaleString();
+                    };
                     const data = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundScaleRecords));
                     if (Object.keys(data).length != 0) {
                         let mapData = data.map((item, index) => {
