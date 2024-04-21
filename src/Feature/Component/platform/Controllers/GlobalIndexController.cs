@@ -46,7 +46,7 @@ namespace Feature.Wealth.Component.Controllers
 
             foreach (var globalIndex in globalIndexList)
             {
-                globalIndex.DetailLink = detailLink + "?IndexCode=" + globalIndex.IndexCode;
+                globalIndex.DetailLink = detailLink + "?id=" + globalIndex.IndexCode;
             }
 
             var model = new GlobalIndexModel

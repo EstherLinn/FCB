@@ -154,5 +154,37 @@ namespace Feature.Wealth.Component.Repositories
             }
             return result;
         }
+
+        public JObject GetGlobalInedxRelevantInformation(string indexCode, int type)
+        {
+            JObject result = null;
+            var request = _route.
+            AppendPathSegments("api", "Finance", "finance", "Related", indexCode, type).
+            WithOAuthBearerToken(_token).
+            GetAsync().
+            ReceiveString().Result;
+
+            if (!string.IsNullOrEmpty(request))
+            {
+                result = JObject.Parse(request);
+            }
+            return result;
+        }
+
+        public JObject GetGlobalInedxPriceData(string indexCode, string cycle)
+        {
+            JObject result = null;
+            var request = _route.
+            AppendPathSegments("api", "Finance", "finance", "Price", indexCode, cycle).
+            WithOAuthBearerToken(_token).
+            GetAsync().
+            ReceiveString().Result;
+
+            if (!string.IsNullOrEmpty(request))
+            {
+                result = JObject.Parse(request);
+            }
+            return result;
+        }
     }
 }
