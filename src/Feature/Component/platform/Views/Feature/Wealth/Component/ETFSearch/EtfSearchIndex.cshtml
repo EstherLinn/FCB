@@ -125,32 +125,30 @@
                 $('[data-tab-currency="' + currency + '"]').prop('checked', true);
             }
 
-            function tabSwitch() {
-                $('[data-tab-target]').on('click', function () {
-                    var $tab = $(this);
-                    var tabTarget = $tab.data('tab-target');
-                    var $tabPanel = $('[data-tab-panel-id="' + tabTarget + '"]');
+            function tabSwitch($tab) {
+                var $tab = $tab;
+                var tabTarget = $tab.data('tab-target');
+                var $tabPanel = $('[data-tab-panel-id="' + tabTarget + '"]');
 
-                    if (tabTarget == 'tab-7') {
+                if (tabTarget == 'tab-7') {
 
-                    } else {
-                        var $sortingLink = $('[data-sorting-linkto]');
-                        var linkto = $tabPanel.find($sortingLink).data('sorting-linkto');
+                } else {
+                    var $sortingLink = $('[data-sorting-linkto]');
+                    var linkto = $tabPanel.find($sortingLink).data('sorting-linkto');
 
-                        $('#uid-table [data-table-name]').each(function () {
-                            var tableName = $(this).data('table-name'); //th, td
+                    $('#uid-table [data-table-name]').each(function () {
+                        var tableName = $(this).data('table-name'); //th, td
 
-                            if (tableName.split(',').includes(linkto)) {
-                                $(this).show();
-                            } else {
-                                $(this).hide();
-                            }
-                        });
+                        if (tableName.split(',').includes(linkto)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
 
-                        var $currency = $tabPanel.find('[data-tab-currency]:checked');
-                        currencyCapsuleSwitch($currency);
-                    }
-                });
+                    var $currency = $tabPanel.find('[data-tab-currency]:checked');
+                    currencyCapsuleSwitch($currency);
+                }
             }
 
             //#region Reset Object
@@ -296,7 +294,7 @@
                             perPageView: '#uid-template-perPage'
                         },
                         onPagination: function () {
-                            $('[data-tab-target].is-active').trigger('click');
+                            tabSwitch($('[data-tab-target].is-active'));
                         }
                     },
                     callbacks: {
@@ -476,11 +474,14 @@
             };
 
             window.ETFSearch.QueryList();
-            tabSwitch();
 
             $(function () {
                 $('[data-tab-currency]').on('change', function () {
                     currencyCapsuleSwitch($(this));
+                });
+
+                $('[data-tab-target]').on('click', function () {
+                    tabSwitch($(this))
                 });
             });
 
