@@ -214,10 +214,13 @@
 
                     if (propertyResetObj.keyValuePercentage.includes(property)) {
                         let value = record[property].Value;
+                        let key = record[property].Key;
 
                         if (value == null || value == undefined) {
                             record[property].Text = '-';
+                            record[property].Key = '';   // bool 轉 class string
                         } else {
+                            record[property].Key = key ? 'o-rise' : 'o-fall';   // bool 轉 class string, 
                             record[property].Text = value + '%';
                         }
                     } else if (propertyResetObj.keyValue.includes(property)) {
