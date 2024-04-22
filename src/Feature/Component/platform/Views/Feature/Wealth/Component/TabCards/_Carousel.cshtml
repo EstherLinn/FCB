@@ -9,54 +9,83 @@
     <!-- .u-shadow-animation: hover時陰影特效 -->
     <div class="swiper c-swiper c-swiper--trend u-shadow-animation" data-carousel="true">
         <div class="swiper-wrapper c-swiper__wrapper">
-            <div class="swiper-slide c-swiper__slide">
-                <a href="@Model.BannerLink1" class="c-banner c-banner--trend c-banner--zoom">
+            @{
+                string link1 = Model.BannerLink1;
+                string image1 = Model.ImageUrl1;
+                string title1 = Html.Sitecore().Field(_TabCard.Fields.Title1.ToString(), item).ToString();
+                string description1 = Html.Sitecore().Field(_TabCard.Fields.Description1.ToString(), item).ToString();
+                if (link1 != "#" || !string.IsNullOrEmpty(image1) || !string.IsNullOrEmpty(title1) || !string.IsNullOrEmpty(description1))
+                {
+                    <div class="swiper-slide c-swiper__slide">
+                    <a href="@link1" class="c-banner c-banner--trend c-banner--zoom">
                     
-                    <img src="@Model.ImageUrl1" class="c-banner__img" loading="lazy" alt="">
+                        <img src="@image1" class="c-banner__img" loading="lazy" alt="">
 
-                    @{
-                        var fontcolor1 = Model.IsBlackFont1 == true ? "" : "c-banner__content--wt";
-                    }
+                        @{
+                            var fontcolor1 = Model.IsBlackFont1 == true ? "" : "c-banner__content--wt";
+                        }
 
-                    <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+                        <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
 
-                    <div class="c-banner__content @fontcolor1">
-                        <h3 class="c-banner__title">@Html.Sitecore().Field(_TabCard.Fields.Title1.ToString(), item) </h3>
-                        <p class="c-banner__slogan">@Html.Sitecore().Field(_TabCard.Fields.Description1.ToString(), item)</p>
+                        <div class="c-banner__content @fontcolor1">
+                            <h3 class="c-banner__title">@title1 </h3>
+                            <p class="c-banner__slogan">@Html.Sitecore().Field(_TabCard.Fields.Description1.ToString(), item)</p>
+                        </div>
+                    </a>
+                </div>
+                }
+            }
+            @{
+                string link2 = Model.BannerLink2;
+                string image2 = Model.ImageUrl2;
+                string title2 = Html.Sitecore().Field(_TabCard.Fields.Title2.ToString(), item).ToString();
+                string description2 = Html.Sitecore().Field(_TabCard.Fields.Description2.ToString(), item).ToString();
+
+                if (link2 != "#" || !string.IsNullOrEmpty(image2) || !string.IsNullOrEmpty(title2) || !string.IsNullOrEmpty(description2))
+                {
+                    <div class="swiper-slide c-swiper__slide">
+                        <a href="@link2" class="c-banner c-banner--trend c-banner--zoom">
+
+                            <img src="@image2" class="c-banner__img" loading="lazy" alt="">
+
+                            @{
+                                var fontcolor2 = Model.IsBlackFont2 == true ? "" : "c-banner__content--wt";
+                            }
+
+                            <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+
+                            <div class="c-banner__content @fontcolor2">
+                                <h3 class="c-banner__title">@title2</h3>
+                                <p class="c-banner__slogan">@Html.Sitecore().Field(_TabCard.Fields.Description2.ToString(), item)</p>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-            <div class="swiper-slide c-swiper__slide">
-                <a href="@Model.BannerLink2" class="c-banner c-banner--trend c-banner--zoom">
+                }
+            }
+            @{
+                string link3 = Model.BannerLink3;
+                string image3 = Model.ImageUrl3;
+                string title3 = Html.Sitecore().Field(_TabCard.Fields.Title3.ToString(), item).ToString();
+                string description3 = Html.Sitecore().Field(_TabCard.Fields.Description3.ToString(), item).ToString();
 
-                    <img src="@Model.ImageUrl2" class="c-banner__img" loading="lazy" alt="">
+                if (link3 != "#" || !string.IsNullOrEmpty(image3) || !string.IsNullOrEmpty(title3) || !string.IsNullOrEmpty(description3))
+                {
+                    <div class="swiper-slide c-swiper__slide">
+                        <a href="@link3" class="c-banner c-banner--trend c-banner--zoom">
 
-                    @{
-                        var fontcolor2 = Model.IsBlackFont2 == true ? "" : "c-banner__content--wt";
-                    }
+                            <img src="@image3" class="c-banner__img" loading="lazy" alt="">
 
-                    <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
-
-                    <div class="c-banner__content @fontcolor2">
-                        <h3 class="c-banner__title">@Html.Sitecore().Field(_TabCard.Fields.Title2.ToString(), item) </h3>
-                        <p class="c-banner__slogan">@Html.Sitecore().Field(_TabCard.Fields.Description2.ToString(), item)</p>
+                            @{
+                                var fontcolor3 = Model.IsBlackFont3 == true ? "" : "c-banner__content--wt";
+                            }
+                            <div class="c-banner__content @fontcolor3">
+                                <h3 class="c-banner__title">@title3 </h3>
+                                <p class="c-banner__slogan">@Html.Sitecore().Field(_TabCard.Fields.Description3.ToString(), item)</p>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-            <div class="swiper-slide c-swiper__slide">
-                <a href="@Model.BannerLink3" class="c-banner c-banner--trend c-banner--zoom">
-                    
-                    <img src="@Model.ImageUrl3" class="c-banner__img" loading="lazy" alt="">
-
-                    @{
-                        var fontcolor3 = Model.IsBlackFont3 == true ? "" : "c-banner__content--wt";
-                    }
-                    <div class="c-banner__content @fontcolor3">
-                        <h3 class="c-banner__title">@Html.Sitecore().Field(_TabCard.Fields.Title3.ToString(), item) </h3>
-                        <p class="c-banner__slogan">@Html.Sitecore().Field(_TabCard.Fields.Description3.ToString(), item)</p>
-                    </div>
-                </a>
-            </div>
+                }
+            }
         </div>
         <div class="swiper-button-next c-swiper__next"></div>
         <div class="swiper-button-prev c-swiper__prev"></div>

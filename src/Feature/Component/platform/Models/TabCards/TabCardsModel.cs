@@ -1,6 +1,7 @@
 ﻿using Feature.Wealth.Component.Models.FundDetail;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -46,7 +47,7 @@ namespace Feature.Wealth.Component.Models.TabCards
             this.BannerLink2 = string.IsNullOrEmpty(ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink2)?.Url) ? "#" : ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink2)?.Url;
             this.BannerLink3 = string.IsNullOrEmpty(ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink3)?.Url) ? "#" : ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink3)?.Url;
 
-            this.FundIDList = this.Datasource.GetFieldValue(_TabCard.Fields.FundIDList)?.ToString().Split(';').Take(3).ToList() ?? new List<string>();
+            this.FundIDList = this.Datasource.GetMultiLineText(_TabCard.Fields.FundIDList)?.Take(3).ToList() ?? new List<string>();
         }
     }
 
