@@ -1908,23 +1908,23 @@
                 fjs.addCriteria({ field: 'Currency.Value', ele: '#currencies_criteria input:checkbox' });
                 fjs.addCriteria({ field: 'Currency.Value', ele: '#currencies_criteria input:checkbox', all: 'all', selector: ':not(:checked)' });
 
-                //fjs.addCriteria({ field: 'FundCompanyName', ele: '#companies_criteria input:checkbox' });
-                //fjs.addCriteria({ field: 'FundCompanyName', ele: '#companies_criteria input:checkbox', all: 'all', selector: ':not(:checked)' });
+                fjs.addCriteria({ field: 'FundCompanyName', ele: '#companies_criteria input:checkbox' });
+                fjs.addCriteria({ field: 'FundCompanyName', ele: '#companies_criteria input:checkbox', all: 'all', selector: ':not(:checked)' });
 
-                //fjs.addCriteria({ field: 'InvestmentTargetName', ele: '#target_criteria input:checkbox' });
-                //fjs.addCriteria({ field: 'InvestmentTargetName', ele: '#target_criteria input:checkbox', all: 'all', selector: ':not(:checked)' });
+                fjs.addCriteria({ field: 'InvestmentTargetName', ele: '#target_criteria input:checkbox' });
+                fjs.addCriteria({ field: 'InvestmentTargetName', ele: '#target_criteria input:checkbox', all: 'all', selector: ':not(:checked)' });
 
-                // fjs.addCriteria({ field: 'DividendFrequencyName', ele: '#DividendFrequencyName input:checkbox' });
-                // fjs.addCriteria({ field: 'DividendFrequencyName', ele: '#DividendFrequencyName input:checkbox', all: 'all', selector: ':not(:checked)' });
+                fjs.addCriteria({ field: 'DividendFrequencyName', ele: '#DividendFrequencyName input:checkbox' });
+                fjs.addCriteria({ field: 'DividendFrequencyName', ele: '#DividendFrequencyName input:checkbox', all: 'all', selector: ':not(:checked)' });
 
                 fjs.addCriteria({ field: 'RiskRewardLevel', ele: '#RiskRewardLevel input:checkbox' });
                 fjs.addCriteria({ field: 'RiskRewardLevel', ele: '#RiskRewardLevel input:checkbox', all: 'all', selector: ':not(:checked)' });
 
-                //fjs.addCriteria({ field: 'FundType', ele: '#fundtype_criteria input:checkbox' });
-                //fjs.addCriteria({ field: 'FundType', ele: '#fundtype_criteria input:checkbox', all: 'all', selector: ':not(:checked)' });
+                fjs.addCriteria({ field: 'FundType', ele: '#fundtype_criteria input:checkbox' });
+                fjs.addCriteria({ field: 'FundType', ele: '#fundtype_criteria input:checkbox', all: 'all', selector: ':not(:checked)' });
 
-                //fjs.addCriteria({ field: 'InvestmentRegionName', ele: '#region_criteria input:checkbox' });
-                //fjs.addCriteria({ field: 'InvestmentRegionName', ele: '#region_criteria input:checkbox', all: 'all', selector: ':not(:checked)' });
+                fjs.addCriteria({ field: 'InvestmentRegionName', ele: '#region_criteria input:checkbox' });
+                fjs.addCriteria({ field: 'InvestmentRegionName', ele: '#region_criteria input:checkbox', all: 'all', selector: ':not(:checked)' });
 
                 //fjs.addCriteria({field: 'FundRating', ele: '#onestar_rating', type: 'range'});
                 //fjs.addCriteria({field: 'FundRating', ele: '#twostar_rating', type: 'range'});
@@ -1952,7 +1952,7 @@
                 // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
                 $('#keyword').autocomplete({
                     noCache: true,
-                    minChars: 2,
+                    minChars: 0,
                     containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
                     maxHeight: 'auto',
                     zIndex: 5,
@@ -1961,7 +1961,7 @@
                     noSuggestionNotice: $('#tmplKeywordNotFound').html(),
                     lookup: function (query, done) {
                         query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-                        if (query.length == 2) {
+                        if (query.length == 0) {
                             result = _modeldata.slice(0, 5);
                         } else {
                             result = _modeldata.filter(function (item) {
