@@ -225,6 +225,12 @@
                                                                                 <div class="o-btnCheckBox__text" data-filter-value="境外"></div>
                                                                             </label>
                                                                         </div>
+                                                                        <div class="l-pickGroup__item" style="display: none;">
+                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="">
+                                                                                <div class="o-btnCheckBox__text" data-filter-value=""></div>
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="l-pickCollapse__expand">
@@ -272,10 +278,19 @@
                                                                     <div class="l-pickGroup">
                                                                         @foreach (var currency in Model.PricingCurrencyList)
                                                                         {
-                                                                            <div class="l-pickGroup__item">
+                                                                            string value = currency;
+                                                                            string display = string.Empty;
+
+                                                                            if (currency == null)
+                                                                            {
+                                                                                display = "display: none;";
+                                                                                value = string.Empty;;
+                                                                            }
+
+                                                                            <div class="l-pickGroup__item" style="@display">
                                                                                 <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@currency">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@currency"></div>
+                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
                                                                                 </label>
                                                                             </div>
                                                                         }
@@ -323,11 +338,24 @@
                                                                         @foreach (var frequency in Model.DividendDistributionFrequencyList)
                                                                         {
                                                                             string distribution = string.Empty;
-                                                                            distribution = frequency == "無" ? "不配息" : frequency;
+                                                                            string value = distribution;
+                                                                            string display = string.Empty;
 
-                                                                            <div class="l-pickGroup__item">
+                                                                            if (frequency == null)
+                                                                            {
+                                                                                display = "display: none;";
+                                                                                value = string.Empty;;
+                                                                                distribution = string.Empty;;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                value = frequency;
+                                                                                distribution = frequency == "無" ? "不配息" : frequency;
+                                                                            }
+
+                                                                            <div class="l-pickGroup__item" style="@display">
                                                                                 <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@frequency">
+                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@value">
                                                                                     <div class="o-btnCheckBox__text" data-filter-value="@distribution"></div>
                                                                                 </label>
                                                                             </div>
@@ -410,10 +438,19 @@
                                                                                 <div class="l-pickGroup">
                                                                                     @foreach (var investmentTarget in Model.InvestmentTargetList)
                                                                                     {
-                                                                                        <div class="l-pickGroup__item">
+                                                                                        string value = investmentTarget;
+                                                                                        string display = string.Empty;
+
+                                                                                        if (investmentTarget == null)
+                                                                                        {
+                                                                                            display = "display: none;";
+                                                                                            value = string.Empty;;
+                                                                                        }
+
+                                                                                        <div class="l-pickGroup__item" style="@display">
                                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@investmentTarget">
-                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@investmentTarget"></div>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
                                                                                             </label>
                                                                                         </div>
                                                                                     }
@@ -460,10 +497,19 @@
                                                                                 <div class="l-pickGroup">
                                                                                     @foreach (var investmentRegion in Model.InvestmentRegionList)
                                                                                     {
-                                                                                        <div class="l-pickGroup__item">
+                                                                                        string value = investmentRegion;
+                                                                                        string display = string.Empty;
+
+                                                                                        if (investmentRegion == null)
+                                                                                        {
+                                                                                            display = "display: none;";
+                                                                                            value = string.Empty;;
+                                                                                        }
+
+                                                                                        <div class="l-pickGroup__item" style="@display">
                                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@investmentRegion">
-                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@investmentRegion"></div>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
                                                                                             </label>
                                                                                         </div>
                                                                                     }
@@ -510,10 +556,19 @@
                                                                                 <div class="l-pickGroup">
                                                                                     @foreach (var company in Model.PublicLimitedCompanyList)
                                                                                     {
-                                                                                        <div class="l-pickGroup__item">
+                                                                                        string value = company;
+                                                                                        string display = string.Empty;
+
+                                                                                        if (company == null)
+                                                                                        {
+                                                                                            display = "display: none;";
+                                                                                            value = string.Empty;;
+                                                                                        }
+
+                                                                                        <div class="l-pickGroup__item" style="@display">
                                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@company">
-                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@company"></div>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
                                                                                             </label>
                                                                                         </div>
                                                                                     }
@@ -560,10 +615,19 @@
                                                                                 <div class="l-pickGroup">
                                                                                     @foreach (var exchange in Model.ExchangeList)
                                                                                     {
-                                                                                        <div class="l-pickGroup__item">
+                                                                                        string value = exchange;
+                                                                                        string display = string.Empty;
+
+                                                                                        if (exchange == null)
+                                                                                        {
+                                                                                            display = "display: none;";
+                                                                                            value = string.Empty;;
+                                                                                        }
+
+                                                                                        <div class="l-pickGroup__item" style="@display">
                                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@exchange">
-                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@exchange"></div>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
                                                                                             </label>
                                                                                         </div>
                                                                                     }
@@ -610,10 +674,19 @@
                                                                                 <div class="l-pickGroup">
                                                                                     @foreach (var investmentStyle in Model.InvestmentStyleList)
                                                                                     {
-                                                                                        <div class="l-pickGroup__item">
+                                                                                        string value = investmentStyle;
+                                                                                        string display = string.Empty;
+
+                                                                                        if (investmentStyle == null)
+                                                                                        {
+                                                                                            display = "display: none;";
+                                                                                            value = string.Empty;;
+                                                                                        }
+
+                                                                                        <div class="l-pickGroup__item" style="@display">
                                                                                             <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@investmentStyle">
-                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@investmentStyle"></div>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
                                                                                             </label>
                                                                                         </div>
                                                                                     }
@@ -844,6 +917,13 @@
                                                                                         <label class="o-btnCheckBox" data-filter-checkbox>
                                                                                             <input class="o-btnCheckBox__input" type="checkbox" value="RR1">
                                                                                             <div class="o-btnCheckBox__text" data-filter-value="RR1"></div>
+                                                                                        </label>
+                                                                                    </div>
+
+                                                                                    <div class="l-pickGroup__item" style="display: none;">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value=""></div>
                                                                                         </label>
                                                                                     </div>
                                                                                 </div>

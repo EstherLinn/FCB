@@ -203,9 +203,9 @@
             };
 
             function reSetResultProperty(record) {
-                //if (record.FirstBankCode == '35AB') {
-                //    console.log(record);
-                //}
+                if (record.FirstBankCode == '35AB') {
+                    console.log(record);
+                }
 
                 for (var property in record) {
                     //console.log(`${property}: ${record[property]}`);
@@ -227,6 +227,7 @@
 
                         if (value == null || value == undefined) {
                             record[property].Text = '-';
+                            record[property].Value = '';
                         } else {
                             record[property].Text = value;
                         }
@@ -254,6 +255,7 @@
 
                         if (value == null || value == undefined) {
                             text = '-';
+                            value = '';
                         } else {
                             text = value;
                         }
