@@ -14,41 +14,41 @@
                 <!-- .is-active: 作用中的項目 -->
                 <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
                 <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
-                <li><a href="#" class="c-tab__item is-active" target="_self" title="市價績效" data-tab-target="tab-1">市價績效</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="淨值績效" data-tab-target="tab-2">淨值績效</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="市價風險" data-tab-target="tab-3">市價風險</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="淨值風險" data-tab-target="tab-4">淨值風險</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="交易狀況" data-tab-target="tab-5">交易狀況</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="基本資料" data-tab-target="tab-6">基本資料</a></li>
-                @*<li><a href="#" class="c-tab__item " target="_self" title="查無商品" data-tab-target="tab-7">查無商品</a></li>*@
+                <li><a href="#" class="c-tab__item is-active" target="_self" title="市價績效" data-tab-target="tab-1" data-filter-empty="false">市價績效</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="淨值績效" data-tab-target="tab-2" data-filter-empty="false">淨值績效</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="市價風險" data-tab-target="tab-3" data-filter-empty="false">市價風險</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="淨值風險" data-tab-target="tab-4" data-filter-empty="false">淨值風險</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="交易狀況" data-tab-target="tab-5" data-filter-empty="false">交易狀況</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="基本資料" data-tab-target="tab-6" data-filter-empty="false">基本資料</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="查無商品" data-tab-target="tab-7" data-filter-empty="true">查無商品</a></li>
             </ul>
             <div class="c-tab__collapse">
                 <a href="#" class="c-tab__switch"></a>
                 <div class="c-tab__dropdown">
-                    <a href="#" class="c-tab__clone is-active" target="_self" title="市價績效" data-tab-target="tab-1">市價績效</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="淨值績效" data-tab-target="tab-2">淨值績效</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="市價風險" data-tab-target="tab-3">市價風險</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="淨值風險" data-tab-target="tab-4">淨值風險</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="交易狀況" data-tab-target="tab-5">交易狀況</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="基本資料" data-tab-target="tab-6">基本資料</a>
-                    @*<a href="#" class="c-tab__clone " target="_self" title="查無商品" data-tab-target="tab-7">查無商品</a>*@
+                    <a href="#" class="c-tab__clone is-active" target="_self" title="市價績效" data-tab-target="tab-1" data-filter-empty="false">市價績效</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="淨值績效" data-tab-target="tab-2" data-filter-empty="false">淨值績效</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="市價風險" data-tab-target="tab-3" data-filter-empty="false">市價風險</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="淨值風險" data-tab-target="tab-4" data-filter-empty="false">淨值風險</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="交易狀況" data-tab-target="tab-5" data-filter-empty="false">交易狀況</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="基本資料" data-tab-target="tab-6" data-filter-empty="false">基本資料</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="查無商品" data-tab-target="tab-7" data-filter-empty="true">查無商品</a>
                 </div>
             </div>
         </div>
         <!-- is-active: 作用中的項目 -->
 
-        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency1" value="原幣" checked class="o-capsulebox__input" data-currency="Original">
+                                    <input type="radio" name="currency1" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency1" value="台幣" class="o-capsulebox__input" data-currency="TWD">
+                                    <input type="radio" name="currency1" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -90,18 +90,18 @@
                 <div class="l-flex__item">  </div>
             </div>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-2">
+        <div class="c-tab__panel" data-tab-panel-id="tab-2" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency2" value="原幣" checked class="o-capsulebox__input" data-currency="Original">
+                                    <input type="radio" name="currency2" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency2" value="台幣" class="o-capsulebox__input" data-currency="TWD">
+                                    <input type="radio" name="currency2" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -143,7 +143,7 @@
                 <div class="l-flex__item"> </div>
             </div>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-3">
+        <div class="c-tab__panel" data-tab-panel-id="tab-3" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
                     風險指標：資產管理公司經常用來作為<a href="#" class="o-link">基金風險綜合評比</a>的指標。
@@ -153,11 +153,11 @@
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency3" value="原幣" checked class="o-capsulebox__input" data-currency="Original">
+                                    <input type="radio" name="currency3" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency3" value="台幣" class="o-capsulebox__input" data-currency="TWD">
+                                    <input type="radio" name="currency3" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -188,7 +188,7 @@
                 <div class="l-flex__item"> </div>
             </div>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-4">
+        <div class="c-tab__panel" data-tab-panel-id="tab-4" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
                     風險指標：資產管理公司經常用來作為<a href="#" class="o-link">基金風險綜合評比</a>的指標。
@@ -198,11 +198,11 @@
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency4" value="原幣" checked class="o-capsulebox__input" data-currency="Original">
+                                    <input type="radio" name="currency4" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency4" value="台幣" class="o-capsulebox__input" data-currency="TWD">
+                                    <input type="radio" name="currency4" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -233,18 +233,18 @@
                 <div class="l-flex__item"> </div>
             </div>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-5">
+        <div class="c-tab__panel" data-tab-panel-id="tab-5" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency5" value="原幣" checked class="o-capsulebox__input" data-currency="Original">
+                                    <input type="radio" name="currency5" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency5" value="台幣" class="o-capsulebox__input" data-currency="TWD">
+                                    <input type="radio" name="currency5" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -273,18 +273,18 @@
                 <div class="l-flex__item"> </div>
             </div>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-6">
+        <div class="c-tab__panel" data-tab-panel-id="tab-6" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency6" value="原幣" checked class="o-capsulebox__input" data-currency="Original">
+                                    <input type="radio" name="currency6" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency6" value="台幣" class="o-capsulebox__input" data-currency="TWD">
+                                    <input type="radio" name="currency6" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -317,9 +317,23 @@
                 <div class="l-flex__item"> </div>
             </div>
         </div>
+
+        <div class="c-tab__panel" data-tab-panel-id="tab-7" data-filter-empty="true">
+            <div class="c-section">
+                <div class="c-section__content">
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                        </div>
+                        <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="l-table">
+    <div class="l-table" data-filter-empty="false">
         <table id="uid-table" class="c-table@dt-only c-cardTable@lt">
             <colgroup>
                 <col style="width: auto;">

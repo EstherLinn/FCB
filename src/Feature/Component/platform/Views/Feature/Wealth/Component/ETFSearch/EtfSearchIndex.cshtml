@@ -114,7 +114,7 @@
             }
 
             function currencyCapsuleSwitch($ele) {
-                var currency = $ele.data('currency');
+                var currency = $ele.data('tab-currency');
                 var $tabPanel = $ele.closest('[data-tab-panel-id]');
                 var $sortingLink = $('[data-sorting-linkto]');
                 var linkto = $tabPanel.find($sortingLink).data('sorting-linkto');
@@ -122,7 +122,7 @@
 
                 $('#uid-table [data-table-name="' + linkto + '"][data-table-column-currency]').hide();
                 $column.show();
-                $('[data-currency="' + currency + '"]').prop('checked', true);
+                $('[data-tab-currency="' + currency + '"]').prop('checked', true);
             }
 
             function tabSwitch() {
@@ -131,24 +131,28 @@
                     var tabTarget = $tab.data('tab-target');
                     var $tabPanel = $('[data-tab-panel-id="' + tabTarget + '"]');
 
-                    var $sortingLink = $('[data-sorting-linkto]');
-                    var linkto = $tabPanel.find($sortingLink).data('sorting-linkto');
+                    if (tabTarget == 'tab-7') {
 
-                    $('#uid-table [data-table-name]').each(function () {
-                        var tableName = $(this).data('table-name'); //th, td
+                    } else {
+                        var $sortingLink = $('[data-sorting-linkto]');
+                        var linkto = $tabPanel.find($sortingLink).data('sorting-linkto');
 
-                        if (tableName.split(',').includes(linkto)) {
-                            $(this).show();
-                        } else {
-                            $(this).hide();
-                        }
-                    });
+                        $('#uid-table [data-table-name]').each(function () {
+                            var tableName = $(this).data('table-name'); //th, td
 
-                    var $currency = $tabPanel.find('[data-currency]:checked');
-                    currencyCapsuleSwitch($currency);
+                            if (tableName.split(',').includes(linkto)) {
+                                $(this).show();
+                            } else {
+                                $(this).hide();
+                            }
+                        });
+
+                        var $currency = $tabPanel.find('[data-tab-currency]:checked');
+                        currencyCapsuleSwitch($currency);
+                    }
                 });
             }
-            
+
             //#region Reset Object
 
             var propertyResetObj = {
@@ -201,9 +205,9 @@
             };
 
             function reSetResultProperty(record) {
-                if (record.FirstBankCode == '35AB') {
-                    console.log(record);
-                }
+                //if (record.FirstBankCode == '35AB') {
+                //    console.log(record);
+                //}
 
                 for (var property in record) {
                     //console.log(`${property}: ${record[property]}`);
@@ -296,14 +300,14 @@
                         beforeAddRecords: function (records) {
                             //window.loading('show');
                             //console.log(records);
-                            
+
                         },
                         afterAddRecords: function (records) {
                             //console.log(records);
                         },
                         beforeRender: function (records) {
                             //console.log(records);
-                           
+
                         },
                         beforeRecordRender: function (record) {
                             //console.log(record);
@@ -312,6 +316,22 @@
                             window.loading('hide');
                             $('[data-uid-total]').text(result.length);
                             //this.paginator.setCurrentPage(1); // 若filter後需要切換至第一頁取消註解此行
+
+                            if (result.length > 0) {
+                                // 顯示table, 切換 tab
+                                $('[data-filter-empty="true"]').hide();
+                                $('[data-tab-target="tab-7"]').removeClass('is-active');
+
+                                if ($('[data-tab-target].is-active').length < 1) {
+                                    $('[data-tab-target]').eq(0).trigger('click');
+                                }
+                                $('[data-filter-empty="false"]').show();
+                            } else {
+                                // 顯示查無資料
+                                $('[data-filter-empty="false"]').hide();
+                                $('[data-filter-empty="true"]').show();
+                                $('[data-tab-target="tab-7"]').trigger('click');
+                            }
                         }
                     },
                     order: {
@@ -338,7 +358,7 @@
                                         f.order = 'desc';
                                     } else if (order == 'is-asc') {
                                         f.order = 'asc';
-                                    } 
+                                    }
                                 } else {
                                     f.order = f.order === 'desc' ? 'asc' : 'desc';
                                 }
@@ -456,7 +476,7 @@
             tabSwitch();
 
             $(function () {
-                $('[data-currency]').on('change', function () {
+                $('[data-tab-currency]').on('change', function () {
                     currencyCapsuleSwitch($(this));
                 });
             });
@@ -697,9 +717,13 @@
                         //console.log(e);
                         tableName = e;
                         $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
-                        var sortingColumn = $(this).data('sorting-column');
-                        $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
-                        $sortingbox.trigger('change');
+                        let sortingColumn = $(this).data('sorting-column');
+                        let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+
+                        if ($option.length > 0) {
+                            $option.prop('selected', true);
+                            $sortingbox.trigger('change');
+                        }
                     });
 
                     // 因展示，使用 setTimeout 延遲關閉 loading
