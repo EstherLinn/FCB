@@ -42,6 +42,7 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     vm.Tags = [];
                 }
+                
                 vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator;
                 vm.ProductCode = f.ProductCode;
                 vm.ProductName = FullWidthToHalfWidth(f.ProductName);
@@ -52,7 +53,7 @@ namespace Feature.Wealth.Component.Repositories
                 if (f.CurrencyCode == null || f.FundCurrency == "TWD")
                 {
                     f.CurrencyCode = "00";
-                    f.CurrencyName = "新台幣";
+                    f.CurrencyName = "新臺幣";
                 }
                 vm.Currency = new KeyValuePair<string, string>(f.CurrencyCode, f.CurrencyName);
                 vm.SixMonthReturnOriginalCurrency = CreateReturnDictionary(f.SixMonthReturnOriginalCurrency);
@@ -68,7 +69,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.PercentageChangeInFundPrice = Percentage(f.PercentageChangeInFundPrice);
                 vm.FundSizeMillionOriginalCurrency = RoundFundSize(f.FundSizeMillionOriginalCurrency);
                 vm.FundSizeMillionTWD = RoundFundSize(f.FundSizeMillionTWD);
-                vm.FundType = f.FundType;
+                vm.FundType = f.FundType ?? "null";
                
                 if(f.DividendFrequencyName =="無" || f.DividendFrequencyName == null)
                 {
@@ -111,7 +112,7 @@ namespace Feature.Wealth.Component.Repositories
                     Purchase = f.OnlineSubscriptionAvailability == "Y" ? true : false
                 };
 
-                vm.InvestmentTargetName = f.InvestmentTargetName;
+                vm.InvestmentTargetName = f.InvestmentTargetName ?? "null";
                 vm.FundRating = f.FundRating;
 
                 result.Add(vm);
