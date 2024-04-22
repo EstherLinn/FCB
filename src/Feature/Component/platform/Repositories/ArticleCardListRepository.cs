@@ -20,7 +20,7 @@ namespace Feature.Wealth.Component.Repositories
 
             var cardList = new List<ArticleCardItem>();
 
-            var children = dataSource.GetChildren().Where(x => x.TemplateID == Templates.ArticleCardItem.ID);
+            var children = ItemUtils.GetChildren(dataSource, Templates.ArticleCardItem.ID);
 
             foreach (var child in children)
             {
@@ -35,6 +35,8 @@ namespace Feature.Wealth.Component.Repositories
                 cardItem.Content = ItemUtils.GetFieldValue(child, Templates.ArticleCardItem.Fields.Content);
                 cardItem.Date = date != DateTime.MinValue ? date.ToString("yyyy/MM/dd") : string.Empty;
                 cardItem.Link = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).Url;
+                var targetItem = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).TargetItem;
+                cardItem.TargetItemID = targetItem != null ? targetItem.ID.ToString() : string.Empty;
 
                 cardList.Add(cardItem);
             }

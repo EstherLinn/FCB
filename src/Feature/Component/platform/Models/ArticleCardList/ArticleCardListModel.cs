@@ -20,6 +20,7 @@ namespace Feature.Wealth.Component.Models.ArticleCardList
         public string Content { get; set; }
         public string Date { get; set; }
         public string Link { get; set; }
+        public string TargetItemID { get; set; }
     }
 
     public struct Templates

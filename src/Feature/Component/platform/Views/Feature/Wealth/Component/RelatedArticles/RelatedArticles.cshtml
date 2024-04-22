@@ -1,5 +1,6 @@
 ﻿@model Feature.Wealth.Component.Models.RelatedArticles.RelatedArticlesModel
 @using Feature.Wealth.Component.Models.ArticleCardList
+@using Foundation.Wealth.Helper
 
 @if (Model == null || !Model.CardList.Any())
 {
@@ -15,10 +16,10 @@
             }
 
             <div class="c-section__content">
-                <div class="l-flex u-flex-col@lt u-flex-gap-xl u-flex-gap-sm@lt">
+                <div class="l-flex u-flex-col@lt u-flex-gap-xl u-flex-gap-sm@lt" relatedArticles>
                     @foreach (var item in Model.CardList)
                     {
-                        <div class="l-flex__item">
+                        <div class="l-flex__item" targetItemId="@item.TargetItemID">
                             @Html.Sitecore().BeginField(Templates.ArticleCardItem.Fields.Link.ToString(), item.Item, new { haschildren = true, @class = "c-box c-box--gapless u-shadow-animation" })
 
                             <div class="c-box c-box--gapless u-shadow-animation">
@@ -34,31 +35,36 @@
                                         </div>
                                     }
 
-                                <div class="c-gridview__content">
+                                    <div class="c-gridview__content">
 
-                                    @if (!string.IsNullOrEmpty(item.Title))
-                                    {
-                                        <div class="c-gridview__main">
-                                            <div class="c-gridview__title s3@dt-only u-ellipsis-2 u-ellipsis-3@mb-only u-line-2@dt-only">@item.Title</div>
-                                        </div>
-                                    }
-
-                                    <div class="c-gridview__minor">
-                                        <div class="c-minorInfo s4">
-                                            <div class="c-minorInfo__main">
-
-                                                @if (!string.IsNullOrEmpty(item.Date))
-                                                {
-                                                    <span class="t-date">@item.Date</span>
-                                                }
-
+                                        @if (!string.IsNullOrEmpty(item.Title))
+                                        {
+                                            <div class="c-gridview__main">
+                                                <div class="c-gridview__title s3@dt-only u-ellipsis-2 u-ellipsis-3@mb-only u-line-2@dt-only">@item.Title</div>
                                             </div>
-                                            <div class="c-minorInfo__view">
-                                                @*<span class="o-views o-views--xs">888,888,888</span>*@
+                                        }
+
+                                        <div class="c-gridview__minor">
+                                            <div class="c-minorInfo s4">
+                                                <div class="c-minorInfo__main">
+
+                                                    @if (!string.IsNullOrEmpty(item.Date))
+                                                    {
+                                                        <span class="t-date">@item.Date</span>
+                                                    }
+
+                                                </div>
+                                                <div class="c-minorInfo__view">
+
+                                                    @if (!string.IsNullOrEmpty(item.Link))
+                                                    {
+                                                        <span class="o-views o-views--xs"></span>
+                                                    }
+
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                                 </div>
                             </div>
 
@@ -70,3 +76,34 @@
         </section>
     </div>
 </section>
+
+<script>
+(function ($, window, document, undefined) {
+    $(document).ready(function () {
+        $('[relatedArticles] .l-flex__item[targetitemid]').each(function (index, element) {
+            var targetItemId = $(element).attr('targetitemid');
+            var targetUrl = window.location.origin +$(element).find('a').attr('href');
+
+            $.ajax({
+                type: "POST",
+                url: '@ClientRoute.GenerateUrl(this, "ViewCount", "GetViewCount")',
+                data: {
+                    pageItemId: targetItemId,
+                    currentUrl: targetUrl
+                },
+                success: function (res) {
+                    if (res.success) {
+                        var viewCount = res.viewCount;
+                        $('[targetitemid="' + targetItemId + '"]').find('.o-views').text(viewCount);
+                    } else {
+                        console.error("Error: " + res.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX error: " + error);
+                }
+            });
+        });
+    });
+})(jQuery, window, document);
+</script>

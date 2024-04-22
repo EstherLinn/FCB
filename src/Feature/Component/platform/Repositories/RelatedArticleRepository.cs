@@ -47,6 +47,8 @@ namespace Feature.Wealth.Component.Repositories
                     cardItem.Title = ItemUtils.GetFieldValue(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Title);
                     cardItem.Date = date != DateTime.MinValue ? date.ToString("yyyy/MM/dd") : string.Empty;
                     cardItem.Link = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).Url;
+                    var targetItem = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).TargetItem;
+                    cardItem.TargetItemID = targetItem != null ? targetItem.ID.ToString() : string.Empty;
 
                     ((List<RelatedArticleCardItemModel>)relatedArticlesInfo.CardList).Add(cardItem);
                 }

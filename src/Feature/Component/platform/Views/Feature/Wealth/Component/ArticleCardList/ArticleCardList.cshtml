@@ -1,5 +1,6 @@
 ﻿@model Feature.Wealth.Component.Models.ArticleCardList.ArticleCardListModel
 @using Feature.Wealth.Component.Models.ArticleCardList
+@using Foundation.Wealth.Helper
 
 @if (Model == null || !Model.CardList.Any())
 {
@@ -17,13 +18,13 @@
         }
 
         <div class="c-block__content">
-            <div class="l-flex u-flex-col u-flex-gap-md">
+            <div class="l-flex u-flex-col u-flex-gap-md" articleCardList>
 
                 @foreach (var item in Model.CardList)
                 {
-                    <div class="l-flex__item">
-                        @Html.Sitecore().BeginField(Templates.ArticleCardItem.Fields.Link.ToString(), item.Item, new { haschildren = true, @class = "c-box c-box--gapless u-shadow-animation" })
+                    <div class="l-flex__item" targetItemId="@item.TargetItemID">
 
+                        @Html.Sitecore().BeginField(Templates.ArticleCardItem.Fields.Link.ToString(), item.Item, new { haschildren = true, @class = "c-box c-box--gapless u-shadow-animation" })
                         <div class="c-box c-box--gapless u-shadow-animation">
                             <div class="c-gridview c-gridview--list">
 
@@ -62,18 +63,54 @@
 
                                             </div>
                                             <div class="c-minorInfo__view">
-                                                @*<span class="o-views o-views--xs">888,888,888</span>*@
+
+                                                @if (!string.IsNullOrEmpty(item.Link))
+                                                {
+                                                    <span class="o-views o-views--xs"></span>
+                                                }
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                         @Html.Sitecore().EndField()
+
                     </div>
                 }
             </div>
         </div>
     </div>
 </section>
+
+<script>
+(function ($, window, document, undefined) {
+    $(document).ready(function () {
+        $('[articlecardlist] .l-flex__item[targetitemid]').each(function (index, element) {
+            var targetItemId = $(element).attr('targetitemid');
+            var targetUrl = window.location.origin + $(element).find('a').attr('href');
+
+            $.ajax({
+                type: "POST",
+                url: '@ClientRoute.GenerateUrl(this, "ViewCount", "GetViewCount")',
+                data: {
+                    pageItemId: targetItemId,
+                    currentUrl: targetUrl
+                },
+                success: function (res) {
+                    if (res.success) {
+                        var viewCount = res.viewCount;
+                        $('[targetitemid="' + targetItemId + '"]').find('.o-views').text(viewCount);
+                    } else {
+                        console.error("Error: " + res.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX error: " + error);
+                }
+            });
+        });
+    });
+})(jQuery, window, document);
+</script>
