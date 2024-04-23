@@ -103,6 +103,8 @@
                         url,
                         type: 'POST',
                         dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(params),
                         success: function (data) {
                             resolve(data);
                         },
@@ -199,7 +201,7 @@
                     , 'PublicLimitedCompany'
                 ],
                 valuePercentage: ['TotalManagementFee'],
-                originalValue: ['CanOnlineSubscription']
+                originalValue: ['CanOnlineSubscription', 'Tags', 'DiscountTags', 'CategoryTags']
             };
 
             function reSetResultProperty(record) {
@@ -218,7 +220,7 @@
                             record[property].Text = '-';
                             record[property].Key = '';   // bool 轉 class string
                         } else {
-                            record[property].Key = key ? 'o-rise' : 'o-fall';   // bool 轉 class string, 
+                            record[property].Key = key ? 'o-rise' : 'o-fall';   // bool 轉 class string,
                             record[property].Text = value + '%';
                         }
                     } else if (propertyResetObj.keyValue.includes(property)) {
@@ -431,13 +433,19 @@
                 return fjs;
             }
 
+            var reqSearch = {
+                req: {
+                    DatasourceId: '@Model.DatasourceId'
+                }
+            };
+
             window.ETFSearch = {
                 FJS: null,
                 Result: new SearchResultRespList(),
                 SearchKeyword: new SearchKeywordDataRespList(),
                 QueryList: async function () {
                     this.Result.Init();
-                    var data = await apiRequest('@Foundation.Wealth.Helper.ClientRoute.GenerateUrl(this, "EtfSearch", "GetSearchResultData")')
+                    var data = await apiRequest('@Foundation.Wealth.Helper.ClientRoute.GenerateUrl(this, "EtfSearch", "GetSearchResultData")', reqSearch)
                     this.Result.List = data;
                     console.log(data);
 

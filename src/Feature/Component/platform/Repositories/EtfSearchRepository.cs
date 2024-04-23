@@ -1,11 +1,12 @@
 ﻿using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Search;
+using Feature.Wealth.Component.Models.ETF.Tag;
 using Foundation.Wealth.Manager;
 using Mapster;
+using Sitecore.Data;
 using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -16,11 +17,25 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class EtfSearchRepository
     {
-        private IEnumerable<EtfSearchResult> SearchResults { get; set; }
-
+        
         public EtfSearchModel GetETFSearchModel(Item dataSource)
         {
+
             EtfSearchModel model = new EtfSearchModel();
+            string detailPageLink = string.Empty;
+
+            if (dataSource != null)
+            {
+                model.DatasourceId = dataSource.ID.ToSearchId();
+                Item linkItem = ItemUtils.TargetItem(dataSource, Templates.EtfSearchDatasource.Fields.DetailPageLink);
+                if (linkItem != null)
+                {
+                    detailPageLink = ItemUtils.Url(linkItem);
+                }
+
+                GetTagsForFilterOption(dataSource);
+            }
+
             var result = MapperResult();
             this.SearchResults = result;
 
@@ -29,29 +44,20 @@ namespace Feature.Wealth.Component.Repositories
                 ResultProducts = result?.ToList()
             };
 
-            string detailPageLink = string.Empty;
-            if (dataSource != null)
-            {
-                Item linkItem = ItemUtils.TargetItem(dataSource, Templates.EtfSearchDatasource.Fields.DetailPageLink);
-                if (linkItem != null)
-                {
-                    detailPageLink = ItemUtils.Url(linkItem);
-                }
-            }
-
             model.SearchResultModel.DetailPageLink = detailPageLink;
             model.FilterModel = SetFilterOptions();
 
             return model;
         }
 
-        public IEnumerable<EtfSearchResult> GetResultList()
+        public IEnumerable<EtfSearchResult> GetResultList(ReqSearch req)
         {
+            Item dataSource = ItemUtils.GetItem(req.DatasourceId);
             var result = MapperResult();
             return result;
         }
 
-        private IList<BasicEtfDto> QueryBasicData()
+        public IList<BasicEtfDto> QueryBasicData()
         {
             string sqlQuery = """
                 SELECT *
@@ -64,6 +70,8 @@ namespace Feature.Wealth.Component.Repositories
         public IEnumerable<EtfSearchResult> MapperResult()
         {
             var collection = QueryBasicData();
+            var tagList = GetTagSource();
+
             var config = new TypeAdapterConfig();
             config.ForType<BasicEtfDto, EtfSearchResult>()
                 .AfterMapping((src, dest) =>
@@ -144,6 +152,12 @@ namespace Feature.Wealth.Component.Repositories
                     dest.TotalManagementFee = RoundingPercentage(src.TotalManagementFee);
                     dest.ScaleMillions = RoundingPrice(src.ScaleMillions);
                     dest.CanOnlineSubscription = src.OnlineSubscriptionAvailability?.ToUpper() == "Y";
+
+                    dest.Tags = tagList?.Where(i => i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode)).Select(i => i.TagKey).ToArray();
+                    dest.DiscountTags = tagList?.Where(i => i.TagType == TagType.Discount && i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
+                                                .Select(i => i.TagKey).ToArray();
+                    dest.CategoryTags = tagList?.Where(i => i.TagType == TagType.Category && i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
+                                                .Select(i => i.TagKey).ToArray();
                 });
 
             var result = collection.Adapt<IEnumerable<EtfSearchResult>>(config);
@@ -160,6 +174,8 @@ namespace Feature.Wealth.Component.Repositories
 
             var model = new EtfSearchFilterModel
             {
+                HotKeywordList = this.HotKeywordList.Select(i => i.TagKey),
+                HotProductList = this.HotProductList.Select(i => i.TagKey),
                 PricingCurrencyList = this.SearchResults.OrderBy(i => i.CurrencyPair.Key).Select(i => i.CurrencyPair.Value).Distinct(),
                 InvestmentTargetList = this.SearchResults.OrderBy(i => i.InvestmentTarget.Key).Select(i => i.InvestmentTarget.Value).Distinct(),
                 InvestmentRegionList = this.SearchResults.OrderBy(i => i.InvestmentRegion.Key).Select(i => i.InvestmentRegion.Value).Distinct(),
@@ -170,6 +186,63 @@ namespace Feature.Wealth.Component.Repositories
             };
 
             return model;
+        }
+
+        private void GetTagsForFilterOption(Item dataSource)
+        {
+            if (dataSource == null)
+            {
+                return;
+            }
+
+            var hotKeywords = dataSource.GetMultiListValueItems(Templates.EtfSearchDatasource.Fields.HotKeyword);
+            var hotProducts = dataSource.GetMultiListValueItems(Templates.EtfSearchDatasource.Fields.HotProduct);
+            this.HotKeywordList = SetTagContent(hotKeywords)?.ToList();
+            this.HotProductList = SetTagContent(hotProducts)?.ToList();
+        }
+
+        private List<ProductTag> GetTagSource()
+        {
+            Item tagSource = ItemUtils.GetItem(TagSourceFolder);
+            var tags = tagSource.GetDescendants(Templates.TagContent.Id);
+            
+            if (tags == null || !tags.Any())
+            {
+                return null;
+            }
+
+            var result = SetTagContent(tags);
+            return result?.ToList();
+        }
+
+        private IEnumerable<ProductTag> SetTagContent(IEnumerable<Item> items)
+        {
+            foreach (Item tagItem in items)
+            {
+                string key = tagItem.GetFieldValue(Templates.TagContent.Fields.TagKey);
+
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    continue;
+                }
+
+                var typeItem = tagItem.TargetItem(Templates.TagContent.Fields.Type);
+                string typeValue = typeItem.GetFieldValue(Templates.DropdownOption.Fields.OptionValue);
+
+                if (!Enum.TryParse(typeValue, out TagType type))
+                {
+                    continue;
+                }
+
+                ProductTag productTag = new ProductTag()
+                {
+                    TagKey = key,
+                    ProductCodes = tagItem.GetMultiLineText(Templates.TagContent.Fields.ProductCode)?.ToList(),
+                    TagType = type
+                };
+
+                yield return productTag;
+            }
         }
 
         #region Method
@@ -251,5 +324,23 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         #endregion
+
+        #region Property
+
+        public static readonly ID TagSourceFolder = new ID("{A83FD682-0D9C-43D0-BE60-261C8E557690}");
+
+        private IEnumerable<EtfSearchResult> SearchResults { get; set; }
+
+        /// <summary>
+        /// 熱門關鍵字
+        /// </summary>
+        public List<ProductTag> HotKeywordList { get; set; }
+
+        /// <summary>
+        /// 熱門主題
+        /// </summary>
+        public List<ProductTag> HotProductList { get; set; }
+
+        #endregion Property
     }
 }

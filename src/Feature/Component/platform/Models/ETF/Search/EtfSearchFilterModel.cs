@@ -5,6 +5,16 @@ namespace Feature.Wealth.Component.Models.ETF.Search
     public class EtfSearchFilterModel
     {
         /// <summary>
+        /// 熱門關鍵字
+        /// </summary>
+        public IEnumerable<string> HotKeywordList { get; set; }
+
+        /// <summary>
+        /// 熱門主題
+        /// </summary>
+        public IEnumerable<string> HotProductList { get; set; }
+
+        /// <summary>
         /// 計價幣別
         /// </summary>
         public IEnumerable<string> PricingCurrencyList { get; set; }

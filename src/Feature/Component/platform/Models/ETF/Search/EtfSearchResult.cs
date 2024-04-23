@@ -410,5 +410,24 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         public string ExchangeID { get; set; }
 
         #endregion
+
+        #region 貼標
+
+        /// <summary>
+        /// 優惠標籤
+        /// </summary>
+        public string[] DiscountTags { get; set; }
+
+        /// <summary>
+        /// 分類標籤
+        /// </summary>
+        public string[] CategoryTags { get; set; }
+
+        /// <summary>
+        /// 所有標籤
+        /// </summary>
+        public string[] Tags { get; set; }
+
+        #endregion
     }
 }

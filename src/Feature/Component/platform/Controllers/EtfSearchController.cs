@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Component.Repositories;
+﻿using Feature.Wealth.Component.Models.ETF.Search;
+using Feature.Wealth.Component.Repositories;
 using Sitecore.Mvc.Presentation;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
@@ -17,9 +18,9 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetSearchResultData()
+        public ActionResult GetSearchResultData(ReqSearch req)
         {
-            var resp = _searchRepository.GetResultList();
+            var resp = _searchRepository.GetResultList(req);
             return new JsonNetResult(resp);
         }
     }
