@@ -1,4 +1,6 @@
 ﻿using Sitecore.Data.Items;
+using System.Linq;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -8,7 +10,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             if (currentItem?.Parent != null)
             {
-                Item[] siblings = currentItem.Parent.GetChildren().ToArray();
+                Item[] siblings = ItemUtils.GetChildren(currentItem.Parent).ToArray();
 
                 int currentIndex = -1;
                 for (int i = 0; i < siblings.Length; i++)
@@ -33,7 +35,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             if (currentItem?.Parent != null)
             {
-                Item[] siblings = currentItem.Parent.GetChildren().ToArray();
+                Item[] siblings = ItemUtils.GetChildren(currentItem.Parent).ToArray();
 
                 int currentIndex = -1;
                 for (int i = 0; i < siblings.Length; i++)
