@@ -153,6 +153,17 @@
                 }
             }
 
+            function initSort() {
+                var tableName = 'marketPriceTable';
+                var sortingColumn = 'SixMonthReturnMarketPriceOriginalCurrency.Value';
+                var orderby = 'is-desc';
+
+                var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+                var $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+                $option.attr('selected', 'selected')
+                $option.trigger('change');
+            }
+
             //#region Reset Object
 
             var propertyResetObj = {
@@ -458,6 +469,7 @@
                     this.GenerateSearchKeywordList();
                     var fjs = createFilterJS();
                     this.FJS = fjs;
+                    initSort();
                 },
                 GenerateSearchKeywordList: function () {
                     this.SearchKeyword.Init();
