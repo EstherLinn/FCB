@@ -57,6 +57,14 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string ChangePercentage { get; set; }
         public bool UpOrDown { get; set; }
         public int ViewCount { get; set; }
+        public string DailyReturn { get; set; }
+        public string WeeklyReturn { get; set; }
+        public string OneMonthReturn { get; set; }
+        public string ThreeMonthReturn { get; set; }
+        public string SixMonthReturn { get; set; }
+        public string YeartoDateReturn { get; set; }
+        public string OneYearReturn { get; set; }
+        public string ThreeYearReturn { get; set; }
     }
 
     public class RelevantInformation

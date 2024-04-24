@@ -22,7 +22,7 @@
                 <div class="c-tab__dropdown"><a href="#" class="c-tab__clone is-active" target="_self" title="指數概要" data-tab-target="tab-1">指數概要</a><a href="#" class="c-tab__clone " target="_self" title="相關標的" data-tab-target="tab-2">相關標的</a><a href="#" class="c-tab__clone " target="_self" title="相關指數" data-tab-target="tab-3">相關指數</a></div>
             </div>
         </div>
-        <!-- is-active: 作用中的項目 --> @* TODO 尚在確認資料源 *@
+        <!-- is-active: 作用中的項目 -->
         <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
             <section class="c-section">
                 <div class="c-section__title">漲跌幅</div>
@@ -32,49 +32,137 @@
                             <div class="l-divideList__item">
                                 <div class="c-numerical">
                                     <div class="c-numerical__title c-numerical__title--dk"><span>一日</span></div>
-                                    <div class="c-numerical__content"><span class="o-rise">11.56%</span></div>
+                                    @if (Model.GlobalIndexDetail.DailyReturn == null)
+                                    {
+                                        <div class="c-numerical__content"><span>-</span></div>
+                                    }
+                                    else if (!Model.GlobalIndexDetail.DailyReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.DailyReturn</span></div>
+                                    }
+                                    else if (Model.GlobalIndexDetail.DailyReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-fall">@Model.GlobalIndexDetail.DailyReturn</span></div>
+                                    }
                                 </div>
                             </div>
                             <div class="l-divideList__item">
                                 <div class="c-numerical">
                                     <div class="c-numerical__title c-numerical__title--dk"><span>一週</span></div>
-                                    <div class="c-numerical__content"><span class="o-rise">5.22%</span></div>
+                                    @if (Model.GlobalIndexDetail.WeeklyReturn == null)
+                                    {
+                                        <div class="c-numerical__content"><span>-</span></div>
+                                    }
+                                    else if (!Model.GlobalIndexDetail.WeeklyReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.WeeklyReturn</span></div>
+                                    }
+                                    else if (Model.GlobalIndexDetail.WeeklyReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-fall">@Model.GlobalIndexDetail.WeeklyReturn</span></div>
+                                    }
                                 </div>
                             </div>
                             <div class="l-divideList__item">
                                 <div class="c-numerical">
                                     <div class="c-numerical__title c-numerical__title--dk"><span>一個月</span></div>
-                                    <div class="c-numerical__content"><span class="o-rise">38.49%</span></div>
+                                    @if (Model.GlobalIndexDetail.OneMonthReturn == null)
+                                    {
+                                        <div class="c-numerical__content"><span>-</span></div>
+                                    }
+                                    else if (!Model.GlobalIndexDetail.OneMonthReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.OneMonthReturn</span></div>
+                                    }
+                                    else if (Model.GlobalIndexDetail.OneMonthReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-fall">@Model.GlobalIndexDetail.OneMonthReturn</span></div>
+                                    }
                                 </div>
                             </div>
                             <div class="l-divideList__item">
                                 <div class="c-numerical">
                                     <div class="c-numerical__title c-numerical__title--dk"><span>三個月</span></div>
-                                    <div class="c-numerical__content"><span class="o-rise">19.76%</span></div>
+                                    @if (Model.GlobalIndexDetail.ThreeMonthReturn == null)
+                                    {
+                                        <div class="c-numerical__content"><span>-</span></div>
+                                    }
+                                    else if (!Model.GlobalIndexDetail.ThreeMonthReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.ThreeMonthReturn</span></div>
+                                    }
+                                    else if (Model.GlobalIndexDetail.ThreeMonthReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-fall">@Model.GlobalIndexDetail.ThreeMonthReturn</span></div>
+                                    }
                                 </div>
                             </div>
                             <div class="l-divideList__item">
                                 <div class="c-numerical">
                                     <div class="c-numerical__title c-numerical__title--dk"><span>六個月</span></div>
-                                    <div class="c-numerical__content"><span class="o-fall">3.07%</span></div>
+                                    @if (Model.GlobalIndexDetail.SixMonthReturn == null)
+                                    {
+                                        <div class="c-numerical__content"><span>-</span></div>
+                                    }
+                                    else if (!Model.GlobalIndexDetail.SixMonthReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.SixMonthReturn</span></div>
+                                    }
+                                    else if (Model.GlobalIndexDetail.SixMonthReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-fall">@Model.GlobalIndexDetail.SixMonthReturn</span></div>
+                                    }
                                 </div>
                             </div>
                             <div class="l-divideList__item">
                                 <div class="c-numerical">
                                     <div class="c-numerical__title c-numerical__title--dk"><span>一年</span></div>
-                                    <div class="c-numerical__content"><span class="o-fall">37.93%</span></div>
+                                    @if (Model.GlobalIndexDetail.OneYearReturn == null)
+                                    {
+                                        <div class="c-numerical__content"><span>-</span></div>
+                                    }
+                                    else if (!Model.GlobalIndexDetail.OneYearReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.OneYearReturn</span></div>
+                                    }
+                                    else if (Model.GlobalIndexDetail.OneYearReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-fall">@Model.GlobalIndexDetail.OneYearReturn</span></div>
+                                    }
                                 </div>
                             </div>
                             <div class="l-divideList__item">
                                 <div class="c-numerical">
                                     <div class="c-numerical__title c-numerical__title--dk"><span>今年以來</span></div>
-                                    <div class="c-numerical__content"><span class="o-fall">16.86%</span></div>
+                                    @if (Model.GlobalIndexDetail.YeartoDateReturn == null)
+                                    {
+                                        <div class="c-numerical__content"><span>-</span></div>
+                                    }
+                                    else if (!Model.GlobalIndexDetail.YeartoDateReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.YeartoDateReturn</span></div>
+                                    }
+                                    else if (Model.GlobalIndexDetail.YeartoDateReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-fall">@Model.GlobalIndexDetail.YeartoDateReturn</span></div>
+                                    }
                                 </div>
                             </div>
                             <div class="l-divideList__item">
                                 <div class="c-numerical">
                                     <div class="c-numerical__title c-numerical__title--dk"><span>三年</span></div>
-                                    <div class="c-numerical__content"><span class="o-fall">41.57%</span></div>
+                                    @if (Model.GlobalIndexDetail.ThreeYearReturn == null)
+                                    {
+                                        <div class="c-numerical__content"><span>-</span></div>
+                                    }
+                                    else if (!Model.GlobalIndexDetail.ThreeYearReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.ThreeYearReturn</span></div>
+                                    }
+                                    else if (Model.GlobalIndexDetail.ThreeYearReturn.Contains('-'))
+                                    {
+                                        <div class="c-numerical__content"><span class="o-fall">@Model.GlobalIndexDetail.ThreeYearReturn</span></div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -98,10 +186,6 @@
                                 <label class="o-capsulebox__item">
                                     <input type="radio" name="ma" value="month" data-trend-filter="ma" class="o-capsulebox__input">
                                     <span class="o-capsulebox__text">月線</span>
-                                </label>
-                                <label class="o-capsulebox__item">
-                                    <input type="radio" name="ma" value="season" data-trend-filter="ma" class="o-capsulebox__input">
-                                    <span class="o-capsulebox__text">季線</span>
                                 </label>
                             </div>
                         </div>

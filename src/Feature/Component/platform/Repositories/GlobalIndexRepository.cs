@@ -85,22 +85,31 @@ namespace Feature.Wealth.Component.Repositories
 
         public GlobalIndexDetail GetGlobalIndexDetail(string indexCode)
         {
-            string sql = @"SELECT
+            string sql = @"SELECT TOP 1
                            A.[IndexCode]
-                           ,[IndexName]
-                           ,[IndexCategoryID]
-                           ,[IndexCategoryName]
-                           ,REPLACE(CONVERT(char(10), [DataDate],126),'-','/') [DataDate]
-                           ,[MarketPrice]
-                           ,CONVERT(nvarchar, CONVERT(MONEY, [MarketPrice]), 1) [MarketPriceText]
-                           ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1) [Change]
-                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), [ChangePercentage])) + '%' [ChangePercentage]
-                           ,CONVERT(bit, IIF([Change] >= 0, 1, 0)) [UpOrDown]
+                           ,A.[IndexName]
+                           ,A.[IndexCategoryID]
+                           ,A.[IndexCategoryName]
+                           ,REPLACE(CONVERT(char(10), A.[DataDate],126),'-','/') [DataDate]
+                           ,A.[MarketPrice]
+                           ,CONVERT(nvarchar, CONVERT(MONEY, A.[MarketPrice]), 1) [MarketPriceText]
+                           ,CONVERT(nvarchar, CONVERT(MONEY, A.[Change]), 1) [Change]
+                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), A.[ChangePercentage])) + '%' [ChangePercentage]
+                           ,CONVERT(bit, IIF(A.[Change] >= 0, 1, 0)) [UpOrDown]
                            ,B.[ViewCount]
+                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[DailyReturn])) + '%' [DailyReturn]
+                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[WeeklyReturn])) + '%' [WeeklyReturn]
+                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[OneMonthReturn])) + '%' [OneMonthReturn]
+                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[ThreeMonthReturn])) + '%' [ThreeMonthReturn]
+                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[SixMonthReturn])) + '%' [SixMonthReturn]
+                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[YeartoDateReturn])) + '%' [YeartoDateReturn]
+                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[OneYearReturn])) + '%' [OneYearReturn]
+                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[ThreeYearReturn])) + '%' [ThreeYearReturn]
                            FROM [Sysjust_GlobalIndex] A WITH (NOLOCK)
                            LEFT JOIN [GlobalIndexViewCount] B WITH (NOLOCK) ON A.[IndexCode] = B.[IndexCode]
+                           LEFT JOIN [Sysjust_GlobalIndex_ROI] C WITH (NOLOCK) ON A.[IndexCode] = C.[IndexID]
                            WHERE A.[IndexCode] = @IndexCode
-                           ORDER BY [IndexCode]";
+                           ORDER BY C.[DataDate] DESC";
 
             var globalIndexDetail = this._dbConnection.Query<GlobalIndexDetail>(sql, new { IndexCode = indexCode })?.FirstOrDefault() ?? new GlobalIndexDetail();
 
