@@ -20,9 +20,20 @@ namespace Feature.Wealth.Component.Controllers
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
             var hotkeywordtags = ItemUtils.GetMultiListValueItems(dataSourceItem, Template.FundSearch.Fields.HotKeywordtags);
-            var keyword = hotkeywordtags.Select(f => f.DisplayName).ToList();
+            var keywords = new List<string>();
+            foreach (var item in hotkeywordtags)
+            {
+                string key = ItemUtils.GetFieldValue(item, Template.FundSearch.Fields.TagName);
+                keywords.Add(key);
+            }
+
             var hotproducttags = ItemUtils.GetMultiListValueItems(dataSourceItem, Template.FundSearch.Fields.HotProductags);
-            var product = hotproducttags.Select(f => f.DisplayName).ToList();
+            var products = new List<string>();
+            foreach (var item in hotproducttags)
+            {
+                string product = ItemUtils.GetFieldValue(item, Template.FundSearch.Fields.TagName);
+                products.Add(product);
+            }
             string content = ItemUtils.GetFieldValue(dataSourceItem, Template.FundSearch.Fields.Content);
 
 
@@ -53,7 +64,7 @@ namespace Feature.Wealth.Component.Controllers
                 FundCompanies = items.Where(f => f.FundCompanyName != null).OrderBy(f=>f.FundCompanyName).Select(f => f.FundCompanyName).Distinct().ToList(),
                 InvestmentRegions = regions,
                 InvestmentTargets = items.OrderBy(t => t.InvestmentTargetID).Select(f => f.InvestmentTargetName).Distinct().ToList(),
-                FundTypeNames = items.OrderBy(f=>f.FundType).Select(f => f.FundType).Distinct().ToList()
+                FundTypeNames = items.OrderBy(f=>f.FormatFundType).Select(f => f.FormatFundType).Distinct().ToList()
             };
 
             var viewModel = new FundSearchViewModel
@@ -61,8 +72,8 @@ namespace Feature.Wealth.Component.Controllers
                 Item = dataSourceItem,
                 FundSearchData = items,
                 SearchBarData = searchbar,
-                HotKeywordTags = keyword,
-                HotProductTags = product,
+                HotKeywordTags = keywords,
+                HotProductTags = products,
                 Content = content
             };
 

@@ -214,6 +214,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// 基金評等
         /// </summary>
         public string FundRating { get; set; }
+
+        /// <summary>
+        /// 基金評等
+        /// </summary>
+        public string FormatFundType { get; set; }
     }
 
     /// <summary>
@@ -311,6 +316,12 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public List<string> FundTypeNames { get; set; }
     }
 
+    public class Tags
+    {
+        public string TagName { get; set; }
+        public List<string> ProductCodes { get; set; }
+    }
+
     public struct Template
     {
         public struct FundSearch
@@ -339,6 +350,32 @@ namespace Feature.Wealth.Component.Models.FundSearch
                 /// </summary>
                 public static readonly string HotProductags = "{B72C2E97-EB7B-48E3-9268-E9260E0BFE9A}";
             }
+        }
+        public struct FundTags
+        {
+            public struct Fields
+            {
+                /// <summary>
+                /// tagFolder
+                /// </summary>
+                public static readonly string FundTags = "{9EC537F8-9EF9-4AF0-B6B6-A66749E3F22A}";
+
+                /// <summary>
+                /// 行銷標籤
+                /// </summary>
+                public static readonly string HotKeywordTag = "{D463F329-22C5-411D-870B-3679A142A6B9}";
+
+                /// <summary>
+                /// 熱銷標籤
+                /// </summary>
+                public static readonly string HotProductTag = "{DA395C80-5B52-4189-8FB4-1570317137AC}";
+
+                /// <summary>
+                /// ProductCodeList
+                /// </summary>
+                public static readonly string ProductCodeList = "{97F5D259-74DE-4B64-A4A9-EFAC9C0A0CD0}";
+            }
+
         }
 
     }
