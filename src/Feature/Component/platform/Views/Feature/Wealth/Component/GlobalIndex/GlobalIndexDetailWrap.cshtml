@@ -277,7 +277,7 @@
                                     '#665DCC',
                                     '#E7465A'
                                 ] -->
-                                <table class="c-table u-center u-nowrap" data-table-name="fundPriceTable">
+                                <table class="c-table u-center u-nowrap" custom-data-fixed-columns data-table-name="fundPriceTable">
                                     <colgroup>
                                         <col style="width: 50%; min-width: 200px;">
                                         <col>
@@ -406,7 +406,7 @@
                                     '#665DCC',
                                     '#E7465A'
                                 ] -->
-                                <table class="c-table u-center u-nowrap" data-table-name="ETFPriceTable">
+                                <table class="c-table u-center u-nowrap" custom-data-fixed-columns data-table-name="ETFPriceTable">
                                     <colgroup>
                                         <col style="width: 50%; min-width: 200px;">
                                         <col>
@@ -537,7 +537,7 @@
                                     '#665DCC',
                                     '#E7465A'
                                 ] -->
-                                <table class="c-table u-center u-nowrap" data-table-name="globalIndexTable">
+                                <table class="c-table u-center u-nowrap" custom-data-fixed-columns data-table-name="globalIndexTable">
                                     <colgroup>
                                         <col style="width: auto; min-width: 200px;">
                                         <col style="width: 1%;">
@@ -851,6 +851,10 @@
                     },
                 }
             });
+
+            //為了不讓 plugins.min.js 統一 fixedColumns
+            //所以自己取名 custom-data-fixed-columns
+            $('[custom-data-fixed-columns]').fixedColumns(); 
 
             // table 排序功能
             $('.o-sorting').on('click.sorting', function (e) {
