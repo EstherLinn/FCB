@@ -1,0 +1,286 @@
+﻿@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.DiscountPremium
+@model DiscountPremiumModel
+
+@{
+	var modelitem = Model.Item;
+}
+
+<div class="l-mainstage">
+	<div class="l-mainstage__wrap">
+		<div class="l-mainstage__title">
+			<h1 class="t-title">@Html.Sitecore().Field(Template.DiscountPremium.Fields.MainTitle.ToString(), modelitem)</h1>
+		</div>
+		<div class="l-mainstage__content">
+			<div class="l-flex u-flex-col u-flex-gap-sm">
+				<div class="l-flex__item">
+					@Html.Sitecore().Field(Template.DiscountPremium.Fields.SubTitle.ToString(), modelitem)
+				</div>
+				<div class="l-flex__item">
+					<span class="t-note">@Html.Sitecore().Field(Template.DiscountPremium.Fields.Content.ToString(), modelitem)</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="l-wrap">
+	<div class="l-stage">
+		<div class="l-flex u-flex-col u-flex-gap-sm">
+			<div class="l-flex__item u-right u-hidden@dt-only">
+				<div class="o-sortingbox">
+					<!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+					<select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="hotTable">
+						<option value="">排序</option>
+						<option value="ETF名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">ETF名稱高至低</option>
+						<option value="ETF名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">ETF名稱低至高</option>
+						<option value="交易所代碼高至低" data-sorting-column="ExchangeCode" data-sorting-class="is-desc">交易所代碼高至低</option>
+						<option value="交易所代碼低至高" data-sorting-column="ExchangeCode" data-sorting-class="is-asc">交易所代碼低至高</option>
+						<option value="市價高至低" data-sorting-column="MarketPrice" data-sorting-class="is-desc">市價高至低</option>
+						<option value="市價低至高" data-sorting-column="MarketPrice" data-sorting-class="is-asc">市價低至高</option>
+						<option value="折溢價高至低" data-sorting-column="DiscountPremium" data-sorting-class="is-desc">折溢價高至低</option>
+						<option value="折溢價低至高" data-sorting-column="DiscountPremium" data-sorting-class="is-asc">折溢價低至高</option>
+						<option value="最新量高至低" data-sorting-column="LatestVolumeTradingVolume" data-sorting-class="is-desc">最新量高至低</option>
+						<option value="最新量低至高" data-sorting-column="LatestVolumeTradingVolume" data-sorting-class="is-asc">最新量低至高</option>
+						<option value="最新量-10日量高至低" data-sorting-column="TenDayAverageVolume" data-sorting-class="is-desc">最新量-10日量高至低</option>
+						<option value="最新量-10日量低至高" data-sorting-column="TenDayAverageVolume" data-sorting-class="is-asc">最新量-10日量低至高</option>
+					</select>
+				</div>
+			</div>
+			<div class="l-flex__item">
+				<div class="l-table">
+					<table class="c-table@dt-only c-cardTable@lt" data-table-name="hotTable">
+						<colgroup>
+							<col style="width: auto;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+						</colgroup>
+						<thead>
+							<tr class="u-nowrap">
+								<th>
+									<div class="c-table__title">
+										<span>ETF名稱</span>
+										<!-- .is-asc: 升冪 -->
+										<!-- .is-desc: 降冪 -->
+										<a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>交易所代碼</span>
+										<a href="#" class="o-sorting" data-sorting-column="ExchangeCode"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>市價<br>(日期)</span>
+										<a href="#" class="o-sorting" data-sorting-column="MarketPrice"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>折溢價(%)</span>
+										<a href="#" class="o-sorting is-desc" data-sorting-column="DiscountPremium"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>最新量</span>
+										<a href="#" class="o-sorting" data-sorting-column="LatestVolumeTradingVolume"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>最新量-10日量</span>
+										<a href="#" class="o-sorting" data-sorting-column="TenDayAverageVolume"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>關注/比較</span>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>申購</span>
+									</div>
+								</th>
+							</tr>
+						</thead>
+						<tbody id="result">
+							@foreach (var item in Model.DiscountPremiums)
+							{
+								if (item.ProductCode != null && item.ProductCode != "")
+								{
+									<tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only" data-product-id="@item.ProductCode">
+										<td class="c-cardTable__top"></td>
+										<td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+											<div class="c-cardTable__content">
+												<div class="l-target">
+													<div class="l-target__name">
+														<a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.ProductName</a>
+													</div>
+												</div>
+											</div>
+										</td>
+										<td class="c-cardTable__space"></td>
+										<td class="c-cardTable__body" data-card-table-width="1/2">
+											<div class="c-cardTable__title" data-length="5">交易所代碼</div>
+											<div class="c-cardTable__content">@item.ExchangeCode</div>
+										</td>
+										<td class="c-cardTable__body" data-card-table-width="1/2">
+											<div class="c-cardTable__title" data-length="5">市價<br>(日期)</div>
+											<div class="c-cardTable__content">@item.MarketPrice<br><span class="t-date">@item.NetAssetValueDateFormat</span></div>
+										</td>
+										<td class="c-cardTable__body" data-card-table-width="1/2">
+											<div class="c-cardTable__title" data-length="5">折溢價(%)</div>
+											@if (item.DiscountPremium < 0)
+											{
+												<span class="o-fall">@item.DiscountPremium%</span>
+											}
+											else
+											{
+												<span class="o-rise">@item.DiscountPremium%</span>
+											}
+										</td>
+										<td class="c-cardTable__body" data-card-table-width="1/2">
+											<div class="c-cardTable__title" data-length="5">最新量</div>
+											<div class="c-cardTable__content">@item.LatestVolumeTradingVolumeFormat</div>
+										</td>
+										<td class="c-cardTable__body" data-card-table-width="1/2">
+											<div class="c-cardTable__title" data-length="5">最新量-10日量</div>
+											<div class="c-cardTable__content">@item.TenDayAverageVolumeFormat</div>
+										</td>
+										<td class="c-cardTable__space"></td>
+										<td class="c-cardTable__footer" data-card-table-width="2/3">
+											<div class="c-cardTable__content">
+												<ul class="l-collect l-collect--divider@lt">
+													<li class="l-collect__item">
+														<a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+													</li>
+													<li class="l-collect__item">
+														<a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+													</li>
+												</ul>
+											</div>
+										</td>
+										<td class="c-cardTable__footer" data-card-table-width="1/3">
+											@if (item.OnlineSubscriptionAvailability == "Y")
+											{
+												<div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+											}
+										</td>
+									</tr>
+								}
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	(function ($, window, document, undefined) {
+		document.addEventListener('DOMContentLoaded', function () {
+			if (!jQuery) {
+				return;
+			}
+
+			function ReturnSortView(orderby, desc) {
+				$.ajax({
+					url: '@ClientRoute.GenerateUrl(this, "DiscountPremium", "GetSortedDiscountPremium")',
+					type: 'POST',
+					data: { orderby: orderby, desc: desc },
+					success: function (data) {
+						$('#result').empty();
+						document.getElementById('result').innerHTML = data;
+						Removefall();
+						$('[data-popup]').magnificPopup();
+					},
+					error: function (xhr, status, error) {
+						console.error(error);
+					}
+				});
+
+			}
+
+			Removefall();
+			function Removefall() {
+				$('span.o-fall').each(function () {
+					var content = $(this).text();
+					if (content.startsWith('-')) {
+						var number = content.substring(1);
+						$(this).text(number);
+					}
+				});
+			}
+
+			$('table').off('click.sorting').on('click.sorting', '.o-sorting', function (e) {
+				e.preventDefault();
+				// 呼叫 loading
+				window.loading('show');
+				var $this = $(this);
+				var orderby = '';
+				if ($this.hasClass('is-asc')) {
+					$this.removeClass('is-asc').addClass('is-desc');
+					orderby = 'is-desc';
+				}
+				else {
+					$this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+					$this.addClass('is-asc');
+					orderby = 'is-asc';
+				}
+
+				var sortingColumn = $this.data('sorting-column');
+
+				// 連動 sortingbox
+				var tableName = $(this).closest('[data-table-name]').data('table-name');
+				var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+				var sortingColumn = $(this).data('sorting-column');
+				$(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+				$sortingbox.trigger('change');
+
+				// 因展示，使用 setTimeout 延遲關閉 loading
+				setTimeout(() => {
+					// 關閉loading
+					window.loading('hide');
+				}, 300);
+			});
+
+
+			// 手機版分頁筆數功能
+			$('[data-sortingbox="true"]').on('change.sorting', function (e) {
+				// 呼叫 loading
+				window.loading('show');
+				var sorting = $(this).val();
+				var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+				var sortingColumn = $('option:selected', this).data('sorting-column');
+				var orderby = $('option:selected', this).data('sorting-class');
+
+				// 連動 table
+				$('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+				$(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+				console.log(`排序：${sorting}`);
+
+
+				ReturnSortView(sortingColumn, orderby)
+
+				// 因展示，使用 setTimeout 延遲關閉 loading
+				setTimeout(() => {
+					// 關閉loading
+					window.loading('hide');
+				}, 300);
+			});
+
+		});
+
+	})(jQuery, window, document);
+</script>
+
+
