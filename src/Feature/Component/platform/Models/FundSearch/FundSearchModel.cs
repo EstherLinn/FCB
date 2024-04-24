@@ -213,10 +213,10 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// 基金評等
         /// </summary>
-        public string FundRating { get; set; }
+        public decimal? FundRating { get; set; }
 
         /// <summary>
-        /// 基金評等
+        /// 合併後國內外的基金類型
         /// </summary>
         public string FormatFundType { get; set; }
     }
@@ -278,7 +278,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
 
         public List<string> InvestmentRegionName { get; set; }
 
-        public string FundRating { get; set; }
+        public decimal? FundRating { get; set; }
 
         public string DetailUrl { get; set; }
 
