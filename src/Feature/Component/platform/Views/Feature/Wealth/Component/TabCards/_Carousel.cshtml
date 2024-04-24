@@ -14,7 +14,7 @@
                 string image1 = Model.ImageUrl1;
                 string title1 = Html.Sitecore().Field(_TabCard.Fields.Title1.ToString(), item).ToString();
                 string description1 = Html.Sitecore().Field(_TabCard.Fields.Description1.ToString(), item).ToString();
-                if (link1 != "#" || !string.IsNullOrEmpty(image1) || !string.IsNullOrEmpty(title1) || !string.IsNullOrEmpty(description1))
+                if (!string.IsNullOrEmpty(link1) || !string.IsNullOrEmpty(image1) || !string.IsNullOrEmpty(title1) || !string.IsNullOrEmpty(description1))
                 {
                     <div class="swiper-slide c-swiper__slide">
                     <a href="@link1" class="c-banner c-banner--trend c-banner--zoom">
@@ -41,7 +41,7 @@
                 string title2 = Html.Sitecore().Field(_TabCard.Fields.Title2.ToString(), item).ToString();
                 string description2 = Html.Sitecore().Field(_TabCard.Fields.Description2.ToString(), item).ToString();
 
-                if (link2 != "#" || !string.IsNullOrEmpty(image2) || !string.IsNullOrEmpty(title2) || !string.IsNullOrEmpty(description2))
+                if (!string.IsNullOrEmpty(link2) || !string.IsNullOrEmpty(image2) || !string.IsNullOrEmpty(title2) || !string.IsNullOrEmpty(description2))
                 {
                     <div class="swiper-slide c-swiper__slide">
                         <a href="@link2" class="c-banner c-banner--trend c-banner--zoom">
@@ -68,7 +68,7 @@
                 string title3 = Html.Sitecore().Field(_TabCard.Fields.Title3.ToString(), item).ToString();
                 string description3 = Html.Sitecore().Field(_TabCard.Fields.Description3.ToString(), item).ToString();
 
-                if (link3 != "#" || !string.IsNullOrEmpty(image3) || !string.IsNullOrEmpty(title3) || !string.IsNullOrEmpty(description3))
+                if (!string.IsNullOrEmpty(link3) || !string.IsNullOrEmpty(image3) || !string.IsNullOrEmpty(title3) || !string.IsNullOrEmpty(description3))
                 {
                     <div class="swiper-slide c-swiper__slide">
                         <a href="@link3" class="c-banner c-banner--trend c-banner--zoom">

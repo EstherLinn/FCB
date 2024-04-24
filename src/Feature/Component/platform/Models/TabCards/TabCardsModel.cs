@@ -1,6 +1,7 @@
 ﻿using Feature.Wealth.Component.Models.FundDetail;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -13,15 +14,15 @@ namespace Feature.Wealth.Component.Models.TabCards
 
         public string ImageUrl1 { get; set; }
         public string BannerLink1 { get; set; }
-        public bool IsBlackFont1 => ((CheckboxField)Datasource?.Fields[_TabCard.Fields.IsBlackFont1])?.Checked ?? false;
+        public bool IsBlackFont1 => ItemUtils.IsChecked(Datasource, _TabCard.Fields.IsBlackFont1);
 
         public string ImageUrl2 { get; set; }
         public string BannerLink2 { get; set; }
-        public bool IsBlackFont2 => ((CheckboxField)Datasource?.Fields[_TabCard.Fields.IsBlackFont2])?.Checked ?? false;
+        public bool IsBlackFont2 => ItemUtils.IsChecked(Datasource, _TabCard.Fields.IsBlackFont2);
 
         public string ImageUrl3 { get; set; }
         public string BannerLink3 { get; set; }
-        public bool IsBlackFont3 => ((CheckboxField)Datasource?.Fields[_TabCard.Fields.IsBlackFont3])?.Checked ?? false;
+        public bool IsBlackFont3 => ItemUtils.IsChecked(Datasource, _TabCard.Fields.IsBlackFont3);
 
         public IList<string> FundIDList { get; set; }
         public IList<FundCardBasicDTO> FundCardsInfos { get; set; }
@@ -42,11 +43,11 @@ namespace Feature.Wealth.Component.Models.TabCards
             this.ImageUrl2 = ItemUtils.ImageUrl(item, _TabCard.Fields.Banner2);
             this.ImageUrl3 = ItemUtils.ImageUrl(item, _TabCard.Fields.Banner3);
 
-            this.BannerLink1 = string.IsNullOrEmpty(ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink1)?.Url) ? "#" : ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink1)?.Url;
-            this.BannerLink2 = string.IsNullOrEmpty(ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink2)?.Url) ? "#" : ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink2)?.Url;
-            this.BannerLink3 = string.IsNullOrEmpty(ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink3)?.Url) ? "#" : ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink3)?.Url;
+            this.BannerLink1 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink1)?.Url;
+            this.BannerLink2 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink2)?.Url;
+            this.BannerLink3 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink3)?.Url;
 
-            this.FundIDList = this.Datasource.GetMultiLineText(_TabCard.Fields.FundIDList)?.Take(3).ToList() ?? new List<string>();
+            this.FundIDList = ItemUtils.GetMultiLineText(item, _TabCard.Fields.FundIDList)?.Take(3).ToList() ?? new List<string>();
         }
     }
 
