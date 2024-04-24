@@ -854,7 +854,9 @@
 
             //為了不讓 plugins.min.js 統一 fixedColumns
             //所以自己取名 custom-data-fixed-columns
-            $('[custom-data-fixed-columns]').fixedColumns(); 
+            $('[custom-data-fixed-columns]').fixedColumns();
+            //然後再把 data-fixed-columns 這個 attr 加上
+            $('[custom-data-fixed-columns]').attr('data-fixed-columns', true);
 
             // table 排序功能
             $('.o-sorting').on('click.sorting', function (e) {
