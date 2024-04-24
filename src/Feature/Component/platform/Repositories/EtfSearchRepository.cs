@@ -17,34 +17,18 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class EtfSearchRepository
     {
-        
         public EtfSearchModel GetETFSearchModel(Item dataSource)
         {
-
             EtfSearchModel model = new EtfSearchModel();
-            string detailPageLink = string.Empty;
 
             if (dataSource != null)
             {
                 model.DatasourceId = dataSource.ID.ToSearchId();
-                Item linkItem = ItemUtils.TargetItem(dataSource, Templates.EtfSearchDatasource.Fields.DetailPageLink);
-                if (linkItem != null)
-                {
-                    detailPageLink = ItemUtils.Url(linkItem);
-                }
-
-                GetTagsForFilterOption(dataSource);
             }
 
             var result = MapperResult();
             this.SearchResults = result;
-
-            model.SearchResultModel = new EtfSearchResultModel()
-            {
-                ResultProducts = result?.ToList()
-            };
-
-            model.SearchResultModel.DetailPageLink = detailPageLink;
+            model.SearchResultModel = GetDatasourceData(dataSource);
             model.FilterModel = SetFilterOptions();
 
             return model;
@@ -52,7 +36,6 @@ namespace Feature.Wealth.Component.Repositories
 
         public IEnumerable<EtfSearchResult> GetResultList(ReqSearch req)
         {
-            Item dataSource = ItemUtils.GetItem(req.DatasourceId);
             var result = MapperResult();
             return result;
         }
@@ -185,6 +168,35 @@ namespace Feature.Wealth.Component.Repositories
                 DividendDistributionFrequencyList = this.SearchResults.OrderBy(i => i.DividendDistributionFrequency).Select(i => i.DividendDistributionFrequency).Distinct(),
                 ExchangeList = this.SearchResults.Select(i => i.ExchangeID).OrderBy(i => i).Distinct()
             };
+
+            return model;
+        }
+
+        private EtfSearchResultModel GetDatasourceData(Item dataSource)
+        {
+            EtfSearchResultModel model = new EtfSearchResultModel();
+
+            if (dataSource == null)
+            {
+                return null;
+            }
+
+            string detailPageLink = string.Empty;
+            Item linkItem = ItemUtils.TargetItem(dataSource, Templates.EtfSearchDatasource.Fields.DetailPageLink);
+
+            if (linkItem != null)
+            {
+                detailPageLink = ItemUtils.Url(linkItem);
+            }
+
+            model.MarketPricePerformanceIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.MarketPricePerformanceIntro);
+            model.NetWorthPerformanceIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.NetWorthPerformanceIntro);
+            model.MarketPriceRiskIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.MarketPriceRiskIntro);
+            model.NetWorthRiskIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.NetWorthRiskIntro);
+            model.TransactionStatusIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.TransactionStatusIntro);
+            model.InformationIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.InformationIntro);
+            model.DetailPageLink = detailPageLink;
+            GetTagsForFilterOption(dataSource);
 
             return model;
         }

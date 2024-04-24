@@ -1,10 +1,6 @@
 ﻿@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 @model Feature.Wealth.Component.Models.ETF.Search.EtfSearchResultModel
 @{
-    if (Model == null)
-    {
-        return;
-    }
     var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId().ToSearchId();
 }
 <div class="l-wrap" data-section="@(uid)-result">
@@ -146,7 +142,7 @@
         <div class="c-tab__panel" data-tab-panel-id="tab-3" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
-                    風險指標：資產管理公司經常用來作為<a href="#" class="o-link">基金風險綜合評比</a>的指標。
+                    @Model.MarketPriceRiskIntro
                 </div>
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
@@ -191,7 +187,7 @@
         <div class="c-tab__panel" data-tab-panel-id="tab-4" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
-                    風險指標：資產管理公司經常用來作為<a href="#" class="o-link">基金風險綜合評比</a>的指標。
+                    @Model.NetWorthRiskIntro
                 </div>
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
