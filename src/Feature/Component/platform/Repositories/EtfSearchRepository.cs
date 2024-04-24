@@ -1,6 +1,7 @@
 ﻿using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Search;
 using Feature.Wealth.Component.Models.ETF.Tag;
+using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
 using Mapster;
 using Sitecore.Data;
