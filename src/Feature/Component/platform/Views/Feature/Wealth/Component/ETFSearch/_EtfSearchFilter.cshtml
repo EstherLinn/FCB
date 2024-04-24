@@ -40,76 +40,33 @@
                         </div>
                         <div class="c-filter__keyword">
                             <!-- 條件群組[data-filter-group] -->
-                            <div class="c-filterForm" data-filter-group>
+                            <div class="c-filterForm" id="uid-criteria-discountTags" data-filter-group>
                                 <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
                                 <div class="c-filterForm__title" data-filter-title>
-                                    <span>熱門關鍵字</span>
+                                    <span>熱門關鍵字</span>@*對應JSON欄位【DiscountTags】*@
                                 </div>
                                 <div class="c-filterForm__value">
                                     <div class="l-pickGroup">
+                                        @foreach (var tag in Model.HotKeywordList)
+                                        {
+                                            string value = tag;
+                                            string display = string.Empty;
 
-                                        <div class="l-pickGroup__item">
-                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                <div class="o-btnCheckBox__text" data-filter-value="智能AI"></div>
-                                            </label>
-                                        </div>
+                                            if (tag == null)
+                                            {
+                                                display = "display: none;";
+                                                value = string.Empty;
+                                            }
 
-                                        <div class="l-pickGroup__item">
-                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                <div class="o-btnCheckBox__text" data-filter-value="通貨膨脹"></div>
-                                            </label>
-                                        </div>
-
-                                        <div class="l-pickGroup__item">
-                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                <div class="o-btnCheckBox__text" data-filter-value="ESG"></div>
-                                            </label>
-                                        </div>
-
-                                        <div class="l-pickGroup__item">
-                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                <div class="o-btnCheckBox__text" data-filter-value="美國"></div>
-                                            </label>
-                                        </div>
-
-                                        <div class="l-pickGroup__item">
-                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                <div class="o-btnCheckBox__text" data-filter-value="第一金投信"></div>
-                                            </label>
-                                        </div>
-
-                                        <div class="l-pickGroup__item">
-                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                <div class="o-btnCheckBox__text" data-filter-value="全球新興市場"></div>
-                                            </label>
-                                        </div>
-
-                                        <div class="l-pickGroup__item">
-                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                <input class="o-btnCheckBox__input" type="checkbox">
-                                                <div class="o-btnCheckBox__text" data-filter-value="生化"></div>
-                                            </label>
-                                        </div>
+                                            <div class="l-pickGroup__item" style="@display">
+                                                <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
+                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                    <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                </label>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -124,67 +81,33 @@
                             <div class="c-filter__wrap">
                                 <div class="c-filter__group">
                                     <!-- 條件群組[data-filter-group] -->
-                                    <div class="c-filterForm" data-filter-group>
+                                    <div class="c-filterForm" id="uid-criteria-categoryTags"  data-filter-group>
                                         <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
                                         <div class="c-filterForm__title" data-filter-title>
-                                            <span>熱門主題</span>
+                                            <span>熱門主題</span>@*對應JSON欄位【CategoryTags】*@
                                         </div>
                                         <div class="c-filterForm__value">
                                             <div class="l-pickGroup">
+                                                @foreach (var tag in Model.HotProductList)
+                                                {
+                                                    string value = tag;
+                                                    string display = string.Empty;
 
-                                                <div class="l-pickGroup__item">
-                                                    <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                    <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                    <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                        <input class="o-btnCheckBox__input" type="checkbox">
-                                                        <div class="o-btnCheckBox__text" data-filter-value="百元ETF"></div>
-                                                    </label>
-                                                </div>
+                                                    if (tag == null)
+                                                    {
+                                                        display = "display: none;";
+                                                        value = string.Empty;
+                                                    }
 
-                                                <div class="l-pickGroup__item">
-                                                    <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                    <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                    <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                        <input class="o-btnCheckBox__input" type="checkbox">
-                                                        <div class="o-btnCheckBox__text" data-filter-value="醫股潮流"></div>
-                                                    </label>
-                                                </div>
-
-                                                <div class="l-pickGroup__item">
-                                                    <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                    <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                    <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                        <input class="o-btnCheckBox__input" type="checkbox">
-                                                        <div class="o-btnCheckBox__text" data-filter-value="源源不絕"></div>
-                                                    </label>
-                                                </div>
-
-                                                <div class="l-pickGroup__item">
-                                                    <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                    <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                    <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                        <input class="o-btnCheckBox__input" type="checkbox">
-                                                        <div class="o-btnCheckBox__text" data-filter-value="新興崛起"></div>
-                                                    </label>
-                                                </div>
-
-                                                <div class="l-pickGroup__item">
-                                                    <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                    <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                    <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                        <input class="o-btnCheckBox__input" type="checkbox">
-                                                        <div class="o-btnCheckBox__text" data-filter-value="優質守選"></div>
-                                                    </label>
-                                                </div>
-
-                                                <div class="l-pickGroup__item">
-                                                    <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                    <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                    <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                        <input class="o-btnCheckBox__input" type="checkbox">
-                                                        <div class="o-btnCheckBox__text" data-filter-value="愛地球"></div>
-                                                    </label>
-                                                </div>
+                                                    <div class="l-pickGroup__item" style="@display">
+                                                        <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                        <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                        <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
+                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                            <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                        </label>
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -284,7 +207,7 @@
                                                                             if (currency == null)
                                                                             {
                                                                                 display = "display: none;";
-                                                                                value = string.Empty;;
+                                                                                value = string.Empty;
                                                                             }
 
                                                                             <div class="l-pickGroup__item" style="@display">
@@ -344,8 +267,8 @@
                                                                             if (frequency == null)
                                                                             {
                                                                                 display = "display: none;";
-                                                                                value = string.Empty;;
-                                                                                distribution = string.Empty;;
+                                                                                value = string.Empty;
+                                                                                distribution = string.Empty;
                                                                             }
                                                                             else
                                                                             {
@@ -444,7 +367,7 @@
                                                                                         if (investmentTarget == null)
                                                                                         {
                                                                                             display = "display: none;";
-                                                                                            value = string.Empty;;
+                                                                                            value = string.Empty;
                                                                                         }
 
                                                                                         <div class="l-pickGroup__item" style="@display">
@@ -503,7 +426,7 @@
                                                                                         if (investmentRegion == null)
                                                                                         {
                                                                                             display = "display: none;";
-                                                                                            value = string.Empty;;
+                                                                                            value = string.Empty;
                                                                                         }
 
                                                                                         <div class="l-pickGroup__item" style="@display">
@@ -562,7 +485,7 @@
                                                                                         if (company == null)
                                                                                         {
                                                                                             display = "display: none;";
-                                                                                            value = string.Empty;;
+                                                                                            value = string.Empty;
                                                                                         }
 
                                                                                         <div class="l-pickGroup__item" style="@display">
@@ -621,7 +544,7 @@
                                                                                         if (exchange == null)
                                                                                         {
                                                                                             display = "display: none;";
-                                                                                            value = string.Empty;;
+                                                                                            value = string.Empty;
                                                                                         }
 
                                                                                         <div class="l-pickGroup__item" style="@display">
@@ -680,7 +603,7 @@
                                                                                         if (investmentStyle == null)
                                                                                         {
                                                                                             display = "display: none;";
-                                                                                            value = string.Empty;;
+                                                                                            value = string.Empty;
                                                                                         }
 
                                                                                         <div class="l-pickGroup__item" style="@display">

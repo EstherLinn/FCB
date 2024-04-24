@@ -14,7 +14,17 @@
                         <a href="@(Model.DetailPageLink)?code=<%= FirstBankCode.Value %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode.Text %> <%= ETFName.Text %></a>
                     </div>
                     @*標籤*@
-                    @*<div class="l-target__additional"> <ul class="l-tag"> <li class="l-tag__item"> <a href="#" class="o-tag">0信託管理費</a> </li> </ul> </div>*@
+                    <% if (DiscountTags.length > 0) { %>
+                    <div class="l-target__additional">
+                        <ul class="l-tag">
+                            <% for (var i = 0; i < DiscountTags.length; i++) { %>
+                            <li class="l-tag__item">
+                                <a href="#" class="o-tag"><%= DiscountTags[i] %></a>
+                            </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <% } %>
                 </div>
             </div>
         </td>

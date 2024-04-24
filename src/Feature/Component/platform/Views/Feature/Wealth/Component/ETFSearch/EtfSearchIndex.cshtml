@@ -375,6 +375,8 @@
                 });
 
                 //#region Criteria
+                fjs.addCriteria({ field: 'DiscountTags', ele: '#uid-criteria-discountTags :checkbox' });
+                fjs.addCriteria({ field: 'CategoryTags', ele: '#uid-criteria-categoryTags :checkbox' });
 
                 fjs.addCriteria({ field: 'RegionType.Value', ele: '#uid-criteria-regionType :checkbox' });
                 fjs.addCriteria({ field: 'RegionType.Value', ele: '#uid-criteria-regionType :checkbox', all: 'all', selector: ':not(:checked)' });
@@ -428,7 +430,7 @@
                         $('[data-keyword-submit]').trigger('click.loading');
                     }
                 });
-                fjs.filter();
+                //fjs.filter();
                 //console.log(fjs.records);
                 return fjs;
             }
@@ -466,7 +468,7 @@
                     if (Object.keys(this.Result.List).length != 0) {
                         $.each(this.Result.List, function (i, item) {
                             let obj = {
-                                value: /*item.FirstBankCode + ' ' +*/ item.ETFName.Value,
+                                value: item.FirstBankCode.Value + ' ' + item.ETFName.Value,
                                 data: {
                                     type: 'ETF',
                                     isLogin: false,
