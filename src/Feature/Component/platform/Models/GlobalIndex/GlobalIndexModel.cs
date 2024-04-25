@@ -36,12 +36,18 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string FundLink { get; set; }
         public string ETFLink { get; set; }
         public GlobalIndexDetail GlobalIndexDetail { get; set; }
-        public string RelevantGlobalIndex { get; set; }
-        public string RelevantFund { get; set; }
-        public string RelevantETF { get; set; }
-        public string PriceData_D { get; set; }
-        public string PriceData_W { get; set; }
-        public string PriceData_M { get; set; }
+        public string RelevantGlobalIndex { get; set; } = "[]";
+        public string RelevantGlobalIndex_Success { get; set; } = "Success";
+        public string RelevantFund { get; set; } = "[]";
+        public string RelevantFund_Success { get; set; } = "Success";
+        public string RelevantETF { get; set; } = "[]";
+        public string RelevantETF_Success { get; set; } = "Success";
+        public string PriceData_D { get; set; } = "[]";
+        public string PriceData_D_Success { get; set; } = "Success";
+        public string PriceData_W { get; set; } = "[]";
+        public string PriceData_W_Success { get; set; } = "Success";
+        public string PriceData_M { get; set; } = "[]";
+        public string PriceData_M_Success { get; set; } = "Success";
     }
 
     public class GlobalIndexDetail

@@ -196,6 +196,12 @@
                                 </div>
                                 <div class="c-empty__desc">沒有資料</div>
                             </div>
+                            <div class="c-error">
+                                <div class="c-error__img">
+                                    <img src="./../../themes/images/lions/lion-construction.svg" alt="">
+                                </div>
+                                <div class="c-error__desc">不好意思~伺服器出了一點小狀況。請您晚點再來！</div>
+                            </div>
                             <div class="c-chartBox">
                                 <div class="c-chartBox__info">
                                     <div class="l-slash l-slash--gy">
@@ -347,7 +353,7 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody id="fundPriceTBody"></tbody>
+                                    <tbody id="FundPriceTBody"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -607,7 +613,7 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody id="globalindexTBody"></tbody>
+                                    <tbody id="GlobalIndexTBody"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -735,8 +741,11 @@
 
 <script>
     const RelevantGlobalIndex = @Html.Raw(Model.RelevantGlobalIndex);
+    const RelevantGlobalIndex_Success = "@Model.RelevantGlobalIndex_Success";
     const RelevantFund = @Html.Raw(Model.RelevantFund);
+    const RelevantFund_Success = "@Model.RelevantFund_Success";
     const RelevantETF = @Html.Raw(Model.RelevantETF);
+    const RelevantETF_Success = "@Model.RelevantETF_Success";
 
     (function ($, window, document, undefined) {
         document.addEventListener('DOMContentLoaded', function () {
@@ -744,113 +753,119 @@
                 return;
             }
 
-            var fjs1 = FilterJS(RelevantGlobalIndex, '#globalindexTBody', {
-                template: '#template',
-                callbacks: {
-                    afterFilter: function (result) {
-                        window.loading('hide');
-                    }
-                },
-                search: {},
-                order: {
-                    default_sort: 'asc',
-                    sorts: [
-                        { field: 'group1', ele: 'select[data-sorting-linkto="globalIndexTable"]' },
-                    ],
-                    onSortEvent: function (f, e) {
-                        let $self = $(this);
-                        if (e.type === 'click') {
-
-                        } else if (e.type === 'change') {
-                            let $selected = $self.find(':selected');
-                            let field = $selected.data('sorting-column');
-                            let order = $selected.data('sorting-class');
-                            f.field = field;
-                            if (!!order) {
-                                if (order === 'is-desc') {
-                                    f.order = 'desc';
-                                } else if (order === 'is-asc') {
-                                    f.order = 'asc';
-                                }
-                            } else {
-                                f.order = f.order === 'desc' ? 'asc' : 'desc';
-                            }
+            if (RelevantGlobalIndex_Success == "Success") {
+                var fjs1 = FilterJS(RelevantGlobalIndex, '#GlobalIndexTBody', {
+                    template: '#template',
+                    callbacks: {
+                        afterFilter: function (result) {
+                            window.loading('hide');
                         }
                     },
-                }
-            });
+                    search: {},
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select[data-sorting-linkto="globalIndexTable"]' },
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') {
 
-            var fjs2 = FilterJS(RelevantFund, '#fundPriceTBody', {
-                template: '#template',
-                callbacks: {
-                    afterFilter: function (result) {
-                        window.loading('hide');
-                    }
-                },
-                search: {},
-                order: {
-                    default_sort: 'asc',
-                    sorts: [
-                        { field: 'group1', ele: 'select[data-sorting-linkto="fundPriceTable"]' },
-                    ],
-                    onSortEvent: function (f, e) {
-                        let $self = $(this);
-                        if (e.type === 'click') {
-
-                        } else if (e.type === 'change') {
-                            let $selected = $self.find(':selected');
-                            let field = $selected.data('sorting-column');
-                            let order = $selected.data('sorting-class');
-                            f.field = field;
-                            if (!!order) {
-                                if (order === 'is-desc') {
-                                    f.order = 'desc';
-                                } else if (order === 'is-asc') {
-                                    f.order = 'asc';
+                            } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order === 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
                                 }
-                            } else {
-                                f.order = f.order === 'desc' ? 'asc' : 'desc';
                             }
+                        },
+                    }
+                });
+            }
+
+            if (RelevantFund_Success == "Success") {
+                var fjs2 = FilterJS(RelevantFund, '#FundPriceTBody', {
+                    template: '#template',
+                    callbacks: {
+                        afterFilter: function (result) {
+                            window.loading('hide');
                         }
                     },
-                }
-            });
+                    search: {},
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select[data-sorting-linkto="fundPriceTable"]' },
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') {
 
-            var fjs3 = FilterJS(RelevantETF, '#ETFPriceTBody', {
-                template: '#template',
-                callbacks: {
-                    afterFilter: function (result) {
-                        window.loading('hide');
-                    }
-                },
-                search: {},
-                order: {
-                    default_sort: 'asc',
-                    sorts: [
-                        { field: 'group1', ele: 'select[data-sorting-linkto="ETFPriceTable"]' },
-                    ],
-                    onSortEvent: function (f, e) {
-                        let $self = $(this);
-                        if (e.type === 'click') {
-
-                        } else if (e.type === 'change') {
-                            let $selected = $self.find(':selected');
-                            let field = $selected.data('sorting-column');
-                            let order = $selected.data('sorting-class');
-                            f.field = field;
-                            if (!!order) {
-                                if (order === 'is-desc') {
-                                    f.order = 'desc';
-                                } else if (order === 'is-asc') {
-                                    f.order = 'asc';
+                            } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order === 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
                                 }
-                            } else {
-                                f.order = f.order === 'desc' ? 'asc' : 'desc';
                             }
+                        },
+                    }
+                });
+            }
+
+            if (RelevantETF_Success == "Success") {
+                var fjs3 = FilterJS(RelevantETF, '#ETFPriceTBody', {
+                    template: '#template',
+                    callbacks: {
+                        afterFilter: function (result) {
+                            window.loading('hide');
                         }
                     },
-                }
-            });
+                    search: {},
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select[data-sorting-linkto="ETFPriceTable"]' },
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') {
+
+                            } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order === 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+                        },
+                    }
+                });
+            }
 
             //為了不讓 plugins.min.js 統一 fixedColumns
             //所以自己取名 custom-data-fixed-columns
@@ -918,8 +933,11 @@
 
 <script>
     const data_D = @Html.Raw(Model.PriceData_D);
+    const data_D_success = "@Model.PriceData_D_Success";
     const data_W = @Html.Raw(Model.PriceData_W);
+    const data_W_success = "@Model.PriceData_W_Success";
     const data_M = @Html.Raw(Model.PriceData_M);
+    const data_M_success = "@Model.PriceData_M_Success";
 
     // 技術分析
     $(function () {
@@ -944,18 +962,31 @@
             try {
 
                 var data = [];
+                var success;
 
                 if (obj.type == 'day') {
                     data = data_D;
+                    success = data_D_success;
                 }
                 else if (obj.type == 'week') {
                     data = data_W;
+                    success = data_W_success;
                 }
                 else if (obj.type == 'month') {
                     data = data_M;
+                    success = data_M_success;
                 }
 
                 initPointFormatter = false;
+
+                if (success == "Fail") {
+                    $('[data-chart="kLine"]').find('.c-empty').addClass('u-hidden');
+                    $('[data-chart="kLine"]').find('.c-error').removeClass('u-hidden');
+                    $('[data-chart="kLine"]').find('.c-chartBox').addClass('u-hidden');
+
+                    return;
+                }
+
                 if (data.length != 0) {
                     let ohlc = [],
                         volume = [];
@@ -1397,10 +1428,14 @@
                         animation: false,
                         rendererType: 'webgl'
                     });
+
                     $('[data-chart="kLine"]').find('.c-empty').addClass('u-hidden');
+                    $('[data-chart="kLine"]').find('.c-error').addClass('u-hidden');
                     $('[data-chart="kLine"]').find('.c-chartBox').removeClass('u-hidden');
-                } else {
+                }
+                else {
                     $('[data-chart="kLine"]').find('.c-empty').removeClass('u-hidden');
+                    $('[data-chart="kLine"]').find('.c-error').addClass('u-hidden');
                     $('[data-chart="kLine"]').find('.c-chartBox').addClass('u-hidden');
                 }
             } catch (error) {

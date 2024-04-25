@@ -35,17 +35,63 @@ namespace Feature.Wealth.Component.Controllers
 
             var model = CreateModel(item, indexCode);
 
-            if(!string.IsNullOrEmpty(indexCode))
+            if (!string.IsNullOrEmpty(indexCode))
             {
                 // 取得相關指數、基金、ETF
-                model.RelevantGlobalIndex = GetGlobalInedxRelevantInformation(indexCode, RelevantInformationType.GlobalIndex, model.DetailLink);
-                model.RelevantFund = GetGlobalInedxRelevantInformation(indexCode, RelevantInformationType.Fund, Models.FundDetail.FundRelatedSettingModel.GetFundDetailsUrl());
-                model.RelevantETF = GetGlobalInedxRelevantInformation(indexCode, RelevantInformationType.ETF, model.ETFLink);
+                try
+                {
+                    model.RelevantGlobalIndex = GetGlobalInedxRelevantInformation(indexCode, RelevantInformationType.GlobalIndex, model.DetailLink);
+                }
+                catch (Exception ex)
+                {
+                    model.RelevantGlobalIndex_Success = "Fail";
+                }
+
+                try
+                {
+                    model.RelevantFund = GetGlobalInedxRelevantInformation(indexCode, RelevantInformationType.Fund, Models.FundDetail.FundRelatedSettingModel.GetFundDetailsUrl());
+                }
+                catch (Exception ex)
+                {
+                    model.RelevantFund_Success = "Fail";
+                }
+
+                try
+                {
+                    model.RelevantETF = GetGlobalInedxRelevantInformation(indexCode, RelevantInformationType.ETF, model.ETFLink);
+                }
+                catch (Exception ex)
+                {
+                    model.RelevantETF_Success = "Fail";
+                }
 
                 // 取得 K 線圖資料
-                model.PriceData_D = GetGlobalInedxPriceData(indexCode, "D");
-                model.PriceData_W = GetGlobalInedxPriceData(indexCode, "W");
-                model.PriceData_M = GetGlobalInedxPriceData(indexCode, "M");
+                try
+                {
+                    model.PriceData_D = GetGlobalInedxPriceData(indexCode, "D");
+                }
+                catch (Exception ex)
+                {
+                    model.PriceData_D_Success = "Fail";
+                }
+
+                try
+                {
+                    model.PriceData_W = GetGlobalInedxPriceData(indexCode, "W");
+                }
+                catch (Exception ex)
+                {
+                    model.PriceData_W_Success = "Fail";
+                }
+
+                try
+                {
+                    model.PriceData_M = GetGlobalInedxPriceData(indexCode, "M");
+                }
+                catch (Exception ex)
+                {
+                    model.PriceData_M_Success = "Fail";
+                }
             }
 
             return View("/Views/Feature/Wealth/Component/GlobalIndex/GlobalIndexDetailWrap.cshtml", model);
