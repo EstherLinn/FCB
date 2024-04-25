@@ -11,7 +11,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?code=<%= FirstBankCode.Value %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode.Text %> <%= ETFName.Text %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode.Value %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode.Text %> <%= ETFName.Text %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
