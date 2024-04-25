@@ -35,6 +35,12 @@
 
         <div class="c-tab__panel is-active" data-tab-panel-id="tab-1" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
+                @if (!string.IsNullOrEmpty(Model.MarketPricePerformanceIntro.ToString()))
+                {
+                    <div class="l-flex__item">
+                        @Model.MarketPricePerformanceIntro
+                    </div>
+                }
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
                         <div class="l-flex__item">
@@ -88,6 +94,12 @@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-2" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
+                @if (!string.IsNullOrEmpty(Model.NetWorthPerformanceIntro.ToString()))
+                {
+                    <div class="l-flex__item">
+                        @Model.NetWorthPerformanceIntro
+                    </div>
+                }
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
                         <div class="l-flex__item">
@@ -141,9 +153,12 @@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-3" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
-                <div class="l-flex__item">
-                    @Model.MarketPriceRiskIntro
-                </div>
+                @if (!string.IsNullOrEmpty(Model.MarketPriceRiskIntro.ToString()))
+                {
+                    <div class="l-flex__item">
+                        @Model.MarketPriceRiskIntro
+                    </div>
+                }
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
                         <div class="l-flex__item">
@@ -186,9 +201,12 @@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-4" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
-                <div class="l-flex__item">
-                    @Model.NetWorthRiskIntro
-                </div>
+                @if (!string.IsNullOrEmpty(Model.NetWorthRiskIntro.ToString()))
+                {
+                    <div class="l-flex__item">
+                        @Model.NetWorthRiskIntro
+                    </div>
+                }
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
                         <div class="l-flex__item">
@@ -231,6 +249,12 @@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-5" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
+                @if (!string.IsNullOrEmpty(Model.TransactionStatusIntro.ToString()))
+                {
+                    <div class="l-flex__item">
+                        @Model.TransactionStatusIntro
+                    </div>
+                }
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
                         <div class="l-flex__item">
@@ -271,6 +295,12 @@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-6" data-filter-empty="false">
             <div class="l-flex u-flex-col u-flex-gap-sm">
+                @if (!string.IsNullOrEmpty(Model.InformationIntro.ToString()))
+                {
+                    <div class="l-flex__item">
+                        @Model.InformationIntro
+                    </div>
+                }
                 <div class="l-flex__item">
                     <div class="l-flex l-flex--wrap u-flex-gap-sm">
                         <div class="l-flex__item">
@@ -326,8 +356,6 @@
                 </div>
             </div>
         </div>
-
-
 
         <div class="l-table" data-filter-empty="false">
             <table id="uid-table" class="c-table@dt-only c-cardTable@lt">
