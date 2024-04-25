@@ -219,6 +219,47 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// 合併後國內外的基金類型
         /// </summary>
         public string FormatFundType { get; set; }
+
+        /// <summary>
+        /// 成立至今 報酬率 (原幣)
+        /// </summary>
+        public decimal InceptionDateReturnOriginalCurrency { get; set; }
+
+        /// <summary>
+        /// 年初至今 報酬率 (原幣)
+        /// </summary>
+        public decimal YeartoDateReturnOriginalCurrency { get; set; }
+
+        /// <summary>
+        /// 成立至今 報酬率 (台幣)
+        /// </summary>
+        public decimal InceptionDateReturnTWD { get; set; }
+
+        /// <summary>
+        /// 年初至今 報酬率 (原幣)
+        /// </summary>
+        public decimal YeartoDateReturnTWD { get; set; }
+
+        /// <summary>
+        /// 二年 報酬率 (原幣)
+        /// </summary>
+        public decimal TwoYearReturnOriginalCurrency { get; set; }
+
+        /// <summary>
+        /// 三年 報酬率 (原幣)
+        /// </summary>
+        public decimal ThreeYearReturnOriginalCurrency { get; set; }
+
+        /// <summary>
+        /// 二年 報酬率 (台幣)
+        /// </summary>
+        public decimal TwoYearReturnTWD { get; set; }
+
+        /// <summary>
+        /// 三年 報酬率 (台幣)
+        /// </summary>
+        public decimal ThreeYearReturnTWD { get; set; }
+
     }
 
     /// <summary>
@@ -285,6 +326,22 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public string value { get; set; }
 
         public FundData Data { get; set; }
+
+        public decimal InceptionDateReturnOriginalCurrency { get; set; }
+
+        public decimal YeartoDateReturnOriginalCurrency { get; set; }
+
+        public decimal InceptionDateReturnTWD { get; set; }
+
+        public decimal YeartoDateReturnTWD { get; set; }
+
+        public decimal TwoYearReturnOriginalCurrency { get; set; }
+
+        public decimal ThreeYearReturnOriginalCurrency { get; set; }
+
+        public decimal TwoYearReturnTWD { get; set; }
+
+        public decimal ThreeYearReturnTWD { get; set; }
 
     }
 

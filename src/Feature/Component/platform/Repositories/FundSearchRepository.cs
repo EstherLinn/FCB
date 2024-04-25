@@ -149,6 +149,16 @@ namespace Feature.Wealth.Component.Repositories
                 vm.InvestmentTargetName = f.InvestmentTargetName ?? string.Empty;
                 vm.FundRating = f.FundRating;
 
+                vm.YeartoDateReturnOriginalCurrency = f.YeartoDateReturnOriginalCurrency;
+                vm.InceptionDateReturnOriginalCurrency = f.InceptionDateReturnOriginalCurrency;
+                vm.TwoYearReturnOriginalCurrency = f.TwoYearReturnOriginalCurrency;
+                vm.ThreeYearReturnOriginalCurrency = f.ThreeYearReturnOriginalCurrency;
+
+                vm.YeartoDateReturnTWD = f.YeartoDateReturnTWD;
+                vm.InceptionDateReturnTWD = f.InceptionDateReturnTWD;
+                vm.TwoYearReturnTWD = f.TwoYearReturnTWD;
+                vm.ThreeYearReturnTWD = f.ThreeYearReturnTWD;
+
                 result.Add(vm);
             }
             return result;
