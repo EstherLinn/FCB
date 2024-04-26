@@ -43,7 +43,7 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     TagName = item[Template.FundSearch.Fields.TagName],
                     ProductCodes = item[Template.FundTags.Fields.ProductCodeList].Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList()
-            });
+                });
             }
             foreach (var item in protagFolder.GetChildren(Template.FundTags.Fields.FundTags))
             {
@@ -54,7 +54,7 @@ namespace Feature.Wealth.Component.Repositories
                 });
             }
 
-            
+
 
             var result = new List<Funds>();
 
@@ -91,9 +91,9 @@ namespace Feature.Wealth.Component.Repositories
                 }
                 vm.Currency = new KeyValuePair<string, string>(f.CurrencyCode, f.CurrencyName);
                 vm.SixMonthReturnOriginalCurrency = CreateReturnDictionary(f.SixMonthReturnOriginalCurrency);
-                vm.OneMonthReturnOriginalCurrency = CreateReturnDictionary( f.OneMonthReturnOriginalCurrency);
+                vm.OneMonthReturnOriginalCurrency = CreateReturnDictionary(f.OneMonthReturnOriginalCurrency);
                 vm.ThreeMonthReturnOriginalCurrency = CreateReturnDictionary(f.ThreeMonthReturnOriginalCurrency);
-                vm.OneYearReturnOriginalCurrency = CreateReturnDictionary( f.OneYearReturnOriginalCurrency);
+                vm.OneYearReturnOriginalCurrency = CreateReturnDictionary(f.OneYearReturnOriginalCurrency);
                 vm.SixMonthReturnTWD = CreateReturnDictionary(f.SixMonthReturnTWD);
                 vm.OneMonthReturnTWD = CreateReturnDictionary(f.OneMonthReturnTWD);
                 vm.ThreeMonthReturnTWD = CreateReturnDictionary(f.ThreeMonthReturnTWD);
@@ -104,8 +104,8 @@ namespace Feature.Wealth.Component.Repositories
                 vm.FundSizeMillionOriginalCurrency = RoundFundSize(f.FundSizeMillionOriginalCurrency);
                 vm.FundSizeMillionTWD = RoundFundSize(f.FundSizeMillionTWD);
                 vm.FundType = f.FormatFundType;
-               
-                if(f.DividendFrequencyName =="無" || f.DividendFrequencyName == null)
+
+                if (f.DividendFrequencyName == "無" || f.DividendFrequencyName == null)
                 {
                     vm.DividendFrequencyName = "不配息";
                 }
@@ -127,7 +127,7 @@ namespace Feature.Wealth.Component.Repositories
                 if (!string.IsNullOrEmpty(f.InvestmentRegionName))
                 {
                     vm.InvestmentRegionName = f.InvestmentRegionName.Split(',')
-                        .Select(region => region.Trim()) 
+                        .Select(region => region.Trim())
                         .ToList();
                 }
                 else
@@ -149,15 +149,15 @@ namespace Feature.Wealth.Component.Repositories
                 vm.InvestmentTargetName = f.InvestmentTargetName ?? string.Empty;
                 vm.FundRating = f.FundRating;
 
-                vm.YeartoDateReturnOriginalCurrency = f.YeartoDateReturnOriginalCurrency;
-                vm.InceptionDateReturnOriginalCurrency = f.InceptionDateReturnOriginalCurrency;
-                vm.TwoYearReturnOriginalCurrency = f.TwoYearReturnOriginalCurrency;
-                vm.ThreeYearReturnOriginalCurrency = f.ThreeYearReturnOriginalCurrency;
+                vm.YeartoDateReturnOriginalCurrency = RoundingPrice(f.YeartoDateReturnOriginalCurrency);
+                vm.InceptionDateReturnOriginalCurrency = RoundingPrice(f.InceptionDateReturnOriginalCurrency);
+                vm.TwoYearReturnOriginalCurrency = RoundingPrice(f.TwoYearReturnOriginalCurrency);
+                vm.ThreeYearReturnOriginalCurrency = RoundingPrice(f.ThreeYearReturnOriginalCurrency);
 
-                vm.YeartoDateReturnTWD = f.YeartoDateReturnTWD;
-                vm.InceptionDateReturnTWD = f.InceptionDateReturnTWD;
-                vm.TwoYearReturnTWD = f.TwoYearReturnTWD;
-                vm.ThreeYearReturnTWD = f.ThreeYearReturnTWD;
+                vm.YeartoDateReturnTWD = RoundingPrice(f.YeartoDateReturnTWD);
+                vm.InceptionDateReturnTWD = RoundingPrice(f.InceptionDateReturnTWD);
+                vm.TwoYearReturnTWD = RoundingPrice(f.TwoYearReturnTWD);
+                vm.ThreeYearReturnTWD = RoundingPrice(f.ThreeYearReturnTWD);
 
                 result.Add(vm);
             }
@@ -183,7 +183,7 @@ namespace Feature.Wealth.Component.Repositories
             bool isUp = value >= 0;
             if (value != null)
             {
-                value = decimal.Round((decimal)value, 4);
+                value = decimal.Round((decimal)value * 100, 4);
             }
             return new KeyValuePair<bool, decimal?>(isUp, value);
         }
@@ -205,7 +205,15 @@ namespace Feature.Wealth.Component.Repositories
             }
             return value;
         }
+        private decimal? RoundingPrice(decimal? number)
+        {
+            if (!number.HasValue)
+            {
+                return null;
+            }
 
+            return Math.Round(number.Value, 4, MidpointRounding.AwayFromZero);
+        }
 
         public IList<FundItem> GetAutoCompleteData()
         {
@@ -229,7 +237,7 @@ namespace Feature.Wealth.Component.Repositories
                         Type = item.FundType,
                         IsLogin = false,
                         IsLike = false,
-                        DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl()+"?id="+item.ProductCode,
+                        DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl() + "?id=" + item.ProductCode,
                         Purchase = item.OnlineSubscriptionAvailability == "Y" ? true : false
                     }
                 };
