@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Feature.Wealth.Component.Models.ETF.Search
+﻿namespace Feature.Wealth.Component.Models.ETF.Search
 {
     public class EtfSearchResult
     {
@@ -26,17 +24,17 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// <summary>
         /// 交易所代碼
         /// </summary>
-        public string ExchangeCode { get; set; }
+        public StringPair ExchangeCode { get; set; }
 
         /// <summary>
         /// 價格(市價)
         /// </summary>
-        public decimal? MarketPrice { get; set; }
+        public VolumePair MarketPrice { get; set; }
 
         /// <summary>
         /// 價格(淨值)
         /// </summary>
-        public decimal? NetAssetValue { get; set; }
+        public VolumePair NetAssetValue { get; set; }
 
         /// <summary>
         /// 淨值日期
@@ -47,27 +45,7 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// 幣別
         /// </summary>
         /// <remarks>Key: 幣別代碼，Value: 幣別名稱</remarks>
-        public KeyValuePair<string, string> CurrencyPair { get; set; }
-
-        /// <summary>
-        /// 計價(市價)幣別
-        /// </summary>
-        //public string QuoteCurrency { get; set; }
-
-        /// <summary>
-        /// 幣別代碼
-        /// </summary>
-        //public string CurrencyCode { get; set; }
-
-        /// <summary>
-        /// 幣別名稱
-        /// </summary>
-        //public string CurrencyName { get; set; }
-
-        /// <summary>
-        /// 計價幣別
-        /// </summary>
-        //public string Currency { get; set; }
+        public StringPair CurrencyPair { get; set; }
 
         /// <summary>
         /// 是否可於網路申購
@@ -78,57 +56,49 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// 風險等級
         /// </summary>
         /// <remarks>風險屬性</remarks>
-        public string RiskLevel { get; set; }
+        public StringPair RiskLevel { get; set; }
 
         #region 報酬率 (市價原幣)
 
         /// <summary>
         /// 成立至今 報酬率 (市價原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> InceptionDateMarketPriceOriginalCurrency { get; set; }
+        public Percentage InceptionDateMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 年初至今 報酬率 (市價原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> YeartoDateReturnMarketPriceOriginalCurrency { get; set; }
+        public Percentage YeartoDateReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一個月 報酬率 (市價原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> MonthlyReturnMarketPriceOriginalCurrency { get; set; }
+        public Percentage MonthlyReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三個月 報酬率 (市價原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> ThreeMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public Percentage ThreeMonthReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 六個月 報酬率 (市價原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> SixMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public Percentage SixMonthReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年 報酬率 (市價原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> OneYearReturnMarketPriceOriginalCurrency { get; set; }
+        public Percentage OneYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 二年 報酬率 (市價原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> TwoYearReturnMarketPriceOriginalCurrency { get; set; }
+        public Percentage TwoYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年 報酬率 (市價原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> ThreeYearReturnMarketPriceOriginalCurrency { get; set; }
+        public Percentage ThreeYearReturnMarketPriceOriginalCurrency { get; set; }
 
         #endregion 報酬率 (市價原幣)
 
@@ -137,50 +107,42 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// <summary>
         /// 成立至今 報酬率 (市價台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> InceptionDateMarketPriceTWD { get; set; }
+        public Percentage InceptionDateMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 年初至今 報酬率 (市價台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> YeartoDateReturnMarketPriceTWD { get; set; }
+        public Percentage YeartoDateReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 一個月 報酬率 (市價台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> MonthlyReturnMarketPriceTWD { get; set; }
+        public Percentage MonthlyReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 三個月 報酬率 (市價台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> ThreeMonthReturnMarketPriceTWD { get; set; }
+        public Percentage ThreeMonthReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 六個月 報酬率 (市價台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> SixMonthReturnMarketPriceTWD { get; set; }
+        public Percentage SixMonthReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 一年 報酬率 (市價台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> OneYearReturnMarketPriceTWD { get; set; }
+        public Percentage OneYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 二年 報酬率 (市價台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> TwoYearReturnMarketPriceTWD { get; set; }
+        public Percentage TwoYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 三年 報酬率 (市價台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> ThreeYearReturnMarketPriceTWD { get; set; }
+        public Percentage ThreeYearReturnMarketPriceTWD { get; set; }
 
         #endregion 報酬率 (市價台幣)
 
@@ -189,50 +151,42 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// <summary>
         /// 成立至今 報酬率 (淨值原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> InceptionDateNetValueOriginalCurrency { get; set; }
+        public Percentage InceptionDateNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 年初至今 報酬率 (淨值原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> YeartoDateReturnNetValueOriginalCurrency { get; set; }
+        public Percentage YeartoDateReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一個月 報酬率 (淨值原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> MonthlyReturnNetValueOriginalCurrency { get; set; }
+        public Percentage MonthlyReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三個月 報酬率 (淨值原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> ThreeMonthReturnNetValueOriginalCurrency { get; set; }
+        public Percentage ThreeMonthReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 六個月 報酬率 (淨值原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> SixMonthReturnNetValueOriginalCurrency { get; set; }
+        public Percentage SixMonthReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年 報酬率 (淨值原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> OneYearReturnNetValueOriginalCurrency { get; set; }
+        public Percentage OneYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 二年 報酬率 (淨值原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> TwoYearReturnNetValueOriginalCurrency { get; set; }
+        public Percentage TwoYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年 報酬率 (淨值原幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> ThreeYearReturnNetValueOriginalCurrency { get; set; }
+        public Percentage ThreeYearReturnNetValueOriginalCurrency { get; set; }
 
         #endregion 報酬率 (淨值原幣)
 
@@ -241,50 +195,42 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// <summary>
         /// 成立至今 報酬率 (淨值台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> InceptionDateNetValueTWD { get; set; }
+        public Percentage InceptionDateNetValueTWD { get; set; }
 
         /// <summary>
         /// 年初至今 報酬率 (淨值台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> YeartoDateReturnNetValueTWD { get; set; }
+        public Percentage YeartoDateReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 一個月 報酬率 (淨值台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> MonthlyReturnNetValueTWD { get; set; }
+        public Percentage MonthlyReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 三個月 報酬率 (淨值台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> ThreeMonthReturnNetValueTWD { get; set; }
+        public Percentage ThreeMonthReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 六個月 報酬率 (淨值台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> SixMonthReturnNetValueTWD { get; set; }
+        public Percentage SixMonthReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 一年 報酬率 (淨值台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> OneYearReturnNetValueTWD { get; set; }
+        public Percentage OneYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 二年 報酬率 (淨值台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> TwoYearReturnNetValueTWD { get; set; }
+        public Percentage TwoYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 三年 報酬率 (淨值台幣)
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 報酬率</remarks>
-        public KeyValuePair<bool, decimal?> ThreeYearReturnNetValueTWD { get; set; }
+        public Percentage ThreeYearReturnNetValueTWD { get; set; }
 
         #endregion 報酬率 (淨值台幣)
 
@@ -293,17 +239,17 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// <summary>
         /// Sharpe (淨值風險)
         /// </summary>
-        public decimal? SharpeNetValueRisk { get; set; }
+        public VolumePair SharpeNetValueRisk { get; set; }
 
         /// <summary>
         /// Beta (淨值風險)
         /// </summary>
-        public decimal? BetaNetValueRisk { get; set; }
+        public VolumePair BetaNetValueRisk { get; set; }
 
         /// <summary>
         /// 年化標準差 (淨值風險)
         /// </summary>
-        public decimal? AnnualizedStandardDeviationNetValueRisk { get; set; }
+        public VolumePair AnnualizedStandardDeviationNetValueRisk { get; set; }
 
         #endregion 淨值風險
 
@@ -312,17 +258,17 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// <summary>
         /// Sharpe (市價風險)
         /// </summary>
-        public decimal? SharpeRatioMarketPriceRisk { get; set; }
+        public VolumePair SharpeRatioMarketPriceRisk { get; set; }
 
         /// <summary>
         /// Beta (市價風險)
         /// </summary>
-        public decimal? BetaMarketPriceRisk { get; set; }
+        public VolumePair BetaMarketPriceRisk { get; set; }
 
         /// <summary>
         /// 年化標準差 (市價風險)
         /// </summary>
-        public decimal? AnnualizedStandardDeviationMarketPriceRisk { get; set; }
+        public VolumePair AnnualizedStandardDeviationMarketPriceRisk { get; set; }
 
         #endregion 市價風險
 
@@ -331,20 +277,19 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// <summary>
         /// 折溢價
         /// </summary>
-        /// <remarks>Key: 是否上漲，Value: 折溢價</remarks>
-        public KeyValuePair<bool, decimal?> DiscountPremium { get; set; }
+        public Percentage DiscountPremium { get; set; }
 
         /// <summary>
         /// 最新量(成交量)
         /// </summary>
         /// <remarks>Key: 成交量原始值，Value: 成交量轉換單位</remarks>
-        public KeyValuePair<decimal?, string> LatestVolumeTradingVolume { get; set; }
+        public VolumePair LatestVolumeTradingVolume { get; set; }
 
         /// <summary>
         /// 最新量(成交量) – 十日均量
         /// </summary>
         /// <remarks>Key: 成交量原始值，Value: 成交量轉換單位</remarks>
-        public KeyValuePair<decimal?, string> LatestVolumeTradingVolumeTenDayAverageVolume { get; set; }
+        public VolumePair LatestVolumeTradingVolumeTenDayAverageVolume { get; set; }
 
         #endregion 交易狀況
 
@@ -354,26 +299,26 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// 投資標的
         /// </summary>
         /// <remarks>Key: 投資標的 ID ，Value: 投資標的 名稱</remarks>
-        public KeyValuePair<int, string> InvestmentTarget { get; set; }
+        public IdValuePair InvestmentTarget { get; set; }
 
         /// <summary>
         /// 成立年資
         /// </summary>
-        public int EstablishmentSeniority { get; set; }
+        public IdPair EstablishmentSeniority { get; set; }
 
         /// <summary>
         /// 總管理費用(%)
         /// </summary>
-        public decimal? TotalManagementFee { get; set; }
+        public VolumePair TotalManagementFee { get; set; }
 
         /// <summary>
         /// ETF規模(百萬)
         /// </summary>
-        public decimal? ScaleMillions { get; set; }
+        public VolumePair ScaleMillions { get; set; }
 
-        #endregion
+        #endregion 基本資料
 
-        #region 其他為搜尋篩選用
+        #region 其他搜尋篩選用
 
         /// <summary>
         /// 國內/境外
@@ -390,26 +335,26 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// 投資區域
         /// </summary>
         /// <remarks>Key: 投資區域 ID ，Value: 投資區域 名稱</remarks>
-        public KeyValuePair<int, string> InvestmentRegion { get; set; }
+        public IdValuePair InvestmentRegion { get; set; }
 
         /// <summary>
         /// 發行公司
         /// </summary>
         /// <remarks>Key: 發行公司 ID ，Value: 發行公司 名稱</remarks>
-        public KeyValuePair<int, string> PublicLimitedCompany { get; set; }
+        public IdValuePair PublicLimitedCompany { get; set; }
 
         /// <summary>
         /// 投資風格
         /// </summary>
         /// <remarks>Key: 投資風格 ID ，Value: 投資風格 名稱</remarks>
-        public KeyValuePair<int, string> InvestmentStyle { get; set; }
+        public IdValuePair InvestmentStyle { get; set; }
 
         /// <summary>
         /// 交易所 ID
         /// </summary>
         public string ExchangeID { get; set; }
 
-        #endregion
+        #endregion 其他搜尋篩選用
 
         #region 貼標
 
@@ -428,6 +373,6 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// </summary>
         public string[] Tags { get; set; }
 
-        #endregion
+        #endregion 貼標
     }
 }

@@ -11,7 +11,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode.Value %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode.Text %> <%= ETFName.Text %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode %> <%= ETFName %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
@@ -57,82 +57,82 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
-                <a href="#" class="o-link"><%= CurrencyPair.Value %></a>
+                <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= CurrencyPair.Value %></a>
             </div>
         </td>
         @*【市價績效-報酬(原幣)】=> 市價績效*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable" data-table-column-currency="Original">
             <div class="c-cardTable__title" data-length="4">1個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= MonthlyReturnMarketPriceOriginalCurrency.Key %>"><%= MonthlyReturnMarketPriceOriginalCurrency.Text %></span>
+                <span class="<%= MonthlyReturnMarketPriceOriginalCurrency.Style %>"><%= MonthlyReturnMarketPriceOriginalCurrency.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable" data-table-column-currency="Original">
             <div class="c-cardTable__title" data-length="5">3個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= ThreeMonthReturnMarketPriceOriginalCurrency.Key %>"><%= ThreeMonthReturnMarketPriceOriginalCurrency.Text %></span>
+                <span class="<%= ThreeMonthReturnMarketPriceOriginalCurrency.Style %>"><%= ThreeMonthReturnMarketPriceOriginalCurrency.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable" data-table-column-currency="Original">
             <div class="c-cardTable__title" data-length="4">6個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= SixMonthReturnMarketPriceOriginalCurrency.Key %>"><%= SixMonthReturnMarketPriceOriginalCurrency.Text %></span>
+                <span class="<%= SixMonthReturnMarketPriceOriginalCurrency.Style %>"><%= SixMonthReturnMarketPriceOriginalCurrency.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable" data-table-column-currency="Original">
             <div class="c-cardTable__title" data-length="5">1年</div>
             <div class="c-cardTable__content">
-                <span class="<%= OneYearReturnMarketPriceOriginalCurrency.Key %>"><%= OneYearReturnMarketPriceOriginalCurrency.Text %></span>
+                <span class="<%= OneYearReturnMarketPriceOriginalCurrency.Style %>"><%= OneYearReturnMarketPriceOriginalCurrency.Text %></span>
             </div>
         </td>
         @*【市價績效-報酬(台幣)】=> 市價績效*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable" data-table-column-currency="TWD">
             <div class="c-cardTable__title" data-length="4">1個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= MonthlyReturnMarketPriceTWD.Key %>"><%= MonthlyReturnMarketPriceTWD.Text %></span>
+                <span class="<%= MonthlyReturnMarketPriceTWD.Style %>"><%= MonthlyReturnMarketPriceTWD.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable" data-table-column-currency="TWD">
             <div class="c-cardTable__title" data-length="5">3個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= ThreeMonthReturnMarketPriceTWD.Key %>"><%= ThreeMonthReturnMarketPriceTWD.Text %></span>
+                <span class="<%= ThreeMonthReturnMarketPriceTWD.Style %>"><%= ThreeMonthReturnMarketPriceTWD.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable" data-table-column-currency="TWD">
             <div class="c-cardTable__title" data-length="4">6個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= SixMonthReturnMarketPriceTWD.Key %>"><%= SixMonthReturnMarketPriceTWD.Text %></span>
+                <span class="<%= SixMonthReturnMarketPriceTWD.Style %>"><%= SixMonthReturnMarketPriceTWD.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable" data-table-column-currency="TWD">
             <div class="c-cardTable__title" data-length="5">1年</div>
             <div class="c-cardTable__content">
-                <span class="<%= OneYearReturnMarketPriceOriginalCurrency.Key %>"><%= OneYearReturnMarketPriceOriginalCurrency.Text %></span>
+                <span class="<%= OneYearReturnMarketPriceOriginalCurrency.Style %>"><%= OneYearReturnMarketPriceOriginalCurrency.Text %></span>
             </div>
         </td>
         @*【淨值績效-報酬(原幣)】=> 淨值績效*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable" data-table-column-currency="Original">
             <div class="c-cardTable__title" data-length="4">1個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= MonthlyReturnNetValueOriginalCurrency.Key %>"><%= MonthlyReturnNetValueOriginalCurrency.Text %></span>
+                <span class="<%= MonthlyReturnNetValueOriginalCurrency.Style %>"><%= MonthlyReturnNetValueOriginalCurrency.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable" data-table-column-currency="Original">
             <div class="c-cardTable__title" data-length="5">3個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= ThreeMonthReturnNetValueOriginalCurrency.Key %>"><%= ThreeMonthReturnNetValueOriginalCurrency.Text %></span>
+                <span class="<%= ThreeMonthReturnNetValueOriginalCurrency.Style %>"><%= ThreeMonthReturnNetValueOriginalCurrency.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable" data-table-column-currency="Original">
             <div class="c-cardTable__title" data-length="4">6個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= SixMonthReturnNetValueOriginalCurrency.Key %>"><%= SixMonthReturnNetValueOriginalCurrency.Text %></span>
+                <span class="<%= SixMonthReturnNetValueOriginalCurrency.Style %>"><%= SixMonthReturnNetValueOriginalCurrency.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable" data-table-column-currency="Original">
             <div class="c-cardTable__title" data-length="5">1年</div>
             <div class="c-cardTable__content">
-                <span class="<%= OneYearReturnNetValueOriginalCurrency.Key %>"><%= OneYearReturnNetValueOriginalCurrency.Text %></span>
+                <span class="<%= OneYearReturnNetValueOriginalCurrency.Style %>"><%= OneYearReturnNetValueOriginalCurrency.Text %></span>
             </div>
         </td>
 
@@ -140,25 +140,25 @@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable" data-table-column-currency="TWD">
             <div class="c-cardTable__title" data-length="4">1個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= MonthlyReturnNetValueTWD.Key %>"><%= MonthlyReturnNetValueTWD.Text %></span>
+                <span class="<%= MonthlyReturnNetValueTWD.Style %>"><%= MonthlyReturnNetValueTWD.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable" data-table-column-currency="TWD">
             <div class="c-cardTable__title" data-length="5">3個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= ThreeMonthReturnNetValueTWD.Key %>"><%= ThreeMonthReturnNetValueTWD.Text %></span>
+                <span class="<%= ThreeMonthReturnNetValueTWD.Style %>"><%= ThreeMonthReturnNetValueTWD.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable" data-table-column-currency="TWD">
             <div class="c-cardTable__title" data-length="4">6個月</div>
             <div class="c-cardTable__content">
-                <span class="<%= SixMonthReturnNetValueTWD.Key %>"><%= SixMonthReturnNetValueTWD.Text %></span>
+                <span class="<%= SixMonthReturnNetValueTWD.Style %>"><%= SixMonthReturnNetValueTWD.Text %></span>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable" data-table-column-currency="TWD">
             <div class="c-cardTable__title" data-length="5">1年</div>
             <div class="c-cardTable__content">
-                <span class="<%= OneYearReturnNetValueTWD.Key %>"><%= OneYearReturnNetValueTWD.Text %></span>
+                <span class="<%= OneYearReturnNetValueTWD.Style %>"><%= OneYearReturnNetValueTWD.Text %></span>
             </div>
         </td>
         @*【風險屬性】=> 市價風險,淨值風險*@
@@ -199,7 +199,7 @@
         @*【折溢價】=> 交易狀況*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="tradeTable">
             <div class="c-cardTable__title" data-length="5">折溢價</div>
-            <span class="<%= DiscountPremium.Key %>"><%= DiscountPremium.Text %></span>
+            <span class="<%= DiscountPremium.Style %>"><%= DiscountPremium.Text %></span>
         </td>
         @*【最新量】=> 交易狀況*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="tradeTable">

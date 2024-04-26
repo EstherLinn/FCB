@@ -57,86 +57,123 @@ namespace Feature.Wealth.Component.Repositories
             var collection = QueryBasicData();
             var tagList = GetTagSource();
 
+            Type[] ignoreTypes =
+            [
+                 typeof(Percentage),
+                 typeof(VolumePair),
+                 typeof(IdValuePair),
+                 typeof(StringPair),
+                 typeof(IdPair)
+            ];
+
             var config = new TypeAdapterConfig();
             config.ForType<BasicEtfDto, EtfSearchResult>()
+                .IgnoreMember((member, side) => ignoreTypes.Contains(member.Type))
                 .AfterMapping((src, dest) =>
                 {
                     dest.ETFName = src.ETFName.Normalize(NormalizationForm.FormKC);
                     dest.RegionType = IdentifyRegion(src.SysjustCode);
-                    dest.CurrencyPair = new KeyValuePair<string, string>(src.CurrencyCode, src.CurrencyName);
+                    dest.ExchangeCode = new StringPair()
+                    {
+                        Value = src.ExchangeCode,
+                        Text = string.IsNullOrEmpty(src.ExchangeCode) ? "-" : src.ExchangeCode
+                    };
+                    dest.CurrencyPair = new StringPair()
+                    {
+                        Key = src.CurrencyCode,
+                        Value = src.CurrencyName,
+                        Text = string.IsNullOrEmpty(src.CurrencyName) ? "-" : src.CurrencyName
+                    };
+                    dest.RiskLevel = new StringPair()
+                    {
+                        Value = src.RiskLevel,
+                        Text = string.IsNullOrEmpty(src.RiskLevel) ? "-" : src.RiskLevel
+                    };
                     dest.NetAssetValueDate = DateTimeFormat(src.NetAssetValueDate);
-                    dest.MarketPrice = RoundingPrice(src.MarketPrice);
-                    dest.NetAssetValue = RoundingPrice(src.NetAssetValue);
+                    dest.MarketPrice = ParseVolume(RoundingPrice(src.MarketPrice));
+                    dest.NetAssetValue = ParseVolume(RoundingPrice(src.NetAssetValue));
 
                     #region 報酬率
 
                     #region 報酬率 (市價原幣)
 
-                    dest.InceptionDateMarketPriceOriginalCurrency    = ParsePercentageChangeToKeyValue(src.InceptionDateMarketPriceOriginalCurrency);
-                    dest.YeartoDateReturnMarketPriceOriginalCurrency = ParsePercentageChangeToKeyValue(src.YeartoDateReturnMarketPriceOriginalCurrency);
-                    dest.MonthlyReturnMarketPriceOriginalCurrency    = ParsePercentageChangeToKeyValue(src.MonthlyReturnMarketPriceOriginalCurrency);
-                    dest.ThreeMonthReturnMarketPriceOriginalCurrency = ParsePercentageChangeToKeyValue(src.ThreeMonthReturnMarketPriceOriginalCurrency);
-                    dest.SixMonthReturnMarketPriceOriginalCurrency   = ParsePercentageChangeToKeyValue(src.SixMonthReturnMarketPriceOriginalCurrency);
-                    dest.OneYearReturnMarketPriceOriginalCurrency    = ParsePercentageChangeToKeyValue(src.OneYearReturnMarketPriceOriginalCurrency);
-                    dest.TwoYearReturnMarketPriceOriginalCurrency    = ParsePercentageChangeToKeyValue(src.TwoYearReturnMarketPriceOriginalCurrency);
-                    dest.ThreeYearReturnMarketPriceOriginalCurrency  = ParsePercentageChangeToKeyValue(src.ThreeYearReturnMarketPriceOriginalCurrency);
+                    dest.InceptionDateMarketPriceOriginalCurrency    = ParsePercentageChange(src.InceptionDateMarketPriceOriginalCurrency);
+                    dest.YeartoDateReturnMarketPriceOriginalCurrency = ParsePercentageChange(src.YeartoDateReturnMarketPriceOriginalCurrency);
+                    dest.MonthlyReturnMarketPriceOriginalCurrency    = ParsePercentageChange(src.MonthlyReturnMarketPriceOriginalCurrency);
+                    dest.ThreeMonthReturnMarketPriceOriginalCurrency = ParsePercentageChange(src.ThreeMonthReturnMarketPriceOriginalCurrency);
+                    dest.SixMonthReturnMarketPriceOriginalCurrency   = ParsePercentageChange(src.SixMonthReturnMarketPriceOriginalCurrency);
+                    dest.OneYearReturnMarketPriceOriginalCurrency    = ParsePercentageChange(src.OneYearReturnMarketPriceOriginalCurrency);
+                    dest.TwoYearReturnMarketPriceOriginalCurrency    = ParsePercentageChange(src.TwoYearReturnMarketPriceOriginalCurrency);
+                    dest.ThreeYearReturnMarketPriceOriginalCurrency  = ParsePercentageChange(src.ThreeYearReturnMarketPriceOriginalCurrency);
 
                     #endregion
 
                     #region 報酬率 (市價台幣)
 
-                    dest.InceptionDateMarketPriceTWD    = ParsePercentageChangeToKeyValue(src.InceptionDateMarketPriceTWD);
-                    dest.YeartoDateReturnMarketPriceTWD = ParsePercentageChangeToKeyValue(src.YeartoDateReturnMarketPriceTWD);
-                    dest.MonthlyReturnMarketPriceTWD    = ParsePercentageChangeToKeyValue(src.MonthlyReturnMarketPriceTWD);
-                    dest.ThreeMonthReturnMarketPriceTWD = ParsePercentageChangeToKeyValue(src.ThreeMonthReturnMarketPriceTWD);
-                    dest.SixMonthReturnMarketPriceTWD   = ParsePercentageChangeToKeyValue(src.SixMonthReturnMarketPriceTWD);
-                    dest.OneYearReturnMarketPriceTWD    = ParsePercentageChangeToKeyValue(src.OneYearReturnMarketPriceTWD);
-                    dest.TwoYearReturnMarketPriceTWD    = ParsePercentageChangeToKeyValue(src.TwoYearReturnMarketPriceTWD);
-                    dest.ThreeYearReturnMarketPriceTWD  = ParsePercentageChangeToKeyValue(src.ThreeYearReturnMarketPriceTWD);
+                    dest.InceptionDateMarketPriceTWD    = ParsePercentageChange(src.InceptionDateMarketPriceTWD);
+                    dest.YeartoDateReturnMarketPriceTWD = ParsePercentageChange(src.YeartoDateReturnMarketPriceTWD);
+                    dest.MonthlyReturnMarketPriceTWD    = ParsePercentageChange(src.MonthlyReturnMarketPriceTWD);
+                    dest.ThreeMonthReturnMarketPriceTWD = ParsePercentageChange(src.ThreeMonthReturnMarketPriceTWD);
+                    dest.SixMonthReturnMarketPriceTWD   = ParsePercentageChange(src.SixMonthReturnMarketPriceTWD);
+                    dest.OneYearReturnMarketPriceTWD    = ParsePercentageChange(src.OneYearReturnMarketPriceTWD);
+                    dest.TwoYearReturnMarketPriceTWD    = ParsePercentageChange(src.TwoYearReturnMarketPriceTWD);
+                    dest.ThreeYearReturnMarketPriceTWD  = ParsePercentageChange(src.ThreeYearReturnMarketPriceTWD);
 
                     #endregion
 
                     #region 報酬率 (淨值原幣)
 
-                    dest.InceptionDateNetValueOriginalCurrency    = ParsePercentageChangeToKeyValue(src.InceptionDateNetValueOriginalCurrency);
-                    dest.YeartoDateReturnNetValueOriginalCurrency = ParsePercentageChangeToKeyValue(src.YeartoDateReturnNetValueOriginalCurrency);
-                    dest.MonthlyReturnNetValueOriginalCurrency    = ParsePercentageChangeToKeyValue(src.MonthlyReturnNetValueOriginalCurrency);
-                    dest.ThreeMonthReturnNetValueOriginalCurrency = ParsePercentageChangeToKeyValue(src.ThreeMonthReturnNetValueOriginalCurrency);
-                    dest.SixMonthReturnNetValueOriginalCurrency   = ParsePercentageChangeToKeyValue(src.SixMonthReturnNetValueOriginalCurrency);
-                    dest.OneYearReturnNetValueOriginalCurrency    = ParsePercentageChangeToKeyValue(src.OneYearReturnNetValueOriginalCurrency);
-                    dest.TwoYearReturnNetValueOriginalCurrency    = ParsePercentageChangeToKeyValue(src.TwoYearReturnNetValueOriginalCurrency);
-                    dest.ThreeYearReturnNetValueOriginalCurrency  = ParsePercentageChangeToKeyValue(src.ThreeYearReturnNetValueOriginalCurrency);
+                    dest.InceptionDateNetValueOriginalCurrency    = ParsePercentageChange(src.InceptionDateNetValueOriginalCurrency);
+                    dest.YeartoDateReturnNetValueOriginalCurrency = ParsePercentageChange(src.YeartoDateReturnNetValueOriginalCurrency);
+                    dest.MonthlyReturnNetValueOriginalCurrency    = ParsePercentageChange(src.MonthlyReturnNetValueOriginalCurrency);
+                    dest.ThreeMonthReturnNetValueOriginalCurrency = ParsePercentageChange(src.ThreeMonthReturnNetValueOriginalCurrency);
+                    dest.SixMonthReturnNetValueOriginalCurrency   = ParsePercentageChange(src.SixMonthReturnNetValueOriginalCurrency);
+                    dest.OneYearReturnNetValueOriginalCurrency    = ParsePercentageChange(src.OneYearReturnNetValueOriginalCurrency);
+                    dest.TwoYearReturnNetValueOriginalCurrency    = ParsePercentageChange(src.TwoYearReturnNetValueOriginalCurrency);
+                    dest.ThreeYearReturnNetValueOriginalCurrency  = ParsePercentageChange(src.ThreeYearReturnNetValueOriginalCurrency);
 
                     #endregion
 
                     #region 報酬率 (淨值台幣)
 
-                    dest.InceptionDateNetValueTWD    = ParsePercentageChangeToKeyValue(src.InceptionDateNetValueTWD);
-                    dest.YeartoDateReturnNetValueTWD = ParsePercentageChangeToKeyValue(src.YeartoDateReturnNetValueTWD);
-                    dest.MonthlyReturnNetValueTWD    = ParsePercentageChangeToKeyValue(src.MonthlyReturnNetValueTWD);
-                    dest.ThreeMonthReturnNetValueTWD = ParsePercentageChangeToKeyValue(src.ThreeMonthReturnNetValueTWD);
-                    dest.SixMonthReturnNetValueTWD   = ParsePercentageChangeToKeyValue(src.SixMonthReturnNetValueTWD);
-                    dest.OneYearReturnNetValueTWD    = ParsePercentageChangeToKeyValue(src.OneYearReturnNetValueTWD);
-                    dest.TwoYearReturnNetValueTWD    = ParsePercentageChangeToKeyValue(src.TwoYearReturnNetValueTWD);
-                    dest.ThreeYearReturnNetValueTWD  = ParsePercentageChangeToKeyValue(src.ThreeYearReturnNetValueTWD);
+                    dest.InceptionDateNetValueTWD    = ParsePercentageChange(src.InceptionDateNetValueTWD);
+                    dest.YeartoDateReturnNetValueTWD = ParsePercentageChange(src.YeartoDateReturnNetValueTWD);
+                    dest.MonthlyReturnNetValueTWD    = ParsePercentageChange(src.MonthlyReturnNetValueTWD);
+                    dest.ThreeMonthReturnNetValueTWD = ParsePercentageChange(src.ThreeMonthReturnNetValueTWD);
+                    dest.SixMonthReturnNetValueTWD   = ParsePercentageChange(src.SixMonthReturnNetValueTWD);
+                    dest.OneYearReturnNetValueTWD    = ParsePercentageChange(src.OneYearReturnNetValueTWD);
+                    dest.TwoYearReturnNetValueTWD    = ParsePercentageChange(src.TwoYearReturnNetValueTWD);
+                    dest.ThreeYearReturnNetValueTWD  = ParsePercentageChange(src.ThreeYearReturnNetValueTWD);
 
                     #endregion 
 
                     #endregion 報酬率
 
-                    dest.AnnualizedStandardDeviationMarketPriceRisk = RoundingPercentage(src.AnnualizedStandardDeviationMarketPriceRisk);
-                    dest.AnnualizedStandardDeviationNetValueRisk = RoundingPercentage(src.AnnualizedStandardDeviationNetValueRisk);
-                    dest.DiscountPremium = ParsePercentageChangeToKeyValue(src.DiscountPremium);
-                    dest.LatestVolumeTradingVolume = ParseTradingVolumeToKeyValue(src.LatestVolumeTradingVolume);
-                    dest.LatestVolumeTradingVolumeTenDayAverageVolume = ParseTradingVolumeToKeyValue(src.LatestVolumeTradingVolumeTenDayAverageVolume);
+                    dest.DiscountPremium = ParsePercentageChange(src.DiscountPremium);
 
-                    dest.PublicLimitedCompany = new KeyValuePair<int, string>(src.PublicLimitedCompanyID, src.PublicLimitedCompanyName);
-                    dest.InvestmentTarget = new KeyValuePair<int, string>(src.InvestmentTargetID, src.InvestmentTargetName);
-                    dest.InvestmentRegion = new KeyValuePair<int, string>(src.InvestmentRegionID, src.InvestmentRegionName);
-                    dest.InvestmentStyle = new KeyValuePair<int, string>(src.InvestmentStyleID, src.InvestmentStyleName);
-                    dest.TotalManagementFee = RoundingPercentage(src.TotalManagementFee);
-                    dest.ScaleMillions = RoundingPrice(src.ScaleMillions);
+                    dest.SharpeNetValueRisk = ParseVolume(src.SharpeNetValueRisk);
+                    dest.SharpeRatioMarketPriceRisk = ParseVolume(src.SharpeRatioMarketPriceRisk);
+                    dest.BetaNetValueRisk = ParseVolume(src.BetaNetValueRisk);
+                    dest.BetaMarketPriceRisk = ParseVolume(src.BetaMarketPriceRisk);
+                    dest.AnnualizedStandardDeviationMarketPriceRisk = ParseVolume(RoundingPercentage(src.AnnualizedStandardDeviationMarketPriceRisk));
+                    dest.AnnualizedStandardDeviationNetValueRisk = ParseVolume(RoundingPercentage(src.AnnualizedStandardDeviationNetValueRisk));
+
+                    dest.LatestVolumeTradingVolume = ParseTradingVolume(src.LatestVolumeTradingVolume);
+                    dest.LatestVolumeTradingVolumeTenDayAverageVolume = ParseTradingVolume(src.LatestVolumeTradingVolumeTenDayAverageVolume);
+
+                    dest.PublicLimitedCompany = ParseIdValuePair(src.PublicLimitedCompanyID, src.PublicLimitedCompanyName);
+                    dest.InvestmentTarget = ParseIdValuePair(src.InvestmentTargetID, src.InvestmentTargetName);
+                    dest.InvestmentRegion = ParseIdValuePair(src.InvestmentRegionID, src.InvestmentRegionName);
+                    dest.InvestmentStyle = ParseIdValuePair(src.InvestmentStyleID, src.InvestmentStyleName);
+                    dest.EstablishmentSeniority = new IdPair()
+                    {
+                        Value = src.EstablishmentSeniority,
+                        Text = src.EstablishmentSeniority > 0 ? Convert.ToString(src.EstablishmentSeniority) : "-"
+                    };
+                    dest.TotalManagementFee = ParseVolume(RoundingPercentage(src.TotalManagementFee), "%");
+                    dest.ScaleMillions = ParseVolume(RoundingPrice(src.ScaleMillions));
                     dest.CanOnlineSubscription = src.OnlineSubscriptionAvailability?.ToUpper() == "Y";
+
 
                     dest.Tags = tagList?.Where(i => i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode)).Select(i => i.TagKey).ToArray();
                     dest.DiscountTags = tagList?.Where(i => i.TagType == TagType.Discount && i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
@@ -301,16 +338,51 @@ namespace Feature.Wealth.Component.Repositories
             return dateTime?.ToString(format);
         }
 
-        private KeyValuePair<bool, decimal?> ParsePercentageChangeToKeyValue(decimal? value)
+        private Percentage ParsePercentageChange(decimal? number)
         {
-            var keyValuePair = new KeyValuePair<bool, decimal?> ( IsUpPercentage(value), RoundingPercentage(value) );
-            return keyValuePair;
+            var pair = new Percentage()
+            {
+                IsUp = IsUpPercentage(number),
+                Value = RoundingPercentage(number),
+            };
+            pair.Text = number.HasValue ? Math.Abs(pair.Value.Value) + "%" : "-";
+
+            if (number.HasValue)
+            {
+                pair.Style = pair.IsUp ? "o-rise" : "o-fall";
+            }
+            return pair;
         }
 
-        private KeyValuePair<decimal?, string> ParseTradingVolumeToKeyValue(decimal? value)
+        private VolumePair ParseTradingVolume(decimal? number)
         {
-            var keyValuePair = new KeyValuePair<decimal?, string>(value, NumberExtensions.FormatNumber(value));
-            return keyValuePair;
+            var pair = new VolumePair
+            {
+                Value = number.HasValue ? number.Value : null,
+                Text = number.HasValue ? NumberExtensions.FormatNumber(number) : "-"
+            };
+            return pair;
+        }
+
+        private VolumePair ParseVolume(decimal? number, string suffix = "")
+        {
+            var pair = new VolumePair()
+            {
+                Value = number.HasValue ? number.Value : null,
+                Text = number.HasValue ? number.Value.ToString() + suffix : "-"
+            };
+            return pair;
+        }
+
+        private IdValuePair ParseIdValuePair(int id, string name)
+        {
+            var pair = new IdValuePair()
+            {
+                Key = id,
+                Value = name,
+                Text = string.IsNullOrEmpty(name) ? "-" : name
+            };
+            return pair;
         }
 
         /// <summary>
