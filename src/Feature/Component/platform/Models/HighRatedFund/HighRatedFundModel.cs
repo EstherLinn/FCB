@@ -29,7 +29,8 @@ namespace Feature.Wealth.Component.Models.HighRatedFund
             /// 淨值日期
             /// </summary>
             public DateTime NetAssetValueDate { get; set; }
-
+            public string NetAssetValueDateFormat => NetAssetValueDate.ToString("yyyy/MM/dd");
+            
             /// <summary>
             /// 淨值
             /// </summary>
