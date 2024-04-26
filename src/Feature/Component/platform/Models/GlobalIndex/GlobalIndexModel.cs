@@ -11,6 +11,7 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string DetailLink { get; set; }
         public IList<GlobalIndex> GlobalIndexList { get; set; }
         public Dictionary<string, GlobalIndex> GlobalIndexDictionary { get; set; }
+        public string GlobalIndexHighchartsDataJson { get; set; }
     }
 
     public class GlobalIndex
@@ -26,8 +27,13 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string ChangePercentage { get; set; }
         public bool UpOrDown { get; set; }
         public IList<GlobalIndex> GlobalIndexHistory { get; set; }
-        public string GlobalIndexHistoryJson { get; set; }
         public string DetailLink { get; set; }
+    }
+
+    public class GlobalIndexHighchartsData
+    {
+        public string IndexCode { get; set; }
+        public List<float> Data { get; set; }
     }
 
     public class GlobalIndexDetailModel

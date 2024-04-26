@@ -25,7 +25,6 @@ namespace Feature.Wealth.Component.Controllers
             {
                 // 排序改成舊到新
                 globalIndex.GlobalIndexHistory = _globalIndexRepository.GetGlobalIndexHistoryList(globalIndex.IndexCode).OrderBy(c => c.DataDate).ToList();
-                globalIndex.GlobalIndexHistoryJson = JsonSerializer.Serialize(globalIndex.GlobalIndexHistory.Select(c => float.Parse(c.MarketPrice)).ToList());
             }
 
             return View("/Views/Feature/Wealth/Component/GlobalIndex/GlobalIndexMainstage.cshtml", CreateModel(item, globalIndexList));
@@ -43,10 +42,19 @@ namespace Feature.Wealth.Component.Controllers
         protected GlobalIndexModel CreateModel(Item item, IList<GlobalIndex> globalIndexList)
         {
             var detailLink = ItemUtils.GeneralLink(item, Template.GlobalIndex.Fields.DetailLink)?.Url;
+            List<GlobalIndexHighchartsData> datas = new List<GlobalIndexHighchartsData>();
 
             foreach (var globalIndex in globalIndexList)
             {
                 globalIndex.DetailLink = detailLink + "?id=" + globalIndex.IndexCode;
+                if(globalIndex.GlobalIndexHistory != null && globalIndex.GlobalIndexHistory.Count > 0)
+                {
+                    datas.Add(new GlobalIndexHighchartsData
+                    {
+                        IndexCode = globalIndex.IndexCode,
+                        Data = globalIndex.GlobalIndexHistory.Select(c => float.Parse(c.MarketPrice)).ToList()
+                    });
+                }
             }
 
             var model = new GlobalIndexModel
@@ -54,7 +62,8 @@ namespace Feature.Wealth.Component.Controllers
                 Item = item,
                 DetailLink = detailLink,
                 GlobalIndexList = globalIndexList,
-                GlobalIndexDictionary = globalIndexList.ToDictionary(x => x.IndexCode, x => x)
+                GlobalIndexDictionary = globalIndexList.ToDictionary(x => x.IndexCode, x => x),
+                GlobalIndexHighchartsDataJson = JsonSerializer.Serialize(datas)
             };
 
             return model;
