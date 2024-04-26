@@ -79,6 +79,14 @@
                 return;
             }
 
+            $.fn.extend({
+                setEleAttribute: function (name, value) {
+                    return this.each(function () {
+                        this.setAttribute(name, value);
+                    });
+                }
+            });
+
             function SearchResultRespList() {
                 this.List;
                 var $this = this;
@@ -160,7 +168,7 @@
 
                 var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
                 var $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
-                $option.attr('selected', 'selected')
+                $option.setEleAttribute('selected', 'selected');
                 $option.trigger('change');
             }
 
@@ -232,7 +240,7 @@
                             record[property].Key = '';   // bool 轉 class string
                         } else {
                             record[property].Key = key ? 'o-rise' : 'o-fall';   // bool 轉 class string,
-                            record[property].Text = value + '%';
+                            record[property].Text = Math.abs(value) + '%';
                         }
                     } else if (propertyResetObj.keyValue.includes(property)) {
                         let value = record[property].Value;
@@ -676,7 +684,7 @@
                     // 日期區間有值時，才需要帶tag下去
                     const releaseSetTag = $('[data-return-rate-date]:checked').length > 0;
                     // 若父層[data-filter-group]的值為'special'，則不會印出已選擇的tag
-                    $(this).closest('[data-filter-group]').attr('data-filter-group', releaseSetTag ? '' : 'special');
+                    $(this).closest('[data-filter-group]').setEleAttribute('data-filter-group', releaseSetTag ? '' : 'special');
                 });
                 // 報酬率日期區間
                 $('[data-return-rate-date]').on('change.returnRateDate', function () {
@@ -794,11 +802,11 @@
 
                     // 調整分頁
                     var $parentWrap = $(this).closest('.l-pagination');
-                    var dataLength = parseInt($parentWrap.attr('data-length'));
+                    var dataLength = parseInt($parentWrap.setEleAttribute('data-length'));
                     $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', size === 'all');
                     if (size !== 'all') {
                         var total = Math.ceil(dataLength / size);
-                        $parentWrap.find('[data-total]').attr('data-total', total);
+                        $parentWrap.find('[data-total]').setEleAttribute('data-total', total);
                         $parentWrap.find('.o-pagination__total').text(total);
                         $parentWrap.find('[data-pagination="true"]').pagination('goto', 1);
                     }
