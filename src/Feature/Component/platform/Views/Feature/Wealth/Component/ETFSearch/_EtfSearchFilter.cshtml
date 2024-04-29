@@ -5,10 +5,9 @@
     {
         return;
     }
-    var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId().ToSearchId();
 }
 
-<div class="l-mainstage" data-section="@(uid)-filter">
+<div class="l-mainstage">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
             <h1 class="t-title">ETF搜尋</h1>
@@ -336,8 +335,7 @@
                                                                 <div class="c-sliderBar">
                                                                     <div class="c-sliderBar__main" data-slider-bar="size"></div>
                                                                     <!-- 篩選拉霸值[data-filter-bar] -->
-                                                                    <input type="text" class="c-sliderBar__value" data-slider-val data-slider-suffix="百萬" data-filter-bar>
-                                                                    <input type="hidden" id="uid-criteria-scaleMillions">
+                                                                    <input type="text" class="c-sliderBar__value" data-slider-val="scaleMillions" data-slider-suffix="百萬" data-filter-bar>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -666,14 +664,14 @@
                                                                             <!-- 若radio搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
                                                                             <label class="o-capsulebox__item" data-filter-radio>
                                                                                 <!-- [data-currency]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                <input type="radio" name="currency" class="o-capsulebox__input" checked data-currency value="原幣">
+                                                                                <input type="radio" name="currency" class="o-capsulebox__input" checked data-currency data-filter-criteria-field="0">
                                                                                 <span class="o-capsulebox__text" data-filter-value="原幣">原幣</span>
                                                                             </label>
                                                                             <!-- 篩選radio外層[data-filter-radio] -->
                                                                             <!-- 若radio搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
                                                                             <label class="o-capsulebox__item" data-filter-radio>
                                                                                 <!-- [data-currency]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                <input type="radio" name="currency" class="o-capsulebox__input" data-currency value="台幣">
+                                                                                <input type="radio" name="currency" class="o-capsulebox__input" data-currency data-filter-criteria-field="1">
                                                                                 <span class="o-capsulebox__text" data-filter-value="台幣">台幣</span>
                                                                             </label>
                                                                         </div>
@@ -685,7 +683,7 @@
                                                                             <div class="l-pickGroup__item">
                                                                                 <label class="o-btnRadio" data-filter-radio>
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="ThreeMonthReturnMarketPriceOriginalCurrency.Value|ThreeMonthReturnMarketPriceTWD.Value">
                                                                                     <div class="o-btnRadio__text" data-filter-value="三個月"></div>
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeMonthReturnMarketPriceOriginalCurrency">
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeMonthReturnMarketPriceTWD">
@@ -697,7 +695,7 @@
                                                                             <div class="l-pickGroup__item">
                                                                                 <label class="o-btnRadio" data-filter-radio>
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="SixMonthReturnMarketPriceOriginalCurrency.Value|SixMonthReturnMarketPriceTWD.Value">
                                                                                     <div class="o-btnRadio__text" data-filter-value="六個月"></div>
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="SixMonthReturnMarketPriceOriginalCurrency">
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="SixMonthReturnMarketPriceTWD">
@@ -709,7 +707,7 @@
                                                                             <div class="l-pickGroup__item">
                                                                                 <label class="o-btnRadio" data-filter-radio>
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="OneYearReturnMarketPriceOriginalCurrency.Value|OneYearReturnMarketPriceTWD.Value">
                                                                                     <div class="o-btnRadio__text" data-filter-value="一年"></div>
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="OneYearReturnMarketPriceOriginalCurrency">
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="OneYearReturnMarketPriceTWD">
@@ -721,7 +719,7 @@
                                                                             <div class="l-pickGroup__item">
                                                                                 <label class="o-btnRadio" data-filter-radio>
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="TwoYearReturnMarketPriceOriginalCurrency.Value|TwoYearReturnMarketPriceTWD.Value">
                                                                                     <div class="o-btnRadio__text" data-filter-value="二年"></div>
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="TwoYearReturnMarketPriceOriginalCurrency">
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="TwoYearReturnMarketPriceTWD">
@@ -733,7 +731,7 @@
                                                                             <div class="l-pickGroup__item">
                                                                                 <label class="o-btnRadio" data-filter-radio>
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="ThreeYearReturnMarketPriceOriginalCurrency.Value|ThreeYearReturnMarketPriceTWD.Value">
                                                                                     <div class="o-btnRadio__text" data-filter-value="三年"></div>
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeYearReturnMarketPriceOriginalCurrency">
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeYearReturnMarketPriceTWD">
@@ -745,7 +743,7 @@
                                                                             <div class="l-pickGroup__item">
                                                                                 <label class="o-btnRadio" data-filter-radio>
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="YeartoDateReturnMarketPriceOriginalCurrency.Value|YeartoDateReturnMarketPriceTWD.Value">
                                                                                     <div class="o-btnRadio__text" data-filter-value="年初至今"></div>
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="YeartoDateReturnMarketPriceOriginalCurrency">
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="YeartoDateReturnMarketPriceTWD">
@@ -757,7 +755,7 @@
                                                                             <div class="l-pickGroup__item">
                                                                                 <label class="o-btnRadio" data-filter-radio>
                                                                                     <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
-                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date>
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="InceptionDateMarketPriceOriginalCurrency.Value|InceptionDateMarketPriceTWD.Value">
                                                                                     <div class="o-btnRadio__text" data-filter-value="成立至今"></div>
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="InceptionDateMarketPriceOriginalCurrency">
                                                                                     <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="InceptionDateMarketPriceTWD">
@@ -882,8 +880,7 @@
                                                             <div class="c-filterForm__value">
                                                                 <div class="c-sliderBar">
                                                                     <div class="c-sliderBar__main" data-slider-bar="sharpe"></div>
-                                                                    <input type="text" class="c-sliderBar__value" data-slider-val data-filter-bar>
-                                                                    <input type="hidden" id="uid-criteria-sharpe">
+                                                                    <input type="text" class="c-sliderBar__value" data-slider-val="sharpe" data-filter-bar>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -897,8 +894,7 @@
                                                             <div class="c-filterForm__value">
                                                                 <div class="c-sliderBar">
                                                                     <div class="c-sliderBar__main" data-slider-bar="beta"></div>
-                                                                    <input type="text" class="c-sliderBar__value" data-slider-val data-filter-bar>
-                                                                    <input type="hidden" id="uid-criteria-beta">
+                                                                    <input type="text" class="c-sliderBar__value" data-slider-val="beta" data-filter-bar>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -911,8 +907,7 @@
                                                             <div class="c-filterForm__value">
                                                                 <div class="c-sliderBar">
                                                                     <div class="c-sliderBar__main" data-slider-bar="standardDeviation"></div>
-                                                                    <input type="text" class="c-sliderBar__value" data-slider-val data-slider-suffix="%" data-filter-bar>
-                                                                    <input type="hidden" id="uid-criteria-standard">
+                                                                    <input type="text" class="c-sliderBar__value" data-slider-val="standard" data-slider-suffix="%" data-filter-bar>
                                                                 </div>
                                                             </div>
                                                         </div>

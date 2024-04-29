@@ -1,39 +1,53 @@
-﻿@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-@model Feature.Wealth.Component.Models.ETF.Search.EtfSearchResultModel
-@{
-    var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId().ToSearchId();
-}
-<div class="l-wrap" data-section="@(uid)-result">
-    <div class="c-tab c-tab--wide" data-tab="true">
+﻿@model Feature.Wealth.Component.Models.ETF.Search.EtfSearchResultModel
+
+<div class="l-wrap">
+
+    <div class="c-tab c-tab--wide" data-filter-empty="true" style="display:none;">
+        <div class="c-tab__panel is-active">
+            <div class="c-section">
+                <div class="c-section__content">
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                        </div>
+                        <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="c-tab c-tab--wide" data-tab="true" data-filter-empty="false" style="display:none;">
         <div class="c-tab__header">
             <ul class="c-tab__navs">
                 <!-- .is-active: 作用中的項目 -->
                 <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
                 <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
-                <li><a href="#" class="c-tab__item is-active" target="_self" title="市價績效" data-tab-target="tab-1" data-filter-empty="false">市價績效</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="淨值績效" data-tab-target="tab-2" data-filter-empty="false">淨值績效</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="市價風險" data-tab-target="tab-3" data-filter-empty="false">市價風險</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="淨值風險" data-tab-target="tab-4" data-filter-empty="false">淨值風險</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="交易狀況" data-tab-target="tab-5" data-filter-empty="false">交易狀況</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="基本資料" data-tab-target="tab-6" data-filter-empty="false">基本資料</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="查無商品" data-tab-target="tab-7" data-filter-empty="true">查無商品</a></li>
+                <li><a href="#" class="c-tab__item is-active" target="_self" title="市價績效" data-tab-target="tab-1" data-filter-switch-columns="marketPriceTable">市價績效</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="淨值績效" data-tab-target="tab-2" data-filter-switch-columns="netWorthTable">淨值績效</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="市價風險" data-tab-target="tab-3" data-filter-switch-columns="marketRiskTable" data-filter-switch="#uid-template-marketRisk">市價風險</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="淨值風險" data-tab-target="tab-4" data-filter-switch-columns="netWorthRiskTable" data-filter-switch="#uid-template-netWorthRisk">淨值風險</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="交易狀況" data-tab-target="tab-5" data-filter-switch-columns="tradeTable" data-filter-switch="#uid-template-trade">交易狀況</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="基本資料" data-tab-target="tab-6" data-filter-switch-columns="baseTable" data-filter-switch="#uid-template-base">基本資料</a></li>
+                <li>@*<a href="#" class="c-tab__item " target="_self" title="查無商品" data-tab-target="tab-7" data-filter-empty="true">查無商品</a>*@</li>
             </ul>
             <div class="c-tab__collapse">
                 <a href="#" class="c-tab__switch"></a>
                 <div class="c-tab__dropdown">
-                    <a href="#" class="c-tab__clone is-active" target="_self" title="市價績效" data-tab-target="tab-1" data-filter-empty="false">市價績效</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="淨值績效" data-tab-target="tab-2" data-filter-empty="false">淨值績效</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="市價風險" data-tab-target="tab-3" data-filter-empty="false">市價風險</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="淨值風險" data-tab-target="tab-4" data-filter-empty="false">淨值風險</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="交易狀況" data-tab-target="tab-5" data-filter-empty="false">交易狀況</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="基本資料" data-tab-target="tab-6" data-filter-empty="false">基本資料</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="查無商品" data-tab-target="tab-7" data-filter-empty="true">查無商品</a>
+                    <a href="#" class="c-tab__clone is-active" target="_self" title="市價績效" data-tab-target="tab-1" data-filter-switch-columns="1">市價績效</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="淨值績效" data-tab-target="tab-2" data-filter-switch-columns="2">淨值績效</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="市價風險" data-tab-target="tab-3" data-filter-switch-columns="3" data-filter-switch="#uid-template-marketRisk">市價風險</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="淨值風險" data-tab-target="tab-4" data-filter-switch-columns="4" data-filter-switch="#uid-template-netWorthRisk">淨值風險</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="交易狀況" data-tab-target="tab-5" data-filter-switch-columns="5" data-filter-switch="#uid-template-trade">交易狀況</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="基本資料" data-tab-target="tab-6" data-filter-switch-columns="6" data-filter-switch="#uid-template-base">基本資料</a>
+                    @*<a href="#" class="c-tab__clone " target="_self" title="查無商品" data-tab-target="tab-7" data-filter-empty="true">查無商品</a>*@
                 </div>
             </div>
         </div>
         <!-- is-active: 作用中的項目 -->
 
-        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1" data-filter-empty="false">
+        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 @if (!string.IsNullOrEmpty(Model.MarketPricePerformanceIntro.ToString()))
                 {
@@ -46,11 +60,11 @@
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency1" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
+                                    <input type="radio" name="currency1" value="原幣" checked class="o-capsulebox__input" data-filter-switch="#uid-template-marketPrice-original" data-filter-switch-columns="Original_marketPrice" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency1" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
+                                    <input type="radio" name="currency1" value="台幣" class="o-capsulebox__input" data-filter-switch="#uid-template-marketPrice-TWD" data-filter-switch-columns="TWD_marketPrice" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -92,7 +106,7 @@
                 <div class="l-flex__item">  </div>
             </div>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-2" data-filter-empty="false">
+        <div class="c-tab__panel" data-tab-panel-id="tab-2">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 @if (!string.IsNullOrEmpty(Model.NetWorthPerformanceIntro.ToString()))
                 {
@@ -105,11 +119,11 @@
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency2" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
+                                    <input type="radio" name="currency2" value="原幣" checked class="o-capsulebox__input" data-filter-switch="#uid-template-netWorth-original" data-filter-switch-columns="Original_netWorth" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency2" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
+                                    <input type="radio" name="currency2" value="台幣" class="o-capsulebox__input" data-filter-switch="#uid-template-netWorth-TWD" data-filter-switch-columns="TWD_netWorth" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -151,7 +165,7 @@
                 <div class="l-flex__item"> </div>
             </div>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-3" data-filter-empty="false">
+        <div class="c-tab__panel" data-tab-panel-id="tab-3">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 @if (!string.IsNullOrEmpty(Model.MarketPriceRiskIntro.ToString()))
                 {
@@ -164,11 +178,11 @@
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency3" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
+                                    <input type="radio" name="currency3" value="原幣" checked class="o-capsulebox__input" data-filter-switch-columns="Original_marketRisk" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency3" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
+                                    <input type="radio" name="currency3" value="台幣" class="o-capsulebox__input" data-filter-switch-columns="TWD_marketRisk" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -199,7 +213,7 @@
                 <div class="l-flex__item"> </div>
             </div>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-4" data-filter-empty="false">
+        <div class="c-tab__panel" data-tab-panel-id="tab-4">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 @if (!string.IsNullOrEmpty(Model.NetWorthRiskIntro.ToString()))
                 {
@@ -212,11 +226,11 @@
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency4" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
+                                    <input type="radio" name="currency4" value="原幣" checked class="o-capsulebox__input" data-filter-switch-columns="Original_netWorthRisk" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency4" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
+                                    <input type="radio" name="currency4" value="台幣" class="o-capsulebox__input" data-filter-switch-columns="TWD_netWorthRisk" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -247,7 +261,7 @@
                 <div class="l-flex__item"> </div>
             </div>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-5" data-filter-empty="false">
+        <div class="c-tab__panel" data-tab-panel-id="tab-5">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 @if (!string.IsNullOrEmpty(Model.TransactionStatusIntro.ToString()))
                 {
@@ -260,11 +274,11 @@
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency5" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
+                                    <input type="radio" name="currency5" value="原幣" checked class="o-capsulebox__input" data-filter-switch-columns="Original_trade" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency5" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
+                                    <input type="radio" name="currency5" value="台幣" class="o-capsulebox__input" data-filter-switch-columns="TWD_trade" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -293,7 +307,7 @@
                 <div class="l-flex__item"> </div>
             </div>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-6" data-filter-empty="false">
+        <div class="c-tab__panel" data-tab-panel-id="tab-6">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 @if (!string.IsNullOrEmpty(Model.InformationIntro.ToString()))
                 {
@@ -306,11 +320,11 @@
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency6" value="原幣" checked class="o-capsulebox__input" data-tab-currency="Original">
+                                    <input type="radio" name="currency6" value="原幣" checked class="o-capsulebox__input" data-filter-switch-columns="Original_base" data-tab-currency="Original">
                                     <span class="o-capsulebox__text">原幣</span>
                                 </label>
                                 <label class="o-capsulebox__item">
-                                    <input type="radio" name="currency6" value="台幣" class="o-capsulebox__input" data-tab-currency="TWD">
+                                    <input type="radio" name="currency6" value="台幣" class="o-capsulebox__input" data-filter-switch-columns="TWD_base" data-tab-currency="TWD">
                                     <span class="o-capsulebox__text">台幣</span>
                                 </label>
                             </div>
@@ -344,21 +358,95 @@
             </div>
         </div>
 
-        <div class="c-tab__panel" data-tab-panel-id="tab-7" data-filter-empty="true">
-            <div class="c-section">
-                <div class="c-section__content">
-                    <div class="c-empty">
-                        <div class="c-empty__img">
-                            <img src="~/themes/images/lions/lion-compare.svg" alt="">
-                        </div>
-                        <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
-                    </div>
-                </div>
-            </div>
+        @*用於 FilterJS order -> sorts*@
+        <div class="o-sortingbox" style="display:none;">
+            <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+            @*所有欄位*@
+            <select class="o-sortingbox__input" data-sortingbox="true" id="uid-sortbox">
+                <option value="">排序</option>
+                <option value="ETF名稱高至低" data-sorting-column="FirstBankCode" data-sorting-class="is-desc">ETF名稱高至低</option>
+                <option value="ETF名稱低至高" data-sorting-column="FirstBankCode" data-sorting-class="is-asc">ETF名稱低至高</option>
+                <option value="市價高至低" data-sorting-column="MarketPrice.Value" data-sorting-class="is-desc">市價高至低</option>
+                <option value="市價低至高" data-sorting-column="MarketPrice.Value" data-sorting-class="is-asc">市價低至高</option>
+                <option value="最新淨值高至低" data-sorting-column="NetAssetValue.Value" data-sorting-class="is-desc">最新淨值高至低</option>
+                <option value="最新淨值低至高" data-sorting-column="NetAssetValue.Value" data-sorting-class="is-asc">最新淨值低至高</option>
+                <option value="幣別高至低" data-sorting-column="CurrencyPair.Key" data-sorting-class="is-desc">幣別高至低</option>
+                <option value="幣別低至高" data-sorting-column="CurrencyPair.Key" data-sorting-class="is-asc">幣別低至高</option>
+                @*市價績效*@
+                <option value="1個月績效高至低" data-sorting-column="MonthlyReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">1個月績效高至低</option>
+                <option value="1個月績效低至高" data-sorting-column="MonthlyReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">1個月績效低至高</option>
+                <option value="3個月績效高至低" data-sorting-column="ThreeMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">3個月績效高至低</option>
+                <option value="3個月績效低至高" data-sorting-column="ThreeMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">3個月績效低至高</option>
+                <option value="6個月績效高至低" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">6個月績效高至低</option>
+                <option value="6個月績效低至高" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">6個月績效低至高</option>
+                <option value="1年績效高至低" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">1年績效高至低</option>
+                <option value="1年績效低至高" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">1年績效低至高</option>
+
+                <option value="1個月績效高至低" data-sorting-column="MonthlyReturnMarketPriceTWD.Value" data-sorting-class="is-desc">1個月績效高至低</option>
+                <option value="1個月績效低至高" data-sorting-column="MonthlyReturnMarketPriceTWD.Value" data-sorting-class="is-asc">1個月績效低至高</option>
+                <option value="3個月績效高至低" data-sorting-column="ThreeMonthReturnMarketPriceTWD.Value" data-sorting-class="is-desc">3個月績效高至低</option>
+                <option value="3個月績效低至高" data-sorting-column="ThreeMonthReturnMarketPriceTWD.Value" data-sorting-class="is-asc">3個月績效低至高</option>
+                <option value="6個月績效高至低" data-sorting-column="SixMonthReturnMarketPriceTWD.Value" data-sorting-class="is-desc">6個月績效高至低</option>
+                <option value="6個月績效低至高" data-sorting-column="SixMonthReturnMarketPriceTWD.Value" data-sorting-class="is-asc">6個月績效低至高</option>
+                <option value="1年績效高至低" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">1年績效高至低</option>
+                <option value="1年績效低至高" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">1年績效低至高</option>
+                @*淨值績效*@
+                <option value="1個月績效高至低" data-sorting-column="MonthlyReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">1個月績效高至低</option>
+                <option value="1個月績效低至高" data-sorting-column="MonthlyReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">1個月績效低至高</option>
+                <option value="3個月績效高至低" data-sorting-column="ThreeMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">3個月績效高至低</option>
+                <option value="3個月績效低至高" data-sorting-column="ThreeMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">3個月績效低至高</option>
+                <option value="6個月績效高至低" data-sorting-column="SixMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">6個月績效高至低</option>
+                <option value="6個月績效低至高" data-sorting-column="SixMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">6個月績效低至高</option>
+                <option value="1年績效高至低" data-sorting-column="OneYearReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">1年績效高至低</option>
+                <option value="1年績效低至高" data-sorting-column="OneYearReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">1年績效低至高</option>
+
+                <option value="1個月績效高至低" data-sorting-column="MonthlyReturnNetValueTWD.Value" data-sorting-class="is-desc">1個月績效高至低</option>
+                <option value="1個月績效低至高" data-sorting-column="MonthlyReturnNetValueTWD.Value" data-sorting-class="is-asc">1個月績效低至高</option>
+                <option value="3個月績效高至低" data-sorting-column="ThreeMonthReturnNetValueTWD.Value" data-sorting-class="is-desc">3個月績效高至低</option>
+                <option value="3個月績效低至高" data-sorting-column="ThreeMonthReturnNetValueTWD.Value" data-sorting-class="is-asc">3個月績效低至高</option>
+                <option value="6個月績效高至低" data-sorting-column="SixMonthReturnNetValueTWD.Value" data-sorting-class="is-desc">6個月績效高至低</option>
+                <option value="6個月績效低至高" data-sorting-column="SixMonthReturnNetValueTWD.Value" data-sorting-class="is-asc">6個月績效低至高</option>
+                <option value="1年績效高至低" data-sorting-column="OneYearReturnNetValueTWD.Value" data-sorting-class="is-desc">1年績效高至低</option>
+                <option value="1年績效低至高" data-sorting-column="OneYearReturnNetValueTWD.Value" data-sorting-class="is-asc">1年績效低至高</option>
+                @*市價風險*@
+                <option value="風險屬性RR5至RR1" data-sorting-column="RiskLevel.Value" data-sorting-class="is-desc">風險屬性RR5至RR1</option>
+                <option value="風險屬性RR1至RR5" data-sorting-column="RiskLevel.Value" data-sorting-class="is-asc">風險屬性RR1至RR5</option>
+                <option value="Sharpe高至低" data-sorting-column="SharpeRatioMarketPriceRisk.Value" data-sorting-class="is-desc">Sharpe高至低</option>
+                <option value="Sharpe低至高" data-sorting-column="SharpeRatioMarketPriceRisk.Value" data-sorting-class="is-asc">Sharpe低至高</option>
+                <option value="Beta高至低" data-sorting-column="BetaMarketPriceRisk.Value" data-sorting-class="is-desc">Beta高至低</option>
+                <option value="Beta低至高" data-sorting-column="BetaMarketPriceRisk.Value" data-sorting-class="is-asc">Beta低至高</option>
+                <option value="年化標準差高至低" data-sorting-column="AnnualizedStandardDeviationMarketPriceRisk.Value" data-sorting-class="is-desc">年化標準差高至低</option>
+                <option value="年化標準差低至高" data-sorting-column="AnnualizedStandardDeviationMarketPriceRisk.Value" data-sorting-class="is-asc">年化標準差低至高</option>
+                @*淨值風險*@
+                <option value="風險屬性RR5至RR1" data-sorting-column="RiskLevel.Value" data-sorting-class="is-desc">風險屬性RR5至RR1</option>
+                <option value="風險屬性RR1至RR5" data-sorting-column="RiskLevel.Value" data-sorting-class="is-asc">風險屬性RR1至RR5</option>
+                <option value="Sharpe高至低" data-sorting-column="SharpeNetValueRisk.Value" data-sorting-class="is-desc">Sharpe高至低</option>
+                <option value="Sharpe低至高" data-sorting-column="SharpeNetValueRisk.Value" data-sorting-class="is-asc">Sharpe低至高</option>
+                <option value="Beta高至低" data-sorting-column="BetaNetValueRisk.Value" data-sorting-class="is-desc">Beta高至低</option>
+                <option value="Beta低至低" data-sorting-column="BetaNetValueRisk.Value" data-sorting-class="is-asc">Beta低至低</option>
+                <option value="年化標準差高至低" data-sorting-column="AnnualizedStandardDeviationNetValueRisk.Value" data-sorting-class="is-desc">年化標準差高至低</option>
+                <option value="年化標準差低至高" data-sorting-column="AnnualizedStandardDeviationNetValueRisk.Value" data-sorting-class="is-asc">年化標準差低至高</option>
+                @*交易狀況*@
+                <option value="折溢價高至低" data-sorting-column="DiscountPremium.Value" data-sorting-class="is-asc">折溢價高至低</option>
+                <option value="折溢價低至高" data-sorting-column="DiscountPremium.Value" data-sorting-class="is-desc">折溢價低至高</option>
+                <option value="最新量高至低" data-sorting-column="LatestVolumeTradingVolume.Value" data-sorting-class="is-asc">最新量高至低</option>
+                <option value="最新量低至高" data-sorting-column="LatestVolumeTradingVolume.Value" data-sorting-class="is-desc">最新量低至高</option>
+                <option value="最新量-10日高至低" data-sorting-column="LatestVolumeTradingVolumeTenDayAverageVolume.Value" data-sorting-class="is-asc">最新量-10日高至低</option>
+                <option value="最新量-10日低至高" data-sorting-column="LatestVolumeTradingVolumeTenDayAverageVolume.Value" data-sorting-class="is-desc">最新量-10日低至高</option>
+                @*基本資料*@
+                <option value="投資標的高至低" data-sorting-column="InvestmentTarget.Value" data-sorting-class="is-desc">投資標的高至低</option>
+                <option value="投資標的低至高" data-sorting-column="InvestmentTarget.Value" data-sorting-class="is-asc">投資標的低至高</option>
+                <option value="成立年資高至低" data-sorting-column="EstablishmentSeniority.Value" data-sorting-class="is-desc">成立年資高至低</option>
+                <option value="成立年資低至高" data-sorting-column="EstablishmentSeniority.Value" data-sorting-class="is-asc">成立年資低至高</option>
+                <option value="管理費高至低" data-sorting-column="TotalManagementFee.Value" data-sorting-class="is-desc">管理費高至低</option>
+                <option value="管理費低至高" data-sorting-column="TotalManagementFee.Value" data-sorting-class="is-asc">管理費低至高</option>
+                <option value="規模高至低" data-sorting-column="ScaleMillions.Value" data-sorting-class="is-desc">規模高至低</option>
+                <option value="規模低至高" data-sorting-column="ScaleMillions.Value" data-sorting-class="is-asc">規模低至高</option>
+            </select>
         </div>
 
-        <div class="l-table" data-filter-empty="false">
-            <table id="uid-table" class="c-table@dt-only c-cardTable@lt">
+        <div class="l-table">
+            <table id="table" class="c-table@dt-only c-cardTable@lt">
                 <colgroup>
                     <col style="width: auto;">
                     <col style="width: 1;">
@@ -373,7 +461,7 @@
                 </colgroup>
                 <thead>
                     <tr class="u-nowrap">
-                        <th data-table-name="marketPriceTable,netWorthTable,marketRiskTable,netWorthRiskTable,tradeTable,baseTable">
+                        <th @*data-table-name="marketPriceTable,netWorthTable,marketRiskTable,netWorthRiskTable,tradeTable,baseTable"*@>
                             <div class="c-table__title">
                                 <span>ETF名稱</span>
                                 <!-- .is-asc: 升冪 -->
@@ -381,27 +469,27 @@
                                 <a href="#" class="o-sorting" data-sorting-column="FirstBankCode"></a>
                             </div>
                         </th>
-                        <th data-table-name="marketPriceTable,netWorthTable,marketRiskTable,netWorthRiskTable,tradeTable,baseTable">
+                        <th @*data-table-name="marketPriceTable,netWorthTable,marketRiskTable,netWorthRiskTable,tradeTable,baseTable"*@>
                             <div class="c-table__title">
                                 <span>交易所代碼</span>
                             </div>
                         </th>
                         @*【市價(日期)】=> 市價績效,市價風險,交易狀況,基本資料*@
-                        <th data-table-name="marketPriceTable,marketRiskTable,tradeTable,baseTable">
+                        <th data-filter-switch-columns="marketPriceTable,marketRiskTable,tradeTable,baseTable,Original_marketPrice,TWD_marketPrice">
                             <div class="c-table__title">
                                 <span>市價<br>(日期)</span>
                                 <a href="#" class="o-sorting" data-sorting-column="MarketPrice.Value"></a>
                             </div>
                         </th>
                         @*【最新淨值(日期)】=> 淨值績效,淨值風險*@
-                        <th data-table-name="netWorthTable,netWorthRiskTable">
+                        <th data-filter-switch-columns="netWorthTable,netWorthRiskTable,Original_netWorth,TWD_netWorth">
                             <div class="c-table__title">
                                 <span>最新淨值<br>(日期)</span>
                                 <a href="#" class="o-sorting" data-sorting-column="NetAssetValue.Value"></a>
                             </div>
                         </th>
                         @*【幣別】=> 市價績效,淨值績效,基本資料*@
-                        <th data-table-name="marketPriceTable,netWorthTable,baseTable">
+                        <th data-filter-switch-columns="marketPriceTable,netWorthTable,Original_marketPrice,TWD_marketPrice,Original_netWorth,TWD_netWorth,baseTable">
                             <div class="c-table__title">
                                 <span>幣別</span>
                                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
@@ -409,107 +497,107 @@
                             </div>
                         </th>
                         @*【市價績效-報酬(原幣)】=> 市價績效*@
-                        <th data-table-name="marketPriceTable" data-table-column-currency="Original">
+                        <th data-filter-switch-columns="marketPriceTable,Original_marketPrice" data-table-column-currency="Original">
                             <div class="c-table__title">
                                 <span>1個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="MonthlyReturnMarketPriceOriginalCurrency.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="marketPriceTable" data-table-column-currency="Original">
+                        <th data-filter-switch-columns="marketPriceTable,Original_marketPrice" data-table-column-currency="Original">
                             <div class="c-table__title">
                                 <span>3個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="ThreeMonthReturnMarketPriceOriginalCurrency.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="marketPriceTable" data-table-column-currency="Original">
+                        <th data-filter-switch-columns="marketPriceTable,Original_marketPrice" data-table-column-currency="Original">
                             <div class="c-table__title">
                                 <span>6個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="marketPriceTable" data-table-column-currency="Original">
+                        <th data-filter-switch-columns="marketPriceTable,Original_marketPrice" data-table-column-currency="Original">
                             <div class="c-table__title">
                                 <span>1年</span>
                                 <a href="#" class="o-sorting" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value"></a>
                             </div>
                         </th>
                         @*【市價績效-報酬(台幣)】=> 市價績效*@
-                        <th data-table-name="marketPriceTable" data-table-column-currency="TWD">
+                        <th data-filter-switch-columns="marketPriceTable,TWD_marketPrice" data-table-column-currency="TWD">
                             <div class="c-table__title">
                                 <span>1個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="MonthlyReturnMarketPriceTWD.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="marketPriceTable" data-table-column-currency="TWD">
+                        <th data-filter-switch-columns="marketPriceTable,TWD_marketPrice" data-table-column-currency="TWD">
                             <div class="c-table__title">
                                 <span>3個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="ThreeMonthReturnMarketPriceTWD.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="marketPriceTable" data-table-column-currency="TWD">
+                        <th data-filter-switch-columns="marketPriceTable,TWD_marketPrice" data-table-column-currency="TWD">
                             <div class="c-table__title">
                                 <span>6個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnMarketPriceTWD.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="marketPriceTable" data-table-column-currency="TWD">
+                        <th data-filter-switch-columns="marketPriceTable,TWD_marketPrice" data-table-column-currency="TWD">
                             <div class="c-table__title">
                                 <span>1年</span>
                                 <a href="#" class="o-sorting" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value"></a>
                             </div>
                         </th>
                         @*【淨值績效-報酬(原幣)】=> 淨值績效*@
-                        <th data-table-name="netWorthTable" data-table-column-currency="Original">
+                        <th data-filter-switch-columns="netWorthTable,Original_netWorth" data-table-column-currency="Original">
                             <div class="c-table__title">
                                 <span>1個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="MonthlyReturnNetValueOriginalCurrency.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="netWorthTable" data-table-column-currency="Original">
+                        <th data-filter-switch-columns="netWorthTable,Original_netWorth" data-table-column-currency="Original">
                             <div class="c-table__title">
                                 <span>3個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="ThreeMonthReturnNetValueOriginalCurrency.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="netWorthTable" data-table-column-currency="Original">
+                        <th data-filter-switch-columns="netWorthTable,Original_netWorth" data-table-column-currency="Original">
                             <div class="c-table__title">
                                 <span>6個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnNetValueOriginalCurrency.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="netWorthTable" data-table-column-currency="Original">
+                        <th data-filter-switch-columns="netWorthTable,Original_netWorth" data-table-column-currency="Original">
                             <div class="c-table__title">
                                 <span>1年</span>
                                 <a href="#" class="o-sorting" data-sorting-column="OneYearReturnNetValueOriginalCurrency.Value"></a>
                             </div>
                         </th>
                         @*【淨值績效-報酬(台幣)】=> 淨值績效*@
-                        <th data-table-name="netWorthTable" data-table-column-currency="TWD">
+                        <th data-filter-switch-columns="netWorthTable,TWD_netWorth" data-table-column-currency="TWD">
                             <div class="c-table__title">
                                 <span>1個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="MonthlyReturnNetValueTWD.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="netWorthTable" data-table-column-currency="TWD">
+                        <th data-filter-switch-columns="netWorthTable,TWD_netWorth" data-table-column-currency="TWD">
                             <div class="c-table__title">
                                 <span>3個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="ThreeMonthReturnNetValueTWD.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="netWorthTable" data-table-column-currency="TWD">
+                        <th data-filter-switch-columns="netWorthTable,TWD_netWorth" data-table-column-currency="TWD">
                             <div class="c-table__title">
                                 <span>6個月</span>
                                 <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnNetValueTWD.Value"></a>
                             </div>
                         </th>
-                        <th data-table-name="netWorthTable" data-table-column-currency="TWD">
+                        <th data-filter-switch-columns="netWorthTable,TWD_netWorth" data-table-column-currency="TWD">
                             <div class="c-table__title">
                                 <span>1年</span>
                                 <a href="#" class="o-sorting" data-sorting-column="OneYearReturnNetValueTWD.Value"></a>
                             </div>
                         </th>
                         @*【風險屬性】=> 市價風險,淨值風險*@
-                        <th data-table-name="marketRiskTable,netWorthRiskTable">
+                        <th data-filter-switch-columns="marketRiskTable,netWorthRiskTable">
                             <div class="c-table__title">
                                 <span>風險屬性</span>
                                 <a href="#" class="o-sorting" data-sorting-column="RiskLevel.Value"></a>
@@ -517,21 +605,21 @@
                         </th>
 
                         @*【Sharpe】=> 市價風險*@
-                        <th data-table-name="marketRiskTable">
+                        <th data-filter-switch-columns="marketRiskTable">
                             <div class="c-table__title">
                                 <span>Sharpe</span>
                                 <a href="#" class="o-sorting" data-sorting-column="SharpeRatioMarketPriceRisk.Value"></a>
                             </div>
                         </th>
                         @*【Beta】=> 市價風險*@
-                        <th data-table-name="marketRiskTable">
+                        <th data-filter-switch-columns="marketRiskTable">
                             <div class="c-table__title">
                                 <span>Beta</span>
                                 <a href="#" class="o-sorting" data-sorting-column="BetaMarketPriceRisk.Value"></a>
                             </div>
                         </th>
                         @*【年化標準差】=> 市價風險*@
-                        <th data-table-name="marketRiskTable">
+                        <th data-filter-switch-columns="marketRiskTable">
                             <div class="c-table__title">
                                 <span>年化標準差</span>
                                 <a href="#" class="o-sorting" data-sorting-column="AnnualizedStandardDeviationMarketPriceRisk.Value"></a>
@@ -539,21 +627,21 @@
                         </th>
 
                         @*【Sharpe】=> 淨值風險*@
-                        <th data-table-name="netWorthRiskTable">
+                        <th data-filter-switch-columns="netWorthRiskTable">
                             <div class="c-table__title">
                                 <span>Sharpe</span>
                                 <a href="#" class="o-sorting" data-sorting-column="SharpeNetValueRisk.Value"></a>
                             </div>
                         </th>
                         @*【Beta】=> 淨值風險*@
-                        <th data-table-name="netWorthRiskTable">
+                        <th data-filter-switch-columns="netWorthRiskTable">
                             <div class="c-table__title">
                                 <span>Beta</span>
                                 <a href="#" class="o-sorting" data-sorting-column="BetaNetValueRisk.Value"></a>
                             </div>
                         </th>
                         @*【年化標準差】=> 淨值風險*@
-                        <th data-table-name="netWorthRiskTable">
+                        <th data-filter-switch-columns="netWorthRiskTable">
                             <div class="c-table__title">
                                 <span>年化標準差</span>
                                 <a href="#" class="o-sorting" data-sorting-column="AnnualizedStandardDeviationNetValueRisk.Value"></a>
@@ -561,21 +649,21 @@
                         </th>
 
                         @*【折溢價】=> 交易狀況*@
-                        <th data-table-name="tradeTable">
+                        <th data-filter-switch-columns="tradeTable">
                             <div class="c-table__title">
                                 <span>折溢價</span>
                                 <a href="#" class="o-sorting" data-sorting-column="DiscountPremium.Value"></a>
                             </div>
                         </th>
                         @*【最新量】=> 交易狀況*@
-                        <th data-table-name="tradeTable">
+                        <th data-filter-switch-columns="tradeTable">
                             <div class="c-table__title">
                                 <span>最新量</span>
                                 <a href="#" class="o-sorting" data-sorting-column="LatestVolumeTradingVolume.Value"></a>
                             </div>
                         </th>
                         @*【最新量-10日量】=> 交易狀況*@
-                        <th data-table-name="tradeTable">
+                        <th data-filter-switch-columns="tradeTable">
                             <div class="c-table__title">
                                 <span>最新量-10日量</span>
                                 <a href="#" class="o-sorting" data-sorting-column="LatestVolumeTradingVolumeTenDayAverageVolume.Value"></a>
@@ -583,28 +671,28 @@
                         </th>
 
                         @*【投資標的】=> 基本資料*@
-                        <th data-table-name="baseTable">
+                        <th data-filter-switch-columns="baseTable">
                             <div class="c-table__title">
                                 <span>投資標的</span>
                                 <a href="#" class="o-sorting" data-sorting-column="InvestmentTarget.Value"></a>
                             </div>
                         </th>
                         @*【成立年資】=> 基本資料*@
-                        <th data-table-name="baseTable">
+                        <th data-filter-switch-columns="baseTable">
                             <div class="c-table__title">
                                 <span>成立年資</span>
                                 <a href="#" class="o-sorting" data-sorting-column="EstablishmentSeniority.Value"></a>
                             </div>
                         </th>
                         @*【管理費】=> 基本資料*@
-                        <th data-table-name="baseTable">
+                        <th data-filter-switch-columns="baseTable">
                             <div class="c-table__title">
                                 <span>管理費</span>
                                 <a href="#" class="o-sorting" data-sorting-column="TotalManagementFee.Value"></a>
                             </div>
                         </th>
                         @*【規模(百萬)】=> 基本資料*@
-                        <th data-table-name="baseTable">
+                        <th data-filter-switch-columns="baseTable">
                             <div class="c-table__title">
                                 <span>規模<br>(百萬)</span>
                                 <a href="#" class="o-sorting" data-sorting-column="ScaleMillions.Value"></a>
@@ -633,10 +721,10 @@
                     .u-center@mb-only: 僅手機版本(<= 767px)置中
                     .u-left/.u-right: 置左/置右，比照置中模式 -->
                     <!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
-                    @{
-                        Html.RenderPartial("/Views/Feature/Wealth/Component/ETFSearch/SearchResult/_ResultTemplate.cshtml", Model);
-                    }
                 </tbody>
+                @{
+                    Html.RenderPartial("/Views/Feature/Wealth/Component/ETFSearch/SearchResult/_ResultTemplate.cshtml", Model);
+                }
             </table>
 
             @{
