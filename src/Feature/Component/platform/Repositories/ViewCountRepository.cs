@@ -122,14 +122,19 @@ namespace Feature.Wealth.Component.Repositories
             if (!string.IsNullOrEmpty(url))
             {
                 var uri = new Uri(url);
-                var uriPath = uri.GetLeftPart(UriPartial.Path);
 
-                // 將網址轉換為小寫
-                string lowercaseUrl = uriPath.ToLowerInvariant();
-                // 解碼網址中的百分比編碼
-                string decodedUrl = Uri.UnescapeDataString(lowercaseUrl);
-                // 將"-"替換為空格
-                formattedUriPath = decodedUrl.Replace("-", " ");
+                // 取得其中 Root
+                var uriRoot = uri.GetLeftPart(UriPartial.Authority);
+
+                // 取得其中網址路徑
+                var uriPath = uri.AbsolutePath;
+
+                // 將網址路徑轉換為小寫
+                string lowercaseUriPath = uriPath.ToLowerInvariant();
+                // 解碼網址路徑中的百分比編碼
+                string decodedUriPath = Uri.UnescapeDataString(lowercaseUriPath);
+                // 將網址路徑的"-"替換為空格並在前頭將上Root
+                formattedUriPath = uriRoot + decodedUriPath.Replace("-", " ");
             }
 
             return formattedUriPath;
