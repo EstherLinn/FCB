@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="c-feature__plate">
-                @Html.Sitecore().Field(Templates.MutipleLinksLongCardDataSource.Fields.Image.ToString(), new { @class="c-feature__img" })
+                @Html.Sitecore().Field(Templates.MutipleLinksLongCardDataSource.Fields.Image.ToString(), Model.DataSource, new { @class="c-feature__img" })
             </div>
         </div>
     </div>
