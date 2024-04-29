@@ -312,6 +312,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public bool IsOnlineSubscriptionAvailability { get; set; }
 
         public List<string> Tags { get; set; }
+        public List<string> HotKeyWordTags { get; set; }
 
         public string FundCompanyName { get; set; }
 
@@ -377,6 +378,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
     {
         public string TagName { get; set; }
         public List<string> ProductCodes { get; set; }
+        public string FundType { get; set; }
     }
 
     public struct Template
@@ -391,6 +393,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
                 /// 基金評等內容
                 /// </summary>
                 public static readonly string Content = "{587133C2-172C-4AA9-A7B5-44E1D7E41B34}";
+
+                /// <summary>
+                /// 風險指標內容
+                /// </summary>
+                public static readonly string RiskIndicatorContent = "{DA72C731-F63B-46CB-9585-4DEDB019E0E2}";
 
                 ///// <summary>
                 /// Tag的名稱

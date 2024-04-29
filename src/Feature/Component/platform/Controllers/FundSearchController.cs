@@ -8,6 +8,7 @@ using Feature.Wealth.Component.Models.FundSearch;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Sitecore.Mvc.Extensions;
+using System.Web;
 
 
 namespace Feature.Wealth.Component.Controllers
@@ -35,6 +36,7 @@ namespace Feature.Wealth.Component.Controllers
                 products.Add(product);
             }
             string content = ItemUtils.GetFieldValue(dataSourceItem, Template.FundSearch.Fields.Content);
+            HtmlString riskcontent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.RiskIndicatorContent);
 
 
             var items = _repository.GetFundSearchData();
@@ -74,7 +76,8 @@ namespace Feature.Wealth.Component.Controllers
                 SearchBarData = searchbar,
                 HotKeywordTags = keywords,
                 HotProductTags = products,
-                Content = content
+                Content = content,
+                RiskIndicatorContent = riskcontent
             };
 
             return View("/Views/Feature/Wealth/Component/FundSearch/FundSearch.cshtml", viewModel);

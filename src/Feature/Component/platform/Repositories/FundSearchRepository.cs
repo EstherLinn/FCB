@@ -35,11 +35,12 @@ namespace Feature.Wealth.Component.Repositories
         public List<Funds> GetFundRenderData(IList<FundSearchModel> funds)
         {
             List<Tags> fundTagModels = new List<Tags>();
+            List<Tags> KeyfundTagModels = new List<Tags>();
             Item keytagFolder = ItemUtils.GetItem(Template.FundTags.Fields.HotKeywordTag);
             Item protagFolder = ItemUtils.GetItem(Template.FundTags.Fields.HotProductTag);
             foreach (var item in keytagFolder.GetChildren(Template.FundTags.Fields.FundTags))
             {
-                fundTagModels.Add(new Tags()
+                KeyfundTagModels.Add(new Tags()
                 {
                     TagName = item[Template.FundSearch.Fields.TagName],
                     ProductCodes = item[Template.FundTags.Fields.ProductCodeList].Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList()
@@ -63,6 +64,12 @@ namespace Feature.Wealth.Component.Repositories
                 var vm = new Funds();
                 vm.Tags = [];
 
+                // 共用欄位
+                if (f.TargetName == "Y")
+                {
+                    vm.Tags.Add("百元基金");
+                }
+
                 foreach (var tagModel in fundTagModels)
                 {
                     if (tagModel.ProductCodes.Contains(f.ProductCode))
@@ -70,11 +77,13 @@ namespace Feature.Wealth.Component.Repositories
                         vm.Tags.Add(tagModel.TagName);
                     }
                 }
-
-                // 共用欄位
-                if (f.TargetName == "Y")
+                vm.HotKeyWordTags = [];
+                foreach (var tagModel in KeyfundTagModels)
                 {
-                    vm.Tags.Add("百元基金");
+                    if (tagModel.ProductCodes.Contains(f.ProductCode))
+                    {
+                        vm.HotKeyWordTags.Add(tagModel.TagName);
+                    }
                 }
 
                 vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator;
