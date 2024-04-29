@@ -40,15 +40,15 @@
 
                                         @if (Model.HotKeywordTags != null)
                                         {
-                                        foreach (string tag in Model.HotKeywordTags)
-                                        {
-                                        <div class="l-pickGroup__item">
-                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
-                                                <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
-                                            </label>
-                                        </div>
-                                        }
+                                            foreach (string tag in Model.HotKeywordTags)
+                                            {
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
+                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                        <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
+                                                    </label>
+                                                </div>
+                                            }
                                         }
 
                                     </div>
@@ -85,15 +85,15 @@
 
                                                 @if (Model.HotProductTags != null)
                                                 {
-                                                foreach (string tag in Model.HotProductTags)
-                                                {
-                                                <div class="l-pickGroup__item">
-                                                    <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
-                                                        <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
-                                                    </label>
-                                                </div>
-                                                }
+                                                    foreach (string tag in Model.HotProductTags)
+                                                    {
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                                <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
+                                                            </label>
+                                                        </div>
+                                                    }
                                                 }
 
 
@@ -184,15 +184,15 @@
                                                                     <div class="l-pickGroup">
                                                                         @foreach (string type in Model.SearchBarData.FundTypeNames)
                                                                         {
-                                                                        if (!string.IsNullOrEmpty(type))
-                                                                        {
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@type">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="@type"></div>
-                                                                            </label>
-                                                                        </div>
-                                                                        }
+                                                                            if (!string.IsNullOrEmpty(type))
+                                                                            {
+                                                                                <div class="l-pickGroup__item">
+                                                                                    <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@type">
+                                                                                        <div class="o-btnCheckBox__text" data-filter-value="@type"></div>
+                                                                                    </label>
+                                                                                </div>
+                                                                            }
                                                                         }
 
                                                                         <div class="l-pickGroup__item" style="display:none;">
@@ -244,15 +244,15 @@
                                                                     <div class="l-pickGroup">
                                                                         @foreach (string currency in Model.SearchBarData.Currencies)
                                                                         {
-                                                                        if (!string.IsNullOrEmpty(currency))
-                                                                        {
-                                                                        <div class="l-pickGroup__item">
-                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@currency">
-                                                                                <div class="o-btnCheckBox__text" data-filter-value="@currency"></div>
-                                                                            </label>
-                                                                        </div>
-                                                                        }
+                                                                            if (!string.IsNullOrEmpty(currency))
+                                                                            {
+                                                                                <div class="l-pickGroup__item">
+                                                                                    <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@currency">
+                                                                                        <div class="o-btnCheckBox__text" data-filter-value="@currency"></div>
+                                                                                    </label>
+                                                                                </div>
+                                                                            }
                                                                         }
                                                                     </div>
                                                                 </div>
@@ -410,15 +410,15 @@
 
                                                                                     @foreach (string target in Model.SearchBarData.InvestmentTargets)
                                                                                     {
-                                                                                    if (!string.IsNullOrEmpty(target))
-                                                                                    {
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@target">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="@target"></div>
-                                                                                        </label>
-                                                                                    </div>
-                                                                                    }
+                                                                                        if (!string.IsNullOrEmpty(target))
+                                                                                        {
+                                                                                            <div class="l-pickGroup__item">
+                                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@target">
+                                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@target"></div>
+                                                                                                </label>
+                                                                                            </div>
+                                                                                        }
                                                                                     }
 
                                                                                     <div class="l-pickGroup__item" style="display:none;">
@@ -472,15 +472,15 @@
 
                                                                                     @foreach (string region in Model.SearchBarData.InvestmentRegions)
                                                                                     {
-                                                                                    if (!string.IsNullOrEmpty(region))
-                                                                                    {
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@region">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="@region"></div>
-                                                                                        </label>
-                                                                                    </div>
-                                                                                    }
+                                                                                        if (!string.IsNullOrEmpty(region))
+                                                                                        {
+                                                                                            <div class="l-pickGroup__item">
+                                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@region">
+                                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@region"></div>
+                                                                                                </label>
+                                                                                            </div>
+                                                                                        }
                                                                                     }
 
                                                                                 </div>
@@ -556,15 +556,15 @@
                                                                                 <div class="l-pickGroup">
                                                                                     @foreach (string company in Model.SearchBarData.FundCompanies)
                                                                                     {
-                                                                                    if (!string.IsNullOrEmpty(company))
-                                                                                    {
-                                                                                    <div class="l-pickGroup__item">
-                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@company">
-                                                                                            <div class="o-btnCheckBox__text" data-filter-value="@company"></div>
-                                                                                        </label>
-                                                                                    </div>
-                                                                                    }
+                                                                                        if (!string.IsNullOrEmpty(company))
+                                                                                        {
+                                                                                            <div class="l-pickGroup__item">
+                                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@company">
+                                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@company"></div>
+                                                                                                </label>
+                                                                                            </div>
+                                                                                        }
                                                                                     }
 
                                                                                 </div>
@@ -1259,7 +1259,7 @@
                                     <div class="l-target__name">
                                         <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
                                     </div>
-                                     <% if (Tags!=null) { %>
+                                    <% if (Tags!=null) { %>
                                     <div class="l-target__additional">
                                         <ul class="l-tag">
                                             <% for(var i = 0; i < Tags.length; i++ ) { %>
@@ -1385,7 +1385,7 @@
                                     <div class="l-target__name">
                                         <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
                                     </div>
-                                     <% if (Tags!=null) { %>
+                                    <% if (Tags!=null) { %>
                                     <div class="l-target__additional">
                                         <ul class="l-tag">
                                             <% for(var i = 0; i < Tags.length; i++ ) { %>
@@ -1511,7 +1511,7 @@
                                     <div class="l-target__name">
                                         <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
                                     </div>
-                                     <% if (Tags!=null) { %>
+                                    <% if (Tags!=null) { %>
                                     <div class="l-target__additional">
                                         <ul class="l-tag">
                                             <% for(var i = 0; i < Tags.length; i++ ) { %>
@@ -1948,13 +1948,13 @@
                     // 申購按鈕
                     let $purchase = suggestion.Data.Purchase ? suggestion.Data.IsLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
                     return `<div class="c-itemKeyword">
-                                <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                    <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
 
-                                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                </a>
-                                <div class="c-itemKeyword__collections">${$like}</div>
-                                ${$purchase}
-                            </div>`;
+                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                    </a>
+                                    <div class="c-itemKeyword__collections">${$like}</div>
+                                    ${$purchase}
+                                </div>`;
                 }
             });
         }
@@ -2030,8 +2030,11 @@
                             $(`[data-filter-empty=${isEmpty}]`).show();
                             $(`[data-filter-empty=${!isEmpty}]`).hide();
 
-                            $('[data-popup]').magnificPopup();
+
                             window.loading('hide');
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
                         }
                     },
                     search: {
@@ -2067,7 +2070,7 @@
                                     f.order = f.order === 'desc' ? 'asc' : 'desc';
                                 }
                             }
-                        },
+                        }
                     },
                     pagination: {
                         //headerView: '#uid-filter-header',
@@ -2086,11 +2089,11 @@
                 fjs.bindEvent('[data-tag-close]', 'click.tag');
                 fjs.bindEvent('[data-keyword-submit]', 'click.loading');
 
-                $('#FundRating input').on('change', function(e){
+                $('#FundRating input').on('change', function (e) {
                     let $radios = $('input[type="radio"][name="star"]');
                     let noneChecked = $radios.filter(':checked').length === 0;
                     if (noneChecked) {
-                       $radios.first().trigger('change');
+                        $radios.first().trigger('change');
                     }
                 });
                 $('[data-filter-reset]').on('click.reset', function (e) {
@@ -2101,9 +2104,9 @@
                         $('[data-keyword-submit]').trigger('click.loading');
                     }
                 });
-                $('[data-tab-target="tab-1"]').on('switch', function(e){
+                $('[data-tab-target="tab-1"]').on('switch', function (e) {
                     $('[data-filter-switch]:checked').trigger('change');
-                })
+                });
                 $('[data-filter-switch]').on('switch click change', function (e) {
                     let $self = $(this);
                     let switchTemplate = $self.data('filter-switch');
@@ -2113,26 +2116,26 @@
                         let switchCol = $self.data('filter-switch-columns').toString();
                         $elTh.each(function () {
                             let $this = $(this);
-                            var columns = $this.data('filter-switch-columns').toString().split(',');
+                            let columns = $this.data('filter-switch-columns').toString().split(',');
                             if (columns.includes(switchCol)) {
                                 $this.show();
                             } else {
                                 $this.hide();
                             }
-                        })
+                        });
 
                         fjs.setTemplate(switchTemplate, true);
                     }
-                })
-                
-                
+                });
+
+
                 $('[data-return-rate-money]').on('change.select2', function (e) {
                     let $currency = $('[data-currency]');
                     let $rateDate = $('[data-return-rate-date]');
-                    $currency.each(function(i) {
+                    $currency.each(function (i) {
                         let currencyData = $(this).data('filter-criteria-field');
                         let isCheck = this.checked;
-                        $rateDate.each(function(ix) {
+                        $rateDate.each(function (ix) {
                             let rateDateData = $(this).data('filter-criteria-field').split('|');
                             let criteriaField = rateDateData[currencyData];
                             fjs.removeCriteria(criteriaField)
@@ -2141,7 +2144,7 @@
                             }
                         });
                     });
-                })
+                });
 
 
                 function fnScrollUp() {
