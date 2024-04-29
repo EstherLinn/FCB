@@ -104,59 +104,14 @@
 </div>
 
 <script>
+    const datas = @Html.Raw(Model.GlobalIndexHighchartsDataJson);
+
     $(function () {
         // highchart
         $('[data-chart="mini"]').each(function (i, el) {
             var data = [];
 
-            if ($(el).attr('id') == 'EB09999') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["EB09999"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000040') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000040"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000041') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000041"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000220') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000220"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000545') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000545"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000030') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000030"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000410') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000410"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000070') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000070"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000800') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000800"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000010') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000010"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000020') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000020"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000140') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000140"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000280') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["EB09999"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000360') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000360"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000170') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000170"].GlobalIndexHistoryJson);
-            }
-            else if ($(el).attr('id') == 'AI000515') {
-                data = @Html.Raw(Model.GlobalIndexDictionary["AI000515"].GlobalIndexHistoryJson);
-            }
+            data = datas.find((element) => element.IndexCode == $(el).attr('id')).Data;
 
             // 為了凸顯數據對比，y軸最小值設定成30日內最小值
             var min = Math.min(...data);

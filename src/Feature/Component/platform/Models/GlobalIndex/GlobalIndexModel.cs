@@ -11,6 +11,7 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string DetailLink { get; set; }
         public IList<GlobalIndex> GlobalIndexList { get; set; }
         public Dictionary<string, GlobalIndex> GlobalIndexDictionary { get; set; }
+        public string GlobalIndexHighchartsDataJson { get; set; }
     }
 
     public class GlobalIndex
@@ -26,8 +27,13 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string ChangePercentage { get; set; }
         public bool UpOrDown { get; set; }
         public IList<GlobalIndex> GlobalIndexHistory { get; set; }
-        public string GlobalIndexHistoryJson { get; set; }
         public string DetailLink { get; set; }
+    }
+
+    public class GlobalIndexHighchartsData
+    {
+        public string IndexCode { get; set; }
+        public List<float> Data { get; set; }
     }
 
     public class GlobalIndexDetailModel
@@ -36,12 +42,18 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string FundLink { get; set; }
         public string ETFLink { get; set; }
         public GlobalIndexDetail GlobalIndexDetail { get; set; }
-        public string RelevantGlobalIndex { get; set; }
-        public string RelevantFund { get; set; }
-        public string RelevantETF { get; set; }
-        public string PriceData_D { get; set; }
-        public string PriceData_W { get; set; }
-        public string PriceData_M { get; set; }
+        public string RelevantGlobalIndex { get; set; } = "[]";
+        public string RelevantGlobalIndex_Success { get; set; } = "Success";
+        public string RelevantFund { get; set; } = "[]";
+        public string RelevantFund_Success { get; set; } = "Success";
+        public string RelevantETF { get; set; } = "[]";
+        public string RelevantETF_Success { get; set; } = "Success";
+        public string PriceData_D { get; set; } = "[]";
+        public string PriceData_D_Success { get; set; } = "Success";
+        public string PriceData_W { get; set; } = "[]";
+        public string PriceData_W_Success { get; set; } = "Success";
+        public string PriceData_M { get; set; } = "[]";
+        public string PriceData_M_Success { get; set; } = "Success";
     }
 
     public class GlobalIndexDetail
@@ -57,6 +69,14 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string ChangePercentage { get; set; }
         public bool UpOrDown { get; set; }
         public int ViewCount { get; set; }
+        public string DailyReturn { get; set; }
+        public string WeeklyReturn { get; set; }
+        public string OneMonthReturn { get; set; }
+        public string ThreeMonthReturn { get; set; }
+        public string SixMonthReturn { get; set; }
+        public string YeartoDateReturn { get; set; }
+        public string OneYearReturn { get; set; }
+        public string ThreeYearReturn { get; set; }
     }
 
     public class RelevantInformation
