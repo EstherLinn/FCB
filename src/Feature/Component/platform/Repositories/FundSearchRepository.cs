@@ -7,6 +7,12 @@ using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.FundDetail;
 using System.Linq;
 using JSNLog.Infrastructure;
+using Sitecore.Pipelines.InsertRenderings.Processors;
+using Template = Feature.Wealth.Component.Models.FundSearch.Template;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using System;
+using Extender = Xcms.Sitecore.Foundation.Basic.Extensions.Extender;
+using Sitecore.Data.Items;
 
 
 namespace Feature.Wealth.Component.Repositories
@@ -28,21 +34,58 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         public List<Funds> GetFundRenderData(IList<FundSearchModel> funds)
         {
+            List<Tags> fundTagModels = new List<Tags>();
+            List<Tags> KeyfundTagModels = new List<Tags>();
+            Item keytagFolder = ItemUtils.GetItem(Template.FundTags.Fields.HotKeywordTag);
+            Item protagFolder = ItemUtils.GetItem(Template.FundTags.Fields.HotProductTag);
+            foreach (var item in keytagFolder.GetChildren(Template.FundTags.Fields.FundTags))
+            {
+                KeyfundTagModels.Add(new Tags()
+                {
+                    TagName = item[Template.FundSearch.Fields.TagName],
+                    ProductCodes = item[Template.FundTags.Fields.ProductCodeList].Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList()
+                });
+            }
+            foreach (var item in protagFolder.GetChildren(Template.FundTags.Fields.FundTags))
+            {
+                fundTagModels.Add(new Tags()
+                {
+                    TagName = item[Template.FundSearch.Fields.TagName],
+                    ProductCodes = item[Template.FundTags.Fields.ProductCodeList].Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList()
+                });
+            }
+
+
+
             var result = new List<Funds>();
 
             foreach (var f in funds)
             {
                 var vm = new Funds();
-                //共用欄位
+                vm.Tags = [];
+
+                // 共用欄位
                 if (f.TargetName == "Y")
                 {
-                    vm.Tags = ["百元基金"];
+                    vm.Tags.Add("百元基金");
                 }
-                else
+
+                foreach (var tagModel in fundTagModels)
                 {
-                    vm.Tags = [];
+                    if (tagModel.ProductCodes.Contains(f.ProductCode))
+                    {
+                        vm.Tags.Add(tagModel.TagName);
+                    }
                 }
-                
+                vm.HotKeyWordTags = [];
+                foreach (var tagModel in KeyfundTagModels)
+                {
+                    if (tagModel.ProductCodes.Contains(f.ProductCode))
+                    {
+                        vm.HotKeyWordTags.Add(tagModel.TagName);
+                    }
+                }
+
                 vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator;
                 vm.ProductCode = f.ProductCode;
                 vm.ProductName = FullWidthToHalfWidth(f.ProductName);
@@ -52,14 +95,14 @@ namespace Feature.Wealth.Component.Repositories
                 //績效表現
                 if (f.CurrencyCode == null || f.FundCurrency == "TWD")
                 {
-                    f.CurrencyCode = "00";
-                    f.CurrencyName = "新臺幣";
+                    f.FundCurrencyCode = "00";
+                    f.FundCurrencyName = "新臺幣";
                 }
                 vm.Currency = new KeyValuePair<string, string>(f.CurrencyCode, f.CurrencyName);
                 vm.SixMonthReturnOriginalCurrency = CreateReturnDictionary(f.SixMonthReturnOriginalCurrency);
-                vm.OneMonthReturnOriginalCurrency = CreateReturnDictionary( f.OneMonthReturnOriginalCurrency);
+                vm.OneMonthReturnOriginalCurrency = CreateReturnDictionary(f.OneMonthReturnOriginalCurrency);
                 vm.ThreeMonthReturnOriginalCurrency = CreateReturnDictionary(f.ThreeMonthReturnOriginalCurrency);
-                vm.OneYearReturnOriginalCurrency = CreateReturnDictionary( f.OneYearReturnOriginalCurrency);
+                vm.OneYearReturnOriginalCurrency = CreateReturnDictionary(f.OneYearReturnOriginalCurrency);
                 vm.SixMonthReturnTWD = CreateReturnDictionary(f.SixMonthReturnTWD);
                 vm.OneMonthReturnTWD = CreateReturnDictionary(f.OneMonthReturnTWD);
                 vm.ThreeMonthReturnTWD = CreateReturnDictionary(f.ThreeMonthReturnTWD);
@@ -69,9 +112,9 @@ namespace Feature.Wealth.Component.Repositories
                 vm.PercentageChangeInFundPrice = Percentage(f.PercentageChangeInFundPrice);
                 vm.FundSizeMillionOriginalCurrency = RoundFundSize(f.FundSizeMillionOriginalCurrency);
                 vm.FundSizeMillionTWD = RoundFundSize(f.FundSizeMillionTWD);
-                vm.FundType = f.FundType ?? "null";
-               
-                if(f.DividendFrequencyName =="無" || f.DividendFrequencyName == null)
+                vm.FundType = f.FormatFundType;
+
+                if (f.DividendFrequencyName == "無" || f.DividendFrequencyName == null)
                 {
                     vm.DividendFrequencyName = "不配息";
                 }
@@ -93,7 +136,7 @@ namespace Feature.Wealth.Component.Repositories
                 if (!string.IsNullOrEmpty(f.InvestmentRegionName))
                 {
                     vm.InvestmentRegionName = f.InvestmentRegionName.Split(',')
-                        .Select(region => region.Trim()) 
+                        .Select(region => region.Trim())
                         .ToList();
                 }
                 else
@@ -101,7 +144,7 @@ namespace Feature.Wealth.Component.Repositories
                     vm.InvestmentRegionName = [null];
                 }
 
-                vm.value = FullWidthToHalfWidth(f.ProductName);
+                vm.value = f.ProductCode + " " + FullWidthToHalfWidth(f.ProductName);
 
                 vm.Data = new FundData
                 {
@@ -112,8 +155,18 @@ namespace Feature.Wealth.Component.Repositories
                     Purchase = f.OnlineSubscriptionAvailability == "Y" ? true : false
                 };
 
-                vm.InvestmentTargetName = f.InvestmentTargetName ?? "null";
+                vm.InvestmentTargetName = f.InvestmentTargetName ?? string.Empty;
                 vm.FundRating = f.FundRating;
+
+                vm.YeartoDateReturnOriginalCurrency = RoundingPrice(f.YeartoDateReturnOriginalCurrency);
+                vm.InceptionDateReturnOriginalCurrency = RoundingPrice(f.InceptionDateReturnOriginalCurrency);
+                vm.TwoYearReturnOriginalCurrency = RoundingPrice(f.TwoYearReturnOriginalCurrency);
+                vm.ThreeYearReturnOriginalCurrency = RoundingPrice(f.ThreeYearReturnOriginalCurrency);
+
+                vm.YeartoDateReturnTWD = RoundingPrice(f.YeartoDateReturnTWD);
+                vm.InceptionDateReturnTWD = RoundingPrice(f.InceptionDateReturnTWD);
+                vm.TwoYearReturnTWD = RoundingPrice(f.TwoYearReturnTWD);
+                vm.ThreeYearReturnTWD = RoundingPrice(f.ThreeYearReturnTWD);
 
                 result.Add(vm);
             }
@@ -139,7 +192,7 @@ namespace Feature.Wealth.Component.Repositories
             bool isUp = value >= 0;
             if (value != null)
             {
-                value = decimal.Round((decimal)value, 4);
+                value = decimal.Round((decimal)value * 100, 4);
             }
             return new KeyValuePair<bool, decimal?>(isUp, value);
         }
@@ -161,7 +214,15 @@ namespace Feature.Wealth.Component.Repositories
             }
             return value;
         }
+        private decimal? RoundingPrice(decimal? number)
+        {
+            if (!number.HasValue)
+            {
+                return null;
+            }
 
+            return Math.Round(number.Value, 4, MidpointRounding.AwayFromZero);
+        }
 
         public IList<FundItem> GetAutoCompleteData()
         {
@@ -185,7 +246,7 @@ namespace Feature.Wealth.Component.Repositories
                         Type = item.FundType,
                         IsLogin = false,
                         IsLike = false,
-                        DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl()+"?id="+item.ProductCode,
+                        DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl() + "?id=" + item.ProductCode,
                         Purchase = item.OnlineSubscriptionAvailability == "Y" ? true : false
                     }
                 };

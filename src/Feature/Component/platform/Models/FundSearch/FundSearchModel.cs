@@ -213,7 +213,53 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// 基金評等
         /// </summary>
-        public string FundRating { get; set; }
+        public decimal? FundRating { get; set; }
+
+        /// <summary>
+        /// 合併後國內外的基金類型
+        /// </summary>
+        public string FormatFundType { get; set; }
+
+        /// <summary>
+        /// 成立至今 報酬率 (原幣)
+        /// </summary>
+        public decimal? InceptionDateReturnOriginalCurrency { get; set; }
+
+        /// <summary>
+        /// 年初至今 報酬率 (原幣)
+        /// </summary>
+        public decimal? YeartoDateReturnOriginalCurrency { get; set; }
+
+        /// <summary>
+        /// 成立至今 報酬率 (台幣)
+        /// </summary>
+        public decimal? InceptionDateReturnTWD { get; set; }
+
+        /// <summary>
+        /// 年初至今 報酬率 (原幣)
+        /// </summary>
+        public decimal? YeartoDateReturnTWD { get; set; }
+
+        /// <summary>
+        /// 二年 報酬率 (原幣)
+        /// </summary>
+        public decimal? TwoYearReturnOriginalCurrency { get; set; }
+
+        /// <summary>
+        /// 三年 報酬率 (原幣)
+        /// </summary>
+        public decimal? ThreeYearReturnOriginalCurrency { get; set; }
+
+        /// <summary>
+        /// 二年 報酬率 (台幣)
+        /// </summary>
+        public decimal? TwoYearReturnTWD { get; set; }
+
+        /// <summary>
+        /// 三年 報酬率 (台幣)
+        /// </summary>
+        public decimal? ThreeYearReturnTWD { get; set; }
+
     }
 
     /// <summary>
@@ -266,6 +312,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public bool IsOnlineSubscriptionAvailability { get; set; }
 
         public List<string> Tags { get; set; }
+        public List<string> HotKeyWordTags { get; set; }
 
         public string FundCompanyName { get; set; }
 
@@ -273,13 +320,29 @@ namespace Feature.Wealth.Component.Models.FundSearch
 
         public List<string> InvestmentRegionName { get; set; }
 
-        public string FundRating { get; set; }
+        public decimal? FundRating { get; set; }
 
         public string DetailUrl { get; set; }
 
         public string value { get; set; }
 
         public FundData Data { get; set; }
+
+        public decimal? InceptionDateReturnOriginalCurrency { get; set; }
+
+        public decimal? YeartoDateReturnOriginalCurrency { get; set; }
+
+        public decimal? InceptionDateReturnTWD { get; set; }
+
+        public decimal? YeartoDateReturnTWD { get; set; }
+
+        public decimal? TwoYearReturnOriginalCurrency { get; set; }
+
+        public decimal? ThreeYearReturnOriginalCurrency { get; set; }
+
+        public decimal? TwoYearReturnTWD { get; set; }
+
+        public decimal? ThreeYearReturnTWD { get; set; }
 
     }
 
@@ -311,6 +374,13 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public List<string> FundTypeNames { get; set; }
     }
 
+    public class Tags
+    {
+        public string TagName { get; set; }
+        public List<string> ProductCodes { get; set; }
+        public string FundType { get; set; }
+    }
+
     public struct Template
     {
         public struct FundSearch
@@ -323,6 +393,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
                 /// 基金評等內容
                 /// </summary>
                 public static readonly string Content = "{587133C2-172C-4AA9-A7B5-44E1D7E41B34}";
+
+                /// <summary>
+                /// 風險指標內容
+                /// </summary>
+                public static readonly string RiskIndicatorContent = "{DA72C731-F63B-46CB-9585-4DEDB019E0E2}";
 
                 ///// <summary>
                 /// Tag的名稱
@@ -339,6 +414,32 @@ namespace Feature.Wealth.Component.Models.FundSearch
                 /// </summary>
                 public static readonly string HotProductags = "{B72C2E97-EB7B-48E3-9268-E9260E0BFE9A}";
             }
+        }
+        public struct FundTags
+        {
+            public struct Fields
+            {
+                /// <summary>
+                /// tagFolder
+                /// </summary>
+                public static readonly string FundTags = "{9EC537F8-9EF9-4AF0-B6B6-A66749E3F22A}";
+
+                /// <summary>
+                /// 行銷標籤
+                /// </summary>
+                public static readonly string HotKeywordTag = "{D463F329-22C5-411D-870B-3679A142A6B9}";
+
+                /// <summary>
+                /// 熱銷標籤
+                /// </summary>
+                public static readonly string HotProductTag = "{DA395C80-5B52-4189-8FB4-1570317137AC}";
+
+                /// <summary>
+                /// ProductCodeList
+                /// </summary>
+                public static readonly string ProductCodeList = "{97F5D259-74DE-4B64-A4A9-EFAC9C0A0CD0}";
+            }
+
         }
 
     }
