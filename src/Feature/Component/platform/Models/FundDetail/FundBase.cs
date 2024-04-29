@@ -36,6 +36,16 @@ namespace Feature.Wealth.Component.Models.FundDetail
         /// 最新淨值
         /// </summary>
         public decimal? NetAssetValue { get; set; }
+
+        /// <summary>
+        /// 三個月內最高淨值
+        /// </summary>
+        public decimal? MaxNetAssetValueThreeMonths { get; set; }
+        /// <summary>
+        /// 三個月內最低淨值
+        /// </summary>
+        public decimal? MinNetAssetValueThreeMonths { get; set; }
+
         /// <summary>
         /// 漲幅
         /// </summary>
