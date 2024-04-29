@@ -1,0 +1,712 @@
+﻿@using Feature.Wealth.Component.Models.USStock
+@model USStockModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">國外股票搜尋</h1>
+        </div>
+        <div class="l-mainstage__content">
+            <!-- 篩選最外層[data-filter-block] -->
+            <div class="l-filter no-picked" data-filter-block>
+                <div class="l-filter__block">
+                    <!-- 收合區域[data-filter] -->
+                    <div class="c-filter is-collapse" data-filter>
+                        <div class="c-filter__search">
+                            <!-- 條件群組[data-filter-group] -->
+                            <div class="c-filterForm" data-filter-group>
+                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                <div class="c-filterForm__title u-hidden" data-filter-title>
+                                    <span>關鍵字</span>
+                                </div>
+                                <div class="c-filterForm__value">
+                                    <div class="o-actionbox o-actionbox--lg" data-clear="true">
+                                        <!-- #keyword: 請見頁面下方的script邏輯，套用jquery.autocomplete套件 -->
+                                        <!-- [data-clear="textbox"]: 套用清除按鈕功能，標示此為文字輸入框 -->
+                                        <input id="keyword" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入代碼或名稱" data-keyword-input>
+                                        <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit></button>
+                                        <!-- [data-clear="button"]: 套用清除按鈕功能，標示此為清除按鈕 -->
+                                        <button type="button" class="o-actionbox__clear" data-clear="button">清除</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-filter__keyword">
+                            <!-- 條件群組[data-filter-group] -->
+                            <div class="c-filterForm" data-filter-group>
+                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                <div class="c-filterForm__title" data-filter-title>
+                                    <span>熱門關鍵字</span>
+                                </div>
+                                <div class="c-filterForm__value">
+                                    <div class="l-pickGroup" id="hotkeywordtags">
+
+                                        @if (Model.HotKeywordTags != null)
+                                        {
+                                            foreach (var tag in Model.HotKeywordTags)
+                                            {
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox="" value="@tag">
+                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                        <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
+                                                    </label>
+                                                </div>
+                                            }
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 小網收合區域[data-filter-hide="mobile"] -->
+                        <div class="c-filter__mbHide" data-filter-hide="mobile">
+                            <div class="c-filter__head">
+                                進階篩選
+                            </div>
+                            <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                            <a href="#" class="c-filter__close" data-filter-collapse></a>
+                            <div class="c-filter__wrap">
+                                <div class="c-filter__group">
+                                    <!-- 條件群組[data-filter-group] -->
+                                    <div class="c-filterForm" data-filter-group>
+                                        <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                        <div class="c-filterForm__title" data-filter-title>
+                                            <span>熱門主題</span>
+                                        </div>
+                                        <div class="c-filterForm__value">
+                                            <div class="l-pickGroup" id="hotproducttags">
+
+                                                @if (Model.HotProductTags != null)
+                                                {
+                                                    foreach (var tag in Model.HotProductTags)
+                                                    {
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox="" value="@tag">
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                                <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
+                                                            </label>
+                                                        </div>
+                                                    }
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                            <div class="c-filter__total" data-filter-collapse>
+                                <div class="o-total o-total--wt">
+                                    共<span id="total-Wt">0</span>檔股票
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 只有小網出現收合按鈕 -->
+                        <div class="c-filter__action u-hidden@dt-only u-hidden@lt-only">
+                            <div class="c-filter__expand">
+                                <div>
+                                    <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                    <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
+                                        展開進階篩選
+                                        <img src="../themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="c-filter__collapse">
+                                <div>
+                                    <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                    <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
+                                        收合進階篩選
+                                        <img src="../themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-filter__picked">
+                    <div class="c-pickedTag">
+                        <div class="c-pickedTag__text">已選取</div>
+                        <div class="c-pickedTag__items">
+                            <!-- 已選取tag區[data-filter-tags] -->
+                            <div class="l-pickGroup" data-filter-tags></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-filter__tool">
+                    <div class="l-filter__total">
+                        <div class="o-total">
+                            共<span id="total">0</span>檔股票
+                        </div>
+                    </div>
+                    <div class="l-filter__reset">
+                        <!-- 重設所有條件功能[data-filter-reset] -->
+                        <a href="#" class="o-prefixLink o-prefixLink--refresh" data-filter-reset>重設所有條件</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="l-stage">
+    <div class="l-wrap">
+        <div class="l-flex u-flex-col u-flex-gap-sm@lt">
+            <div class="l-flex__item">
+                <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                    <div class="l-flex__item u-right u-hidden@dt-only">
+                        <div class="o-sortingbox">
+                            <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="stockTable">
+                                <option value="">排序</option>
+                                <option value="股票名稱高至低" data-sorting-column="FullName" data-sorting-class="is-desc">股票名稱高至低</option>
+                                <option value="股票名稱低至高" data-sorting-column="FullName" data-sorting-class="is-asc">股票名稱低至高</option>
+                                <option value="交易所代碼高至低" data-sorting-column="FundCode" data-sorting-class="is-desc">交易所代碼高至低</option>
+                                <option value="交易所代碼低至高" data-sorting-column="FundCode" data-sorting-class="is-asc">交易所代碼低至高</option>
+                                <option value="收盤價高至低" data-sorting-column="ClosingPrice" data-sorting-class="is-desc">收盤價高至低</option>
+                                <option value="收盤價低至高" data-sorting-column="ClosingPrice" data-sorting-class="is-asc">收盤價低至高</option>
+                                <option value="1日績效高至低" data-sorting-column="DailyReturn" data-sorting-class="is-desc">1日績效高至低</option>
+                                <option value="1日績效低至高" data-sorting-column="DailyReturn" data-sorting-class="is-asc">1日績效低至高</option>
+                                <option value="1週績效高至低" data-sorting-column="WeeklyReturn" data-sorting-class="is-desc">1週績效高至低</option>
+                                <option value="1週績效低至高" data-sorting-column="WeeklyReturn" data-sorting-class="is-asc">1週績效低至高</option>
+                                <option value="1月績效高至低" data-sorting-column="MonthlyReturn" data-sorting-class="is-desc">1月績效高至低</option>
+                                <option value="1月績效低至高" data-sorting-column="MonthlyReturn" data-sorting-class="is-asc">1月績效低至高</option>
+                                <option value="1季績效高至低" data-sorting-column="ThreeMonthReturn" data-sorting-class="is-desc">1季績效高至低</option>
+                                <option value="1季績效低至高" data-sorting-column="ThreeMonthReturn" data-sorting-class="is-asc">1季績效低至高</option>
+                                <option value="1年績效高至低" data-sorting-column="OneYearReturn" data-sorting-class="is-desc">1年績效高至低</option>
+                                <option value="1年績效低至高" data-sorting-column="OneYearReturn" data-sorting-class="is-asc">1年績效低至高</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="l-flex__item">
+                <div class="l-table">
+                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="stockTable">
+                        <colgroup>
+                            <col style="width: auto;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                        </colgroup>
+                        <thead>
+                            <tr class="u-nowrap">
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>股票名稱</span>
+                                        <!-- .is-asc: 升冪 -->
+                                        <!-- .is-desc: 降冪 -->
+                                        <a href="#" class="o-sorting" data-sorting-column="FullName"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>交易所代碼</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="FundCode"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>收盤價<br>(收盤日)</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="ClosingPrice"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>1日績效</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="DailyReturn"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>1週績效</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="WeeklyReturn"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>1月績效</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="MonthlyReturn"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>1季績效</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="ThreeMonthReturn"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>1年績效</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="OneYearReturn"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>關注</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>申購</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockTBody"></tbody>
+                    </table>
+                    <div class="l-pagination">
+                        <div class="l-pagination__size" id="uid-perPage">
+                        </div>
+                        <div class="l-pagination__switch" id="uid-pagination">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<template id="tmplKeywordNotFound">
+    <div class="c-empty">
+        <div class="c-empty__img">
+            <img src="./../themes/images/lions/lion-keyword.svg" alt="">
+        </div>
+        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
+    </div>
+</template>
+
+<script id="uid-template-perPage" type="text/html">
+    <span>每頁顯示</span>
+    <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+    <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+        <% for(var i = 0; i < values.length - 1; i++ ) { %>
+        <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+        <% } %>
+        <option value="<%= values[values.length - 1] %>">全部</option>
+    </select>
+</script>
+
+<script id="uid-template-pagination" type="text/html">
+    <div class="o-pagination">
+        <% if (currentPage > 1) { %>
+        <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+        <% } else { %>
+        <!-- .is-disabled: 停用狀態，無法點擊 -->
+        <a href="#" class="o-pagination__prev is-disabled"></a>
+        <% } %>
+        <span class="o-pagination__pager">
+            <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+            <span class="o-pagination__total"><%= totalPages %></span>
+        </span>
+        <% if (currentPage < totalPages ) { %>
+        <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+        <% } else { %>
+        <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+        <% } %>
+    </div>
+</script>
+
+<script id="template" type="text/html">
+    <!-- .u-nowrap@dt-only: 桌機版(desktop)不折行 -->
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+        <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+        <td class="c-cardTable__top"></td>
+        <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+        <!-- .u-wrap@dt-only: 桌機版(desktop)自動折行 -->
+        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+            <div class="c-cardTable__content">
+                <a href="<%= DetailLink %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FullName %></a>
+            </div>
+            <% if (Tags != null && Tags.length > 0) { %>
+                <% for(var i = 0; i < Tags.length; i++ ) { %>
+                    <div class="l-target__additional">
+                        <ul class="l-tag">
+                            <li class="l-tag__item">
+                                <a href="#" class="o-tag"><%= Tags[i] %></a>
+                            </li>
+                        </ul>
+                    </div>
+                <% } %>
+            <% } %>
+        </td>
+        <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+        <td class="c-cardTable__space"></td>
+        <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+        <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+            <div class="c-cardTable__title" data-length="5">交易所代碼</div>
+            <div class="c-cardTable__content"><%= FundCode %></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+            <div class="c-cardTable__title" data-length="4">收盤價<br>(收盤日)</div>
+            <div class="c-cardTable__content"><%= ClosingPriceText %><br><span class="t-date"><%= DataDate %></span></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">1日績效</div>
+            <div class="c-cardTable__content">
+                <% if (!DailyReturn) { %>
+                    <span>-</span>
+                <% } %>
+                <% if (typeof DailyReturn == "number" && !isNaN(DailyReturn) && DailyReturn > 0) { %>
+                    <span class="o-rise"><%= DailyReturn %>%</span>
+                <% } %>
+                <% if (typeof DailyReturn == "number" && !isNaN(DailyReturn) && DailyReturn < 0) { %>
+                    <span class="o-fall"><%= DailyReturn %>%</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">1週績效</div>
+            <div class="c-cardTable__content">
+                <% if (!WeeklyReturn) { %>
+                    <span>-</span>
+                <% } %>
+                <% if (typeof WeeklyReturn == "number" && !isNaN(WeeklyReturn) && WeeklyReturn > 0) { %>
+                    <span class="o-rise"><%= WeeklyReturn %>%</span>
+                <% } %>
+                <% if (typeof WeeklyReturn == "number" && !isNaN(WeeklyReturn) && WeeklyReturn < 0) { %>
+                    <span class="o-fall"><%= WeeklyReturn %>%</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">1月績效</div>
+            <div class="c-cardTable__content">
+                <% if (!MonthlyReturn) { %>
+                    <span>-</span>
+                <% } %>
+                <% if (typeof MonthlyReturn == "number" && !isNaN(MonthlyReturn) && MonthlyReturn > 0) { %>
+                    <span class="o-rise"><%= MonthlyReturn %>%</span>
+                <% } %>
+                <% if (typeof MonthlyReturn == "number" && !isNaN(MonthlyReturn) && MonthlyReturn < 0) { %>
+                    <span class="o-fall"><%= MonthlyReturn %>%</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">1季績效</div>
+            <div class="c-cardTable__content">
+                <% if (!ThreeMonthReturn) { %>
+                    <span>-</span>
+                <% } %>
+                <% if (typeof ThreeMonthReturn == "number" && !isNaN(ThreeMonthReturn) && ThreeMonthReturn > 0) { %>
+                    <span class="o-rise"><%= ThreeMonthReturn %>%</span>
+                <% } %>
+                <% if (typeof ThreeMonthReturn == "number" && !isNaN(ThreeMonthReturn) && ThreeMonthReturn < 0) { %>
+                    <span class="o-fall"><%= ThreeMonthReturn %>%</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">1年績效</div>
+            <div class="c-cardTable__content">
+                <% if (!OneYearReturn) { %>
+                    <span>-</span>
+                <% } %>
+                <% if (typeof OneYearReturn == "number" && !isNaN(OneYearReturn) && OneYearReturn > 0) { %>
+                    <span class="o-rise"><%= OneYearReturn %>%</span>
+                <% } %>
+                <% if (typeof OneYearReturn == "number" && !isNaN(OneYearReturn) && OneYearReturn < 0) { %>
+                    <span class="o-fall"><%= OneYearReturn %>%</span>
+                <% } %>
+            </div>
+        </td>
+        <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+        <td class="c-cardTable__space"></td>
+        <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                        <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+                        <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+                        <a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                    </li>
+                </ul>
+            </div>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <% if (OnlineSubscriptionAvailability == 'Y') { %>
+                <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <% } %>
+        </td>
+    </tr>
+</script>
+
+<template id="tmplKeywordNotFound">
+    <div class="c-empty">
+        <div class="c-empty__img">
+            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+        </div>
+        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
+    </div>
+</template>
+
+<script src="~/themes/vendor/noUiSlider/nouislider.min.js"></script>
+<script src="~/themes/vendor/wnumb/wNumb.min.js"></script>
+<script src="~/themes/js/filter.min.js"></script>
+
+<script>
+    const USStockList = @Html.Raw(Model.USStockJson);
+
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            $('[id="total"]').text(USStockList.length);
+            $('[id="total-wt"]').text(USStockList.length);
+
+            var fjs = FilterJS(USStockList, '#stockTBody', {
+                template: '#template',
+                callbacks: {
+                    afterFilter: function (result) {
+                        window.loading('hide');
+                        $('[id="total"]').text(result.length);
+                        $('[id="total-wt"]').text(result.length);
+                    }
+                },
+                search: {
+                    ele: '#keyword',
+                    fields: ['FirstBankCode', 'FundCode', 'EnglishName', 'ChineseName'],
+                    start_length: 2,
+                    bindEvent: false,
+                    multi: function () {
+                        let texts = [];
+                        $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                            let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                            let text = matches && matches[1];
+                            texts.push(text);
+                        });
+
+                        return texts;
+                    }
+                },
+                order: {
+                    default_sort: 'asc',
+                    sorts: [
+                        { field: 'group1', ele: 'select[data-sorting-linkto="stockTable"]' }
+                    ],
+                    onSortEvent: function (f, e) {
+                        let $self = $(this);
+                        if (e.type === 'click') {
+
+                        } else if (e.type === 'change') {
+                            let $selected = $self.find(':selected');
+                            let field = $selected.data('sorting-column');
+                            let order = $selected.data('sorting-class');
+                            f.field = field;
+                            if (!!order) {
+                                if (order === 'is-desc') {
+                                    f.order = 'desc';
+                                } else if (order === 'is-asc') {
+                                    f.order = 'asc';
+                                }
+                            } else {
+                                f.order = f.order === 'desc' ? 'asc' : 'desc';
+                            }
+                        }
+                    },
+                },
+                pagination: {
+                    //headerView: '#uid-filter-header',
+                    container: '#uid-pagination',
+                    paginationView: '#uid-template-pagination',
+                    visiblePages: 5,
+                    perPage: {
+                        values: [10, 50, 100, USStockList.length],
+                        container: '#uid-perPage',
+                        perPageView: '#uid-template-perPage'
+                    },
+                    onPagination: function () {
+                    }
+                }
+            });
+
+            fjs.addCriteria({ field: 'Tags', ele: '#hotkeywordtags input:checkbox' });
+            fjs.addCriteria({ field: 'Tags', ele: '#hotproducttags input:checkbox' });
+
+            fjs.bindEvent('[data-filter-reset]', 'click.reset');
+            fjs.bindEvent('[data-tag-close]', 'click.tag');
+            fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+            $('[data-keyword-input]').on('keypress.loading', function (e) {
+                if (e.which === 13 && !!$(this).val().trim()) {
+                    $('[data-keyword-submit]').trigger('click.loading');
+                }
+            });
+
+            fjs.filter();
+
+            $(function () {
+                // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
+                $('#keyword').autocomplete({
+                    noCache: true,
+                    minChars: 0,
+                    containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
+                    maxHeight: 'auto',
+                    zIndex: 5,
+                    preserveInput: true,
+                    showNoSuggestionNotice: true,
+                    noSuggestionNotice: $('#tmplKeywordNotFound').html(),
+                    lookup: function (query, done) {
+                        query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+                        if (query.length == 0) {
+                            result = USStockList.slice(0, 5);
+                        } else {
+                            result = USStockList.filter(function (item) {
+                                return new RegExp(query, 'gi').test(item.value);
+                            });
+                        }
+                        done({
+                            suggestions: result
+                        });
+                    },
+                    onSearchComplete: function (query, suggestions) {
+                        var autocomplete = $(this).autocomplete();
+                        var container = autocomplete.suggestionsContainer;
+                        var $this = $(this);
+
+                        // 取消套件預設 blur 事件會關閉 suggestions container
+                        $this.off('blur.autocomplete');
+
+                        // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
+                        if (autocomplete.isRegisteGlobalEvent != true) {
+                            $(window).on('click.autocomplete', {
+                                source: this
+                            }, e => {
+                                if (e.target != e.data.source) {
+                                    autocomplete.hide();
+                                }
+                            });
+                            autocomplete.isRegisteGlobalEvent = true;
+                        }
+
+                        // 停止 like icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
+                        $(container).find('.o-statusBtn').off('click.autocomplete').on('click.autocomplete', function (e) {
+                            e.stopPropagation();
+                        });
+                        // 綁定 like icon 的互動功能
+                        $(container).find('[data-ia]').interactive();
+                        // 綁定 like icon 的彈跳登入畫面
+                        $(container).find('[data-popup]').magnificPopup();
+                    },
+                    formatResult: function (suggestion, currentValue) {
+                        let detailUrl = suggestion.DetailLink ? suggestion.DetailLink : '#';
+                        let className = suggestion.IsLike ? 'is-active' : '';
+
+                        // like 按鈕
+                        let likeWord = '加入關注|取消關注';
+                        let $like = suggestion.IsLike != null ? suggestion.IsLogin == true ?
+                            // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
+                            `<a href="#" class="o-statusBtn o-statusBtn--like ${className}" data-msg="${likeWord}" data-ia="true"></a>` :
+                            // <!-- [data-popup]: 未登入開啟登入彈跳視窗 -->
+                            `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
+
+                        // 申購按鈕
+                        let $purchase = suggestion.OnlineSubscriptionAvailability == 'Y' ? suggestion.IsLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
+                        return `<div class="c-itemKeyword">
+                                    <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                    </a>
+                                    <div class="c-itemKeyword__collections">${$like}</div>
+                                    ${$purchase}
+                                    </div>`;
+                    }
+                });
+            });
+
+            // table 排序功能
+            $('.o-sorting').on('click.sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                window.loading('show');
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                var tableName = $(this).closest('[data-table-name]').data('table-name');
+                var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+                var sortingColumn = $(this).data('sorting-column');
+                $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+                $sortingbox.trigger('change');
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
+            });
+
+            // 手機版分頁筆數功能
+            $('[data-sortingbox="true"]').on('change.sorting', function (e) {
+                // 呼叫 loading
+                window.loading('show');
+                var sorting = $(this).val();
+                var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+                var sortingColumn = $('option:selected', this).data('sorting-column');
+                var orderby = $('option:selected', this).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                console.log(`排序：${sorting}`);
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
+            });
+
+            // 分頁筆數功能
+            $('[data-sizebox="true"]').on('change.pagesize', function (e) {
+                // 呼叫 loading
+                window.loading('show');
+                var size = $(this).val();
+                console.log(`每頁顯示${size}筆`);
+
+                // 調整分頁
+                var $parentWrap = $(this).closest('.l-pagination');
+                var dataLength = parseInt($parentWrap.attr('data-length'));
+                $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', size === 'all');
+                if (size !== 'all') {
+                    var total = Math.ceil(dataLength / size);
+                    $parentWrap.find('[data-total]').attr('data-total', total);
+                    $parentWrap.find('.o-pagination__total').text(total);
+                    $parentWrap.find('.o-pagination__no').val(1);
+                    $parentWrap.find('.o-pagination__prev').addClass('is-disabled');
+                    $parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
+            });
+        });
+    })(jQuery, window, document);
+</script>

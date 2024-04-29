@@ -1,0 +1,246 @@
+﻿@using Feature.Wealth.Component.Models.USStock
+@model USStockDetailModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__content">
+            <div class="l-pageHeader">
+                <div class="l-pageHeader__title">
+                    <div class="c-pageHeader">
+                        <div class="c-pageHeader__main">
+                            <h1 class="c-pageHeader__title">@(Model.USStock.FirstBankCode + " " + Model.USStock.ChineseName)</h1>
+                        </div>
+                        <div class="c-pageHeader__subContent">
+                            <h2 class="c-pageHeader__subTitle">@Model.USStock.EnglishName</h2>
+                        </div>
+                        <div class="c-pageHeader__views">
+                            <div class="o-views o-views--bk">@Model.USStock.ViewCount</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-pageHeader__content">
+                    <div class="l-pageHeader__info">
+                        <div class="l-detailInfo">
+                            <div class="l-detailInfo__major">
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical">
+                                        <div class="c-numerical__title u-left@dt-only"><span>收盤價</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@Model.USStock.ClosingPriceText</span></div>
+                                    </div>
+                                </div>
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical">
+                                        <div class="c-numerical__title u-left@dt-only"><span>收盤日</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@Model.USStock.DataDate</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="l-detailInfo__lower">
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical c-numerical--horiz@lt">
+                                        <div class="c-numerical__title u-left@dt-only"><span>交易所代碼</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only"><span>@Model.USStock.FundCode</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-pageHeader__action">
+                        <ul class="l-pageWallet">
+                            <li class="l-pageWallet__item">
+                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+                                <a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                            </li>
+                            <li class="l-pageWallet__btn">
+                                <a href="#popupPurchase" class="o-fixedBtn" data-popup="true">申購</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="l-wrap">
+    <div class="c-tab c-tab--wide" data-tab="true">
+        <div class="c-tab__header">
+            <ul class="c-tab__navs">
+                <!-- .is-active: 作用中的項目 -->
+                <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                <li><a href="#" class="c-tab__item is-active" target="_self" title="基本資料" data-tab-target="tab-1">基本資料</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="財務資料" data-tab-target="tab-2">財務資料</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="價格走勢" data-tab-target="tab-3">價格走勢</a></li>
+            </ul>
+            <div class="c-tab__collapse">
+                <a href="#" class="c-tab__switch"></a>
+                <div class="c-tab__dropdown"><a href="#" class="c-tab__clone is-active" target="_self" title="基本資料" data-tab-target="tab-1">基本資料</a><a href="#" class="c-tab__clone " target="_self" title="財務資料" data-tab-target="tab-2">財務資料</a><a href="#" class="c-tab__clone " target="_self" title="價格走勢" data-tab-target="tab-3">價格走勢</a></div>
+            </div>
+        </div>
+        <!-- is-active: 作用中的項目 -->
+        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+            <section class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="l-selectbox">
+                        <div class="l-selectbox__item">
+                            <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true">
+                                <option value="基本資料">基本資料</option>
+                                <option value="相關企業">相關企業</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item" id="基本資料">
+                    <!-- 示意用，請替換正確內容 -->
+                    基本資料
+                </div>
+                <div class="l-flex__item" id="相關企業" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    相關企業
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-2">
+            <section class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="l-selectbox">
+                        <div class="l-selectbox__item">
+                            <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true">
+                                <option value="營收分析">營收分析</option>
+                                <option value="資產負債表">資產負債表</option>
+                                <option value="損益表">損益表</option>
+                                <option value="現金流量表">現金流量表</option>
+                                <option value="財務比率表">財務比率表</option>
+                                <option value="獲利能力">獲利能力</option>
+                                <option value="財務結構">財務結構</option>
+                                <option value="盈餘分析">盈餘分析</option>
+                                <option value="經營績效">經營績效</option>
+                                <option value="現金流量分析">現金流量分析</option>
+                                <option value="償還能力">償還能力</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item" id="營收分析">
+                    <!-- 示意用，請替換正確內容 -->
+                    營收分析
+                </div>
+                <div class="l-flex__item" id="資產負債表" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    資產負債表
+                </div>
+                <div class="l-flex__item" id="損益表" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    損益表
+                </div>
+                <div class="l-flex__item" id="現金流量表" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    現金流量表
+                </div>
+                <div class="l-flex__item" id="財務比率表" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    財務比率表
+                </div>
+                <div class="l-flex__item" id="獲利能力" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    獲利能力
+                </div>
+                <div class="l-flex__item" id="財務結構" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    財務結構
+                </div>
+                <div class="l-flex__item" id="盈餘分析" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    盈餘分析
+                </div>
+                <div class="l-flex__item" id="經營績效" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    經營績效
+                </div>
+                <div class="l-flex__item" id="現金流量分析" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    現金流量分析
+                </div>
+                <div class="l-flex__item" id="償還能力" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    償還能力
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-3">
+            <section class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="l-selectbox">
+                        <div class="l-selectbox__item">
+                            <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true">
+                                <option value="技術分析">技術分析</option>
+                                <option value="收盤走勢圖">收盤走勢圖</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item" id="技術分析">
+                    <!-- 示意用，請替換正確內容 -->
+                    技術分析
+                </div>
+                <div class="l-flex__item" id="收盤走勢圖" hidden>
+                    <!-- 示意用，請替換正確內容 -->
+                    收盤走勢圖
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('select').on('change', function () {
+            var val = this.value;
+
+            if (val == '基本資料' || val == '相關企業') {
+                $('#基本資料').hide();
+                $('#相關企業').hide();
+
+                $('#' + val).show();
+            }
+            else if (val == '營收分析'
+                || val == '資產負債表'
+                || val == '損益表'
+                || val == '現金流量表'
+                || val == '財務比率表'
+                || val == '獲利能力'
+                || val == '財務結構'
+                || val == '盈餘分析'
+                || val == '經營績效'
+                || val == '現金流量分析'
+                || val == '償還能力') {
+                $('#營收分析').hide();
+                $('#資產負債表').hide();
+                $('#損益表').hide();
+                $('#現金流量表').hide();
+                $('#財務比率表').hide();
+                $('#獲利能力').hide();
+                $('#財務結構').hide();
+                $('#盈餘分析').hide();
+                $('#經營績效').hide();
+                $('#現金流量分析').hide();
+                $('#償還能力').hide();
+
+                $('#' + val).show();
+            }
+            else if (val == '技術分析' || val == '收盤走勢圖') {
+                $('#技術分析').hide();
+                $('#收盤走勢圖').hide();
+
+                $('#' + val).show();
+            }
+        });
+    });
+</script>
