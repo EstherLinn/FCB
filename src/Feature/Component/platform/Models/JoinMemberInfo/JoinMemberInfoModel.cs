@@ -7,11 +7,8 @@ namespace Feature.Wealth.Component.Models.JoinMemberInfo
     {
         public Item Item { get; set; }
         public string Image1 { get; set; }
-        public string Image1_3X { get; set; }
         public string Image2 { get; set; }
-        public string Image2_3X { get; set; }
         public string Image3 { get; set; }
-        public string Image3_3X { get; set; }
     }
 
     public struct Template
@@ -31,11 +28,8 @@ namespace Feature.Wealth.Component.Models.JoinMemberInfo
                 public static readonly ID Title3 = new ID("{912C5111-3339-4BCE-A7F3-7CE9EF69B41E}");
                 public static readonly ID Description3 = new ID("{9F068343-9693-4FE0-B180-09BC15A39AEB}");
                 public static readonly ID Image1 = new ID("{4EE0C3D9-82B1-4746-A419-5C1A1FC39B7B}");
-                public static readonly ID Image1_3X = new ID("{A88B8EFE-78BD-4616-B8E1-9FE519142FF0}");
                 public static readonly ID Image2 = new ID("{C96A6430-915B-4E44-B6AD-293C76CEFB12}");
-                public static readonly ID Image2_3X = new ID("{A776E272-C348-4761-8E65-81858A350455}");
                 public static readonly ID Image3 = new ID("{0642A9AC-3AB9-4977-97BE-410D7C59E5A8}");
-                public static readonly ID Image3_3X = new ID("{AAA1B6C8-FC7A-4491-A1ED-39D77CB09E07}");
             }
         }
     }
