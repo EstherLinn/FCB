@@ -23,7 +23,7 @@
     else
     {
         @: $('a[eh-subscription-init]').attr("href","#popupPurchase");
-    } 
+    }
             let fundid = $('a[eh-subscription-init]').data('fundid');
                if ($(window).width() < 768)
             {
@@ -69,3 +69,4 @@
             });
             })(jQuery, window, document);
 </script>
+@Xcms.Sitecore.Foundation.Assets.Services.RenderAssetsService.Current.ScriptsRender("<script type=\"text/javascript\" src=\"{0}\" async ></script>", "/themes/project/wealth/js/utm.min.js")
