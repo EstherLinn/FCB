@@ -8,6 +8,8 @@ namespace Feature.Wealth.Component.Models.FundDetail
 {
   public  class FundRateOfReturn
     {
+        public decimal? OneDayReturnOriginalCurrency { get; set; }
+        public decimal? OneWeekReturnOriginalCurrency { get; set; }
         public decimal? OneMonthReturnOriginalCurrency { get; set; }
         public decimal? ThreeMonthReturnOriginalCurrency { get; set; }
         public decimal? SixMonthReturnOriginalCurrency { get; set; }
