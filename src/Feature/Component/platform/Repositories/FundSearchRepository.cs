@@ -189,10 +189,11 @@ namespace Feature.Wealth.Component.Repositories
 
         private KeyValuePair<bool, decimal?> Percentage(decimal? value)
         {
-            bool isUp = value >= 0;
+            bool isUp = true;
             if (value != null)
             {
-                value = decimal.Round((decimal)value * 100, 4);
+                isUp = value >= 0;
+                value = decimal.Round((decimal)value * 100, 2);
             }
             return new KeyValuePair<bool, decimal?>(isUp, value);
         }
