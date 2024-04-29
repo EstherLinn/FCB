@@ -34,28 +34,8 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         public List<Funds> GetFundRenderData(IList<FundSearchModel> funds)
         {
-            List<Tags> fundTagModels = new List<Tags>();
-            List<Tags> KeyfundTagModels = new List<Tags>();
-            Item keytagFolder = ItemUtils.GetItem(Template.FundTags.Fields.HotKeywordTag);
-            Item protagFolder = ItemUtils.GetItem(Template.FundTags.Fields.HotProductTag);
-            foreach (var item in keytagFolder.GetChildren(Template.FundTags.Fields.FundTags))
-            {
-                KeyfundTagModels.Add(new Tags()
-                {
-                    TagName = item[Template.FundSearch.Fields.TagName],
-                    ProductCodes = item[Template.FundTags.Fields.ProductCodeList].Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList()
-                });
-            }
-            foreach (var item in protagFolder.GetChildren(Template.FundTags.Fields.FundTags))
-            {
-                fundTagModels.Add(new Tags()
-                {
-                    TagName = item[Template.FundSearch.Fields.TagName],
-                    ProductCodes = item[Template.FundTags.Fields.ProductCodeList].Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList()
-                });
-            }
-
-
+            var _tagsRepository = new TagsRepository();
+            var tags = _tagsRepository.GetTagData();
 
             var result = new List<Funds>();
 
@@ -70,21 +50,14 @@ namespace Feature.Wealth.Component.Repositories
                     vm.Tags.Add("百元基金");
                 }
 
-                foreach (var tagModel in fundTagModels)
-                {
-                    if (tagModel.ProductCodes.Contains(f.ProductCode))
-                    {
-                        vm.Tags.Add(tagModel.TagName);
-                    }
-                }
+                vm.Tags.AddRange(from tagModel in tags.Where(t => t.FundType == "DiscountTag")
+                                 where tagModel.ProductCodes.Contains(f.ProductCode)
+                                 select tagModel.TagName);
+
                 vm.HotKeyWordTags = [];
-                foreach (var tagModel in KeyfundTagModels)
-                {
-                    if (tagModel.ProductCodes.Contains(f.ProductCode))
-                    {
-                        vm.HotKeyWordTags.Add(tagModel.TagName);
-                    }
-                }
+                vm.HotKeyWordTags.AddRange(from tagModel in tags
+                                           where tagModel.ProductCodes.Contains(f.ProductCode)
+                                           select tagModel.TagName);
 
                 vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator;
                 vm.ProductCode = f.ProductCode;
@@ -192,7 +165,7 @@ namespace Feature.Wealth.Component.Repositories
             bool isUp = true;
             if (value != null)
             {
-                isUp = value >= 0;
+                isUp = value >= 0; 
                 value = decimal.Round((decimal)value * 100, 2);
             }
             return new KeyValuePair<bool, decimal?>(isUp, value);

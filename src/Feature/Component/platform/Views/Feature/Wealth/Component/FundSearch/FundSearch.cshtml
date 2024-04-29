@@ -1014,9 +1014,7 @@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-3">
             <div class="l-flex u-flex-col u-flex-gap-sm">
-                <div class="l-flex__item">
-                    風險指標：資產管理公司經常用來作為<a href="#" class="o-link">基金風險綜合評比</a>的指標。
-                </div>
+                <div class="l-flex__item">@Model.RiskIndicatorContent</div>
                 <div class="l-flex__item u-right u-hidden@dt-only">
                     <div class="o-sortingbox">
                         <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
@@ -1261,17 +1259,17 @@
                                     <div class="l-target__name">
                                         <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
                                     </div>
-                                    <% if (Tags!=null) { %>
-                                    <% for(var i = 0; i < Tags.length; i++ ) { %>
+                                     <% if (Tags!=null) { %>
                                     <div class="l-target__additional">
                                         <ul class="l-tag">
+                                            <% for(var i = 0; i < Tags.length; i++ ) { %>
                                             <li class="l-tag__item">
                                                 <!-- <a href="#" class="o-tag">百元基金</a> -->
                                                 <a href="#" class="o-tag"><%= Tags[i] %></a>
                                             </li>
+                                            <% } %>
                                         </ul>
                                     </div>
-                                    <% } %>
                                     <% } %>
                                 </div>
                             </div>
@@ -1292,7 +1290,7 @@
                             </div>
                             <div class="c-cardTable__content">
                                 <% if (Currency.Value!=null) { %>
-                                <a href="#" class="o-link"><%= Currency.Value %></a>
+                                <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= Currency.Value %></a>
                                 <% } else {%>
                                 <span>-</span>
                                 <% } %>
@@ -1387,17 +1385,17 @@
                                     <div class="l-target__name">
                                         <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
                                     </div>
-                                    <% if (Tags!=null) { %>
-                                    <% for(var i = 0; i < Tags.length; i++ ) { %>
+                                     <% if (Tags!=null) { %>
                                     <div class="l-target__additional">
                                         <ul class="l-tag">
+                                            <% for(var i = 0; i < Tags.length; i++ ) { %>
                                             <li class="l-tag__item">
                                                 <!-- <a href="#" class="o-tag">百元基金</a> -->
                                                 <a href="#" class="o-tag"><%= Tags[i] %></a>
                                             </li>
+                                            <% } %>
                                         </ul>
                                     </div>
-                                    <% } %>
                                     <% } %>
                                 </div>
                             </div>
@@ -1418,7 +1416,7 @@
                             </div>
                             <div class="c-cardTable__content">
                                 <% if (Currency.Value!=null) { %>
-                                <a href="#" class="o-link"><%= Currency.Value %></a>
+                                <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= Currency.Value %></a>
                                 <% } else {%>
                                 <span>-</span>
                                 <% } %>
@@ -1513,17 +1511,17 @@
                                     <div class="l-target__name">
                                         <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
                                     </div>
-                                    <% if (Tags!=null) { %>
-                                    <% for(var i = 0; i < Tags.length; i++ ) { %>
+                                     <% if (Tags!=null) { %>
                                     <div class="l-target__additional">
                                         <ul class="l-tag">
+                                            <% for(var i = 0; i < Tags.length; i++ ) { %>
                                             <li class="l-tag__item">
                                                 <!-- <a href="#" class="o-tag">百元基金</a> -->
                                                 <a href="#" class="o-tag"><%= Tags[i] %></a>
                                             </li>
+                                            <% } %>
                                         </ul>
                                     </div>
-                                    <% } %>
                                     <% } %>
                                 </div>
                             </div>
@@ -1544,7 +1542,7 @@
                             </div>
                             <div class="c-cardTable__content">
                                 <% if (FundCurrency.Value!=null) { %>
-                                <a href="#" class="o-link"><%= FundCurrency.Value %></a>
+                                <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= FundCurrency.Value %></a>
                                 <% } else {%>
                                 <span>-</span>
                                 <% } %>
@@ -1621,16 +1619,16 @@
                                         <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
                                     </div>
                                     <% if (Tags!=null) { %>
-                                    <% for(var i = 0; i < Tags.length; i++ ) { %>
                                     <div class="l-target__additional">
                                         <ul class="l-tag">
+                                            <% for(var i = 0; i < Tags.length; i++ ) { %>
                                             <li class="l-tag__item">
                                                 <!-- <a href="#" class="o-tag">百元基金</a> -->
                                                 <a href="#" class="o-tag"><%= Tags[i] %></a>
                                             </li>
+                                            <% } %>
                                         </ul>
                                     </div>
-                                    <% } %>
                                     <% } %>
                                 </div>
                             </div>
@@ -1973,7 +1971,7 @@
             }).done(function (data, textStatus, jqXHR) {
                 initFilter(data);
                 initAutocomplete(data);
-                
+
                 $('[data-tab] [data-tab-target]:first').trigger('switch');
                 $('[data-filter-switch="#uid-template"]').trigger('change');
             }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -1985,7 +1983,7 @@
                 let opts = {
                     template: '#uid-template',
                     criterias: [
-                        { field: 'Tags', ele: '#hotproducts_criteria input:checkbox' }, { field: 'Tags', ele: '#hotkey_criteria input:checkbox' },
+                        { field: 'Tags', ele: '#hotproducts_criteria input:checkbox' }, { field: 'HotKeyWordTags', ele: '#hotkey_criteria input:checkbox' },
                         { field: 'DomesticForeignFundIndicator', ele: '#DomesticForeignFundIndicator input:checkbox' }, { field: 'DomesticForeignFundIndicator', ele: '#DomesticForeignFundIndicator input:checkbox', all: 'all', selector: ':not(:checked)' },
                         { field: 'Currency.Value', ele: '#currencies_criteria input:checkbox' }, { field: 'Currency.Value', ele: '#currencies_criteria input:checkbox', all: 'all', selector: ':not(:checked)' },
                         { field: 'FundCompanyName', ele: '#companies_criteria input:checkbox' }, { field: 'FundCompanyName', ele: '#companies_criteria input:checkbox', all: 'all', selector: ':not(:checked)' },
@@ -2032,7 +2030,7 @@
                             $(`[data-filter-empty=${isEmpty}]`).show();
                             $(`[data-filter-empty=${!isEmpty}]`).hide();
 
-
+                            $('[data-popup]').magnificPopup();
                             window.loading('hide');
                         }
                     },
