@@ -1,94 +1,73 @@
 ﻿@using Feature.Wealth.Component.Models.TabCards
 @model Feature.Wealth.Component.Models.TabCards.TabCardsModel
 
-@{
-    var item = Model.Datasource;
-}
-
 <div class="l-trend__slider">
-    <!-- .u-shadow-animation: hover時陰影特效 -->
-    <div class="swiper c-swiper c-swiper--trend u-shadow-animation" data-carousel="true">
-        <div class="swiper-wrapper c-swiper__wrapper">
-            @{
-                string link1 = Model.BannerLink1;
-                string image1 = Model.ImageUrl1;
-                string title1 = Html.Sitecore().Field(_TabCard.Fields.Title1.ToString(), item).ToString();
-                string description1 = Html.Sitecore().Field(_TabCard.Fields.Description1.ToString(), item).ToString();
-                if (!string.IsNullOrEmpty(link1) || !string.IsNullOrEmpty(image1) || !string.IsNullOrEmpty(title1) || !string.IsNullOrEmpty(description1))
-                {
-                    <div class="swiper-slide c-swiper__slide">
-                    <a href="@link1" class="c-banner c-banner--trend c-banner--zoom">
-                    
-                        <img src="@image1" class="c-banner__img" loading="lazy" alt="">
+	<!-- .u-shadow-animation: hover時陰影特效 -->
+	<div class="swiper c-swiper c-swiper--trend u-shadow-animation" data-carousel="true">
+		<div class="swiper-wrapper c-swiper__wrapper">
+			@if (!string.IsNullOrEmpty(Model.BannerLink1) || !string.IsNullOrEmpty(Model.ImageUrl1) || !string.IsNullOrEmpty(Model.Title1) || !string.IsNullOrEmpty(Model.Description1))
+			{
+				<div class="swiper-slide c-swiper__slide">
+					<a href="@Model.BannerLink1" class="c-banner c-banner--trend c-banner--zoom">
 
-                        @{
-                            var fontcolor1 = Model.IsBlackFont1 == true ? "" : "c-banner__content--wt";
-                        }
+						<img src="@Model.ImageUrl1" class="c-banner__img" loading="lazy" alt="">
 
-                        <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+						@{
+							var fontcolor1 = Model.IsBlackFont1 == true ? null : "c-banner__content--wt";
+						}
 
-                        <div class="c-banner__content @fontcolor1">
-                            <h3 class="c-banner__title">@title1 </h3>
-                            <p class="c-banner__slogan">@Html.Sitecore().Field(_TabCard.Fields.Description1.ToString(), item)</p>
-                        </div>
-                    </a>
-                </div>
-                }
-            }
-            @{
-                string link2 = Model.BannerLink2;
-                string image2 = Model.ImageUrl2;
-                string title2 = Html.Sitecore().Field(_TabCard.Fields.Title2.ToString(), item).ToString();
-                string description2 = Html.Sitecore().Field(_TabCard.Fields.Description2.ToString(), item).ToString();
+						<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
 
-                if (!string.IsNullOrEmpty(link2) || !string.IsNullOrEmpty(image2) || !string.IsNullOrEmpty(title2) || !string.IsNullOrEmpty(description2))
-                {
-                    <div class="swiper-slide c-swiper__slide">
-                        <a href="@link2" class="c-banner c-banner--trend c-banner--zoom">
+						<div class="c-banner__content @fontcolor1">
+							<h3 class="c-banner__title">@Model.Title1 </h3>
+							<p class="c-banner__slogan">@Model.Description1</p>
+						</div>
+					</a>
+				</div>
+			}
 
-                            <img src="@image2" class="c-banner__img" loading="lazy" alt="">
+			@if (!string.IsNullOrEmpty(Model.BannerLink2) || !string.IsNullOrEmpty(Model.ImageUrl2) || !string.IsNullOrEmpty(Model.Title2) || !string.IsNullOrEmpty(Model.Description2))
+			{
+				<div class="swiper-slide c-swiper__slide">
+					<a href="@Model.BannerLink2" class="c-banner c-banner--trend c-banner--zoom">
 
-                            @{
-                                var fontcolor2 = Model.IsBlackFont2 == true ? "" : "c-banner__content--wt";
-                            }
+						<img src="@Model.ImageUrl2" class="c-banner__img" loading="lazy" alt="">
 
-                            <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+						@{
+							var fontcolor2 = Model.IsBlackFont2 == true ? null : "c-banner__content--wt";
+						}
 
-                            <div class="c-banner__content @fontcolor2">
-                                <h3 class="c-banner__title">@title2</h3>
-                                <p class="c-banner__slogan">@Html.Sitecore().Field(_TabCard.Fields.Description2.ToString(), item)</p>
-                            </div>
-                        </a>
-                    </div>
-                }
-            }
-            @{
-                string link3 = Model.BannerLink3;
-                string image3 = Model.ImageUrl3;
-                string title3 = Html.Sitecore().Field(_TabCard.Fields.Title3.ToString(), item).ToString();
-                string description3 = Html.Sitecore().Field(_TabCard.Fields.Description3.ToString(), item).ToString();
+						<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
 
-                if (!string.IsNullOrEmpty(link3) || !string.IsNullOrEmpty(image3) || !string.IsNullOrEmpty(title3) || !string.IsNullOrEmpty(description3))
-                {
-                    <div class="swiper-slide c-swiper__slide">
-                        <a href="@link3" class="c-banner c-banner--trend c-banner--zoom">
+						<div class="c-banner__content @fontcolor2">
+							<h3 class="c-banner__title">@Model.Title2</h3>
+							<p class="c-banner__slogan">@Model.Description2</p>
+						</div>
+					</a>
+				</div>
+			}
 
-                            <img src="@image3" class="c-banner__img" loading="lazy" alt="">
+			@if (!string.IsNullOrEmpty(Model.BannerLink3) || !string.IsNullOrEmpty(Model.ImageUrl3) || !string.IsNullOrEmpty(Model.Title3) || !string.IsNullOrEmpty(Model.Description3))
+			{
+				<div class="swiper-slide c-swiper__slide">
+					<a href="@Model.BannerLink3" class="c-banner c-banner--trend c-banner--zoom">
 
-                            @{
-                                var fontcolor3 = Model.IsBlackFont3 == true ? "" : "c-banner__content--wt";
-                            }
-                            <div class="c-banner__content @fontcolor3">
-                                <h3 class="c-banner__title">@title3 </h3>
-                                <p class="c-banner__slogan">@Html.Sitecore().Field(_TabCard.Fields.Description3.ToString(), item)</p>
-                            </div>
-                        </a>
-                    </div>
-                }
-            }
-        </div>
-        <div class="swiper-button-next c-swiper__next"></div>
-        <div class="swiper-button-prev c-swiper__prev"></div>
-        <div class="swiper-pagination c-swiper__pagination"></div>
-    </div>
+						<img src="@Model.ImageUrl3" class="c-banner__img" loading="lazy" alt="">
+
+						@{
+							var fontcolor3 = Model.IsBlackFont3 == true ? null : "c-banner__content--wt";
+						}
+						<div class="c-banner__content @fontcolor3">
+							<h3 class="c-banner__title">@Model.Title3 </h3>
+							<p class="c-banner__slogan">@Model.Description3</p>
+						</div>
+					</a>
+				</div>
+			}
+
+		</div>
+		<div class="swiper-button-next c-swiper__next"></div>
+		<div class="swiper-button-prev c-swiper__prev"></div>
+		<div class="swiper-pagination c-swiper__pagination"></div>
+	</div>
 </div>
