@@ -9,6 +9,7 @@ using Sitecore.Configuration;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
+using Foundation.Wealth.Extensions;
 
 
 namespace Feature.Wealth.Component.Repositories
@@ -42,7 +43,7 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.NetAssetValue = decimal.Round(item.NetAssetValue, 4);
+            item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
         }
 
         /// <summary>

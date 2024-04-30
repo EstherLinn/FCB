@@ -35,7 +35,7 @@ namespace Feature.Wealth.Component.Models.AwardFund
             /// <summary>
             /// 淨值
             /// </summary>
-            public decimal NetAssetValue { get; set; }
+            public decimal? NetAssetValue { get; set; }
 
             /// <summary>
             /// 計價幣別 

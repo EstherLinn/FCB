@@ -34,9 +34,9 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.NetAssetValue = NumberExtensions.RoundingPrice(item.NetAssetValue, 4);
-            item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPrice(item.SixMonthReturnOriginalCurrency, 2);
-            item.PercentageChangeInFundPrice = NumberExtensions.RoundingPrice((item.PercentageChangeInFundPrice) * 100, 2);
+            item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
+            item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPercentage(item.SixMonthReturnOriginalCurrency);
+            item.PercentageChangeInFundPrice = NumberExtensions.RoundingPercentage((item.PercentageChangeInFundPrice) * 100);
         }
 
         /// <summary>

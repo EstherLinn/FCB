@@ -26,10 +26,10 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPrice(item.SixMonthReturnOriginalCurrency, 2);
-            item.NetAssetValue = NumberExtensions.RoundingPrice(item.NetAssetValue, 4);
-            item.PercentageChangeInFundPrice = NumberExtensions.RoundingPrice((item.PercentageChangeInFundPrice * 100), 2);
-            item.DomesticInvestmentRatio = NumberExtensions.RoundingPrice(item.DomesticInvestmentRatio, 4);
+            item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPercentage(item.SixMonthReturnOriginalCurrency);
+            item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
+            item.PercentageChangeInFundPrice = NumberExtensions.RoundingPercentage((item.PercentageChangeInFundPrice * 100));
+            item.DomesticInvestmentRatio = NumberExtensions.RoundingValue(item.DomesticInvestmentRatio);
         }
 
         /// <summary>
