@@ -18,63 +18,80 @@
                     switch (node)
                     {
                         case NavigationPageLink pageLinkLv:
-                            <li class="c-menu__item c-menu__item--lv1">
-                                <!-- 第一層選單要加[data-megamenu="true"]以綁定互動操作功能 -->
-                                <a href="@pageLinkLv.Link.Url" class="c-menu__name c-menu__name--lv1  " data-megamenu="true">@pageLinkLv.GetBestLinkText()</a>
-                                <div class="c-menu c-menu--lv2">
-                                    <div class="c-menu__wrap c-menu__wrap--lv2">
-                                        <menu class="c-menu__list c-menu__list--lv2">
-                                            @foreach (var child in pageLinkLv.Children)
-                                            {
-                                                if (child is NavigationPageLink pageLinkLv1)
-                                                {
-                                                    <li class="c-menu__item c-menu__item--lv2">
-                                                        <a href="#" class="c-menu__name c-menu__name--lv2  ">@pageLinkLv1.GetBestLinkText()</a>
-                                                        <div class="c-menu c-menu--lv3">
-                                                            <div class="c-menu__wrap c-menu__wrap--lv3">
-                                                                <menu class="c-menu__list c-menu__list--lv3">
-                                                                    @foreach (var childLv2 in pageLinkLv1.Children)
+                            if (pageLinkLv.Item.IsChecked(Templates.Navigable.Fields.ShowNavigation))
+                            {
+                                <li class="c-menu__item c-menu__item--lv1">
+                                    <!-- 第一層選單要加[data-megamenu="true"]以綁定互動操作功能 -->
+                                    <a href="@(pageLinkLv.Link?.Url)" target="@(pageLinkLv.Link?.Target)" class="c-menu__name c-menu__name--lv1" data-megamenu="true">
+                                        @Html.Sitecore().Field(Templates.IconNavigationLink.Fields.Icon, pageLinkLv.Item, new { disableWebEditing = true })
+                                        @pageLinkLv.GetBestLinkText()
+                                    </a>
+                                    @if (pageLinkLv.Item.IsChecked(Templates.Navigable.Fields.ShowChildren))
+                                    {
+                                        <div class="c-menu c-menu--lv2">
+                                            <div class="c-menu__wrap c-menu__wrap--lv2">
+                                                <menu class="c-menu__list c-menu__list--lv2">
+                                                    @{
+                                                        foreach (var child in pageLinkLv.Children)
+                                                        {
+                                                            if (child is NavigationPageLink pageLinkLv1 && pageLinkLv1.Item.IsChecked(Templates.Navigable.Fields.ShowNavigation))
+                                                            {
+                                                                <li class="c-menu__item c-menu__item--lv2">
+                                                                    <a href="#" class="c-menu__name c-menu__name--lv2">@pageLinkLv1.GetBestLinkText()</a>
+                                                                    @if (pageLinkLv1.Item.IsChecked(Templates.Navigable.Fields.ShowChildren))
                                                                     {
-                                                                        if (childLv2 is NavigationPageLink pageLinkLv2)
-                                                                        {
-                                                                            <li class="c-menu__item c-menu__item--lv3">
-                                                                                <a href="@pageLinkLv2.Link.Url" class="c-menu__name c-menu__name--lv3  ">@pageLinkLv2.GetBestLinkText()</a>
-                                                                            </li>
-                                                                        }
+                                                                        <div class="c-menu c-menu--lv3">
+                                                                            <div class="c-menu__wrap c-menu__wrap--lv3">
+                                                                                <menu class="c-menu__list c-menu__list--lv3">
+                                                                                    @foreach (var childLv2 in pageLinkLv1.Children)
+                                                                                    {
+                                                                                        if (childLv2 is NavigationPageLink pageLinkLv2 && pageLinkLv2.Item.IsChecked(Templates.Navigable.Fields.ShowNavigation))
+                                                                                        {
+                                                                                            <li class="c-menu__item c-menu__item--lv3">
+                                                                                                <a href="@(pageLinkLv2.Link?.Url)" target="@(pageLinkLv2.Link?.Target)" class="c-menu__name c-menu__name--lv3">
+                                                                                                    @Html.Sitecore().Field(Templates.IconNavigationLink.Fields.Icon, pageLinkLv2.Item, new { disableWebEditing = true })
+                                                                                                    @pageLinkLv2.GetBestLinkText()
+                                                                                                </a>
+                                                                                            </li>
+                                                                                        }
+                                                                                    }
+                                                                                </menu>
+                                                                            </div>
+                                                                        </div>
                                                                     }
-                                                                </menu>
-                                                            </div>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    }
+                                                </menu>
+                                                @{
+                                                    var item = pageLinkLv.Item;
+                                                    string image = item.ImageUrl(Templates.ImageNavigationLink.Fields.Image);
+                                                    if (!string.IsNullOrEmpty(image)|| !item.IsChecked(Templates.Navigable.Fields.ShowNavigation))
+                                                    {
+                                                        <div class="c-menu__banner">
+                                                            <article class="c-banner c-banner--menu">
+                                                                <img src="@image" class="c-banner__img" alt="">
+                                                                <div class="c-banner__content">
+                                                                    <h3 class="c-banner__title">@item.Field(Templates.ImageNavigationLink.Fields.Title)</h3>
+                                                                    <p class="c-banner__slogan">@item.Field(Templates.ImageNavigationLink.Fields.Slogan)</p>
+                                                                    <div class="c-banner__actions">
+                                                                        @{
+                                                                            var link = item.GeneralLink(Templates.ImageNavigationLink.Fields.ButtonLink);
+                                                                            <a href="@(link?.Url)" target="@(link?.Target)" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@item.Field(Templates.ImageNavigationLink.Fields.ButtonText)</a>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            </article>
                                                         </div>
-                                                    </li>
+                                                    }
                                                 }
-                                            }
-                                        </menu>
-                                        @{
-                                            var item = pageLinkLv.Item;
-                                            string image = ItemUtils.ImageUrl(item, Templates.ImageNavigationLink.Fields.Image);
-                                            string image3x = ItemUtils.ImageUrl(item, Templates.ImageNavigationLink.Fields.Image3x);
-                                            if (!string.IsNullOrEmpty(image))
-                                            {
-                                                <div class="c-menu__banner">
-                                                    <article class="c-banner c-banner--menu">
-                                                        <img src="@image" srcset="@image3x 3x" class="c-banner__img" alt="">
-                                                        <div class="c-banner__content">
-                                                            <h3 class="c-banner__title">@ItemUtils.Field(item, Templates.ImageNavigationLink.Fields.Title)</h3>
-                                                            <p class="c-banner__slogan">@ItemUtils.Field(item, Templates.ImageNavigationLink.Fields.Slogan)</p>
-                                                            <div class="c-banner__actions">
-                                                                @{
-                                                                    var link = ItemUtils.GeneralLink(item, Templates.ImageNavigationLink.Fields.ButtonLink);
-                                                                    <a href="@link?.Url" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@ItemUtils.Field(item, Templates.ImageNavigationLink.Fields.ButtonText)</a>
-                                                                }
-                                                            </div>
-                                                        </div>
-                                                    </article>
-                                                </div>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-                            </li>
+                                            </div>
+                                        </div>
+                                    }
+                                </li>
+                            }
+
                             break;
                     }
                 }

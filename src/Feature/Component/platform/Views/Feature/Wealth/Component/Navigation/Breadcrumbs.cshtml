@@ -18,12 +18,21 @@
                     }
                     else
                     {
-                        <li class="o-breadcrumb__item"><span class="o-breadcrumb__link">@node.GetBestLinkText()</span></li>
-                        @* <li class="o-breadcrumb__item"><a href="@node.Link.Url" class="o-breadcrumb__link">@node.GetBestLinkText()</a></li> *@
+                        <li class="o-breadcrumb__item">
+                            @if (node.Link != null && string.IsNullOrEmpty(node.Link.Url))
+                            {
+                                <span class="o-breadcrumb__link">@node.GetBestLinkText()</span>
+
+                            }
+                            else
+                            {
+                                <a href="@(node.Link?.Url)" target="@(node.Link?.Target)" class="o-breadcrumb__link">@node.GetBestLinkText()</a>
+                            }
+                        </li>
+
+                        <li class="o-breadcrumb__item"></li>
                     }
                 }
-
-
             }
         }
     </ul>
