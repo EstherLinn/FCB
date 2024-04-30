@@ -51,7 +51,8 @@ namespace Feature.Wealth.Component.Controllers
 
             var viewModel = new VolumeRankModel
             {
-                VolumeRanks = etfs
+                VolumeRanks = etfs,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/VolumeRank/VolumeRankReturnView.cshtml", viewModel);

@@ -51,7 +51,8 @@ namespace Feature.Wealth.Component.Controllers
 
             var viewModel = new DiscountPremiumModel
             {
-                DiscountPremiums = etfs
+                DiscountPremiums = etfs,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/DiscountPremium/DiscountPremiumReturnView.cshtml", viewModel);

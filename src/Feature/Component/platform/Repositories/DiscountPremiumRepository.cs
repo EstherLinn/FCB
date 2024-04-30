@@ -29,7 +29,7 @@ namespace Feature.Wealth.Component.Repositories
         }
         private void ProcessFundFilterDatas(ETFs item)
         {
-            item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC).TrimEnd(' ');
+            item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
             item.DiscountPremium = decimal.Round(item.DiscountPremium, 4);
             item.MarketPrice = decimal.Round(item.MarketPrice, 4);
         }
