@@ -352,14 +352,17 @@
                             }
                         },
                         afterFilter: function (result) {
-                            window.loading('hide');
                             $('[data-uid-total]').text(result.length);
-                            $('[data-popup]').magnificPopup();
-                            //this.paginator.setCurrentPage(1); // 若filter後需要切換至第一頁取消註解此行
+                            this.paginator.setCurrentPage(1);
 
                             let isEmpty = result.length == 0;
                             $(`[data-filter-empty=${isEmpty}]`).show();
                             $(`[data-filter-empty=${!isEmpty}]`).hide();
+
+                            window.loading('hide');
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
                         }
                     },
                     order: {
@@ -416,19 +419,19 @@
                     let switchTemplate = $self.data('filter-switch');
 
                     if (switchTemplate) {
-                        $elTh = $('#table th[data-filter-switch-columns]')
+                        $elTh = $('#table th[data-filter-switch-columns]');
                         $elTh.hide();
                         let switchCol = $self.data('filter-switch-columns').toString();
 
                         $elTh.each(function () {
                             let $this = $(this);
-                            var columns = $this.data('filter-switch-columns').toString().split(',');
+                            let columns = $this.data('filter-switch-columns').toString().split(',');
                             if (columns.includes(switchCol)) {
                                 $this.show();
                             } else {
                                 $this.hide();
                             }
-                        })
+                        });
 
                         fjs.setTemplate(switchTemplate, true);
                     }
