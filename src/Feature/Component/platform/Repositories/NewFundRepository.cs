@@ -2,6 +2,7 @@
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.NewFund.NewFundModel;
+using Foundation.Wealth.Extensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -33,10 +34,9 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.NetAssetValue = decimal.Round(item.NetAssetValue, 4);
-            item.SixMonthReturnOriginalCurrency = decimal.Round(item.SixMonthReturnOriginalCurrency, 2);
-            item.SixMonthReturnTWD = decimal.Round(item.SixMonthReturnTWD, 2);
-            item.PercentageChangeInFundPrice = decimal.Round((item.PercentageChangeInFundPrice) * 100, 4);
+            item.NetAssetValue = NumberExtensions.RoundingPrice(item.NetAssetValue, 4);
+            item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPrice(item.SixMonthReturnOriginalCurrency, 2);
+            item.PercentageChangeInFundPrice = NumberExtensions.RoundingPrice((item.PercentageChangeInFundPrice) * 100, 2);
         }
 
         /// <summary>
@@ -54,7 +54,6 @@ namespace Feature.Wealth.Component.Repositories
                 vm.NetAssetValue = f.NetAssetValue;
                 vm.NetAssetValueDate = f.NetAssetValueDate;
                 vm.SixMonthReturnOriginalCurrency = f.SixMonthReturnOriginalCurrency;
-                vm.SixMonthReturnTWD = f.SixMonthReturnTWD;
                 vm.CurrencyName = f.CurrencyName;
                 vm.RiskRewardLevel = f.RiskRewardLevel;
                 vm.OnlineSubscriptionAvailability = f.OnlineSubscriptionAvailability;
