@@ -9,6 +9,10 @@
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Component\platform\Feature.Wealth.Component.csproj" />
+    <PackageReference Include="Flurl" />
+    <PackageReference Include="Flurl.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
   </ItemGroup>
 </Project>

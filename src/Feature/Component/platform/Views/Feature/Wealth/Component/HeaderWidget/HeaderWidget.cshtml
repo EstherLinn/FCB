@@ -1,7 +1,6 @@
-﻿@using Sitecore.Web;
-@*@if (!string.IsNullOrEmpty(WebUtil.GetCookieValue("MemberInfo")))
-*@
-@if(Sitecore.Context.IsLoggedIn){
+﻿@using Feature.Wealth.Account.Helpers;
+@if (FcbMemberHelper.CheckMemberLogin())
+{
     Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LoginState.cshtml");
 }
 else

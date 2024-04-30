@@ -9,6 +9,11 @@
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Feature\Account\platform\Feature.Wealth.Account.csproj" />
+    <ProjectReference Include="..\..\..\Feature\Component\platform\Feature.Wealth.Component.csproj" />
+    <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Xcms.Sitecore.Foundation.Assets">
       <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.Assets.dll</HintPath>
     </Reference>

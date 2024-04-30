@@ -1,0 +1,34 @@
+﻿@using Foundation.Wealth.Helper;
+@{
+    var errorMsg = TempData["OAuthErrorMsg"];
+}
+
+@if (errorMsg != null)
+{
+<p>@errorMsg.ToString()</p>
+<p>五秒後為您回到上一頁。</p>
+<script>
+    function GoBack()
+    {
+        let xhr = new XMLHttpRequest();
+        xhr.open('post', '@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")', true);
+        xhr.send(null);
+        xhr.onload = function () {
+            let res = JSON.parse(xhr.responseText);
+            const url = new URL(res.url);
+            location.href = url;
+        }
+    }
+    setTimeout(GoBack(), 5000);
+</script>
+}
+<script>
+    let xhr = new XMLHttpRequest();
+    xhr.open('post', '@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")', true);
+    xhr.send(null);
+    xhr.onload = function () {
+        let res = JSON.parse(xhr.responseText);
+        const url = new URL(res.url);
+        location.href = url;
+    }
+</script>

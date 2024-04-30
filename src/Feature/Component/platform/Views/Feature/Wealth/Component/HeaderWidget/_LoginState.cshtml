@@ -1,10 +1,8 @@
-﻿@using Foundation.Wealth.Helper;
-@using Newtonsoft.Json
-@using Sitecore.Web;
-@using Feature.Wealth.Component.Models.HeaderWidget;
+﻿@using Feature.Wealth.Account.Helpers;
+@using Foundation.Wealth.Helper;
 @{
-    //var logoutUrl = ClientRoute.GenerateUrl(this, "Accounts", "Logout");
-    //var member = JsonConvert.DeserializeObject<FcbMemberModel>(WebUtil.GetCookieValue("MemberInfo"));
+    var logoutUrl = ClientRoute.GenerateUrl(this, "Accounts", "Logout");
+    var member = FcbMemberHelper.GetMemberAllInfo();
 }
 <div class="l-header__tools">
     <div class="l-topbar">
@@ -101,9 +99,9 @@
             <div id="popoverMember" class="c-popover">
                 <div class="c-popover__wrap">
                     <header class="c-popover__header">
-                        <span class="c-popover__title">Hi 林嘉欣</span>
+                        <span class="c-popover__title">Hi @member.MemberName</span>
                         <div class="c-popover__tools">
-                            <a href="#" class="o-btn o-btn--secondary o-btn--auto o-btn--thin">登出</a>
+                            <a href="@logoutUrl" class="o-btn o-btn--secondary o-btn--auto o-btn--thin">登出</a>
                         </div>
                     </header>
                     <nav class="c-popover__content">
@@ -111,31 +109,31 @@
                             <li class="c-listGroup__item">
                                 <a href="#" class="o-itemLink">
                                     <span class="o-itemLink__title t-bold">關注清單</span>
-                                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                    <img src="@Url.Content("~/themes/images/icons/green/corner-right.svg")" class="o-itemLink__icon" alt="">
                                 </a>
                             </li>
                             <li class="c-listGroup__item">
                                 <a href="#a" class="o-itemLink">
                                     <span class="o-itemLink__title t-bold">專屬推薦</span>
-                                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                    <img src="@Url.Content("~/themes/images/icons/green/corner-right.svg")" class="o-itemLink__icon" alt="">
                                 </a>
                             </li>
                             <li class="c-listGroup__item">
                                 <a href="#" class="o-itemLink">
                                     <span class="o-itemLink__title t-bold">理財試算</span>
-                                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                    <img src="@Url.Content("~/themes/images/icons/green/corner-right.svg")" class="o-itemLink__icon" alt="">
                                 </a>
                             </li>
                             <li class="c-listGroup__item">
                                 <a href="#" class="o-itemLink">
                                     <span class="o-itemLink__title t-bold">收藏新聞</span>
-                                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                    <img src="@Url.Content("~/themes/images/icons/green/corner-right.svg")" class="o-itemLink__icon" alt="">
                                 </a>
                             </li>
                             <li class="c-listGroup__item">
                                 <a href="#" class="o-itemLink">
                                     <span class="o-itemLink__title t-bold">遠距理財諮詢</span>
-                                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                    <img src="@Url.Content("~/themes/images/icons/green/corner-right.svg")" class="o-itemLink__icon" alt="">
                                 </a>
                             </li>
                         </ul>

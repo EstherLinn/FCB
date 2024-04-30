@@ -21,5 +21,6 @@
       <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Feature.Navigation.dll</HintPath>
     </Reference>
     <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
+    <ProjectReference Include="..\..\Account\platform\Feature.Wealth.Account.csproj" />
   </ItemGroup>
 </Project>

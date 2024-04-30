@@ -1,0 +1,10 @@
+﻿@model string
+@if (string.IsNullOrEmpty(Model))
+{
+    @:-
+}
+else
+{
+<a href="#popupCurrencyWebSite" class="o-link" data-popup="true">@Model</a>
+}
+
