@@ -53,8 +53,9 @@ namespace Feature.Wealth.Component.Controllers
             var renderDatas = _repository.GetFundRenderData(eFirstFunds);
             var viewModel = new EFirstChoiceModel
             {
-                EFirstFunds = renderDatas
-            };
+                EFirstFunds = renderDatas,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+        };
             
             return View("/Views/Feature/Wealth/Component/EFirstChoice/EFirstChoiceReturnView.cshtml", viewModel);
         }

@@ -103,5 +103,22 @@ namespace Foundation.Wealth.Extensions
             /// </summary>
             Q
         }
+
+        /// <summary>
+        /// 取小數點第幾位數
+        /// </summary>
+        /// <param name="number">數值</param>
+        /// <param name="dot">保留小數點後幾位，預設 4</param>
+        public static decimal? RoundingPrice(decimal? number,int dot)
+        {
+            if (dot == null) { dot = 4; }
+            
+            if (!number.HasValue)
+            {
+                return null;
+            }
+
+            return Math.Round(number.Value, dot, MidpointRounding.AwayFromZero);
+        }
     }
 }
