@@ -34,7 +34,7 @@ namespace Feature.Wealth.Component.Models.PopularityFund
             /// <summary>
             /// 淨值
             /// </summary>
-            public decimal NetAssetValue { get; set; }
+            public decimal? NetAssetValue { get; set; }
 
             /// <summary>
             /// 計價幣別 
@@ -49,17 +49,12 @@ namespace Feature.Wealth.Component.Models.PopularityFund
             /// <summary>
             /// 六個月報酬原幣
             /// </summary>
-            public decimal SixMonthReturnOriginalCurrency { get; set; }
-
-            /// <summary>
-            /// 六個月報酬台幣
-            /// </summary>
-            public decimal SixMonthReturnTWD { get; set; }
+            public decimal? SixMonthReturnOriginalCurrency { get; set; }
 
             /// <summary>
             /// 漲跌幅
             /// </summary>
-            public decimal PercentageChangeInFundPrice { get; set; }
+            public decimal? PercentageChangeInFundPrice { get; set; }
 
             /// <summary>
             /// 風險屬性
@@ -75,6 +70,11 @@ namespace Feature.Wealth.Component.Models.PopularityFund
             /// 百元標的
             /// </summary>
             public string TargetName { get; set; }
+
+            /// <summary>
+            /// 點擊次數
+            /// </summary>
+            public int? ViewCount { get; set; }
         }
     }
 

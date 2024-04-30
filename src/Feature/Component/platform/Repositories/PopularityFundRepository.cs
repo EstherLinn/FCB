@@ -2,6 +2,7 @@
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.PopularityFund.PopularityFundModel;
+using Foundation.Wealth.Extensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -11,7 +12,12 @@ namespace Feature.Wealth.Component.Repositories
         {
             List<Funds> fundItems = new List<Funds>();
 
-            string sql = "SELECT * FROM [vw_BasicFund]";
+            string sql = """
+                   SELECT *
+                   FROM [vw_BasicFund] 
+                   ORDER BY ViewCount
+                   DESC,ProductCode
+                   """;
 
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 
@@ -27,10 +33,9 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.SixMonthReturnOriginalCurrency = decimal.Round(item.SixMonthReturnOriginalCurrency, 2);
-            item.SixMonthReturnTWD = decimal.Round(item.SixMonthReturnTWD, 2);
-            item.NetAssetValue = decimal.Round(item.NetAssetValue, 4);
-            item.PercentageChangeInFundPrice = decimal.Round((item.PercentageChangeInFundPrice * 100), 4);
+            item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPercentage(item.SixMonthReturnOriginalCurrency);
+            item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
+            item.PercentageChangeInFundPrice = NumberExtensions.RoundingPercentage((item.PercentageChangeInFundPrice * 100));
         }
 
 
@@ -53,6 +58,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.RiskRewardLevel = f.RiskRewardLevel;
                 vm.OnlineSubscriptionAvailability = f.OnlineSubscriptionAvailability;
                 vm.PercentageChangeInFundPrice = f.PercentageChangeInFundPrice;
+                vm.ViewCount = f.ViewCount ?? null;
                 result.Add(vm);
             }
             return result;

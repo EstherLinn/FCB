@@ -40,7 +40,7 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetSortedPopularityFund(string[] selectedId,string orderby, string desc)
         {
-            if (orderby==null) { orderby = "SixMonthReturnOriginalCurrency"; }
+            if (orderby==null) { orderby = "ViewCount"; }
             if (desc==null) { desc = "is-desc"; }
 
             var funds = _popularityFundRepository.GetFundData();
@@ -60,7 +60,8 @@ namespace Feature.Wealth.Component.Controllers
 
             var viewModel = new PopularityFundModel
             {
-                PopularFunds = renderDatas
+                PopularFunds = renderDatas,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/PopularityFund/PopularFundReturnView.cshtml", viewModel);
