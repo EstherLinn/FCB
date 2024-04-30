@@ -10,6 +10,8 @@ using System.Web;
 using Flurl;
 using Flurl.Http;
 using Newtonsoft.Json;
+using log4net;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 
 namespace Feature.Wealth.Account.Services
 {
@@ -21,6 +23,8 @@ namespace Feature.Wealth.Account.Services
         private readonly string _ProfileUrl = Settings.GetSetting("Line.ProfileUrl");
         private readonly string _VerifyUrl = Settings.GetSetting("Line.VerifyUrl");
         private readonly string _RedirectUrl = $"https://{HttpContext.Current.Request.Url.Host}/api/client/Accounts/SignInLine";
+        private ILog Log { get; } = Logger.Account;
+
         public string AppId => _AppId;
         public string AppSecret => _AppSecret;
         public string TokenUrl => _TokenUrl;
@@ -38,21 +42,46 @@ namespace Feature.Wealth.Account.Services
                 new KeyValuePair<string, string>("client_id", _AppId),
                 new KeyValuePair<string, string>("client_secret", _AppSecret),
                 });
-
-
-            var res = await TokenUrl
-                .PostAsync(formContent)
-                .ReceiveString();
-
+            string res = string.Empty;
+            try
+            {
+               res = await TokenUrl
+               .PostAsync(formContent)
+               .ReceiveString();
+            }
+            catch (FlurlHttpException ex)
+            {
+                Log.Error($"Error returned from {ex.Call.Request.Url}: {ex.Message} by Line Login");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error returned from Line Login: {ex.Message}");
+                return null;
+            }
             return JsonConvert.DeserializeObject<LineTokenResponse>(res);
         }
 
         public async Task<LineUser> GetProfileByToken(string access_token)
         {
-            var res = await ProfileUrl
+            string res = string.Empty;
+            try
+            {
+                 res = await ProfileUrl
                 .WithOAuthBearerToken(access_token)
                 .GetAsync()
                 .ReceiveString();
+            }
+            catch (FlurlHttpException ex)
+            {
+                Log.Error($"Error returned from {ex.Call.Request.Url}: {ex.Message} by Line Login");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error returned from Line Login: {ex.Message}");
+                return null;
+            }
             return JsonConvert.DeserializeObject<LineUser>(res);
         }
 
@@ -64,11 +93,25 @@ namespace Feature.Wealth.Account.Services
             new KeyValuePair<string, string>("client_id", AppId),
             new KeyValuePair<string, string>("user_id", uid),
            });
-            var res = await VerifyUrl
+            string res = string.Empty;
+            try
+            {
+                 res = await VerifyUrl
                 .PostAsync(formContent)
                 .ReceiveString();
-
+            }
+            catch (FlurlHttpException ex)
+            {
+                Log.Error($"Error returned from {ex.Call.Request.Url}: {ex.Message} by Line Login");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error returned from Line Login: {ex.Message}");
+                return null;
+            }
             return JsonConvert.DeserializeObject<LineVerify>(res);
         }
+
     }
 }

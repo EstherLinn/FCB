@@ -1,7 +1,8 @@
 ﻿@using Sitecore.Configuration;
-@using Sitecore.Data;
-@using Sitecore.Data.Items;
-@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+@using Foundation.Wealth.Extensions;
+@using Sitecore.Web;
+@using Foundation.Wealth.Helper;
+@using Feature.Wealth.Account.Helpers;
 @{
     var SubcriptionSingleLink = Settings.GetSetting("WebSubscriptionSingle");
     var SubcriptionRegularLink = Settings.GetSetting("WebSubscriptionRegular");
@@ -9,46 +10,177 @@
     var MobileERegularLink = Settings.GetSetting("MobileERegular");
     var MobileIleoSingleLink = Settings.GetSetting("MobileIleoSingle");
     var MobileIleoRegularLink = Settings.GetSetting("MobileIleoRegular");
+
 }
 
 <script>
-        (function ($, window, document, undefined) {
-         document.cookie = 'NowUrl=@System.Web.HttpContext.Current.Request.Url.PathAndQuery;path=/;samesite=lax;secure;';
-          EventHandler.AddAction('subscription-init',function(event,self){
+    (function ($, window, document, undefined) {
 
-    @if (!Sitecore.Context.IsLoggedIn)
-    {
-        @: $('a[eh-subscription-init]').attr("href","#popupLogin");
-    }
-    else
-    {
-        @: $('a[eh-subscription-init]').attr("href","#popupPurchase");
-    }
-            let fundid = $('a[eh-subscription-init]').data('fundid');
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
+                data: { "url": '@System.Web.HttpContext.Current.Request.Url.AbsoluteUri' },
+                success: function (msg) {
+                    //設置成功
+                },
+            })
+              window.CompareObj = function (id,type,name) {
+                    this.id = id;
+                    this.type = type;
+                    this.name = name;
+                }
+           window.checkItemExists = function(key, value) {
+               let existingEntries = store.get(key) || [];
+               let idx = existingEntries.findIndex((x) => x.id == value);
+                if (idx < 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            window.addItem = function(key, value) {
+                let existingEntries = store.get(key) || [];
+                let idx = existingEntries.findIndex((x) => x.id == value.id);
+                if (idx < 0 ) {
+                    existingEntries.push(value);
+                    store.set(key, existingEntries)
+                }
+            }
+            window.removeItem = function(key, value) {
+                let existingEntries = store.get(key) || [];
+                let idx = existingEntries.findIndex((x) => x.id == value.id);
+                if (idx > -1) {
+                    existingEntries.splice(idx, 1);
+                    store.set(key, existingEntries)
+                }
+            }
+
+        EventHandler.AddExec('compare-init', function (self) {
+            let $this = $(self);
+            let id = $this.data('id');
+            let compare = store.get('compare');
+            if (checkItemExists('compare', id)) {
+                $this.addClass('is-active');
+                self.setAttribute('data-add', true);
+            };
+
+            if (compare.length == 7) {
+                if (self.getAttribute('data-add').toString() == "false")
+                {
+                    self.setAttribute('href', '#popupCompareMax');
+                    self.setAttribute('data-popup', true);
+                    self.removeAttribute('data-ia');
+                    self.removeAttribute('data-msg');
+                     $(self).off('click.interactive');
+                     $(self).magnificPopup();
+                }
+            }
+        });
+        EventHandler.AddClick('compare-click', function () {
+            let $this = $(this);
+            $this.css('visibility', 'hidden');
+            setTimeout(() => $this.css('visibility', ''), 750);
+            let id = $this.data('id');
+            let name = $this.data('name');
+            let type = $this.data('type').toLowerCase();
+            let obj = new CompareObj(id, type, name);
+            let compare = store.get('compare');
+            if (this.getAttribute('data-add').toString() == "false") {
+                if (compare.length < 7) {
+                    addItem('compare', obj);
+                    this.setAttribute('data-add', true);
+                    if (compare.length == 6) {
+                        $('[data-compare][data-add=false]').each(function (idx,ele) {
+                                   ele.setAttribute('href', '#popupCompareMax');
+                                    ele.setAttribute('data-popup', true);
+                                    ele.removeAttribute('data-ia');
+                                    ele.removeAttribute('data-msg');
+                                    $(ele).off('click.interactive');
+                                    $(ele).magnificPopup();
+
+                        })
+                    }
+                }
+            } else {
+                removeItem('compare', obj);
+                this.setAttribute('data-add', false);
+                if(compare.length == 7){
+               $('[data-compare][data-add=false]').each(function (idx,ele)
+                {
+                        ele.setAttribute('href', 'javascript:;');
+                        ele.removeAttribute('data-popup');
+                        ele.setAttribute('data-ia', 'true');
+                        ele.setAttribute('data-msg', '加入比較|取消比較');
+                        $(ele).interactive();
+                        $(ele).off('click.magnificPopup');
+                })
+                }
+            }
+    });
+
+
+        EventHandler.AddExec('focus-init', function (self) {
+            let $this = $(self);
+            let id = $this.data('id');
+            if (checkItemExists('focus', id)) {
+                $this.addClass('is-active');
+                self.setAttribute('data-add', true);
+            };
+        });
+        EventHandler.AddClick('focus-click', function () {
+            let $this = $(this);
+            $this.css('visibility', 'hidden');
+            setTimeout(() => $this.css('visibility', ''), 750);
+            let id = $this.data('id');
+            let name = $this.data('name');
+            let type = $this.data('type').toLowerCase();
+            let obj = new CompareObj(id, type, name);
+            if (this.getAttribute('data-add').toString() == "false") {
+                    addItem('focus', obj);
+                    this.setAttribute('data-add', true);
+            } else {
+                removeItem('focus', obj);
+                this.setAttribute('data-add', false);
+            }
+        });
+
+          EventHandler.AddExec('subscription-init',function(self){
+              let $this = $(self);
+              let single = document.getElementById("subscriptionSingle");
+              let regular = document.getElementById("subscriptionRegular");
+                @if (!FcbMemberHelper.CheckMemberLogin())
+                {
+                    @: $this.attr("href","#popupLogin");
+                }
+                else
+                {
+                    @: $this.attr("href", "#popupPurchase");
+                }
+
+
+
                if ($(window).width() < 768)
             {
                 $('input[name="platform"]').on('click', function () {
                     let val = $(this).data('name');
                     if (val == "firste") {
-                        $('#subscriptionSingle').attr("href", "@MobileESingleLink");
-                        $('#subscriptionRegular').attr("href", "@MobileERegularLink");
+                        single.setAttribute("href", "@MobileESingleLink");
+                        regular.setAttribute("href", "@MobileERegularLink");
 
                     } else {
-                        $('#subscriptionSingle').attr("href", "@MobileIleoSingleLink");
-                        $('#subscriptionRegular').attr("href", "@MobileIleoRegularLink");
+                        single.setAttribute("href", "@MobileIleoSingleLink");
+                        regular.setAttribute("href", "@MobileIleoRegularLink");
                     }
-                    localStorage.setItem("MobilePlatform", val);
-            $('#subscriptionSingle').attr("href", $('#subscriptionSingle').attr("href").replace("{}",fundid));
-            $('#subscriptionRegular').attr("href", $('#subscriptionRegular').attr("href").replace("{}",fundid));
+                    store.set("MobilePlatform", val);
                 });
             }else
             {
-             $('#subscriptionSingle').attr("href", "@SubcriptionSingleLink");
-             $('#subscriptionRegular').attr("href", "@SubcriptionRegularLink");
+                   single.setAttribute("href", "@SubcriptionSingleLink");
+                   regular.setAttribute("href", "@SubcriptionRegularLink");
             }
-                  if (localStorage.getItem('MobilePlatform') !== 'undefined')
+              if (localStorage.hasOwnProperty('MobilePlatform'))
           {
-              let val = localStorage.getItem('MobilePlatform');
+                  let val = store.get('MobilePlatform');
               if (val == "firste") {
                   $('input[data-name="firste"]').prop('checked', true);
                   $('input[data-name="firste"]').click();
@@ -60,13 +192,24 @@
           }else{
                   $('input[data-name="firste"]').click();
           }
+          });
+
+            EventHandler.AddClick('subscription-click', function (e,self) {
+                let $this = $(this);
+                let id = $this.data('id');
+                let lastId = store.get("lastsubscription");
+                let single = document.getElementById("subscriptionSingle");
+                let regular =  document.getElementById("subscriptionRegular");
+                if (localStorage.hasOwnProperty("lastsubscription")) {
+                    single.setAttribute("href", single.getAttribute("href").replaceAll("{}", id));
+                    regular.setAttribute("href", regular.getAttribute("href").replaceAll("{}", id));
+                } else {
+                    single.setAttribute("href", single.getAttribute("href").replaceAll(lastId, id));
+                    regular.setAttribute("href", regular.getAttribute("href").replaceAll(lastId, id));
+                    store.set("lastsubscription", id);
+                }
             });
-    EventHandler.AddClick('subscription-click',function(event,self){
-            let $this = $(self);
-             let fundid = $this.data('fundid');
-             $('#subscriptionSingle').attr("href", $('#subscriptionSingle').attr("href").replace("{}",fundid));
-            $('#subscriptionRegular').attr("href", $('#subscriptionRegular').attr("href").replace("{}",fundid));
-            });
+
             })(jQuery, window, document);
 </script>
 @Xcms.Sitecore.Foundation.Assets.Services.RenderAssetsService.Current.ScriptsRender("<script type=\"text/javascript\" src=\"{0}\" async ></script>", "/themes/project/wealth/js/utm.min.js")

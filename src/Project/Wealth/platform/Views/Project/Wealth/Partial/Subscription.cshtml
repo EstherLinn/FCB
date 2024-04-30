@@ -1,0 +1,12 @@
+﻿@using Feature.Wealth.Component.Models.Invest
+@model Tuple<InvestTypeEnum, string>
+@{
+    if (string.IsNullOrEmpty(Model.Item2))
+    {
+        return;
+    }
+}
+<a href="#" data-eh="subscription-init,subscription-click"
+   eh-subscription-init class="o-fixedBtn" data-popup="true"
+   data-type="@Model.Item1" data-id="@Model.Item2">申購</a>
+

@@ -1,12 +1,13 @@
-﻿@*@using Feature.Wealth.Account.Services;
-    @using Feature.Wealth.Account.Models.OAuth;*@
+﻿@using Feature.Wealth.Account.Services;
+@using Feature.Wealth.Account.Models.OAuth;
 @using Sitecore.Configuration;
-
+@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+@using Project.Wealth.Platform
 @{
-    //string fbAuthUrl = OAuthFactory.GetAuthUrl(PlatFormEunm.FaceBook);
-    //string lineAuthUrl = OAuthFactory.GetAuthUrl(PlatFormEunm.Line);
+    string fbAuthUrl = OAuthFactory.GetAuthUrl(PlatFormEunm.FaceBook);
+    string lineAuthUrl = OAuthFactory.GetAuthUrl(PlatFormEunm.Line);
     var CurrencyWebSite = Settings.GetSetting("CurrencyWebSite");
-
+    var loginItem = ItemUtils.GetItem(Templates.Login.Root);
 }
 <div id="popupLogin" class="c-modal mfp-hide">
     <div class="c-modal__wrap">
@@ -28,7 +29,7 @@
                                     <a href="#" class="o-social o-social--fb"></a>
                                 </li>
                                 <li class="c-socialBox__item">
-                                    <a href="#" class="o-social o-social--line"></a>
+                                    <a href="#" class="o-social o-social--line" data-login></a>
                                 </li>
                             </ul>
                         </div>
@@ -38,10 +39,9 @@
             <div class="c-loginModal__item">
                 <figure class="c-registerBox">
                     <div class="c-registerBox__wrap">
-                        <img src="@Url.Content("~/themes/images/layout/create.png")" class="c-registerBox__img" alt="">
+                        @Html.Sitecore().Field(Templates.Login.Fields.Image.ToString(), loginItem, new { @class = "c-feature__img" })
                         <figcaption class="c-registerBox__content">
-                            <span>還沒有第一銀行帳戶嗎？</span>
-                            <a href="https://ibank.firstbank.com.tw/NetBank/DigAMA/LandingPage/index.html?ch=&cp=&em=" class="o-link t-bold">立即開戶</a>
+                            @Html.Sitecore().Field(Templates.Login.Fields.Content.ToString(), loginItem)
                         </figcaption>
                     </div>
                 </figure>
@@ -124,7 +124,7 @@
         <div class="c-modal__content">
             <div class="c-modalResult">
                 <div class="c-modalResult__icon">
-                    <img src="~/themes/images/icons/orange/x-solid.svg" class="c-modalResult__img" alt="">
+                    <img src=@Url.Content("~/themes/images/icons/orange/x-solid.svg") class="c-modalResult__img" alt="">
                 </div>
                 <div class="c-modalResult__title">基金商品比較已達上限</div>
                 <p class="c-modalResult__msg">您一次最多可比較7個基金</p>
