@@ -40,7 +40,8 @@ namespace Feature.Wealth.Component.Models.USStock
         public string DetailLink { get; set; }
         public int ViewCount { get; set; }
         public string OnlineSubscriptionAvailability { get; set; }
-        public List<string> Tags { get; set; } = new List<string>();
+        public List<string> HotKeywordTags { get; set; } = new List<string>();
+        public List<string> HoProductTags { get; set; } = new List<string>();
         /// <summary>
         /// 同 FullName 但是是 Autocomplete 要用的
         /// </summary>

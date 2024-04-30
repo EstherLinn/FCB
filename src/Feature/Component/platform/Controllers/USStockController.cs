@@ -44,7 +44,7 @@ namespace Feature.Wealth.Component.Controllers
 
                     if (firstBankCodeList.Contains(uSStock.FirstBankCode))
                     {
-                        uSStock.Tags.Add(campaignTypeCode);
+                        uSStock.HotKeywordTags.Add(campaignTypeCode);
                     }
                 }
 
@@ -55,7 +55,7 @@ namespace Feature.Wealth.Component.Controllers
 
                     if (firstBankCodeList.Contains(uSStock.FirstBankCode))
                     {
-                        uSStock.Tags.Add(campaignTypeCode);
+                        uSStock.HoProductTags.Add(campaignTypeCode);
                     }
                 }
             }
