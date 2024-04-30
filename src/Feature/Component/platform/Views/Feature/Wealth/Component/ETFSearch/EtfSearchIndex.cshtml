@@ -461,6 +461,13 @@
                     loading();
                     $('#table').scrollPosition('scroll');
                 }
+
+                function fnToFirstPage() {
+                    loading();
+                    $('#table').scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
+
                 $containgerPagination = $('#uid-pagination');
                 $containgerPagination.on('click', '[data-page]', fnScrollUp);
                 $containgerPagination.on('keypress', '[data-page-input]', function (e) {
@@ -469,7 +476,7 @@
                     }
                 });
 
-                $('#uid-view-perPage').on('change.pagesize', fnScrollUp).sizebox();
+                $('#uid-view-perPage').on('change.pagesize', fnToFirstPage).sizebox();
                 $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
 
                 $('[data-keyword-submit]').on('click.loading', function () {

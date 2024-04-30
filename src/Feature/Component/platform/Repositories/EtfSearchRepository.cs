@@ -90,8 +90,8 @@ namespace Feature.Wealth.Component.Repositories
                         Text = string.IsNullOrEmpty(src.RiskLevel) ? "-" : src.RiskLevel
                     };
                     dest.NetAssetValueDate = DateTimeFormat(src.NetAssetValueDate);
-                    dest.MarketPrice = ParseVolume(RoundingPrice(src.MarketPrice));
-                    dest.NetAssetValue = ParseVolume(RoundingPrice(src.NetAssetValue));
+                    dest.MarketPrice = ParseVolume(src.MarketPrice.RoundingValue());
+                    dest.NetAssetValue = ParseVolume(src.NetAssetValue.RoundingValue());
 
                     #region 報酬率
 
@@ -155,8 +155,8 @@ namespace Feature.Wealth.Component.Repositories
                     dest.SharpeRatioMarketPriceRisk = ParseVolume(src.SharpeRatioMarketPriceRisk);
                     dest.BetaNetValueRisk = ParseVolume(src.BetaNetValueRisk);
                     dest.BetaMarketPriceRisk = ParseVolume(src.BetaMarketPriceRisk);
-                    dest.AnnualizedStandardDeviationMarketPriceRisk = ParseVolume(RoundingPercentage(src.AnnualizedStandardDeviationMarketPriceRisk));
-                    dest.AnnualizedStandardDeviationNetValueRisk = ParseVolume(RoundingPercentage(src.AnnualizedStandardDeviationNetValueRisk));
+                    dest.AnnualizedStandardDeviationMarketPriceRisk = ParseVolume(src.AnnualizedStandardDeviationMarketPriceRisk);
+                    dest.AnnualizedStandardDeviationNetValueRisk = ParseVolume(src.AnnualizedStandardDeviationNetValueRisk);
 
                     dest.LatestVolumeTradingVolume = ParseTradingVolume(src.LatestVolumeTradingVolume);
                     dest.LatestVolumeTradingVolumeTenDayAverageVolume = ParseTradingVolume(src.LatestVolumeTradingVolumeTenDayAverageVolume);
@@ -170,8 +170,8 @@ namespace Feature.Wealth.Component.Repositories
                         Value = src.EstablishmentSeniority,
                         Text = src.EstablishmentSeniority > 0 ? Convert.ToString(src.EstablishmentSeniority) : "-"
                     };
-                    dest.TotalManagementFee = ParseVolume(RoundingPercentage(src.TotalManagementFee), "%");
-                    dest.ScaleMillions = ParseVolume(RoundingPrice(src.ScaleMillions));
+                    dest.TotalManagementFee = ParseVolume(src.TotalManagementFee.RoundingPercentage(), "%");
+                    dest.ScaleMillions = ParseVolume(src.ScaleMillions.RoundingValue());
                     dest.CanOnlineSubscription = src.OnlineSubscriptionAvailability?.ToUpper() == "Y";
 
 
@@ -290,26 +290,6 @@ namespace Feature.Wealth.Component.Repositories
 
         #region Method
 
-        private decimal? RoundingPrice(decimal? number)
-        {
-            if (!number.HasValue)
-            {
-                return null;
-            }
-
-            return Math.Round(number.Value, 4, MidpointRounding.AwayFromZero);
-        }
-
-        private decimal? RoundingPercentage(decimal? number)
-        {
-            if (!number.HasValue)
-            {
-                return null;
-            }
-
-            return Math.Round(number.Value, 2, MidpointRounding.AwayFromZero);
-        }
-
         private bool IsUpPercentage(decimal? number)
         {
             bool isIncreased = true;
@@ -335,7 +315,7 @@ namespace Feature.Wealth.Component.Repositories
             var pair = new Percentage()
             {
                 IsUp = IsUpPercentage(number),
-                Value = RoundingPercentage(number),
+                Value = number.RoundingPercentage(),
             };
             pair.Text = number.HasValue ? Math.Abs(pair.Value.Value) + "%" : "-";
 
