@@ -219,21 +219,13 @@ namespace Feature.Wealth.Component.Repositories
                 return null;
             }
 
-            string detailPageLink = string.Empty;
-            Item linkItem = ItemUtils.TargetItem(dataSource, Templates.EtfSearchDatasource.Fields.DetailPageLink);
-
-            if (linkItem != null)
-            {
-                detailPageLink = ItemUtils.Url(linkItem);
-            }
-
             model.MarketPricePerformanceIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.MarketPricePerformanceIntro);
             model.NetWorthPerformanceIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.NetWorthPerformanceIntro);
             model.MarketPriceRiskIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.MarketPriceRiskIntro);
             model.NetWorthRiskIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.NetWorthRiskIntro);
             model.TransactionStatusIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.TransactionStatusIntro);
             model.InformationIntro = dataSource.Field(Templates.EtfSearchDatasource.Fields.InformationIntro);
-            model.DetailPageLink = detailPageLink;
+            model.DetailPageLink = EtfRelatedLinkSetting.GetETFDetailUrl();
             GetTagsForFilterOption(dataSource);
 
             return model;

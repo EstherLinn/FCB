@@ -31,7 +31,6 @@ namespace Feature.Wealth.Component.Models.ETF.Search
 
             public struct Fields
             {
-                public static readonly ID DetailPageLink = new ID("{56695F44-A5FD-4BF8-8430-BD7B5D5B06A5}");
                 public static readonly ID MarketPricePerformanceIntro = new ID("{A86ED3AF-1FA9-45F3-B3AE-0C6ACFD1B4BE}");
                 public static readonly ID NetWorthPerformanceIntro = new ID("{416BAEBB-0278-49A4-AEAF-4DD489E46634}");
                 public static readonly ID MarketPriceRiskIntro = new ID("{10E0B26A-7B4C-48A3-B112-0F90C10481D4}");
