@@ -23,7 +23,7 @@
 							<div class="c-banner__actions">
 								@if (!string.IsNullOrEmpty(banner.ButtonLink) || !string.IsNullOrEmpty(banner.ButtonText))
 								{
-									<a href="@banner.ButtonLink" class="o-btn o-btn--wt o-btn--dark@dt o-btn--flat@lt">@banner.ButtonText</a>
+									<a href="@banner.ButtonLink" class="o-btn o-btn--wt o-btn--dark@dt o-btn--flat@lt" target="@banner.Target">@banner.ButtonText</a>
 								}
 							</div>
 						</div>
@@ -41,7 +41,9 @@
 							<div class="c-banner__actions">
 								@if (!string.IsNullOrEmpty(banner.ButtonLink) || !string.IsNullOrEmpty(banner.ButtonText))
 								{
-									<a href="@banner.ButtonLink" class="o-btn o-btn--wt o-btn--flat@lt">@banner.ButtonText</a>
+									@Html.Sitecore().BeginField(Template.IndexBanner.Fields.ButtonLink.ToString(), banner.Item, new { haschildren = true, @class = "o-btn o-btn--wt o-btn--flat@lt" })
+									@Html.Sitecore().Field(Template.IndexBanner.Fields.ButtonText.ToString(), banner.Item)
+									@Html.Sitecore().EndField()
 								}
 							</div>
 						</div>
