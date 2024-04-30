@@ -149,7 +149,9 @@
                             @if (BasicData.OnlineSubscriptionAvailability.ToBoolean())
                             {
                                 <li class="l-pageWallet__btn">
-                                    @Html.Partial("~/Views/Project/Wealth/Partial/Subscription.cshtml", Tuple.Create(InvestTypeEnum.Fund, BasicData.ProductCode))
+                                    <a href="#" data-eh="subscription-init,subscription-click"
+                                       eh-subscription-init class="o-fixedBtn" data-popup="true"
+                                       data-type="@InvestTypeEnum.Fund" data-id="@BasicData.ProductCode">申購</a>
                                 </li>
                             }
                         </ul>
