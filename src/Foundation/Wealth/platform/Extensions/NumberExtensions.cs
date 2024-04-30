@@ -38,6 +38,42 @@ namespace Foundation.Wealth.Extensions
             return numberStr;
         }
 
+        /// <summary>
+        /// 四捨五入取到小數第4位
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public static decimal? RoundingValue(this decimal? number)
+        {
+            return Rounding(number, 4);
+        }
+
+        /// <summary>
+        /// 百分比以四捨五入取到小數第2位
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public static decimal? RoundingPercentage(this decimal? number)
+        {
+            return Rounding(number, 2);
+        }
+
+        /// <summary>
+        /// 四捨五入取到指定小數位數
+        /// </summary>
+        /// <param name="number">數值</param>
+        /// <param name="decimals">小數位數</param>
+        /// <returns></returns>
+        public static decimal? Rounding(decimal? number, int decimals)
+        {
+            if (!number.HasValue)
+            {
+                return null;
+            }
+
+            return Math.Round(number.Value, decimals, MidpointRounding.AwayFromZero);
+        }
+
         private enum NumberSuffix
         {
             P,
