@@ -55,7 +55,7 @@ namespace Feature.Wealth.Component.Controllers
             int totalPages;
             List<ETFs> renderDatas;
 
-            if (pageSize.ToLower() == "all")
+            if (pageSize.ToLower().Equals("all", StringComparison.OrdinalIgnoreCase))
             {
                 totalPages = 1;
                 renderDatas = etfs;
