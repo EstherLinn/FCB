@@ -1,24 +1,24 @@
 ﻿(() => {
-    const CAMPAIGN_TYPE = 'url';
     // 維持寫死website
     const UTM_MEDIUM = 'website';
     // 取得當前頁面之html title。(前提是各頁title可識別差異)
     const UTM_CAMPAIGN = (() => {
         let currentPath = encodeURI(window.location.pathname).split('/');
         let name = currentPath.pop();
-
-        if (CAMPAIGN_TYPE === 'url') {
-            return name.toLocaleLowerCase().replace(' ', '-');
+        if (!name) {
+            name = '第一銀行基金理財網';
         }
+        name = name.toLocaleLowerCase().replace(' ', '-');
 
-        // default
+        // default > 優先Html Title > Uri last part > 第一銀行基金理財網
         return document.title || name;
-    })()
-    // wms更換為最終子網域名稱
-    const UTM_SOURCE = 'wms.firstbank.com.tw';
-    const BLOCKLIST = ['facebook.com'];
-    const QUERYSELECTOR = 'a[href^="/"],a[href^="https://"],a[href^="http://"]';
+    })();
 
+    // wms更換為最終子網域名稱
+    const UTM_SOURCE = 'wealth';
+    const BLOCKLIST = ['facebook.com/sharer/', 'social-plugins.line.me/lineit/share/', 'access.line.me/oauth2/'];
+    const QUERYSELECTOR = 'a[href^="/"],a[href^="https://"],a[href^="http://"]';
+    const PROP = 'href';
     /**
      * 增加連結QueryString
      * @param {Node} htmlNodes HtmlNodes
@@ -26,7 +26,7 @@
     async function AddUTMCode(htmlNodes) {
         // 如果查無結果
         if (!htmlNodes || !htmlNodes.length) {
-            return;
+            return Promise.resolve();
         }
         htmlNodes.forEach(node => {
             try {
@@ -34,15 +34,15 @@
 
                 let predict = BLOCKLIST.find(domain => {
                     let reg = new RegExp(domain, 'gi');
-                    return reg.test(url.hostname);
+                    return reg.test(`${url.hostname}${url.pathname}`);
                 });
                 // 如果黑名單中
                 if (predict) {
                     return;
                 }
 
-                const search = url.searchParams;
-                const utmSourceKey = 'utm_source', utmMediumKey = 'utm_medium', utmCampaignKey = 'utm_campaign';
+                let search = url.searchParams;
+                let utmSourceKey = 'utm_source', utmMediumKey = 'utm_medium', utmCampaignKey = 'utm_campaign';
 
                 search.delete(utmSourceKey);
                 search.append(utmSourceKey, UTM_SOURCE);
@@ -53,22 +53,33 @@
                 search.delete(utmCampaignKey);
                 search.append(utmCampaignKey, UTM_CAMPAIGN);
 
-                let encodeLink = encodeURI(url.toString());
-                node.href = encodeLink;
+                let setUrl;
+                // 透過getAttribute查詢raw value判別內外部連結
+                if (node.getAttribute(PROP).startsWith('/')) {
+                    setUrl = encodeURI(`${url.pathname}${url.search}${url.hash}`);
+                } else {
+                    setUrl = encodeURI(url.toString());
+                }
 
+                // 若setUrl非空值
+                if (setUrl) {
+                    node.setAttribute(PROP, setUrl);
+                }
             } catch (e) {
                 console.error(e);
             }
         })
+        return Promise.resolve();
     }
 
-   /**
-    * 尋找需要修改的節點
-    * @param {Node} node Node
-    */
+    /**
+     * 尋找需要修改的節點
+     * @param {Node} node Node
+     */
     async function FindNode(node) {
         let eles = node.querySelectorAll(QUERYSELECTOR);
         await AddUTMCode(eles);
+        return Promise.resolve();
     }
 
     // 建立觀察者
@@ -88,7 +99,5 @@
     observer.observe(document.body, { subtree: true, childList: true });
 
     // First View
-    document.addEventListener("DOMContentLoaded", function () {
-        FindNode(document);
-    });
+    FindNode(document).catch(e => console.log(e));
 })()
