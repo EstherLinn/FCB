@@ -1,8 +1,8 @@
 ﻿using System.Data;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
+using Foundation.Wealth.Extensions;
 using static Feature.Wealth.Component.Models.PerformanceFundRank.PerformanceFundRankModel;
-using Feature.Wealth.Component.Models.FundDetail;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -34,10 +34,10 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.NetAssetValue = decimal.Round(item.NetAssetValue, 4);
-            item.SixMonthReturnOriginalCurrency = decimal.Round(item.SixMonthReturnOriginalCurrency, 2);
-            item.SixMonthReturnTWD = decimal.Round(item.SixMonthReturnTWD, 2);
-            item.PercentageChangeInFundPrice = decimal.Round((item.PercentageChangeInFundPrice) * 100, 4);
+            item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
+            item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPercentage(item.SixMonthReturnOriginalCurrency);
+            item.SixMonthReturnTWD = NumberExtensions.RoundingPercentage(item.SixMonthReturnTWD);
+            item.PercentageChangeInFundPrice = NumberExtensions.RoundingPercentage((item.PercentageChangeInFundPrice) * 100);
         }
 
         /// <summary>
