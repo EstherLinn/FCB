@@ -1,0 +1,971 @@
+﻿@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+@model Feature.Wealth.Component.Models.ETF.Search.EtfSearchFilterModel
+@{
+    if (Model == null)
+    {
+        return;
+    }
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">ETF搜尋</h1>
+        </div>
+        <div class="l-mainstage__content">
+            <!-- 篩選最外層[data-filter-block] -->
+            <div class="l-filter no-picked" data-filter-block>
+                <div class="l-filter__block">
+                    <!-- 收合區域[data-filter] -->
+                    <div class="c-filter is-collapse" data-filter>
+                        <div class="c-filter__search">
+                            <!-- 條件群組[data-filter-group] -->
+                            <div class="c-filterForm" data-filter-group>
+                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                <div class="c-filterForm__title u-hidden" data-filter-title>
+                                    <span>關鍵字</span>
+                                </div>
+                                <div class="c-filterForm__value">
+                                    <div class="o-actionbox o-actionbox--lg" data-clear="true">
+                                        <!-- #keyword: 請見頁面下方的script邏輯，套用jquery.autocomplete套件 -->
+                                        <!-- [data-clear="textbox"]: 套用清除按鈕功能，標示此為文字輸入框 -->
+                                        <input id="uid-searchbox" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入代碼或名稱" data-keyword-input>
+                                        <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit id="uid-btn-search"></button>
+                                        <!-- [data-clear="button"]: 套用清除按鈕功能，標示此為清除按鈕 -->
+                                        <button type="button" class="o-actionbox__clear" data-clear="button">清除</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-filter__keyword">
+                            <!-- 條件群組[data-filter-group] -->
+                            <div class="c-filterForm" id="uid-criteria-discountTags" data-filter-group>
+                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                <div class="c-filterForm__title" data-filter-title>
+                                    <span>熱門關鍵字</span>@*對應JSON欄位【DiscountTags】*@
+                                </div>
+                                <div class="c-filterForm__value">
+                                    <div class="l-pickGroup">
+                                        @foreach (var tag in Model.HotKeywordList)
+                                        {
+                                            string value = tag;
+                                            string display = string.Empty;
+
+                                            if (tag == null)
+                                            {
+                                                display = "display: none;";
+                                                value = string.Empty;
+                                            }
+
+                                            <div class="l-pickGroup__item" style="@display">
+                                                <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
+                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                    <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 小網收合區域[data-filter-hide="mobile"] -->
+                        <div class="c-filter__mbHide" data-filter-hide="mobile">
+                            <div class="c-filter__head">
+                                進階篩選
+                            </div>
+                            <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                            <a href="#" class="c-filter__close" data-filter-collapse></a>
+                            <div class="c-filter__wrap">
+                                <div class="c-filter__group">
+                                    <!-- 條件群組[data-filter-group] -->
+                                    <div class="c-filterForm" id="uid-criteria-categoryTags"  data-filter-group>
+                                        <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                        <div class="c-filterForm__title" data-filter-title>
+                                            <span>熱門主題</span>@*對應JSON欄位【CategoryTags】*@
+                                        </div>
+                                        <div class="c-filterForm__value">
+                                            <div class="l-pickGroup">
+                                                @foreach (var tag in Model.HotProductList)
+                                                {
+                                                    string value = tag;
+                                                    string display = string.Empty;
+
+                                                    if (tag == null)
+                                                    {
+                                                        display = "display: none;";
+                                                        value = string.Empty;
+                                                    }
+
+                                                    <div class="l-pickGroup__item" style="@display">
+                                                        <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                        <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                        <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
+                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                            <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="c-filter__group c-filter__group--divider">
+                                    <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-max@mb-only">
+                                        <div class="l-flex__item">
+                                            <!-- 條件群組[data-filter-group] -->
+                                            <div class="c-filterForm" id="uid-criteria-regionType" data-filter-group>
+                                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                                <div class="c-filterForm__title" data-filter-title>
+                                                    <span>國內/境外</span>@*對應JSON欄位【RegionType】*@
+                                                </div>
+                                                <div class="c-filterForm__value">
+                                                    <div class="l-pickGroup">
+                                                        <div class="l-pickGroup__all">
+                                                            <!-- 全部checkbox[data-filter-checkall] -->
+                                                            <label class="o-btnCheckBox">
+                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                <div class="o-btnCheckBox__text">全部</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__wrap" id="uid-criteria-regionType">
+                                                            <!-- 展開收合功能最外層[data-overflow-hide="相對應ID"] -->
+                                                            <div class="l-pickCollapse" data-overflow-hide="area">
+                                                                <!-- 高度過高內容區[data-overflow-content="相對應ID"] -->
+                                                                <div class="l-pickCollapse__content" data-overflow-content="area">
+                                                                    <div class="l-pickGroup">
+                                                                        <div class="l-pickGroup__item">
+                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="國內">
+                                                                                <div class="o-btnCheckBox__text" data-filter-value="國內"></div>
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="l-pickGroup__item">
+                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="境外">
+                                                                                <div class="o-btnCheckBox__text" data-filter-value="境外"></div>
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="l-pickGroup__item" style="display: none;">
+                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="">
+                                                                                <div class="o-btnCheckBox__text" data-filter-value=""></div>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="l-pickCollapse__expand">
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                        <!-- 展開收合觸發點[data-overflow-action="相對應ID"] -->
+                                                                        <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="area">展開</a>
+                                                                    </div>
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                        <!-- 展開收合觸發點[data-overflow-action="相對應ID"] -->
+                                                                        <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="area"></a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="l-pickCollapse__collapse">
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                        <!-- 展開收合觸發點[data-overflow-action="相對應ID"] -->
+                                                                        <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="area">收合</a>
+                                                                    </div>
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                        <!-- 展開收合觸發點[data-overflow-action="相對應ID"] -->
+                                                                        <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="area"></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="l-flex__item">
+                                            <div class="c-filterForm" id="uid-criteria-currencyPair" data-filter-group>
+                                                <div class="c-filterForm__title" data-filter-title>
+                                                    <span>計價幣別</span>@*對應JSON欄位【CurrencyPair】*@
+                                                </div>
+                                                <div class="c-filterForm__value">
+                                                    <div class="l-pickGroup">
+                                                        <div class="l-pickGroup__all">
+                                                            <label class="o-btnCheckBox">
+                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                <div class="o-btnCheckBox__text">全部</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__wrap">
+                                                            <div class="l-pickCollapse" data-overflow-hide="pricingCurrency">
+                                                                <div class="l-pickCollapse__content" data-overflow-content="pricingCurrency">
+                                                                    <div class="l-pickGroup">
+                                                                        @foreach (var currency in Model.PricingCurrencyList)
+                                                                        {
+                                                                            string value = currency;
+                                                                            string display = string.Empty;
+
+                                                                            if (currency == null)
+                                                                            {
+                                                                                display = "display: none;";
+                                                                                value = string.Empty;
+                                                                            }
+
+                                                                            <div class="l-pickGroup__item" style="@display">
+                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                                                </label>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <div class="l-pickCollapse__expand">
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                        <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="pricingCurrency">展開</a>
+                                                                    </div>
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                        <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="pricingCurrency"></a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="l-pickCollapse__collapse">
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                        <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="pricingCurrency">收合</a>
+                                                                    </div>
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                        <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="pricingCurrency"></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="l-flex__item">
+                                            <div class="c-filterForm" id="uid-criteria-dividend" data-filter-group>
+                                                <div class="c-filterForm__title" data-filter-title>
+                                                    <span>是否配息</span>@*對應JSON欄位【DividendDistributionFrequency】*@
+                                                </div>
+                                                <div class="c-filterForm__value">
+                                                    <div class="l-pickGroup">
+                                                        <div class="l-pickGroup__all">
+                                                            <label class="o-btnCheckBox">
+                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                <div class="o-btnCheckBox__text">全部</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__wrap">
+                                                            <div class="l-pickCollapse" data-overflow-hide="dividend">
+                                                                <div class="l-pickCollapse__content" data-overflow-content="dividend">
+                                                                    <div class="l-pickGroup">
+                                                                        @foreach (var frequency in Model.DividendDistributionFrequencyList)
+                                                                        {
+                                                                            string distribution = string.Empty;
+                                                                            string value = distribution;
+                                                                            string display = string.Empty;
+
+                                                                            if (frequency == null)
+                                                                            {
+                                                                                display = "display: none;";
+                                                                                value = string.Empty;
+                                                                                distribution = string.Empty;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                value = frequency;
+                                                                                distribution = frequency == "無" ? "不配息" : frequency;
+                                                                            }
+
+                                                                            <div class="l-pickGroup__item" style="@display">
+                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@distribution"></div>
+                                                                                </label>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <div class="l-pickCollapse__expand">
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                        <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="dividend">展開</a>
+                                                                    </div>
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                        <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="dividend"></a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="l-pickCollapse__collapse">
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                        <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="dividend">收合</a>
+                                                                    </div>
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                        <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="dividend"></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 大網收合區域[data-filter-hide="desktop"] -->
+                                <div class="c-filter__pcHide" data-filter-hide="desktop">
+                                    <!-- 大網高度過高內容區[data-filter-wrap="desktop"] -->
+                                    <div class="c-filter__wrap" data-filter-wrap="desktop">
+                                        <div class="c-filter__group">
+                                            <div class="c-filter__title">
+                                                <div class="c-textDivider">
+                                                    <div class="c-textDivider__title">基本資料</div>
+                                                </div>
+                                            </div>
+                                            <div class="c-filter__items">
+                                                <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-max@mb-only">
+                                                    <div class="l-flex__item">
+                                                        <!-- 條件群組[data-filter-group] -->
+                                                        <div class="c-filterForm" data-filter-group>
+                                                            <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>ETF規模</span>@*對應JSON欄位【ScaleMillions】*@
+                                                            </div>
+                                                            <div class="c-filterForm__value">
+                                                                <!-- 拉霸本體[data-slider-bar="相對應ID"] -->
+                                                                <!-- 拉霸值[data-slider-val] -->
+                                                                <!-- 有前綴字[data-slider-prefix="你的前綴字"] -->
+                                                                <!-- 有後綴字[data-slider-suffix="你的後綴字"] -->
+                                                                <div class="c-sliderBar">
+                                                                    <div class="c-sliderBar__main" data-slider-bar="size"></div>
+                                                                    <!-- 篩選拉霸值[data-filter-bar] -->
+                                                                    <input type="text" class="c-sliderBar__value" data-slider-val="scaleMillions" data-slider-suffix="百萬" data-filter-bar>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="l-flex__item">
+                                                        <div class="c-filterForm" id="uid-criteria-investmentTarget" data-filter-group>
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>投資標的</span>@*對應JSON欄位【InvestmentTarget】*@
+                                                            </div>
+                                                            <div class="c-filterForm__value">
+                                                                <div class="l-pickGroup">
+                                                                    <div class="l-pickGroup__all">
+                                                                        <label class="o-btnCheckBox">
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                            <div class="o-btnCheckBox__text">全部</div>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="l-pickGroup__wrap">
+                                                                        <div class="l-pickCollapse" data-overflow-hide="target">
+                                                                            <div class="l-pickCollapse__content" data-overflow-content="target">
+                                                                                <div class="l-pickGroup">
+                                                                                    @foreach (var investmentTarget in Model.InvestmentTargetList)
+                                                                                    {
+                                                                                        string value = investmentTarget;
+                                                                                        string display = string.Empty;
+
+                                                                                        if (investmentTarget == null)
+                                                                                        {
+                                                                                            display = "display: none;";
+                                                                                            value = string.Empty;
+                                                                                        }
+
+                                                                                        <div class="l-pickGroup__item" style="@display">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__expand">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="target">展開</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="target"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__collapse">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="target">收合</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="target"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="l-flex__item">
+                                                        <div class="c-filterForm" id="uid-criteria-investmentRegion" data-filter-group>
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>投資地區</span>@*對應JSON欄位【InvestmentRegion】*@
+                                                            </div>
+                                                            <div class="c-filterForm__value">
+                                                                <div class="l-pickGroup">
+                                                                    <div class="l-pickGroup__all">
+                                                                        <label class="o-btnCheckBox">
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                            <div class="o-btnCheckBox__text">全部</div>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="l-pickGroup__wrap">
+                                                                        <div class="l-pickCollapse" data-overflow-hide="investArea">
+                                                                            <div class="l-pickCollapse__content" data-overflow-content="investArea">
+                                                                                <div class="l-pickGroup">
+                                                                                    @foreach (var investmentRegion in Model.InvestmentRegionList)
+                                                                                    {
+                                                                                        string value = investmentRegion;
+                                                                                        string display = string.Empty;
+
+                                                                                        if (investmentRegion == null)
+                                                                                        {
+                                                                                            display = "display: none;";
+                                                                                            value = string.Empty;
+                                                                                        }
+
+                                                                                        <div class="l-pickGroup__item" style="@display">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__expand">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="investArea">展開</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="investArea"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__collapse">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="investArea">收合</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="investArea"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="l-flex__item">
+                                                        <div class="c-filterForm" id="uid-criteria-publicLimitedCompany" data-filter-group>
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>發行公司</span>@*對應JSON欄位【PublicLimitedCompany】*@
+                                                            </div>
+                                                            <div class="c-filterForm__value">
+                                                                <div class="l-pickGroup">
+                                                                    <div class="l-pickGroup__all">
+                                                                        <label class="o-btnCheckBox">
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                            <div class="o-btnCheckBox__text">全部</div>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="l-pickGroup__wrap">
+                                                                        <div class="l-pickCollapse" data-overflow-hide="company">
+                                                                            <div class="l-pickCollapse__content" data-overflow-content="company">
+                                                                                <div class="l-pickGroup">
+                                                                                    @foreach (var company in Model.PublicLimitedCompanyList)
+                                                                                    {
+                                                                                        string value = company;
+                                                                                        string display = string.Empty;
+
+                                                                                        if (company == null)
+                                                                                        {
+                                                                                            display = "display: none;";
+                                                                                            value = string.Empty;
+                                                                                        }
+
+                                                                                        <div class="l-pickGroup__item" style="@display">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__expand">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="company">展開</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="company"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__collapse">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="company">收合</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="company"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="l-flex__item">
+                                                        <div class="c-filterForm" id="uid-criteria-exchangeid" data-filter-group>
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>交易所</span>@*對應JSON欄位【ExchangeID】*@
+                                                            </div>
+                                                            <div class="c-filterForm__value">
+                                                                <div class="l-pickGroup">
+                                                                    <div class="l-pickGroup__all">
+                                                                        <label class="o-btnCheckBox">
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                            <div class="o-btnCheckBox__text">全部</div>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="l-pickGroup__wrap">
+                                                                        <div class="l-pickCollapse" data-overflow-hide="exchange">
+                                                                            <div class="l-pickCollapse__content" data-overflow-content="exchange">
+                                                                                <div class="l-pickGroup">
+                                                                                    @foreach (var exchange in Model.ExchangeList)
+                                                                                    {
+                                                                                        string value = exchange;
+                                                                                        string display = string.Empty;
+
+                                                                                        if (exchange == null)
+                                                                                        {
+                                                                                            display = "display: none;";
+                                                                                            value = string.Empty;
+                                                                                        }
+
+                                                                                        <div class="l-pickGroup__item" style="@display">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__expand">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="exchange">展開</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="exchange"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__collapse">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="exchange">收合</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="exchange"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="l-flex__item">
+                                                        <div class="c-filterForm" id="uid-criteria-investmentStyle" data-filter-group>
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>投資風格</span>@*對應JSON欄位【InvestmentStyle】*@
+                                                            </div>
+                                                            <div class="c-filterForm__value">
+                                                                <div class="l-pickGroup">
+                                                                    <div class="l-pickGroup__all">
+                                                                        <label class="o-btnCheckBox">
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                            <div class="o-btnCheckBox__text">全部</div>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="l-pickGroup__wrap">
+                                                                        <div class="l-pickCollapse" data-overflow-hide="investStyle">
+                                                                            <div class="l-pickCollapse__content" data-overflow-content="investStyle">
+                                                                                <div class="l-pickGroup">
+                                                                                    @foreach (var investmentStyle in Model.InvestmentStyleList)
+                                                                                    {
+                                                                                        string value = investmentStyle;
+                                                                                        string display = string.Empty;
+
+                                                                                        if (investmentStyle == null)
+                                                                                        {
+                                                                                            display = "display: none;";
+                                                                                            value = string.Empty;
+                                                                                        }
+
+                                                                                        <div class="l-pickGroup__item" style="@display">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__expand">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="investStyle">展開</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="investStyle"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__collapse">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="investStyle">收合</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="investStyle"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="c-filter__group">
+                                            <div class="c-filter__title">
+                                                <div class="c-textDivider">
+                                                    <div class="c-textDivider__title">績效表現</div>
+                                                </div>
+                                            </div>
+                                            <div class="c-filter__items">
+                                                <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-max@mb-only">
+                                                    <div class="l-flex__item">
+                                                        <!-- 條件群組[data-filter-group] -->
+                                                        <!-- 若有特殊條件，需在頁面做特殊處理後才印出已選擇的tag，請設定"special"，即[data-filter-group="special"] -->
+                                                        <div class="c-filterForm" data-filter-group="special">
+                                                            <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>報酬率</span>@*對應JSON欄位有分淨值、市價報酬率*@
+                                                            </div>
+                                                            <!-- 多個條件組合成一個tag[data-filter-part="相對應組合ID"] -->
+                                                            <div class="c-filterForm__value" data-filter-part="returnRate">
+                                                                <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-md@mb-only">
+                                                                    <!-- 組合之一[data-part-id="相對應組合ID"]  -->
+                                                                    <div class="l-flex__item" data-part-id="returnRate">
+                                                                        <div class="o-capsulebox o-capsulebox--sm">
+                                                                            <!-- 篩選radio外層[data-filter-radio] -->
+                                                                            <!-- 若radio搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                                            <label class="o-capsulebox__item" data-filter-radio>
+                                                                                <!-- [data-currency]此radio為頁面特殊處理，可參考頁面下方script -->
+                                                                                <input type="radio" name="currency" class="o-capsulebox__input" checked data-currency data-filter-criteria-field="0">
+                                                                                <span class="o-capsulebox__text" data-filter-value="原幣">原幣</span>
+                                                                            </label>
+                                                                            <!-- 篩選radio外層[data-filter-radio] -->
+                                                                            <!-- 若radio搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                                            <label class="o-capsulebox__item" data-filter-radio>
+                                                                                <!-- [data-currency]此radio為頁面特殊處理，可參考頁面下方script -->
+                                                                                <input type="radio" name="currency" class="o-capsulebox__input" data-currency data-filter-criteria-field="1">
+                                                                                <span class="o-capsulebox__text" data-filter-value="台幣">台幣</span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- 組合之一[data-part-id="相對應組合ID"] -->
+                                                                    <div class="l-flex__item" data-part-id="returnRate" data-filter-section="returnRate">
+                                                                        <div class="l-pickGroup">
+
+                                                                            <div class="l-pickGroup__item">
+                                                                                <label class="o-btnRadio" data-filter-radio>
+                                                                                    <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="ThreeMonthReturnMarketPriceOriginalCurrency.Value|ThreeMonthReturnMarketPriceTWD.Value">
+                                                                                    <div class="o-btnRadio__text" data-filter-value="三個月"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeMonthReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeMonthReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeMonthReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeMonthReturnNetValueTWD">
+                                                                                </label>
+                                                                            </div>
+
+                                                                            <div class="l-pickGroup__item">
+                                                                                <label class="o-btnRadio" data-filter-radio>
+                                                                                    <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="SixMonthReturnMarketPriceOriginalCurrency.Value|SixMonthReturnMarketPriceTWD.Value">
+                                                                                    <div class="o-btnRadio__text" data-filter-value="六個月"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="SixMonthReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="SixMonthReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="SixMonthReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="SixMonthReturnNetValueTWD">
+                                                                                </label>
+                                                                            </div>
+
+                                                                            <div class="l-pickGroup__item">
+                                                                                <label class="o-btnRadio" data-filter-radio>
+                                                                                    <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="OneYearReturnMarketPriceOriginalCurrency.Value|OneYearReturnMarketPriceTWD.Value">
+                                                                                    <div class="o-btnRadio__text" data-filter-value="一年"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="OneYearReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="OneYearReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="OneYearReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="OneYearReturnNetValueTWD">
+                                                                                </label>
+                                                                            </div>
+
+                                                                            <div class="l-pickGroup__item">
+                                                                                <label class="o-btnRadio" data-filter-radio>
+                                                                                    <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="TwoYearReturnMarketPriceOriginalCurrency.Value|TwoYearReturnMarketPriceTWD.Value">
+                                                                                    <div class="o-btnRadio__text" data-filter-value="二年"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="TwoYearReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="TwoYearReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="TwoYearReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="TwoYearReturnNetValueTWD">
+                                                                                </label>
+                                                                            </div>
+
+                                                                            <div class="l-pickGroup__item">
+                                                                                <label class="o-btnRadio" data-filter-radio>
+                                                                                    <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="ThreeYearReturnMarketPriceOriginalCurrency.Value|ThreeYearReturnMarketPriceTWD.Value">
+                                                                                    <div class="o-btnRadio__text" data-filter-value="三年"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeYearReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeYearReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeYearReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="ThreeYearReturnNetValueTWD">
+                                                                                </label>
+                                                                            </div>
+
+                                                                            <div class="l-pickGroup__item">
+                                                                                <label class="o-btnRadio" data-filter-radio>
+                                                                                    <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="YeartoDateReturnMarketPriceOriginalCurrency.Value|YeartoDateReturnMarketPriceTWD.Value">
+                                                                                    <div class="o-btnRadio__text" data-filter-value="年初至今"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="YeartoDateReturnMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="YeartoDateReturnMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="YeartoDateReturnNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="YeartoDateReturnNetValueTWD">
+                                                                                </label>
+                                                                            </div>
+
+                                                                            <div class="l-pickGroup__item">
+                                                                                <label class="o-btnRadio" data-filter-radio>
+                                                                                    <!-- [data-return-rate-date]此radio為頁面特殊處理，可參考頁面下方script -->
+                                                                                    <input class="o-btnRadio__input" type="radio" name="returnRate" data-return-rate-date data-filter-criteria-field="InceptionDateMarketPriceOriginalCurrency.Value|InceptionDateMarketPriceTWD.Value">
+                                                                                    <div class="o-btnRadio__text" data-filter-value="成立至今"></div>
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="InceptionDateMarketPriceOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="InceptionDateMarketPriceTWD">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="InceptionDateNetValueOriginalCurrency">
+                                                                                    <input class="o-btnRadio__input" type="hidden" data-criteria-returnrate="InceptionDateNetValueTWD">
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- 組合之一[data-part-id="相對應組合ID"]  -->
+                                                                    <div class="l-flex__item u-hidden" data-part-id="returnRate">
+                                                                        <div class="c-sliderBar">
+                                                                            <div class="c-sliderBar__main" data-slider-bar="returnRate"></div>
+                                                                            <!-- [data-return-rate-money]此拉霸為頁面特殊處理，可參考頁面下方script -->
+                                                                            <input type="text" class="c-sliderBar__value" id="uid-criteria-returnRate" data-slider-val data-slider-suffix="%" data-filter-bar data-return-rate-money>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="c-filter__group">
+                                            <div class="c-filter__title">
+                                                <div class="c-textDivider">
+                                                    <div class="c-textDivider__title">ETF風險</div>
+                                                </div>
+                                            </div>
+                                            <div class="c-filter__items">
+                                                <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-max@mb-only">
+                                                    <div class="l-flex__item">
+                                                        <div class="c-filterForm" id="uid-criteria-riskLevel" data-filter-group>
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>風險屬性</span>@*對應JSON欄位【RiskLevel】*@
+                                                            </div>
+                                                            <div class="c-filterForm__value">
+                                                                <div class="l-pickGroup">
+                                                                    <div class="l-pickGroup__all">
+                                                                        <label class="o-btnCheckBox">
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                            <div class="o-btnCheckBox__text">全部</div>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="l-pickGroup__wrap">
+                                                                        <div class="l-pickCollapse" data-overflow-hide="risk">
+                                                                            <div class="l-pickCollapse__content" data-overflow-content="risk">
+                                                                                <div class="l-pickGroup">
+
+                                                                                    <div class="l-pickGroup__item">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="RR5">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value="RR5"></div>
+                                                                                        </label>
+                                                                                    </div>
+
+                                                                                    <div class="l-pickGroup__item">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="RR4">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value="RR4"></div>
+                                                                                        </label>
+                                                                                    </div>
+
+                                                                                    <div class="l-pickGroup__item">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="RR3">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value="RR3"></div>
+                                                                                        </label>
+                                                                                    </div>
+
+                                                                                    <div class="l-pickGroup__item">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="RR2">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value="RR2"></div>
+                                                                                        </label>
+                                                                                    </div>
+
+                                                                                    <div class="l-pickGroup__item">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="RR1">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value="RR1"></div>
+                                                                                        </label>
+                                                                                    </div>
+
+                                                                                    <div class="l-pickGroup__item" style="display: none;">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value=""></div>
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__expand">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="risk">展開</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="risk"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__collapse">
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                    <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="risk">收合</a>
+                                                                                </div>
+                                                                                <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                    <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="risk"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="l-flex__item">
+                                                        <div class="c-filterForm" data-filter-group>
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>夏普指數</span>@*對應JSON欄位有淨值風險【SharpeNetValueRisk】、市價風險【SharpeRatioMarketPriceRisk】*@
+                                                                <div class="s4">(Sharpe)</div>
+                                                            </div>
+                                                            <div class="c-filterForm__value">
+                                                                <div class="c-sliderBar">
+                                                                    <div class="c-sliderBar__main" data-slider-bar="sharpe"></div>
+                                                                    <input type="text" class="c-sliderBar__value" data-slider-val="sharpe" data-filter-bar>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="l-flex__item">
+                                                        <div class="c-filterForm" data-filter-group>
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>貝他值</span>@*對應JSON欄位有淨值風險【BetaNetValueRisk】、市價風險【BetaMarketPriceRisk】*@
+                                                                <div class="s4">(Beta)</div>
+                                                            </div>
+                                                            <div class="c-filterForm__value">
+                                                                <div class="c-sliderBar">
+                                                                    <div class="c-sliderBar__main" data-slider-bar="beta"></div>
+                                                                    <input type="text" class="c-sliderBar__value" data-slider-val="beta" data-filter-bar>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="l-flex__item">
+                                                        <div class="c-filterForm" data-filter-group>
+                                                            <div class="c-filterForm__title" data-filter-title>
+                                                                <span>標準差</span>@*對應JSON欄位有淨值風險【AnnualizedStandardDeviationNetValueRisk】、市價風險【AnnualizedStandardDeviationMarketPriceRisk】*@
+                                                            </div>
+                                                            <div class="c-filterForm__value">
+                                                                <div class="c-sliderBar">
+                                                                    <div class="c-sliderBar__main" data-slider-bar="standardDeviation"></div>
+                                                                    <input type="text" class="c-sliderBar__value" data-slider-val="standard" data-slider-suffix="%" data-filter-bar>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                            <div class="c-filter__total" data-filter-collapse>
+                                <div class="o-total o-total--wt">
+                                    搜尋<span data-uid-total>9999</span>筆
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-filter__expand">
+                            <div>
+                                <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
+                                    展開進階篩選
+                                    <img src="~/themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="c-filter__collapse">
+                            <div>
+                                <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
+                                    收合進階篩選
+                                    <img src="~/themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-filter__picked">
+                    <div class="c-pickedTag">
+                        <div class="c-pickedTag__text">已選取</div>
+                        <div class="c-pickedTag__items">
+                            <!-- 已選取tag區[data-filter-tags] -->
+                            <div class="l-pickGroup" data-filter-tags></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-filter__tool">
+                    <div class="l-filter__total">
+                        <div class="o-total">
+                            共<span data-uid-total>9999</span>檔ETF
+                        </div>
+                    </div>
+                    <div class="l-filter__reset">
+                        <!-- 重設所有條件功能[data-filter-reset] -->
+                        <a href="#" class="o-prefixLink o-prefixLink--refresh" data-filter-reset>重設所有條件</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

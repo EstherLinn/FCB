@@ -1,0 +1,712 @@
+﻿@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+@using Foundation.Wealth.Helper;
+@model Feature.Wealth.Component.Models.ETF.Search.EtfSearchModel
+@{
+    if (Model == null)
+    {
+        return;
+    }
+    var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId().ToSearchId();
+}
+@Html.Partial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchFilter.cshtml", Model.FilterModel)
+@Html.Partial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchResult.cshtml", Model.SearchResultModel)
+
+<div id="popupPurchase" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">立即申購</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="u-hidden@lt-up">
+                <div class="l-flex u-flex-col u-flex-gap-xs">
+                    <div class="l-flex__item">
+                        <span class="t-bold">選擇申購平台：</span>
+                    </div>
+                    <div class="l-flex__item">
+                        <div class="l-pickGroup">
+                            <div class="l-pickGroup__item">
+                                <label class="o-btnRadio">
+                                    <input class="o-btnRadio__input" type="radio" name="platform" checked>
+                                    <div class="o-btnRadio__text"><span>第e行動</span></div>
+                                </label>
+                            </div>
+                            <div class="l-pickGroup__item">
+                                <label class="o-btnRadio">
+                                    <input class="o-btnRadio__input" type="radio" name="platform">
+                                    <div class="o-btnRadio__text"><span>iLEO</span></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm">單筆申購</a>
+                </div>
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm">定期定額</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<template id="tmplKeywordNotFound">
+    <div class="c-empty">
+        <div class="c-empty__img">
+            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+        </div>
+        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
+    </div>
+</template>
+
+<script>
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            function loading() {
+                // 開啟loading方式:
+                window.loading('show');
+                setTimeout(() => {
+                    // 載入完成需將loading關閉
+                    // 關閉loading方式:
+                    window.loading('hide');
+                }, 300);
+            }
+
+            $.fn.extend({
+                setEleAttribute: function (name, value) {
+                    return this.each(function () {
+                        this.setAttribute(name, value);
+                    });
+                }
+            });
+
+            function SearchResultRespList() {
+                this.List;
+                var $this = this;
+
+                this.Init = function () {
+                    $this.List = [];
+                }
+            }
+
+            function SearchKeywordDataRespList() {
+                this.List;
+                this.Url = '@Model.SearchResultModel.DetailPageLink';
+                var $this = this;
+                this.Init = function () {
+                    $this.List = [];
+                }
+            }
+
+            function apiRequest(url, params) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url,
+                        type: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(params),
+                        success: function (data) {
+                            resolve(data);
+                        },
+                        error: function (xhr, status, error) {
+                            reject(xhr, status, error);
+                        }
+                    });
+                });
+            }
+
+            const propertyResetObj = [
+                'InceptionDateMarketPriceOriginalCurrency'
+                , 'YeartoDateReturnMarketPriceOriginalCurrency'
+                , 'MonthlyReturnMarketPriceOriginalCurrency'
+                , 'ThreeMonthReturnMarketPriceOriginalCurrency'
+                , 'SixMonthReturnMarketPriceOriginalCurrency'
+                , 'OneYearReturnMarketPriceOriginalCurrency'
+                , 'TwoYearReturnMarketPriceOriginalCurrency'
+                , 'ThreeYearReturnMarketPriceOriginalCurrency'
+                , 'InceptionDateMarketPriceTWD'
+                , 'YeartoDateReturnMarketPriceTWD'
+                , 'MonthlyReturnMarketPriceTWD'
+                , 'ThreeMonthReturnMarketPriceTWD'
+                , 'SixMonthReturnMarketPriceTWD'
+                , 'OneYearReturnMarketPriceTWD'
+                , 'TwoYearReturnMarketPriceTWD'
+                , 'ThreeYearReturnMarketPriceTWD'
+                , 'InceptionDateNetValueOriginalCurrency'
+                , 'YeartoDateReturnNetValueOriginalCurrency'
+                , 'MonthlyReturnNetValueOriginalCurrency'
+                , 'ThreeMonthReturnNetValueOriginalCurrency'
+                , 'SixMonthReturnNetValueOriginalCurrency'
+                , 'OneYearReturnNetValueOriginalCurrency'
+                , 'TwoYearReturnNetValueOriginalCurrency'
+                , 'ThreeYearReturnNetValueOriginalCurrency'
+                , 'InceptionDateNetValueTWD'
+                , 'YeartoDateReturnNetValueTWD'
+                , 'MonthlyReturnNetValueTWD'
+                , 'ThreeMonthReturnNetValueTWD'
+                , 'SixMonthReturnNetValueTWD'
+                , 'OneYearReturnNetValueTWD'
+                , 'TwoYearReturnNetValueTWD'
+                , 'ThreeYearReturnNetValueTWD'
+                , 'DiscountPremium'
+                , 'CurrencyPair'
+                , 'LatestVolumeTradingVolume'
+                , 'LatestVolumeTradingVolumeTenDayAverageVolume'
+                , 'InvestmentTarget'
+                , 'InvestmentRegion'
+                , 'InvestmentStyle'
+                , 'PublicLimitedCompany',
+                , 'DiscountTags'
+                , 'CategoryTags'
+            ];
+
+            function initBind() {
+                // 拉霸
+                $('[data-slider-bar="size"]').sliderBar({
+                    start: [0, 302],
+                    connect: true,
+                    range: {
+                        'min': [0, 2],
+                        '17%': [2, 8],
+                        '33.5%': [10, 20],
+                        '50%': [30, 70],
+                        '66.5%': [100, 200],
+                        '83%': [300, 2],
+                        'max': 302
+                    },
+                    pips: {
+                        mode: 'positions',
+                        values: [0, 17, 33.5, 50, 66.5, 83, 100],
+                        density: -1,
+                        format: wNumb({
+                            suffix: '百萬'
+                        })
+                    }
+                });
+                $('[data-slider-bar="returnRate"]').sliderBar({
+                    start: [-5, 20],
+                    step: 5,
+                    connect: true,
+                    range: {
+                        'min': -5,
+                        'max': 20
+                    },
+                    pips: {
+                        mode: 'steps',
+                        density: -1,
+                        format: wNumb({
+                            suffix: '%'
+                        })
+                    }
+                });
+                $('[data-slider-bar="sharpe"]').sliderBar({
+                    start: [-0.5, 2],
+                    step: 0.5,
+                    connect: true,
+                    range: {
+                        'min': -0.5,
+                        'max': 2
+                    },
+                    pips: {
+                        mode: 'steps',
+                        density: -1,
+                        format: wNumb({})
+                    }
+                });
+                $('[data-slider-bar="beta"]').sliderBar({
+                    start: [-0.5, 2],
+                    step: 0.5,
+                    connect: true,
+                    range: {
+                        'min': -0.5,
+                        'max': 2
+                    },
+                    pips: {
+                        mode: 'steps',
+                        density: -1,
+                        format: wNumb({})
+                    }
+                });
+                $('[data-slider-bar="standardDeviation"]').sliderBar({
+                    start: [0, 25],
+                    step: 5,
+                    connect: true,
+                    range: {
+                        'min': 0,
+                        'max': 25
+                    },
+                    pips: {
+                        mode: 'steps',
+                        density: -1,
+                        format: wNumb({
+                            suffix: '%'
+                        })
+                    }
+                });
+
+                // 報酬率組合
+                $('[data-filter-part="returnRate"] input').on('change.returnRate', function () {
+                    // 日期區間有值時，才需要帶tag下去
+                    let releaseSetTag = $('[data-return-rate-date]:checked').length > 0;
+                    // 若父層[data-filter-group]的值為'special'，則不會印出已選擇的tag
+                    $(this).closest('[data-filter-group]').setEleAttribute('data-filter-group', releaseSetTag ? '' : 'special');
+                });
+                // 報酬率日期區間
+                $('[data-return-rate-date]').on('change.returnRateDate', function () {
+                    // 日期區間有值時，才顯示報酬率拉霸
+                    $('[data-return-rate-money]').closest('.l-flex__item').toggleClass('u-hidden', $('[data-return-rate-date]:checked').length === 0);
+                    $('[data-return-rate-money]').val('').trigger('input.reset');
+                });
+
+                // 報酬率幣別固定預設值"原幣"
+                $('[data-currency]').on('change.currency', function () {
+                    if (!$('[data-currency]:checked').length > 0) {
+                        $('[data-currency]').eq(0).prop('checked', true);
+                    }
+                    $('[data-return-rate-money]').val('').trigger('input.reset');
+                });
+            }
+
+            function initFilterJS() {
+                var fjs = FilterJS(window.ETFSearch.Result.List, '#uid-fjs', {
+                    template: '#uid-template-marketPrice-original',
+                    criterias: [
+                        { field: 'DiscountTags', ele: '#uid-criteria-discountTags :checkbox' },
+                        { field: 'CategoryTags', ele: '#uid-criteria-categoryTags :checkbox' },
+                        { field: 'RegionType', ele: '#uid-criteria-regionType :checkbox' },
+                        { field: 'RegionType', ele: '#uid-criteria-regionType :checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'DividendDistributionFrequency', ele: '#uid-criteria-dividend :checkbox' },
+                        { field: 'DividendDistributionFrequency', ele: '#uid-criteria-dividend :checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'ExchangeID', ele: '#uid-criteria-exchangeid :checkbox' },
+                        { field: 'ExchangeID', ele: '#uid-criteria-exchangeid :checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'RiskLevel.Value', ele: '#uid-criteria-riskLevel :checkbox' },
+                        { field: 'RiskLevel.Value', ele: '#uid-criteria-riskLevel :checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'CurrencyPair.Value', ele: '#uid-criteria-currencyPair :checkbox' },
+                        { field: 'CurrencyPair.Value', ele: '#uid-criteria-currencyPair :checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'InvestmentTarget.Value', ele: '#uid-criteria-investmentTarget :checkbox' },
+                        { field: 'InvestmentTarget.Value', ele: '#uid-criteria-investmentTarget :checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'InvestmentRegion.Value', ele: '#uid-criteria-investmentRegion :checkbox' },
+                        { field: 'InvestmentRegion.Value', ele: '#uid-criteria-investmentRegion :checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'InvestmentStyle.Value', ele: '#uid-criteria-investmentStyle :checkbox' },
+                        { field: 'InvestmentStyle.Value', ele: '#uid-criteria-investmentStyle :checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'PublicLimitedCompany.Value', ele: '#uid-criteria-publicLimitedCompany :checkbox' },
+                        { field: 'PublicLimitedCompany.Value', ele: '#uid-criteria-publicLimitedCompany :checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'ScaleMillions.Value', ele: '[data-slider-val="scaleMillions"]', type: 'range', delimiter: ',' },
+                        { field: 'SharpeRatioMarketPriceRisk.Value', ele: '[data-slider-val="sharpe"]', type: 'range', delimiter: ',' },
+                        { field: 'BetaMarketPriceRisk.Value', ele: '[data-slider-val="beta"]', type: 'range', delimiter: ',' },
+                        { field: 'AnnualizedStandardDeviationMarketPriceRisk.Value', ele: '[data-slider-val="standard"]', type: 'range', delimiter: ',' },
+                    ],
+                    search: {
+                        ele: '#uid-searchbox', fields: ['FirstBankCode', 'ETFName'], start_length: 2, bindEvent: false, multi: function () {
+                            let texts = [];
+                            $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                                let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                                let text = matches && matches[1];
+                                texts.push(text);
+                            });
+                            return texts;
+                        }
+                    },
+                    pagination: {
+                        //headerView: '#uid-filter-header',
+                        container: '#uid-pagination',
+                        paginationView: '#uid-template-pagination',
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, window.ETFSearch.Result.List.length],
+                            container: '#uid-perPage',
+                            perPageView: '#uid-template-perPage'
+                        }
+                    },
+                    callbacks: {
+                        onFilterSelect: function (obj) {
+                            if (obj.criteria.type === 'range') {
+                                if (obj.values[0] !== obj.values[0]) {
+                                    obj.values[0] = -9999999999;
+                                }
+                                if (obj.values[1] !== obj.values[1]) {
+                                    obj.values[1] = 9999999999;
+                                }
+                            }
+                        },
+                        beforeRecordRender: function (record) {
+                            //if (record.FirstBankCode == '35AB') {
+                            //    console.log(record);
+                            //}
+
+                            for (let r in record) {
+                                if (propertyResetObj.includes(r)) {
+                                    if (record[r].Value == null || record[r].Value == undefined) {
+                                        record[r].Value = '';
+                                    }
+                                }
+                            }
+                        },
+                        afterFilter: function (result) {
+                            $('[data-uid-total]').text(result.length);
+                            this.paginator.setCurrentPage(1);
+
+                            let isEmpty = result.length == 0;
+                            $(`[data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-filter-empty=${!isEmpty}]`).hide();
+
+                            window.loading('hide');
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select#uid-sortbox' }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') {
+                            } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order == 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+
+                            console.log(f);
+                        }
+                    }
+                });
+
+                fjs.bindEvent('[data-filter-reset]', 'click.reset');
+                fjs.bindEvent('[data-tag-close]', 'click.tag');
+                fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+
+                $('[data-filter-reset]').on('click.reset', function (e) {
+                    $('[data-tab] [data-tab-target]:first').trigger('switch');
+                });
+
+                $('[data-keyword-input]').on('keypress.loading', function (e) {
+                    if (e.which === 13 && !!$(this).val().trim()) {
+                        $('[data-keyword-submit]').trigger('click.loading');
+                    }
+                });
+
+                $('[data-tab-target="tab-1"], [data-tab-target="tab-2"]').on('switch', function (e) {
+                    let target = $(this).data('tab-target');
+                    $(`[data-tab-panel-id="${target}"]`).find('[data-filter-switch]:checked').trigger('change');
+                });
+
+                $('[data-filter-switch]').on('switch click change', function (e) {
+                    let $self = $(this);
+                    let switchTemplate = $self.data('filter-switch');
+
+                    if (switchTemplate) {
+                        $elTh = $('#table th[data-filter-switch-columns]');
+                        $elTh.hide();
+                        let switchCol = $self.data('filter-switch-columns').toString();
+
+                        $elTh.each(function () {
+                            let $this = $(this);
+                            let columns = $this.data('filter-switch-columns').toString().split(',');
+                            if (columns.includes(switchCol)) {
+                                $this.show();
+                            } else {
+                                $this.hide();
+                            }
+                        });
+
+                        fjs.setTemplate(switchTemplate, true);
+                    }
+                });
+
+                $('[data-return-rate-money]').on('change.select2', function (e) {
+                    let $currency = $('[data-currency]');
+                    let $rateDate = $('[data-return-rate-date]');
+
+                    $currency.each(function (i) {
+                        let currencyData = $(this).data('filter-criteria-field');
+                        let isCheck = this.checked;
+
+                        $rateDate.each(function (ix) {
+                            let rateDateData = $(this).data('filter-criteria-field').split('|');
+                            let criteriaField = rateDateData[currencyData];
+                            fjs.removeCriteria(criteriaField);
+
+                            if (isCheck && this.checked) {
+                                fjs.addCriteria({ field: criteriaField, ele: '[data-return-rate-money]', type: 'range', delimiter: ',' })
+                            }
+                        });
+                    });
+                });
+
+                function fnScrollUp() {
+                    loading();
+                    $('#table').scrollPosition('scroll');
+                }
+
+                function fnToFirstPage() {
+                    loading();
+                    $('#table').scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
+
+                $containgerPagination = $('#uid-pagination');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+
+                $('#uid-view-perPage').on('change.pagesize', fnToFirstPage).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+
+                $('[data-keyword-submit]').on('click.loading', function () {
+                    if (!!$('[data-keyword-input]').val().trim()) {
+                        loading();
+                    }
+                });
+
+                return fjs;
+            }
+
+            function initAutocomplete() {
+                // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
+                $('#uid-searchbox').autocomplete({
+                    max: 10,
+                    noCache: true,
+                    minChars: 0,
+                    containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
+                    maxHeight: 'auto',
+                    zIndex: 5,
+                    preserveInput: true,
+                    showNoSuggestionNotice: true,
+                    noSuggestionNotice: $('#tmplKeywordNotFound').html(),
+                    lookup: function (query, done) {
+                        // Do Ajax call or lookup locally, when done,
+                        // call the callback and pass your results:
+                        query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+                        let result = window.ETFSearch.SearchKeyword.List.filter(function (item) {
+                            return query.length == 0 || new RegExp(query, 'gi').test(item.value);
+                        });
+                        done({
+                            suggestions: result.slice(0, 5)
+                        });
+                    },
+                    onSearchComplete: function (query, suggestions) {
+                        var autocomplete = $(this).autocomplete();
+                        var container = autocomplete.suggestionsContainer;
+                        var $this = $(this);
+
+                        // 取消套件預設 blur 事件會關閉 suggestions container
+                        $this.off('blur.autocomplete');
+
+                        // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
+                        if (autocomplete.isRegisteGlobalEvent != true) {
+                            $(window).on('click.autocomplete', {
+                                source: this
+                            }, e => {
+                                if (e.target != e.data.source) {
+                                    autocomplete.hide();
+                                }
+                            });
+                            autocomplete.isRegisteGlobalEvent = true;
+                        }
+
+                        // 停止 like icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
+                        $(container).find('.o-statusBtn').off('click.autocomplete').on('click.autocomplete', function (e) {
+                            e.stopPropagation();
+                        });
+                        // 綁定 like icon 的互動功能
+                        $(container).find('[data-ia]').interactive();
+                        // 綁定 like icon 的彈跳登入畫面
+                        $(container).find('[data-popup]').magnificPopup();
+                    },
+                    formatResult: function (suggestion, currentValue) {
+                        let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
+                        let className = suggestion.data.isLike ? 'is-active' : '';
+
+                        // like 按鈕
+                        let likeWord = suggestion.data.isNews ? '加入收藏|取消收藏' : '加入關注|取消關注';
+                        let $like = suggestion.data.isLike != null ? suggestion.data.isLogin == true ?
+                            // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
+                            `<a href="#" class="o-statusBtn o-statusBtn--like ${className}" data-msg="${likeWord}" data-ia="true"></a>` :
+                            // <!-- [data-popup]: 未登入開啟登入彈跳視窗 -->
+                            `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
+
+                        // 申購按鈕
+                        let $purchase = suggestion.data.purchase ? suggestion.data.isLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
+                        return `<div class="c-itemKeyword">
+                <a href="${detailUrl}" class="c-itemKeyword__content">
+
+                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                </a>
+                <div class="c-itemKeyword__collections">${$like}</div>
+                ${$purchase}
+            </div>`;
+                    }
+                });
+            }
+
+            var reqSearch = {
+                req: {
+                    DatasourceId: '@Model.DatasourceId'
+                }
+            };
+
+            window.ETFSearch = {
+                FJS: null,
+                Result: new SearchResultRespList(),
+                SearchKeyword: new SearchKeywordDataRespList(),
+                QueryList: function () {
+                    this.Result.Init();
+                    var query = apiRequest('@ClientRoute.GenerateUrl(this, "EtfSearch", "GetSearchResultData")', reqSearch);
+
+                    query.then((data) => {
+                        console.log(data);
+                        this.Result.List = data;
+                        return data;
+                    }).catch((err) => {
+                        console.log(err);
+                    }).then((data) => {
+                        var fjs = initFilterJS();
+                        this.FJS = fjs;
+                        this.GenerateSearchKeywordList();
+                        initAutocomplete();
+                        
+                        $('[data-tab] [data-tab-target]:first').trigger('switch');
+                        $('[data-filter-switch="#uid-template-marketPrice-original"]').trigger('change');
+                    });
+                },
+                GenerateSearchKeywordList: function () {
+                    this.SearchKeyword.Init();
+                    let $SearchKeyword = this.SearchKeyword;
+                    let list = [];
+                    let url  = $SearchKeyword.Url;
+
+                    if (Object.keys(this.Result.List).length != 0) {
+                        $.each(this.Result.List, function (i, item) {
+                            let obj = {
+                                value: item.FirstBankCode + ' ' + item.ETFName,
+                                data: {
+                                    type: 'ETF',
+                                    isLogin: false,
+                                    isLike: false,
+                                    detailUrl: url + '?' + $.param({ code: item.FirstBankCode }),
+                                    purchase: item.CanOnlineSubscription
+                                }
+                            };
+                            list.push(obj);
+                        })
+
+                        this.SearchKeyword.List = list;
+                    }
+                }
+            };
+
+            initBind();
+            window.ETFSearch.QueryList();
+
+            $('[data-tab-currency]').on('change', function () {
+                var currency = $(this).data('tab-currency');
+                $('[data-tab-currency="' + currency + '"]').prop('checked', true);
+            });
+
+            // table 排序功能
+            $('#table').on('click.sorting', '.o-sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                window.loading('show');
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                var $sortingbox = $('#uid-sortbox');
+                var sortingColumn = $this.data('sorting-column');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+
+                if ($option.length > 0) {
+                    $option.prop('selected', true);
+                    $sortingbox.trigger('change');
+                } else {
+                    $sortingbox.val(null).trigger('change');
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
+            });
+
+            // 手機版分頁筆數功能
+            $('[data-sortingbox]:not(#uid-sortbox)').on('change', function (e) {
+                let self = this;
+                let $self = $(this);
+                let sortingColumn = $('option:selected', self).data('sorting-column');
+                let orderby = $('option:selected', self).data('sorting-class');
+                let $box = $('#uid-sortbox');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                if ($option.length != 0) {
+                    $option.prop('selected', true);
+                    $box.trigger('change');
+                } else {
+                    $box.val(null).trigger('change');
+                }
+            });
+
+            $('#uid-sortbox').on('change.select2', function (e) {
+                let self = this;
+                let $self = $(this);
+
+                var sorting = $(this).val();
+                var $linkTable = $('#table');
+                var sortingColumn = $('option:selected', self).data('sorting-column');
+                var orderby = $('option:selected', self).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                console.log(`排序：${sorting}`);
+
+                let $linkedBox = $('[data-sortingbox]').not(self);
+                for (box of $linkedBox) {
+                    let $box = $(box);
+                    let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                    if ($option.length != 0) {
+                        $option.prop('selected', true);
+                        $box.trigger('change.select2');
+                    } else {
+                        $box.val(null).trigger('change.select2');
+                    }
+                }
+            });
+        });
+    })(jQuery, window, document);
+</script>
