@@ -90,7 +90,7 @@
                                 <th>
                                     <div class="c-table__title">
                                         <span>年度</span>
-                                        <a href="#" class="o-sorting is-desc" data-sorting-column="Year"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="Year"></a>
                                     </div>
                                 </th>
                                 <th>
@@ -147,7 +147,7 @@
                                             <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
                                         </div>
                                         <div class="c-cardTable__content">
-                                            <a href="#" class="o-link">@item.CurrencyName</a>
+                                            <a href="#popupCurrencyWebSite" class="o-link" data-popup="true">@item.CurrencyName</a>
                                         </div>
                                     </td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
@@ -212,7 +212,8 @@
                     data: { orderby: orderby, desc: desc },
                     success: function (data) {
                         $('#result').empty();
-                        $('#result').html(data);
+                        document.getElementById('result').innerHTML = data;
+                        $('[data-popup]').magnificPopup();
                     },
                     error: function (xhr, status, error) {
                         console.error(error);

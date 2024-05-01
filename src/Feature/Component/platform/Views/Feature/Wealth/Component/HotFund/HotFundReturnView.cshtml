@@ -36,7 +36,7 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
-                <a href="#" class="o-link">@item.CurrencyName</a>
+                <a href="#popupCurrencyWebSite" class="o-link" data-popup="true">@item.CurrencyName</a>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
@@ -73,12 +73,12 @@
             <div class="c-cardTable__title" data-length="5">國人持有金額占基金規模比重</div>
             @if (item.DomesticInvestmentRatio == null)
             {
-                <div class="c-cardTable__content">0</div>
+                <div class="c-cardTable__content">-</div>
 
             }
             else
             {
-                <div class="c-cardTable__content">@item.DomesticInvestmentRatio</div>
+                <div class="c-cardTable__content">@item.DomesticInvestmentRatio%</div>
             }
         </td>
         <td class="c-cardTable__space"></td>

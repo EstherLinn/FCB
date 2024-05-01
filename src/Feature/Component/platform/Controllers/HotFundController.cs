@@ -57,7 +57,8 @@ namespace Feature.Wealth.Component.Controllers
 
             var viewModel = new HotFundModel
             {
-                HotFunds = renderDatas
+                HotFunds = renderDatas,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/HotFund/HotFundReturnView.cshtml", viewModel);

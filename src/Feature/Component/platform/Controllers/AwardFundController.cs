@@ -23,8 +23,9 @@ namespace Feature.Wealth.Component.Controllers
             var viewModel = new AwardFundModel { Item = dataSourceItem };
 
             Task<List<Funds>> award12024 = Task.Run(() => _repository.JsonPostAsync());
+            var awardFunds = award12024.Result;
 
-            viewModel.AwardFunds = award12024.Result;
+            viewModel.AwardFunds = awardFunds.OrderByDescending(a=>a.Year).ToList();
             viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
 
             return View("/Views/Feature/Wealth/Component/AwardFund/AwardFund.cshtml", viewModel);
@@ -52,8 +53,9 @@ namespace Feature.Wealth.Component.Controllers
 
             var viewModel = new AwardFundModel
             {
-                AwardFunds = awardFunds
-            };
+                AwardFunds = awardFunds,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+        };
             return View("/Views/Feature/Wealth/Component/AwardFund/AwardFundReturnView.cshtml", viewModel);
         }
 

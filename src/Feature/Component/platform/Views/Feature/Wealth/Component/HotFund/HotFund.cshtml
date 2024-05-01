@@ -94,7 +94,7 @@
                                 <th>
                                     <div class="c-table__title">
                                         <span>6個月績效</span>
-                                        <a href="#" class="o-sorting is-desc" data-sorting-column="SixMonthReturnOriginalCurrency"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnOriginalCurrency"></a>
                                     </div>
                                 </th>
                                 <th>
@@ -157,7 +157,7 @@
                                             <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
                                         </div>
                                         <div class="c-cardTable__content">
-                                            <a href="#" class="o-link">@item.CurrencyName</a>
+                                            <a href="#popupCurrencyWebSite" class="o-link" data-popup="true">@item.CurrencyName</a>
                                         </div>
                                     </td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
@@ -194,12 +194,12 @@
                                         <div class="c-cardTable__title" data-length="5">國人持有金額占基金規模比重</div>
                                         @if (item.DomesticInvestmentRatio == null)
                                         {
-                                            <div class="c-cardTable__content">0</div>
+                                            <div class="c-cardTable__content">-</div>
 
                                         }
                                         else
                                         {
-                                            <div class="c-cardTable__content">@item.DomesticInvestmentRatio</div>
+                                            <div class="c-cardTable__content">@item.DomesticInvestmentRatio%</div>
                                         }
                                     </td>
                                     <td class="c-cardTable__space"></td>
@@ -237,7 +237,7 @@
             if (!jQuery) {
                 return;
             }
-            var selectedId = @Html.Raw(Json.Encode(Model.SelectedId));
+            var selectedId = @(new HtmlString(Json.Encode(Model.SelectedId)));
             var currentData = [];
 
             function ReturnView(selectedId, orderby, desc) {
@@ -247,8 +247,9 @@
                     data: { selectedId: selectedId, orderby: orderby, desc: desc },
                     success: function (data) {
                         $('#result').empty();
-                        $('#result').html(data);
+                        document.getElementById('result').innerHTML = data;
                         Removefall();
+                        $('[data-popup]').magnificPopup();
                     },
                     error: function (xhr, status, error) {
                         console.error(error);

@@ -52,7 +52,8 @@ namespace Feature.Wealth.Component.Controllers
 
             var viewModel = new HighRatedFundModel
             {
-                HighRatedFunds = renderDatas
+                HighRatedFunds = renderDatas,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/HighRatedFund/HighRatedFundReturnView.cshtml", viewModel);

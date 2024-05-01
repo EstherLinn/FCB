@@ -86,7 +86,7 @@
                                 <th>
                                     <div class="c-table__title">
                                         <span>6個月績效</span>
-                                        <a href="#" class="o-sorting is-desc" data-sorting-column="SixMonthReturnOriginalCurrency"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnOriginalCurrency"></a>
                                     </div>
                                 </th>
                                 <th>
@@ -163,7 +163,8 @@
                     success: function (data) {
                         if (data) {
                             $('#result').empty();
-                            $('#result').html(data);
+                            document.getElementById('result').innerHTML = data;
+                            $('[data-popup]').magnificPopup();
 
                             $('span.o-fall').each(function () {
                                 var content = $(this).text();

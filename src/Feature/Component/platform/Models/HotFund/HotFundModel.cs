@@ -35,7 +35,7 @@ namespace Feature.Wealth.Component.Models.HotFund
             /// <summary>
             /// 淨值
             /// </summary>
-            public decimal NetAssetValue { get; set; }
+            public decimal? NetAssetValue { get; set; }
 
             /// <summary>
             /// 計價幣別 
@@ -50,12 +50,12 @@ namespace Feature.Wealth.Component.Models.HotFund
             /// <summary>
             /// 六個月報酬原幣
             /// </summary>
-            public decimal SixMonthReturnOriginalCurrency { get; set; }
+            public decimal? SixMonthReturnOriginalCurrency { get; set; }
 
             /// <summary>
             /// 漲跌幅
             /// </summary>
-            public decimal PercentageChangeInFundPrice { get; set; }
+            public decimal? PercentageChangeInFundPrice { get; set; }
 
             /// <summary>
             /// 風險屬性
@@ -70,7 +70,7 @@ namespace Feature.Wealth.Component.Models.HotFund
             /// <summary>
             /// 國人持有金額占基金規模比重
             /// </summary>
-            public decimal DomesticInvestmentRatio { get; internal set; }
+            public decimal? DomesticInvestmentRatio { get; internal set; }
 
             /// <summary>
             /// 百元標的

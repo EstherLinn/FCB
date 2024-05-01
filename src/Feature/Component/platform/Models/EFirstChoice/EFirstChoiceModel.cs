@@ -31,11 +31,12 @@ namespace Feature.Wealth.Component.Models.EFirstChoice
             /// 淨值日期
             /// </summary>
             public DateTime NetAssetValueDate { get; set; }
+            public string NetAssetValueDateFormat => NetAssetValueDate.ToString("yyyy/MM/dd");
 
             /// <summary>
             /// 淨值
             /// </summary>
-            public decimal NetAssetValue { get; set; }
+            public decimal? NetAssetValue { get; set; }
 
             /// <summary>
             /// 計價幣別 
@@ -50,12 +51,12 @@ namespace Feature.Wealth.Component.Models.EFirstChoice
             /// <summary>
             /// 六個月報酬原幣
             /// </summary>
-            public decimal SixMonthReturnOriginalCurrency { get; set; }
+            public decimal? SixMonthReturnOriginalCurrency { get; set; }
 
             /// <summary>
             /// 漲跌幅
             /// </summary>
-            public decimal PercentageChangeInFundPrice { get; set; }
+            public decimal? PercentageChangeInFundPrice { get; set; }
 
             /// <summary>
             /// 風險屬性

@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
+using Foundation.Wealth.Extensions;
 using static Feature.Wealth.Component.Models.HotFund.HotFundModel;
 
 namespace Feature.Wealth.Component.Repositories
@@ -25,10 +26,10 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.SixMonthReturnOriginalCurrency = decimal.Round(item.SixMonthReturnOriginalCurrency, 2);
-            item.NetAssetValue = decimal.Round(item.NetAssetValue, 4);
-            item.PercentageChangeInFundPrice = decimal.Round((item.PercentageChangeInFundPrice * 100), 4);
-            item.DomesticInvestmentRatio = decimal.Round(item.DomesticInvestmentRatio, 4);
+            item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPercentage(item.SixMonthReturnOriginalCurrency);
+            item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
+            item.PercentageChangeInFundPrice = NumberExtensions.RoundingPercentage((item.PercentageChangeInFundPrice * 100));
+            item.DomesticInvestmentRatio = NumberExtensions.RoundingValue(item.DomesticInvestmentRatio);
         }
 
         /// <summary>
