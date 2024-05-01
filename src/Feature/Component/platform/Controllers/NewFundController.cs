@@ -52,7 +52,7 @@ namespace Feature.Wealth.Component.Controllers
             int totalPages;
             List<Funds> renderDatas;
 
-            if (pageSize.ToLower().Equals("all"))
+            if (pageSize.Equals("all", StringComparison.OrdinalIgnoreCase))
             {
                 totalPages = 1;
                 renderDatas = _repository.GetFundRenderData(funds).ToList();
