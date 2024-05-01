@@ -51,7 +51,8 @@ namespace Feature.Wealth.Component.Controllers
 
             var viewModel = new CostRankModel
             {
-                CostRanks = etfs
+                CostRanks = etfs,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/CostRank/CostRankReturnView.cshtml", viewModel);

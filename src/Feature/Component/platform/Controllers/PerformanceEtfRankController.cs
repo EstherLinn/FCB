@@ -51,7 +51,8 @@ namespace Feature.Wealth.Component.Controllers
 
             var viewModel = new PerformanceEtfRankModel
             {
-                PerformanceEtfRanks = etfs
+                PerformanceEtfRanks = etfs,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/PerformanceEtfRank/PerformanceEtfRankReturnView.cshtml", viewModel);
