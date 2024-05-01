@@ -27,7 +27,9 @@
                 @if (!string.IsNullOrEmpty(Model.ButtonLink) || !string.IsNullOrEmpty(Model.ButtonText))
                 {
                     <div class="c-cardLecture__action">
-                        <a href="@Model.ButtonLink" class="o-btnListen">@Model.ButtonText</a>
+                        @Html.Sitecore().BeginField(Template.CTA.Fields.ButtonLink.ToString(), Model.Item, new { haschildren = true, @class = "o-btnListen" })
+                        @Html.Sitecore().Field(Template.CTA.Fields.ButtonText.ToString(), Model.Item)
+                        @Html.Sitecore().EndField()
                     </div>
                 }
             </div>
