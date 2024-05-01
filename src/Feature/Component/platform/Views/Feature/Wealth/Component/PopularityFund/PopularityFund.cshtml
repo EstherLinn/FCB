@@ -44,8 +44,8 @@
                         <option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-asc">6個月績效低至高</option>
                         <option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
                         <option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
-                        <option value="點擊率" data-sorting-column="hits" data-sorting-class="is-desc">點擊率高至低</option>
-                        <option value="點擊率" data-sorting-column="hits" data-sorting-class="is-asc">點擊率低至高</option>
+                        <option value="點擊率" data-sorting-column="ViewCount" data-sorting-class="is-desc">點擊率高至低</option>
+                        <option value="點擊率" data-sorting-column="ViewCount" data-sorting-class="is-asc">點擊率低至高</option>
                     </select>
                 </div>
             </div>
@@ -95,7 +95,7 @@
                                 <th>
                                     <div class="c-table__title">
                                         <span>6個月績效</span>
-                                        <a href="#" class="o-sorting is-desc" data-sorting-column="SixMonthReturnOriginalCurrency"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnOriginalCurrency"></a>
                                     </div>
                                 </th>
                                 <th>
@@ -107,7 +107,7 @@
                                 <th>
                                     <div class="c-table__title">
                                         <span class="u-wrap">點擊率</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="hits"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="ViewCount"></a>
                                     </div>
                                 </th>
                                 <th>
@@ -158,7 +158,7 @@
                                             <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
                                         </div>
                                         <div class="c-cardTable__content">
-                                            <a href="#" class="o-link">@item.CurrencyName</a>
+                                            <a href="#popupCurrencyWebSite" class="o-link" data-popup="true">@item.CurrencyName</a>
                                         </div>
                                     </td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
@@ -193,7 +193,14 @@
                                     </td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
                                         <div class="c-cardTable__title" data-length="5">點擊率</div>
-                                        <div class="c-cardTable__content">111.11%</div>
+                                        @if (item.ViewCount != null)
+                                        {
+                                            <div class="c-cardTable__content">@item.ViewCount</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-cardTable__content">-</div>
+                                        }
                                     </td>
                                     <td class="c-cardTable__space"></td>
                                     <td class="c-cardTable__footer" data-card-table-width="2/3">
@@ -230,7 +237,7 @@
             if (!jQuery) {
                 return;
             }
-            var selectedId = @Html.Raw(Json.Encode(Model.SelectedId));
+            var selectedId = @(new HtmlString(Json.Encode(Model.SelectedId)));
             var currentData = [];
 
             function ReturnView(selectedId, orderby, desc) {
@@ -240,14 +247,9 @@
                     data: { selectedId: selectedId, orderby: orderby, desc: desc },
                     success: function (data) {
                         $('#result').empty();
-                        $('#result').html(data);
-                        $('span.o-fall').each(function () {
-                            var content = $(this).text();
-                            if (content.startsWith('-')) {
-                                var number = content.substring(1);
-                                $(this).text(number);
-                            }
-                        });
+                        document.getElementById('result').innerHTML = data;
+                        Removefall();
+                        $('[data-popup]').magnificPopup();
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
@@ -255,6 +257,16 @@
                 });
             }
 
+            Removefall();
+            function Removefall() {
+                $('span.o-fall').each(function () {
+                    var content = $(this).text();
+                    if (content.startsWith('-')) {
+                        var number = content.substring(1);
+                        $(this).text(number);
+                    }
+                });
+            }
 
             $('table').off('click.sorting').on('click.sorting', '.o-sorting', function (e) {
                 e.preventDefault();
