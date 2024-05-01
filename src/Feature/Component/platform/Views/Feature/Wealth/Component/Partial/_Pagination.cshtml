@@ -1,0 +1,35 @@
+﻿<div class="l-pagination">
+    <div class="l-pagination__size" id="uid-perPage">
+    </div>
+    <script id="uid-template-perPage" type="text/html">
+        <span>每頁顯示</span>
+        <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+        <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+            <% for(var i = 0; i < values.length - 1; i++ ) { %>
+            <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+            <% } %>
+            <option value="<%= values[values.length - 1] %>">全部</option>
+        </select>
+    </script>
+    <div class="l-pagination__switch" id="uid-pagination">
+    </div>
+    <script id="uid-template-pagination" type="text/html">
+        <div class="o-pagination">
+            <% if (currentPage > 1) { %>
+            <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+            <% } else { %>
+            <!-- .is-disabled: 停用狀態，無法點擊 -->
+            <a href="#" class="o-pagination__prev is-disabled"></a>
+            <% } %>
+            <span class="o-pagination__pager">
+                <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+                <span class="o-pagination__total"><%= totalPages %></span>
+            </span>
+            <% if (currentPage < totalPages ) { %>
+            <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+            <% } else { %>
+            <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+            <% } %>
+        </div>
+    </script>
+</div>

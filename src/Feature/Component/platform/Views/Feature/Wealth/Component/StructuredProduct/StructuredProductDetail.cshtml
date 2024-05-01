@@ -1,0 +1,947 @@
+﻿@using System.Web.Script.Serialization
+@model Feature.Wealth.Component.Models.StructuredProduct.StructuredProductDetailViewModel
+
+@{
+    string productCode = Model.StructuredProduct.ProductCode;
+
+    string pageview = "999,999,999,999";
+}
+
+<script>
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            };
+
+            $('[data-trend-filter="dateRange"]').on('change', function () {
+
+                function getParams() {
+                    const obj = {
+                        trend: $('[data-trend-filter="trend"]:checked').val(),
+                        range: $('[data-trend-filter="dateRange"]:checked').length > 0 ? $('[data-trend-filter="dateRange"]:checked').val() : "custom",
+                        startdate: $('[data-trend-filter="inputStart"]').val(),
+                        enddate: $('[data-trend-filter="inputEnd"]').val(),
+                    };
+
+                    let today = new Date();
+
+                    function CalDateRange(month) {
+                        let set = new Date().setMonth(new Date().getMonth() - month);
+                        let setDate = new Date(set);
+                        return setDate.getFullYear() + "-" + ((setDate.getMonth() + 1) < 10 ? "0" + (setDate.getMonth() + 1) : (setDate.getMonth() + 1)) + "-" + setDate.getDate();
+                    }
+
+                    if (!obj.startdate && !obj.enddate) {
+                        switch (obj.range) {
+                            case 'sinceYear':
+                                obj.startdate = today.getFullYear() + "-" + "01-01";
+                                obj.enddate = today.toISOString().split('T')[0];
+                                break;
+                            case '1m':
+                                obj.startdate = CalDateRange(1);
+                                obj.enddate = today.toISOString().split('T')[0];
+                                break;
+                            case '3m':
+                                obj.startdate = CalDateRange(3);
+                                obj.enddate = today.toISOString().split('T')[0];
+                                break;
+                            case '6m':
+                                obj.startdate = CalDateRange(6);
+                                obj.enddate = today.toISOString().split('T')[0];
+                                break;
+                            case '12m':
+                                obj.startdate = CalDateRange(12);
+                                obj.enddate = today.toISOString().split('T')[0];
+                                break;
+                            case '24m':
+                                obj.startdate = CalDateRange(24);
+                                obj.enddate = today.toISOString().split('T')[0];
+                                break;
+                            case '36m':
+                                obj.startdate = CalDateRange(36);
+                                obj.enddate = today.toISOString().split('T')[0];
+                                break;
+                            case '60m':
+                                obj.startdate = CalDateRange(60);
+                                obj.enddate = today.toISOString().split('T')[0];
+                                break;
+                            case 'establishment':
+                                obj.startdate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                                obj.enddate = today.toISOString().split('T')[0];
+                                break;
+                        }
+                        $('[data-trend-filter="inputStart"]').val(obj.startdate.replaceAll('-', '/'));
+                        $('[data-trend-filter="inputEnd"]').val(obj.enddate.replaceAll('-', '/'));
+                        $('[data-trend-filter="inputStart"]').datepicker('setDate', obj.startdate.replaceAll('-', '/'));
+                        $('[data-trend-filter="inputEnd"]').datepicker('setDate', obj.enddate.replaceAll('-', '/'));
+                    } else {
+                        obj.startdate = obj.startdate.replaceAll('/', '-');
+                        obj.enddate = obj.enddate.replaceAll('/', '-');
+                    }
+                }
+
+                $('[data-trend-filter="inputStart"], [data-trend-filter="inputEnd"]').val('');
+                $('[data-chart="trend"] .l-form').removeClass('is-error');
+                getParams();
+            }).trigger("change");
+
+            var data = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
+
+            // 產品資訊 資料
+            var ProductData = JSON.parse(JSON.stringify(data.StructuredProduct));
+
+            // 配息 資料
+            let DividendData = JSON.parse(JSON.stringify(data.HistoryDividend));
+
+            // 參考贖回價 資料
+            let HistoryBankSellPrice = JSON.parse(JSON.stringify(data.HistoryBankSellPrice));
+            let ThirtyDayBankSellPriceWithChange = JSON.parse(JSON.stringify(data.ThirtyDayBankSellPriceWithChange));
+
+
+            RenderPageHeader();
+            RenderThirtyDaySellPrice();
+            RenderDividendFilter();
+            RenderDividendList();
+
+
+            // 商品資訊Header
+            function RenderPageHeader() {
+                var data = ProductData;
+                var pageHeaderTemplate = $('#page-header-template').html();
+
+                var renderedHTML = pageHeaderTemplate.replace(/%Title%/g, data.ProductCode + " " + data.ProductName).replace(/%Views%/g, "@pageview").replace(/%BankSellPrice%/g, data.BankSellPrice).replace(/%CurrencyName%/g, data.CurrencyName).replace(/%PriceBaseDate%/g, data.PriceBaseDate).replace(/%ProductMaturityDate%/g, data.ProductMaturityDate).replace(/%IssuingInstitution%/g, data.IssuingInstitution);
+
+                $('#pageHeader').html(renderedHTML);
+            };
+
+
+            // 配息 年份篩選
+            function RenderDividendFilter() {
+                // 年份篩選(取最近三年)
+                var currentYear = new Date().getFullYear();
+                var years = [currentYear, currentYear - 1, currentYear - 2];
+                for (var i = 0; i < 3; i++) {
+                    var optionYear = currentYear - i;
+                    $("#dividendyear").append('<option value="' + optionYear + '">' + optionYear + '</option>');
+                }
+            };
+
+            $("#dividendyear").change(function () {
+                RenderDividendList();
+            });
+
+            // 配息 列表
+            function RenderDividendList() {
+
+                var data = DividendData;
+                var orderby = '';
+                var $this = $('[data-tab-panel-id="tab-2"] .o-sorting');
+
+                if ($this.hasClass('is-asc')) {
+                    orderby = 'is-asc';
+                } else if ($this.hasClass('is-desc')) {
+                    orderby = 'is-desc';
+                };
+
+
+                // 選取年份
+                var selectedYear = parseInt($("#dividendyear").val());
+                var filteredData = data.filter(function (item) {
+                    return new Date(item.DepositDay).getFullYear() == selectedYear;
+                });
+
+
+                // html
+                var length = Math.min(filteredData.length, 12);
+                var count = 1;
+                var percolumn = 6;
+
+                var DividendHtml = '';
+
+                for (var i = 0; i < length; i++) {
+
+                    var tbodyHtml = '';
+
+                    // thead、tbody開頭
+                    if (count % percolumn == 1) {
+                        DividendHtml += '<div class="l-flex__item">';
+                        DividendHtml += '<div class="l-table">';
+                        DividendHtml += '<table class="c-table u-center" data-table-name="dividendTable">';
+                        DividendHtml += '<colgroup>';
+                        DividendHtml += '<col style="width: 33.3%;">';
+                        DividendHtml += '<col style="width: 33.3%;">';
+                        DividendHtml += '<col style="width: 33.3%;">';
+                        DividendHtml += '</colgroup>';
+
+                        var theadClass = ((count + percolumn - 1) % (percolumn * 2) == 0) ? ' class="u-hidden@lt"' : '';
+
+                        //sort
+                        var htr = $('#dividend-theadtr').html().replace(/%Sort%/gi, orderby);
+
+                        var theadHtml = '<thead' + theadClass + '>' + htr + '</thead>';
+                        DividendHtml += theadHtml;
+
+                        tbodyHtml += '<tbody>';
+                    }
+
+                    // tbody內容
+                    var tr = $('#dividend-tbodytr').html();
+
+                    tr = tr.replace(/%DepositDay%/gi, filteredData[i].DepositDay);
+                    tr = tr.replace(/%CurrencyName%/gi, filteredData[i].CurrencyName);
+                    tr = tr.replace(/%DividendValue%/gi, filteredData[i].DividendValue);
+
+                    tbodyHtml += tr;
+
+                    // tbody end
+                    if (count % percolumn == 0) {
+                        tbodyHtml += '</tbody></table></div></div>';
+                    }
+
+                    DividendHtml += tbodyHtml;
+
+                    count++;
+                }
+
+                $('#dividendtable').html(DividendHtml);
+            };
+
+            // 配息排序(幣別)
+            function SortingDividend(data, orderby) {
+
+                var sorteddata = data.sort(function (a, b) {
+                    if (orderby === 'is-desc') {
+                        return a.currencyorder - b.currencyorder;
+                    } else if (orderby === 'is-asc') {
+                        return b.currencyorder - a.currencyorder;
+                    }
+                });
+
+                return sorteddata;
+            };
+
+            // table 排序功能
+            $('body').on('click', '[data-tab-panel-id="tab-2"] .o-sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                window.loading('show');
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                var tableName = $(this).closest('[data-table-name]').data('table-name');
+                var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+                var sortingColumn = $(this).data('sorting-column');
+                $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+                $sortingbox.trigger('change');
+
+
+                window.loading('hide');
+            });
+
+
+            // 參考贖回價 近30日
+            function RenderThirtyDaySellPrice() {
+                let ThirtyDayHtml = '';
+
+                var thirtyDayBankSellPriceWithChange = ThirtyDayBankSellPriceWithChange;
+                var data = thirtyDayBankSellPriceWithChange.map(function (item) {
+                    return {
+                        "date": item.PriceBaseDate,
+                        "value": item.BankSellPriceValue,
+                        "diff": item.BankSellPriceChange
+                    };
+                });
+
+                var length = Math.min(data.length, 30);
+                var count = 1;
+                var percolumn = 5;
+
+                for (var i = 0; i < length; i++) {
+
+                    // slide框
+                    if (count % (percolumn * 2) == 1) {
+                        ThirtyDayHtml += '<div class="swiper-slide c-swiper__slide">';
+                        ThirtyDayHtml += '<div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>';
+                    }
+
+                    var tbodyHtml = '';
+
+                    // thead、tbody開頭
+                    if (count % percolumn == 1) {
+                        ThirtyDayHtml += '<div class="l-flex__item">';
+                        ThirtyDayHtml += '<div class="l-table">';
+                        ThirtyDayHtml += '<table class="c-table u-center">';
+                        ThirtyDayHtml += '<colgroup>';
+                        ThirtyDayHtml += '<col style="width: 33.3%;">';
+                        ThirtyDayHtml += '<col style="width: 33.3%;">';
+                        ThirtyDayHtml += '<col style="width: 33.3%;">';
+                        ThirtyDayHtml += '</colgroup>';
+
+                        var theadClass = ((count + percolumn - 1) % (percolumn * 2) == 0) ? ' class="u-hidden@lt"' : '';
+                        var theadHtml = '<thead' + theadClass + '>' + $('#thirty-theadtr').html() + '</thead>';
+                        ThirtyDayHtml += theadHtml;
+
+                        tbodyHtml += '<tbody>';
+                    }
+
+                    // tbody內容
+                    var tr = $('#thirty-tbodytr').html();
+
+                    tr = tr.replace(/%Date%/gi, data[i].date);
+                    tr = tr.replace(/%Price%/gi, data[i].value);
+
+                    var diffClass = data[i].diff > 0 ? 'o-rise' : 'o-fall';
+                    tr = tr.replace(/%Diff%/gi, "<span class='" + diffClass + "'>" + data[i].diff + "</span>");
+
+                    tbodyHtml += tr;
+
+                    // tbody end
+                    if (count % percolumn == 0) {
+                        tbodyHtml += '</tbody></table></div></div>';
+                    }
+                    ThirtyDayHtml += tbodyHtml;
+
+                    if (count % (percolumn * 2) == 0) {
+                        ThirtyDayHtml += '</div></div>';
+                    }
+
+                    count++;
+                }
+
+                $('#thirtydaytable').html(ThirtyDayHtml);
+            };
+
+            // 參考贖回價 走勢圖
+            getParams();
+            $('[data-trend-filter="dateRange"]').on('change', function () {
+                /*$('[data-trend-filter="inputStart"], [data-trend-filter="inputEnd"]').val('');*/
+                $('[data-chart="trend"] .l-form').removeClass('is-error');
+                getParams();
+            });
+            $('[data-trend-filter="submit"]').on('click', function (e) {
+                if (required($('[data-trend-filter="inputStart"]')) && required($('[data-trend-filter="inputEnd"]')) && dateRange()) {
+                    $('[data-trend-filter="dateRange"]').prop('checked', false);
+                    getParams();
+                }
+            });
+
+            function required($element) {
+                const requiredMsg = '欄位必填';
+                let $parents = $element.closest('.l-form');
+                let $msg = $parents.find('.o-errorText');
+                let isEmpty = $element.val().trim() == '';
+                $parents.toggleClass('is-error', isEmpty);
+                $msg.text(isEmpty ? requiredMsg : '');
+                return !isEmpty;
+            };
+
+            function dateRange() {
+                const dateRangeMsg = '起訖日期區間錯誤';
+                let $inputStart = $('[data-trend-filter="inputStart"]');
+                let $inputEnd = $('[data-trend-filter="inputEnd"]');
+                let startDate = new Date($inputStart.val());
+                let endDate = new Date($inputEnd.val());
+                let $startParents = $inputStart.closest('.l-form');
+                let $endParents = $inputEnd.closest('.l-form');
+                if (endDate < startDate) {
+                    $startParents.addClass('is-error');
+                    $endParents.addClass('is-error');
+                    $startParents.find('.o-errorText').text(dateRangeMsg);
+                    return false;
+                } else {
+                    $startParents.removeClass('is-error');
+                    $endParents.removeClass('is-error');
+                    $startParents.find('.o-errorText').text('');
+                    return true;
+                }
+            };
+
+            function getParams() {
+                let text = '參考贖回價';
+                const obj = {
+                    currency: 'ori',
+                    netWorth: false,
+                    range: $('[data-trend-filter="dateRange"]:checked').val(),
+                    startDate: $('[data-trend-filter="inputStart"]').val() ? new Date($('[data-trend-filter="inputStart"]').val()) : null,
+                    endDate: $('[data-trend-filter="inputEnd"]').val() ? new Date($('[data-trend-filter="inputEnd"]').val()) : null
+                };
+                obj.range = $('[data-trend-filter="dateRange"]:checked').val();
+
+
+                if (!obj.startDate && !obj.endDate) {
+                    function calculateDateRange(range) {
+                        const today = new Date();
+                        let startDate, endDate;
+
+                        switch (range) {
+                            case '1m':
+                                startDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+                                endDate = today;
+                                break;
+                            case '3m':
+                                startDate = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+                                endDate = today;
+                                break;
+                            case '6m':
+                                startDate = new Date(today.getFullYear(), today.getMonth() - 6, today.getDate());
+                                endDate = today;
+                                break;
+                            case '12m':
+                                startDate = new Date(today.getFullYear(), today.getMonth() - 12, today.getDate());
+                                endDate = today;
+                                break;
+                            case '24m':
+                                startDate = new Date(today.getFullYear(), today.getMonth() - 24, today.getDate());
+                                endDate = today;
+                                break;
+                            case '36m':
+                                startDate = new Date(today.getFullYear(), today.getMonth() - 36, today.getDate());
+                                endDate = today;
+                                break;
+                            case '60m':
+                                startDate = new Date(today.getFullYear(), today.getMonth() - 60, today.getDate());
+                                endDate = today;
+                                break;
+                        }
+
+                        return { startDate: startDate, endDate: endDate };
+                    };
+
+                    obj.startDate = calculateDateRange(obj.range).startDate;
+                    obj.endDate = calculateDateRange(obj.range).endDate;
+                }
+
+
+                initTrendChart(obj, text);
+            };
+
+            async function initTrendChart(obj, text) {
+                try {
+                    const params = {
+                        obj
+                    };
+
+                    var historyBankSellPrice = HistoryBankSellPrice;
+                    var _data = {
+                        "updateDate": historyBankSellPrice.UpdateDate,
+                        "navs": historyBankSellPrice.BankSellPrice.map(function (item) {
+                            return {
+                                "date": item.PriceBaseDate,
+                                "value": parseFloat(item.BankSellPriceValue)
+                            };
+                        })
+                    };
+
+                    // 日期排序
+                    _data.navs.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                    // 根據日期區間filter data
+                    const filteredData = _data.navs.filter(nav => {
+                        const navDate = new Date(nav.date);
+                        return navDate >= obj.startDate && navDate <= obj.endDate;
+                    });
+
+                    _data.navs = filteredData;
+                    var data = _data;
+
+
+                    if (Object.keys(data).length != 0) {
+                        const mapData = data.navs.map(item => {
+                            return {
+                                x: new Date(item.date).getTime(),
+                                name: item.date,
+                                y: item.value
+                            };
+                        });
+                        const updateDate = data.updateDate.replaceAll('-', '/');
+                        // 資料日期
+                        $('[data-update-date="trend"]').text(updateDate);
+                        let series = {
+                            name: text,
+                            data: mapData,
+                            legendSymbol: 'rectangle',
+                            color: obj.netWorth ? '#A4844E' : '#238C6C'
+                        };
+                        Highcharts.stockChart('trendChart',
+                            {
+                                chart: {
+                                    zooming: {
+                                        mouseWheel: {
+                                            enabled: false
+                                        }
+                                    },
+                                    height: 280
+                                },
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                scrollbar: {
+                                    enabled: false
+                                },
+                                navigator: {
+                                    enabled: false
+                                },
+                                rangeSelector: {
+                                    enabled: false
+                                },
+                                legend: {
+                                    enabled: true,
+                                    align: 'left',
+                                    floating: false,
+                                    y: 20,
+                                    itemStyle: {
+                                        fontSize: '1em',
+                                        color: '#222',
+                                        cursor: 'default'
+                                    },
+                                    itemHoverStyle: {
+                                        color: '#222'
+                                    },
+                                    symbolHeight: 12,
+                                    symbolWidth: 12
+                                },
+                                plotOptions: {
+                                    series: {
+                                        dataGrouping: {
+                                            enabled: false
+                                        },
+                                        states: {
+                                            hover: {
+                                                enabled: true,
+                                                lineWidth: 2,
+                                                halo: {
+                                                    size: 8
+                                                }
+                                            }
+                                        },
+                                        events: {
+                                            legendItemClick: function () {
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    split: false,
+                                    useHTML: true,
+                                    formatter: function () {
+                                        const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '</div>';
+                                        return tooltip;
+                                    },
+                                    shadow: {
+                                        color: 'rgba(0, 0, 0, 0.1)'
+                                    }
+                                },
+                                xAxis: {
+                                    type: 'datetime',
+                                    tickPosition: 'inside',
+                                    tickWidth: 0.5,
+                                    tickLength: 7,
+                                    labels: {
+                                        formatter: function () {
+                                            const format = {
+                                                day: '%Y/%m',
+                                                week: '%Y/%m',
+                                                month: '%Y/%m'
+                                            }[this.tickPositionInfo.unitName];
+                                            return Highcharts.dateFormat(format, this.value);
+                                        },
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    },
+                                    crosshair: {
+                                        width: 1,
+                                        color: '#c3c3c3'
+                                    },
+                                    lineColor: '#ebebeb',
+                                    tickColor: '#ebebeb'
+                                },
+                                yAxis: {
+                                    showLastLabel: true,
+                                    opposite: false,
+                                    labels: {
+                                        y: 4,
+                                        formatter: function (value) {
+                                            return value.value;
+                                        },
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    },
+                                    plotLines: [{
+                                        color: '#c3c3c3'
+                                    }]
+                                },
+                                series: [series]
+                            });
+                        $('[data-chart="trend"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                    } else {
+                        $('[data-chart="trend"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            };
+
+
+            // 手機版分頁筆數功能
+            $('[data-sortingbox="true"]').on('change.sorting',
+                function (e) {
+                    // 呼叫 loading
+                    window.loading('show');
+                    var sorting = $(this).val();
+                    var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+                    var sortingColumn = $('option:selected', this).data('sorting-column');
+                    var orderby = $('option:selected', this).data('sorting-class');
+
+                    // 連動 table
+                    $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                    $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+
+
+                    DividendData = SortingDividend(DividendData, orderby);
+                    RenderDividendList();
+
+                    window.loading('hide');
+                });
+
+        });
+
+    })(jQuery, window, document);
+</script>
+
+<script type="text/template" id="page-header-template">
+    <div class="l-pageHeader__title">
+        <div class="c-pageHeader">
+            <div class="c-pageHeader__main">
+                <h1 class="c-pageHeader__title">%Title%</h1>
+            </div>
+            <div class="c-pageHeader__views">
+                <div class="o-views o-views--bk">%Views%</div>
+            </div>
+        </div>
+    </div>
+    <div class="l-pageHeader__content">
+        <div class="l-pageHeader__info">
+            <div class="l-detailInfo">
+                <div class="l-detailInfo__major">
+                    <div class="l-detailInfo__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title u-left@dt-only"><span>參考贖回價</span></div>
+                            <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>%BankSellPrice%</span><span class="t-unit">%CurrencyName%</span></div>
+                        </div>
+                    </div>
+                    <div class="l-detailInfo__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title u-left@dt-only"><span>價格日期</span></div>
+                            <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>%PriceBaseDate%</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-detailInfo__lower">
+                    <div class="l-detailInfo__item">
+                        <div class="c-numerical c-numerical--horiz@lt">
+                            <div class="c-numerical__title u-left@dt-only"><span>到期日</span></div>
+                            <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only"><span>%ProductMaturityDate%</span></div>
+                        </div>
+                    </div>
+                    <div class="l-detailInfo__item">
+                        <div class="c-numerical c-numerical--horiz@lt">
+                            <div class="c-numerical__title u-left@dt-only"><span>發行機構</span></div>
+                            <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only"><span>%IssuingInstitution%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="thirty-tbodytr">
+    <tr>
+        <td>
+            %Date%
+        </td>
+        <td>
+            %Price%
+        </td>
+        <td>
+            %Diff%
+        </td>
+    </tr>
+</script>
+
+<script type="text/template" id="thirty-theadtr">
+    <tr>
+        <th>
+            <div class="c-table__title">
+                <span>日期</span>
+            </div>
+        </th>
+        <th>
+            <div class="c-table__title">
+                <span>參考贖回價</span>
+            </div>
+        </th>
+        <th>
+            <div class="c-table__title">
+                <span>漲跌</span>
+            </div>
+        </th>
+    </tr>
+</script>
+
+<script type="text/template" id="dividend-theadtr">
+    <tr>
+        <th>
+            <div class="c-table__title">
+                <span>撥款日</span>
+            </div>
+        </th>
+        <th>
+            <div class="c-table__title">
+                <span>幣別</span>
+                <a href="#" class="o-sorting %Sort%" data-sorting-column="currency"></a>
+            </div>
+        </th>
+        <th>
+            <div class="c-table__title">
+                <span>配息率</span>
+            </div>
+        </th>
+    </tr>
+</script>
+
+<script type="text/template" id="dividend-tbodytr">
+    <tr>
+        <td>
+            %DepositDay%
+        </td>
+        <td>
+            %CurrencyName%
+        </td>
+        <td>
+            %DividendValue%
+        </td>
+    </tr>
+</script>
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__content">
+            <div class="l-pageHeader" id="pageHeader"></div>
+        </div>
+    </div>
+</div>
+
+<div class="l-wrap">
+    <div class="c-tab c-tab--wide" data-tab="true">
+        <div class="c-tab__header">
+            <ul class="c-tab__navs">
+                <!-- .is-active: 作用中的項目 -->
+                <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                <li>
+                    <a href="#" class="c-tab__item is-active" target="_self" title="參考贖回價" data-tab-target="tab-1">參考贖回價</a>
+                </li>
+                <li>
+                    <a href="#" class="c-tab__item " target="_self" title="配息" data-tab-target="tab-2">配息</a>
+                </li>
+            </ul>
+            <div class="c-tab__collapse">
+                <a href="#" class="c-tab__switch"></a>
+                <div class="c-tab__dropdown">
+                    <a href="#" class="c-tab__clone is-active" target="_self" title="參考贖回價" data-tab-target="tab-1">參考贖回價</a><a href="#" class="c-tab__clone " target="_self" title="配息" data-tab-target="tab-2">配息</a>
+                </div>
+            </div>
+        </div>
+        <!-- is-active: 作用中的項目 -->
+        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+            <section class="c-section">
+                <div class="c-section__content">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        <div class="l-flex__item" data-chart="trend">
+                            <div class="c-empty">
+                                <div class="c-empty__img">
+                                    <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                                </div>
+                                <div class="c-empty__desc">沒有資料</div>
+                            </div>
+                            <div class="c-chartBox">
+                                <div class="c-chartBox__filter">
+                                    <div class="l-flex u-flex-gap-md u-flex-top u-flex-col@lt">
+                                        <div class="l-flex__item">
+                                            <div class="l-pickGroup">
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="1m" data-trend-filter="dateRange" checked>
+                                                        <div class="o-btnRadio__text">
+                                                            <span>1個月</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="3m" data-trend-filter="dateRange">
+                                                        <div class="o-btnRadio__text">
+                                                            <span>3個月</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="6m" data-trend-filter="dateRange">
+                                                        <div class="o-btnRadio__text">
+                                                            <span>6個月</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="12m" data-trend-filter="dateRange">
+                                                        <div class="o-btnRadio__text">
+                                                            <span>1年</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="24m" data-trend-filter="dateRange">
+                                                        <div class="o-btnRadio__text">
+                                                            <span>2年</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="36m" data-trend-filter="dateRange">
+                                                        <div class="o-btnRadio__text">
+                                                            <span>3年</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="60m" data-trend-filter="dateRange">
+                                                        <div class="o-btnRadio__text">
+                                                            <span>5年</span>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="l-flex__item">
+                                            <div class="l-flex u-flex-gap-min u-flex-top u-flex-left u-flex-right@dt-only">
+                                                <div class="l-flex__item l-flex__item--auto">
+                                                    <div class="l-form">
+                                                        <div class="l-form__item">
+                                                            <div class="o-calendarBox o-calendarBox--filter">
+                                                                <!-- data-date-start-date: 請填寫基金成立日期 -->
+                                                                <input type="text" class="o-calendarBox__input" data-trend-filter="inputStart" data-calendar="true" data-date-start-date="2024/01/01" data-date-end-date="0d" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="l-form__error">
+                                                            <span class="o-errorText"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="l-flex__item l-flex__item--auto">-</div>
+                                                <div class="l-flex__item l-flex__item--auto">
+                                                    <div class="l-form">
+                                                        <div class="l-form__item">
+                                                            <div class="o-calendarBox o-calendarBox--filter">
+                                                                <!-- data-date-start-date: 請填寫基金成立日期 -->
+                                                                <input type="text" class="o-calendarBox__input" data-trend-filter="inputEnd" data-calendar="true" data-date-start-date="2024/01/01" data-date-end-date="0d" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="l-form__error">
+                                                            <span class="o-errorText"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="l-flex__item l-flex__item--auto">
+                                                    <button type="submit" class="o-searchBtn" data-trend-filter="submit"></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="c-chartBox__chart">
+                                    <div id="trendChart"></div>
+                                </div>
+                            </div>
+                            <div class="l-dataNotes">
+                                <span class="t-date">資料日期：</span><span class="t-date" data-update-date="trend">2023/09/13</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="c-section">
+                <div class="c-section__title">近30日參考贖回價</div>
+                <div class="c-section__content">
+                    <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{"spaceBetween":20, "autoplay": false, "navigation":{ "enabled":true }, "breakpoints": {"1200": { "navigation":{ "enabled":false }}}}'>
+                        <div class="swiper-wrapper c-swiper__wrapper" id="thirtydaytable"></div>
+                        <div class="swiper-button-next c-swiper__next"></div>
+                        <div class="swiper-button-prev c-swiper__prev"></div>
+                        <div class="swiper-pagination c-swiper__pagination"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-2">
+            <section class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="l-selectbox">
+                        <div class="l-selectbox__item">
+                            <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" id="dividendyear"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item u-right u-hidden@dt-only">
+                    <div class="o-sortingbox">
+                        <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                        <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="dividendTable">
+                            <option value="">排序</option>
+                            <option value="幣別高至低" data-sorting-column="currency" data-sorting-class="is-desc">幣別高至低</option>
+                            <option value="幣別低至高" data-sorting-column="currency" data-sorting-class="is-asc">幣別低至高</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <!-- 左右表格 -->
+                    <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table id="dividendtable"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="c-hashTags">
+        <div class="c-hashTags__title">Tags</div>
+        <div class="c-hashTags__content">
+            <ul class="l-divideList l-divideList--sm">
+                @foreach (string topic in Model.StructuredProduct.TopicTags)
+                {
+                    <li class="l-divideList__item l-divideList__item--auto">
+                        <a href="#" class="o-hashTag u-nowrap">#@topic</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
