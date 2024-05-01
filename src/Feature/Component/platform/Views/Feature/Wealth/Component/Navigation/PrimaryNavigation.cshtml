@@ -66,19 +66,21 @@
                                                 </menu>
                                                 @{
                                                     var item = pageLinkLv.Item;
-                                                    string image = item.ImageUrl(Templates.ImageNavigationLink.Fields.Image);
-                                                    if (!string.IsNullOrEmpty(image)|| !item.IsChecked(Templates.Navigable.Fields.ShowNavigation))
+                                                    if (item.IsChecked(Templates.Navigable.Fields.ShowNavigation))
                                                     {
                                                         <div class="c-menu__banner">
                                                             <article class="c-banner c-banner--menu">
-                                                                <img src="@image" class="c-banner__img" alt="">
+                                                                @Html.Sitecore().Field(Templates.ImageNavigationLink.Fields.Image, item, new { @class = "c-banner__img", disableWebEditing = true })
                                                                 <div class="c-banner__content">
                                                                     <h3 class="c-banner__title">@item.Field(Templates.ImageNavigationLink.Fields.Title)</h3>
                                                                     <p class="c-banner__slogan">@item.Field(Templates.ImageNavigationLink.Fields.Slogan)</p>
                                                                     <div class="c-banner__actions">
                                                                         @{
                                                                             var link = item.GeneralLink(Templates.ImageNavigationLink.Fields.ButtonLink);
-                                                                            <a href="@(link?.Url)" target="@(link?.Target)" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@item.Field(Templates.ImageNavigationLink.Fields.ButtonText)</a>
+                                                                            if (link != null && !string.IsNullOrEmpty(link.Url))
+                                                                            {
+                                                                                <a href="@(link?.Url)" target="@(link?.Target)" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@item.Field(Templates.ImageNavigationLink.Fields.ButtonText)</a>
+                                                                            }
                                                                         }
                                                                     </div>
                                                                 </div>
