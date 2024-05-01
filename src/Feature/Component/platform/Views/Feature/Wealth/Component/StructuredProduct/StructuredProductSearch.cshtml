@@ -2,10 +2,6 @@
 @using Foundation.Wealth.Helper
 @model Feature.Wealth.Component.Models.StructuredProduct.StructuredProductSearchViewModel
 
-@{
-    var getAllProductsUrl = ClientRoute.GenerateUrl(this, "StructuredProduct", "GetAllStructuredProducts");
-}
-
 <div class="l-mainstage">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
@@ -230,7 +226,7 @@
                     <div class="l-flex__item u-right u-hidden@dt-only">
                         <div class="o-sortingbox">
                             <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
-                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="searchTable">
+                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="searchTable" id="uid-sortbox">
                                 <option value="">排序</option>
                                 <option value="股票名稱高至低" data-sorting-column="stockName" data-sorting-class="is-desc">股票名稱高至低</option>
                                 <option value="股票名稱低至高" data-sorting-column="stockName" data-sorting-class="is-asc">股票名稱低至高</option>
@@ -251,7 +247,7 @@
             </div>
             <div class="l-flex__item">
                 <div class="l-table">
-                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="searchTable">
+                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="searchTable" id="table">
                         <colgroup>
                             <col style="width: auto;">
                             <col style="width: 1%;">
@@ -267,45 +263,44 @@
                                         <span>商品名稱</span>
                                         <!-- .is-asc: 升冪 -->
                                         <!-- .is-desc: 降冪 -->
-                                        <a href="#" class="o-sorting" data-sorting-column="stockName" id="uid-sort-name"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="stockName"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>發行機構</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="agency" id="uid-sort-issuingInstitution"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="agency"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>幣別</span>
                                         <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                        <a href="#" class="o-sorting" data-sorting-column="currency" id="uid-sort-currencyCode"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="currency"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>到期日</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="expire" id="uid-sort-productMaturityDate"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="expire"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>參考贖回價</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="redemption" id="uid-sort-bankSellPrice"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="redemption"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>價格日期</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="price" id="uid-sort-priceBaseDate"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="price"></a>
                                     </div>
                                 </th>
                             </tr>
                         </thead>
-                        <tbody id="uid-fjs">
-                            
-                        </tbody>
+                        <tbody id="uid-fjs"></tbody>
+
                     </table>
                     @{
                         Html.RenderPartial("~/Views/Feature/Wealth/Component/Partial/_Pagination.cshtml");
@@ -324,9 +319,6 @@
     </div>
 </template>
 
-<script src="~/themes/js/filter.min.js"></script>
-
-
 <script id="uid-template" type="text/html">
     <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
         <td class="c-cardTable__top"></td>
@@ -340,9 +332,7 @@
         <td class="c-cardTable__space"></td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">發行機構</div>
-            <div class="c-cardTable__content">
-                <%= IssuingInstitution %>
-            </div>
+            <div class="c-cardTable__content"><%= IssuingInstitution %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">
@@ -350,221 +340,38 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
-                <a href="#" class="o-link">
-                    <%= CurrencyName %>
-                </a>
+                <a href="#" class="o-link"><%= CurrencyName %></a>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">到期日</div>
-            <div class="c-cardTable__content">
-                 <%= ProductMaturityDate %>
-            </div>
+            <div class="c-cardTable__content"><%= ProductMaturityDate %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-            <div class="c-cardTable__content">
-                 <%= BankSellPrice %>
-            </div>
+            <div class="c-cardTable__content"><%= BankSellPrice %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">價格日期</div>
-            <div class="c-cardTable__content">
-                <%= PriceBaseDate %>
-            </div>
+            <div class="c-cardTable__content"><%= PriceBaseDate %></div>
         </td>
         <td class="c-cardTable__space"></td>
     </tr>
 </script>
 
-
 <script>
     (function ($, window, document, undefined) {
-        document.addEventListener('DOMContentLoaded', function () {
-            if (!jQuery) {
-                return;
-            }
+        function loading() {
+            // 開啟loading方式:
+            window.loading('show');
+            setTimeout(() => {
+                // 載入完成需將loading關閉
+                // 關閉loading方式:
+                window.loading('hide');
+            }, 300);
+        }
 
-            let modelData = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
-
-            // 詳細頁頁面節點Url
-            let DetailPageItemUrl = JSON.parse(JSON.stringify(modelData.DetailPageItemUrl));
-
-            // 資料源Id
-            let datasourceId = JSON.parse(JSON.stringify(modelData.DatasourceId));
-
-            // 商品列表
-            $.ajax({
-                url: '@getAllProductsUrl',
-                type: 'POST',
-                data: { datasourceIdStr : datasourceId },
-                success: function (data) {
-                    console.log(data);
-
-                    $.each(data, function (index, item) {
-                        // 新增 ProductDisplayName 欄位
-                        item.ProductDisplayName = item.ProductCode + " " + item.ProductName;
-
-                        // 新增 ProductDetailUrl 欄位
-                        item.ProductDetailUrl = DetailPageItemUrl + "?id=" + item.ProductCode;
-                    });
-
-
-                    var template = document.getElementById('uid-template').innerHTML;
-                    var container = document.getElementById('uid-fjs');
-
-                    for (var i = 0; i < data.length; i++) {
-
-                        var filledTemplate = template
-                            .replace(/<%= ProductDisplayName %>/g, data[i].ProductDisplayName)
-                            .replace(/<%= ProductDetailUrl %>/g, data[i].ProductDetailUrl)
-                            .replace(/<%= IssuingInstitution %>/g, data[i].IssuingInstitution)
-                            .replace(/<%= CurrencyName %>/g, data[i].CurrencyName)
-                            .replace(/<%= ProductMaturityDate %>/g, data[i].ProductMaturityDate)
-                            .replace(/<%= BankSellPrice %>/g, data[i].BankSellPrice)
-                            .replace(/<%= PriceBaseDate %>/g, data[i].PriceBaseDate);
-
-                        container.innerHTML += filledTemplate;
-                    }
-
-
-
-                    var fjs = FilterJS(data, '#uid-fjs', {
-                        template: '#uid-template',
-                        callbacks: {
-                            afterFilter: function(result){
-                                window.loading('hide');
-                                $('[id="uid-total"]').text(result.length);
-                            }
-                        },
-                        search: { ele: '#uid-searchbox' },
-                        order: {
-                            onSortEvent: function (f) {
-                            },
-                            default_sort: 'asc',
-                            sorts: [{ field: 'ProductDisplayName', ele: '#uid-sort-name', toggle: true },
-                            { field: 'ProductDetailUrl'},
-                            { field: 'IssuingInstitution', ele: '#uid-sort-issuingInstitution', toggle: true },
-                            { field: 'CurrencyCode', ele: '#uid-sort-currencyCode', toggle: true },
-                            { field: 'ProductMaturityDate', ele: '#uid-sort-productMaturityDate', toggle: true },
-                            { field: 'BankSellPrice', ele: '#uid-sort-bankSellPrice', toggle: true },
-                            { field: 'PriceBaseDate', ele: '#uid-sort-priceBaseDate', toggle: true }
-                            ]
-                        },
-                        pagination: {
-                            //headerView: '#uid-filter-header',
-                            container: '#uid-pagination',
-                            paginationView: '#uid-template-pagination',
-                            visiblePages: 5,
-                            perPage: {
-                                values: [10, 50, 100, data.length],
-                                container: '#uid-perPage',
-                                perPageView: '#uid-template-perPage'
-                            }
-                        }
-                    });
-
-                    // 加入篩選
-                    fjs.addCriteria({ field: 'ProductIdentifierName', ele: '#ProductIdentifierName input:checkbox'});
-                    fjs.addCriteria({ field: 'KeywordTags', ele: '#KeywordTags input:checkbox' });
-                    fjs.addCriteria({ field: 'TopicTags', ele: '#TopicTags input:checkbox' });
-
-
-                     //fjs.forceBindEvent('#uid-btn-search', 'click');
-
-
-                }
-            });
-
-
-            /* StructuredProducts 商品列表 資料欄位對應
-
-                篩選-熱門商品
-                "ProductIdentifierName": "境外",
-
-                篩選-熱門關鍵字
-                "KeywordTags": [
-                    "智能AI"
-                ],
-
-                篩選-熱門主題
-                "TopicTags": [
-                    "法興銀行",
-                    "主題4"
-                ],
-
-                欄位-商品名稱 (顯示: ProductCode+" "+ProductName)
-                "ProductName": "法巴銀行５年期數位型保本結構型商品",
-                "ProductCode": "PO29",
-
-                欄位-發行機構
-                "IssuingInstitution": "ＢＮＰ  Ｐａｒｉｂａｓ  Ｉｓｓｕａｎｃｅ",
-
-                欄位-幣別 (排序: CurrencyCode、顯示: CurrencyName)
-                "CurrencyCode": "01",
-                "CurrencyName": "美金",
-
-                欄位-到期日
-                "ProductMaturityDate": "2029/03/15",
-
-                欄位-參考贖回價
-                "BankSellPrice": "0.6182",
-
-                欄位-價格日期
-                "PriceBaseDate": "2024/04/02"
-            */
-
-
-
-
-
-            const keywordSearchSampleDate = [{
-                value: '統一黑馬基金',
-                data: {
-                    type: '基金',
-                    isLogin: JSON.parse('true'),
-                    isLike: JSON.parse('true'),
-                    detailUrl: './../fund/detail.html',
-                    purchase: true
-                }
-            }, {
-                value: 'GLOBAL X機器人與人工智慧ETF',
-                data: {
-                    type: 'ETF',
-                    isLogin: JSON.parse('true'),
-                    isLike: false,
-                    detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=$etfweb$html$et011001.djhtm?xyz=1704969638740?|&openexternalbrowser=1&ETFID=BOT^~EF40',
-                    purchase: true
-                }
-            }, {
-                value: 'Alcoa美國鋁業公司',
-                data: {
-                    type: '國外股票',
-                    isLogin: JSON.parse('true'),
-                    isLike: false,
-                    detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=https:$$wms.firstbank.com.tw$b2brwd$page$16005$basic$0001?sym=aa&symidxq=aa.us&symidbsr=aa.us&stsst=16005&bid=eg49&openExternalBrowser=1',
-                    purchase: true
-                }
-            }, {
-                value: '澳盛銀行集團可買回人民幣配息債券',
-                data: {
-                    type: '國外債券',
-                    isLogin: JSON.parse('true'),
-                    isLike: false,
-                    purchase: true
-                }
-            }, {
-                value: '摩根士丹利12個月DRA不保本結構型商品',
-                data: {
-                    type: '結構型商品',
-                    isLogin: JSON.parse('true'),
-                    isLike: null,
-                    detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=$w$custom$structproductlist.djhtm?openExternalBrowser=1',
-                    purchase: false
-                }
-            }];
-
-
+        function initAutocomplete(data) {
             // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
             $('#keyword').autocomplete({
                 noCache: true,
@@ -576,15 +383,15 @@
                 showNoSuggestionNotice: true,
                 noSuggestionNotice: $('#tmplKeywordNotFound').html(),
                 lookup: function (query, done) {
-                    // Do Ajax call or lookup locally, when done,
-                    // call the callback and pass your results:
                     query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-                    let result = keywordSearchSampleDate.filter(function (item) {
-                        return query.length == 0 || new RegExp(query, 'gi').test(item.value);
-                    });
-                    done({
-                        suggestions: result
-                    });
+                    if (query.length == 0) {
+                        result = data.slice(0, 5);
+                    } else {
+                        result = data.filter(function (item) {
+                            return new RegExp(query, 'gi').test(item.value);
+                        });
+                    }
+                    done({ suggestions: result.slice(0, 5) });
                 },
                 onSearchComplete: function (query, suggestions) {
                     var autocomplete = $(this).autocomplete();
@@ -617,63 +424,154 @@
                 },
                 formatResult: function (suggestion, currentValue) {
                     let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
-                    let className = suggestion.data.isLike ? 'is-active' : '';
-
-                    // like 按鈕
-                    let likeWord = suggestion.data.isNews ? '加入收藏|取消收藏' : '加入關注|取消關注';
-                    let $like = suggestion.data.isLike != null ? suggestion.data.isLogin == true ?
-                        // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
-                        `<a href="#" class="o-statusBtn o-statusBtn--like ${className}" data-msg="${likeWord}" data-ia="true"></a>` :
-                        // <!-- [data-popup]: 未登入開啟登入彈跳視窗 -->
-                        `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
-
                     // 申購按鈕
-                    let $purchase = suggestion.data.purchase ? suggestion.data.isLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
                     return `<div class="c-itemKeyword">
-                                <a href="${detailUrl}" class="c-itemKeyword__content">
-
-                                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                </a>
-                                <div class="c-itemKeyword__collections">${$like}</div>
-                                ${$purchase}
-                            </div>`;
+                            <a href="${detailUrl}" class="c-itemKeyword__content">
+                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                            </a>
+                        </div>`;
                 }
             });
 
+        }
 
-
-            // ------------- 示意資料載入出現loading畫面，請更換成正確程式碼 -------------
-            function loading() {
-                // 開啟loading方式:
-                window.loading('show');
-                setTimeout(() => {
-                    // 載入完成需將loading關閉
-                    // 關閉loading方式:
-                    window.loading('hide');
-                }, 300);
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
             }
 
-            // 僅示意用
-            $('.l-mainstage input:not([data-keyword-input])').on('change.loading', function () {
-                loading();
+            let modelData = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
+
+            // 詳細頁頁面節點Url
+            let DetailPageItemUrl = JSON.parse(JSON.stringify(modelData.DetailPageItemUrl));
+
+            // 資料源Id
+            let datasourceId = JSON.parse(JSON.stringify(modelData.DatasourceId));
+
+            // 商品列表
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "StructuredProduct", "GetStructuredProducts")',
+                type: 'POST',
+                data: { datasourceIdStr: datasourceId },
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        // 新增 ProductDisplayName 欄位
+                        item.ProductDisplayName = item.ProductCode + " " + item.ProductName;
+
+                        // 新增 ProductDetailUrl 欄位
+                        item.ProductDetailUrl = DetailPageItemUrl + "?id=" + item.ProductCode;
+                    });
+
+                    var template = document.getElementById('uid-template').innerHTML;
+                    var container = document.getElementById('uid-fjs');
+
+                    for (var i = 0; i < data.length; i++) {
+                        var filledTemplate = template.replace(/<%= ProductDisplayName %>/g, data[i].ProductDisplayName).replace(/<%= ProductDetailUrl %>/g, data[i].ProductDetailUrl).replace(/<%= IssuingInstitution %>/g, data[i].IssuingInstitution).replace(/<%= CurrencyName %>/g, data[i].CurrencyName).replace(/<%= ProductMaturityDate %>/g, data[i].ProductMaturityDate).replace(/<%= BankSellPrice %>/g, data[i].BankSellPrice).replace(/<%= PriceBaseDate %>/g, data[i].PriceBaseDate);
+
+                        container.innerHTML += filledTemplate;
+                    }
+
+                    initFilter(data);
+                    initAutocomplete(data);
+                }
             });
+
+            function initFilter(data) {
+                let fjs = FilterJS(data, '#uid-fjs', {
+                    template: '#uid-template',
+                    criterias: [
+                        { field: 'KeywordTags', ele: '#KeywordTags input:checkbox' }, { field: 'TopicTags', ele: '#TopicTags input:checkbox' },
+                        { field: 'ProductIdentifierName', ele: '#ProductIdentifierName input:checkbox' }, { field: 'ProductIdentifierName', ele: '#ProductIdentifierName input:checkbox', all: 'all', selector: ':not(:checked)' },
+                    ],
+                    callbacks: {
+                        afterFilter: function (result) {
+                            window.loading('hide');
+                            $('[id="uid-total"]').text(result.length);
+                        }
+                    },
+                    search: {
+                        ele: '#keyword', fields: ['ProductCode', 'ProductName'], start_length: 2, bindEvent: false, multi: function () {
+                            let texts = [];
+                            $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                                let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                                let text = matches && matches[1];
+                                texts.push(text);
+                            });
+                            return texts;
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select#uid-sortbox' }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') { } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order === 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+                        }
+                    },
+                    pagination: {
+                        container: '#uid-pagination',
+                        paginationView: '#uid-template-pagination',
+                        visiblePages: 5,
+                        perPage: {
+                            values: [10, 50, 100, data.length],
+                            container: '#uid-perPage',
+                            perPageView: '#uid-template-perPage'
+                        }
+                    }
+                });
+                fjs.bindEvent('[data-filter-reset]', 'click.reset');
+                fjs.bindEvent('[data-tag-close]', 'click.tag');
+                fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+
+                $('[data-keyword-input]').on('keypress.loading', function (e) {
+                    if (e.which === 13 && !!$(this).val().trim()) {
+                        $('[data-keyword-submit]').trigger('click.loading');
+                    }
+                });
+            }
+
+            function fnScrollUp() {
+                loading();
+                $('#table').scrollPosition('scroll');
+            }
+
+            let $containgerPagination = $('#uid-pagination');
+            $containgerPagination.on('click', '[data-page]', fnScrollUp);
+            $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                if (e.which === 13) {
+                    fnScrollUp();
+                }
+            });
+
+            $('#uid-view-perPage').on('change.pagesize', function() {
+                fnScrollUp();
+                fjs.paginator.setCurrentPage(1);
+            }).sizebox();
+            $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
             $('[data-keyword-submit]').on('click.loading', function () {
                 if (!!$('[data-keyword-input]').val().trim()) {
                     loading();
                 }
             });
-            $('[data-keyword-input]').on('keypress.loading', function (e) {
-                if (e.which === 13 && !!$(this).val().trim()) {
-                    loading();
-                }
-            });
-            // ------------- 示意資料載入出現loading畫面，請更換成正確程式碼 -------------
-
-
-
 
             // table 排序功能
-            $('.o-sorting').on('click.sorting', function (e) {
+            $('#table').on('click.sorting', '.o-sorting', function (e) {
                 e.preventDefault();
                 // 呼叫 loading
                 window.loading('show');
@@ -702,9 +600,6 @@
                 }, 300);
             });
 
-
-
-
             // 手機版分頁筆數功能
             $('[data-sortingbox="true"]').on('change.sorting', function (e) {
                 // 呼叫 loading
@@ -725,45 +620,6 @@
                     window.loading('hide');
                 }, 300);
             });
-
-
-
-            // 分頁功能
-            $('.o-pagination__no').on('update.pagination', function (e) {
-                // 呼叫 loading
-                window.loading('show');
-                var page = parseInt($(this).val());
-                console.log(`頁碼：${page}`);
-
-                // scroll 到表頭
-                $(this).trigger('scrolltop');
-
-                // 因展示，故使用 setTimeout 延遲關閉 loading
-                setTimeout(() => {
-                    // 關閉loading
-                    window.loading('hide');
-                }, 300);
-            });
-
-
-
-
-            // 分頁筆數功能
-            $('[data-sizebox="true"]').on('change.pagesize', function (e) {
-                // 呼叫 loading
-                window.loading('show');
-                var size = $(this).val();
-                console.log(`每頁顯示${size}筆`);
-
-                // 因展示，使用 setTimeout 延遲關閉 loading
-                setTimeout(() => {
-                    // 關閉loading
-                    window.loading('hide');
-                }, 300);
-            });
-
-
-
         });
     })(jQuery, window, document);
 </script>

@@ -5,6 +5,7 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
     public class StructuredProductModel
     {
         #region from DB
+
         public string ProductIdentifier { get; set; }
         public string ProductIdentifierName { get; set; }
         public string ProductName { get; set; }
@@ -16,11 +17,14 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
         public string CurrencyCode { get; set; }
         public string BankSellPrice { get; set; }
         public string PriceBaseDate { get; set; }
+
         #endregion
 
         #region from 後台
+
         public IList<string> KeywordTags { get; set; }
         public IList<string> TopicTags { get; set; }
+
         #endregion
     }
 
@@ -35,7 +39,7 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
         public string PriceBaseDate { get; set; }
         public string BankSellPriceValue { get; set; }
     }
-    
+
     public class BankSellPriceWithChange
     {
         public string PriceBaseDate { get; set; }

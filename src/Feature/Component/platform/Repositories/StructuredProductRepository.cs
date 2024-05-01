@@ -1,6 +1,7 @@
 ﻿using Feature.Wealth.Component.Models.StructuredProduct;
 using Foundation.Wealth.Manager;
 using Sitecore.Data;
+using Sitecore.Data.Items;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,59 +10,101 @@ using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
-    public class StructuredProductRepository
+    public class StructuredProductSearchRepository
     {
+        /// <summary>
+        /// 結構型商品搜尋
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <returns></returns>
+        public StructuredProductSearchViewModel GetStructuredProductSearch(Item item)
+        {
+            if (item == null)
+            {
+                return null;
+            }
+
+            return new StructuredProductSearchViewModel
+            {
+                DatasourceId = item.ID?.ToString(),
+                KeywordOptions = GetTagOptionsWithProducts(item, _StructProductTagDatasource.Fields.KeywordDatasource),
+                TopicOptions = GetTagOptionsWithProducts(item, _StructProductTagDatasource.Fields.TopicDatasource),
+                DetailPageItemUrl = item.TargetItem(StructProductListDatasource.Fields.DetailPageItem)?.Url() ?? string.Empty
+            };
+        }
+
         /// <summary>
         /// 取得Tag篩選選項及其商品
         /// </summary>
-        /// <param name="structuredDatasourceId">資料源Id</param>
+        /// <param name="structuredDatasource">資料源Id</param>
         /// <param name="fieldId">Tag資料源欄位Id</param>
         /// <returns>篩選項List</returns>
-        public IList<TagWithProducts> GetTagOptionsWithProducts(ID structuredDatasourceId, ID fieldId)
+        private IList<TagWithProducts> GetTagOptionsWithProducts(Item structuredDatasource, ID fieldId)
         {
-            var structuredDatasource = ItemUtils.GetItem(structuredDatasourceId);
             if (structuredDatasource == null || (!structuredDatasource.GetReferenceFieldItem(fieldId).GetChildren(StructProductTag.Id)?.Any() ?? true))
             {
                 return new List<TagWithProducts>();
             }
 
-            var TagWithProductsList = new List<TagWithProducts>();
+            var tagWithProductsList = new List<TagWithProducts>();
 
             foreach (var item in structuredDatasource.GetReferenceFieldItem(fieldId).GetChildren(StructProductTag.Id))
             {
-                TagWithProductsList.Add(new TagWithProducts
+                tagWithProductsList.Add(new TagWithProducts
                 {
                     TagTitle = item.GetFieldValue(StructProductTag.Fields.TagTitle),
                     StructProductList = item.GetFieldValue(StructProductTag.Fields.StructList)?.Split(';').ToList()
                 });
             }
 
-            return TagWithProductsList;
+            return tagWithProductsList;
+        }
+    }
+
+    public class StructuredProductRepository
+    {
+        /// <summary>
+        /// 取得結構型商品
+        /// </summary>
+        /// <param name="item">item</param>
+        /// <param name="productCode">產品代碼</param>
+        public StructuredProductDetailViewModel GetStructuredProduct(Item item, string productCode)
+        {
+            if (string.IsNullOrEmpty(productCode))
+            {
+                return null;
+            }
+
+            var model = new StructuredProductDetailViewModel
+            {
+                StructuredProduct = GetStructuredProduct(productCode, item),
+                HistoryBankSellPrice = GetHistoryBankSellPrice(productCode),
+                ThirtyDayBankSellPriceWithChange = GetThirtyDayBankSellPriceWithChange(productCode),
+                HistoryDividend = GetHistoryDividend(productCode)
+            };
+            return model;
         }
 
         /// <summary>
         /// 取得單一商品的特定類別的Tags
         /// </summary>
-        /// <param name="structuredDatasourceId">資料源Id</param>
+        /// <param name="structuredDatasource">資料源</param>
         /// <param name="tagDatasourceFieldId">Tag資料源欄位Id</param>
-        /// <param name="productID">欲查詢的商品Id</param>
+        /// <param name="productId">欲查詢的商品Id</param>
         /// <returns>某類別的Tag List</returns>
-        public IList<string> GetProductTags(ID structuredDatasourceId, ID tagDatasourceFieldId, string productID)
+        private IList<string> GetProductTags(Item structuredDatasource, ID tagDatasourceFieldId, string productId)
         {
-            var tagWithProductsList = GetTagOptionsWithProducts(structuredDatasourceId, tagDatasourceFieldId);
-
-            var productTags = tagWithProductsList?.Where(t => t.StructProductList.Contains(productID)).Select(x => x.TagTitle).ToList() ?? new List<string>();
-
-            return productTags;
+            var tagWithProductsList = GetTagOptionsWithProducts(structuredDatasource, tagDatasourceFieldId);
+            return tagWithProductsList?.Where(t => t.StructProductList.Contains(productId)).Select(x => x.TagTitle).ToList();
         }
 
         /// <summary>
         /// 取得單一商品資訊
         /// </summary>
         /// <param name="productCode">商品代號</param>
-        /// <param name="datasourceId">貼標資料源(查詢商品所屬Tags)</param>
+        /// <param name="item">貼標資料源(查詢商品所屬Tags)</param>
         /// <returns>StructuredProductModel基本資訊</returns>
-        public StructuredProductModel GetStructuredProduct(string productCode, ID? datasourceId)
+        private StructuredProductModel GetStructuredProduct(string productCode, Item item)
         {
             string query = @"
                             SELECT TOP(1)
@@ -88,12 +131,11 @@ namespace Feature.Wealth.Component.Repositories
                 return null;
             }
 
-
-            // 貼標from 後台
-            if (!datasourceId.IsNullOrEmpty() && ItemUtils.GetItem(datasourceId)?.TemplateID == StructProductDetailDatasource.Id)
+            // 貼標 from 後台
+            if (item?.TemplateID == StructProductDetailDatasource.Id)
             {
-                structuredProduct.KeywordTags = GetProductTags(datasourceId, _StructProductTagDatasource.Fields.KeywordDatasource, productCode);
-                structuredProduct.TopicTags = GetProductTags(datasourceId, _StructProductTagDatasource.Fields.TopicDatasource, productCode);
+                structuredProduct.KeywordTags = GetProductTags(item, _StructProductTagDatasource.Fields.KeywordDatasource, productCode);
+                structuredProduct.TopicTags = GetProductTags(item, _StructProductTagDatasource.Fields.TopicDatasource, productCode);
             }
             else
             {
@@ -109,11 +151,12 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="productCode">商品代號</param>
         /// <returns>歷史參考贖回價List</returns>
-        public HistoryBankSellPrice GetHistoryBankSellPrice(string productCode)
+        private HistoryBankSellPrice GetHistoryBankSellPrice(string productCode)
         {
-            var result = new HistoryBankSellPrice();
-
-            result.BankSellPrice = DbManager.Custom.ExecuteIList<BankSellPrice>("sp_StructProductSellPrice", new { ProductCode = productCode }, CommandType.StoredProcedure)?.ToList();
+            var result = new HistoryBankSellPrice
+            {
+                BankSellPrice = DbManager.Custom.ExecuteIList<BankSellPrice>("sp_StructProductSellPrice", new { ProductCode = productCode }, CommandType.StoredProcedure)?.ToList()
+            };
 
             string query = @"
                             SELECT TOP(1)
@@ -132,11 +175,9 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="productCode">商品代號</param>
         /// <returns>最近三十筆參考贖回價含漲跌List</returns>
-        public IList<BankSellPriceWithChange> GetThirtyDayBankSellPriceWithChange(string productCode)
+        private IList<BankSellPriceWithChange> GetThirtyDayBankSellPriceWithChange(string productCode)
         {
-            var result = DbManager.Custom.ExecuteIList<BankSellPriceWithChange>("sp_StructProductSellPriceCountForThirtyDays", new { ProductCode = productCode }, CommandType.StoredProcedure)?.ToList();
-
-            return result;
+            return DbManager.Custom.ExecuteIList<BankSellPriceWithChange>("sp_StructProductSellPriceCountForThirtyDays", new { ProductCode = productCode }, CommandType.StoredProcedure);
         }
 
         /// <summary>
@@ -144,21 +185,46 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="productCode">商品代號</param>
         /// <returns>歷史配息List</returns>
-        public IList<Dividend> GetHistoryDividend(string productCode)
+        private IList<Dividend> GetHistoryDividend(string productCode)
         {
-            var result = DbManager.Custom.ExecuteIList<Dividend>("sp_StructProductDividend", new { ProductCode = productCode }, CommandType.StoredProcedure);
+            return DbManager.Custom.ExecuteIList<Dividend>("sp_StructProductDividend", new { ProductCode = productCode }, CommandType.StoredProcedure);
+        }
 
-            return result;
+        /// <summary>
+        /// 取得Tag篩選選項及其商品
+        /// </summary>
+        /// <param name="structuredDatasource">資料源Id</param>
+        /// <param name="fieldId">Tag資料源欄位Id</param>
+        /// <returns>篩選項List</returns>
+        private IList<TagWithProducts> GetTagOptionsWithProducts(Item structuredDatasource, ID fieldId)
+        {
+            if (structuredDatasource == null || (!structuredDatasource.GetReferenceFieldItem(fieldId).GetChildren(StructProductTag.Id)?.Any() ?? true))
+            {
+                return new List<TagWithProducts>();
+            }
+
+            var tagWithProductsList = new List<TagWithProducts>();
+
+            foreach (var item in structuredDatasource.GetReferenceFieldItem(fieldId).GetChildren(StructProductTag.Id))
+            {
+                tagWithProductsList.Add(new TagWithProducts
+                {
+                    TagTitle = item.GetFieldValue(StructProductTag.Fields.TagTitle),
+                    StructProductList = item.GetFieldValue(StructProductTag.Fields.StructList)?.Split(';').ToList()
+                });
+            }
+
+            return tagWithProductsList;
         }
 
         /// <summary>
         /// 取得所有結構型商品
         /// </summary>
-        /// <param name="datasourceId">資料源Id(for貼標)</param>
+        /// <param name="item">資料源Id(for貼標)</param>
         /// <returns>結構型商品List</returns>
-        public IList<StructuredProductModel> GetAllStructuredProducts(ID? datasourceId)
+        public IEnumerable<StructuredProductModel> GetStructuredProducts(Item item)
         {
-            var query = @"SELECT
+            string query = @"SELECT
                                ProductIdentifier
                               ,ProductIdentifierName
                               ,ProductName
@@ -177,26 +243,12 @@ namespace Feature.Wealth.Component.Repositories
 
             foreach (var structuredProduct in structuredProducts)
             {
-                var productCode = structuredProduct.ProductCode;
-                structuredProduct.KeywordTags = GetProductTags(datasourceId, _StructProductTagDatasource.Fields.KeywordDatasource, productCode);
-                structuredProduct.TopicTags = GetProductTags(datasourceId, _StructProductTagDatasource.Fields.TopicDatasource, productCode);
+                string productCode = structuredProduct.ProductCode;
+                structuredProduct.KeywordTags = GetProductTags(item, _StructProductTagDatasource.Fields.KeywordDatasource, productCode);
+                structuredProduct.TopicTags = GetProductTags(item, _StructProductTagDatasource.Fields.TopicDatasource, productCode);
             }
 
             return structuredProducts;
-        }
-
-        /// <summary>
-        /// 取得詳細頁頁面節點Url
-        /// </summary>
-        /// <param name="datasourceId">資料源Id</param>
-        /// <returns></returns>
-        public string GetDetailPageItemUrl(ID datasourceId)
-        {
-            var structuredDatasource = ItemUtils.GetItem(datasourceId);
-
-            var detailPageItemUrl = structuredDatasource?.TargetItem(StructProductListDatasource.Fields.DetailPageItem)?.Url() ?? string.Empty;
-
-            return detailPageItemUrl;
         }
     }
 }
