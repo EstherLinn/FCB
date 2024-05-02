@@ -414,7 +414,7 @@
                         if (data) {
                             var tabContent = document.getElementById(tabTarget);
                             tabContent.innerHTML = data;
-
+                            $('[data-popup]').magnificPopup();
 
                             var tabPanel = $('.c-tab__panel[data-tab-panel-id="' + tabTarget + '"]');
                             var totalPages = tabPanel.find('#totalPages').val();
@@ -475,11 +475,6 @@
                                 $('[data-filter-empty="false"]').show();
                                 $('[data-filter-empty="true"]').hide();
                              }
-                            
-                            setTimeout(() => {
-                                // 關閉loading
-                                window.loading('hide');
-                            }, 300);
                         } else {
                             console.error("Empty response received from the server.");
                         }
@@ -531,6 +526,9 @@
 
 
                 ChangeCurrency(tabTarget);
+                setTimeout(() => {
+                                window.loading('hide');
+                            }, 300);
                 
             });
 
@@ -598,6 +596,10 @@
                 var pageSize = tabPanel.find('.o-selectbox--pagesize').val();
                 console.log('連棟排序');
                 loadData(tabTarget, selectedValue, 1, pageSize, sortingColumn, orderby);
+                setTimeout(() => {
+                                // 關閉loading
+                                window.loading('hide');
+                            }, 300);
             });
 
 
@@ -610,11 +612,15 @@
                 var pageSize = tabPanel.find('.o-selectbox--pagesize').val();
                 var currentPage = tabPanel.find('.o-pagination__no').val(1);
                 var sortingColumns = findSortingColumns();
-                // sortingColumns.forEach(function (sortingInfo) {
-                //     console.log('切換:', 'TAB:', tabTarget, '，選擇的基金類型:', selectedValue, '，現在第幾頁:', currentPage, "，現在顯示幾筆:", pageSize, "，排序順序:", sortingInfo.column, "，升冪還降冪:", sortingInfo.direction);
-                //     loadData(tabTarget, selectedValue, 1, pageSize, sortingInfo.column, sortingInfo.direction);
-                // });
-                tabPanel.find('[data-pagination="true"]').pagination('goto', 1);
+                sortingColumns.forEach(function (sortingInfo) {
+                    console.log('切換:', 'TAB:', tabTarget, '，選擇的基金類型:', selectedValue, '，現在第幾頁:', currentPage, "，現在顯示幾筆:", pageSize, "，排序順序:", sortingInfo.column, "，升冪還降冪:", sortingInfo.direction);
+                    loadData(tabTarget, selectedValue, 1, pageSize, sortingInfo.column, sortingInfo.direction);
+                });
+                //tabPanel.find('[data-pagination="true"]').pagination('goto', 1);
+                setTimeout(() => {
+                                // 關閉loading
+                                window.loading('hide');
+                            }, 300);
             });
 
 
@@ -661,11 +667,12 @@
                             }
                             else{
                                 OCTWD(selectedValue);
-                                setTimeout(() => {
+                                
+                            }
+                            setTimeout(() => {
                                     // 關閉loading
                                     window.loading('hide');
                                 }, 300);
-                            }
                             console.log('台幣原幣切換:', tabTarget, selectedcolumn, 1, pageSize, sortingInfo.column, sortingInfo.direction);
                         });
                     });
