@@ -26,7 +26,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetAllStructuredProducts(string datasourceIdStr)
+        public ActionResult GetStructuredProducts(string datasourceIdStr)
         {
             var datasource = ItemUtils.GetItem(datasourceIdStr);
 
