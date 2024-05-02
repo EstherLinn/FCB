@@ -53,7 +53,7 @@ namespace Feature.Wealth.Component.Repositories
                 tagWithProductsList.Add(new TagWithProducts
                 {
                     TagTitle = item.GetFieldValue(StructProductTag.Fields.TagTitle),
-                    StructProductList = item.GetFieldValue(StructProductTag.Fields.StructList)?.Split(';').ToList()
+                    StructProductList = item.GetMultiLineText(StructProductTag.Fields.StructList)?.ToList()
                 });
             }
 
@@ -210,7 +210,7 @@ namespace Feature.Wealth.Component.Repositories
                 tagWithProductsList.Add(new TagWithProducts
                 {
                     TagTitle = item.GetFieldValue(StructProductTag.Fields.TagTitle),
-                    StructProductList = item.GetFieldValue(StructProductTag.Fields.StructList)?.Split(';').ToList()
+                    StructProductList = item.GetMultiLineText(StructProductTag.Fields.StructList)?.ToList()
                 });
             }
 
