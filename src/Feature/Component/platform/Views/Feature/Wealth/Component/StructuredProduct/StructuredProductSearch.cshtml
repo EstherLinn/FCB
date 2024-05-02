@@ -464,7 +464,7 @@
 
             // 商品列表
             $.ajax({
-                url: '@ClientRoute.GenerateUrl(this, "StructuredProduct", "GetAllStructuredProducts")',
+                url: '@ClientRoute.GenerateUrl(this, "StructuredProduct", "GetStructuredProducts")',
                 type: 'POST',
                 data: { datasourceIdStr: datasourceId },
                 success: function (data) {

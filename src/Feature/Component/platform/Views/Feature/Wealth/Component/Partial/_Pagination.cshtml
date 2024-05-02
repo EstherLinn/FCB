@@ -33,31 +33,3 @@
         </div>
     </script>
 </div>
-
-<script>
-    (function ($, window, document, undefined) {
-        document.addEventListener('DOMContentLoaded', function () {
-            if (!jQuery) {
-                return;
-            }
-
-            $(function () {
-                $('#uid-pagination .o-pagination__no').on('update.pagination', function (e) {
-                    // 呼叫 loading
-                    window.loading('show');
-                    var page = parseInt($(this).val());
-                    console.log(`頁碼：${page}`);
-
-                    // scroll 到表頭
-                    $(this).closest('.l-table').scrollPosition('scroll');
-
-                    // 因展示，故使用 setTimeout 延遲關閉 loading
-                    setTimeout(() => {
-                        // 關閉loading
-                        window.loading('hide');
-                    }, 300);
-                });
-            });
-        });
-    })(jQuery, window, document);
-</script>
