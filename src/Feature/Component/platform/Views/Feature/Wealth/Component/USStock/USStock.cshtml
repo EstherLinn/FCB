@@ -265,12 +265,9 @@
                         </thead>
                         <tbody id="stockTBody"></tbody>
                     </table>
-                    <div class="l-pagination">
-                        <div class="l-pagination__size" id="uid-perPage">
-                        </div>
-                        <div class="l-pagination__switch" id="uid-pagination">
-                        </div>
-                    </div>
+                    @{
+                        Html.RenderPartial("~/Views/Feature/Wealth/Component/Partial/_Pagination.cshtml");
+                    }
                 </div>
             </div>
         </div>
@@ -280,42 +277,11 @@
 <template id="tmplKeywordNotFound">
     <div class="c-empty">
         <div class="c-empty__img">
-            <img src="./../themes/images/lions/lion-keyword.svg" alt="">
+            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
         </div>
         <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
     </div>
 </template>
-
-<script id="uid-template-perPage" type="text/html">
-    <span>每頁顯示</span>
-    <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
-    <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
-        <% for(var i = 0; i < values.length - 1; i++ ) { %>
-        <option value="<%= values[i] %>"><%= values[i] %>筆</option>
-        <% } %>
-        <option value="<%= values[values.length - 1] %>">全部</option>
-    </select>
-</script>
-
-<script id="uid-template-pagination" type="text/html">
-    <div class="o-pagination">
-        <% if (currentPage > 1) { %>
-        <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
-        <% } else { %>
-        <!-- .is-disabled: 停用狀態，無法點擊 -->
-        <a href="#" class="o-pagination__prev is-disabled"></a>
-        <% } %>
-        <span class="o-pagination__pager">
-            <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
-            <span class="o-pagination__total"><%= totalPages %></span>
-        </span>
-        <% if (currentPage < totalPages ) { %>
-        <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
-        <% } else { %>
-        <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
-        <% } %>
-    </div>
-</script>
 
 <script id="template" type="text/html">
     <!-- .u-nowrap@dt-only: 桌機版(desktop)不折行 -->
@@ -328,12 +294,12 @@
             <div class="c-cardTable__content">
                 <a href="<%= DetailLink %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FullName %></a>
             </div>
-            <% if (Tags != null && Tags.length > 0) { %>
-                <% for(var i = 0; i < Tags.length; i++ ) { %>
+            <% if (HoProductTags != null && HoProductTags.length > 0) { %>
+                <% for(var i = 0; i < HoProductTags.length; i++ ) { %>
                     <div class="l-target__additional">
                         <ul class="l-tag">
                             <li class="l-tag__item">
-                                <a href="#" class="o-tag"><%= Tags[i] %></a>
+                                <a href="#" class="o-tag"><%= HoProductTags[i] %></a>
                             </li>
                         </ul>
                     </div>
@@ -447,15 +413,6 @@
     </tr>
 </script>
 
-<template id="tmplKeywordNotFound">
-    <div class="c-empty">
-        <div class="c-empty__img">
-            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
-        </div>
-        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
-    </div>
-</template>
-
 <script src="~/themes/vendor/noUiSlider/nouislider.min.js"></script>
 <script src="~/themes/vendor/wnumb/wNumb.min.js"></script>
 <script src="~/themes/js/filter.min.js"></script>
@@ -538,8 +495,8 @@
                 }
             });
 
-            fjs.addCriteria({ field: 'Tags', ele: '#hotkeywordtags input:checkbox' });
-            fjs.addCriteria({ field: 'Tags', ele: '#hotproducttags input:checkbox' });
+            fjs.addCriteria({ field: 'HotKeywordTags', ele: '#hotkeywordtags input:checkbox' });
+            fjs.addCriteria({ field: 'HoProductTags', ele: '#hotproducttags input:checkbox' });
 
             fjs.bindEvent('[data-filter-reset]', 'click.reset');
             fjs.bindEvent('[data-tag-close]', 'click.tag');
