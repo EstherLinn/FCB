@@ -122,14 +122,14 @@
 
                                                         @foreach (var item in Model.KeywordOptions)
                                                         {
-                                                            <div class="l-pickGroup__item">
-                                                                <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                                <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                                <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagTitle">
-                                                                    <div class="o-btnCheckBox__text" data-filter-value="@item.TagTitle"></div>
-                                                                </label>
-                                                            </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagTitle">
+                                                                <div class="o-btnCheckBox__text" data-filter-value="@item.TagTitle"></div>
+                                                            </label>
+                                                        </div>
                                                         }
 
                                                     </div>
@@ -148,14 +148,14 @@
 
                                                         @foreach (var item in Model.TopicOptions)
                                                         {
-                                                            <div class="l-pickGroup__item">
-                                                                <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                                <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                                <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagTitle">
-                                                                    <div class="o-btnCheckBox__text" data-filter-value="@item.TagTitle"></div>
-                                                                </label>
-                                                            </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                            <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagTitle">
+                                                                <div class="o-btnCheckBox__text" data-filter-value="@item.TagTitle"></div>
+                                                            </label>
+                                                        </div>
                                                         }
 
                                                     </div>
@@ -220,7 +220,21 @@
 </div>
 <div class="l-stage">
     <div class="l-wrap">
-        <div class="l-flex u-flex-col u-flex-gap-sm@lt">
+        <div class="c-tab c-tab--wide" data-filter-empty="true" style="display:none;">
+            <div class="c-tab__panel is-active">
+                <div class="c-section">
+                    <div class="c-section__content">
+                        <div class="c-empty">
+                            <div class="c-empty__img">
+                                <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                            </div>
+                            <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="l-flex u-flex-col u-flex-gap-sm@lt" data-filter-empty="false" style="display:none;">
             <div class="l-flex__item">
                 <div class="l-flex l-flex--wrap u-flex-gap-sm">
                     <div class="l-flex__item u-right u-hidden@dt-only">
@@ -228,18 +242,18 @@
                             <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
                             <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="searchTable" id="uid-sortbox">
                                 <option value="">排序</option>
-                                <option value="股票名稱高至低" data-sorting-column="stockName" data-sorting-class="is-desc">股票名稱高至低</option>
-                                <option value="股票名稱低至高" data-sorting-column="stockName" data-sorting-class="is-asc">股票名稱低至高</option>
-                                <option value="發行機構高至低" data-sorting-column="agency" data-sorting-class="is-desc">發行機構高至低</option>
-                                <option value="發行機構低至高" data-sorting-column="agency" data-sorting-class="is-asc">發行機構低至高</option>
-                                <option value="幣別高至低" data-sorting-column="currency" data-sorting-class="is-desc">幣別高至低</option>
-                                <option value="幣別低至高" data-sorting-column="currency" data-sorting-class="is-asc">幣別低至高</option>
-                                <option value="到期日近至遠" data-sorting-column="expire" data-sorting-class="is-desc">到期日近至遠</option>
-                                <option value="到期日遠至近" data-sorting-column="expire" data-sorting-class="is-asc">到期日遠至近</option>
-                                <option value="參考贖回價高至低" data-sorting-column="redemption" data-sorting-class="is-desc">參考贖回價高至低</option>
-                                <option value="參考贖回價低至高" data-sorting-column="redemption" data-sorting-class="is-asc">參考贖回價低至高</option>
-                                <option value="價格日期近至遠" data-sorting-column="price" data-sorting-class="is-desc">價格日期近至遠</option>
-                                <option value="價格日期遠至近" data-sorting-column="price" data-sorting-class="is-asc">價格日期遠至近</option>
+                                <option value="股票名稱高至低" data-sorting-column="ProductDisplayName" data-sorting-class="is-desc">股票名稱高至低</option>
+                                <option value="股票名稱低至高" data-sorting-column="ProductDisplayName" data-sorting-class="is-asc">股票名稱低至高</option>
+                                <option value="發行機構高至低" data-sorting-column="IssuingInstitution" data-sorting-class="is-desc">發行機構高至低</option>
+                                <option value="發行機構低至高" data-sorting-column="IssuingInstitution" data-sorting-class="is-asc">發行機構低至高</option>
+                                <option value="幣別高至低" data-sorting-column="CurrencyName" data-sorting-class="is-desc">幣別高至低</option>
+                                <option value="幣別低至高" data-sorting-column="CurrencyName" data-sorting-class="is-asc">幣別低至高</option>
+                                <option value="到期日近至遠" data-sorting-column="ProductMaturityDate" data-sorting-class="is-desc">到期日近至遠</option>
+                                <option value="到期日遠至近" data-sorting-column="ProductMaturityDate" data-sorting-class="is-asc">到期日遠至近</option>
+                                <option value="參考贖回價高至低" data-sorting-column="BankSellPrice" data-sorting-class="is-desc">參考贖回價高至低</option>
+                                <option value="參考贖回價低至高" data-sorting-column="BankSellPrice" data-sorting-class="is-asc">參考贖回價低至高</option>
+                                <option value="價格日期近至遠" data-sorting-column="PriceBaseDate" data-sorting-class="is-desc">價格日期近至遠</option>
+                                <option value="價格日期遠至近" data-sorting-column="PriceBaseDate" data-sorting-class="is-asc">價格日期遠至近</option>
                             </select>
                         </div>
                     </div>
@@ -263,38 +277,38 @@
                                         <span>商品名稱</span>
                                         <!-- .is-asc: 升冪 -->
                                         <!-- .is-desc: 降冪 -->
-                                        <a href="#" class="o-sorting" data-sorting-column="stockName"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="ProductDisplayName"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>發行機構</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="agency"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="IssuingInstitution"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>幣別</span>
                                         <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                        <a href="#" class="o-sorting" data-sorting-column="currency"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyName"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>到期日</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="expire"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="ProductMaturityDate"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>參考贖回價</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="redemption"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="BankSellPrice"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>價格日期</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="price"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="PriceBaseDate"></a>
                                     </div>
                                 </th>
                             </tr>
@@ -423,11 +437,11 @@
                     $(container).find('[data-popup]').magnificPopup();
                 },
                 formatResult: function (suggestion, currentValue) {
-                    let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
+                    let detailUrl = suggestion.ProductDetailUrl ? suggestion.ProductDetailUrl : '#';
                     // 申購按鈕
                     return `<div class="c-itemKeyword">
                             <a href="${detailUrl}" class="c-itemKeyword__content">
-                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                <div class="c-itemKeyword__title">${suggestion.ProductDisplayName}</div>
                             </a>
                         </div>`;
                 }
@@ -450,16 +464,21 @@
 
             // 商品列表
             $.ajax({
-                url: '@ClientRoute.GenerateUrl(this, "StructuredProduct", "GetStructuredProducts")',
+                url: '@ClientRoute.GenerateUrl(this, "StructuredProduct", "GetAllStructuredProducts")',
                 type: 'POST',
                 data: { datasourceIdStr: datasourceId },
                 success: function (data) {
+                    console.log(data);
+
                     $.each(data, function (index, item) {
                         // 新增 ProductDisplayName 欄位
                         item.ProductDisplayName = item.ProductCode + " " + item.ProductName;
 
                         // 新增 ProductDetailUrl 欄位
                         item.ProductDetailUrl = DetailPageItemUrl + "?id=" + item.ProductCode;
+
+                        // 新增 value 欄位
+                        item.value = item.ProductCode + " " + item.ProductName;
                     });
 
                     var template = document.getElementById('uid-template').innerHTML;
@@ -485,9 +504,16 @@
                     ],
                     callbacks: {
                         afterFilter: function (result) {
-                            window.loading('hide');
+                            this.paginator.setCurrentPage(1);
                             $('[id="uid-total"]').text(result.length);
-                        }
+
+                            let isEmpty = result.length == 0;
+                            $(`[data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-filter-empty=${!isEmpty}]`).hide();
+
+
+                            window.loading('hide');
+                        },
                     },
                     search: {
                         ele: '#keyword', fields: ['ProductCode', 'ProductName'], start_length: 2, bindEvent: false, multi: function () {
@@ -544,31 +570,31 @@
                         $('[data-keyword-submit]').trigger('click.loading');
                     }
                 });
-            }
 
-            function fnScrollUp() {
-                loading();
-                $('#table').scrollPosition('scroll');
-            }
-
-            let $containgerPagination = $('#uid-pagination');
-            $containgerPagination.on('click', '[data-page]', fnScrollUp);
-            $containgerPagination.on('keypress', '[data-page-input]', function (e) {
-                if (e.which === 13) {
-                    fnScrollUp();
-                }
-            });
-
-            $('#uid-view-perPage').on('change.pagesize', function() {
-                fnScrollUp();
-                fjs.paginator.setCurrentPage(1);
-            }).sizebox();
-            $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
-            $('[data-keyword-submit]').on('click.loading', function () {
-                if (!!$('[data-keyword-input]').val().trim()) {
+                function fnScrollUp() {
                     loading();
+                    $('#table').scrollPosition('scroll');
                 }
-            });
+
+                let $containgerPagination = $('#uid-pagination');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+
+                $('#uid-view-perPage').on('change.pagesize', function () {
+                    fnScrollUp();
+                    fjs.paginator.setCurrentPage(1);
+                }).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+                $('[data-keyword-submit]').on('click.loading', function () {
+                    if (!!$('[data-keyword-input]').val().trim()) {
+                        loading();
+                    }
+                });
+            }
 
             // table 排序功能
             $('#table').on('click.sorting', '.o-sorting', function (e) {
