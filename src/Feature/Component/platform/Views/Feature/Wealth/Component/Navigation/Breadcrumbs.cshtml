@@ -5,9 +5,10 @@
             int ix = 0;
             foreach (var node in Model)
             {
-                if (ix == 0)
+                ix++;
+
+                if (ix == 1)
                 {
-                    ix++;
                     <li class="o-breadcrumb__item"><a href="/" class="o-breadcrumb__link o-breadcrumb__link--home">Home</a></li>
                 }
                 else
@@ -19,14 +20,13 @@
                     else
                     {
                         <li class="o-breadcrumb__item">
-                            @if (node.Link != null && string.IsNullOrEmpty(node.Link.Url))
+                            @if (string.IsNullOrEmpty(node.Link.Url) || ix == 3)
                             {
                                 <span class="o-breadcrumb__link">@node.GetBestLinkText()</span>
-
                             }
                             else
                             {
-                                <a href="@(node.Link?.Url)" target="@(node.Link?.Target)" class="o-breadcrumb__link">@node.GetBestLinkText()</a>
+                                <a href="@(node.Link.Url)" target="@(node.Link.Target)" class="o-breadcrumb__link">@node.GetBestLinkText()</a>
                             }
                         </li>
                     }

@@ -39,6 +39,8 @@ namespace Feature.Wealth.Component.Models.Navigation
             {
                 public static readonly ID ShowChildren = new("{CC01D8FD-C850-40FB-883B-9ACC2D0B3628}");
                 public static readonly ID ShowNavigation = new("{6C065467-19E3-403C-B882-A584557E9AA2}");
+                public static readonly ID Highlight = new("{870DAF58-0CBE-447C-B4CB-E5E13BBC4D41}");
+                
             }
         }
     }
