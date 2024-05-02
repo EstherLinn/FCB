@@ -1,6 +1,7 @@
 ﻿@* model Xcms.Sitecore.Feature.Navigation.Models.NavigationMenu *@
 @using Feature.Wealth.Component.Models.Navigation
 @using Xcms.Sitecore.Feature.Navigation.Models
+@using Xcms.Sitecore.Foundation.Basic.FieldTypes
 @using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions
 @inherits Xcms.Sitecore.Foundation.Basic.MVC.EditorCompatibleView<Xcms.Sitecore.Feature.Navigation.Models.NavigationMenu>
 
@@ -20,9 +21,19 @@
                         case NavigationPageLink pageLinkLv:
                             if (pageLinkLv.Item.IsChecked(Templates.Navigable.Fields.ShowNavigation))
                             {
+                                if (pageLinkLv.Link.Type == LinkType.External)
+                                {
+                                    pageLinkLv.Link.Class += " c-menu__name--external ";
+                                }
+
+                                if (pageLinkLv.Item.IsChecked(Templates.Navigable.Fields.Highlight))
+                                {
+                                    pageLinkLv.Link.Class += " c-menu__name--highlight ";
+                                }
+
                                 <li class="c-menu__item c-menu__item--lv1">
                                     <!-- 第一層選單要加[data-megamenu="true"]以綁定互動操作功能 -->
-                                    <a href="@(pageLinkLv.Link?.Url)" target="@(pageLinkLv.Link?.Target)" class="c-menu__name c-menu__name--lv1" data-megamenu="true">
+                                    <a href="@(pageLinkLv.Link.Url)" target="@(pageLinkLv.Link.Target)" class="c-menu__name c-menu__name--lv1 @(pageLinkLv.Link.Class)" data-megamenu="true">
                                         @Html.Sitecore().Field(Templates.IconNavigationLink.Fields.Icon, pageLinkLv.Item, new { disableWebEditing = true })
                                         @pageLinkLv.GetBestLinkText()
                                     </a>
@@ -47,8 +58,13 @@
                                                                                     {
                                                                                         if (childLv2 is NavigationPageLink pageLinkLv2 && pageLinkLv2.Item.IsChecked(Templates.Navigable.Fields.ShowNavigation))
                                                                                         {
+                                                                                            if (pageLinkLv2.Link.Type == LinkType.External)
+                                                                                            {
+                                                                                                pageLinkLv2.Link.Class += " c-menu__name--external";
+                                                                                            }
+
                                                                                             <li class="c-menu__item c-menu__item--lv3">
-                                                                                                <a href="@(pageLinkLv2.Link?.Url)" target="@(pageLinkLv2.Link?.Target)" class="c-menu__name c-menu__name--lv3">
+                                                                                                <a href="@(pageLinkLv2.Link.Url)" target="@(pageLinkLv2.Link.Target)" class="c-menu__name c-menu__name--lv3 @(pageLinkLv2.Link.Class)">
                                                                                                     @Html.Sitecore().Field(Templates.IconNavigationLink.Fields.Icon, pageLinkLv2.Item, new { disableWebEditing = true })
                                                                                                     @pageLinkLv2.GetBestLinkText()
                                                                                                 </a>
@@ -65,21 +81,24 @@
                                                     }
                                                 </menu>
                                                 @{
-                                                    var item = pageLinkLv.Item;
-                                                    if (item.IsChecked(Templates.Navigable.Fields.ShowNavigation))
+                                                    if (pageLinkLv.Item.FieldHasValue(Templates.ImageNavigationLink.Fields.Image)
+                                                    || pageLinkLv.Item.FieldHasValue(Templates.ImageNavigationLink.Fields.Title)
+                                                    || pageLinkLv.Item.FieldHasValue(Templates.ImageNavigationLink.Fields.Slogan)
+                                                    || pageLinkLv.Item.FieldHasValue(Templates.ImageNavigationLink.Fields.ButtonText)
+                                                    || pageLinkLv.Item.FieldHasValue(Templates.ImageNavigationLink.Fields.ButtonLink))
                                                     {
                                                         <div class="c-menu__banner">
                                                             <article class="c-banner c-banner--menu">
-                                                                @Html.Sitecore().Field(Templates.ImageNavigationLink.Fields.Image, item, new { @class = "c-banner__img", disableWebEditing = true })
+                                                                @Html.Sitecore().Field(Templates.ImageNavigationLink.Fields.Image, pageLinkLv.Item, new { @class = "c-banner__img", disableWebEditing = true })
                                                                 <div class="c-banner__content">
-                                                                    <h3 class="c-banner__title">@item.Field(Templates.ImageNavigationLink.Fields.Title)</h3>
-                                                                    <p class="c-banner__slogan">@item.Field(Templates.ImageNavigationLink.Fields.Slogan)</p>
+                                                                    <h3 class="c-banner__title">@pageLinkLv.Item.Field(Templates.ImageNavigationLink.Fields.Title)</h3>
+                                                                    <p class="c-banner__slogan">@pageLinkLv.Item.Field(Templates.ImageNavigationLink.Fields.Slogan)</p>
                                                                     <div class="c-banner__actions">
                                                                         @{
-                                                                            var link = item.GeneralLink(Templates.ImageNavigationLink.Fields.ButtonLink);
+                                                                            var link = pageLinkLv.Item.GeneralLink(Templates.ImageNavigationLink.Fields.ButtonLink);
                                                                             if (link != null && !string.IsNullOrEmpty(link.Url))
                                                                             {
-                                                                                <a href="@(link?.Url)" target="@(link?.Target)" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@item.Field(Templates.ImageNavigationLink.Fields.ButtonText)</a>
+                                                                                <a href="@(link?.Url)" target="@(link?.Target)" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@pageLinkLv.Item.Field(Templates.ImageNavigationLink.Fields.ButtonText)</a>
                                                                             }
                                                                         }
                                                                     </div>
