@@ -506,6 +506,9 @@
                         sortingInfo.push({ column: sortingColumn, direction: sortingDirection });
                     }
                 });
+                if (sortingInfo == "") {
+                    sortingInfo.push({ column: 'SixMonthReturnOriginalCurrency', direction: 'is-desc' });
+                }
                 return sortingInfo;
             }
 
