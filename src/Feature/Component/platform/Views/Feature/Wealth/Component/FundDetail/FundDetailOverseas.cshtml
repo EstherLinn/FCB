@@ -135,24 +135,16 @@
                     <div class="l-pageHeader__action u-hidden-embed">
                         <ul class="l-pageWallet">
                             <li class="l-pageWallet__item">
-                                <a href="javascript:;" data-focus
-                                   data-type="@InvestTypeEnum.Fund" data-id="@BasicData.ProductCode" data-name="@BasicData.ProductName"
-                                   class="o-statusBtn o-statusBtn--like" data-eh="focus-init,focus-click"
-                                   data-after="關注" data-msg="加入關注|取消關注" data-ia="true" data-add="false"></a>
+                                @Html.FocusButton(null, BasicData.ProductCode, BasicData.FundName, InvestTypeEnum.Fund, false)
                             </li>
                             <li class="l-pageWallet__item">
-                                <a href="javascript;" data-compare
-                                   data-type="@InvestTypeEnum.Fund" data-id="@BasicData.ProductCode" data-name="@BasicData.ProductName"
-                                   data-eh="compare-init,compare-click" class="o-statusBtn o-statusBtn--compare "
-                                   data-after="比較" data-msg="加入比較|取消比較" data-ia="true" data-add="false"></a>
+                                @Html.CompareButton(null, BasicData.ProductCode, BasicData.FundName, InvestTypeEnum.Fund, false)
                             </li>
                             @if (BasicData.OnlineSubscriptionAvailability.ToBoolean())
                             {
-                                <li class="l-pageWallet__btn">
-                                    <a href="#" data-eh="subscription-init,subscription-click"
-                                       eh-subscription-init class="o-fixedBtn" data-popup="true"
-                                       data-type="@InvestTypeEnum.Fund" data-id="@BasicData.ProductCode">申購</a>
-                                </li>
+                        <li class="l-pageWallet__btn">
+                            @Html.SubscriptionButton(null, BasicData.ProductCode, InvestTypeEnum.Fund, false)
+                        </li>
                             }
                         </ul>
                     </div>
@@ -218,7 +210,7 @@
                             <div class="c-zebraList__title">計價幣別 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true">i</a></div>
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
-                                    @Html.Partial("~/Views/Project/Wealth/Partial/Currency.cshtml", BasicData.ValuationCurrency)
+                                    @Html.CurrencyLink(null,BasicData.ValuationCurrency)
                                 </span>
                             </div>
                         </div>
@@ -2858,6 +2850,7 @@
                 {
                     fundId : fundId
                 },
+                beforeSend: function () {window.loading('show'); },
                 success: function (result) {
                     if (result && result.resultSet.result.length > 0) {
                         const set = new Set();
@@ -2883,9 +2876,11 @@
                     } else {
                           $('#fundSelect').find("select").addClass('u-hidden');
                     }
+                    window.loading('hide');
                 },
                 error: function (err) {
-                  console.log(err) },
+                    console.log(err);
+                    window.loading('hide');},
             });
 
             //國內外基金-PDF
