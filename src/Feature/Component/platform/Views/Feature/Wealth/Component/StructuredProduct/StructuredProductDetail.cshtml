@@ -14,78 +14,6 @@
                 return;
             };
 
-            $('[data-trend-filter="dateRange"]').on('change', function () {
-
-                function getParams() {
-                    const obj = {
-                        trend: $('[data-trend-filter="trend"]:checked').val(),
-                        range: $('[data-trend-filter="dateRange"]:checked').length > 0 ? $('[data-trend-filter="dateRange"]:checked').val() : "custom",
-                        startdate: $('[data-trend-filter="inputStart"]').val(),
-                        enddate: $('[data-trend-filter="inputEnd"]').val(),
-                    };
-
-                    let today = new Date();
-
-                    function CalDateRange(month) {
-                        let set = new Date().setMonth(new Date().getMonth() - month);
-                        let setDate = new Date(set);
-                        return setDate.getFullYear() + "-" + ((setDate.getMonth() + 1) < 10 ? "0" + (setDate.getMonth() + 1) : (setDate.getMonth() + 1)) + "-" + setDate.getDate();
-                    }
-
-                    if (!obj.startdate && !obj.enddate) {
-                        switch (obj.range) {
-                            case 'sinceYear':
-                                obj.startdate = today.getFullYear() + "-" + "01-01";
-                                obj.enddate = today.toISOString().split('T')[0];
-                                break;
-                            case '1m':
-                                obj.startdate = CalDateRange(3)
-                                obj.enddate = today.toISOString().split('T')[0];
-                                break;
-                            case '3m':
-                                obj.startdate = CalDateRange(3);
-                                obj.enddate = today.toISOString().split('T')[0];
-                                break;
-                            case '6m':
-                                obj.startdate = CalDateRange(6);
-                                obj.enddate = today.toISOString().split('T')[0];
-                                break;
-                            case '12m':
-                                obj.startdate = CalDateRange(12);
-                                obj.enddate = today.toISOString().split('T')[0];
-                                break;
-                            case '24m':
-                                obj.startdate = CalDateRange(24);
-                                obj.enddate = today.toISOString().split('T')[0];
-                                break;
-                            case '36m':
-                                obj.startdate = CalDateRange(36);
-                                obj.enddate = today.toISOString().split('T')[0];
-                                break;
-                            case '60m':
-                                obj.startdate = CalDateRange(60);
-                                obj.enddate = today.toISOString().split('T')[0];
-                                break;
-                            case 'establishment':
-                                obj.startdate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
-                                obj.enddate = today.toISOString().split('T')[0];
-                                break;
-                        }
-                        $('[data-trend-filter="inputStart"]').val(obj.startdate.replaceAll('-', '/'));
-                        $('[data-trend-filter="inputEnd"]').val(obj.enddate.replaceAll('-', '/'));
-                        $('[data-trend-filter="inputStart"]').datepicker('setDate', obj.startdate.replaceAll('-', '/'));
-                        $('[data-trend-filter="inputEnd"]').datepicker('setDate', obj.enddate.replaceAll('-', '/'));
-                    } else {
-                        obj.startdate = obj.startdate.replaceAll('/', '-');
-                        obj.enddate = obj.enddate.replaceAll('/', '-');
-                    }
-                }
-
-                $('[data-trend-filter="inputStart"], [data-trend-filter="inputEnd"]').val('');
-                $('[data-chart="trend"] .l-form').removeClass('is-error');
-                getParams();
-            }).trigger("change");
-
             var data = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
 
             // 產品資訊 資料
@@ -212,9 +140,9 @@
 
                 var sorteddata = data.sort(function (a, b) {
                     if (orderby === 'is-desc') {
-                        return a.currencyorder - b.currencyorder;
+                        return a.CurrencyOrder - b.CurrencyOrder;
                     } else if (orderby === 'is-asc') {
-                        return b.currencyorder - a.currencyorder;
+                        return b.CurrencyOrder - a.CurrencyOrder;
                     }
                 });
 
@@ -324,7 +252,7 @@
             // 參考贖回價 走勢圖
             getParams();
             $('[data-trend-filter="dateRange"]').on('change', function () {
-                /*$('[data-trend-filter="inputStart"], [data-trend-filter="inputEnd"]').val('');*/
+                $('[data-trend-filter="inputStart"], [data-trend-filter="inputEnd"]').val('');
                 $('[data-chart="trend"] .l-form').removeClass('is-error');
                 getParams();
             });
@@ -419,6 +347,11 @@
 
                     obj.startDate = calculateDateRange(obj.range).startDate;
                     obj.endDate = calculateDateRange(obj.range).endDate;
+
+                    $('[data-trend-filter="inputStart"]').val(obj.startDate.toLocaleDateString());
+                    $('[data-trend-filter="inputEnd"]').val(obj.endDate.toLocaleDateString());
+                    $('[data-trend-filter="inputStart"]').datepicker('setDate', obj.startDate.toLocaleDateString());
+                    $('[data-trend-filter="inputEnd"]').datepicker('setDate', obj.endDate.toLocaleDateString());
                 }
 
 
@@ -538,7 +471,7 @@
                                     split: false,
                                     useHTML: true,
                                     formatter: function () {
-                                        const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '</div>';
+                                        const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + this.point.name + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '</div>';
                                         return tooltip;
                                     },
                                     shadow: {
