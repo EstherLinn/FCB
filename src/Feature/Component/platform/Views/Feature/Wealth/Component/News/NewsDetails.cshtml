@@ -1,0 +1,102 @@
+﻿@using Feature.Wealth.Component.Models.News
+@model NewsModel
+
+@if (Model.Datasource == null)
+{
+    return;
+}
+
+<div class="l-wrap">
+    <div class="c-article">
+        <div class="c-article__head">
+            @if (!string.IsNullOrEmpty(Model.Category))
+            {
+                <div class="c-article__tag">
+                    <span class="o-hangTag o-hangTag--gn">@Model.Category</span>
+                </div>
+            }
+            <div class="c-article__title">@Html.Sitecore().Field(Templates.NewsDetails.Fields.PageTitle.ToString(), Model.Datasource)</div>
+        </div>
+        <div class="c-article__extra">
+            <div class="c-minorInfo s4">
+                <div class="c-minorInfo__main">
+                    <span class="t-date">@Model.Date</span>
+                </div>
+            </div>
+        </div>
+        <div class="c-article__source">@Html.Sitecore().Field(Templates.NewsDetails.Fields.Description.ToString(), Model.Datasource)</div>
+        <div class="c-article__content">
+            <div class="c-section">
+                <figure class="o-figure">
+                    @if (!string.IsNullOrEmpty(Model.Image))
+                    {
+                        <img src="@Model.Image" srcset="" class="o-figure__img" alt="">
+                    }
+                    <figcaption class="o-figure__caption">@Html.Sitecore().Field(Templates.NewsDetails.Fields.ImageCaption.ToString(), Model.Datasource)</figcaption>
+                </figure>
+            </div>
+            <div class="c-section">
+                <p class="l-paragraph">
+                    @Html.Sitecore().Field(Templates.NewsDetails.Fields.Content.ToString(), Model.Datasource)
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="l-sharebar">
+    <div class="l-sharebar__wrap">
+        <div class="l-sharebar__content">
+            <div class="l-flex l-flex--inline u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <!-- [data-popover]: 彈跳視窗功能，值為彈跳視窗的 selector -->
+                    <a href="#" class="o-btn o-btn--primary o-btn--icon" data-popover="#popoverInsightNewsShare02">
+                        <img src="@Url.Content("~/themes/images/icons/white/share.svg")" alt="分享">分享
+                    </a>
+                    <div id="popoverInsightNewsShare02" class="c-popover c-popover--auto u-left">
+                        <div class="c-popover__wrap">
+                            <nav class="c-popover__main">
+                                <ul class="l-flex u-flex-col u-flex-gap-md s4">
+                                    <li class="l-flex__item">
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u=" class="o-social o-social--sm o-social--fb" target="_blank" data-share>
+                                            <span class="u-hidden@mb-only">Facebook</span>
+                                        </a>
+                                    </li>
+                                    <li class="l-flex__item">
+                                        <a href="https://social-plugins.line.me/lineit/share?url=" class="o-social o-social--sm o-social--line" target="_blank" data-share>
+                                            <span class="u-hidden@mb-only">LINE</span>
+                                        </a>
+                                    </li>
+                                    <li class="l-flex__item">
+                                        <div class="l-copy" data-copy>
+                                            <div class="l-copy__action">
+                                                <a href="#" class="o-social o-social--sm o-social--copy" data-copy-action>
+                                                    <span class="u-hidden@mb-only">複製網址</span>
+                                                </a>
+                                            </div>
+                                            <div class="l-copy__msg">
+                                                <div class="o-tooltip o-tooltip--relative o-tooltip--top" data-copy-msg>
+                                                    <div class="o-tooltip__content u-nowrap">已複製</div>
+                                                    <div class="o-tooltip__arrow"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function ($, window, document) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+        });
+    })(jQuery, window, document);
+</script>

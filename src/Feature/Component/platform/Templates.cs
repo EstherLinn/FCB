@@ -18,5 +18,10 @@ namespace Feature.Wealth.Component
 
             }
         }
+
+        public struct DropdownOption
+        {
+            public static readonly ID OptionText = new ID("{8532457A-4AF0-488D-8C45-34AC0AE7A859}");
+        }
     }
 }
