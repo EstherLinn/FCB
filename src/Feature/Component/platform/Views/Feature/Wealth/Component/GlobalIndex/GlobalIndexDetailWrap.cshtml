@@ -192,13 +192,13 @@
                         <div class="l-flex__item" data-chart="kLine">
                             <div class="c-empty">
                                 <div class="c-empty__img">
-                                    <img src="./../../themes/images/lions/lion-keyword.svg" alt="">
+                                    <img src="~/themes/images/lions/lion-keyword.svg" alt="">
                                 </div>
                                 <div class="c-empty__desc">沒有資料</div>
                             </div>
                             <div class="c-error">
                                 <div class="c-error__img">
-                                    <img src="./../../themes/images/lions/lion-construction.svg" alt="">
+                                    <img src="~/themes/images/lions/lion-construction.svg" alt="">
                                 </div>
                                 <div class="c-error__desc">不好意思~伺服器出了一點小狀況。請您晚點再來！</div>
                             </div>
@@ -355,6 +355,18 @@
                                     </thead>
                                     <tbody id="FundPriceTBody"></tbody>
                                 </table>
+                                <div class="c-empty" empty-error-name="fundPrice-empty">
+                                    <div class="c-empty__img">
+                                        <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                                    </div>
+                                    <div class="c-empty__desc">沒有資料</div>
+                                </div>
+                                <div class="c-error" empty-error-name="fundPrice-error">
+                                    <div class="c-error__img">
+                                        <img src="~/themes/images/lions/lion-construction.svg" alt="">
+                                    </div>
+                                    <div class="c-error__desc">不好意思~伺服器出了一點小狀況。請您晚點再來！</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -484,6 +496,18 @@
                                     </thead>
                                     <tbody id="ETFPriceTBody"></tbody>
                                 </table>
+                                <div class="c-empty" empty-error-name="ETFPrice-empty">
+                                    <div class="c-empty__img">
+                                        <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                                    </div>
+                                    <div class="c-empty__desc">沒有資料</div>
+                                </div>
+                                <div class="c-error" empty-error-name="ETFPrice-error">
+                                    <div class="c-error__img">
+                                        <img src="~/themes/images/lions/lion-construction.svg" alt="">
+                                    </div>
+                                    <div class="c-error__desc">不好意思~伺服器出了一點小狀況。請您晚點再來！</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -615,6 +639,18 @@
                                     </thead>
                                     <tbody id="GlobalIndexTBody"></tbody>
                                 </table>
+                                <div class="c-empty" empty-error-name="globalIndex-empty">
+                                    <div class="c-empty__img">
+                                        <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                                    </div>
+                                    <div class="c-empty__desc">沒有資料</div>
+                                </div>
+                                <div class="c-error" empty-error-name="globalIndex-error">
+                                    <div class="c-error__img">
+                                        <img src="~/themes/images/lions/lion-construction.svg" alt="">
+                                    </div>
+                                    <div class="c-error__desc">不好意思~伺服器出了一點小狀況。請您晚點再來！</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -754,117 +790,165 @@
             }
 
             if (RelevantGlobalIndex_Success == "Success") {
-                var fjs1 = FilterJS(RelevantGlobalIndex, '#GlobalIndexTBody', {
-                    template: '#template',
-                    callbacks: {
-                        afterFilter: function (result) {
-                            window.loading('hide');
-                        }
-                    },
-                    search: {},
-                    order: {
-                        default_sort: 'asc',
-                        sorts: [
-                            { field: 'group1', ele: 'select[data-sorting-linkto="globalIndexTable"]' },
-                        ],
-                        onSortEvent: function (f, e) {
-                            let $self = $(this);
-                            if (e.type === 'click') {
-
-                            } else if (e.type === 'change') {
-                                let $selected = $self.find(':selected');
-                                let field = $selected.data('sorting-column');
-                                let order = $selected.data('sorting-class');
-                                f.field = field;
-                                if (!!order) {
-                                    if (order === 'is-desc') {
-                                        f.order = 'desc';
-                                    } else if (order === 'is-asc') {
-                                        f.order = 'asc';
-                                    }
-                                } else {
-                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
-                                }
+                if (RelevantGlobalIndex.length > 0) {
+                    var fjs1 = FilterJS(RelevantGlobalIndex, '#GlobalIndexTBody', {
+                        template: '#template',
+                        callbacks: {
+                            afterFilter: function (result) {
+                                window.loading('hide');
                             }
                         },
-                    }
-                });
+                        search: {},
+                        order: {
+                            default_sort: 'asc',
+                            sorts: [
+                                { field: 'group1', ele: 'select[data-sorting-linkto="globalIndexTable"]' },
+                            ],
+                            onSortEvent: function (f, e) {
+                                let $self = $(this);
+                                if (e.type === 'click') {
+
+                                } else if (e.type === 'change') {
+                                    let $selected = $self.find(':selected');
+                                    let field = $selected.data('sorting-column');
+                                    let order = $selected.data('sorting-class');
+                                    f.field = field;
+                                    if (!!order) {
+                                        if (order === 'is-desc') {
+                                            f.order = 'desc';
+                                        } else if (order === 'is-asc') {
+                                            f.order = 'asc';
+                                        }
+                                    } else {
+                                        f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                    }
+                                }
+                            },
+                        }
+                    });
+
+                    $('[data-table-name="globalIndexTable"]').removeClass('u-hidden');
+                    $('[empty-error-name="globalIndex-empty"]').addClass('u-hidden');
+                    $('[empty-error-name="globalIndex-error"]').addClass('u-hidden');
+                }
+                else {
+                    $('[data-table-name="globalIndexTable"]').addClass('u-hidden');
+                    $('[empty-error-name="globalIndex-empty"]').removeClass('u-hidden');
+                    $('[empty-error-name="globalIndex-error"]').addClass('u-hidden');
+                }
+            }
+            else {
+                $('[data-table-name="globalIndexTable"]').addClass('u-hidden');
+                $('[empty-error-name="globalIndex-empty"]').addClass('u-hidden');
+                $('[empty-error-name="globalIndex-error"]').removeClass('u-hidden');
             }
 
             if (RelevantFund_Success == "Success") {
-                var fjs2 = FilterJS(RelevantFund, '#FundPriceTBody', {
-                    template: '#template',
-                    callbacks: {
-                        afterFilter: function (result) {
-                            window.loading('hide');
-                        }
-                    },
-                    search: {},
-                    order: {
-                        default_sort: 'asc',
-                        sorts: [
-                            { field: 'group1', ele: 'select[data-sorting-linkto="fundPriceTable"]' },
-                        ],
-                        onSortEvent: function (f, e) {
-                            let $self = $(this);
-                            if (e.type === 'click') {
-
-                            } else if (e.type === 'change') {
-                                let $selected = $self.find(':selected');
-                                let field = $selected.data('sorting-column');
-                                let order = $selected.data('sorting-class');
-                                f.field = field;
-                                if (!!order) {
-                                    if (order === 'is-desc') {
-                                        f.order = 'desc';
-                                    } else if (order === 'is-asc') {
-                                        f.order = 'asc';
-                                    }
-                                } else {
-                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
-                                }
+                if (RelevantFund.length > 0) {
+                    var fjs2 = FilterJS(RelevantFund, '#FundPriceTBody', {
+                        template: '#template',
+                        callbacks: {
+                            afterFilter: function (result) {
+                                window.loading('hide');
                             }
                         },
-                    }
-                });
+                        search: {},
+                        order: {
+                            default_sort: 'asc',
+                            sorts: [
+                                { field: 'group1', ele: 'select[data-sorting-linkto="fundPriceTable"]' },
+                            ],
+                            onSortEvent: function (f, e) {
+                                let $self = $(this);
+                                if (e.type === 'click') {
+
+                                } else if (e.type === 'change') {
+                                    let $selected = $self.find(':selected');
+                                    let field = $selected.data('sorting-column');
+                                    let order = $selected.data('sorting-class');
+                                    f.field = field;
+                                    if (!!order) {
+                                        if (order === 'is-desc') {
+                                            f.order = 'desc';
+                                        } else if (order === 'is-asc') {
+                                            f.order = 'asc';
+                                        }
+                                    } else {
+                                        f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                    }
+                                }
+                            },
+                        }
+                    });
+
+                    $('[data-table-name="fundPriceTable"]').removeClass('u-hidden');
+                    $('[empty-error-name="fundPrice-empty"]').addClass('u-hidden');
+                    $('[empty-error-name="fundPrice-error"]').addClass('u-hidden');
+                }
+                else {
+                    $('[data-table-name="fundPriceTable"]').addClass('u-hidden');
+                    $('[empty-error-name="fundPrice-empty"]').removeClass('u-hidden');
+                    $('[empty-error-name="fundPrice-error"]').addClass('u-hidden');
+                }
+            }
+            else {
+                $('[data-table-name="fundPriceTable"]').addClass('u-hidden');
+                $('[empty-error-name="fundPrice-empty"]').addClass('u-hidden');
+                $('[empty-error-name="fundPrice-error"]').removeClass('u-hidden');
             }
 
             if (RelevantETF_Success == "Success") {
-                var fjs3 = FilterJS(RelevantETF, '#ETFPriceTBody', {
-                    template: '#template',
-                    callbacks: {
-                        afterFilter: function (result) {
-                            window.loading('hide');
-                        }
-                    },
-                    search: {},
-                    order: {
-                        default_sort: 'asc',
-                        sorts: [
-                            { field: 'group1', ele: 'select[data-sorting-linkto="ETFPriceTable"]' },
-                        ],
-                        onSortEvent: function (f, e) {
-                            let $self = $(this);
-                            if (e.type === 'click') {
-
-                            } else if (e.type === 'change') {
-                                let $selected = $self.find(':selected');
-                                let field = $selected.data('sorting-column');
-                                let order = $selected.data('sorting-class');
-                                f.field = field;
-                                if (!!order) {
-                                    if (order === 'is-desc') {
-                                        f.order = 'desc';
-                                    } else if (order === 'is-asc') {
-                                        f.order = 'asc';
-                                    }
-                                } else {
-                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
-                                }
+                if (RelevantETF.length > 0) {
+                    var fjs3 = FilterJS(RelevantETF, '#ETFPriceTBody', {
+                        template: '#template',
+                        callbacks: {
+                            afterFilter: function (result) {
+                                window.loading('hide');
                             }
                         },
-                    }
-                });
+                        search: {},
+                        order: {
+                            default_sort: 'asc',
+                            sorts: [
+                                { field: 'group1', ele: 'select[data-sorting-linkto="ETFPriceTable"]' },
+                            ],
+                            onSortEvent: function (f, e) {
+                                let $self = $(this);
+                                if (e.type === 'click') {
+
+                                } else if (e.type === 'change') {
+                                    let $selected = $self.find(':selected');
+                                    let field = $selected.data('sorting-column');
+                                    let order = $selected.data('sorting-class');
+                                    f.field = field;
+                                    if (!!order) {
+                                        if (order === 'is-desc') {
+                                            f.order = 'desc';
+                                        } else if (order === 'is-asc') {
+                                            f.order = 'asc';
+                                        }
+                                    } else {
+                                        f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                    }
+                                }
+                            },
+                        }
+                    });
+
+                    $('[data-table-name="ETFPriceTable"]').removeClass('u-hidden');
+                    $('[empty-error-name="ETFPrice-empty"]').addClass('u-hidden');
+                    $('[empty-error-name="ETFPrice-error"]').addClass('u-hidden');
+                }
+                else{
+                    $('[data-table-name="ETFPriceTable"]').addClass('u-hidden');
+                    $('[empty-error-name="ETFPrice-empty"]').removeClass('u-hidden');
+                    $('[empty-error-name="ETFPrice-error"]').addClass('u-hidden');
+                }
+            }
+            else{
+                $('[data-table-name="ETFPriceTable"]').addClass('u-hidden');
+                $('[empty-error-name="ETFPrice-empty"]').addClass('u-hidden');
+                $('[empty-error-name="ETFPrice-error"]').removeClass('u-hidden');
             }
 
             //為了不讓 plugins.min.js 統一 fixedColumns

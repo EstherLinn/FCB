@@ -1732,8 +1732,8 @@
                                     <input type="radio" name="exchangeRate" value="主要匯率" checked class="o-pelletbox__input">
                                     <span class="o-pelletbox__text">主要匯率</span>
                                 </label><label class="o-pelletbox__item">
-                                    <input type="radio" name="exchangeRate" value="亞州匯率" class="o-pelletbox__input">
-                                    <span class="o-pelletbox__text">亞州匯率</span>
+                                    <input type="radio" name="exchangeRate" value="亞洲匯率" class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">亞洲匯率</span>
                                 </label><label class="o-pelletbox__item">
                                     <input type="radio" name="exchangeRate" value="歐非中東匯率" class="o-pelletbox__input">
                                     <span class="o-pelletbox__text">歐非中東匯率</span>
@@ -1857,7 +1857,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="亞州匯率" style="display: none;">
+                        <div class="l-flex__item" id="亞洲匯率" style="display: none;">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -2270,10 +2270,10 @@
                     $('#' + $(this).val()).show();
                 });
             }
-            else if (val == '主要匯率' || val == '亞州匯率' || val == '歐非中東匯率') {
+            else if (val == '主要匯率' || val == '亞洲匯率' || val == '歐非中東匯率') {
                 $(el).on("click", function () {
                     $('#主要匯率').hide();
-                    $('#亞州匯率').hide();
+                    $('#亞洲匯率').hide();
                     $('#歐非中東匯率').hide();
 
                     $('#' + $(this).val()).show();
