@@ -310,6 +310,43 @@ namespace Feature.Wealth.Component.Repositories
             return result;
         }
 
+        public async Task<JObject> GetMarketNewsData(string id, string count, string startDatetime, string endDatetime)
+        {
+            JObject result = null;
+            var request = await _route.
+           AppendPathSegments("api", "News", "kmdjnews", "type", id, count).
+           SetQueryParams(new
+           {
+               startdate = startDatetime,
+               enddate = endDatetime
+           }).
+           WithOAuthBearerToken(_token).
+           GetAsync().
+           ReceiveString();
+
+            if (!string.IsNullOrEmpty(request))
+            {
+                result = JObject.Parse(request);
+            }
+            return result;
+        }
+
+        public async Task<JObject> GetMarketNewsDetailData(string guid)
+        {
+            JObject result = null;
+            var request = await _route.
+           AppendPathSegments("api", "News", "kmdjnews", "content", guid).
+           WithOAuthBearerToken(_token).
+           GetAsync().
+           ReceiveString();
+
+            if (!string.IsNullOrEmpty(request))
+            {
+                result = JObject.Parse(request);
+            }
+            return result;
+        }
+
         #region ETF
 
         private readonly ILog _log = Logger.Api;
