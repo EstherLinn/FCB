@@ -64,12 +64,12 @@
 					</ul>
 				</div>
 			</td>
-			<td class="c-cardTable__footer" data-card-table-width="1/3">
-				@if (item.OnlineSubscriptionAvailability == "Y")
-				{
+			@if (item.OnlineSubscriptionAvailability == "Y")
+			{
+				<td class="c-cardTable__footer" data-card-table-width="1/3">
 					<div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
-				}
-			</td>
+				</td>
+			}
 		</tr>
 	}
 }
