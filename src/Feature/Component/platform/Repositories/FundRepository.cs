@@ -503,7 +503,6 @@ namespace Feature.Wealth.Component.Repositories
         public List<FundScaleRecord> GetScaleMove(string fundId, string domesticOroverseas = nameof(FundEnum.D))
         {
             string tableName = domesticOroverseas == nameof(FundEnum.D) ? "[Sysjust_Fundsize_Fund_2]" : "[Sysjust_Fundsize_Fund_1]";
-            string field = domesticOroverseas == nameof(FundEnum.D) ? "REPLACE(CONVERT(VARCHAR(12), CONVERT(MONEY, [Scale] / 100000), 1), '.00', '') [Scale]" : "CONVERT(MONEY, [Scale]/1000) [Scale]";
             List<FundScaleRecord> fundScaleMove = new List<FundScaleRecord>();
             var sql = $@" ;WITH CTE AS (
                              SELECT * FROM {tableName} (NOLOCK)
@@ -511,7 +510,7 @@ namespace Feature.Wealth.Component.Repositories
                             )
                             SELECT [FirstBankCode]
                                 ,FORMAT([ScaleDate],'yyyy/MM/dd') [ScaleDate]
-                                 , {field}
+                                 , CONVERT(MONEY, [Scale]/1000) [Scale]
                                  ,[Currency]
                               FROM CTE
                               WHERE [ScaleDate] >= CAST(CAST(YEAR(DATEADD(YEAR,-2,(SELECT MAX([ScaleDate]) FROM CTE))) AS varchar(4))+'-01-01' AS smalldatetime)

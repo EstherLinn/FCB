@@ -77,7 +77,7 @@
                                 <div class="l-detailInfo__item">
                                     <div class="c-numerical">
                                         <div class="c-numerical__title u-left@dt-only"><span>最新淨值</span></div>
-                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@BasicData.NetAssetValue.FormatDecimalNumber()</span><span class="t-unit">@BasicData.ValuationCurrency</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@BasicData.NetAssetValue.FormatDecimalNumber(4)</span><span class="t-unit">@BasicData.ValuationCurrency</span></div>
                                     </div>
                                 </div>
                                 <div class="l-detailInfo__item">
@@ -223,7 +223,7 @@
                             <div class="c-zebraList__content"><span class="t-bold">@BasicData.FundTypeName.CheckNullOrEmptyString()</span></div>
                         </div>
                         <div class="c-zebraList__item">
-                            <div class="c-zebraList__title">基金評等 <a href="https://www.moneydj.com/funddj/notes/FundRating/Fund_Page.htm" class="o-icon o-icon--external o-icon--xs"></a></div>
+                            <div class="c-zebraList__title">基金評等 <a href="https://www.moneydj.com/funddj/notes/FundRating/Fund_Page.htm" target="_blank" class="o-icon o-icon--external o-icon--xs"></a></div>
                             <div class="c-zebraList__content">
                                 <div class="o-starLevel o-starLevel--sm">
                                     @{
@@ -618,7 +618,7 @@
                                             </td>
                                             <td>
                                                 <span class="@(item.FundPriceChange.DecimalNumberToStyle())">
-                                                    @item.FundPriceChange.FormatDecimalNumber()
+                                                    @item.FundPriceChange.FormatDecimalNumber(4)
                                                 </span>
                                             </td>
                                             <td>
@@ -2702,8 +2702,7 @@
 </div>
 
 <script>
-    var getUrlString = location.href;
-    var url = new URL(getUrlString);
+    var url = new URL(location.href);
     var fundId = url.searchParams.get('id');
 </script>
 
@@ -2715,65 +2714,9 @@
                   return;
             }
             $('body').addClass("has-bottomTool");
-            function checkItemExists(key, value) {
-                let existingEntries = JSON.parse(localStorage.getItem(key) || '[]');
-                if (!existingEntries.includes(value)) {
-                    return false;
-                } else
-                {
-                    return true;
-                }
-            }
-            function addItem(key,value) {
-                let existingEntries = JSON.parse(localStorage.getItem(key) || '[]');
-                if (!existingEntries.includes(value)) {
-                    existingEntries.push(value);
-                    localStorage.setItem(key, JSON.stringify(existingEntries));
-                }
-            }
-            function removeItem(key, value) {
-                let existingEntries = JSON.parse(localStorage.getItem(key) || '[]');
-                if (existingEntries.includes(value)) {
-                    existingEntries.splice(existingEntries.indexOf(value),1);
-                    localStorage.setItem(key, JSON.stringify(existingEntries));
-                }
-            }
-
-
-            $('#closeFiveYearsLink').attr("href", $('#closeFiveYearsLink').attr("href") + "?id=" + fundId);
-            if (checkItemExists("FocusFundId",fundId)  ) {
-                $('#focusBtn').addClass('is-active');
-                $('#focusBtn').data('add',"true");
-            }
-            if (checkItemExists("CompareFundId", fundId)) {
-                $('#compareBtn').addClass('is-active');
-                $('#compareBtn').data('add',"true");
-            }
-            $('#focusBtn').on('click', function () {
-                if ($(this).data('add') == "false")
-                {
-                    addItem('FocusFundId', fundId);
-                    $(this).data('add',"true");
-                } else {
-                    removeItem('FocusFundId', fundId);
-                     $(this).data('add',"false");
-                }
-            });
-            $('#compareBtn').on('click', function () {
-
-                if ($(this).data('add') == "false") {
-                    addItem('CompareFundId', fundId);
-               $(this).data('add',"true");
-
-                } else {
-                    removeItem('CompareFundId', fundId);
-               $(this).data('add',"false");
-
-                }
-            });
               function emptyValueToDash (str)
               {
-              if(str == null || str.trim().length == 0) {
+                  if (str == null || str.replace(/\s/g, "").length == 0) {
                   return "-"
                   }
               else{
@@ -2806,7 +2749,7 @@
             });
             $('[name="currency1"]').trigger('change');
             //配息紀錄
-        let dividendData = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundDividendRecords));
+            let dividendData = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundDividendRecords)));
           if(dividendData.length > 0){
               $('#dividendCurrency').html(`每單位配息<br class="u-hidden@dt-only">金額(${dividendData[0].Currency.trim()})`);
         const dividendYearData = dividendData.map((item) => new Date(item.BaseDate).getFullYear()).filter(function (element, index, arr) {
@@ -2898,14 +2841,16 @@
                     {
                         //公開說明書
                         $('#openDoc').removeClass("u-hidden")
-                        $('#openDoc').find('a').attr("href", result.resultSet.result[0].v1);
+                        $('#openDoc').find('a')[0].setAttribute("href", result.resultSet.result[0].v1);
                     } else
                     {
                         $('#openDoc').addClass("u-hidden")
-                        $('#openDoc').find('a').attr("href", "");
+                        $('#openDoc').find('a')[0].setAttribute("href", "");
                     }
                 },
-                error: function (err) {  console.log(err) },
+                error: function (err) {
+                    console.log(err);
+                   },
             });
             $.ajax({
                 url: `@FundDocLinkApiUrl`,
@@ -2919,13 +2864,15 @@
                     if (result && result.resultSet.result[0].v1) {
                         //財務報告書
                         $('#financialReportDoc').removeClass("u-hidden")
-                        $('#financialReportDoc').find('a').attr("href",  result.resultSet.result[0].v1);
+                        $('#financialReportDoc').find('a')[0].setAttribute("href",  result.resultSet.result[0].v1);
                     } else {
                         $('#financialReportDoc').addClass("u-hidden")
-                        $('#financialReportDoc').find('a').attr("href", "");
+                        $('#financialReportDoc').find('a')[0].setAttribute("href", "");
                     }
                 },
-                error: function (err) { console.log(err) },
+                error: function (err) {
+                    console.log(err);
+                    },
             });
             $.ajax({
                 url: `@FundDocLinkApiUrl`,
@@ -2939,13 +2886,15 @@
                     if (result &&  result.resultSet.result[0].v1) {
                         //基金月報
                         $('#monthReportDoc').removeClass("u-hidden")
-                        $('#monthReportDoc').find('a').attr("href",  result.resultSet.result[0].v1);
+                        $('#monthReportDoc').find('a')[0].setAttribute("href",  result.resultSet.result[0].v1);
                     } else {
                         $('#monthReportDoc').addClass("u-hidden")
-                        $('#monthReportDoc').find('a').attr("href", "");
+                        $('#monthReportDoc').find('a')[0].setAttribute("href", "");
                     }
                 },
-                error: function (err) { console.log(err) },
+                error: function (err) {
+                    console.log(err);
+                },
             });
             $.ajax({
                 url: `@FundDocLinkApiUrl`,
@@ -2959,13 +2908,14 @@
                     //投資人專屬
                     if (result &&  result.resultSet.result[0].v1) {
                         $('#investExclusiveDoc').removeClass("u-hidden")
-                        $('#investExclusiveDoc').find('a').attr("href",  result.resultSet.result[0].v1);
+                        $('#investExclusiveDoc').find('a')[0].setAttribute("href",  result.resultSet.result[0].v1);
                     } else {
                         $('#investExclusiveDoc').addClass("u-hidden")
-                        $('#investExclusiveDoc').find('a').attr("href", "");
+                        $('#investExclusiveDoc').find('a')[0].setAttribute("href", "");
                     }
                 },
-                error: function (err) { console.log(err) },
+                error: function (err) {
+                    console.log(err);},
             });
             $.ajax({
                url: `@FundDocLinkApiUrl`,
@@ -2979,13 +2929,14 @@
                     //投資人一般
                     if (result &&  result.resultSet.result[0].v1) {
                         $('#investNomnalDoc').removeClass("u-hidden")
-                        $('#investNomnalDoc').find('a').attr("href",  result.resultSet.result[0].v1);
+                        $('#investNomnalDoc').find('a')[0].setAttribute("href",  result.resultSet.result[0].v1);
                     } else {
                         $('#investNomnalDoc').addClass("u-hidden")
-                        $('#investNomnalDoc').find('a').attr("href", "");
+                        $('#investNomnalDoc').find('a')[0].setAttribute("href", "");
                     }
                 },
-                error: function (err) { console.log(err) },
+                error: function (err) {
+                    console.log(err);},
             });
 
             $.ajax({
@@ -3006,7 +2957,8 @@
                          $('#popupTradeRule').find('p').text("")
                     }
                 },
-                error: function (err) {console.log(err) },
+                error: function (err) {
+                    console.log(err);},
             });
             $.ajax({
                 url: `@FundRuleTextApiUrl`,
@@ -3290,7 +3242,7 @@
             async function initNetWorth() {
                 try {
 
-                    const data = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundCloseYearsNetValue));
+                    const data = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundCloseYearsNetValue)));
                     function roundToFourString(num) {
                         return num.toFixed(4);
                     }
@@ -3819,7 +3771,7 @@
                 try {
 
 
-                    const industryData =  @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundStockHoldings));
+                    const industryData = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundStockHoldings)));
                     if(industryData.length > 0){
                     mapIndustryData = industryData.map((item, index) => {
                         return {
@@ -3832,7 +3784,7 @@
                     industryUpdateDate = industryData[0].Date;
                     }
 
-                    const areaData = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundStockAreaHoldings));
+                    const areaData = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundStockAreaHoldings)));
                     if(areaData.length > 0){
                     mapAreaData = areaData.map((item, index) => {
                         return {
@@ -4124,18 +4076,19 @@
                                     zIndex: 5
                                 }
                             },
-                            series: [{
-                                id: selfData[0].firstBankCode,
-                                name: selfData[0].firstBankCode + selfData[0].fundName,
-                                color: '#238C6C',
-                                showInLegend: true,
-                                data: [{
+                            series: [otherData,
+                                {
                                     id: selfData[0].firstBankCode,
                                     name: selfData[0].firstBankCode + selfData[0].fundName,
-                                    x: selfData[0][standardField],
-                                    y: selfData[0][rateField]
+                                    color: '#238C6C',
+                                    showInLegend: true,
+                                    data: [{
+                                        id: selfData[0].firstBankCode,
+                                        name: selfData[0].firstBankCode + selfData[0].fundName,
+                                        x: selfData[0][standardField],
+                                        y: selfData[0][rateField]
+                                    }]
                                 }]
-                            }, otherData]
                         });
 
                         $('[data-chart="risk"]').find('.c-empty').addClass('u-hidden');
@@ -4176,7 +4129,7 @@
                     function numberComma(num) {
                         return num.toLocaleString();
                     };
-                    const data = @Html.Raw(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundScaleRecords));
+                    const data = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundScaleRecords)));
                     if (Object.keys(data).length != 0) {
                         let mapData = data.map((item, index) => {
                                 return {
