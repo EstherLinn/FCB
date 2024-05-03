@@ -16,7 +16,6 @@ namespace Feature.Wealth.Component.Controllers
     public class AwardFundController : Controller
     {
         private static AwardFundRepository _repository = new AwardFundRepository();
-
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
@@ -31,14 +30,15 @@ namespace Feature.Wealth.Component.Controllers
             return View("/Views/Feature/Wealth/Component/AwardFund/AwardFund.cshtml", viewModel);
         }
 
+
         [HttpPost]
-        public ActionResult GetSortedAwardFund(string orderby, string desc)
+        public async Task<ActionResult> GetSortedAwardFund(string orderby, string desc)
         {
             if (orderby.IsNullOrEmpty()) { orderby = "Year"; }
             if (desc.IsNullOrEmpty()) { desc = "is-desc"; }
 
-            Task<List<Funds>> award12024 = Task.Run(() => _repository.JsonPostAsync());
-            var awardFunds = award12024.Result;
+            List<Funds> award12024 = await _repository.JsonPostAsync();
+            var awardFunds = award12024;
 
             var property = typeof(Funds).GetProperty(orderby);
             if (desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase))
