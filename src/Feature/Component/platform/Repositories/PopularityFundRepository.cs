@@ -16,7 +16,7 @@ namespace Feature.Wealth.Component.Repositories
                    SELECT *
                    FROM [vw_BasicFund] 
                    ORDER BY ViewCount
-                   DESC,ProductCode
+                   DESC,SixMonthReturnOriginalCurrency DESC,ProductCode
                    """;
 
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
