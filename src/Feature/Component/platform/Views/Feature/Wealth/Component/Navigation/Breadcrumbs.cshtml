@@ -20,7 +20,7 @@
                     else
                     {
                         <li class="o-breadcrumb__item">
-                            @if (string.IsNullOrEmpty(node.Link.Url) || ix == 3)
+                            @if (string.IsNullOrEmpty(node.Link.Url) || ix == 2 || ix == 3)
                             {
                                 <span class="o-breadcrumb__link">@node.GetBestLinkText()</span>
                             }
