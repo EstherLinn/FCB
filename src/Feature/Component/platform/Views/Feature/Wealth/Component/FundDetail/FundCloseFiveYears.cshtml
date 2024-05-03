@@ -9,7 +9,7 @@
 <div class="l-mainstage">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
-            <h1 class="t-title">近5年不同級別報酬率與費用率比較</h1>
+            <h1 class="t-title">近五年不同級別報酬率與費用率比較</h1>
         </div>
 
     </div>
@@ -238,10 +238,10 @@
                             series: mapData
                         });
                         $.each(years, function (index, value) {
-                            $('#rateSelect').append(`<option value="${value}報酬率高到低" data-sorting-column="${value}" data-sorting-class="is-desc" data-idx=${index}>${value}報酬率高到低</option>`);
-                            $('#rateSelect').append(`<option value="${value}報酬率低到高" data-sorting-column="${value}" data-sorting-class="is-asc"data-idx=${index}>${value}報酬率低到高</option>`);
-                            $('#feeSelect').append(`<option value="${value}費用率高到低" data-sorting-column="${value}" data-sorting-class="is-desc" data-idx=${index}>${value}費用率高到低</option>`);
-                            $('#feeSelect').append(`<option value="${value}費用率低到高" data-sorting-column="${value}" data-sorting-class="is-asc" data-idx=${index}>${value}費用率低到高</option>`);
+                            $('#rateSelect')[0].innerHTML+= `<option value="${value}報酬率高到低" data-sorting-column="${value}" data-sorting-class="is-desc" data-idx=${index}>${value}報酬率高到低</option>`;
+                            $('#rateSelect')[0].innerHTML +=`<option value="${value}報酬率低到高" data-sorting-column="${value}" data-sorting-class="is-asc"data-idx=${index}>${value}報酬率低到高</option>`;
+                            $('#feeSelect')[0].innerHTML +=`<option value="${value}費用率高到低" data-sorting-column="${value}" data-sorting-class="is-desc" data-idx=${index}>${value}費用率高到低</option>`;
+                            $('#feeSelect')[0].innerHTML +=`<option value="${value}費用率低到高" data-sorting-column="${value}" data-sorting-class="is-asc" data-idx=${index}>${value}費用率低到高</option>`;
                         });
                         ShowRateTable(mapData, years);
                         ShowFeeTable(mapData, years);
