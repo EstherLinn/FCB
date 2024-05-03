@@ -1,7 +1,5 @@
-﻿using Feature.Wealth.Component.Models.TabCards;
-using Sitecore.Data;
+﻿using Sitecore.Data;
 using Sitecore.Data.Items;
-using System.Web;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.AnnouncementsAndWarnings
