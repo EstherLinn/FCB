@@ -1,0 +1,683 @@
+﻿@using Feature.Wealth.Component.Models.IndexRecommendation
+@model IndexRecommendationModel
+
+@if (Model == null)
+{
+	return;
+}
+
+<section class="c-block c-block--gn" data-aos="fade-up" data-aos-once="true">
+	<div class="c-block__wrap">
+		<div class="c-block__header">
+			<h2 class="c-block__title">@Html.Sitecore().Field(Template.IndexRecommendation.Fields.MainTitle.ToString(), Model.Item)</h2>
+		</div>
+		<div class="c-block__content">
+			<div class="c-tab" data-tab="true">
+				<div class="c-tab__header">
+					<ul class="c-tab__navs">
+						<!-- .is-active: 作用中的項目 -->
+						<!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+						<!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+						<li>
+							<a href="#" class="c-tab__item is-active" target="_self" title="基金" data-tab-target="tab-1">@Html.Sitecore().Field(Template.IndexRecommendation.Fields.Tab1Title.ToString(), Model.Item)</a>
+						</li>
+						<li style="display:none;">
+							<a href="#" class="c-tab__item " target="_self" title="ETF" data-tab-target="tab-2">@Html.Sitecore().Field(Template.IndexRecommendation.Fields.Tab2Title.ToString(), Model.Item)</a>
+						</li>
+						<li style="display:none;">
+							<a href="#" class="c-tab__item " target="_self" title="國外股票" data-tab-target="tab-3">@Html.Sitecore().Field(Template.IndexRecommendation.Fields.Tab3Title.ToString(), Model.Item)</a>
+						</li>
+						<li style="display:none;">
+							<a href="#" class="c-tab__item " target="_self" title="國外債券" data-tab-target="tab-4">@Html.Sitecore().Field(Template.IndexRecommendation.Fields.Tab4Title.ToString(), Model.Item)</a>
+						</li>
+					</ul>
+					<div class="c-tab__collapse">
+						<a href="#" class="c-tab__switch"></a>
+						<div class="c-tab__dropdown"><a href="#" class="c-tab__clone is-active" target="_self" title="基金" data-tab-target="tab-1">基金</a><a href="#" class="c-tab__clone " target="_self" title="ETF" data-tab-target="tab-2">ETF</a><a href="#" class="c-tab__clone " target="_self" title="國外股票" data-tab-target="tab-3">國外股票</a><a href="#" class="c-tab__clone " target="_self" title="國外債券" data-tab-target="tab-4">國外債券</a></div>
+					</div>
+				</div>
+				<!-- is-active: 作用中的項目 -->
+				<div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+					<div class="l-table">
+						<!-- .c-table@dt-only: 於桌機版本(@@dt = @@desktop)呈現標準表格樣式 -->
+						<!-- .c-cardTable@lt: 於桌機以下版本(@@lt = @@laptop)呈現卡片(破壞式表格)樣式 -->
+						<table class="c-table@dt-only c-table--surround c-cardTable@lt">
+							<colgroup>
+								<col style="width: 1%;">
+								<col style="width: auto;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+							</colgroup>
+							<thead>
+								<tr class="u-nowrap">
+									<th>
+										<div class="c-table__title">
+											<span>排行</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>基金名稱</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>最新淨值</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>幣別</span>
+											<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>當日漲跌幅</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>6個月績效</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>關注/比較</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>申購</span>
+										</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								@{
+									int itemCount = 0;
+								}
+								@foreach (var item in Model.HotFunds)
+								{
+									itemCount++;
+									<tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+										<!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+										<td class="c-cardTable__top"></td>
+										<!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+										<td class="c-cardTable__header">
+											<div class="c-cardTable__content">
+												@{
+													int ranking = itemCount;
+													string rankingClass = ranking == 1 ? "<span class=\"o-ranking o-ranking--1st\" data-before-lt=\"排行\"><i></i></span>" :
+													ranking == 2 ? "<span class=\"o-ranking o-ranking--2st\" data-before-lt=\"排行\"><i></i></span>" :
+													ranking == 3 ? "<span class=\"o-ranking o-ranking--3st\" data-before-lt=\"排行\"><i></i></span>" :
+													"<span class=\"o-ranking o-ranking\" data-before-lt=\"排行\"><span>" + itemCount + "</span></span>";
+												}
+												@(new HtmlString(rankingClass))
+											</div>
+										</td>
+										<td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+											<div class="c-cardTable__content">
+												<div class="l-target">
+													<div class="l-target__name">
+														<a href="@Model.FundDetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.ProductName</a>
+													</div>
+													@if (item.TargetName == "Y")
+													{
+														<div class="l-target__additional">
+															<ul class="l-tag">
+																<li class="l-tag__item">
+																	<a href="#" class="o-tag">百元基金</a>
+																</li>
+															</ul>
+														</div>
+													}
+
+												</div>
+											</div>
+										</td>
+										<!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+										<td class="c-cardTable__space"></td>
+										<!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+										<!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+										<td class="c-cardTable__body" data-card-table-width="1/2">
+											<!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+											<div class="c-cardTable__title" data-length="5">最新淨值</div>
+											<div class="c-cardTable__content">@item.NetAssetValue</div>
+										</td>
+										<td class="c-cardTable__body" data-card-table-width="1/2">
+											<div class="c-cardTable__title" data-length="5">
+												幣別
+												<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+											</div>
+											<div class="c-cardTable__content">
+												<a href="#popupCurrencyWebSite" class="o-link" data-popup="true">@item.CurrencyName</a>
+											</div>
+										</td>
+										<td class="c-cardTable__body" data-card-table-width="1/2">
+											<div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
+											<div class="c-cardTable__content">
+												@if (item.PercentageChangeInFundPrice < 0)
+												{
+													<span class="o-fall">@item.PercentageChangeInFundPriceFormat%</span>
+												}
+												else
+												{
+													<span class="o-rise">@item.PercentageChangeInFundPrice%</span>
+												}
+											</div>
+										</td>
+										<td class="c-cardTable__body" data-card-table-width="1/2">
+											<div class="c-cardTable__title" data-length="5">6個月績效</div>
+											<div class="c-cardTable__content">
+												@if (item.SixMonthReturnOriginalCurrency < 0)
+												{
+													<span class="o-fall">@item.SixMonthReturnOriginalCurrencyForamt%</span>
+												}
+												else
+												{
+													<span class="o-rise">@item.SixMonthReturnOriginalCurrency%</span>
+												}
+											</div>
+										</td>
+										<!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+										<td class="c-cardTable__space"></td>
+										<!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+										<td class="c-cardTable__footer" data-card-table-width="2/3">
+											<div class="c-cardTable__content">
+												<ul class="l-collect l-collect--divider@lt">
+													<li class="l-collect__item">
+														<!-- [data-after-lt]: pad / mobile 自動顯示文字，值為要顯示的文字 --><!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+														<!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+														<a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+													</li>
+													<li class="l-collect__item">
+														<!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+														<!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+														<!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+														<a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+													</li>
+												</ul>
+											</div>
+										</td>
+										<td class="c-cardTable__footer" data-card-table-width="1/3">
+											<div class="c-cardTable__content">
+											@if (item.OnlineSubscriptionAvailability == "Y")
+											{
+												<a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+											}
+											</div>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+						<div class="l-dataNotes"><span class="t-date">資料日期：@Model.NetAssetValueDate.ToString("yyyy/MM/dd")</span></div>
+					</div>
+					<div class="l-action">
+						<div class="l-action__item">
+							@Html.Sitecore().BeginField(Template.IndexRecommendation.Fields.Tab1ButtonLink.ToString(), Model.Item, new { haschildren = true, @class = "o-btn o-btn--secondary o-btn--lg" })
+							@Html.Sitecore().Field(Template.IndexRecommendation.Fields.Tab1ButtonText.ToString(), Model.Item)
+							@Html.Sitecore().EndField()
+						</div>
+					</div>
+				</div>
+				<div class="c-tab__panel" data-tab-panel-id="tab-2">
+					<div class="l-table">
+						<table class="c-table@dt-only c-table--surround c-cardTable@lt">
+							<colgroup>
+								<col style="width: 1%;">
+								<col style="width: auto;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+							</colgroup>
+							<thead>
+								<tr class="u-nowrap">
+									<th>
+										<div class="c-table__title">
+											<span>排行</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>ETF名稱</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>交易所代碼</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>市價</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>幣別</span>
+											<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>當日漲跌幅</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>6個月績效</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>關注/比較</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>申購</span>
+										</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+									<!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+									<td class="c-cardTable__top"></td>
+									<!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+									<td class="c-cardTable__header">
+										<div class="c-cardTable__content">
+											<span class="o-ranking o-ranking--1st" data-before-lt="排行"><i></i></span>
+										</div>
+									</td>
+									<td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+										<div class="c-cardTable__content">
+											<div class="l-target">
+												<div class="l-target__name">
+													<a href="#" class="o-contentLink t-bold u-ellipsis-2">EF42 ISHARES MSCU 巴西ETF</a>
+												</div>
+												<div class="l-target__additional">
+													<ul class="l-tag">
+														<li class="l-tag__item">
+															<a href="#" class="o-tag">百元基金</a>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+									</td>
+									<!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+									<td class="c-cardTable__space"></td>
+									<!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+									<!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+										<div class="c-cardTable__title" data-length="5">交易所代碼</div>
+										<div class="c-cardTable__content">00834B</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+										<div class="c-cardTable__title" data-length="5">市價</div>
+										<div class="c-cardTable__content">31.33</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<div class="c-cardTable__title" data-length="5">
+											幣別
+											<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+										</div>
+										<div class="c-cardTable__content">
+											<a href="#" class="o-link">美元</a>
+										</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
+										<div class="c-cardTable__content">
+											<span class="o-rise">2.45%</span>
+										</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<div class="c-cardTable__title" data-length="5">6個月績效</div>
+										<div class="c-cardTable__content">
+											<span class="o-fall">11.47%</span>
+										</div>
+									</td>
+									<!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+									<td class="c-cardTable__space"></td>
+									<!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+									<td class="c-cardTable__footer" data-card-table-width="2/3">
+										<div class="c-cardTable__content">
+											<ul class="l-collect l-collect--divider@lt">
+												<li class="l-collect__item">
+													<!-- [data-after-lt]: pad / mobile 自動顯示文字，值為要顯示的文字 --><!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+													<!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+													<a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+												</li>
+												<li class="l-collect__item">
+													<!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+													<!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+													<!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+													<a href="#" class="o-statusBtn o-statusBtn--compare is-active" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+												</li>
+											</ul>
+										</div>
+									</td>
+									<td class="c-cardTable__footer" data-card-table-width="1/3">
+										<div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="l-dataNotes"><span class="t-date">資料日期：2023/09/13</span></div>
+					</div>
+					<div class="l-action">
+						<div class="l-action__item">
+							<a href="#" class="o-btn o-btn--secondary o-btn--lg">更多ETF</a>
+						</div>
+					</div>
+				</div>
+				<div class="c-tab__panel" data-tab-panel-id="tab-3">
+					<div class="l-table">
+						<table class="c-table@dt-only c-table--surround c-cardTable@lt">
+							<colgroup>
+								<col style="width: 1%;">
+								<col style="width: auto;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+							</colgroup>
+							<thead>
+								<tr class="u-nowrap">
+									<th>
+										<div class="c-table__title">
+											<span>排行</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>股票名稱</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>交易所代碼</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>收盤價格</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>漲跌幅</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>6個月績效</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>關注</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>申購</span>
+										</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+									<!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+									<td class="c-cardTable__top"></td>
+									<!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+									<td class="c-cardTable__header">
+										<div class="c-cardTable__content">
+											<span class="o-ranking o-ranking--1st" data-before-lt="排行"><i></i></span>
+										</div>
+									</td>
+									<td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+										<div class="c-cardTable__content">
+											<div class="l-target">
+												<div class="l-target__name">
+													<a href="#" class="o-contentLink t-bold u-ellipsis-2">EG49 美國鋁業公司 Alcoa</a>
+												</div>
+												<div class="l-target__additional">
+													<ul class="l-tag">
+														<li class="l-tag__item">
+															<a href="#" class="o-tag">百元基金</a>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+									</td>
+									<!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+									<td class="c-cardTable__space"></td>
+									<!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+									<!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+										<div class="c-cardTable__title" data-length="5">交易所代碼</div>
+										<div class="c-cardTable__content">AA</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<div class="c-cardTable__title" data-length="5">收盤價格</div>
+										<div class="c-cardTable__content">89.52</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<div class="c-cardTable__title" data-length="5">漲跌幅</div>
+										<div class="c-cardTable__content">
+											<span class="o-rise">888.22%</span>
+										</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<div class="c-cardTable__title" data-length="5">6個月績效</div>
+										<div class="c-cardTable__content">
+											<span class="o-rise">888.47%</span>
+										</div>
+									</td>
+									<!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+									<td class="c-cardTable__space"></td>
+									<!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+									<td class="c-cardTable__footer" data-card-table-width="1/2">
+										<div class="c-cardTable__content">
+											<ul class="l-collect l-collect--divider@lt">
+												<li class="l-collect__item">
+													<!-- [data-after-lt]: pad / mobile 自動顯示文字，值為要顯示的文字 --><!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+													<!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+													<a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+												</li>
+											</ul>
+										</div>
+									</td>
+									<td class="c-cardTable__footer" data-card-table-width="1/2">
+										<div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="l-dataNotes"><span class="t-date">資料日期：2023/09/13</span></div>
+					</div>
+					<div class="l-action">
+						<div class="l-action__item">
+							<a href="#" class="o-btn o-btn--secondary o-btn--lg">更多國外股票</a>
+						</div>
+					</div>
+				</div>
+				<div class="c-tab__panel" data-tab-panel-id="tab-4">
+					<div class="l-table">
+						<table class="c-table@dt-only c-table--surround c-cardTable@lt">
+							<colgroup>
+								<col style="width: 1%;">
+								<col style="width: auto;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+								<col style="width: 1%;">
+							</colgroup>
+							<thead>
+								<tr class="u-nowrap">
+									<th>
+										<div class="c-table__title">
+											<span>排行</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>債券名稱</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>幣別</span>
+											<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>配息頻率</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>到期日</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>參考贖回價</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>月</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>季</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>關注</span>
+										</div>
+									</th>
+									<th>
+										<div class="c-table__title">
+											<span>申購</span>
+										</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+									<!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+									<td class="c-cardTable__top"></td>
+									<!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+									<td class="c-cardTable__header">
+										<div class="c-cardTable__content">
+											<span class="o-ranking o-ranking--1st" data-before-lt="排行"><i></i></span>
+										</div>
+									</td>
+									<td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+										<div class="c-cardTable__content">
+											<div class="l-target">
+												<div class="l-target__name">
+													<a href="#" class="o-contentLink t-bold u-ellipsis-2">SBY3 阿聯酋杜拜國家銀行公司債(限OBU及專業投資人申購)</a>
+												</div>
+											</div>
+										</div>
+									</td>
+									<!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+									<td class="c-cardTable__space"></td>
+									<!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+									<!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+										<div class="c-cardTable__title" data-length="4">
+											幣別
+											<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+										</div>
+										<div class="c-cardTable__content">
+											<a href="#" class="o-link">澳幣</a>
+										</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+										<div class="c-cardTable__title" data-length="5">配息頻率</div>
+										<div class="c-cardTable__content">月配</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<div class="c-cardTable__title" data-length="4">到期日</div>
+										<div class="c-cardTable__content">2034/07/28</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<div class="c-cardTable__title" data-length="5">參考贖回價</div>
+										<div class="c-cardTable__content">89.52</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<div class="c-cardTable__title" data-length="4">月</div>
+										<div class="c-cardTable__content">
+											<span class="o-rise">888.22%</span>
+										</div>
+									</td>
+									<td class="c-cardTable__body" data-card-table-width="1/2">
+										<div class="c-cardTable__title" data-length="5">季</div>
+										<div class="c-cardTable__content">
+											<span class="o-rise">888.47%</span>
+										</div>
+									</td>
+									<!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+									<td class="c-cardTable__space"></td>
+									<!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+									<td class="c-cardTable__footer" data-card-table-width="1/2">
+										<div class="c-cardTable__content">
+											<ul class="l-collect l-collect--divider@lt">
+												<li class="l-collect__item">
+													<!-- [data-after-lt]: pad / mobile 自動顯示文字，值為要顯示的文字 --><!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+													<!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+													<a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+												</li>
+											</ul>
+										</div>
+									</td>
+									<td class="c-cardTable__footer" data-card-table-width="1/2">
+										<div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="l-dataNotes"><span class="t-date">資料日期：2023/09/13</span></div>
+					</div>
+					<div class="l-action">
+						<div class="l-action__item">
+							<a href="#" class="o-btn o-btn--secondary o-btn--lg">更多國外債券</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
