@@ -368,11 +368,6 @@
         /// </summary>
         public string[] CategoryTags { get; set; }
 
-        /// <summary>
-        /// 所有標籤
-        /// </summary>
-        public string[] Tags { get; set; }
-
         #endregion 貼標
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Detail;
+using Feature.Wealth.Component.Models.ETF.Tag;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
 using Mapster;
@@ -120,6 +121,7 @@ namespace Feature.Wealth.Component.Repositories
 
             //model.VisitCount = GetETFVisiteCount();   //TODO: 待修改ETF
             //TODO: Tags
+            model.DiscountTags = GetTags(TagType.Discount);
             model.ETFMarketPriceOverPastYear = GetMarketPriceWithOverPastYear();
             model.ETFNetWorthOverPastYear = GetNetWorthWithOverPastYear();
             model.ETFTypeRanks = GetSameTypeETFRank();
@@ -134,6 +136,25 @@ namespace Feature.Wealth.Component.Repositories
             model.ETFScaleRecords = GetScalechange();
 
             return model;
+        }
+
+        /// <summary>
+        /// 取得標籤
+        /// </summary>
+        /// <param name="tagType"></param>
+        /// <returns></returns>
+        private string[] GetTags(TagType tagType)
+        {
+            EtfTagRepository tagRepository = new EtfTagRepository();
+            var dicTag = tagRepository.GetTagCollection();
+
+            if (dicTag.TryGetValue(tagType, out List<ProductTag> productTags))
+            {
+                string[] arrTag = productTags.Where(i => i.ProductCodes.Contains(this.ETFId)).Select(i => i.TagKey).ToArray();
+                return arrTag;
+            }
+
+            return [];
         }
 
         private EtfDetail MapperResult()

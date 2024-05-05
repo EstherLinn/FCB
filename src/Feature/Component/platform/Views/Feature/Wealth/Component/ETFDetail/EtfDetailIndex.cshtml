@@ -25,15 +25,21 @@
                     <div class="c-pageHeader">
                         <div class="c-pageHeader__main">
                             <h1 class="c-pageHeader__title">@etfData.ProductCode @etfData.ETFName</h1>
-                            @*
+                            @if (Model.DiscountTags != null &&  Model.DiscountTags.Any())
+                            {
                                 <!-- 如果沒有tag，不要放 div.c-pageHeader__tags 區塊 -->
                                 <div class="c-pageHeader__tags">
                                     <ul class="l-tag">
-                                        <li class="l-tag__item">
-                                            <a href="#" class="o-tag">百元ETF</a>
-                                        </li>
+                                        @foreach (var tag in Model.DiscountTags)
+                                        {
+                                            <li class="l-tag__item">
+                                                <a href="#" class="o-tag">@tag</a>
+                                            </li>
+                                        }
                                     </ul>
-                                </div>*@
+                                </div>
+                            }
+                            
                         </div>
                         <div class="c-pageHeader__subContent">
                             <h2 class="c-pageHeader__subTitle">@etfData.ETFEnglishName</h2>
