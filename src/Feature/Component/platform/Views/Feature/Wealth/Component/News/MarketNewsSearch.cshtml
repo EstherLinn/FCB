@@ -377,7 +377,7 @@
                                 </div>
                             </td>
                             <td class="c-cardTable__body" data-card-table-width="1/2">
-                                <div class="c-cardTable__content u-nowrap@dt-only"><%= NewsDate %> <%= NewsTime %></div>
+                                <div class="c-cardTable__content u-nowrap@dt-only"><%= NewsDate %></div>
                             </td>
                             <td class="c-cardTable__body" data-card-table-width="1/2">
                                 <div class="c-cardTable__content u-right@lt">
@@ -654,49 +654,11 @@
                 fjs.bindEvent('[data-tag-close]', 'click.tag');
                 fjs.bindEvent('[data-keyword-submit]', 'click.loading');
 
-                $('[data-filter-reset]').on('click.reset', function (e) {
-                    $('[data-tab] [data-tab-target]:first').trigger('switch');
-
-                    $('[data-filter-part="range"] input').eq(0).on('change.default', function () {
-                        if (!$(this).val()) {
-                            $(this).val(moment().format('YYYY/MM/DD')).datepicker('update');
-                        }
-                    }).trigger('change.default');
-                    $('[data-filter-part="range"] input').eq(1).on('change.default', function () {
-                        if (!$(this).val()) {
-                            $(this).val(moment().format('YYYY/MM/DD')).datepicker('update');
-                        }
-                    }).trigger('change.default');
-
-                    $('#newsDateRange').val($('[data-filter-part="range"] input').eq(0).val() + "-" + $('[data-filter-part="range"] input').eq(1).val());
-                    $("#newsDateRange").attr("value", $('[data-filter-part="range"] input').eq(0).val() + "-" + $('[data-filter-part="range"] input').eq(1).val());
-                    $('#newsDateRange').trigger('change');
-                });
                 $('[data-keyword-input]').on('keypress.loading', function (e) {
                     if (e.which === 13 && !!$(this).val().trim()) {
                         $('[data-keyword-submit]').trigger('click.loading');
                     }
                 });
-                $('[data-filter-switch]').on('switch click change', function (e) {
-                    let $self = $(this);
-                    let switchTemplate = $self.data('filter-switch');
-                    if (switchTemplate) {
-                        $elTh = $('#table th[data-filter-switch-columns]')
-                        $elTh.hide();
-                        let switchCol = $self.data('filter-switch-columns').toString();
-                        $elTh.each(function () {
-                            let $this = $(this);
-                            var columns = $this.data('filter-switch-columns').toString().split(',');
-                            if (columns.includes(switchCol)) {
-                                $this.show();
-                            } else {
-                                $this.hide();
-                            }
-                        })
-
-                        fjs.setTemplate(switchTemplate, true);
-                    }
-                })
 
                 function fnScrollUp() {
                     loading();
@@ -729,11 +691,15 @@
                 let isSameOrBefore = moment(range[0]).isSameOrBefore(range[1]);
                 if (!hasValue) {
                     isSameOrBefore = true;
-                } else if (hasValue && isSameOrBefore) {
-                    var newDateValue = $('[data-filter-part="range"] input').eq(0).val() + "-" + $('[data-filter-part="range"] input').eq(1).val();
 
-                    $('#newsDateRange').val(newDateValue);
-                    $("#newsDateRange").attr("value", newDateValue);
+                    $('#newsDateRange').val(moment().format('YYYY/MM/DD') + " 00:00" + "-" + moment().format('YYYY/MM/DD') + " 23:59");
+                    $("#newsDateRange").attr("value", moment().format('YYYY/MM/DD') + " 00:00" + "-" + moment().format('YYYY/MM/DD') + " 23:59");
+                    $('#newsDateRange').trigger('change');
+
+                } else if (hasValue && isSameOrBefore) {
+
+                    $('#newsDateRange').val($('[data-filter-part="range"] input').eq(0).val() + " 00:00" + "-" + $('[data-filter-part="range"] input').eq(1).val() + " 23:59");
+                    $("#newsDateRange").attr("value", $('[data-filter-part="range"] input').eq(0).val() + " 00:00" + "-" + $('[data-filter-part="range"] input').eq(1).val() + " 23:59");
                     $('#newsDateRange').trigger('change');
                 }
 
@@ -758,8 +724,8 @@
                 }
             }).trigger('change.default');
 
-            $('#newsDateRange').val($('[data-filter-part="range"] input').eq(0).val() + "-" + $('[data-filter-part="range"] input').eq(1).val());
-            $("#newsDateRange").attr("value", $('[data-filter-part="range"] input').eq(0).val() + "-" + $('[data-filter-part="range"] input').eq(1).val());
+            $('#newsDateRange').val($('[data-filter-part="range"] input').eq(0).val() + " 00:00" + "-" + $('[data-filter-part="range"] input').eq(1).val() + " 23:59");
+            $("#newsDateRange").attr("value", $('[data-filter-part="range"] input').eq(0).val() + " 00:00" + "-" + $('[data-filter-part="range"] input').eq(1).val() + " 23:59");
             $('#newsDateRange').trigger('change');
 
             // table 排序功能

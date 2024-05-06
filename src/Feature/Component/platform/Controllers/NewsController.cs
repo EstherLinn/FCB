@@ -53,10 +53,9 @@ namespace Feature.Wealth.Component.Controllers
                     // 若是頭條新聞 HotNews 為 string.Empty，若不是則為 "u-invisible"
                     newsData.HotNews = isFirstItem ? string.Empty : "u-invisible";
                     newsData.NewsType = isFirstItem ? "頭條新聞" : "台股";
-                    newsData.NewsDate = isFirstItem ? "2024/03/01" : item["v1"].ToString();
+                    newsData.NewsDate = isFirstItem ? "2024/05/01" + " " + item["v2"].ToString() : item["v1"].ToString() + " " + item["v2"].ToString();
                     isFirstItem = false;
 
-                    newsData.NewsTime = item["v2"].ToString();
                     newsData.NewsTitle = _articleFilterListRespository.FullWidthToHalfWidth(item["v3"].ToString());
                     newsData.NewsSerialNumber = item["v4"].ToString();
                     newsData.NewsDetailLink = _articleFilterListRespository.GetMarketNewsDetailsUrl() + "?id=" + item["v4"].ToString();
