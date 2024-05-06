@@ -1,6 +1,7 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.Link
 {
@@ -14,9 +15,25 @@ namespace Feature.Wealth.Component.Models.Link
             public Link(Item item)
             {
                 Item = item;
+
+                this.icon = "o-prefixLink o-prefixLink--insidebox t-bold ";
+                if (this.LinkUrl.StartsWith("http") && !this.LinkUrl.EndsWith(".pdf"))
+                {
+                    this.icon += "o-prefixLink--external";
+                }
+                else if (this.LinkUrl.EndsWith(".pdf"))
+                {
+                    this.icon += "o-prefixLink--pdf";
+                }
+                else
+                {
+                    this.icon += "o-prefixLink--link";
+                }
             }
             public Item Item { get; set; }
-            public string LinkUrl { get; set; }
+            public string Title => ItemUtils.GetFieldValue(Item, Templates.Link.Fields.Title);
+            public string LinkUrl => ItemUtils.GeneralLink(Item, Templates.Link.Fields.Link)?.Url;
+            public string icon { get; set; }
         }
     }
 
