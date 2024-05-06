@@ -15,7 +15,7 @@ namespace Feature.Wealth.Component.Controllers
 
             var model = new SmallNoticeModel()
             {
-                DataSource = RenderingContext.CurrentOrNull?.Rendering.Item,
+                DataSource = dataSource,
                 MainTitle = mainTitle,
                 Content = content
             };
