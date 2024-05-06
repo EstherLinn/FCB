@@ -12,12 +12,14 @@ namespace Feature.Wealth.Component.Controllers
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             var imageUrl = ItemUtils.ImageUrl(item, Templates.LongCards.Fields.Image);
+            var buttonText = ItemUtils.GetFieldValue(item, Templates.LongCards.Fields.ButtonText);
             var buttonLink = ItemUtils.GeneralLink(item, Templates.LongCards.Fields.ButtonLink)?.Url;
 
             var model = new LongCardsModel()
             {
                 Item = item,
                 ImageUrl = imageUrl,
+                ButtonText = buttonText,
                 ButtonLink = buttonLink,
             };
 
