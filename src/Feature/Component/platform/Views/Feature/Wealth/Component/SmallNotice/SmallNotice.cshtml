@@ -1,0 +1,30 @@
+﻿@model Feature.Wealth.Component.Models.SmallNotice.SmallNoticeModel
+@using Feature.Wealth.Component.Models.SmallNotice
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="c-section" data-aos="fade-up" data-aos-once="true">
+    <div class="l-wrap">
+        <div class="c-section__content">
+            <div class="c-collapse c-collapse--warning" data-collapse="true">
+                <div class="c-collapse__head" data-collapse-button="true">
+                    @if (!string.IsNullOrEmpty(Model.MainTitle))
+                    {
+                        <span>@Model.MainTitle</span>
+                    }
+                </div>
+                <div class="c-collapse__content" data-collapse-content="true">
+                    <div class="c-collapse__inner">
+                        @if (!string.IsNullOrEmpty(Model.Content))
+                        {
+                            @Html.Sitecore().Field(Templates.SmallNoticeDatasource.Fields.Content.ToString(), Model.DataSource)
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
