@@ -7,6 +7,7 @@ namespace Feature.Wealth.Component.Models.LongCards
     {
         public Item Item { get; set; }
         public string ImageUrl { get; set; }
+        public string ButtonText { get; set; }
         public string ButtonLink { get; set; }
     }
 
