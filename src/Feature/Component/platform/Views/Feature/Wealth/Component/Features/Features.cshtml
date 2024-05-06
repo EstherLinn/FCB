@@ -15,6 +15,7 @@
                 {
                     var linkText1 = Html.Sitecore().Field(Templates.Features.Fields.LinkText1.ToString(), item.Item).ToString();
                     var linkText2 = Html.Sitecore().Field(Templates.Features.Fields.LinkText2.ToString(), item.Item).ToString();
+                    var buttonText = Html.Sitecore().Field(Templates.Features.Fields.ButtonText.ToString(), item.Item).ToString();
 
                     <div class="l-productCard__item">
                         <div class="c-productCard">
@@ -24,17 +25,26 @@
                             <div class="c-productCard__content">
                                 <div class="c-productCard__name u-ellipsis-1">@Html.Sitecore().Field(Templates.Features.Fields.Title.ToString(), item.Item)</div>
                                 <div class="c-productCard__btns">
-                                    <a href="@item.ButtonLink" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@Html.Sitecore().Field(Templates.Features.Fields.ButtonText.ToString(), item.Item)</a>
+                                    @if (!string.IsNullOrEmpty(buttonText) || !string.IsNullOrEmpty(item.ButtonLink))
+                                    {
+                                        @Html.Sitecore().BeginField(Templates.Features.Fields.ButtonLink.ToString(), item.Item, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--thin o-btn--auto" })
+                                        @Html.Sitecore().Field(Templates.Features.Fields.ButtonText.ToString(), item.Item)
+                                        @Html.Sitecore().EndField()
+                                    }
                                 </div>
                             </div>
                             <div class="c-productCard__links">
-                                @if (linkText1 != "")
+                                @if (!string.IsNullOrEmpty(linkText1) || !string.IsNullOrEmpty(item.LinkUrl1))
                                 {
-                                    <a href="@item.LinkUrl1" class="o-suffixLink o-suffixLink--xs o-suffixLink--external">@linkText1</a>
+                                    @Html.Sitecore().BeginField(Templates.Features.Fields.Link1.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--xs o-suffixLink--external" })
+                                    @Html.Sitecore().Field(Templates.Features.Fields.LinkText1.ToString(), item.Item)
+                                    @Html.Sitecore().EndField()
                                 }
-                                @if (linkText2 != "")
+                                @if (!string.IsNullOrEmpty(linkText2) || !string.IsNullOrEmpty(item.LinkUrl2))
                                 {
-                                    <a href="@item.LinkUrl2" class="o-suffixLink o-suffixLink--xs o-suffixLink--external">@linkText2</a>
+                                    @Html.Sitecore().BeginField(Templates.Features.Fields.Link2.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--xs o-suffixLink--external" })
+                                    @Html.Sitecore().Field(Templates.Features.Fields.LinkText2.ToString(), item.Item)
+                                    @Html.Sitecore().EndField()
                                 }
                             </div>
                         </div>
