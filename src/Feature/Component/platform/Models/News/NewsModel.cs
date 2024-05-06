@@ -22,7 +22,7 @@ namespace Feature.Wealth.Component.Models.News
             }
             this.Datasource = item;
             this.Image = this.Datasource.ImageUrl(Templates.NewsDetails.Fields.Image);
-            this.Category = this.Datasource.TargetItem(Templates.NewsDetails.Fields.Category)?.GetFieldValue(ComponentTemplates.DropdownOption.OptionText);
+            this.Category = this.Datasource.TargetItem(Templates.NewsDetails.Fields.Category)?.GetFieldValue(ComponentTemplates.DropdownOption.Fields.OptionText);
         }
     }
 

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Feature.Wealth.Component.Models.ETF
+namespace Feature.Wealth.Component.Models.ETF.Detail
 {
-    public class BasicEtfDto
+    public class EtfDetail
     {
         #region MainTable
 
@@ -29,7 +29,6 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 是否上架
         /// </summary>
-
         public string AvailabilityStatus { get; set; }
 
         /// <summary>
@@ -95,7 +94,7 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 是否可於網路申購
         /// </summary>
-        public string OnlineSubscriptionAvailability { get; set; }
+        public bool CanOnlineSubscription { get; set; }
 
         /// <summary>
         /// 風險等級
@@ -184,12 +183,12 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 規模日期
         /// </summary>
-        public DateTime? ScaleDate { get; set; }
+        public string ScaleDate { get; set; }
 
         /// <summary>
         /// 成立日期
         /// </summary>
-        public DateTime? EstablishmentDate { get; set; }
+        public string EstablishmentDate { get; set; }
 
         /// <summary>
         /// 成立年資
@@ -249,47 +248,67 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 總管理費用(%)
         /// </summary>
-        public decimal? TotalManagementFee { get; set; }
+        public string TotalManagementFee { get; set; }
 
         /// <summary>
         /// 市價漲跌
         /// </summary>
-        public decimal? MarketPriceChange { get; set; }
+        public string MarketPriceChange { get; set; }
 
         /// <summary>
         /// 市價漲跌幅
         /// </summary>
-        public decimal? MarketPriceChangePercentage { get; set; }
+        public string MarketPriceChangePercentage { get; set; }
+
+        /// <summary>
+        /// 市價漲跌樣式
+        /// </summary>
+        public string MarketPriceChangeStyle { get; set; }
+
+        /// <summary>
+        /// 市價漲跌幅樣式
+        /// </summary>
+        public string MarketPriceChangePercentageStyle { get; set; }
 
         /// <summary>
         /// 淨值漲跌
         /// </summary>
-        public decimal? NetAssetValueChange { get; set; }
+        public string NetAssetValueChange { get; set; }
 
         /// <summary>
         /// 淨值漲跌幅
         /// </summary>
-        public decimal? NetAssetValueChangePercentage { get; set; }
+        public string NetAssetValueChangePercentage { get; set; }
+
+        /// <summary>
+        /// 淨值漲跌樣式
+        /// </summary>
+        public string NetAssetValueChangeStyle { get; set; }
+
+        /// <summary>
+        /// 淨值漲跌幅樣式
+        /// </summary>
+        public string NetAssetValueChangePercentageStyle { get; set; }
 
         /// <summary>
         /// 最高市價(年)
         /// </summary>
-        public decimal? HighestMarketPrice { get; set; }
+        public string HighestMarketPrice { get; set; }
 
         /// <summary>
         /// 最低市價(年)
         /// </summary>
-        public decimal? LowestMarketPrice { get; set; }
+        public string LowestMarketPrice { get; set; }
 
         /// <summary>
         /// 最高淨值(年)
         /// </summary>
-        public decimal? HighestNetAssetValue { get; set; }
+        public string HighestNetAssetValue { get; set; }
 
         /// <summary>
         /// 最低淨值(年)
         /// </summary>
-        public decimal? LowestNetAssestValue { get; set; }
+        public string LowestNetAssestValue { get; set; }
 
         #endregion Basic
 
@@ -308,7 +327,7 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 淨值日期
         /// </summary>
-        public DateTime? NetAssetValueDate { get; set; }
+        public string NetAssetValueDate { get; set; }
 
         /// <summary>
         /// 計價(市價)幣別
@@ -330,7 +349,9 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 年初至今 報酬率 (淨值原幣)
         /// </summary>
-        public decimal? YeartoDateReturnNetValueOriginalCurrency { get; set; }
+        public string YeartoDateReturnNetValueOriginalCurrency { get; set; }
+
+        public string YeartoDateReturnNetValueOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 一日 報酬率 (淨值原幣)
@@ -394,57 +415,68 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 月初至今 報酬率 (市價原幣)
         /// </summary>
-        public decimal? MonthtoDateMarketPriceOriginalCurrency { get; set; }
+        public string MonthtoDateMarketPriceOriginalCurrency { get; set; }
+        public string MonthtoDateMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 年初至今 報酬率 (市價原幣)
         /// </summary>
-        public decimal? YeartoDateReturnMarketPriceOriginalCurrency { get; set; }
+        public string YeartoDateReturnMarketPriceOriginalCurrency { get; set; }
+        public string YeartoDateReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 一日 報酬率 (市價原幣)
         /// </summary>
-        public decimal? DailyReturnMarketPriceOriginalCurrency { get; set; }
+        public string DailyReturnMarketPriceOriginalCurrency { get; set; }
+        public string DailyReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 一週 報酬率 (市價原幣)
         /// </summary>
-        public decimal? WeeklyReturnMarketPriceOriginalCurrency { get; set; }
+        public string WeeklyReturnMarketPriceOriginalCurrency { get; set; }
+        public string WeeklyReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 一個月 報酬率 (市價原幣)
         /// </summary>
-        public decimal? MonthlyReturnMarketPriceOriginalCurrency { get; set; }
+        public string MonthlyReturnMarketPriceOriginalCurrency { get; set; }
+        public string MonthlyReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 三個月 報酬率 (市價原幣)
         /// </summary>
-        public decimal? ThreeMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public string ThreeMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public string ThreeMonthReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 六個月 報酬率 (市價原幣)
         /// </summary>
-        public decimal? SixMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public string SixMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public string SixMonthReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 一年 報酬率 (市價原幣)
         /// </summary>
-        public decimal? OneYearReturnMarketPriceOriginalCurrency { get; set; }
+        public string OneYearReturnMarketPriceOriginalCurrency { get; set; }
+        public string OneYearReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 二年 報酬率 (市價原幣)
         /// </summary>
-        public decimal? TwoYearReturnMarketPriceOriginalCurrency { get; set; }
+        public string TwoYearReturnMarketPriceOriginalCurrency { get; set; }
+        public string TwoYearReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 三年 報酬率 (市價原幣)
         /// </summary>
-        public decimal? ThreeYearReturnMarketPriceOriginalCurrency { get; set; }
+        public string ThreeYearReturnMarketPriceOriginalCurrency { get; set; }
+        public string ThreeYearReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 五年 報酬率 (市價原幣)
         /// </summary>
-        public decimal? FiveYearReturnMarketPriceOriginalCurrency { get; set; }
+        public string FiveYearReturnMarketPriceOriginalCurrency { get; set; }
+        public string FiveYearReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 十年 報酬率 (市價原幣)
@@ -596,17 +628,17 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// Sharpe (淨值風險)
         /// </summary>
-        public decimal? SharpeNetValueRisk { get; set; }
+        public string SharpeNetValueRisk { get; set; }
 
         /// <summary>
         /// Beta (淨值風險)
         /// </summary>
-        public decimal? BetaNetValueRisk { get; set; }
+        public string BetaNetValueRisk { get; set; }
 
         /// <summary>
         /// 年化標準差 (淨值風險)
         /// </summary>
-        public decimal? AnnualizedStandardDeviationNetValueRisk { get; set; }
+        public string AnnualizedStandardDeviationNetValueRisk { get; set; }
 
         #endregion 淨值風險
 
@@ -615,17 +647,17 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// Sharpe (市價風險)
         /// </summary>
-        public decimal? SharpeRatioMarketPriceRisk { get; set; }
+        public string SharpeRatioMarketPriceRisk { get; set; }
 
         /// <summary>
         /// Beta (市價風險)
         /// </summary>
-        public decimal? BetaMarketPriceRisk { get; set; }
+        public string BetaMarketPriceRisk { get; set; }
 
         /// <summary>
         /// 年化標準差 (市價風險)
         /// </summary>
-        public decimal? AnnualizedStandardDeviationMarketPriceRisk { get; set; }
+        public string AnnualizedStandardDeviationMarketPriceRisk { get; set; }
 
         #endregion 市價風險
 
@@ -673,5 +705,45 @@ namespace Feature.Wealth.Component.Models.ETF
         public string Currency { get; set; }
 
         #endregion
+
+        #region 配息資訊
+
+        /// <summary>
+        /// 除昔日
+        /// </summary>
+        public string ExDividendDate { get; set; }
+
+        /// <summary>
+        /// 基準日
+        /// </summary>
+        public string RecordDate { get; set; }
+
+        /// <summary>
+        /// 發放日
+        /// </summary>
+        public string PaymentDate { get; set; }
+
+        /// <summary>
+        /// 配息總額
+        /// </summary>
+        public string TotalDividendAmount { get; set; }
+
+        /// <summary>
+        /// 配息頻率
+        /// </summary>
+        public string DividendFrequency { get; set; }
+
+        /// <summary>
+        /// 短期資本利得
+        /// </summary>
+        public string ShortTermCapitalGains { get; set; }
+
+        /// <summary>
+        /// 長期資本利得
+        /// </summary>
+        public string LongTermCapitalGains { get; set; }
+
+        #endregion
+
     }
 }

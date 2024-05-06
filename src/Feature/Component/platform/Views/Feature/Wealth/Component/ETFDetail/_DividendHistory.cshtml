@@ -1,0 +1,145 @@
+﻿@model Feature.Wealth.Component.Models.ETF.Detail.EtfDetailModel
+@using Feature.Wealth.Component.Models.ETF.Detail;
+@{
+    var etfData = Model.BasicEtf as EtfDetail;
+}
+@*配息紀錄*@
+<div class="c-tab__panel" data-tab-panel-id="tab-8">
+    <section class="c-section u-printBreak">
+        <div class="c-section__content">
+            <div class="c-borderBox">
+                <div class="l-divideList l-divideList--col2@mb-only">
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>配息頻率</span></div>
+                            <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold">@etfData.DividendDistributionFrequency</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>最近一次配息發放日</span></div>
+                            <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold">@etfData.PaymentDate</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>最近一次除息日</span></div>
+                            <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold">@etfData.ExDividendDate</span></div>
+                        </div>
+                    </div>
+                    <div class="l-divideList__item">
+                        <div class="c-numerical">
+                            <div class="c-numerical__title c-numerical__title--dk"><span>最近一次配息總額</span></div>
+                            <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold">@(etfData.TotalDividendAmount)@(etfData.CurrencyName)</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">配息紀錄</div>
+        <div class="c-section__content">
+            @if (Model.ETFDividendRecords != null && Model.ETFDividendRecords.Any())
+            {
+                <div class="l-flex u-flex-col u-flex-gap-sm">
+                    <div class="l-flex__item">
+                        <div class="l-selectbox">
+                            <div class="l-selectbox__item">
+                                <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" data-dividend-switch>
+                                    @foreach (var pair in Model.ETFDividendRecords)
+                                    {
+                                        <option value="@pair.Key">@pair.Key</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-flex__item">
+                        <div class="l-table">
+                            <table class="c-table u-nowrap u-center" data-fixed-columns="true" id="etfDividendTable">
+                                <colgroup>
+                                    <col style="width: 16.6%;">
+                                    <col style="width: 16.6%;">
+                                    <col style="width: 16.6%;">
+                                    <col style="width: 16.6%;">
+                                    <col style="width: 16.6%;">
+                                    <col style="width: 16.6%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="c-table__title u-center"><span>配息基準日</span></div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title u-center"><span>除息日</span></div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title u-center"><span>發放日</span></div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title u-center"><span>短期資本利得</span></div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title u-center"><span>長期資本利得</span></div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title u-center"><span>配息總額</span></div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @foreach (var pair in Model.ETFDividendRecords)
+                                {
+                                    <tbody data-dividend-tbody="@pair.Key" style="display:none;">
+                                        @foreach (var record in pair.Value)
+                                        {
+                                            <tr>
+                                                <td>@record.RecordDate</td>
+                                                <td>@record.ExDividendDate</td>
+                                                <td>@record.PaymentDate</td>
+                                                <td>@record.ShortTermCapitalGains</td>
+                                                <td>@record.LongTermCapitalGains</td>
+                                                <td>@record.TotalDividendAmount</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                }
+                            </table>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.DividendRecordDescription.ToString()))
+                        {
+                            <div class="l-dataNotes u-left">
+                                <span class="t-note">@Model.DividendRecordDescription</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="c-empty">
+                    <div class="c-empty__img">
+                        <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                    </div>
+                    <div class="c-empty__desc">沒有資料</div>
+                </div>
+            }
+        </div>
+    </section>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+
+        document.addEventListener('DOMContentLoaded', function () {
+            $('[data-dividend-switch]').on('change', function () {
+                var $this = $(this);
+                let year = $this.val();
+                $('#etfDividendTable [data-dividend-tbody]').hide();
+                $('#etfDividendTable').find(`[data-dividend-tbody="${year}"]`).show();
+            });
+
+            $('[data-dividend-switch]').trigger('change');
+        });
+    })(jQuery, window, document);
+</script>

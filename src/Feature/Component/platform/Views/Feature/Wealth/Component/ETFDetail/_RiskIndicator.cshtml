@@ -1,0 +1,592 @@
+﻿@model Feature.Wealth.Component.Models.ETF.Detail.EtfDetailModel
+@using Feature.Wealth.Component.Models.ETF.Detail;
+@using Foundation.Wealth.Helper;
+@{
+    var etfData = Model.BasicEtf as EtfDetail;
+    var ETFRiskApiUrl = ClientRoute.GenerateUrl(this, "EtfDetail", "GetETFRiskGraph");
+}
+@*風險指標*@
+<div class="c-tab__panel" data-tab-panel-id="tab-7">
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">風險指標</div>
+        <div class="c-section__content">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                @if (!string.IsNullOrEmpty(Model.RiskIntro.ToString()))
+                {
+                    <div class="l-flex__item">
+                        <span>
+                            @Model.RiskIntro
+                        </span>
+                    </div>
+                }
+                @if (Model.ETFRiskIndicator != null)
+                {
+                    <div class="l-flex__item">
+                        <div class="l-table">
+                            <table class="c-table u-center u-nowrap" data-fixed-columns="true">
+                                <colgroup>
+                                    <col style="width: 20%;">
+                                    <col style="width: 16%;">
+                                    <col style="width: 16%;">
+                                    <col style="width: 16%;">
+                                    <col style="width: 16%;">
+                                    <col style="width: 16%;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="c-table__title"><span>項目</span></div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title"><span>6個月</span></div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title"><span>1年</span></div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title"><span>3年</span></div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title"><span>5年</span></div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title"><span>10年 </span></div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>標準差</td>
+                                        <td @Model.ETFRiskIndicator.SixMonthStandardDeviationStyle>@Model.ETFRiskIndicator.SixMonthStandardDeviation</td>
+                                        <td @Model.ETFRiskIndicator.OneYearStandardDeviationStyle>@Model.ETFRiskIndicator.OneYearStandardDeviation</td>
+                                        <td @Model.ETFRiskIndicator.ThreeYearStandardDeviationStyle>@Model.ETFRiskIndicator.ThreeYearStandardDeviation</td>
+                                        <td @Model.ETFRiskIndicator.FiveYearStandardDeviationStyle>@Model.ETFRiskIndicator.FiveYearStandardDeviation</td>
+                                        <td @Model.ETFRiskIndicator.TenYearStandardDeviationStyle>@Model.ETFRiskIndicator.TenYearStandardDeviation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sharpe</td>
+                                        <td @Model.ETFRiskIndicator.SixMonthSharpeStyle>@Model.ETFRiskIndicator.SixMonthSharpe</td>
+                                        <td @Model.ETFRiskIndicator.OneYearSharpeStyle>@Model.ETFRiskIndicator.OneYearSharpe</td>
+                                        <td @Model.ETFRiskIndicator.ThreeYearSharpeStyle>@Model.ETFRiskIndicator.ThreeYearSharpe</td>
+                                        <td @Model.ETFRiskIndicator.FiveYearSharpeStyle>@Model.ETFRiskIndicator.FiveYearSharpe</td>
+                                        <td @Model.ETFRiskIndicator.TenYearSharpeStyle>@Model.ETFRiskIndicator.TenYearSharpe</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Alpha</td>
+                                        <td @Model.ETFRiskIndicator.SixMonthAlphaStyle>@Model.ETFRiskIndicator.SixMonthAlpha</td>
+                                        <td @Model.ETFRiskIndicator.OneYearAlphaStyle>@Model.ETFRiskIndicator.OneYearAlpha</td>
+                                        <td @Model.ETFRiskIndicator.ThreeYearAlphaStyle>@Model.ETFRiskIndicator.ThreeYearAlpha</td>
+                                        <td @Model.ETFRiskIndicator.FiveYearAlphaStyle>@Model.ETFRiskIndicator.FiveYearAlpha</td>
+                                        <td @Model.ETFRiskIndicator.TenYearAlphaStyle>@Model.ETFRiskIndicator.TenYearAlpha</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Beta</td>
+                                        <td @Model.ETFRiskIndicator.SixMonthBetaStyle>@Model.ETFRiskIndicator.SixMonthBeta</td>
+                                        <td @Model.ETFRiskIndicator.OneYearBetaStyle>@Model.ETFRiskIndicator.OneYearBeta</td>
+                                        <td @Model.ETFRiskIndicator.ThreeYearBetaStyle>@Model.ETFRiskIndicator.ThreeYearBeta</td>
+                                        <td @Model.ETFRiskIndicator.FiveYearBetaStyle>@Model.ETFRiskIndicator.FiveYearBeta</td>
+                                        <td @Model.ETFRiskIndicator.TenYearBetaStyle>@Model.ETFRiskIndicator.TenYearBeta</td>
+                                    </tr>
+                                    <tr>
+                                        <td>R-squared</td>
+                                        <td @Model.ETFRiskIndicator.SixMonthRsquaredStyle>@Model.ETFRiskIndicator.SixMonthRsquared</td>
+                                        <td @Model.ETFRiskIndicator.ThreeYearRsquaredStyle>@Model.ETFRiskIndicator.ThreeYearRsquared</td>
+                                        <td @Model.ETFRiskIndicator.OneYearRsquaredStyle>@Model.ETFRiskIndicator.OneYearRsquared</td>
+                                        <td @Model.ETFRiskIndicator.FiveYearRsquaredStyle>@Model.ETFRiskIndicator.FiveYearRsquared</td>
+                                        <td @Model.ETFRiskIndicator.TenYearRsquaredStyle>@Model.ETFRiskIndicator.TenYearRsquared</td>
+                                    </tr>
+                                    <tr>
+                                        <td>與指數相關係數</td>
+                                        <td @Model.ETFRiskIndicator.SixMonthCorrelationCoefficientIndexStyle>@Model.ETFRiskIndicator.SixMonthCorrelationCoefficientIndex</td>
+                                        <td @Model.ETFRiskIndicator.OneYearCorrelationCoefficientIndexStyle>@Model.ETFRiskIndicator.OneYearCorrelationCoefficientIndex</td>
+                                        <td @Model.ETFRiskIndicator.ThreeYearCorrelationCoefficientIndexStyle>@Model.ETFRiskIndicator.ThreeYearCorrelationCoefficientIndex</td>
+                                        <td @Model.ETFRiskIndicator.FiveYearCorrelationCoefficientIndexStyle>@Model.ETFRiskIndicator.FiveYearCorrelationCoefficientIndex</td>
+                                        <td @Model.ETFRiskIndicator.TenYearCorrelationCoefficientIndexStyle>@Model.ETFRiskIndicator.TenYearCorrelationCoefficientIndex</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tracking Error</td>
+                                        <td @Model.ETFRiskIndicator.SixMonthTrackingErrorStyle>@Model.ETFRiskIndicator.SixMonthTrackingError</td>
+                                        <td @Model.ETFRiskIndicator.OneYearTrackingErrorStyle>@Model.ETFRiskIndicator.OneYearTrackingError</td>
+                                        <td @Model.ETFRiskIndicator.ThreeYearTrackingErrorStyle>@Model.ETFRiskIndicator.ThreeYearTrackingError</td>
+                                        <td @Model.ETFRiskIndicator.FiveYearTrackingErrorStyle>@Model.ETFRiskIndicator.FiveYearTrackingError</td>
+                                        <td @Model.ETFRiskIndicator.TenYearTrackingErrorStyle>@Model.ETFRiskIndicator.TenYearTrackingError</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Variance</td>
+                                        <td @Model.ETFRiskIndicator.SixMonthVarianceStyle>@Model.ETFRiskIndicator.SixMonthVariance</td>
+                                        <td @Model.ETFRiskIndicator.OneYearVarianceStyle>@Model.ETFRiskIndicator.OneYearVariance</td>
+                                        <td @Model.ETFRiskIndicator.ThreeYearVarianceStyle>@Model.ETFRiskIndicator.ThreeYearVariance</td>
+                                        <td @Model.ETFRiskIndicator.FiveYearVarianceStyle>@Model.ETFRiskIndicator.FiveYearVariance</td>
+                                        <td @Model.ETFRiskIndicator.TenYearVarianceStyle>@Model.ETFRiskIndicator.TenYearVariance</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="l-dataNotes"><span class="t-date">資料日期：@Model.ETFRiskIndicator.Date</span></div>
+                    </div>
+                }
+                else
+                {
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                        </div>
+                        <div class="c-empty__desc">沒有資料</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">風險象限圖</div>
+        <div class="c-section__content">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="c-chartBox">
+                        <div class="c-chartBox__filter">
+                            <div class="l-selectbox">
+                                <div class="l-selectbox__item">
+                                    <select class="o-selectbox o-selectbox--full o-selectbox--form" data-quadrant="type" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true">
+                                        <option value="type" selected>相同投資類型</option>
+                                        <option value="area">相同投資區域</option>
+                                        <option value="target">相同投資標的</option>
+                                    </select>
+                                </div>
+                                <div class="l-selectbox__item">
+                                    <select class="o-selectbox o-selectbox--full o-selectbox--form" data-quadrant="year" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true">
+                                        <option value="1" selected>1年報酬率</option>
+                                        <option value="2">2年報酬率</option>
+                                        <option value="3">3年報酬率</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-chartBox__chart" data-chart="risk">
+                            <div class="c-empty">
+                                <div class="c-empty__img">
+                                    <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                                </div>
+                                <div class="c-empty__desc">沒有資料</div>
+                            </div>
+                            <div id="riskChart"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <div class="c-collapse" data-collapse="true">
+                        <div class="c-collapse__head" data-collapse-button="true">
+                            <span>說明</span>
+                        </div>
+                        <div class="c-collapse__content" data-collapse-content="true">
+                            <div class="c-collapse__inner">
+                                @if (!string.IsNullOrEmpty(Model.RiskQuadrantChartDescription.ToString()))
+                                {
+                                    @Model.RiskQuadrantChartDescription
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">年報酬率比較表</div>
+        <div class="c-section__content">
+            @if (Model.ETFYearReturns != null && Model.ETFYearReturns.Any())
+            {
+                <div class="l-table">
+                    <table class="c-table u-center u-nowrap" data-fixed-columns="true">
+                        @*<colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 15%;">
+                        <col style="width: 15%;">
+                        <col style="width: 15%;">
+                        <col style="width: 15%;">
+                        <col style="width: 15%;">
+                    </colgroup>*@
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="c-table__title"><span></span></div>
+                                </th>
+                                @foreach (var item in Model.ETFYearReturns)
+                                {
+                                    <th>
+                                        <div class="c-table__title"><span>@item.Year</span></div>
+                                    </th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>年化標準差</td>
+                                @foreach (var item in Model.ETFYearReturns)
+                                {
+                                    <td @item.AnnualizedStandardDeviationMarketPriceStyle>@item.AnnualizedStandardDeviationMarketPrice</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td>Beta</td>
+                                @foreach (var item in Model.ETFYearReturns)
+                                {
+                                    <td @item.BetaMarketPriceStyle>@item.BetaMarketPrice</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td>Sharpe Ratio</td>
+                                @foreach (var item in Model.ETFYearReturns)
+                                {
+                                    <td @item.SharpeMarketPriceStyle>@item.SharpeMarketPrice</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td>Treynor Index</td>
+                                @foreach (var item in Model.ETFYearReturns)
+                                {
+                                    <td @item.TreynorIndexMarketPriceStyle>@item.TreynorIndexMarketPrice</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td>Jensen Ratio</td>
+                                @foreach (var item in Model.ETFYearReturns)
+                                {
+                                    <td @item.JensenIndexMarketPriceStyle>@item.JensenIndexMarketPrice</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td>Informaton Ratio</td>
+                                @foreach (var item in Model.ETFYearReturns)
+                                {
+                                    <td @item.InformationRatioMarketPriceStyle>@item.InformationRatioMarketPrice</td>
+                                }
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            }
+            else
+            {
+                <div class="c-empty">
+                    <div class="c-empty__img">
+                        <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                    </div>
+                    <div class="c-empty__desc">沒有資料</div>
+                </div>
+            }
+        </div>
+    </section>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+
+        function required($element) {
+            const requiredMsg = '欄位必填';
+            let $parents = $element.closest('.l-form');
+            let $msg = $parents.find('.o-errorText');
+            let isEmpty = $element.val().trim() == '';
+            $parents.toggleClass('is-error', isEmpty);
+            $msg.text(isEmpty ? requiredMsg : '');
+            return !isEmpty;
+        }
+
+        function dateRange($inputStart, $inputEnd) {
+            const dateRangeMsg = '起訖日期區間錯誤';
+            let startDate = new Date($inputStart.val());
+            let endDate = new Date($inputEnd.val());
+            let $startParents = $inputStart.closest('.l-form');
+            let $endParents = $inputEnd.closest('.l-form');
+            if (endDate < startDate) {
+                $startParents.addClass('is-error');
+                $endParents.addClass('is-error');
+                $startParents.find('.o-errorText').text(dateRangeMsg);
+                return false;
+            } else {
+                $startParents.removeClass('is-error');
+                $endParents.removeClass('is-error');
+                $startParents.find('.o-errorText').text('');
+                return true;
+            }
+        }
+
+        //#region 風險指標 – 風險象限圖
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            $('[data-quadrant="type"]').on('change', function () {
+                let type = this.value;
+                let year = $('[data-quadrant="year"]').val();
+                initRisk(type, year);
+            });
+            $('[data-quadrant="year"]').on('change', function () {
+                let type = $('[data-quadrant="type"]').val();
+                let year = this.value;
+                initRisk(type, year);
+            });
+
+            let type = $('[data-quadrant="type"]').val();
+            let year = $('[data-quadrant="year"]').val();
+
+            function convertNaNToZero(num) {
+                return isNaN(num) ? 0 : num;
+            }
+            function roundToTwo(num) {
+                return +(Math.round(num + 'e+2') + 'e-2');
+            }
+
+            var chart;
+
+            initRisk(type, year);
+
+            // 風險象限圖
+            async function initRisk(type, year) {
+                try {
+                    /*
+                     * API參數
+                     * id: ETF代號
+                     * selectType: 投資類別
+                     * year: 年度
+                     */
+                    const params = {
+                        etfId: etfId,
+                        selectType: type,
+                        //year: year
+                    };
+                    // 呼叫 API ETF詳細頁 – 風險指標 - 風險象限圖
+                    var query = apiRequest('@ETFRiskApiUrl', params);
+                    query.then((data) => {
+                        let rateField = '';
+                        let standardField = '';
+
+                        switch (year) {
+                            case '1':
+                                rateField = 'oneYearReturnOriginalCurrency';
+                                standardField = 'oneYearStandardDeviation';
+                                break;
+                            case '2':
+                                rateField = 'twoYearReturnOriginalCurrency';
+                                standardField = 'twoYearStandardDeviation';
+                                break;
+                            case '3':
+                                rateField = 'threeYearReturnOriginalCurrency';
+                                standardField = 'threeYearStandardDeviation';
+                                break;
+                        }
+
+                        if (Object.keys(data.body).length != 0) {
+                            let mapData = data.body.map((item, index) => {
+                                return {
+                                    id: item.firstBankCode,
+                                    name: item.firstBankCode + ' ' + item.etfName,
+                                    x: roundToTwo(item[standardField]),
+                                    y: roundToTwo(item[rateField])
+                                };
+                            });
+
+                            mapData.splice(mapData.findIndex(x => x.id == etfId), 1);
+                            const selfData = data.body.filter((item) => item.firstBankCode == etfId);
+
+                            const otherData = {
+                                id: 'group',
+                                name: '同類型ETF',
+                                color: '#A4844E',
+                                data: mapData
+                            };
+
+                            // 同類型ETF標準差, 報酬率總和
+                            const total = mapData.reduce((curr, prev) => {
+                                return {
+                                    x: curr.x + convertNaNToZero(prev.x),
+                                    y: curr.y + convertNaNToZero(prev.y)
+                                };
+                            }, {
+                                x: 0,
+                                y: 0
+                            });
+
+
+                            // 本ETF + 同類型ETF平均值
+                            total.sd = (total.x + selfData[0][standardField]) / data.body.length + 1;
+                            total.rate = (total.y + selfData[0][rateField]) / data.body.length + 1;
+                            const zh = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+
+                            chart = Highcharts.chart('riskChart', {
+                                chart: {
+                                    type: 'scatter',
+                                    zooming: {
+                                        mouseWheel: {
+                                            enabled: false
+                                        }
+                                    },
+                                    height: 446
+                                },
+                                credits: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    title: {
+                                        text: '標準差%'
+                                    },
+                                    startOnTick: true,
+                                    endOnTick: true,
+                                    showLastLabel: true,
+                                    crosshair: {
+                                        snap: false,
+                                        label: {
+                                            enabled: false
+                                        }
+                                    },
+                                    plotLines: [{
+                                        value: total.sd,
+                                        width: 1,
+                                        color: 'red',
+                                        acrossPanes: false
+                                    }],
+                                    gridLineWidth: 1,
+                                    lineColor: '#ebebeb',
+                                    tickColor: '#ebebeb',
+                                    tickPosition: 'inside',
+                                    labels: {
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    }
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: `${zh[year]} 年 報 酬 率%`,
+                                        offset: 0,
+                                        margin: 0,
+                                        style: {
+                                            writingMode: 'vertical-lr',
+                                            transform: 'rotate(0deg)'
+                                        }
+                                    },
+                                    crosshair: {
+                                        snap: false,
+                                        label: {
+                                            enabled: false
+                                        }
+                                    },
+                                    plotLines: [{
+                                        value: total.rate,
+                                        width: 1,
+                                        color: 'red',
+                                        acrossPanes: false
+                                    }],
+                                    gridLineWidth: 1,
+                                    lineColor: '#ebebeb',
+                                    tickColor: '#ebebeb',
+                                    labels: {
+                                        y: 4,
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    enabled: true,
+                                    align: 'left',
+                                    itemStyle: {
+                                        fontSize: '1em',
+                                        color: '#222',
+                                        cursor: 'default'
+                                    },
+                                    itemHoverStyle: {
+                                        color: '#222'
+                                    }
+                                },
+                                plotOptions: {
+                                    scatter: {
+                                        marker: {
+                                            symbol: 'circle',
+                                            states: {
+                                                hover: {
+                                                    enabled: true,
+                                                    fillColor: '#F58220',
+                                                    radius: 5
+                                                }
+                                            }
+                                        },
+                                        states: {
+                                            hover: {
+                                                enabled: true,
+                                                halo: {
+                                                    attributes: {
+                                                        fill: '#F58220'
+                                                    },
+                                                    opacity: 0.2,
+                                                    size: 8
+                                                }
+                                            },
+                                            inactive: {
+                                                enabled: false
+                                            }
+                                        }
+                                    },
+                                    series: {
+                                        events: {
+                                            legendItemClick: function () {
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    split: false,
+                                    useHTML: true,
+                                    formatter: function () {
+                                        const tooltip = '<div style="font-size: 14px">' + '<div style="font-weight: 700; margin-bottom: 8px;">' + this.point.name + '</div>' + '<div style="font-weight: 400; margin-bottom: 8px;">標準差：' + this.point.x + '%</div>' + '<div style="font-weight: 400;">' + zh[year] + '年報酬率：' + this.point.y + '%</div>' + '</div>';
+                                        return tooltip;
+                                    },
+                                    shadow: {
+                                        color: 'rgba(0, 0, 0, 0.1)'
+                                    },
+                                    style: {
+                                        zIndex: 5
+                                    }
+                                },
+                                series: [{
+                                    id: selfData[0].firstBankCode,
+                                    name: selfData[0].firstBankCode + ' ' + selfData[0].etfName,
+                                    color: '#238C6C',
+                                    showInLegend: true,
+                                    data: [{
+                                        id: selfData[0].firstBankCode,
+                                        name: selfData[0].firstBankCode + ' ' + selfData[0].etfName,
+                                        x: selfData[0][standardField],
+                                        y: selfData[0][rateField]
+                                    }]
+                                }, otherData]
+                            });
+                            $('[data-chart="risk"]').find('.c-empty').addClass('u-hidden');
+                            $('[data-chart="risk"]').find('#riskChart').removeClass('u-hidden');
+                        } else {
+                            $('[data-chart="risk"]').find('.c-empty').removeClass('u-hidden');
+                            $('[data-chart="risk"]').find('#riskChart').addClass('u-hidden');
+                        }
+                    }).catch((err) => {
+                        $('[data-chart="risk"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="risk"]').find('#riskChart').addClass('u-hidden');
+                        console.log(err);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        });
+        //#endregion 風險指標 – 風險象限圖
+
+    })(jQuery, window, document);
+</script>

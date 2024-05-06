@@ -55,7 +55,7 @@ namespace Feature.Wealth.Component.Repositories
         public IEnumerable<EtfSearchResult> MapperResult()
         {
             var collection = QueryBasicData();
-            var tagList = GetTagSource();
+            var dicTag = this.TagRepository.GetTagCollection();
 
             Type[] ignoreTypes =
             [
@@ -174,12 +174,17 @@ namespace Feature.Wealth.Component.Repositories
                     dest.ScaleMillions = ParseVolume(src.ScaleMillions.RoundingValue());
                     dest.CanOnlineSubscription = src.OnlineSubscriptionAvailability?.ToUpper() == "Y";
 
+                    if (dicTag.ContainsKey(TagType.Discount))
+                    {
+                        dest.DiscountTags = dicTag[TagType.Discount].Where(i => i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
+                                                                    .Select(i => i.TagKey).ToArray();
+                    }
 
-                    dest.Tags = tagList?.Where(i => i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode)).Select(i => i.TagKey).ToArray();
-                    dest.DiscountTags = tagList?.Where(i => i.TagType == TagType.Discount && i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
-                                                .Select(i => i.TagKey).ToArray();
-                    dest.CategoryTags = tagList?.Where(i => i.TagType == TagType.Category && i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
-                                                .Select(i => i.TagKey).ToArray();
+                    if (dicTag.ContainsKey(TagType.Category))
+                    {
+                        dest.CategoryTags = dicTag[TagType.Category].Where(i => i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
+                                                                    .Select(i => i.TagKey).ToArray();
+                    }
                 });
 
             var result = collection.Adapt<IEnumerable<EtfSearchResult>>(config);
@@ -240,52 +245,8 @@ namespace Feature.Wealth.Component.Repositories
 
             var hotKeywords = dataSource.GetMultiListValueItems(Templates.EtfSearchDatasource.Fields.HotKeyword);
             var hotProducts = dataSource.GetMultiListValueItems(Templates.EtfSearchDatasource.Fields.HotProduct);
-            this.HotKeywordList = SetTagContent(hotKeywords)?.ToList();
-            this.HotProductList = SetTagContent(hotProducts)?.ToList();
-        }
-
-        private List<ProductTag> GetTagSource()
-        {
-            Item tagSource = ItemUtils.GetItem(TagSourceFolder);
-            var tags = tagSource.GetDescendants(Templates.TagContent.Id);
-            
-            if (tags == null || !tags.Any())
-            {
-                return null;
-            }
-
-            var result = SetTagContent(tags);
-            return result?.ToList();
-        }
-
-        private IEnumerable<ProductTag> SetTagContent(IEnumerable<Item> items)
-        {
-            foreach (Item tagItem in items)
-            {
-                string key = tagItem.GetFieldValue(Templates.TagContent.Fields.TagKey);
-
-                if (string.IsNullOrWhiteSpace(key))
-                {
-                    continue;
-                }
-
-                var typeItem = tagItem.TargetItem(Templates.TagContent.Fields.Type);
-                string typeValue = typeItem.GetFieldValue(Templates.DropdownOption.Fields.OptionValue);
-
-                if (!Enum.TryParse(typeValue, out TagType type))
-                {
-                    continue;
-                }
-
-                ProductTag productTag = new ProductTag()
-                {
-                    TagKey = key,
-                    ProductCodes = tagItem.GetMultiLineText(Templates.TagContent.Fields.ProductCode)?.ToList(),
-                    TagType = type
-                };
-
-                yield return productTag;
-            }
+            this.HotKeywordList = TagRepository.ParseTagContent(hotKeywords)?.ToList();
+            this.HotProductList = TagRepository.ParseTagContent(hotProducts)?.ToList();
         }
 
         #region Method
@@ -398,6 +359,9 @@ namespace Feature.Wealth.Component.Repositories
         /// 熱門主題
         /// </summary>
         public List<ProductTag> HotProductList { get; set; }
+
+        private EtfTagRepository TagRepository { get; set; } = new EtfTagRepository();
+
 
         #endregion Property
     }

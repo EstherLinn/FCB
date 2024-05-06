@@ -1,0 +1,307 @@
+﻿@model Feature.Wealth.Component.Models.ETF.Detail.EtfDetailModel
+@using Foundation.Wealth.Helper;
+@{
+    var EETFHoldingsaApiUrl = ClientRoute.GenerateUrl(this, "EtfDetail", "GetETFHoldings");
+}
+
+@*持股狀況*@
+<div class="c-tab__panel" data-tab-panel-id="tab-6">
+    <section class="c-section u-printBreak">
+        <div class="c-section__content">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="o-capsulebox">
+                        <label class="o-capsulebox__item">
+                            <input type="radio" name="so1" value="industry" checked class="o-capsulebox__input">
+                            <span class="o-capsulebox__text">產業</span>
+                        </label>
+                        <label class="o-capsulebox__item">
+                            <input type="radio" name="so1" value="area" class="o-capsulebox__input">
+                            <span class="o-capsulebox__text">區域</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="l-flex__item" data-chart="so1">
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                        </div>
+                        <div class="c-empty__desc">沒有資料</div>
+                    </div>
+                    <div class="c-chartBox">
+                        <div class="c-chartBox__chart">
+                            <div id="soChart"></div>
+                        </div>
+                    </div>
+                    <div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="so1"></span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="c-section u-printBreak">
+        <div class="c-section__title">前十大持股</div>
+        <div class="c-section__content">
+            @if (Model.ETFStockHoldings != null && Model.ETFStockHoldings.Any())
+            {
+                <div class="c-collapseTable">
+                    <div class="c-collapseTable__outer" data-overflow-hide="01">
+                        <div class="l-table" data-overflow-content="01">
+                            <table class="c-table c-table">
+                                <colgroup>
+                                    <col>
+                                    <col style="width: 16%; min-width: 80px;">
+                                    <col style="width: 16%; min-width: 103px;">
+                                </colgroup>
+                                <thead>
+                                    <tr class="u-nowrap">
+                                        <th>
+                                            <div class="c-table__title"><span>持股名稱</span></div>
+                                        </th>
+                                        <th style="min-width: 103px;">
+                                            <div class="c-table__title"><span>比例</span></div>
+                                        </th>
+                                        <th style="min-width: 103px;">
+                                            <div class="c-table__title"><span>持有股數</span></div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ETFStockHoldings)
+                                    {
+                                        <tr>
+                                            <td>@item.StockName</td>
+                                            <td class="u-center">@item.Percentage</td>
+                                            <td class="u-center">@item.NumberofSharesHeld</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="c-collapseTable__actions"><a href="#" class="c-collapseTable__btn" data-overflow-action="01" data-collapse="收合主要持股" data-expand="查看全部持股"></a></div>
+                </div>
+                <div class="l-dataNotes"><span class="t-date">資料日期：@Model.ETFStockHoldings.First().Date</span></div>
+            }
+            else
+            {
+                <div class="c-empty">
+                    <div class="c-empty__img">
+                        <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                    </div>
+                    <div class="c-empty__desc">沒有資料</div>
+                </div>
+            }
+        </div>
+    </section>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+        //#region 持股狀況 – 產業、區域
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            var chart = Highcharts.chart('soChart', {
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: ''
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                    type: 'category',
+                    lineColor: '#ebebeb',
+                    labels: {
+                        style: {
+                            color: '#6e6e6e',
+                            fontSize: '1em'
+                        }
+                    }
+                },
+                yAxis: {
+                    tickPixelInterval: 150,
+                    max: 100,
+                    lineColor: '#ebebeb',
+                    title: {
+                        text: null
+                    },
+                    labels: {
+                        style: {
+                            color: '#6e6e6e'
+                        },
+                        formatter: function () {
+                            return this.value + '%';
+                        }
+                    }
+                },
+                tooltip: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        animation: false,
+                        groupPadding: 0,
+                        pointPadding: 0.2,
+                        borderWidth: 0,
+                        colorByPoint: true,
+                        type: 'bar',
+                        dataLabels: [{
+                            enabled: true,
+                            useHTML: true,
+                            formatter: function () {
+                                return '<div style="color:#6e6e6e; font-weight: 400;">' + this.point.y + '%</div>';
+                            }
+                        }],
+                        states: {
+                            hover: {
+                                brightness: 0,
+                                halo: {
+                                    size: 0
+                                }
+                            },
+                            inactive: {
+                                opacity: 1
+                            }
+                        },
+                        events: {
+                            legendItemClick: function () {
+                                return false;
+                            }
+                        }
+                    }
+                },
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 375
+                        },
+                        chartOptions: {
+                            xAxis: {
+                                visible: false
+                            },
+                            yAxis: {
+                                showFirstLabel: true,
+                                tickPixelInterval: 80
+                            },
+                            plotOptions: {
+                                series: {
+                                    pointPadding: 0.1,
+                                    dataLabels: [{
+                                        enabled: true,
+                                        useHTML: false,
+                                        format: '{point.y}%',
+                                        y: 8,
+                                        style: {
+                                            fontWeight: 400,
+                                            opacity: 0.7
+                                        }
+                                    }, {
+                                        enabled: true,
+                                        useHTML: false,
+                                        format: '{point.name}',
+                                        y: -8,
+                                        style: {
+                                            fontWeight: 400,
+                                            opacity: 0.7
+                                        }
+                                    }]
+                                }
+                            }
+                        }
+                    }]
+                },
+                series: [{
+                    type: 'bar',
+                    colorByPoint: true
+                }]
+            });
+
+            let mapIndustryData;
+            let industryUpdateDate;
+            let mapAreaData;
+            let areaUpdateDate;
+
+            async function initShareholding() {
+                try {
+                    const params = {
+                        etfId: etfId,
+                    };
+
+                    var query = apiRequest('@EETFHoldingsaApiUrl', params);
+                    query.then((data) => {
+                        if (data.IndustryHoldings.length > 0) {
+                            mapIndustryData = data.IndustryHoldings.map((item, index) => {
+                                return {
+                                    ...item,
+                                    name: item.IndustryName,
+                                    y: item.Percentage
+                                };
+                            });
+                            industryUpdateDate = data.IndustryHoldings[0].Date.replaceAll('-', '/');
+                        }
+
+                        if (data.RegionHoldings.length > 0) {
+                            mapAreaData = data.RegionHoldings.map((item, index) => {
+                                return {
+                                    ...item,
+                                    name: item.RegionName,
+                                    y: item.Percentage
+                                };
+                            });
+                            areaUpdateDate = data.RegionHoldings[0].Date.replaceAll('-', '/');
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                        $('[data-chart="so1"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                    }).then((data) => {
+                        $('[name="so1"]:checked').trigger('change');
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+
+            initShareholding();
+
+            $('[name="so1"]').on('change', function () {
+                let data = [],
+                    updateDate = '';
+
+                if (this.value == 'industry') {
+                    if (mapIndustryData) {
+                        data = JSON.parse(JSON.stringify(mapIndustryData));
+                        updateDate = industryUpdateDate;
+                    }
+                } else if (this.value == 'area') {
+                    if (mapAreaData) {
+                        data = JSON.parse(JSON.stringify(mapAreaData));
+                        updateDate = areaUpdateDate;
+                    }
+                }
+
+                if (data.length != 0) {
+                    chart.series[0].update({
+                        type: 'bar',
+                        colorByPoint: true,
+                        data: data
+                    });
+
+                    $('[data-update-date="so1"]').text(updateDate);
+                    $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
+                    $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                } else {
+                    $('[data-chart="so1"]').find('.c-empty').removeClass('u-hidden');
+                    $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                }
+            });
+        });
+        //#endregion 持股狀況 – 產業、區域
+
+    })(jQuery, window, document);
+</script>
