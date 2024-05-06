@@ -120,7 +120,6 @@ namespace Feature.Wealth.Component.Repositories
             model.BasicEtf = result;
 
             //model.VisitCount = GetETFVisiteCount();   //TODO: 待修改ETF
-            //TODO: Tags
             model.DiscountTags = GetTags(TagType.Discount);
             model.ETFMarketPriceOverPastYear = GetMarketPriceWithOverPastYear();
             model.ETFNetWorthOverPastYear = GetNetWorthWithOverPastYear();
@@ -438,7 +437,7 @@ namespace Feature.Wealth.Component.Repositories
                     FROM [dbo].[Sysjust_Nav_ETF] WITH (NOLOCK)
                 ) T1
                 WHERE [FirstBankCode] = @ETFId
-                    AND [RowNumber] < 32
+                    AND [RowNumber] < 31
                 """;
             var param = new { ETFId = this.ETFId };
             var result = DbManager.Custom.ExecuteIList<EtfNav>(sqlQuery, param, CommandType.Text)?.ToList();
