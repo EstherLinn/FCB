@@ -28,7 +28,7 @@
                                 <p class="c-feature__desc">@Model.Content1</p>
                             }
 
-                            @if (!string.IsNullOrEmpty(Model.ButtonLink1) && !string.IsNullOrEmpty(Model.ButtonText1))
+                            @if (!string.IsNullOrEmpty(Model.ButtonLink1) || !string.IsNullOrEmpty(Model.ButtonText1))
                             {
                                 <div class="c-feature__actions">
                                     @Html.Sitecore().BeginField(Templates.GraphicTwoCardsDatasource.Fields.ButtonLink1.ToString(), Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--thin o-btn--auto" })
@@ -68,7 +68,7 @@
                                 <p class="c-feature__desc">@Model.Content2</p>
                             }
 
-                            @if (!string.IsNullOrEmpty(Model.ButtonLink2) && !string.IsNullOrEmpty(Model.ButtonText2))
+                            @if (!string.IsNullOrEmpty(Model.ButtonLink2) || !string.IsNullOrEmpty(Model.ButtonText2))
                             {
                                 <div class="c-feature__actions">
                                     @Html.Sitecore().BeginField(Templates.GraphicTwoCardsDatasource.Fields.ButtonLink2.ToString(), Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--thin o-btn--auto" })
