@@ -1,6 +1,7 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.Features
 {
@@ -15,10 +16,13 @@ namespace Feature.Wealth.Component.Models.Features
                 Item = item;
             }
             public Item Item { get; set; }
-            public string ImageUrl { get; set; }
-            public string ButtonLink { get; set; }
-            public string LinkUrl1 { get; set; }
-            public string LinkUrl2 { get; set; }
+            public string ImageUrl => ItemUtils.ImageUrl(Item, Templates.Features.Fields.Image);
+            public string ButtonText => ItemUtils.GetFieldValue(Item, Templates.Features.Fields.ButtonText);
+            public string ButtonLink => ItemUtils.GeneralLink(Item, Templates.Features.Fields.ButtonLink)?.Url;
+            public string LinkText1 => ItemUtils.GetFieldValue(Item, Templates.Features.Fields.LinkText1);
+            public string LinkUrl1 => ItemUtils.GeneralLink(Item, Templates.Features.Fields.Link1)?.Url;
+            public string LinkText2 => ItemUtils.GetFieldValue(Item, Templates.Features.Fields.LinkText2);
+            public string LinkUrl2 => ItemUtils.GeneralLink(Item, Templates.Features.Fields.Link2)?.Url;
         }
     }
 
