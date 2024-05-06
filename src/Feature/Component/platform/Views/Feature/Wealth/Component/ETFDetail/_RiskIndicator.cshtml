@@ -349,7 +349,7 @@
                     /*
                      * API參數
                      * id: ETF代號
-                     * type: 投資類別
+                     * selectType: 投資類別
                      * year: 年度
                      */
                     const params = {
@@ -358,10 +358,6 @@
                         //year: year
                     };
                     // 呼叫 API ETF詳細頁 – 風險指標 - 風險象限圖
-                    //const data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/riskindicators', params);
-                    // 呼叫 mock data json
-                    // const data = await apiRequestGet('../themes/chartdatas/quadrant-data.json', params);
-
                     var query = apiRequest('@ETFRiskApiUrl', params);
                     query.then((data) => {
                         let rateField = '';

@@ -1,8 +1,9 @@
 ﻿@model Feature.Wealth.Component.Models.ETF.Detail.EtfDetailModel
 @using Feature.Wealth.Component.Models.ETF.Detail;
+@using Feature.Wealth.Component.Models.Invest
 @using Foundation.Wealth.Extensions;
+@using Foundation.Wealth.Helper;
 @{
-
     var etfData = Model.BasicEtf as EtfDetail;
     if (etfData == null)
     {
@@ -25,9 +26,8 @@
                     <div class="c-pageHeader">
                         <div class="c-pageHeader__main">
                             <h1 class="c-pageHeader__title">@etfData.ProductCode @etfData.ETFName</h1>
-                            @if (Model.DiscountTags != null &&  Model.DiscountTags.Any())
+                            @if (Model.DiscountTags != null && Model.DiscountTags.Any())
                             {
-                                <!-- 如果沒有tag，不要放 div.c-pageHeader__tags 區塊 -->
                                 <div class="c-pageHeader__tags">
                                     <ul class="l-tag">
                                         @foreach (var tag in Model.DiscountTags)
@@ -39,7 +39,7 @@
                                     </ul>
                                 </div>
                             }
-                            
+
                         </div>
                         <div class="c-pageHeader__subContent">
                             <h2 class="c-pageHeader__subTitle">@etfData.ETFEnglishName</h2>
@@ -126,21 +126,15 @@
                     <div class="l-pageHeader__action">
                         <ul class="l-pageWallet">
                             <li class="l-pageWallet__item">
-                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-msg="加入關注|取消關注" data-ia="false"></a>
+                                @Html.FocusButton(null, etfData.ProductCode, etfData.ETFName, InvestTypeEnum.ETF, false)
                             </li>
                             <li class="l-pageWallet__item">
-                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-msg="加入比較|取消比較" data-ia="false"></a>
-                            </li>
+                                @Html.CompareButton(null, etfData.ProductCode, etfData.ETFName, InvestTypeEnum.ETF, false)
+
                             @if (etfData.CanOnlineSubscription)
                             {
                                 <li class="l-pageWallet__btn">
-                                    <a href="#popupPurchase" class="o-fixedBtn" data-popup="true">申購</a>
+                                    @Html.SubscriptionButton(null, etfData.ProductCode, InvestTypeEnum.ETF, false)
                                 </li>
                             }
                         </ul>
@@ -256,15 +250,4 @@
             });
         });
     }
-
-    (function ($, window, document, undefined) {
-        document.addEventListener('DOMContentLoaded', function () {
-            if (!jQuery) {
-                return;
-            }
-
-            // test code
-            //$('[data-tab-target="tab-9"]').trigger('click');
-        });
-    })(jQuery, window, document);
 </script>

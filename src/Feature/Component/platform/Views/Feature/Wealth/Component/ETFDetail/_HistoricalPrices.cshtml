@@ -308,8 +308,6 @@
 <script>
     (function ($, window, document, undefined) {
 
-        // ETF詳細頁 HighCharts 圖表ETF參數，請替換成實際ETF Id
-
         function required($element) {
             const requiredMsg = '欄位必填';
             let $parents = $element.closest('.l-form');
@@ -437,7 +435,7 @@
                 try {
                     /*
                      * API參數
-                     * id: ETF代號：請替換成實際ETF的id
+                     * id: ETF代號
                      * currency: 幣別
                      * range: 區間
                      * startDate: 自訂開始日期
@@ -449,12 +447,7 @@
                     };
 
                     // 呼叫 API ETF詳細頁 – 績效/淨值 - 市價/淨值走勢
-                    //let data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/historyprice', params);
-                    // 呼叫 mock data json
-                    //const data = await apiRequestGet('../themes/chartdatas/history-data.json', params);
-
                     var query = apiRequest('@ETFHistoryPriceApiUrl', params);
-
                     query.then((data) => {
                         if (Object.keys(data).length != 0
                             && Object.keys(data.Item1).length != 0 ) {
@@ -475,21 +468,6 @@
                                     y: roundToTwo(item.BankBuyPrice)
                                 };
                             });
-
-                            //const mapBuyData = data.body.buyNavs.map(item => {
-                            //    return {
-                            //        upDown: item.upDown,
-                            //        x: new Date(item.date).getTime(),
-                            //        y: item.value
-                            //    };
-                            //});
-                            //const mapSellData = data.body.sellNavs.map(item => {
-                            //    return {
-                            //        upDown: item.upDown,
-                            //        x: new Date(item.date).getTime(),
-                            //        y: item.value
-                            //    };
-                            //});
 
                             let series = [{
                                 name: '買價',

@@ -1,7 +1,6 @@
 ﻿@model Feature.Wealth.Component.Models.ETF.Detail.EtfDetailModel
 @using Feature.Wealth.Component.Models.ETF.Detail;
 @using Feature.Wealth.Component.Models.ETF;
-@using Foundation.Wealth.Extensions;
 @using Foundation.Wealth.Helper;
 @{
     var etfData = Model.BasicEtf as EtfDetail;
@@ -50,7 +49,7 @@
                 </div>
                 <div class="c-zebraList__item">
                     <div class="c-zebraList__title">計價幣別 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true">i</a></div>
-                    <div class="c-zebraList__content"><span class="t-bold"><a href="#" class="o-link">@etfData.CurrencyName</a></span></div>
+                    <div class="c-zebraList__content"><span class="t-bold"><a href="#" class="o-link">@Html.CurrencyLink(null, etfData.CurrencyName)</a></span></div>
                 </div>
                 <div class="c-zebraList__item">
                     <div class="c-zebraList__title">風險報酬等級</div>
@@ -419,16 +418,12 @@
 
                     /*
                      * API參數
-                     * id: ETF代號：請替換成實際ETF的id
+                     * id: ETF代號
                      */
                     const params = {
                         etfId: etfId
                     };
                     // 呼叫 API ETF詳細頁 – ETF概況 – 近一年績效表現
-                    //const data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/performancetrends', params);
-                    // 呼叫 mock data json
-                    //const data = await apiRequestGet('../themes/chartdatas/stock-data.json', params);
-
                     var query = apiRequest('@ETFPerformanceTrendApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data.resultSet.result).length != 0) {
@@ -489,8 +484,6 @@
                             $('[data-chart="performance"]').find('.c-empty').removeClass('u-hidden');
                             $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                         }
-
-                        return data;
                     }).catch((err) => {
                         $('[data-chart="performance"]').find('.c-empty').removeClass('u-hidden');
                         $('[data-chart="performance"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
@@ -504,10 +497,6 @@
             async function initNetWorth() {
                 try {
                     // 呼叫 API ETF詳細頁 – ETF概況 – 近一年淨值表現
-                    //const data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/marketpricetrend', params);
-                    // 呼叫 mock data json
-                    //const data = await apiRequestGet('../themes/chartdatas/market-data.json', params);
-
                     const marketPriceNavs = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.ETFMarketPriceOverPastYear)));
                     const netWorthNavs = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.ETFNetWorthOverPastYear)));
 

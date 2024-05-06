@@ -145,14 +145,8 @@
                         ...obj
                     };
                     // 呼叫 API ETF詳細頁 – 技術分析
-                    //const data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/klinechart', params);
-                    // 呼叫 mock data json
-                    //const data = await apiRequestGet('../themes/chartdatas/k-line-data.json', params);
-
                     var query = apiRequest('@ETFGetKLineChartApiUrl', params);
                     query.then((data) => {
-                        console.log(data);
-
                         initPointFormatter = false;
 
                         if (Object.keys(data).length != 0) {

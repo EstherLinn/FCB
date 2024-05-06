@@ -879,10 +879,6 @@
                     };
 
                     // 呼叫 API ETF詳細頁 – 績效/淨值 - 市價/淨值走勢
-                    //let data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/navmarketpricetrend', params);
-                    // 呼叫 mock data json
-                    // const data = await apiRequestGet('../themes/chartdatas/market-pricet-data.json', params);
-
                     var query = apiRequest('@ETFReturnChartDataApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data).length != 0
@@ -1262,10 +1258,6 @@
                     };
 
                     // 呼叫 API ETF詳細頁 – 績效/淨值 - 市價/淨值走勢
-                    //let data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/etfperformance', params);
-                    // 呼叫 mock data json
-                    //const data = await apiRequestGet('../themes/chartdatas/etfperformance-data.json', params);
-
                     var query = apiRequest('@ETFReturnReferenceIndexChartDataApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data).length != 0

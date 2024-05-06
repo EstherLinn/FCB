@@ -170,20 +170,7 @@
 
             async function initRate() {
                 try {
-                    /*
-                     * API參數
-                     * id: ETF代號
-                     */
-                    //const params = {
-                    //    id: etfId
-                    //};
-                    // 呼叫 API ETF詳細頁 – 規模變動 – 規模變動圖
-                    //const data = await apiRequestGet('https://mock.apidog.com/m1/446201-0-default/etf/scalechange', params);
-                    // 呼叫 mock data json
-                    // const data = await apiRequestGet('../themes/chartdatas/scale-data.json', params);
-
                     const data = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.ETFScaleRecords)));
-
 
                     if (Object.keys(data).length != 0) {
                         let mapData = data.map((item, index) => {
