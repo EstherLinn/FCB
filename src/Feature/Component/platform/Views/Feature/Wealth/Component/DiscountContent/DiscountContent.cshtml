@@ -86,7 +86,7 @@
 
     </div>
 
-    @if (!string.IsNullOrEmpty(Model.ButtonLink) && !string.IsNullOrEmpty(Model.DataSource["Button Text"]))
+    @if (!string.IsNullOrEmpty(Model.ButtonLink) || !string.IsNullOrEmpty(Model.DataSource["Button Text"]))
     {
         <div class="l-action">
             <div class="l-action__item">
