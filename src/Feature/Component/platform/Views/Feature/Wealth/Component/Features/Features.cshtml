@@ -13,10 +13,6 @@
             <div class="l-productCard">
                 @foreach (var item in Model.Items)
                 {
-                    var linkText1 = Html.Sitecore().Field(Templates.Features.Fields.LinkText1.ToString(), item.Item).ToString();
-                    var linkText2 = Html.Sitecore().Field(Templates.Features.Fields.LinkText2.ToString(), item.Item).ToString();
-                    var buttonText = Html.Sitecore().Field(Templates.Features.Fields.ButtonText.ToString(), item.Item).ToString();
-
                     <div class="l-productCard__item">
                         <div class="c-productCard">
                             <div class="c-productCard__media">
@@ -25,27 +21,18 @@
                             <div class="c-productCard__content">
                                 <div class="c-productCard__name u-ellipsis-1">@Html.Sitecore().Field(Templates.Features.Fields.Title.ToString(), item.Item)</div>
                                 <div class="c-productCard__btns">
-                                    @if (!string.IsNullOrEmpty(buttonText) || !string.IsNullOrEmpty(item.ButtonLink))
-                                    {
-                                        @Html.Sitecore().BeginField(Templates.Features.Fields.ButtonLink.ToString(), item.Item, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--thin o-btn--auto" })
-                                        @Html.Sitecore().Field(Templates.Features.Fields.ButtonText.ToString(), item.Item)
-                                        @Html.Sitecore().EndField()
-                                    }
+                                    @Html.Sitecore().BeginField(Templates.Features.Fields.ButtonLink.ToString(), item.Item, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--thin o-btn--auto" })
+                                    @Html.Sitecore().Field(Templates.Features.Fields.ButtonText.ToString(), item.Item)
+                                    @Html.Sitecore().EndField()
                                 </div>
                             </div>
                             <div class="c-productCard__links">
-                                @if (!string.IsNullOrEmpty(linkText1) || !string.IsNullOrEmpty(item.LinkUrl1))
-                                {
-                                    @Html.Sitecore().BeginField(Templates.Features.Fields.Link1.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--xs o-suffixLink--external" })
-                                    @Html.Sitecore().Field(Templates.Features.Fields.LinkText1.ToString(), item.Item)
-                                    @Html.Sitecore().EndField()
-                                }
-                                @if (!string.IsNullOrEmpty(linkText2) || !string.IsNullOrEmpty(item.LinkUrl2))
-                                {
-                                    @Html.Sitecore().BeginField(Templates.Features.Fields.Link2.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--xs o-suffixLink--external" })
-                                    @Html.Sitecore().Field(Templates.Features.Fields.LinkText2.ToString(), item.Item)
-                                    @Html.Sitecore().EndField()
-                                }
+                                @Html.Sitecore().BeginField(Templates.Features.Fields.Link1.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--xs o-suffixLink--external" })
+                                @Html.Sitecore().Field(Templates.Features.Fields.LinkText1.ToString(), item.Item)
+                                @Html.Sitecore().EndField()
+                                @Html.Sitecore().BeginField(Templates.Features.Fields.Link2.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--xs o-suffixLink--external" })
+                                @Html.Sitecore().Field(Templates.Features.Fields.LinkText2.ToString(), item.Item)
+                                @Html.Sitecore().EndField()
                             </div>
                         </div>
                     </div>

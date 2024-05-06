@@ -18,18 +18,8 @@ namespace Feature.Wealth.Component.Controllers
 
             foreach (var childItem in childItems)
             {
-                var imageUrl = ItemUtils.ImageUrl(childItem, Templates.Features.Fields.Image);
-                var btnlink = ItemUtils.GeneralLink(childItem, Templates.Features.Fields.ButtonLink)?.Url;
-                var linkUrl1 = ItemUtils.GeneralLink(childItem, Templates.Features.Fields.Link1)?.Url;
-                var linkUrl2 = ItemUtils.GeneralLink(childItem, Templates.Features.Fields.Link2)?.Url;
 
-                items.Add(new FeaturesModel.Features(childItem)
-                {
-                    ImageUrl = imageUrl,
-                    ButtonLink = btnlink,
-                    LinkUrl1 = linkUrl1,
-                    LinkUrl2 = linkUrl2,
-                });
+                items.Add(new FeaturesModel.Features(childItem));
             }
 
             var model = new FeaturesModel
