@@ -23,6 +23,8 @@ namespace Feature.Wealth.Component.Controllers
             var buttonLink2 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.ButtonLink2)?.Url;
             var buttonLink3 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.ButtonLink3)?.Url;
             var bigImageUrl = ItemUtils.ImageUrl(item, Templates.BigAndSmallCards.Fields.BigImage);
+            var bigButtonText1 = ItemUtils.GetFieldValue(item, Templates.BigAndSmallCards.Fields.BigButtonText1);
+            var bigButtonText2 = ItemUtils.GetFieldValue(item, Templates.BigAndSmallCards.Fields.BigButtonText2);
             var bigButtonLink1 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.BigButtonLink1)?.Url;
             var bigButtonLink2 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.BigButtonLink2)?.Url;
 
@@ -36,6 +38,8 @@ namespace Feature.Wealth.Component.Controllers
                 ButtonLink2 = buttonLink2,
                 ButtonLink3 = buttonLink3,
                 BigImageUrl = bigImageUrl,
+                BigButtonText1 = bigButtonText1,
+                BigButtonText2 = bigButtonText2,
                 BigButtonLink1 = bigButtonLink1,
                 BigButtonLink2 = bigButtonLink2,
             };

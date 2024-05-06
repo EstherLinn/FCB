@@ -54,8 +54,18 @@
                                 <h3 class="c-feature__title">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigTitle.ToString(), Model.Item)</h3>
                                 <p class="c-feature__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigSubtitle.ToString(), Model.Item)</p>
                                 <div class="c-feature__actions">
-                                    <a href="@Model.BigButtonLink1" class="o-btn o-btn--secondary o-btn--flat o-btn--sm">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigButtonText1.ToString(), Model.Item)</a>
-                                    <a href="@Model.BigButtonLink2" class="o-btn o-btn--primary o-btn--flat o-btn--sm">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigButtonText2.ToString(), Model.Item)</a>
+                                    @if (!string.IsNullOrEmpty(Model.BigButtonText1) || !string.IsNullOrEmpty(Model.BigButtonLink1))
+                                    {
+                                        @Html.Sitecore().BeginField(Templates.BigAndSmallCards.Fields.BigButtonLink1.ToString(), Model.Item, new { haschildren = true, @class = "o-btn o-btn--secondary o-btn--flat o-btn--sm" })
+                                        @Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigButtonText1.ToString(), Model.Item)
+                                        @Html.Sitecore().EndField()
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.BigButtonText2) || !string.IsNullOrEmpty(Model.BigButtonLink2))
+                                    {
+                                        @Html.Sitecore().BeginField(Templates.BigAndSmallCards.Fields.BigButtonLink2.ToString(), Model.Item, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--flat o-btn--sm" })
+                                        @Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigButtonText2.ToString(), Model.Item)
+                                        @Html.Sitecore().EndField()
+                                    }
                                 </div>
                             </div>
                             <div class="c-feature__plate">

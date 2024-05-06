@@ -13,6 +13,8 @@ namespace Feature.Wealth.Component.Models.BigAndSmallCards
         public string ButtonLink1 { get; set; }
         public string ButtonLink2 { get; set; }
         public string ButtonLink3 { get; set; }
+        public string BigButtonText1 { get; set; }
+        public string BigButtonText2 { get; set; }
         public string BigButtonLink1 { get; set; }
         public string BigButtonLink2 { get; set; }
     }
