@@ -24,7 +24,7 @@
                             <div class="c-productCard__content">
                                 <div class="c-productCard__name u-ellipsis-1">@Html.Sitecore().Field(Templates.Features.Fields.Title.ToString(), item.Item)</div>
                                 <div class="c-productCard__btns">
-                                    <a href="/fund/search.html" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@Html.Sitecore().Field(Templates.Features.Fields.ButtonText.ToString(), item.Item)</a>
+                                    <a href="@item.ButtonLink" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@Html.Sitecore().Field(Templates.Features.Fields.ButtonText.ToString(), item.Item)</a>
                                 </div>
                             </div>
                             <div class="c-productCard__links">
