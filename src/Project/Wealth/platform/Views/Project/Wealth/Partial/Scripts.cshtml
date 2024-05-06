@@ -58,7 +58,7 @@
         EventHandler.AddExec('compare-init', function (self) {
             let $this = $(self);
             let id = self.getAttribute('eh-compare-id');
-            let compare = store.get('compare');
+            let compare = store.get('compare') || [];
             if (checkItemExists('compare', id)) {
                 $this.addClass('is-active');
                 self.setAttribute('eh-compare-add', true);
@@ -85,7 +85,7 @@
             let name = this.getAttribute('eh-compare-name');
             let type = this.getAttribute('eh-compare-type').toLowerCase();
             let obj = new CompareObj(id, type, name);
-            let compare = store.get('compare');
+            let compare = store.get('compare') || [];
             if (this.getAttribute('eh-compare-add').toString() == "false") {
                 if (compare.length < 7) {
                     addItem('compare', obj);
@@ -157,8 +157,6 @@
                     @: $this.setAttribute("href", "#popupPurchase");
                 }
 
-
-
                if ($(window).width() < 768)
             {
                 $('input[name="platform"]').on('click', function () {
@@ -180,7 +178,7 @@
             }
               if (localStorage.hasOwnProperty('MobilePlatform'))
           {
-                  let val = store.get('MobilePlatform');
+                  let val = store.get('MobilePlatform') || "";
               if (val == "firste") {
                   $('input[data-name="firste"]','#popupPurchase').prop('checked', true);
                   $('input[data-name="firste"]').trigger('click');
@@ -196,12 +194,13 @@
 
             EventHandler.AddClick('subscription-click', function () {
                 let id = this.getAttribute('eh-subscription-id');
-                let lastId = store.get("lastsubscription");
+                let lastId = store.get("lastsubscription") || "";
                 let single = document.getElementById("subscriptionSingle");
                 let regular =  document.getElementById("subscriptionRegular");
-                if (localStorage.hasOwnProperty("lastsubscription")) {
+                if (single.getAttribute("href").indexOf("{}") > -1) {
                     single.setAttribute("href", single.getAttribute("href").replaceAll("{}", id));
                     regular.setAttribute("href", regular.getAttribute("href").replaceAll("{}", id));
+                    store.set("lastsubscription", id);
                 } else {
                     single.setAttribute("href", single.getAttribute("href").replaceAll(lastId, id));
                     regular.setAttribute("href", regular.getAttribute("href").replaceAll(lastId, id));
