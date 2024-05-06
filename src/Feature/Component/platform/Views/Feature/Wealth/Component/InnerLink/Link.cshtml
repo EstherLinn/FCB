@@ -14,11 +14,16 @@
                 <div class="l-linkBox">
                     @foreach (var item in Model.Items)
                     {
-                        <div class="l-linkBox__item">
-                            <div class="c-box c-box--link u-shadow-animation">
-                                <a href="@item.LinkUrl" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold"><span>@Html.Sitecore().Field(Templates.Link.Fields.Title.ToString(), item.Item)</span></a>
+                        if (!string.IsNullOrEmpty(item.Title) || !string.IsNullOrEmpty(item.LinkUrl))
+                        {
+                            <div class="l-linkBox__item">
+                                <div class="c-box c-box--link u-shadow-animation">
+                                    @Html.Sitecore().BeginField(Templates.Link.Fields.Link.ToString(), item.Item, new { haschildren = true, @class = item.icon})
+                                    @Html.Sitecore().Field(Templates.Link.Fields.Title.ToString(), item.Item)
+                                    @Html.Sitecore().EndField()
+                                </div>
                             </div>
-                        </div>
+                        }
                     }
                 </div>
             </div>

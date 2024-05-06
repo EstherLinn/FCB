@@ -18,12 +18,7 @@ namespace Feature.Wealth.Component.Controllers
 
             foreach (var childItem in childItems)
             {
-                var link = ItemUtils.GeneralLink(childItem, Templates.Link.Fields.Link).Url;
-
-                items.Add(new LinkModel.Link(childItem)
-                {
-                    LinkUrl = link,
-                });
+                items.Add(new LinkModel.Link(childItem));
             }
 
             var model = new LinkModel
