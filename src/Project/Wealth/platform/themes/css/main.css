@@ -1626,6 +1626,7 @@ textarea {
   align-items: center;
   gap: 22px;
   width: 280px;
+  min-height: 127px;
   margin-bottom: 28px;
   padding: 14px;
   border-radius: 12px;

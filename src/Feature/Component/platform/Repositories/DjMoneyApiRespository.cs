@@ -195,6 +195,22 @@ namespace Feature.Wealth.Component.Repositories
             return result;
         }
 
+        public JObject GetNewsForMarketTrend(string id)
+        {
+            JObject result = null;
+            var request = _route.
+            AppendPathSegments("api", "News", "kmdjnews", "type", id, 5).
+            WithOAuthBearerToken(_token).
+            GetAsync().
+            ReceiveString().Result;
+
+            if (!string.IsNullOrEmpty(request))
+            {
+                result = JObject.Parse(request);
+            }
+            return result;
+        }
+
         #region ETF
 
         public async Task<JObject> GetReturnChartData(string etfId, EtfReturnTrend type, string startdate, string enddate)

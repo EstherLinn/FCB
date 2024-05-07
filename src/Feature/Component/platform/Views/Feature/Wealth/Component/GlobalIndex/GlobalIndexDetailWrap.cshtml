@@ -660,6 +660,28 @@
     </div>
 </div>
 
+@* 沒有 pagination FilterJS 無法正常運作，放在這邊 hidden *@
+<div class="l-pagination" hidden>
+    <div class="l-pagination__size" id="uid-perPage-1">
+    </div>
+    <div class="l-pagination__switch" id="uid-pagination-1">
+    </div>
+</div>
+
+<div class="l-pagination" hidden>
+    <div class="l-pagination__size" id="uid-perPage-2">
+    </div>
+    <div class="l-pagination__switch" id="uid-pagination-2">
+    </div>
+</div>
+
+<div class="l-pagination" hidden>
+    <div class="l-pagination__size" id="uid-perPage-3">
+    </div>
+    <div class="l-pagination__switch" id="uid-pagination-3">
+    </div>
+</div>
+
 <script id="template" type="text/html">
     <tr>
         <td class="u-left u-wrap">
@@ -763,14 +785,34 @@
 </script>
 
 <script id="uid-template-perPage" type="text/html">
-    <span hidden>每頁顯示</span>
+    <span>每頁顯示</span>
     <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
-    <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize" hidden>
+    <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
         <% for(var i = 0; i < values.length - 1; i++ ) { %>
         <option value="<%= values[i] %>"><%= values[i] %>筆</option>
         <% } %>
         <option value="<%= values[values.length - 1] %>">全部</option>
     </select>
+</script>
+
+<script id="uid-template-pagination" type="text/html">
+    <div class="o-pagination">
+        <% if (currentPage > 1) { %>
+        <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+        <% } else { %>
+        <!-- .is-disabled: 停用狀態，無法點擊 -->
+        <a href="#" class="o-pagination__prev is-disabled"></a>
+        <% } %>
+        <span class="o-pagination__pager">
+            <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+            <span class="o-pagination__total"><%= totalPages %></span>
+        </span>
+        <% if (currentPage < totalPages ) { %>
+        <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+        <% } else { %>
+        <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+        <% } %>
+    </div>
 </script>
 
 <script src="/themes/js/filter.min.js"></script>
@@ -824,6 +866,19 @@
                                     }
                                 }
                             },
+                        },
+                        pagination: {
+                            //headerView: '#uid-filter-header',
+                            container: '#uid-pagination-1',
+                            paginationView: '#uid-template-pagination',
+                            visiblePages: 5,
+                            perPage: {
+                                values: [10, 50, 100, RelevantGlobalIndex.length],
+                                container: '#uid-perPage-1',
+                                perPageView: '#uid-template-perPage'
+                            },
+                            onPagination: function () {
+                            }
                         }
                     });
 
@@ -878,6 +933,19 @@
                                     }
                                 }
                             },
+                        },
+                        pagination: {
+                            //headerView: '#uid-filter-header',
+                            container: '#uid-pagination-2',
+                            paginationView: '#uid-template-pagination',
+                            visiblePages: 5,
+                            perPage: {
+                                values: [10, 50, 100, RelevantFund.length],
+                                container: '#uid-perPage-2',
+                                perPageView: '#uid-template-perPage'
+                            },
+                            onPagination: function () {
+                            }
                         }
                     });
 
@@ -932,6 +1000,19 @@
                                     }
                                 }
                             },
+                        },
+                        pagination: {
+                            //headerView: '#uid-filter-header',
+                            container: '#uid-pagination-3',
+                            paginationView: '#uid-template-pagination',
+                            visiblePages: 5,
+                            perPage: {
+                                values: [10, 50, 100, RelevantETF.length],
+                                container: '#uid-perPage-3',
+                                perPageView: '#uid-template-perPage'
+                            },
+                            onPagination: function () {
+                            }
                         }
                     });
 
@@ -939,13 +1020,13 @@
                     $('[empty-error-name="ETFPrice-empty"]').addClass('u-hidden');
                     $('[empty-error-name="ETFPrice-error"]').addClass('u-hidden');
                 }
-                else{
+                else {
                     $('[data-table-name="ETFPriceTable"]').addClass('u-hidden');
                     $('[empty-error-name="ETFPrice-empty"]').removeClass('u-hidden');
                     $('[empty-error-name="ETFPrice-error"]').addClass('u-hidden');
                 }
             }
-            else{
+            else {
                 $('[data-table-name="ETFPriceTable"]').addClass('u-hidden');
                 $('[empty-error-name="ETFPrice-empty"]').addClass('u-hidden');
                 $('[empty-error-name="ETFPrice-error"]').removeClass('u-hidden');

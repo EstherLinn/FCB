@@ -1,0 +1,1956 @@
+﻿@using Feature.Wealth.Component.Models.MarketTrend
+@model MarketTrendModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">市場風向球</h1>
+        </div>
+    </div>
+</div>
+<div class="c-tab c-tab--wide" data-tab="true">
+    <div class="c-tab__header">
+        <div class="c-tab__wrap">
+            <ul class="c-tab__navs">
+                <!-- .is-active: 作用中的項目 -->
+                <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                <li><a href="#" class="c-tab__item is-active" target="_self" title="股市" data-tab-target="tab-1">股市</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="債市" data-tab-target="tab-2">債市</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="產業" data-tab-target="tab-3">產業</a></li>
+            </ul>
+        </div>
+        <div class="c-tab__collapse">
+            <a href="#" class="c-tab__switch"></a>
+            <div class="c-tab__dropdown">
+                <a href="#" class="c-tab__clone is-active" target="_self" title="股市" data-tab-target="tab-1">股市</a>
+                <a href="#" class="c-tab__clone " target="_self" title="債市" data-tab-target="tab-2">債市</a>
+                <a href="#" class="c-tab__clone " target="_self" title="產業" data-tab-target="tab-3">產業</a>
+            </div>
+        </div>
+    </div>
+    <!-- is-active: 作用中的項目 -->
+    <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+        <section class="c-section c-section--gradientOg">
+            <div class="l-wrap">
+                <div class="c-section__content">
+                    <div class="c-tab c-tab--weather">
+                        <div class="c-tab__header">
+                            <div class="o-weatherbox" id="weather1">
+                                @if (Model.Stock != null)
+                                {
+                                    foreach (var item in Model.Stock)
+                                    {
+                                        <label class="o-weatherbox__item">
+                                            <input type="radio" name="weather1" value="@item.Title" @(item.Checked) class="o-weatherbox__input">
+                                            <div class="o-weatherbox__content">
+                                                @if (item.Degree == "1")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/sun.svg" alt="">
+                                                }
+                                                else if (item.Degree == "2")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/common.svg" alt="">
+                                                }
+                                                else if (item.Degree == "3")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/cloudy.svg" alt="">
+                                                }
+                                                else if (item.Degree == "4")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/rainy.svg" alt="">
+                                                }
+                                                <span>@item.Title</span>
+                                            </div>
+                                        </label>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        @if (Model.Stock != null)
+                        {
+                            foreach (var item in Model.Stock)
+                            {
+                                <div class="c-tab__panel @item.IsActive" data-div="stock" id="div-stock-@item.Title">
+                                    <div class="c-indexData">
+                                        <div class="c-indexData__head">
+                                            <div class="c-indexData__title">@item.Title</div>
+                                            <div class="c-indexData__icon">
+                                                @if (item.Degree == "1")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/sun.svg" alt="">
+                                                }
+                                                else if (item.Degree == "2")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/common.svg" alt="">
+                                                }
+                                                else if (item.Degree == "3")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/cloudy.svg" alt="">
+                                                }
+                                                else if (item.Degree == "4")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/rainy.svg" alt="">
+                                                }
+                                            </div>
+                                            <div class="c-indexData__text">
+                                                <div class="c-indexData__title">@item.Title</div>
+                                                <div class="c-indexData__desc">@item.DegreeText</div>
+                                                <div class="c-indexData__date">@item.Date</div>
+                                            </div>
+                                        </div>
+                                        <div class="c-indexData__content">
+                                            <div class="swiper c-swiper c-swiper--minor has-shadow" data-carousel="true" data-swiper='{"spaceBetween":16}' style="--shadowWidth: 8px;">
+                                                <div class="swiper-wrapper c-swiper__wrapper">
+                                                    @if (item.RelevantGlobalIndex != null)
+                                                    {
+                                                        foreach (var indexList in item.RelevantGlobalIndex)
+                                                        {
+                                                            <div class="swiper-slide c-swiper__slide">
+                                                                <div class="l-cardFund l-cardFund--indexCard">
+                                                                    @if (indexList != null)
+                                                                    {
+                                                                        foreach (var index in indexList)
+                                                                        {
+
+                                                                            <div class="l-cardFund__item">
+                                                                                <div class="c-box c-box--goods u-padding-xs u-shadow-animation">
+                                                                                    <div class="c-cardFund c-cardFund--half">
+                                                                                        <a href="#" class="c-cardFund__name s4">
+                                                                                            <div class="u-ellipsis-2">@index.IndexName</div>
+                                                                                            <div class="u-ellipsis-1">@index.MarketPriceText</div>
+                                                                                        </a>
+                                                                                        <div class="c-cardFund__trend">
+                                                                                            <div class="c-cardFund__rate">
+                                                                                                <span class="t-small">
+                                                                                                    @if (index.UpOrDown)
+                                                                                                    {
+                                                                                                        <span class="t-rise">漲跌幅</span>
+                                                                                                        <span class="o-rise">@index.ChangePercentage</span>
+                                                                                                    }
+                                                                                                    @if (!index.UpOrDown)
+                                                                                                    {
+                                                                                                        <span class="t-fall">漲跌幅</span>
+                                                                                                        <span class="o-fall">@index.ChangePercentage</span>
+                                                                                                    }
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <div class="c-cardFund__charts">
+                                                                                                <!-- .o-charts--rise: 漲, .o-charts--fall: 跌，會透過css處理漲跌顏色設定 -->
+                                                                                                <!-- [data-chart="mini"]: charts圖表，參考下方script邏輯 -->
+                                                                                                @if (index.UpOrDown)
+                                                                                                {
+                                                                                                    <div id="@index.IndexCode" class="o-charts o-charts--rise" data-chart="mini"></div>
+                                                                                                }
+                                                                                                @if (!index.UpOrDown)
+                                                                                                {
+                                                                                                    <div id="@index.IndexCode" class="o-charts o-charts--fall" data-chart="mini"></div>
+                                                                                                }
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                                <div class="swiper-button-next c-swiper__next u-hidden@dt-only"></div>
+                                                <div class="swiper-button-prev c-swiper__prev u-hidden@dt-only"></div>
+                                                <div class="swiper-pagination c-swiper__pagination"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @* 新聞區塊 *@
+        @if (Model.Stock != null && Model.Bond.Count > 0)
+        {
+            foreach (var item in Model.Stock)
+            {
+                if (item.News != null && item.News.Count > 0)
+                {
+                    <section class="c-section" data-section="stock" id="section-stock-@item.Title" style="@item.Display">
+                        <div class="l-wrap">
+                            <div class="c-section__title">@(item.Title)-市場新聞</div>
+                            <div class="c-section__content">
+                                <div class="l-headlines">
+                                    <div class="l-headlines__focus">
+                                        <div class="c-box c-box--gapless u-shadow-animation">
+                                            <div class="c-gridview">
+                                                <div class="c-gridview__media">
+                                                    <img src="~/themes/images/others/pic1.jpg" class="c-gridview__img" srcset="~/themes/images/articles/huawei__3x.jpg 3x" alt="">
+                                                </div>
+                                                <div class="c-gridview__content">
+                                                    <a href="@item.News[0].DetailLink" class="c-gridview__title s3 u-ellipsis-2">@item.News[0].Title</a>
+                                                    <div class="c-gridview__minor">
+                                                        <div class="c-minorInfo s4">
+                                                            <div class="c-minorInfo__main">
+                                                                <span class="t-date">@(item.News[0].Date) @(item.News[0].Time)</span>
+                                                                <span class="o-views o-views--xs">@item.News[0].ViewCount</span>
+                                                            </div>
+                                                            <div class="c-minorInfo__like">
+                                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="l-headlines__list">
+                                        <ul class="c-listGroup c-listGroup--article">
+                                            @if (item.News != null && item.News.Count > 1)
+                                            {
+                                                var count = 0;
+
+                                                foreach (var news in item.News)
+                                                {
+                                                    if (count > 0)
+                                                    {
+                                                        <li class="c-listGroup__item">
+                                                            <div class="c-gridview">
+                                                                <div class="c-gridview__content">
+                                                                    <a href="@news.DetailLink" class="c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only">@news.Title</a>
+                                                                    <div class="c-gridview__minor">
+                                                                        <div class="c-minorInfo s4">
+                                                                            <div class="c-minorInfo__main">
+                                                                                <span class="t-date">@(news.Date) @(news.Time)</span>
+                                                                                <span class="o-views o-views--xs">@news.ViewCount</span>
+                                                                            </div>
+                                                                            <div class="c-minorInfo__like">
+                                                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like is-active" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        count++;
+                                                    }
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="l-action">
+                                    <div class="l-action__item">
+                                        <a href="@Model.MoreNewsButtonLink" class="o-btn o-btn--secondary o-btn--lg">@Model.MoreNewsButtonText</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                }
+            }
+
+            <section class="c-section">
+                <div class="l-wrap">
+                    <div class="c-section__title" id="relevant-title-stock">@(Model.Stock[0].Title)-相關標的</div>
+                    <div class="c-section__content">
+                        <div class="c-tab c-tab--capsule" data-tab="true" data-docking="false">
+                            <div class="c-tab__header" id="header-stock">
+                                <ul class="c-tab__navs">
+                                    <!-- .is-active: 作用中的項目 -->
+                                    <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                                    <li id="li-fund-stock">
+                                        <a href="#" class="c-tab__item is-active" target="_self" title="基金" data-tab-target="tab-fund" data-table-tab>基金</a>
+                                    </li>
+                                    <li id="li-etf-stock">
+                                        <a href="#" class="c-tab__item" target="_self" title="ETF" data-tab-target="tab-etf" data-table-tab>ETF</a>
+                                    </li>
+                                </ul>
+                                <div class="c-tab__tools u-hidden@dt-only">
+                                    <div data-sortingbox-wrap="tab-fund" id="wrap-fund-stock">
+                                        <div class="o-sortingbox">
+                                            <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="fundTable-stock">
+                                                <option value="">排序</option>
+                                                <option value="基金名稱高至低" data-sorting-column="ProductName" data-sorting-class="is-desc">基金名稱高至低</option>
+                                                <option value="基金名稱低至高" data-sorting-column="ProductName" data-sorting-class="is-asc">基金名稱低至高</option>
+                                                <option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
+                                                <option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
+                                                <option value="幣別高至低" data-sorting-column="CurrencyName" data-sorting-class="is-desc">幣別高至低</option>
+                                                <option value="幣別低至高" data-sorting-column="CurrencyName" data-sorting-class="is-asc">幣別低至高</option>
+                                                <option value="當日漲跌幅高至低" data-sorting-column="Change" data-sorting-class="is-desc">當日漲跌幅高至低</option>
+                                                <option value="當日漲跌幅低至高" data-sorting-column="Change" data-sorting-class="is-asc">當日漲跌幅低至高</option>
+                                                <option value="6個月績效高至低" data-sorting-column="M6Change" data-sorting-class="is-desc">6個月績效高至低</option>
+                                                <option value="6個月績效低至高" data-sorting-column="M6Change" data-sorting-class="is-asc">6個月績效低至高</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="u-hidden" data-sortingbox-wrap="tab-etf" id="wrap-etf-stock">
+                                        <div class="o-sortingbox">
+                                            <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="etfTable-stock">
+                                                <option value="">排序</option>
+                                                <option value="ETF名稱高至低" data-sorting-column="ProductName" data-sorting-class="is-desc">ETF名稱高至低</option>
+                                                <option value="ETF名稱低至高" data-sorting-column="ProductName" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                                <option value="市價高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">市價高至低</option>
+                                                <option value="市價低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">市價低至高</option>
+                                                <option value="幣別高至低" data-sorting-column="CurrencyName" data-sorting-class="is-desc">幣別高至低</option>
+                                                <option value="幣別低至高" data-sorting-column="CurrencyName" data-sorting-class="is-asc">幣別低至高</option>
+                                                <option value="漲跌幅高至低" data-sorting-column="change" data-sorting-class="is-desc">漲跌幅高至低</option>
+                                                <option value="漲跌幅低至高" data-sorting-column="change" data-sorting-class="is-asc">漲跌幅低至高</option>
+                                                <option value="6個月績效高至低" data-sorting-column="M6Change" data-sorting-class="is-desc">6個月績效高至低</option>
+                                                <option value="6個月績效低至高" data-sorting-column="M6Change" data-sorting-class="is-asc">6個月績效低至高</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- is-active: 作用中的項目 -->
+                            <div class="c-tab__panel is-active" data-tab-panel-id="tab-fund" id="panel-fund-stock">
+                                <div class="l-table">
+                                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="fundTable-stock" id="fundTable-stock">
+                                        <colgroup>
+                                            <col style="width: auto;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr class="u-nowrap">
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>基金名稱</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="ProductName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>最新淨值</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>幣別</span>
+                                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>當日漲跌幅</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="Change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>6個月績效</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="M6Change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>關注/比較</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>申購</span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="fundTbody-stock">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="l-action">
+                                    <div class="l-action__item">
+                                        <a href="@Model.MoreFundButtonLink" class="o-btn o-btn--secondary o-btn--lg">@Model.MoreFundButtonText</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c-tab__panel" data-tab-panel-id="tab-etf" id="panel-etf-stock">
+                                <div class="l-table">
+                                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="etfTable-stock" id="etfTable-stock">
+                                        <colgroup>
+                                            <col style="width: auto;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr class="u-nowrap">
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>ETF名稱</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="ProductName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>市價</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>幣別</span>
+                                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>漲跌幅</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>6個月績效</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="M6Change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>關注/比較</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>申購</span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="etfTbody-stock">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="l-action">
+                                    <div class="l-action__item">
+                                        <a href="@Model.MoreETFButtonLink" class="o-btn o-btn--secondary o-btn--lg">@Model.MoreETFButtonText</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c-empty" id="empty-stock" style="display: none;">
+                                <div class="c-empty__img">
+                                    <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                                </div>
+                                <div class="c-empty__desc">沒有資料</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+
+        <section class="c-section">
+            <div class="l-wrap">
+                <div class="c-section__content">
+                    <div class="c-feature c-feature--join c-feature--personalize">
+                        <div class="c-feature__content u-center">
+                            <h3 class="c-feature__title">@Model.ReportTitle</h3>
+                            <p class="c-feature__desc">@Model.ReportText</p>
+                            <div class="c-feature__actions">
+                                <a href="@Model.ReportButtonLink" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@Model.ReportButtonText</a>
+                            </div>
+                        </div>
+                        <div class="c-feature__plate">
+                            <img src="~/themes/images/features/market.png" alt="第一銀行 投資週/月報" class="c-feature__img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="c-tab__panel" data-tab-panel-id="tab-2">
+        <section class="c-section c-section--gradientOg">
+            <div class="l-wrap">
+                <div class="c-section__content">
+                    <div class="c-tab c-tab--weather">
+                        <div class="c-tab__header">
+                            <div class="o-weatherbox" id="weather2">
+                                @if (Model.Bond != null)
+                                {
+                                    foreach (var item in Model.Bond)
+                                    {
+                                        <label class="o-weatherbox__item">
+                                            <input type="radio" name="weather2" value="@item.Title" @(item.Checked) class="o-weatherbox__input">
+                                            <div class="o-weatherbox__content">
+                                                @if (item.Degree == "1")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/sun.svg" alt="">
+                                                }
+                                                else if (item.Degree == "2")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/common.svg" alt="">
+                                                }
+                                                else if (item.Degree == "3")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/cloudy.svg" alt="">
+                                                }
+                                                else if (item.Degree == "4")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/rainy.svg" alt="">
+                                                }
+                                                <span>@item.Title</span>
+                                            </div>
+                                        </label>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        @if (Model.Bond != null)
+                        {
+                            foreach (var item in Model.Bond)
+                            {
+                                <div class="c-tab__panel @item.IsActive" data-div="bond" id="div-bond-@item.Title">
+                                    <div class="c-indexData">
+                                        <div class="c-indexData__head">
+                                            <div class="c-indexData__title">@item.Title</div>
+                                            <div class="c-indexData__icon">
+                                                @if (item.Degree == "1")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/sun.svg" alt="">
+                                                }
+                                                else if (item.Degree == "2")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/common.svg" alt="">
+                                                }
+                                                else if (item.Degree == "3")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/cloudy.svg" alt="">
+                                                }
+                                                else if (item.Degree == "4")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/rainy.svg" alt="">
+                                                }
+                                            </div>
+                                            <div class="c-indexData__text">
+                                                <div class="c-indexData__title">@item.Title</div>
+                                                <div class="c-indexData__desc">@item.DegreeText</div>
+                                                <div class="c-indexData__date">@item.Date</div>
+                                            </div>
+                                        </div>
+                                        <div class="c-indexData__content">
+                                            <div class="swiper c-swiper c-swiper--minor has-shadow" data-carousel="true" data-swiper='{"spaceBetween":16}' style="--shadowWidth: 8px;">
+                                                <div class="swiper-wrapper c-swiper__wrapper">
+                                                    @if (item.RelevantGlobalIndex != null)
+                                                    {
+                                                        foreach (var indexList in item.RelevantGlobalIndex)
+                                                        {
+                                                            <div class="swiper-slide c-swiper__slide">
+                                                                <div class="l-cardFund l-cardFund--indexCard">
+                                                                    @if (indexList != null)
+                                                                    {
+                                                                        foreach (var index in indexList)
+                                                                        {
+
+                                                                            <div class="l-cardFund__item">
+                                                                                <div class="c-box c-box--goods u-padding-xs u-shadow-animation">
+                                                                                    <div class="c-cardFund c-cardFund--half">
+                                                                                        <a href="#" class="c-cardFund__name s4">
+                                                                                            <div class="u-ellipsis-2">@index.IndexName</div>
+                                                                                            <div class="u-ellipsis-1">@index.MarketPriceText</div>
+                                                                                        </a>
+                                                                                        <div class="c-cardFund__trend">
+                                                                                            <div class="c-cardFund__rate">
+                                                                                                <span class="t-small">
+                                                                                                    @if (index.UpOrDown)
+                                                                                                    {
+                                                                                                        <span class="t-rise">漲跌幅</span>
+                                                                                                        <span class="o-rise">@index.ChangePercentage</span>
+                                                                                                    }
+                                                                                                    @if (!index.UpOrDown)
+                                                                                                    {
+                                                                                                        <span class="t-fall">漲跌幅</span>
+                                                                                                        <span class="o-fall">@index.ChangePercentage</span>
+                                                                                                    }
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <div class="c-cardFund__charts">
+                                                                                                <!-- .o-charts--rise: 漲, .o-charts--fall: 跌，會透過css處理漲跌顏色設定 -->
+                                                                                                <!-- [data-chart="mini"]: charts圖表，參考下方script邏輯 -->
+                                                                                                @if (index.UpOrDown)
+                                                                                                {
+                                                                                                    <div id="@index.IndexCode" class="o-charts o-charts--rise" data-chart="mini"></div>
+                                                                                                }
+                                                                                                @if (!index.UpOrDown)
+                                                                                                {
+                                                                                                    <div id="@index.IndexCode" class="o-charts o-charts--fall" data-chart="mini"></div>
+                                                                                                }
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                                <div class="swiper-button-next c-swiper__next u-hidden@dt-only"></div>
+                                                <div class="swiper-button-prev c-swiper__prev u-hidden@dt-only"></div>
+                                                <div class="swiper-pagination c-swiper__pagination"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @* 新聞區塊 *@
+        @if (Model.Bond != null && Model.Bond.Count > 0)
+        {
+            foreach (var item in Model.Bond)
+            {
+                if (item.News != null && item.News.Count > 0)
+                {
+                    <section class="c-section" data-section="stock" id="section-stock-@item.Title" style="@item.Display">
+                        <div class="l-wrap">
+                            <div class="c-section__title">@(item.Title)-市場新聞</div>
+                            <div class="c-section__content">
+                                <div class="l-headlines">
+                                    <div class="l-headlines__focus">
+                                        <div class="c-box c-box--gapless u-shadow-animation">
+                                            <div class="c-gridview">
+                                                <div class="c-gridview__media">
+                                                    <img src="~/themes/images/others/pic2.jpg" class="c-gridview__img" srcset="~/themes/images/articles/huawei__3x.jpg 3x" alt="">
+                                                </div>
+                                                <div class="c-gridview__content">
+                                                    <a href="@item.News[0].DetailLink" class="c-gridview__title s3 u-ellipsis-2">@item.News[0].Title</a>
+                                                    <div class="c-gridview__minor">
+                                                        <div class="c-minorInfo s4">
+                                                            <div class="c-minorInfo__main">
+                                                                <span class="t-date">@(item.News[0].Date) @(item.News[0].Time)</span>
+                                                                <span class="o-views o-views--xs">@item.News[0].ViewCount</span>
+                                                            </div>
+                                                            <div class="c-minorInfo__like">
+                                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="l-headlines__list">
+                                        <ul class="c-listGroup c-listGroup--article">
+                                            @if (item.News != null && item.News.Count > 1)
+                                            {
+                                                var count = 0;
+
+                                                foreach (var news in item.News)
+                                                {
+                                                    if (count > 0)
+                                                    {
+                                                        <li class="c-listGroup__item">
+                                                            <div class="c-gridview">
+                                                                <div class="c-gridview__content">
+                                                                    <a href="@news.DetailLink" class="c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only">@news.Title</a>
+                                                                    <div class="c-gridview__minor">
+                                                                        <div class="c-minorInfo s4">
+                                                                            <div class="c-minorInfo__main">
+                                                                                <span class="t-date">@(news.Date) @(news.Time)</span>
+                                                                                <span class="o-views o-views--xs">@news.ViewCount</span>
+                                                                            </div>
+                                                                            <div class="c-minorInfo__like">
+                                                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like is-active" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        count++;
+                                                    }
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="l-action">
+                                    <div class="l-action__item">
+                                        <a href="@Model.MoreNewsButtonLink" class="o-btn o-btn--secondary o-btn--lg">@Model.MoreNewsButtonText</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                }
+            }
+
+            <section class="c-section">
+                <div class="l-wrap">
+                    <div class="c-section__title" id="relevant-title-bond">@(Model.Bond[0].Title)-相關標的</div>
+                    <div class="c-section__content">
+                        <div class="c-tab c-tab--capsule" data-tab="true" data-docking="false">
+                            <div class="c-tab__header" id="header-bond">
+                                <ul class="c-tab__navs">
+                                    <!-- .is-active: 作用中的項目 -->
+                                    <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                                    <li id="li-fund-bond">
+                                        <a href="#" class="c-tab__item is-active" target="_self" title="基金" data-tab-target="tab-fund" data-table-tab>基金</a>
+                                    </li>
+                                    <li id="li-etf-bond">
+                                        <a href="#" class="c-tab__item" target="_self" title="ETF" data-tab-target="tab-etf" data-table-tab>ETF</a>
+                                    </li>
+                                </ul>
+                                <div class="c-tab__tools u-hidden@dt-only">
+                                    <div data-sortingbox-wrap="tab-fund" id="wrap-fund-bond">
+                                        <div class="o-sortingbox">
+                                            <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="fundTable-bond">
+                                                <option value="">排序</option>
+                                                <option value="基金名稱高至低" data-sorting-column="ProductName" data-sorting-class="is-desc">基金名稱高至低</option>
+                                                <option value="基金名稱低至高" data-sorting-column="ProductName" data-sorting-class="is-asc">基金名稱低至高</option>
+                                                <option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
+                                                <option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
+                                                <option value="幣別高至低" data-sorting-column="CurrencyName" data-sorting-class="is-desc">幣別高至低</option>
+                                                <option value="幣別低至高" data-sorting-column="CurrencyName" data-sorting-class="is-asc">幣別低至高</option>
+                                                <option value="當日漲跌幅高至低" data-sorting-column="Change" data-sorting-class="is-desc">當日漲跌幅高至低</option>
+                                                <option value="當日漲跌幅低至高" data-sorting-column="Change" data-sorting-class="is-asc">當日漲跌幅低至高</option>
+                                                <option value="6個月績效高至低" data-sorting-column="M6Change" data-sorting-class="is-desc">6個月績效高至低</option>
+                                                <option value="6個月績效低至高" data-sorting-column="M6Change" data-sorting-class="is-asc">6個月績效低至高</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="u-hidden" data-sortingbox-wrap="tab-etf" id="wrap-etf-bond">
+                                        <div class="o-sortingbox">
+                                            <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="etfTable-bond">
+                                                <option value="">排序</option>
+                                                <option value="ETF名稱高至低" data-sorting-column="ProductName" data-sorting-class="is-desc">ETF名稱高至低</option>
+                                                <option value="ETF名稱低至高" data-sorting-column="ProductName" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                                <option value="市價高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">市價高至低</option>
+                                                <option value="市價低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">市價低至高</option>
+                                                <option value="幣別高至低" data-sorting-column="CurrencyName" data-sorting-class="is-desc">幣別高至低</option>
+                                                <option value="幣別低至高" data-sorting-column="CurrencyName" data-sorting-class="is-asc">幣別低至高</option>
+                                                <option value="漲跌幅高至低" data-sorting-column="change" data-sorting-class="is-desc">漲跌幅高至低</option>
+                                                <option value="漲跌幅低至高" data-sorting-column="change" data-sorting-class="is-asc">漲跌幅低至高</option>
+                                                <option value="6個月績效高至低" data-sorting-column="M6Change" data-sorting-class="is-desc">6個月績效高至低</option>
+                                                <option value="6個月績效低至高" data-sorting-column="M6Change" data-sorting-class="is-asc">6個月績效低至高</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- is-active: 作用中的項目 -->
+                            <div class="c-tab__panel is-active" data-tab-panel-id="tab-fund" id="panel-fund-bond">
+                                <div class="l-table">
+                                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="fundTable-bond" id="fundTable-bond">
+                                        <colgroup>
+                                            <col style="width: auto;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr class="u-nowrap">
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>基金名稱</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="ProductName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>最新淨值</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>幣別</span>
+                                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>當日漲跌幅</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="Change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>6個月績效</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="M6Change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>關注/比較</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>申購</span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="fundTbody-bond">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="l-action">
+                                    <div class="l-action__item">
+                                        <a href="@Model.MoreFundButtonLink" class="o-btn o-btn--secondary o-btn--lg">@Model.MoreFundButtonText</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c-tab__panel" data-tab-panel-id="tab-etf" id="panel-etf-bond">
+                                <div class="l-table">
+                                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="etfTable-bond" id="etfTable-bond">
+                                        <colgroup>
+                                            <col style="width: auto;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr class="u-nowrap">
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>ETF名稱</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="ProductName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>市價</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>幣別</span>
+                                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>漲跌幅</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>6個月績效</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="M6Change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>關注/比較</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>申購</span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="etfTbody-bond">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="l-action">
+                                    <div class="l-action__item">
+                                        <a href="@Model.MoreETFButtonLink" class="o-btn o-btn--secondary o-btn--lg">@Model.MoreETFButtonText</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c-empty" id="empty-bond" style="display: none;">
+                                <div class="c-empty__img">
+                                    <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                                </div>
+                                <div class="c-empty__desc">沒有資料</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+
+        <section class="c-section">
+            <div class="l-wrap">
+                <div class="c-section__content">
+                    <div class="c-feature c-feature--join c-feature--personalize">
+                        <div class="c-feature__content u-center">
+                            <h3 class="c-feature__title">@Model.ReportTitle</h3>
+                            <p class="c-feature__desc">@Model.ReportText</p>
+                            <div class="c-feature__actions">
+                                <a href="@Model.ReportButtonLink" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@Model.ReportButtonText</a>
+                            </div>
+                        </div>
+                        <div class="c-feature__plate">
+                            <img src="~/themes/images/features/market.png" alt="第一銀行 投資週/月報" class="c-feature__img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="c-tab__panel" data-tab-panel-id="tab-3">
+        <section class="c-section c-section--gradientOg">
+            <div class="l-wrap">
+                <div class="c-section__content">
+                    <div class="c-tab c-tab--weather">
+                        <div class="c-tab__header">
+                            <div class="o-weatherbox" id="weather3">
+                                @if (Model.Industry != null)
+                                {
+                                    foreach (var item in Model.Industry)
+                                    {
+                                        <label class="o-weatherbox__item">
+                                            <input type="radio" name="weather3" value="@item.Title" @(item.Checked) class="o-weatherbox__input">
+                                            <div class="o-weatherbox__content">
+                                                @if (item.Degree == "1")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/sun.svg" alt="">
+                                                }
+                                                else if (item.Degree == "2")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/common.svg" alt="">
+                                                }
+                                                else if (item.Degree == "3")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/cloudy.svg" alt="">
+                                                }
+                                                else if (item.Degree == "4")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/rainy.svg" alt="">
+                                                }
+                                                <span>@item.Title</span>
+                                            </div>
+                                        </label>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        @if (Model.Industry != null)
+                        {
+                            foreach (var item in Model.Industry)
+                            {
+                                <div class="c-tab__panel @item.IsActive" data-div="industry" id="div-industry-@item.Title">
+                                    <div class="c-indexData">
+                                        <div class="c-indexData__head">
+                                            <div class="c-indexData__title">@item.Title</div>
+                                            <div class="c-indexData__icon">
+                                                @if (item.Degree == "1")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/sun.svg" alt="">
+                                                }
+                                                else if (item.Degree == "2")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/common.svg" alt="">
+                                                }
+                                                else if (item.Degree == "3")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/cloudy.svg" alt="">
+                                                }
+                                                else if (item.Degree == "4")
+                                                {
+                                                    <img src="~/themes/images/icons/weather/rainy.svg" alt="">
+                                                }
+                                            </div>
+                                            <div class="c-indexData__text">
+                                                <div class="c-indexData__title">@item.Title</div>
+                                                <div class="c-indexData__desc">@item.DegreeText</div>
+                                                <div class="c-indexData__date">@item.Date</div>
+                                            </div>
+                                        </div>
+                                        <div class="c-indexData__content">
+                                            <div class="swiper c-swiper c-swiper--minor has-shadow" data-carousel="true" data-swiper='{"spaceBetween":16}' style="--shadowWidth: 8px;">
+                                                <div class="swiper-wrapper c-swiper__wrapper">
+                                                    @if (item.RelevantGlobalIndex != null)
+                                                    {
+                                                        foreach (var indexList in item.RelevantGlobalIndex)
+                                                        {
+                                                            <div class="swiper-slide c-swiper__slide">
+                                                                <div class="l-cardFund l-cardFund--indexCard">
+                                                                    @if (indexList != null)
+                                                                    {
+                                                                        foreach (var index in indexList)
+                                                                        {
+
+                                                                            <div class="l-cardFund__item">
+                                                                                <div class="c-box c-box--goods u-padding-xs u-shadow-animation">
+                                                                                    <div class="c-cardFund c-cardFund--half">
+                                                                                        <a href="#" class="c-cardFund__name s4">
+                                                                                            <div class="u-ellipsis-2">@index.IndexName</div>
+                                                                                            <div class="u-ellipsis-1">@index.MarketPriceText</div>
+                                                                                        </a>
+                                                                                        <div class="c-cardFund__trend">
+                                                                                            <div class="c-cardFund__rate">
+                                                                                                <span class="t-small">
+                                                                                                    @if (index.UpOrDown)
+                                                                                                    {
+                                                                                                        <span class="t-rise">漲跌幅</span>
+                                                                                                        <span class="o-rise">@index.ChangePercentage</span>
+                                                                                                    }
+                                                                                                    @if (!index.UpOrDown)
+                                                                                                    {
+                                                                                                        <span class="t-fall">漲跌幅</span>
+                                                                                                        <span class="o-fall">@index.ChangePercentage</span>
+                                                                                                    }
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <div class="c-cardFund__charts">
+                                                                                                <!-- .o-charts--rise: 漲, .o-charts--fall: 跌，會透過css處理漲跌顏色設定 -->
+                                                                                                <!-- [data-chart="mini"]: charts圖表，參考下方script邏輯 -->
+                                                                                                @if (index.UpOrDown)
+                                                                                                {
+                                                                                                    <div id="@index.IndexCode" class="o-charts o-charts--rise" data-chart="mini"></div>
+                                                                                                }
+                                                                                                @if (!index.UpOrDown)
+                                                                                                {
+                                                                                                    <div id="@index.IndexCode" class="o-charts o-charts--fall" data-chart="mini"></div>
+                                                                                                }
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                                <div class="swiper-button-next c-swiper__next u-hidden@dt-only"></div>
+                                                <div class="swiper-button-prev c-swiper__prev u-hidden@dt-only"></div>
+                                                <div class="swiper-pagination c-swiper__pagination"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @* 新聞區塊 *@
+        @if (Model.Industry != null && Model.Industry.Count > 0)
+        {
+            foreach (var item in Model.Industry)
+            {
+                if (item.News != null && item.News.Count > 0)
+                {
+                    <section class="c-section" data-section="stock" id="section-stock-@item.Title" style="@item.Display">
+                        <div class="l-wrap">
+                            <div class="c-section__title">@(item.Title)-市場新聞</div>
+                            <div class="c-section__content">
+                                <div class="l-headlines">
+                                    <div class="l-headlines__focus">
+                                        <div class="c-box c-box--gapless u-shadow-animation">
+                                            <div class="c-gridview">
+                                                <div class="c-gridview__media">
+                                                    <img src="~/themes/images/others/pic3.jpg" class="c-gridview__img" srcset="~/themes/images/articles/huawei__3x.jpg 3x" alt="">
+                                                </div>
+                                                <div class="c-gridview__content">
+                                                    <a href="@item.News[0].DetailLink" class="c-gridview__title s3 u-ellipsis-2">@item.News[0].Title</a>
+                                                    <div class="c-gridview__minor">
+                                                        <div class="c-minorInfo s4">
+                                                            <div class="c-minorInfo__main">
+                                                                <span class="t-date">@(item.News[0].Date) @(item.News[0].Time)</span>
+                                                                <span class="o-views o-views--xs">@item.News[0].ViewCount</span>
+                                                            </div>
+                                                            <div class="c-minorInfo__like">
+                                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="l-headlines__list">
+                                        <ul class="c-listGroup c-listGroup--article">
+                                            @if (item.News != null && item.News.Count > 1)
+                                            {
+                                                var count = 0;
+
+                                                foreach (var news in item.News)
+                                                {
+                                                    if (count > 0)
+                                                    {
+                                                        <li class="c-listGroup__item">
+                                                            <div class="c-gridview">
+                                                                <div class="c-gridview__content">
+                                                                    <a href="@news.DetailLink" class="c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only">@news.Title</a>
+                                                                    <div class="c-gridview__minor">
+                                                                        <div class="c-minorInfo s4">
+                                                                            <div class="c-minorInfo__main">
+                                                                                <span class="t-date">@(news.Date) @(news.Time)</span>
+                                                                                <span class="o-views o-views--xs">@news.ViewCount</span>
+                                                                            </div>
+                                                                            <div class="c-minorInfo__like">
+                                                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like is-active" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        count++;
+                                                    }
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="l-action">
+                                    <div class="l-action__item">
+                                        <a href="@Model.MoreNewsButtonLink" class="o-btn o-btn--secondary o-btn--lg">@Model.MoreNewsButtonText</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                }
+            }
+
+            <section class="c-section">
+                <div class="l-wrap">
+                    <div class="c-section__title" id="relevant-title-industry">@(Model.Industry[0].Title)-相關標的</div>
+                    <div class="c-section__content">
+                        <div class="c-tab c-tab--capsule" data-tab="true" data-docking="false">
+                            <div class="c-tab__header" id="header-industry">
+                                <ul class="c-tab__navs">
+                                    <!-- .is-active: 作用中的項目 -->
+                                    <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                                    <li id="li-fund-industry">
+                                        <a href="#" class="c-tab__item is-active" target="_self" title="基金" data-tab-target="tab-fund" data-table-tab>基金</a>
+                                    </li>
+                                    <li id="li-etf-industry">
+                                        <a href="#" class="c-tab__item" target="_self" title="ETF" data-tab-target="tab-etf" data-table-tab>ETF</a>
+                                    </li>
+                                </ul>
+                                <div class="c-tab__tools u-hidden@dt-only">
+                                    <div data-sortingbox-wrap="tab-fund" id="wrap-fund-industry">
+                                        <div class="o-sortingbox">
+                                            <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="fundTable-industry">
+                                                <option value="">排序</option>
+                                                <option value="基金名稱高至低" data-sorting-column="ProductName" data-sorting-class="is-desc">基金名稱高至低</option>
+                                                <option value="基金名稱低至高" data-sorting-column="ProductName" data-sorting-class="is-asc">基金名稱低至高</option>
+                                                <option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
+                                                <option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
+                                                <option value="幣別高至低" data-sorting-column="CurrencyName" data-sorting-class="is-desc">幣別高至低</option>
+                                                <option value="幣別低至高" data-sorting-column="CurrencyName" data-sorting-class="is-asc">幣別低至高</option>
+                                                <option value="當日漲跌幅高至低" data-sorting-column="Change" data-sorting-class="is-desc">當日漲跌幅高至低</option>
+                                                <option value="當日漲跌幅低至高" data-sorting-column="Change" data-sorting-class="is-asc">當日漲跌幅低至高</option>
+                                                <option value="6個月績效高至低" data-sorting-column="M6Change" data-sorting-class="is-desc">6個月績效高至低</option>
+                                                <option value="6個月績效低至高" data-sorting-column="M6Change" data-sorting-class="is-asc">6個月績效低至高</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="u-hidden" data-sortingbox-wrap="tab-etf" id="wrap-etf-industry">
+                                        <div class="o-sortingbox">
+                                            <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="etfTable-industry">
+                                                <option value="">排序</option>
+                                                <option value="ETF名稱高至低" data-sorting-column="ProductName" data-sorting-class="is-desc">ETF名稱高至低</option>
+                                                <option value="ETF名稱低至高" data-sorting-column="ProductName" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                                <option value="市價高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">市價高至低</option>
+                                                <option value="市價低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">市價低至高</option>
+                                                <option value="幣別高至低" data-sorting-column="CurrencyName" data-sorting-class="is-desc">幣別高至低</option>
+                                                <option value="幣別低至高" data-sorting-column="CurrencyName" data-sorting-class="is-asc">幣別低至高</option>
+                                                <option value="漲跌幅高至低" data-sorting-column="change" data-sorting-class="is-desc">漲跌幅高至低</option>
+                                                <option value="漲跌幅低至高" data-sorting-column="change" data-sorting-class="is-asc">漲跌幅低至高</option>
+                                                <option value="6個月績效高至低" data-sorting-column="M6Change" data-sorting-class="is-desc">6個月績效高至低</option>
+                                                <option value="6個月績效低至高" data-sorting-column="M6Change" data-sorting-class="is-asc">6個月績效低至高</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- is-active: 作用中的項目 -->
+                            <div class="c-tab__panel is-active" data-tab-panel-id="tab-fund" id="panel-fund-industry">
+                                <div class="l-table">
+                                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="fundTable-industry" id="fundTable-industry">
+                                        <colgroup>
+                                            <col style="width: auto;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr class="u-nowrap">
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>基金名稱</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="ProductName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>最新淨值</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>幣別</span>
+                                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>當日漲跌幅</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="Change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>6個月績效</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="M6Change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>關注/比較</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>申購</span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="fundTbody-industry">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="l-action">
+                                    <div class="l-action__item">
+                                        <a href="@Model.MoreFundButtonLink" class="o-btn o-btn--secondary o-btn--lg">@Model.MoreFundButtonText</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c-tab__panel" data-tab-panel-id="tab-etf" id="panel-etf-industry">
+                                <div class="l-table">
+                                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="etfTable-industry" id="etfTable-industry">
+                                        <colgroup>
+                                            <col style="width: auto;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr class="u-nowrap">
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>ETF名稱</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="ProductName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>市價</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>幣別</span>
+                                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyName"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>漲跌幅</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>6個月績效</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="M6Change"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>關注/比較</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>申購</span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="etfTbody-industry">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="l-action">
+                                    <div class="l-action__item">
+                                        <a href="@Model.MoreETFButtonLink" class="o-btn o-btn--secondary o-btn--lg">@Model.MoreETFButtonText</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c-empty" id="empty-industry" style="display: none;">
+                                <div class="c-empty__img">
+                                    <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                                </div>
+                                <div class="c-empty__desc">沒有資料</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+
+        <section class="c-section">
+            <div class="l-wrap">
+                <div class="c-section__content">
+                    <div class="c-feature c-feature--join c-feature--personalize">
+                        <div class="c-feature__content u-center">
+                            <h3 class="c-feature__title">@Model.ReportTitle</h3>
+                            <p class="c-feature__desc">@Model.ReportText</p>
+                            <div class="c-feature__actions">
+                                <a href="@Model.ReportButtonLink" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@Model.ReportButtonText</a>
+                            </div>
+                        </div>
+                        <div class="c-feature__plate">
+                            <img src="~/themes/images/features/market.png" alt="第一銀行 投資週/月報" class="c-feature__img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+@* 沒有 pagination FilterJS 無法正常運作，放在這邊 hidden *@
+<div class="l-pagination" hidden>
+    <div class="l-pagination__size" id="uid-perPage-1">
+    </div>
+    <div class="l-pagination__switch" id="uid-pagination-1">
+    </div>
+</div>
+
+<div class="l-pagination" hidden>
+    <div class="l-pagination__size" id="uid-perPage-2">
+    </div>
+    <div class="l-pagination__switch" id="uid-pagination-2">
+    </div>
+</div>
+
+<div class="l-pagination" hidden>
+    <div class="l-pagination__size" id="uid-perPage-3">
+    </div>
+    <div class="l-pagination__switch" id="uid-pagination-3">
+    </div>
+</div>
+
+<div class="l-pagination" hidden>
+    <div class="l-pagination__size" id="uid-perPage-4">
+    </div>
+    <div class="l-pagination__switch" id="uid-pagination-4">
+    </div>
+</div>
+
+<div class="l-pagination" hidden>
+    <div class="l-pagination__size" id="uid-perPage-5">
+    </div>
+    <div class="l-pagination__switch" id="uid-pagination-5">
+    </div>
+</div>
+
+<div class="l-pagination" hidden>
+    <div class="l-pagination__size" id="uid-perPage-6">
+    </div>
+    <div class="l-pagination__switch" id="uid-pagination-6">
+    </div>
+</div>
+
+<script id="template1" type="text/html">
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+        <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+        <td class="c-cardTable__top"></td>
+        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+            <div class="c-cardTable__content">
+                <div class="l-target">
+                    <div class="l-target__name">
+                        <a href="<%= DetailLink %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductName %></a>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+        <td class="c-cardTable__space"></td>
+        <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+        <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+            <div class="c-cardTable__title" data-length="5">最新淨值</div>
+            <div class="c-cardTable__content"><%= NetAssetValue %></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">
+                幣別
+                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+            </div>
+            <div class="c-cardTable__content">
+                <a href="<%= CurrencyLink %>" class="o-link"><%= CurrencyName %></a>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
+            <div class="c-cardTable__content">
+                <% if (!Change) { %>
+                    <span>-</span>
+                <% } %>
+                <% if (typeof Change == "number" && !isNaN(Change) && Change > 0) { %>
+                    <span class="o-rise"><%= Change %>%</span>
+                <% } %>
+                <% if (typeof Change == "number" && !isNaN(Change) && Change < 0) { %>
+                    <span class="o-fall"><%= Change %>%</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">6個月績效</div>
+            <div class="c-cardTable__content">
+                <% if (!M6Change) { %>
+                    <span>-</span>
+                <% } %>
+                <% if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change > 0) { %>
+                    <span class="o-rise"><%= M6Change %>%</span>
+                <% } %>
+                <% if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change < 0) { %>
+                    <span class="o-fall"><%= M6Change %>%</span>
+                <% } %>
+            </div>
+        </td>
+        <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+        <td class="c-cardTable__space"></td>
+        <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+        <td class="c-cardTable__footer" data-card-table-width="2/3">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <!-- [data-after-lt]: pad / mobile 自動顯示文字，值為要顯示的文字 --><!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+                        <!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+                        <a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                    </li>
+                    <li class="l-collect__item">
+                        <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                        <!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+                        <!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+                        <a href="#" class="o-statusBtn o-statusBtn--compare is-active" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                    </li>
+                </ul>
+            </div>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/3">
+            <% if (OnlineSubscriptionAvailability == 'Y') { %>
+                <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <% } %>
+        </td>
+    </tr>
+</script>
+
+<script id="template2" type="text/html">
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+        <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+        <td class="c-cardTable__top"></td>
+        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+            <div class="c-cardTable__content">
+                <div class="l-target">
+                    <div class="l-target__name">
+                         <a href="<%= DetailLink %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductName %></a>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+        <td class="c-cardTable__space"></td>
+        <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+        <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+            <div class="c-cardTable__title" data-length="5">市價</div>
+            <div class="c-cardTable__content"><%= NetAssetValue %></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">
+                幣別
+                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+            </div>
+            <div class="c-cardTable__content">
+                <a href="<%= CurrencyLink %>" class="o-link"><%= CurrencyName %></a>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">漲跌幅</div>
+            <div class="c-cardTable__content">
+                <% if (!Change) { %>
+                    <span>-</span>
+                <% } %>
+                <% if (typeof Change == "number" && !isNaN(Change) && Change > 0) { %>
+                    <span class="o-rise"><%= Change %>%</span>
+                <% } %>
+                <% if (typeof Change == "number" && !isNaN(Change) && Change < 0) { %>
+                    <span class="o-fall"><%= Change %>%</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">6個月績效</div>
+            <div class="c-cardTable__content">
+                <% if (!M6Change) { %>
+                    <span>-</span>
+                <% } %>
+                <% if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change > 0) { %>
+                    <span class="o-rise"><%= M6Change %>%</span>
+                <% } %>
+                <% if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change < 0) { %>
+                    <span class="o-fall"><%= M6Change %>%</span>
+                <% } %>
+            </div>
+        </td>
+        <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+        <td class="c-cardTable__space"></td>
+        <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+        <td class="c-cardTable__footer" data-card-table-width="2/3">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <!-- [data-after-lt]: pad / mobile 自動顯示文字，值為要顯示的文字 --><!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+                        <!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+                        <a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                    </li>
+                    <li class="l-collect__item">
+                        <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                        <!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+                        <!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+                        <a href="#" class="o-statusBtn o-statusBtn--compare is-active" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                    </li>
+                </ul>
+            </div>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/3">
+            <% if (OnlineSubscriptionAvailability == 'Y') { %>
+                <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <% } %>
+        </td>
+    </tr>
+</script>
+
+<script id="uid-template-perPage" type="text/html">
+    <span>每頁顯示</span>
+    <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+    <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+        <% for(var i = 0; i < values.length - 1; i++ ) { %>
+        <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+        <% } %>
+        <option value="<%= values[values.length - 1] %>">全部</option>
+    </select>
+</script>
+
+<script id="uid-template-pagination" type="text/html">
+    <div class="o-pagination">
+        <% if (currentPage > 1) { %>
+        <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+        <% } else { %>
+        <!-- .is-disabled: 停用狀態，無法點擊 -->
+        <a href="#" class="o-pagination__prev is-disabled"></a>
+        <% } %>
+        <span class="o-pagination__pager">
+            <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+            <span class="o-pagination__total"><%= totalPages %></span>
+        </span>
+        <% if (currentPage < totalPages ) { %>
+        <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+        <% } else { %>
+        <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+        <% } %>
+    </div>
+</script>
+
+<script>
+    const StockRelevantFund = @Html.Raw(Model.StockRelevantFundJson);
+    const StockRelevantETF = @Html.Raw(Model.StockRelevantETFJson);
+    const BondRelevantFund = @Html.Raw(Model.BondRelevantFundJson);
+    const BondRelevantETF = @Html.Raw(Model.BondRelevantETFJson);
+    const IndustryRelevantFund = @Html.Raw(Model.IndustryRelevantFundJson);
+    const IndustryRelevantETF = @Html.Raw(Model.IndustryRelevantETFJson);
+
+    $(function () {
+
+        function showRelevant(prod, fundlength, etflength) {
+            debugger;
+            if (fundlength == 0 && etflength == 0) {
+                $('#header-' + prod).hide();
+                $('#panel-fund-' + prod).removeClass('is-active');
+                $('#panel-etf-' + prod).removeClass('is-active');
+                // 顯示無資料
+                $('#empty-' + prod).show();
+            }
+            else if (fundlength == 0) {
+                // 不顯示基金/ETF切換塊
+                $('#li-fund-' + prod).hide();
+                $('#li-etf-' + prod).hide();
+
+                $('#wrap-fund-' + prod).addClass('u-hidden');
+                $('#wrap-etf-' + prod).addClass('u-hidden');
+                $('#wrap-etf-' + prod).removeClass('u-hidden');
+
+                $('#panel-fund-' + prod).removeClass('is-active');
+                $('#panel-etf-' + prod).removeClass('is-active');
+                $('#panel-etf-' + prod).addClass('is-active');
+            }
+            else if (etflength == 0) {
+                // 不顯示基金/ETF切換塊
+                $('#li-fund-' + prod).hide();
+                $('#li-etf-' + prod).hide();
+
+                $('#wrap-fund-' + prod).addClass('u-hidden');
+                $('#wrap-etf-' + prod).addClass('u-hidden');
+                $('#wrap-fund-' + prod).removeClass('u-hidden');
+
+                $('#panel-fund-' + prod).removeClass('is-active');
+                $('#panel-etf-' + prod).removeClass('is-active');
+                $('#panel-fund-' + prod).addClass('is-active');
+            }
+            else {
+                $('#header-' + prod).show();
+
+                $('#li-fund-' + prod).show();
+                $('#li-etf-' + prod).show();
+
+                if ($('#li-fund-' + prod + ' a').hasClass('is-active')) {
+                    $('#wrap-fund-' + prod).addClass('u-hidden');
+                    $('#wrap-etf-' + prod).addClass('u-hidden');
+                    $('#wrap-fund-' + prod).removeClass('u-hidden');
+
+                    $('#panel-fund-' + prod).removeClass('is-active');
+                    $('#panel-etf-' + prod).removeClass('is-active');
+                    $('#panel-fund-' + prod).addClass('is-active');
+                }
+                else {
+                    $('#wrap-fund-' + prod).addClass('u-hidden');
+                    $('#wrap-etf-' + prod).addClass('u-hidden');
+                    $('#wrap-etf-' + prod).removeClass('u-hidden');
+
+                    $('#panel-fund-' + prod).removeClass('is-active');
+                    $('#panel-etf-' + prod).removeClass('is-active');
+                    $('#panel-etf-' + prod).addClass('is-active');
+                }
+
+                $('#empty-' + prod).hide();
+            }
+        }
+
+        $('.o-weatherbox__input').each(function (i, el) {
+            var val = $(el).val();
+            var name = $(el).attr("name");
+
+            if (name == 'weather1') {
+                $(el).on("click", function () {
+
+                    $('[data-div="stock"]').removeClass('is-active');
+                    $('#div-stock-' + $(this).val()).addClass('is-active');
+
+                    $('[data-section="stock"]').hide();
+                    $('#section-stock-' + $(this).val()).show();
+
+                    $('#relevant-title-stock').text($(this).val() + "-相關標的");
+
+                    var fundlength = StockRelevantFund.filter((element) => element.Title == $(this).val()).length;
+                    var etflength = StockRelevantETF.filter((element) => element.Title == $(this).val()).length;
+
+                    showRelevant('stock', fundlength, etflength);
+                });
+            }
+            else if (name == 'weather2') {
+                $(el).on("click", function () {
+
+                    $('[data-div="bond"]').removeClass('is-active');
+                    $('#div-bond-' + $(this).val()).addClass('is-active');
+
+                    $('[data-section="bond"]').hide();
+                    $('#section-bond-' + $(this).val()).show();
+
+                    $('#relevant-title-bond').text($(this).val() + "-相關標的");
+
+                    var fundlength = BondRelevantFund.filter((element) => element.Title == $(this).val()).length;
+                    var etflength = BondRelevantETF.filter((element) => element.Title == $(this).val()).length;
+
+                    showRelevant('bond', fundlength, etflength);
+                });
+            }
+            else if (name == 'weather3') {
+                $(el).on("click", function () {
+
+                    $('[data-div="industry"]').removeClass('is-active');
+                    $('#div-industry-' + $(this).val()).addClass('is-active');
+
+                    $('[data-section="industry"]').hide();
+                    $('#section-industry-' + $(this).val()).show();
+
+                    $('#relevant-title-industry').text($(this).val() + "-相關標的");
+
+                    var fundlength = IndustryRelevantFund.filter((element) => element.Title == $(this).val()).length;
+                    var etflength = IndustryRelevantETF.filter((element) => element.Title == $(this).val()).length;
+
+                    showRelevant('industry', fundlength, etflength);
+                });
+            }
+        });
+
+        function initFilterJS(data, tbody, template, select, pagination, perPage, radio) {
+            var fjs = FilterJS(data, tbody, {
+                template: template,
+                callbacks: {
+                    afterFilter: function (result) {
+                        window.loading('hide');
+                    }
+                },
+                search: {},
+                order: {
+                    default_sort: 'asc',
+                    sorts: [
+                        { field: 'group1', ele: select },
+                    ],
+                    onSortEvent: function (f, e) {
+                        let $self = $(this);
+                        if (e.type === 'click') {
+
+                        } else if (e.type === 'change') {
+                            let $selected = $self.find(':selected');
+                            let field = $selected.data('sorting-column');
+                            let order = $selected.data('sorting-class');
+                            f.field = field;
+                            if (!!order) {
+                                if (order === 'is-desc') {
+                                    f.order = 'desc';
+                                } else if (order === 'is-asc') {
+                                    f.order = 'asc';
+                                }
+                            } else {
+                                f.order = f.order === 'desc' ? 'asc' : 'desc';
+                            }
+                        }
+                    },
+                },
+                pagination: {
+                    //headerView: '#uid-filter-header',
+                    container: pagination,
+                    paginationView: '#uid-template-pagination',
+                    visiblePages: 5,
+                    perPage: {
+                        values: [10, 50, 100, data.length],
+                        container: perPage,
+                        perPageView: '#uid-template-perPage'
+                    },
+                    onPagination: function () {
+                    }
+                }
+            });
+
+            fjs.addCriteria({ field: 'Title', ele: radio });
+
+            fjs.filter();
+        }
+
+        initFilterJS(StockRelevantFund, '#fundTbody-stock', '#template1', 'select[data-sorting-linkto="fundTable-stock"]', '#uid-pagination-1', '#uid-perPage-1', '#weather1 input:radio');
+        initFilterJS(StockRelevantETF, '#etfTbody-stock', '#template2', 'select[data-sorting-linkto="etfTable-stock"]', '#uid-pagination-2', '#uid-perPage-2', '#weather1 input:radio');
+        initFilterJS(BondRelevantFund, '#fundTbody-bond', '#template1', 'select[data-sorting-linkto="fundTable-bond"]', '#uid-pagination-3', '#uid-perPage-3', '#weather2 input:radio');
+        initFilterJS(BondRelevantETF, '#etfTbody-bond', '#template2', 'select[data-sorting-linkto="etfTable-bond"]', '#uid-pagination-4', '#uid-perPage-4', '#weather2 input:radio');
+        initFilterJS(IndustryRelevantFund, '#fundTbody-industry', '#template1', 'select[data-sorting-linkto="fundTable-industry"]', '#uid-pagination-5', '#uid-perPage-5', '#weather3 input:radio');
+        initFilterJS(IndustryRelevantETF, '#etfTbody-industry', '#template2', 'select[data-sorting-linkto="etfTable-industry"]', '#uid-pagination-6', '#uid-perPage-6', '#weather3 input:radio');
+
+        // table 排序功能
+        $('.o-sorting').on('click.sorting', function (e) {
+            e.preventDefault();
+            // 呼叫 loading
+            window.loading('show');
+            var $this = $(this);
+            var orderby = '';
+            if ($this.hasClass('is-asc')) {
+                $this.removeClass('is-asc').addClass('is-desc');
+                orderby = 'is-desc';
+            } else {
+                $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                $this.addClass('is-asc');
+                orderby = 'is-asc';
+            }
+
+            // 連動 sortingbox
+            var tableName = $(this).closest('[data-table-name]').data('table-name');
+            var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+            var sortingColumn = $(this).data('sorting-column');
+            $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+            $sortingbox.trigger('change');
+
+            // 因展示，使用 setTimeout 延遲關閉 loading
+            setTimeout(() => {
+                // 關閉loading
+                window.loading('hide');
+            }, 300);
+        });
+
+        // 手機版分頁筆數功能
+        $('[data-sortingbox="true"]').on('change.sorting', function (e) {
+            // 呼叫 loading
+            window.loading('show');
+            var sorting = $(this).val();
+            var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+            var sortingColumn = $('option:selected', this).data('sorting-column');
+            var orderby = $('option:selected', this).data('sorting-class');
+
+            // 連動 table
+            $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+            $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+            console.log(`排序：${sorting}`);
+
+            // 因展示，使用 setTimeout 延遲關閉 loading
+            setTimeout(() => {
+                // 關閉loading
+                window.loading('hide');
+            }, 300);
+        });
+
+        // 相關標的table 排序顯示切換
+        $('[data-table-tab]').on('click.table', function () {
+            $('[data-sortingbox-wrap]').addClass('u-hidden');
+            $(`[data-sortingbox-wrap="${$(this).attr('data-tab-target')}"]`).removeClass('u-hidden');
+        });
+
+        //根據各tab第一筆資料顯示對應相關標的各區塊
+        var val1 = $('input[name="weather1"]:checked').val();
+        var fundlength1 = StockRelevantFund.filter((element) => element.Title == val1).length;
+        var etflength1 = StockRelevantETF.filter((element) => element.Title == val1).length;
+        showRelevant('stock', fundlength1, etflength1);
+
+        var val2 = $('input[name="weather2"]:checked').val();
+        var fundlength2 = BondRelevantFund.filter((element) => element.Title == val2).length;
+        var etflength2 = BondRelevantETF.filter((element) => element.Title == val2).length;
+        showRelevant('bond', fundlength2, etflength2);
+
+        var val3 = $('input[name="weather3"]:checked').val();
+        var fundlength3 = IndustryRelevantFund.filter((element) => element.Title == val3).length;
+        var etflength3 = IndustryRelevantETF.filter((element) => element.Title == val3).length;
+        showRelevant('industry', fundlength3, etflength3);
+    });
+</script>
+
+<script>
+    const datas = @Html.Raw(Model.GlobalIndexHighchartsDataJson);
+
+    $(function () {
+        // highchart
+        $('[data-chart="mini"]').each(function (i, el) {
+            var data = [];
+
+            var temp = datas.find((element) => element.IndexCode == $(el).attr('id'));
+
+            if (temp && temp.Data) {
+
+                data = temp.Data;
+
+                // 為了凸顯數據對比，y軸最小值設定成30日內最小值
+                var min = Math.min(...data);
+
+                $(el).highcharts({
+                    chart: {
+                        type: 'area',
+                        margin: [0, 0, 0, 0],
+                        backgroundColor: 'transparent'
+                    },
+                    title: {
+                        text: undefined
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            enableMouseTracking: false,
+                            marker: {
+                                enabled: false
+                            }
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    xAxis: {
+                        visible: false
+                    },
+                    yAxis: {
+                        visible: false,
+                        min: min
+                    },
+                    series: [{
+                        //lineColor: '#FF0000',
+                        //color: '#FF0000',
+                        fillOpacity: 0.06,
+                        data: data
+                    }]
+                });
+            }
+        });
+    });
+</script>

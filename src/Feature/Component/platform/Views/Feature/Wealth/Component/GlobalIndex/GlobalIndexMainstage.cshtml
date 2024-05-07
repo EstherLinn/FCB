@@ -111,48 +111,53 @@
         $('[data-chart="mini"]').each(function (i, el) {
             var data = [];
 
-            data = datas.find((element) => element.IndexCode == $(el).attr('id')).Data;
+            var temp = datas.find((element) => element.IndexCode == $(el).attr('id'));
 
-            // 為了凸顯數據對比，y軸最小值設定成30日內最小值
-            var min = Math.min(...data);
+            if (temp && temp.Data) {
 
-            $(el).highcharts({
-                chart: {
-                    type: 'area',
-                    margin: [0, 0, 0, 0],
-                    backgroundColor: 'transparent'
-                },
-                title: {
-                    text: undefined
-                },
-                legend: {
-                    enabled: false
-                },
-                plotOptions: {
-                    series: {
-                        enableMouseTracking: false,
-                        marker: {
-                            enabled: false
+                data = temp.Data;
+
+                // 為了凸顯數據對比，y軸最小值設定成30日內最小值
+                var min = Math.min(...data);
+
+                $(el).highcharts({
+                    chart: {
+                        type: 'area',
+                        margin: [0, 0, 0, 0],
+                        backgroundColor: 'transparent'
+                    },
+                    title: {
+                        text: undefined
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            enableMouseTracking: false,
+                            marker: {
+                                enabled: false
+                            }
                         }
-                    }
-                },
-                credits: {
-                    enabled: false
-                },
-                xAxis: {
-                    visible: false
-                },
-                yAxis: {
-                    visible: false,
-                    min: min
-                },
-                series: [{
-                    //lineColor: '#FF0000',
-                    //color: '#FF0000',
-                    fillOpacity: 0.06,
-                    data: data
-                }]
-            });
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    xAxis: {
+                        visible: false
+                    },
+                    yAxis: {
+                        visible: false,
+                        min: min
+                    },
+                    series: [{
+                        //lineColor: '#FF0000',
+                        //color: '#FF0000',
+                        fillOpacity: 0.06,
+                        data: data
+                    }]
+                });
+            }
         });
     });
 </script>
