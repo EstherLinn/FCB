@@ -815,8 +815,6 @@
     </div>
 </script>
 
-<script src="/themes/js/filter.min.js"></script>
-
 <script>
     const RelevantGlobalIndex = @Html.Raw(Model.RelevantGlobalIndex);
     const RelevantGlobalIndex_Success = "@Model.RelevantGlobalIndex_Success";
@@ -1091,10 +1089,6 @@
         });
     })(jQuery, window, document);
 </script>
-
-@* highcharts K線要的額外模組，不知道要不要搬到外層 *@
-<script src="~/themes/vendor/highcharts/indicators/indicators-all.js" defer></script>
-<script src="~/themes/vendor/highcharts/modules/accessibility.js" defer></script>
 
 <script>
     const data_D = @Html.Raw(Model.PriceData_D);
