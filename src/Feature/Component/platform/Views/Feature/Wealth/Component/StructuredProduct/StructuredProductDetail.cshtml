@@ -26,7 +26,9 @@
             let HistoryBankSellPrice = JSON.parse(JSON.stringify(data.HistoryBankSellPrice));
             let ThirtyDayBankSellPriceWithChange = JSON.parse(JSON.stringify(data.ThirtyDayBankSellPriceWithChange));
 
-
+            const resetProps = ['IssuingInstitution', 'CurrencyName', 'ProductMaturityDate', 'BankSellPrice', 'PriceBaseDate'];
+            const dateProps = ['ProductMaturityDate', 'PriceBaseDate'];
+            
             RenderPageHeader();
             RenderThirtyDaySellPrice();
             RenderDividendFilter();
@@ -36,13 +38,39 @@
             // 商品資訊Header
             function RenderPageHeader() {
                 var data = ProductData;
+                resetProp(data);
+
+                for (var d in data) {
+                    let value = data[d];
+
+                    if ((value == null || value == undefined || value == '')
+                        && d.includes('_DisplayText')) {
+                        data[d] = '-';
+                    }
+                }
+
                 var pageHeaderTemplate = $('#page-header-template').html();
 
-                var renderedHTML = pageHeaderTemplate.replace(/%Title%/g, data.ProductCode + " " + data.ProductName).replace(/%Views%/g, "@pageview").replace(/%BankSellPrice%/g, data.BankSellPrice).replace(/%CurrencyName%/g, data.CurrencyName).replace(/%PriceBaseDate%/g, data.PriceBaseDate).replace(/%ProductMaturityDate%/g, data.ProductMaturityDate).replace(/%IssuingInstitution%/g, data.IssuingInstitution);
+                var renderedHTML = pageHeaderTemplate.replace(/%Title%/g, data.ProductCode + " " + data.ProductName).replace(/%Views%/g, "@pageview").replace(/%BankSellPrice%/g, data.BankSellPrice_DisplayText).replace(/%CurrencyName%/g, data.CurrencyName_DisplayText).replace(/%PriceBaseDate%/g, data.PriceBaseDate_DisplayText).replace(/%ProductMaturityDate%/g, data.ProductMaturityDate_DisplayText).replace(/%IssuingInstitution%/g, data.IssuingInstitution_DisplayText);
 
                 $('#pageHeader').html(renderedHTML);
             };
 
+            function resetProp(obj) {
+                for (var o in obj) {
+                    let value = obj[o];
+
+                    if (resetProps.includes(o)) {
+                        let newProp = o + '_DisplayText';
+                        obj[newProp] = value;
+                    }
+
+                    if (dateProps.includes(o) && value != null) {
+                        obj[o] = new Date(value).getTime().toString();
+                    }
+                }
+                return obj;
+            }
 
             // 配息 年份篩選
             function RenderDividendFilter() {
@@ -396,7 +424,7 @@
                                 y: item.value
                             };
                         });
-                        const updateDate = data.updateDate.replaceAll('-', '/');
+                        const updateDate = data.updateDate?.replaceAll('-', '/');
                         // 資料日期
                         $('[data-update-date="trend"]').text(updateDate);
                         let series = {
