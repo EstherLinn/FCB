@@ -27,12 +27,7 @@
                     @if (Model.ETFScaleRecords != null && Model.ETFScaleRecords.Any())
                     {
                         var record = Model.ETFScaleRecords.FirstOrDefault();
-                        string date = string.Empty;
-
-                        //if (record.ScaleDate.HasValue)
-                        //{
-                        //    date = $"({DateTimeExtensions.FormatDate(record.ScaleDate)})";
-                        //}
+                        string date = string.IsNullOrEmpty(record.ScaleDate) ? string.Empty : $"({record.ScaleDate})";
 
                         <div class="c-zebraList__content">
                             <span class="t-bold">@(record.ScaleMillions)百萬@(record.Currency) @date</span>
