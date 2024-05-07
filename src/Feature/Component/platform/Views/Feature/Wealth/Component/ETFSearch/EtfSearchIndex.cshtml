@@ -1,4 +1,5 @@
 ﻿@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+@using Feature.Wealth.Component.Models.Invest
 @using Foundation.Wealth.Helper;
 @model Feature.Wealth.Component.Models.ETF.Search.EtfSearchModel
 @{
@@ -122,6 +123,36 @@
                         }
                     });
                 });
+            }
+
+            function currencyLink(obj) {
+                let btnHtml = '@Html.CurrencyLink(null, "null")';
+                let $Btn = $(btnHtml);
+                $Btn.text(obj.CurrencyPair.Value);
+                return $Btn[0].outerHTML;
+            }
+
+            function focusButton(obj){
+                let btnHtml = '@Html.FocusButton(null, null, null, InvestTypeEnum.ETF, true)';
+                let $Btn = $(btnHtml);
+                $Btn.eq(0).setEleAttribute('eh-focus-id', obj.FirstBankCode);
+                $Btn.eq(0).setEleAttribute('eh-focus-name', obj.ETFName);
+                return $Btn[0].outerHTML;
+            }
+
+            function compareButton(obj){
+                let btnHtml = '@Html.CompareButton(null, null, null, InvestTypeEnum.ETF, true)';
+                let $Btn = $(btnHtml);
+                $Btn.eq(0).setEleAttribute('eh-compare-id', obj.FirstBankCode);
+                $Btn.eq(0).setEleAttribute('eh-compare-name', obj.ETFName);
+                return $Btn[0].outerHTML;
+            }
+
+            function subscriptionButton(obj) {
+                let btnHtml = '@Html.SubscriptionButton(null, null, InvestTypeEnum.ETF, true)';
+                let $Btn = $(btnHtml);
+                $Btn.eq(0).setEleAttribute('eh-subscription-id', obj.FirstBankCode);
+                return $Btn[0].outerHTML;
             }
 
             const propertyResetObj = [
@@ -342,6 +373,11 @@
                             //if (record.FirstBankCode == '35AB') {
                             //    console.log(record);
                             //}
+
+                            record.FocusButtonHtml = focusButton(record);
+                            record.CompareButtonHtml = compareButton(record);
+                            record.SubscribeButtonHtml = subscriptionButton(record);
+                            record.CurrencyHtml = currencyLink(record);
 
                             for (let r in record) {
                                 if (propertyResetObj.includes(r)) {
@@ -591,7 +627,7 @@
                         this.FJS = fjs;
                         this.GenerateSearchKeywordList();
                         initAutocomplete();
-                        
+
                         $('[data-tab] [data-tab-target]:first').trigger('switch');
                         $('[data-filter-switch="#uid-template-marketPrice-original"]').trigger('change');
                     });

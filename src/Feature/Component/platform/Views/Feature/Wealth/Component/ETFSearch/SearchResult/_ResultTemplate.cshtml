@@ -11,7 +11,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode %> <%= ETFName %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FirstBankCode %> <%= ETFName %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
@@ -42,13 +42,13 @@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,marketRiskTable,tradeTable,baseTable">
             <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
             <div class="c-cardTable__title" data-length="4">市價<br>(日期)</div>
-            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate.Text %></span></div>
+            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         @*【最新淨值(日期)】=> 淨值績效,淨值風險*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable,netWorthRiskTable">
             <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
             <div class="c-cardTable__title" data-length="4">最新淨值<br>(日期)</div>
-            <div class="c-cardTable__content"><%= NetAssetValue.Text %><br><span class="t-date"><%= NetAssetValueDate.Text %></span></div>
+            <div class="c-cardTable__content"><%= NetAssetValue.Text %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         @*【幣別】=> 市價績效,淨值績效,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,netWorthTable,baseTable">
@@ -269,7 +269,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode %> <%= ETFName %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FirstBankCode %> <%= ETFName %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
@@ -295,7 +295,7 @@
         @*【市價(日期)】=> 市價績效,市價風險,交易狀況,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,marketRiskTable,tradeTable,baseTable">
             <div class="c-cardTable__title" data-length="4">市價<br>(日期)</div>
-            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate.Text %></span></div>
+            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         @*【幣別】=> 市價績效,淨值績效,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,netWorthTable,baseTable">
@@ -304,7 +304,7 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
-                <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= CurrencyPair.Value %></a>
+                <%= CurrencyHtml %>
             </div>
         </td>
         @*【市價績效-報酬(原幣)】=> 市價績效*@
@@ -338,17 +338,19 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                        <%= FocusButtonHtml %>
                     </li>
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                        <%= CompareButtonHtml %>
                     </li>
                 </ul>
             </div>
         </td>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <% if(CanOnlineSubscription) { %>
-            <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <div class="c-cardTable__content">
+                <%= SubscribeButtonHtml %>
+            </div>
             <% } %>
         </td>
     </tr>
@@ -362,7 +364,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode %> <%= ETFName %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FirstBankCode %> <%= ETFName %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
@@ -388,7 +390,7 @@
         @*【市價(日期)】=> 市價績效,市價風險,交易狀況,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,marketRiskTable,tradeTable,baseTable">
             <div class="c-cardTable__title" data-length="4">市價<br>(日期)</div>
-            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate.Text %></span></div>
+            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         @*【幣別】=> 市價績效,淨值績效,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,netWorthTable,baseTable">
@@ -397,7 +399,7 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
-                <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= CurrencyPair.Value %></a>
+                <%= CurrencyHtml %>
             </div>
         </td>
         @*【市價績效-報酬(台幣)】=> 市價績效*@
@@ -431,17 +433,19 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                        <%= FocusButtonHtml %>
                     </li>
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                        <%= CompareButtonHtml %>
                     </li>
                 </ul>
             </div>
         </td>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <% if(CanOnlineSubscription) { %>
-            <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <div class="c-cardTable__content">
+                <%= SubscribeButtonHtml %>
+            </div>
             <% } %>
         </td>
     </tr>
@@ -455,7 +459,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode %> <%= ETFName %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FirstBankCode %> <%= ETFName %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
@@ -482,7 +486,7 @@
         @*【最新淨值(日期)】=> 淨值績效,淨值風險*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable,netWorthRiskTable">
             <div class="c-cardTable__title" data-length="4">最新淨值<br>(日期)</div>
-            <div class="c-cardTable__content"><%= NetAssetValue.Text %><br><span class="t-date"><%= NetAssetValueDate.Text %></span></div>
+            <div class="c-cardTable__content"><%= NetAssetValue.Text %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         @*【幣別】=> 市價績效,淨值績效,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,netWorthTable,baseTable">
@@ -491,7 +495,7 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
-                <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= CurrencyPair.Value %></a>
+                <%= CurrencyHtml %>
             </div>
         </td>
         @*【淨值績效-報酬(原幣)】=> 淨值績效*@
@@ -525,17 +529,19 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                        <%= FocusButtonHtml %>
                     </li>
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                        <%= CompareButtonHtml %>
                     </li>
                 </ul>
             </div>
         </td>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <% if(CanOnlineSubscription) { %>
-            <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <div class="c-cardTable__content">
+                <%= SubscribeButtonHtml %>
+            </div>
             <% } %>
         </td>
     </tr>
@@ -549,7 +555,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode %> <%= ETFName %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FirstBankCode %> <%= ETFName %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
@@ -577,7 +583,7 @@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable,netWorthRiskTable">
             <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
             <div class="c-cardTable__title" data-length="4">最新淨值<br>(日期)</div>
-            <div class="c-cardTable__content"><%= NetAssetValue.Text %><br><span class="t-date"><%= NetAssetValueDate.Text %></span></div>
+            <div class="c-cardTable__content"><%= NetAssetValue.Text %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         @*【幣別】=> 市價績效,淨值績效,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,netWorthTable,baseTable">
@@ -586,7 +592,7 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
-                <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= CurrencyPair.Value %></a>
+                <%= CurrencyHtml %>
             </div>
         </td>
         @*【淨值績效-報酬(台幣)】=> 淨值績效*@
@@ -620,17 +626,19 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                        <%= FocusButtonHtml %>
                     </li>
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                        <%= CompareButtonHtml %>
                     </li>
                 </ul>
             </div>
         </td>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <% if(CanOnlineSubscription) { %>
-            <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <div class="c-cardTable__content">
+                <%= SubscribeButtonHtml %>
+            </div>
             <% } %>
         </td>
     </tr>
@@ -644,7 +652,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode %> <%= ETFName %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FirstBankCode %> <%= ETFName %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
@@ -670,7 +678,7 @@
         @*【市價(日期)】=> 市價績效,市價風險,交易狀況,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,marketRiskTable,tradeTable,baseTable">
             <div class="c-cardTable__title" data-length="4">市價<br>(日期)</div>
-            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate.Text %></span></div>
+            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         @*【風險屬性】=> 市價風險,淨值風險*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketRiskTable,netWorthRiskTable">
@@ -698,17 +706,19 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                        <%= FocusButtonHtml %>
                     </li>
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                        <%= CompareButtonHtml %>
                     </li>
                 </ul>
             </div>
         </td>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <% if(CanOnlineSubscription) { %>
-            <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <div class="c-cardTable__content">
+                <%= SubscribeButtonHtml %>
+            </div>
             <% } %>
         </td>
     </tr>
@@ -722,7 +732,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode %> <%= ETFName %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FirstBankCode %> <%= ETFName %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
@@ -748,7 +758,7 @@
         @*【最新淨值(日期)】=> 淨值績效,淨值風險*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="netWorthTable,netWorthRiskTable">
             <div class="c-cardTable__title" data-length="4">最新淨值<br>(日期)</div>
-            <div class="c-cardTable__content"><%= NetAssetValue.Text %><br><span class="t-date"><%= NetAssetValueDate.Text %></span></div>
+            <div class="c-cardTable__content"><%= NetAssetValue.Text %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         @*【風險屬性】=> 市價風險,淨值風險*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketRiskTable,netWorthRiskTable">
@@ -776,17 +786,19 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                        <%= FocusButtonHtml %>
                     </li>
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                        <%= CompareButtonHtml %>
                     </li>
                 </ul>
             </div>
         </td>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <% if(CanOnlineSubscription) { %>
-            <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <div class="c-cardTable__content">
+                <%= SubscribeButtonHtml %>
+            </div>
             <% } %>
         </td>
     </tr>
@@ -800,7 +812,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode %> <%= ETFName %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FirstBankCode %> <%= ETFName %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
@@ -826,7 +838,7 @@
         @*【市價(日期)】=> 市價績效,市價風險,交易狀況,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,marketRiskTable,tradeTable,baseTable">
             <div class="c-cardTable__title" data-length="4">市價<br>(日期)</div>
-            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate.Text %></span></div>
+            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         @*【折溢價】=> 交易狀況*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="tradeTable">
@@ -849,17 +861,19 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                        <%= FocusButtonHtml %>
                     </li>
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                        <%= CompareButtonHtml %>
                     </li>
                 </ul>
             </div>
         </td>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <% if(CanOnlineSubscription) { %>
-            <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <div class="c-cardTable__content">
+                <%= SubscribeButtonHtml %>
+            </div>
             <% } %>
         </td>
     </tr>
@@ -873,7 +887,7 @@
             <div class="c-cardTable__content">
                 <div class="l-target">
                     <div class="l-target__name">
-                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FirstBankCode %> <%= ETFName %></a>
+                        <a href="@(Model.DetailPageLink)?id=<%= FirstBankCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FirstBankCode %> <%= ETFName %></a>
                     </div>
                     @*標籤*@
                     <% if (DiscountTags.length > 0) { %>
@@ -899,7 +913,7 @@
         @*【市價(日期)】=> 市價績效,市價風險,交易狀況,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,marketRiskTable,tradeTable,baseTable">
             <div class="c-cardTable__title" data-length="4">市價<br>(日期)</div>
-            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate.Text %></span></div>
+            <div class="c-cardTable__content"><%= MarketPrice.Text %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         @*【幣別】=> 市價績效,淨值績效,基本資料*@
         <td class="c-cardTable__body" data-card-table-width="1/2" data-table-name="marketPriceTable,netWorthTable,baseTable">
@@ -908,7 +922,7 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
-                <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= CurrencyPair.Value %></a>
+                <%= CurrencyHtml %>
             </div>
         </td>
         @*【投資標的】=> 基本資料*@
@@ -937,17 +951,19 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                        <%= FocusButtonHtml %>
                     </li>
                     <li class="l-collect__item">
-                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                        <%= CompareButtonHtml %>
                     </li>
                 </ul>
             </div>
         </td>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <% if(CanOnlineSubscription) { %>
-            <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <div class="c-cardTable__content">
+                <%= SubscribeButtonHtml %>
+            </div>
             <% } %>
         </td>
     </tr>
