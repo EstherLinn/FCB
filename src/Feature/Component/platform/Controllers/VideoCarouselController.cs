@@ -14,6 +14,7 @@ namespace Feature.Wealth.Component.Controllers
             var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
             bool checkedShowIcon = ItemUtils.IsChecked(dataSourceItem, Templates.VideoCarouselIndex.Fields.ShowIcon);
             var imageUrl = ItemUtils.ImageUrl(dataSourceItem, Templates.VideoCarouselIndex.Fields.Image);
+            var linkText = ItemUtils.GetFieldValue(dataSourceItem, Templates.VideoCarouselIndex.Fields.LinkText);
             var linkUrl = ItemUtils.GeneralLink(dataSourceItem, Templates.VideoCarouselIndex.Fields.Link)?.Url;
             var childItems = ItemUtils.GetChildren(dataSourceItem).ToList();
 
@@ -24,14 +25,12 @@ namespace Feature.Wealth.Component.Controllers
                 var vimageUrl = ItemUtils.ImageUrl(childItem, Templates.VideoCarouselVideos.Fields.Image);
                 bool vcheckedShowIcon = ItemUtils.IsChecked(childItem, Templates.VideoCarouselVideos.Fields.ShowIcon);
                 bool vcheckedOpenVideoLinkinLightBox = ItemUtils.IsChecked(childItem, Templates.VideoCarouselVideos.Fields.OpenVideoLinkinLightBox);
-                var vlink = ItemUtils.GeneralLink(childItem, Templates.VideoCarouselVideos.Fields.Link)?.Url;
 
                 items.Add(new VideoCarouselModel.VideoCarousel(childItem)
                 {
                     ImageUrl = vimageUrl,
                     CheckedShowIcon = vcheckedShowIcon,
                     CheckedOpenVideoLinkinLightBox = vcheckedOpenVideoLinkinLightBox,
-                    LinkUrl = vlink,
                 });
             }
 
@@ -41,6 +40,7 @@ namespace Feature.Wealth.Component.Controllers
                 CheckedShowIcon = checkedShowIcon,
                 ImageUrl = imageUrl,
                 LinkUrl = linkUrl,
+                LinkText = linkText,
                 Items = items
             };
 
