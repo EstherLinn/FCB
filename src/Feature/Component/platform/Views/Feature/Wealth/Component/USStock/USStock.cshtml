@@ -102,7 +102,7 @@
                             <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                             <div class="c-filter__total" data-filter-collapse>
                                 <div class="o-total o-total--wt">
-                                    共<span id="total-Wt">0</span>檔股票
+                                    共<span id="uid-total">0</span>檔股票
                                 </div>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                                     <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                                     <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
                                         展開進階篩選
-                                        <img src="../themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                        <img src="~/themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
                                     </a>
                                 </div>
                             </div>
@@ -122,7 +122,7 @@
                                     <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                                     <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
                                         收合進階篩選
-                                        <img src="../themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                        <img src="~/themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
                                     </a>
                                 </div>
                             </div>
@@ -141,7 +141,7 @@
                 <div class="l-filter__tool">
                     <div class="l-filter__total">
                         <div class="o-total">
-                            共<span id="total">0</span>檔股票
+                            共<span id="uid-total">0</span>檔股票
                         </div>
                     </div>
                     <div class="l-filter__reset">
@@ -155,7 +155,22 @@
 </div>
 <div class="l-stage">
     <div class="l-wrap">
-        <div class="l-flex u-flex-col u-flex-gap-sm@lt">
+        <div class="c-tab c-tab--wide" data-filter-empty="true" style="display:none;">
+            <div class="c-tab__panel is-active">
+                <div class="c-section">
+                    <div class="c-section__content">
+                        <div class="c-empty">
+                            <div class="c-empty__img">
+                                <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                            </div>
+                            <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="l-flex u-flex-col u-flex-gap-sm@lt" data-filter-empty="false" style="display:none;">
             <div class="l-flex__item">
                 <div class="l-flex l-flex--wrap u-flex-gap-sm">
                     <div class="l-flex__item u-right u-hidden@dt-only">
@@ -186,7 +201,7 @@
             </div>
             <div class="l-flex__item">
                 <div class="l-table">
-                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="stockTable">
+                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="stockTable" id="stockTable">
                         <colgroup>
                             <col style="width: auto;">
                             <col style="width: 1%;">
@@ -295,15 +310,15 @@
                 <a href="<%= DetailLink %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FullName %></a>
             </div>
             <% if (HoProductTags != null && HoProductTags.length > 0) { %>
-                <% for(var i = 0; i < HoProductTags.length; i++ ) { %>
-                    <div class="l-target__additional">
-                        <ul class="l-tag">
+                <div class="l-target__additional">
+                    <ul class="l-tag">
+                        <% for(var i = 0; i < HoProductTags.length; i++ ) { %>
                             <li class="l-tag__item">
                                 <a href="#" class="o-tag"><%= HoProductTags[i] %></a>
                             </li>
-                        </ul>
-                    </div>
-                <% } %>
+                        <% } %>
+                    </ul>
+                </div>
             <% } %>
         </td>
         <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
@@ -400,22 +415,18 @@
                         <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
                         <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
                         <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                        <a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                        <a href="#popupLogin" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-popup="true"></a>
                     </li>
                 </ul>
             </div>
         </td>
         <td class="c-cardTable__footer" data-card-table-width="1/2">
             <% if (OnlineSubscriptionAvailability == 'Y') { %>
-                <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+                <div class="c-cardTable__content"><a href="#popupLogin" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
             <% } %>
         </td>
     </tr>
 </script>
-
-<script src="~/themes/vendor/noUiSlider/nouislider.min.js"></script>
-<script src="~/themes/vendor/wnumb/wNumb.min.js"></script>
-<script src="~/themes/js/filter.min.js"></script>
 
 <script>
     const USStockList = @Html.Raw(Model.USStockJson);
@@ -433,9 +444,14 @@
                 template: '#template',
                 callbacks: {
                     afterFilter: function (result) {
+
+                        let isEmpty = result.length == 0;
+                        $(`[data-filter-empty=${isEmpty}]`).show();
+                        $(`[data-filter-empty=${!isEmpty}]`).hide();
+
+                        $('[id="uid-total"]').text(result.length);
+
                         window.loading('hide');
-                        $('[id="total"]').text(result.length);
-                        $('[id="total-wt"]').text(result.length);
                     }
                 },
                 search: {
@@ -509,6 +525,35 @@
 
             fjs.filter();
 
+            function fnScrollUp() {
+                loading();
+                $('#stockTable').scrollPosition('scroll');
+            }
+
+            function fnScrollUpPageTo1() {
+                loading();
+                $('#stockTable').scrollPosition('scroll');
+                fjs.paginator.setCurrentPage(1);
+            }
+
+            let $containgerPagination = $('#uid-pagination');
+            $containgerPagination.on('click', '[data-page]', fnScrollUp);
+            $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                if (e.which === 13) {
+                    fnScrollUp();
+                }
+            });
+            $('#uid-view-perPage').on('change.pagesize', function () {
+                fnScrollUp();
+                fjs.paginator.setCurrentPage(1);
+            }).sizebox();
+            $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+            $('[data-keyword-submit]').on('click.loading', function () {
+                if (!!$('[data-keyword-input]').val().trim()) {
+                    loading();
+                }
+            });
+
             $(function () {
                 // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
                 $('#keyword').autocomplete({
@@ -575,14 +620,17 @@
                             `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
 
                         // 申購按鈕
-                        let $purchase = suggestion.OnlineSubscriptionAvailability == 'Y' ? suggestion.IsLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
+                        let $purchase = suggestion.OnlineSubscriptionAvailability == 'Y' ? suggestion.IsLogin == true ?
+                        `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` :
+                        `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
+
                         return `<div class="c-itemKeyword">
                                     <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
                                         <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
                                     </a>
                                     <div class="c-itemKeyword__collections">${$like}</div>
                                     ${$purchase}
-                                    </div>`;
+                                </div>`;
                     }
                 });
             });
