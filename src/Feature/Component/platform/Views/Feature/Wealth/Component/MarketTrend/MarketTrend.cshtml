@@ -1629,12 +1629,12 @@
 </script>
 
 <script>
-    const StockRelevantFund = @Html.Raw(Model.StockRelevantFundJson);
-    const StockRelevantETF = @Html.Raw(Model.StockRelevantETFJson);
-    const BondRelevantFund = @Html.Raw(Model.BondRelevantFundJson);
-    const BondRelevantETF = @Html.Raw(Model.BondRelevantETFJson);
-    const IndustryRelevantFund = @Html.Raw(Model.IndustryRelevantFundJson);
-    const IndustryRelevantETF = @Html.Raw(Model.IndustryRelevantETFJson);
+    const StockRelevantFund = @Model.StockRelevantFundHtmlString;
+    const StockRelevantETF = @Model.StockRelevantETFHtmlString;
+    const BondRelevantFund = @Model.BondRelevantFundHtmlString;
+    const BondRelevantETF = @Model.BondRelevantETFHtmlString;
+    const IndustryRelevantFund = @Model.IndustryRelevantFundHtmlString;
+    const IndustryRelevantETF = @Model.IndustryRelevantETFHtmlString;
 
     $(function () {
 
@@ -1896,7 +1896,7 @@
 </script>
 
 <script>
-    const datas = @Html.Raw(Model.GlobalIndexHighchartsDataJson);
+    const datas = @Model.GlobalIndexHighchartsDataHtmlString;
 
     $(function () {
         // highchart

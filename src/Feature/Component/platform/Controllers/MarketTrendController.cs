@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.MarketTrend;
 using Feature.Wealth.Component.Repositories;
@@ -79,14 +80,14 @@ namespace Feature.Wealth.Component.Controllers
             model.Bond = CreateMarketTrendList(item, bondChildren, RelevantInformationType.Bond);
             model.Industry = CreateMarketTrendList(item, industryChildren, RelevantInformationType.Industry);
 
-            model.GlobalIndexHighchartsDataJson = JsonSerializer.Serialize(this._datas);
+            model.GlobalIndexHighchartsDataHtmlString = new HtmlString(JsonSerializer.Serialize(this._datas));
 
-            model.StockRelevantFundJson = JsonSerializer.Serialize(this._stockRelevantFund);
-            model.StockRelevantETFJson = JsonSerializer.Serialize(this._stockRelevantETF);
-            model.BondRelevantFundJson = JsonSerializer.Serialize(this._bondRelevantFund);
-            model.BondRelevantETFJson = JsonSerializer.Serialize(this._bondRelevantETF);
-            model.IndustryRelevantFundJson = JsonSerializer.Serialize(this._industryRelevantFund);
-            model.IndustryRelevantETFJson = JsonSerializer.Serialize(this._industryRelevantETF);
+            model.StockRelevantFundHtmlString = new HtmlString(JsonSerializer.Serialize(this._stockRelevantFund));
+            model.StockRelevantETFHtmlString = new HtmlString(JsonSerializer.Serialize(this._stockRelevantETF));
+            model.BondRelevantFundHtmlString = new HtmlString(JsonSerializer.Serialize(this._bondRelevantFund));
+            model.BondRelevantETFHtmlString = new HtmlString(JsonSerializer.Serialize(this._bondRelevantETF));
+            model.IndustryRelevantFundHtmlString = new HtmlString(JsonSerializer.Serialize(this._industryRelevantFund));
+            model.IndustryRelevantETFHtmlString = new HtmlString(JsonSerializer.Serialize(this._industryRelevantETF));
 
             return model;
         }

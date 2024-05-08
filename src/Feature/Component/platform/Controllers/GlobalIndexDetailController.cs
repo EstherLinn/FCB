@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.GlobalIndex;
 using Feature.Wealth.Component.Repositories;
@@ -116,7 +117,7 @@ namespace Feature.Wealth.Component.Controllers
             return model;
         }
 
-        private string GetGlobalInedxRelevantInformation(string indexCode, RelevantInformationType type, string detailLink)
+        private HtmlString GetGlobalInedxRelevantInformation(string indexCode, RelevantInformationType type, string detailLink)
         {
             var relevantInformations = new List<RelevantInformation>();
 
@@ -175,10 +176,10 @@ namespace Feature.Wealth.Component.Controllers
                 }
             }
 
-            return JsonSerializer.Serialize(relevantInformations);
+            return new HtmlString(JsonSerializer.Serialize(relevantInformations));
         }
 
-        private string GetGlobalInedxPriceData(string indexCode, string cycle)
+        private HtmlString GetGlobalInedxPriceData(string indexCode, string cycle)
         {
             var priceDatas = new List<PriceData>();
 
@@ -224,7 +225,7 @@ namespace Feature.Wealth.Component.Controllers
                 }
             }
 
-            return JsonSerializer.Serialize(priceDatas);
+            return new HtmlString(JsonSerializer.Serialize(priceDatas));
         }
     }
 }

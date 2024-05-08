@@ -429,7 +429,7 @@
 </script>
 
 <script>
-    const USStockList = @Html.Raw(Model.USStockJson);
+    const USStockList = @Model.USStockHtmlString;
 
     (function ($, window, document, undefined) {
         document.addEventListener('DOMContentLoaded', function () {

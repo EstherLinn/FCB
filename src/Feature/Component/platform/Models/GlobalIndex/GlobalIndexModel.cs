@@ -1,7 +1,7 @@
-﻿using Feature.Wealth.Component.Models.GlobalIndex;
-using Sitecore.Data;
+﻿using Sitecore.Data;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
+using System.Web;
 
 namespace Feature.Wealth.Component.Models.GlobalIndex
 {
@@ -11,7 +11,7 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string DetailLink { get; set; }
         public IList<GlobalIndex> GlobalIndexList { get; set; }
         public Dictionary<string, GlobalIndex> GlobalIndexDictionary { get; set; }
-        public string GlobalIndexHighchartsDataJson { get; set; }
+        public HtmlString GlobalIndexHighchartsDataHtmlString { get; set; }
     }
 
     public class GlobalIndex
@@ -42,17 +42,17 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string FundLink { get; set; }
         public string ETFLink { get; set; }
         public GlobalIndexDetail GlobalIndexDetail { get; set; }
-        public string RelevantGlobalIndex { get; set; } = "[]";
+        public HtmlString RelevantGlobalIndex { get; set; } = new HtmlString(string.Empty);
         public string RelevantGlobalIndex_Success { get; set; } = "Success";
-        public string RelevantFund { get; set; } = "[]";
+        public HtmlString RelevantFund { get; set; } = new HtmlString(string.Empty);
         public string RelevantFund_Success { get; set; } = "Success";
-        public string RelevantETF { get; set; } = "[]";
+        public HtmlString RelevantETF { get; set; } = new HtmlString(string.Empty);
         public string RelevantETF_Success { get; set; } = "Success";
-        public string PriceData_D { get; set; } = "[]";
+        public HtmlString PriceData_D { get; set; } = new HtmlString(string.Empty);
         public string PriceData_D_Success { get; set; } = "Success";
-        public string PriceData_W { get; set; } = "[]";
+        public HtmlString PriceData_W { get; set; } = new HtmlString(string.Empty);
         public string PriceData_W_Success { get; set; } = "Success";
-        public string PriceData_M { get; set; } = "[]";
+        public HtmlString PriceData_M { get; set; } = new HtmlString(string.Empty);
         public string PriceData_M_Success { get; set; } = "Success";
     }
 

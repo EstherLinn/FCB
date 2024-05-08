@@ -104,7 +104,7 @@
 </div>
 
 <script>
-    const datas = @Html.Raw(Model.GlobalIndexHighchartsDataJson);
+    const datas = @Model.GlobalIndexHighchartsDataHtmlString;
 
     $(function () {
         // highchart

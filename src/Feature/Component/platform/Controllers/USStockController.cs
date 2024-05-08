@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.USStock;
 using Feature.Wealth.Component.Repositories;
@@ -65,7 +66,7 @@ namespace Feature.Wealth.Component.Controllers
                 Item = item,
                 USStockList = uSStockList,
                 USStockDictionary = uSStockList.ToDictionary(x => x.FirstBankCode, x => x),
-                USStockJson = JsonSerializer.Serialize(uSStockList),
+                USStockHtmlString = new HtmlString(JsonSerializer.Serialize(uSStockList)),
                 HotKeywordTags = keyword,
                 HotProductTags = product
             };
