@@ -1,6 +1,7 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.VideoCarousel
 {
@@ -9,6 +10,7 @@ namespace Feature.Wealth.Component.Models.VideoCarousel
         public Item DataSource { get; set; }
         public bool CheckedShowIcon { get; set; }
         public string ImageUrl { get; set; }
+        public string LinkText { get; set; }
         public string LinkUrl { get; set; }
         public IList<VideoCarousel> Items { get; set; }
 
@@ -22,7 +24,7 @@ namespace Feature.Wealth.Component.Models.VideoCarousel
             public string ImageUrl { get; set; }
             public bool CheckedShowIcon { get; set; }
             public bool CheckedOpenVideoLinkinLightBox { get; set; }
-            public string LinkUrl { get; set; }
+            public string LinkUrl => ItemUtils.GeneralLink(Item, Templates.VideoCarouselVideos.Fields.Link)?.Url;
         }
     }
 

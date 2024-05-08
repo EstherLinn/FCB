@@ -60,7 +60,11 @@
                                                             <div class="c-gridview__main">
                                                                 <div class="c-gridview__title s3 u-ellipsis-2">@Html.Sitecore().Field(Templates.VideoCarouselVideos.Fields.Title.ToString(), item.Item)</div>
                                                             </div>
-                                                            <div class="c-gridview__minor"><a href="@item.LinkUrl" class="o-suffixLink o-suffixLink--right o-suffixLink--xs" target="_blank">@Html.Sitecore().Field(Templates.VideoCarouselVideos.Fields.LinkText.ToString(), item.Item)</a></div>
+                                                            <div class="c-gridview__minor">
+                                                                @Html.Sitecore().BeginField(Templates.VideoCarouselVideos.Fields.Link.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--right o-suffixLink--xs" })
+                                                                @Html.Sitecore().Field(Templates.VideoCarouselVideos.Fields.LinkText.ToString(), item.Item)
+                                                                @Html.Sitecore().EndField()
+                                                                </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -93,7 +97,11 @@
                                                                 <div class="c-gridview__main">
                                                                     <div class="c-gridview__title s3 u-ellipsis-2">@Html.Sitecore().Field(Templates.VideoCarouselVideos.Fields.Title.ToString(), item1.Item)</div>
                                                                 </div>
-                                                                <div class="c-gridview__minor"><a href="@item1.LinkUrl" class="o-suffixLink o-suffixLink--right o-suffixLink--xs" target="_blank">@Html.Sitecore().Field(Templates.VideoCarouselVideos.Fields.LinkText.ToString(), item1.Item)</a></div>
+                                                                <div class="c-gridview__minor">
+                                                                    @Html.Sitecore().BeginField(Templates.VideoCarouselVideos.Fields.Link.ToString(), item1.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--right o-suffixLink--xs" })
+                                                                    @Html.Sitecore().Field(Templates.VideoCarouselVideos.Fields.LinkText.ToString(), item1.Item)
+                                                                    @Html.Sitecore().EndField()
+                                                                    </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -110,9 +118,14 @@
                         <div class="swiper-button-prev c-swiper__prev"></div>
                         <div class="swiper-pagination c-swiper__pagination"></div>
                     </div>
-                    <div class="l-lectern__actions">
-                        <a href="@Model.LinkUrl" class="o-btn o-btn--secondary">@Html.Sitecore().Field(Templates.VideoCarouselIndex.Fields.LinkText.ToString(), Model.DataSource)</a>
-                    </div>
+                    @if (!string.IsNullOrEmpty(Model.LinkUrl) || !string.IsNullOrEmpty(Model.LinkText))
+                    {
+                        <div class="l-lectern__actions">
+                            @Html.Sitecore().BeginField(Templates.VideoCarouselIndex.Fields.Link.ToString(), Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--secondary" })
+                            @Html.Sitecore().Field(Templates.VideoCarouselIndex.Fields.LinkText.ToString(), Model.DataSource)
+                            @Html.Sitecore().EndField()
+                        </div>
+                    }
                 </div>
             </div>
         </div>
