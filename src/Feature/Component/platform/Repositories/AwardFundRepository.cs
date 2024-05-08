@@ -10,13 +10,16 @@ using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
 using Foundation.Wealth.Extensions;
-using static Sitecore.Configuration.State;
-
+using System.Runtime.Caching;
+using System.Linq;
 
 namespace Feature.Wealth.Component.Repositories
 {
     public class AwardFundRepository
     {
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly string AwardFundCacheKey = $"Fcb_AwardFundCache";
+
         public List<Funds> GetFundData(string code)
         {
             List<Funds> fundItems = new List<Funds>();
@@ -50,7 +53,20 @@ namespace Feature.Wealth.Component.Repositories
         private readonly string _route = Settings.GetSetting("MoneyDjApiRoute");
         private readonly string _token = Settings.GetSetting("MoneyDjToken");
 
-        public async Task<List<Funds>> JsonPostAsync()
+        public List<Funds> GetOrSetAwardFundCache()
+        {
+            var awardFundData = (List<Funds>)_cache.Get(AwardFundCacheKey) ?? new List<Funds>();
+
+            if (!awardFundData.Any())
+            {
+                awardFundData = JsonPostAsync();
+                _cache.Set(AwardFundCacheKey, awardFundData, DateTimeOffset.Now.AddMinutes(60));
+            }
+
+            return awardFundData;
+        }
+
+        private List<Funds> JsonPostAsync()
         {
             List<Funds> awardFundList = new List<Funds>();
 
@@ -58,14 +74,34 @@ namespace Feature.Wealth.Component.Repositories
             {
                 for (int year = DateTime.Now.Year - 1; year <= DateTime.Now.Year; year++)
                 {
-                    var content1 = await _route.
-                                   AppendPathSegments("api", "fund", "FundAward").
-                                   SetQueryParam("awardName", "晨星基金獎").
-                                   SetQueryParam("awardYear", $"{year}年").
-                                   WithOAuthBearerToken(_token).
-                                   AllowAnyHttpStatus().
-                                   GetAsync().
-                                   ReceiveString();
+                    Task<string> task1 = Task.Run(() =>
+                    {
+                        return _route.
+                            AppendPathSegments("api", "fund", "FundAward").
+                            SetQueryParam("awardName", "晨星基金獎").
+                            SetQueryParam("awardYear", $"{year}年").
+                            WithOAuthBearerToken(_token).
+                            AllowAnyHttpStatus().
+                            GetAsync().
+                            ReceiveString();
+                    });
+
+                    Task<string> task2 = Task.Run(() =>
+                    {
+                        return _route.
+                            AppendPathSegments("api", "fund", "FundAward").
+                            SetQueryParam("awardName", "Smart智富台灣基金獎").
+                            SetQueryParam("awardYear", $"{year}年").
+                            WithOAuthBearerToken(_token).
+                            AllowAnyHttpStatus().
+                            GetAsync().
+                            ReceiveString();
+                    });
+
+                    Task.WaitAll(task1, task2);
+
+                    string content1 = task1.Result;
+                    string content2 = task2.Result;
 
                     if (!string.IsNullOrEmpty(content1))
                     {
@@ -73,16 +109,6 @@ namespace Feature.Wealth.Component.Repositories
 
                         awardFundList.AddRange(ProcessJsonData(jsonData));
                     }
-
-
-                    var content2 = await _route.
-                                   AppendPathSegments("api", "fund", "FundAward").
-                                   SetQueryParam("awardName", "Smart智富台灣基金獎").
-                                   SetQueryParam("awardYear", $"{year}年").
-                                   WithOAuthBearerToken(_token).
-                                   AllowAnyHttpStatus().
-                                   GetAsync().
-                                   ReceiveString();
 
                     if (!string.IsNullOrEmpty(content2))
                     {
@@ -95,7 +121,6 @@ namespace Feature.Wealth.Component.Repositories
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
-
 
             return awardFundList;
         }
