@@ -15,7 +15,7 @@
 
 <script>
     (function ($, window, document, undefined) {
-
+        let isLogin = "@FcbMemberHelper.CheckMemberLogin()";
             $.ajax({
                 type: "post",
                 url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
@@ -55,41 +55,39 @@
                 }
             }
 
-        EventHandler.AddExec('compare-init', function (self) {
-            let $this = $(self);
-            let id = self.getAttribute('eh-compare-id');
+        EventHandler.AddOnExec('compare-init', function () {
+            let $this = $(this);
+            let id = this.getAttribute('eh-compare-id');
             let compare = store.get('compare') || [];
             if (checkItemExists('compare', id)) {
                 $this.addClass('is-active');
-                self.setAttribute('eh-compare-add', true);
+                this.setAttribute('eh-compare-add', true);
             };
 
             if (compare.length == 7) {
-                if (self.getAttribute('eh-compare-add').toString() == "false")
+                if (this.getAttribute('eh-compare-add').toString() == "false")
                 {
-                    self.setAttribute('href', '#popupCompareMax');
-                    self.setAttribute('data-popup', true);
-                    self.removeAttribute('data-ia');
-                    self.removeAttribute('data-msg');
-                    $(self).off('click.interactive');
-                    $(self).removeData('plugin_interactive');
-                    $(self).magnificPopup();
+                    this.setAttribute('href', '#popupCompareMax');
+                    this.setAttribute('data-popup', true);
+                    this.removeAttribute('data-ia');
+                    this.removeAttribute('data-msg');
+                    $this.off('click.interactive');
+                    $this.removeData('plugin_interactive');
+                    $this.magnificPopup();
                 }
             }
         });
         EventHandler.AddClick('compare-click', function () {
-            let $this = $(this);
-            $this.css('visibility', 'hidden');
-            setTimeout(() => $this.css('visibility', ''), 750);
-            let id = this.getAttribute('eh-compare-id');
-            let name = this.getAttribute('eh-compare-name');
-            let type = this.getAttribute('eh-compare-type').toLowerCase();
+            let $this = this;
+            let id = $this.getAttribute('eh-compare-id');
+            let name = $this.getAttribute('eh-compare-name');
+            let type = $this.getAttribute('eh-compare-type').toLowerCase();
             let obj = new CompareObj(id, type, name);
             let compare = store.get('compare') || [];
-            if (this.getAttribute('eh-compare-add').toString() == "false") {
+            if ($this.getAttribute('eh-compare-add').toString() == "false") {
                 if (compare.length < 7) {
                     addItem('compare', obj);
-                    this.setAttribute('eh-compare-add', true);
+                    $this.setAttribute('eh-compare-add', true);
                     if (compare.length == 6) {
                         $('[eh-compare][eh-compare-add=false]').each(function (idx, ele) {
                                    ele.setAttribute('href', '#popupCompareMax');
@@ -119,77 +117,82 @@
     });
 
 
-        EventHandler.AddExec('focus-init', function (self) {
-            let $this = $(self);
-            let id = self.getAttribute('eh-focus-id');
-            if (checkItemExists('focus', id)) {
-                $this.addClass('is-active');
-                self.setAttribute('eh-focus-add', true);
-            };
+        EventHandler.AddOnExec('focus-init', function () {
+            let $this = $(this);
+            if (isLogin.toLowerCase() === "false") {
+                this.setAttribute("href", "#popupLogin");
+                this.setAttribute('data-popup', true);
+                this.removeAttribute('data-ia');
+                this.removeAttribute('data-msg');
+                $this.off('click.interactive');
+                $this.removeData('plugin_interactive');
+                $this.magnificPopup();
+            } else
+            {
+                let id = this.getAttribute('eh-focus-id');
+                if (checkItemExists('focus', id)) {
+                    $this.addClass('is-active');
+                    this.setAttribute('eh-focus-add', true);
+                };
+            }
         });
         EventHandler.AddClick('focus-click', function () {
-            let $this = $(this);
-            $this.css('visibility', 'hidden');
-            setTimeout(() => $this.css('visibility', ''), 750);
-            let id = this.getAttribute('eh-focus-id');
-            let name = this.getAttribute('eh-focus-name');
-            let type = this.getAttribute('eh-focus-type').toLowerCase();
-            let obj = new CompareObj(id, type, name);
-            if (this.getAttribute('eh-focus-add').toString() == "false") {
+            let $this = this;
+            if (isLogin.toLowerCase() === "true") {
+                let id = $this.getAttribute('eh-focus-id');
+                let name = $this.getAttribute('eh-focus-name');
+                let type = $this.getAttribute('eh-focus-type').toLowerCase();
+                let obj = new CompareObj(id, type, name);
+                if ($this.getAttribute('eh-focus-add').toString() == "false") {
                     addItem('focus', obj);
-                this.setAttribute('eh-focus-add', true);
-            } else {
-                removeItem('focus', obj);
-                this.setAttribute('eh-focus-add', false);
+                    $this.setAttribute('eh-focus-add', true);
+                } else {
+                    removeItem('focus', obj);
+                    $this.setAttribute('eh-focus-add', false);
+                }
             }
         });
 
-          EventHandler.AddExec('subscription-init',function(self){
-              let $this = self;
+          EventHandler.AddOnExec('subscription-init',function(){
+              let $this = this;
               let single = document.getElementById("subscriptionSingle");
               let regular = document.getElementById("subscriptionRegular");
-                @if (!FcbMemberHelper.CheckMemberLogin())
-                {
-                    @: $this.setAttribute("href","#popupLogin");
-                }
-                else
-                {
-                    @: $this.setAttribute("href", "#popupPurchase");
-                }
-
-               if ($(window).width() < 768)
-            {
-                $('input[name="platform"]').on('click', function () {
-                    let val = $(this).data('name');
-                    if (val == "firste") {
-                        single.setAttribute("href", "@MobileESingleLink");
-                        regular.setAttribute("href", "@MobileERegularLink");
-
-                    } else {
-                        single.setAttribute("href", "@MobileIleoSingleLink");
-                        regular.setAttribute("href", "@MobileIleoRegularLink");
-                    }
-                    store.set("MobilePlatform", val);
-                });
-            }else
-            {
-                   single.setAttribute("href", "@SubcriptionSingleLink");
-                   regular.setAttribute("href", "@SubcriptionRegularLink");
-            }
-              if (localStorage.hasOwnProperty('MobilePlatform'))
-          {
-                  let val = store.get('MobilePlatform') || "";
-              if (val == "firste") {
-                  $('input[data-name="firste"]','#popupPurchase').prop('checked', true);
-                  $('input[data-name="firste"]').trigger('click');
-              } else {
-                  $('input[data-name="ileo"]','#popupPurchase').prop('checked', true);
-
-                  $('input[data-name="ileo"]','#popupPurchase').trigger('click');
+              if (isLogin.toLowerCase() === "false") {
+                  $this.setAttribute("href", "#popupLogin");
               }
-          }else{
-                  $('input[data-name="firste"]','#popupPurchase').trigger('click');
-          }
+              else {
+                  $this.setAttribute("href", "#popupPurchase");
+                  if ($(window).width() < 768) {
+                      $('input[name="platform"]').on('click', function () {
+                          let val = $(this).data('name');
+                          if (val == "firste") {
+                              single.setAttribute("href", "@MobileESingleLink");
+                              regular.setAttribute("href", "@MobileERegularLink");
+
+                          } else {
+                              single.setAttribute("href", "@MobileIleoSingleLink");
+                              regular.setAttribute("href", "@MobileIleoRegularLink");
+                          }
+                          store.set("MobilePlatform", val);
+                      });
+                  } else {
+                      single.setAttribute("href", "@SubcriptionSingleLink");
+                      regular.setAttribute("href", "@SubcriptionRegularLink");
+                  }
+                  if (localStorage.hasOwnProperty('MobilePlatform')) {
+                      let val = store.get('MobilePlatform') || "";
+                      if (val == "firste") {
+                          $('input[data-name="firste"]', '#popupPurchase').prop('checked', true);
+                          $('input[data-name="firste"]').trigger('click');
+                      } else {
+                          $('input[data-name="ileo"]', '#popupPurchase').prop('checked', true);
+
+                          $('input[data-name="ileo"]', '#popupPurchase').trigger('click');
+                      }
+                  } else {
+                      $('input[data-name="firste"]', '#popupPurchase').trigger('click');
+                  }
+              }
           });
 
             EventHandler.AddClick('subscription-click', function () {
