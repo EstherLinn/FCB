@@ -21,10 +21,8 @@ namespace Feature.Wealth.Component.Controllers
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
             var viewModel = new AwardFundModel { Item = dataSourceItem };
 
-            Task<List<Funds>> award12024 = Task.Run(() => _repository.JsonPostAsync());
-            var awardFunds = award12024.Result;
-
-            viewModel.AwardFunds = awardFunds.OrderByDescending(a=>a.Year).ToList();
+            List<Funds> awardFunds = _repository.GetOrSetAwardFundCache();
+            viewModel.AwardFunds = awardFunds.OrderByDescending(a => a.Year).ToList();
             viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
 
             return View("/Views/Feature/Wealth/Component/AwardFund/AwardFund.cshtml", viewModel);
@@ -37,8 +35,7 @@ namespace Feature.Wealth.Component.Controllers
             if (orderby.IsNullOrEmpty()) { orderby = "Year"; }
             if (desc.IsNullOrEmpty()) { desc = "is-desc"; }
 
-            List<Funds> award12024 = await _repository.JsonPostAsync();
-            var awardFunds = award12024;
+            List<Funds> awardFunds = _repository.GetOrSetAwardFundCache();
 
             var property = typeof(Funds).GetProperty(orderby);
             if (desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase))
@@ -50,12 +47,11 @@ namespace Feature.Wealth.Component.Controllers
                 awardFunds = awardFunds.OrderBy(f => property.GetValue(f, null)).ToList();
             }
 
-
             var viewModel = new AwardFundModel
             {
                 AwardFunds = awardFunds,
                 DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
-        };
+            };
             return View("/Views/Feature/Wealth/Component/AwardFund/AwardFundReturnView.cshtml", viewModel);
         }
 
