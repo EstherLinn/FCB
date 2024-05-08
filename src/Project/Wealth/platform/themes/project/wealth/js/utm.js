@@ -30,7 +30,7 @@
         }
         htmlNodes.forEach(node => {
             try {
-                let url = new URL(window.encodeURI(node.href));
+                let url = new URL(node.href);
 
                 let predict = BLOCKLIST.find(domain => {
                     let reg = new RegExp(domain, 'gi');
@@ -56,9 +56,9 @@
                 let setUrl;
                 // 透過getAttribute查詢raw value判別內外部連結
                 if (node.getAttribute(PROP).startsWith('/')) {
-                    setUrl = encodeURI(`${url.pathname}${url.search}${url.hash}`);
+                    setUrl = `${url.pathname}${url.search}${url.hash}`;
                 } else {
-                    setUrl = encodeURI(url.toString());
+                    setUrl = url;
                 }
 
                 // 若setUrl非空值
