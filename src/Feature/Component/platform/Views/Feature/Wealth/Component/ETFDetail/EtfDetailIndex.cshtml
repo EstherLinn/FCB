@@ -4,11 +4,11 @@
 @using Foundation.Wealth.Extensions;
 @using Foundation.Wealth.Helper;
 @{
-    var etfData = Model.BasicEtf as EtfDetail;
-    if (etfData == null)
+    if (Model == null || Model.BasicEtf == null)
     {
         return;
     }
+    var etfData = Model.BasicEtf as EtfDetail;
 }
 
 <div class="l-mainstage">

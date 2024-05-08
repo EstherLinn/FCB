@@ -33,7 +33,6 @@ namespace Feature.Wealth.Component.Repositories
 
         public EtfDetailModel GetETFDetailModel(string etfId, Item dataSource)
         {
-            this.ETFId = etfId;
             this.Indicator = GetProductIdentifier(etfId);
 
             //TODO: 瀏覽紀錄
@@ -43,7 +42,7 @@ namespace Feature.Wealth.Component.Repositories
             //}
 
             EtfDetailModel model;
-            model = GetOrSetETFDetailsCache(this.ETFId);
+            model = GetOrSetETFDetailsCache(etfId);
             GetDatasourceData(model, dataSource);
 
             return model;
@@ -68,6 +67,7 @@ namespace Feature.Wealth.Component.Repositories
 
         public EtfDetailModel GetOrSetETFDetailsCache(string etfId)
         {
+            this.ETFId = etfId;
             var etfDic = (Dictionary<string, EtfDetailModel>)_cache.Get(ETFDetailsCacheKey) ?? new Dictionary<string, EtfDetailModel>();
             EtfDetailModel etfFullData = null;
 
