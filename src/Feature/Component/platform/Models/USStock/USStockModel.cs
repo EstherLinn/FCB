@@ -1,6 +1,7 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
+using System.Web;
 
 namespace Feature.Wealth.Component.Models.USStock
 {
@@ -9,7 +10,7 @@ namespace Feature.Wealth.Component.Models.USStock
         public Item Item { get; set; }
         public IList<USStock> USStockList { get; set; }
         public Dictionary<string, USStock> USStockDictionary { get; set; }
-        public string USStockJson { get; set; }
+        public HtmlString USStockHtmlString { get; set; }
         public List<string> HotKeywordTags { get; set; }
         public List<string> HotProductTags { get; set; }
     }

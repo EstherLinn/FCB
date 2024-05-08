@@ -1,6 +1,7 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
+using System.Web;
 
 namespace Feature.Wealth.Component.Models.MarketTrend
 {
@@ -24,13 +25,13 @@ namespace Feature.Wealth.Component.Models.MarketTrend
         public List<MarketTrend> Stock { get; set; } = new List<MarketTrend>();
         public List<MarketTrend> Bond { get; set; } = new List<MarketTrend>();
         public List<MarketTrend> Industry { get; set; } = new List<MarketTrend>();
-        public string GlobalIndexHighchartsDataJson { get; set; }
-        public string StockRelevantFundJson { get; set; }
-        public string StockRelevantETFJson { get; set; }
-        public string BondRelevantFundJson { get; set; }
-        public string BondRelevantETFJson { get; set; }
-        public string IndustryRelevantFundJson { get; set; }
-        public string IndustryRelevantETFJson { get; set; }
+        public HtmlString GlobalIndexHighchartsDataHtmlString { get; set; }
+        public HtmlString StockRelevantFundHtmlString { get; set; }
+        public HtmlString StockRelevantETFHtmlString { get; set; }
+        public HtmlString BondRelevantFundHtmlString { get; set; }
+        public HtmlString BondRelevantETFHtmlString { get; set; }
+        public HtmlString IndustryRelevantFundHtmlString { get; set; }
+        public HtmlString IndustryRelevantETFHtmlString { get; set; }
     }
 
     public class MarketTrend

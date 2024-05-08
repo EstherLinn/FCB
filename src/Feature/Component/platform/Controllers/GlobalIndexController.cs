@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.GlobalIndex;
 using Feature.Wealth.Component.Repositories;
@@ -41,13 +42,13 @@ namespace Feature.Wealth.Component.Controllers
 
         protected GlobalIndexModel CreateModel(Item item, IList<GlobalIndex> globalIndexList)
         {
-            var detailLink = ItemUtils.GeneralLink(item, Template.GlobalIndex.Fields.DetailLink)?.Url;
-            List<GlobalIndexHighchartsData> datas = new List<GlobalIndexHighchartsData>();
+            string detailLink = ItemUtils.GeneralLink(item, Template.GlobalIndex.Fields.DetailLink)?.Url;
+            var datas = new List<GlobalIndexHighchartsData>();
 
             foreach (var globalIndex in globalIndexList)
             {
                 globalIndex.DetailLink = detailLink + "?id=" + globalIndex.IndexCode;
-                if(globalIndex.GlobalIndexHistory != null && globalIndex.GlobalIndexHistory.Count > 0)
+                if (globalIndex.GlobalIndexHistory != null && globalIndex.GlobalIndexHistory.Count > 0)
                 {
                     datas.Add(new GlobalIndexHighchartsData
                     {
@@ -63,7 +64,7 @@ namespace Feature.Wealth.Component.Controllers
                 DetailLink = detailLink,
                 GlobalIndexList = globalIndexList,
                 GlobalIndexDictionary = globalIndexList.ToDictionary(x => x.IndexCode, x => x),
-                GlobalIndexHighchartsDataJson = JsonSerializer.Serialize(datas)
+                GlobalIndexHighchartsDataHtmlString = new HtmlString(JsonSerializer.Serialize(datas))
             };
 
             return model;
