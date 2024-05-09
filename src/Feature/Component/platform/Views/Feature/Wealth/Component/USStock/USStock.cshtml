@@ -411,6 +411,8 @@
         </td>
         <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
         <td class="c-cardTable__space"></td>
+        @* 申購按鈕不顯示時，前面的關注按鈕的 data-card-table-width 也要改成 1/1
+        手機板的時候版型才會對 *@
         <% if (OnlineSubscriptionAvailability == 'Y') { %>
         <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
         <td class="c-cardTable__footer" data-card-table-width="1/2">
