@@ -307,19 +307,23 @@
         <!-- .u-wrap@dt-only: 桌機版(desktop)自動折行 -->
         <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
             <div class="c-cardTable__content">
-                <a href="<%= DetailLink %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FullName %></a>
-            </div>
-            <% if (HoProductTags != null && HoProductTags.length > 0) { %>
-                <div class="l-target__additional">
-                    <ul class="l-tag">
-                        <% for(var i = 0; i < HoProductTags.length; i++ ) { %>
-                            <li class="l-tag__item">
-                                <a href="#" class="o-tag"><%= HoProductTags[i] %></a>
-                            </li>
-                        <% } %>
-                    </ul>
+                <div class="l-target">
+                    <div class="l-target__name">
+                        <a href="<%= DetailLink %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FullName %></a>
+                    </div>
+                    <% if (HoProductTags != null && HoProductTags.length > 0) { %>
+                        <div class="l-target__additional">
+                            <ul class="l-tag">
+                                <% for(var i = 0; i < HoProductTags.length; i++ ) { %>
+                                    <li class="l-tag__item">
+                                        <a href="#" class="o-tag"><%= HoProductTags[i] %></a>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </div>
+                    <% } %>
                 </div>
-            <% } %>
+            </div>
         </td>
         <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
         <td class="c-cardTable__space"></td>
@@ -407,6 +411,7 @@
         </td>
         <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
         <td class="c-cardTable__space"></td>
+        <% if (OnlineSubscriptionAvailability == 'Y') { %>
         <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
         <td class="c-cardTable__footer" data-card-table-width="1/2">
             <div class="c-cardTable__content">
@@ -419,11 +424,31 @@
                     </li>
                 </ul>
             </div>
-        </td
-        <% if (OnlineSubscriptionAvailability == 'Y') { %>
-            <td class="c-cardTable__footer" data-card-table-width="1/2">
-                <div class="c-cardTable__content"><a href="#popupLogin" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
-            </td>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+                <a href="#popupLogin" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+            </div>
+        </td>
+        <% } %>
+        <% if (OnlineSubscriptionAvailability != 'Y') { %>
+        <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+        <td class="c-cardTable__footer" data-card-table-width="1/1">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                        <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+                        <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+                        <a href="#popupLogin" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-popup="true"></a>
+                    </li>
+                </ul>
+            </div>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+            </div>
+        </td>
         <% } %>
     </tr>
 </script>
