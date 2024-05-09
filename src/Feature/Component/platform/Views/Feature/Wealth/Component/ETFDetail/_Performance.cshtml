@@ -1112,8 +1112,8 @@
                             $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                         }
                     }).catch((err) => {
-                        $('[data-chart="marketTrend"]').find('.c-empty').addClass('u-hidden');
-                        $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                        $('[data-chart="marketTrend"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                         console.log(err);
                     });
                 } catch (error) {
@@ -1257,7 +1257,7 @@
                         ...obj
                     };
 
-                    // 呼叫 API ETF詳細頁 – 績效/淨值 - 市價/淨值走勢
+                    // 呼叫 API ETF詳細頁 – 績效/淨值 - ETF績效圖
                     var query = apiRequest('@ETFReturnReferenceIndexChartDataApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data).length != 0
@@ -1514,8 +1514,8 @@
                             $('[data-chart="etfTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                         }
                     }).catch((err) => {
-                        $('[data-chart="etfTrend"]').find('.c-empty').addClass('u-hidden');
-                        $('[data-chart="etfTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                        $('[data-chart="etfTrend"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="etfTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                         console.log(err);
                     });
                 } catch (error) {

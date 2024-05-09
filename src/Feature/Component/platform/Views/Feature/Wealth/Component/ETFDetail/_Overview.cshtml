@@ -418,7 +418,7 @@
                     const params = {
                         etfId: etfId
                     };
-                    // 呼叫 API ETF詳細頁 – ETF概況 – 近一年績效表現
+                    // 呼叫 API ETF概況 – 近一年績效走勢
                     var query = apiRequest('@ETFPerformanceTrendApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data.resultSet.result).length != 0) {
@@ -491,7 +491,7 @@
 
             async function initNetWorth() {
                 try {
-                    // 呼叫 API ETF詳細頁 – ETF概況 – 近一年淨值表現
+                    // ETF概況 – 近一年市價/淨值走勢
                     const marketPriceNavs = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.ETFMarketPriceOverPastYear)));
                     const netWorthNavs = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.ETFNetWorthOverPastYear)));
 
