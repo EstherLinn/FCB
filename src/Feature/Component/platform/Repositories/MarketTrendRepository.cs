@@ -84,5 +84,25 @@ namespace Feature.Wealth.Component.Repositories
 
             return result;
         }
+
+        public RelevantInformation CloneRelevantInformation(RelevantInformation item)
+        {
+            return new RelevantInformation()
+            {
+                ProductCode = item.ProductCode,
+                ProductName = item.ProductName,
+                Title = item.Title,
+                NetAssetValue = item.NetAssetValue,
+                CurrencyCode = item.CurrencyCode,
+                CurrencyName = item.CurrencyName,
+                CurrencyLink = item.CurrencyLink,
+                Change = item.Change,
+                M6Change = item.M6Change,
+                DetailLink = item.DetailLink,
+                OnlineSubscriptionAvailability = item.OnlineSubscriptionAvailability,
+                IsLogin = item.IsLogin,
+                IsLike = item.IsLike
+            };
+        }
     }
 }

@@ -133,7 +133,7 @@ namespace Feature.Wealth.Component.Controllers
 
                 foreach (string indexCode in indexCodes)
                 {
-                    var index = this._globalIndexList.First(c => c.IndexCode == indexCode);
+                    var index = this._globalIndexList.First(c => c.IndexCode.ToLower().Trim() == indexCode.ToLower().Trim());
 
                     if (index != null)
                     {
@@ -190,38 +190,47 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     string[] fundCodes = fundCodeString.Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
-                    int count = 0;
+                    var tempFunds = new List<RelevantInformation>();
 
                     foreach (string fundCode in fundCodes)
                     {
                         // 最多5筆
-                        if (count == 5)
+                        if (tempFunds.Count == 5)
                         {
                             break;
                         }
 
-                        var fund = JsonSerializer.Deserialize<RelevantInformation>(JsonSerializer.Serialize(this._fundList.FirstOrDefault(c => c.ProductCode == fundCode)));
-                        fund.DetailLink = fundLink + "?id=" + fund.ProductCode;
-                        fund.Title = marketTrend.Title;
-
-                        // TODO 取得關注
-
-                        // TODO 取得比較
-
-                        if (relevantInformationType == RelevantInformationType.Stock)
+                        if (this._fundList.Any(c => c.ProductCode.ToLower().Trim() == fundCode.ToLower().Trim()))
                         {
-                            this._stockRelevantFund.Add(fund);
-                        }
-                        else if (relevantInformationType == RelevantInformationType.Bond)
-                        {
-                            this._bondRelevantFund.Add(fund);
-                        }
-                        else if (relevantInformationType == RelevantInformationType.Industry)
-                        {
-                            this._industryRelevantFund.Add(fund);
-                        }
+                            var fund = this._marketTrendRepository.CloneRelevantInformation(this._fundList.FirstOrDefault(c => c.ProductCode.ToLower().Trim() == fundCode.ToLower().Trim()));
+                            fund.DetailLink = fundLink + "?id=" + fund.ProductCode;
+                            fund.Title = marketTrend.Title;
 
-                        count++;
+                            // TODO 取得關注
+
+                            // TODO 取得比較
+
+                            if (!tempFunds.Any(c => c.ProductCode == fund.ProductCode))
+                            {
+                                tempFunds.Add(fund);
+                            }
+                        }
+                    }
+
+                    // 照六個月績效做預設排序
+                    tempFunds = tempFunds.OrderByDescending(c => c.M6Change).ToList();
+
+                    if (relevantInformationType == RelevantInformationType.Stock)
+                    {
+                        this._stockRelevantFund.AddRange(tempFunds);
+                    }
+                    else if (relevantInformationType == RelevantInformationType.Bond)
+                    {
+                        this._bondRelevantFund.AddRange(tempFunds);
+                    }
+                    else if (relevantInformationType == RelevantInformationType.Industry)
+                    {
+                        this._industryRelevantFund.AddRange(tempFunds);
                     }
                 }
 
@@ -232,38 +241,47 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     string[] etfCodes = etfCodeString.Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
-                    int count = 0;
+                    var tempETFs = new List<RelevantInformation>();
 
                     foreach (string etfCode in etfCodes)
                     {
                         // 最多5筆
-                        if (count == 5)
+                        if (tempETFs.Count == 5)
                         {
                             break;
                         }
 
-                        var etf = JsonSerializer.Deserialize<RelevantInformation>(JsonSerializer.Serialize(this._etfList.FirstOrDefault(c => c.ProductCode == etfCode)));
-                        etf.DetailLink = etfLink + "?id=" + etf.ProductCode;
-                        etf.Title = marketTrend.Title;
-
-                        // TODO 取得關注
-
-                        // TODO 取得比較
-
-                        if (relevantInformationType == RelevantInformationType.Stock)
+                        if (this._etfList.Any(c => c.ProductCode.ToLower().Trim() == etfCode.ToLower().Trim()))
                         {
-                            this._stockRelevantETF.Add(etf);
-                        }
-                        else if (relevantInformationType == RelevantInformationType.Bond)
-                        {
-                            this._bondRelevantETF.Add(etf);
-                        }
-                        else if (relevantInformationType == RelevantInformationType.Industry)
-                        {
-                            this._industryRelevantETF.Add(etf);
-                        }
+                            var etf = this._marketTrendRepository.CloneRelevantInformation(this._etfList.FirstOrDefault(c => c.ProductCode.ToLower().Trim() == etfCode.ToLower().Trim()));
+                            etf.DetailLink = etfLink + "?id=" + etf.ProductCode;
+                            etf.Title = marketTrend.Title;
 
-                        count++;
+                            // TODO 取得關注
+
+                            // TODO 取得比較
+
+                            if (!tempETFs.Any(c => c.ProductCode == etf.ProductCode))
+                            {
+                                tempETFs.Add(etf);
+                            }
+                        }
+                    }
+
+                    // 照六個月績效做預設排序
+                    tempETFs = tempETFs.OrderByDescending(c => c.M6Change).ToList();
+
+                    if (relevantInformationType == RelevantInformationType.Stock)
+                    {
+                        this._stockRelevantETF.AddRange(tempETFs);
+                    }
+                    else if (relevantInformationType == RelevantInformationType.Bond)
+                    {
+                        this._bondRelevantETF.AddRange(tempETFs);
+                    }
+                    else if (relevantInformationType == RelevantInformationType.Industry)
+                    {
+                        this._industryRelevantETF.AddRange(tempETFs);
                     }
                 }
 
