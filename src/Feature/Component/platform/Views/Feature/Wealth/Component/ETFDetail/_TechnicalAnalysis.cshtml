@@ -165,7 +165,7 @@
                             });
 
                             // 重新組織 API dataSource 給 技術分析圖使用
-                            mapData.forEach(item => {
+                            mapData.sort((a, b) => { return a.date - b.date; }).forEach(item => {
                                 ohlc.push([item.date, item.open, item.high, item.low, item.close]);
                                 volume.push({
                                     x: item.date,
