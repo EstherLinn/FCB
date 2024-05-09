@@ -1,11 +1,24 @@
 ﻿@using Foundation.Wealth.Helper
 
 <div class="l-wrap">
-    <div class="c-article">
-        <div class="c-article__head">
-            <div class="c-article__tag">
-                <span class="o-hangTag o-hangTag--gn" id="newsTopTag"></span>
+    <div class="l-table" data-empty="true" style="display:none;">
+        <div class="c-section">
+            <div class="c-section__content">
+                <div class="c-empty">
+                    <div class="c-empty__img">
+                        <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                    </div>
+                    <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <div class="c-article" data-empty="false">
+        <div class="c-article__head">
+            @*<div class="c-article__tag">
+                <span class="o-hangTag o-hangTag--gn" id="newsTopTag"></span>
+            </div>*@
             <div class="c-article__title" id="newsTitle"></div>
         </div>
         <div class="c-article__extra">
@@ -14,7 +27,7 @@
                     <span class="t-date" id="newsDate"></span>
                 </div>
                 <div class="c-minorInfo__like">
-                    <span class="o-views o-views--xs" id="newsViewCount">0</span>
+                    <span class="o-views o-views--xs" id="newsViewCount"></span>
                     <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like " data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
                 </div>
             </div>
@@ -22,7 +35,7 @@
         <div class="c-article__content">
             <div class="c-section" id="newsContent">
             </div>
-            <div class="c-hashTags">
+            @*<div class="c-hashTags">
                 <div class="c-hashTags__title">Tags</div>
                 <div class="c-hashTags__content">
                     <ul class="l-divideList l-divideList--sm">
@@ -31,18 +44,18 @@
                         </li>
                     </ul>
                 </div>
-            </div>
+            </div>*@
         </div>
-        <div class="o-record">
-            <a href="#" class="o-record__nav o-record__nav--prev">
-                <span class="o-record__prev"></span>
-                <span class="o-record__title">今年每股純益7.9~8元？群電：以公告為準</span>
-            </a>
-            <a href="#" class="o-record__nav o-record__nav--next">
-                <span class="o-record__title">昶瑞機電現增案代收及存儲股款行庫</span>
-                <span class="o-record__next"></span>
-            </a>
-        </div>
+        @*<div class="o-record">
+                <a href="#" class="o-record__nav o-record__nav--prev">
+                    <span class="o-record__prev"></span>
+                    <span class="o-record__title">今年每股純益7.9~8元？群電：以公告為準</span>
+                </a>
+                <a href="#" class="o-record__nav o-record__nav--next">
+                    <span class="o-record__title">昶瑞機電現增案代收及存儲股款行庫</span>
+                    <span class="o-record__next"></span>
+                </a>
+            </div>*@
     </div>
 </div>
 
@@ -69,15 +82,23 @@
                 success: function (data) {
                     console.log(data);
 
-                    $('#newsTopTag').text(data.NewsType);
-                    $('#newsTitle').text(data.NewsTitle);
-                    $('#newsDate').text(data.NewsDate);
-                    $('#newsContent').html(data.NewsContent);
-                    $('#newsBottomTag').text("#" + data.NewsType);
-                    $('#newsViewCount').text(data.NewsViewCount);
+                    if (data.MarketNewsDetailData != null) {
+                        //$('#newsTopTag').text(data.MarketNewsDetailData.NewsType);
+                        $('#newsTitle').text(data.MarketNewsDetailData.NewsTitle);
+                        $('#newsDate').text(data.MarketNewsDetailData.NewsDate);
+                        $('#newsContent').html(data.MarketNewsDetailData.NewsContent);
+                        //$('#newsBottomTag').text("#" + data.NewsType);
+                        $('#newsViewCount').text(data.MarketNewsDetailData.NewsViewCount);
+                    }
+                    else {
+                        $('[data-empty="true"]').show();
+                        $('[data-empty="false"]').hide();
+                    }
                 },
                 error: function (xhr, status, error) {
-                    console.error("AJAX error: " + error);
+                    console.log(error);
+                    $('[data-empty="true"]').show();
+                    $('[data-empty="false"]').hide();
                 }
             });
 

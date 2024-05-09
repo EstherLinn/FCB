@@ -317,8 +317,8 @@ namespace Feature.Wealth.Component.Repositories
            AppendPathSegments("api", "News", "kmdjnews", "type", id, count).
            SetQueryParams(new
            {
-               startdate = startDatetime,
-               enddate = endDatetime
+               StartDatetime = startDatetime,
+               EndDatetime = endDatetime
            }).
            WithOAuthBearerToken(_token).
            GetAsync().

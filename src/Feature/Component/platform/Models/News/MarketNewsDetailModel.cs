@@ -2,6 +2,11 @@
 {
     public class MarketNewsDetailModel
     {
+        public MarketNewsDetailData MarketNewsDetailData { get; set; }
+    }
+
+    public class MarketNewsDetailData
+    {
         public string NewsType { get; set; }
         public string NewsDate { get; set; }
         public string NewsTitle { get; set; }
