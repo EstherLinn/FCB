@@ -4142,7 +4142,7 @@
                                            ${rangeData[i].ScaleDate}
                                                     </td>
                                                     <td>
-                                                         ${numberComma(rangeData[i].Scale.toFixed(2))}
+                                                         ${numberComma(Math.round(rangeData[i].Scale, 3))}
                                                     </td>
                                                     <td>
                                                          ${rangeData[i].Currency}
