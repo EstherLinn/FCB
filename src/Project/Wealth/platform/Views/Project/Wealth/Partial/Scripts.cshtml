@@ -56,38 +56,38 @@
             }
 
         EventHandler.AddOnExec('compare-init', function (e) {
-            let $this = e.target;
-            let id = $this.getAttribute('eh-compare-id');
+            let self = e.target;
+            let id = self.getAttribute('eh-compare-id');
             let compare = store.get('compare') || [];
             if (checkItemExists('compare', id)) {
-                $($this).addClass('is-active');
-                $this.setAttribute('eh-compare-add', true);
+                $(self).addClass('is-active');
+                self.setAttribute('eh-compare-add', true);
             };
 
             if (compare.length == 7) {
-                if ($this.getAttribute('eh-compare-add').toString() == "false")
+                if (self.getAttribute('eh-compare-add').toString() == "false")
                 {
-                    $this.setAttribute('href', '#popupCompareMax');
-                    $this.setAttribute('data-popup', true);
-                    $this.removeAttribute('data-ia');
-                    $this.removeAttribute('data-msg');
-                    $($this).off('click.interactive');
-                    $($this).removeData('plugin_interactive');
-                    $($this).magnificPopup();
+                    self.setAttribute('href', '#popupCompareMax');
+                    self.setAttribute('data-popup', true);
+                    self.removeAttribute('data-ia');
+                    self.removeAttribute('data-msg');
+                    $(self).off('click.interactive');
+                    $(self).removeData('plugin_interactive');
+                    $(self).magnificPopup();
                 }
             }
         });
         EventHandler.AddClick('compare-click',  function(e){
-            let $this = e.target;
-            let id = $this.getAttribute('eh-compare-id');
-            let name = $this.getAttribute('eh-compare-name');
-            let type = $this.getAttribute('eh-compare-type').toLowerCase();
+            let self = e.target;
+            let id = self.getAttribute('eh-compare-id');
+            let name = self.getAttribute('eh-compare-name');
+            let type = self.getAttribute('eh-compare-type').toLowerCase();
             let obj = new CompareObj(id, type, name);
             let compare = store.get('compare') || [];
-            if ($this.getAttribute('eh-compare-add').toString() == "false") {
+            if (self.getAttribute('eh-compare-add').toString() == "false") {
                 if (compare.length < 7) {
                     addItem('compare', obj);
-                    $this.setAttribute('eh-compare-add', true);
+                    self.setAttribute('eh-compare-add', true);
                     if (compare.length == 6) {
                         $('[eh-compare][eh-compare-add=false]').each(function (idx, ele) {
                                    ele.setAttribute('href', '#popupCompareMax');
@@ -102,7 +102,7 @@
                 }
             } else {
                 removeItem('compare', obj);
-                $this.setAttribute('eh-compare-add', false);
+                self.setAttribute('eh-compare-add', false);
                 if(compare.length == 7){
                     $('[eh-compare][eh-compare-add=false]').each(function (idx, ele) {
                         ele.setAttribute('href', 'javascript:;');
@@ -118,50 +118,50 @@
 
 
         EventHandler.AddOnExec('focus-init', function (e) {
-            let $this = e.target;
+            let self = e.target;
             if (!isLogin) {
-                $this.setAttribute("href", "#popupLogin");
-                $this.setAttribute('data-popup', true);
-                $this.removeAttribute('data-ia');
-                $this.removeAttribute('data-msg');
-                $($this).off('click.interactive');
-                $($this).removeData('plugin_interactive');
-                $($this).magnificPopup();
+                self.setAttribute("href", "#popupLogin");
+                self.setAttribute('data-popup', true);
+                self.removeAttribute('data-ia');
+                self.removeAttribute('data-msg');
+                $(self).off('click.interactive');
+                $(self).removeData('plugin_interactive');
+                $(self).magnificPopup();
             } else
             {
-                let id = $this.getAttribute('eh-focus-id');
+                let id = self.getAttribute('eh-focus-id');
                 if (checkItemExists('focus', id)) {
-                    $($this).addClass('is-active');
-                    $this.setAttribute('eh-focus-add', true);
+                    $(self).addClass('is-active');
+                    self.setAttribute('eh-focus-add', true);
                 };
             }
         });
         EventHandler.AddClick('focus-click', function (e) {
-            let $this = e.target;
+            let self = e.target;
             if (isLogin) {
-                let id = $this.getAttribute('eh-focus-id');
-                let name = $this.getAttribute('eh-focus-name');
-                let type = $this.getAttribute('eh-focus-type').toLowerCase();
+                let id = self.getAttribute('eh-focus-id');
+                let name = self.getAttribute('eh-focus-name');
+                let type = self.getAttribute('eh-focus-type').toLowerCase();
                 let obj = new CompareObj(id, type, name);
-                if ($this.getAttribute('eh-focus-add').toString() == "false") {
+                if (self.getAttribute('eh-focus-add').toString() == "false") {
                     addItem('focus', obj);
-                    $this.setAttribute('eh-focus-add', true);
+                    self.setAttribute('eh-focus-add', true);
                 } else {
                     removeItem('focus', obj);
-                    $this.setAttribute('eh-focus-add', false);
+                    self.setAttribute('eh-focus-add', false);
                 }
             }
         });
 
           EventHandler.AddOnExec('subscription-init',function(e){
-              let $this = e.target;
+              let self = e.target;
               let single = document.getElementById("subscriptionSingle");
               let regular = document.getElementById("subscriptionRegular");
               if (!isLogin) {
-                  $this.setAttribute("href", "#popupLogin");
+                  self.setAttribute("href", "#popupLogin");
               }
               else {
-                  $this.setAttribute("href", "#popupPurchase");
+                  self.setAttribute("href", "#popupPurchase");
                         let singlelink = "";
                           let regularlink= "";
                   if ($(window).width() < 768) {
@@ -224,8 +224,8 @@
 
             EventHandler.AddClick('subscription-click', function (e) {
               if(isLogin){
-                let $this = e.target;
-                let id = $this.getAttribute('eh-subscription-id');
+                let self = e.target;
+                let id = self.getAttribute('eh-subscription-id');
                 let single = document.getElementById("subscriptionSingle");
                 let regular =  document.getElementById("subscriptionRegular");
                 single.setAttribute('eh-subscription-id',id);
