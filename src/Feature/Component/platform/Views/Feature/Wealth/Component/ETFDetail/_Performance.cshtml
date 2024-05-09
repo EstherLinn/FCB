@@ -950,8 +950,12 @@
                                                     minPoint = point;
                                                 }
                                             });
+
+                                            allPoints.reverse();
+
                                             var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
                                             var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+
                                             setTimeout(function () {
                                                 maxPoint.update({
                                                     dataLabels: {
@@ -1346,8 +1350,12 @@
                                                     minPoint = point;
                                                 }
                                             });
+
+                                            allPoints.reverse();
+
                                             var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
                                             var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+
                                             setTimeout(function () {
                                                 maxPoint.update({
                                                     dataLabels: {
