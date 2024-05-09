@@ -15,7 +15,7 @@
 
 <script>
     (function ($, window, document, undefined) {
-        let isLogin = "@FcbMemberHelper.CheckMemberLogin()";
+        let isLogin = @(FcbMemberHelper.CheckMemberLogin() ? "true": "false");
             $.ajax({
                 type: "post",
                 url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
@@ -55,30 +55,30 @@
                 }
             }
 
-        EventHandler.AddOnExec('compare-init', function () {
-            let $this = $(this);
-            let id = this.getAttribute('eh-compare-id');
+        EventHandler.AddOnExec('compare-init', function (e) {
+            let $this = e.target;
+            let id = $this.getAttribute('eh-compare-id');
             let compare = store.get('compare') || [];
             if (checkItemExists('compare', id)) {
-                $this.addClass('is-active');
-                this.setAttribute('eh-compare-add', true);
+                $($this).addClass('is-active');
+                $this.setAttribute('eh-compare-add', true);
             };
 
             if (compare.length == 7) {
-                if (this.getAttribute('eh-compare-add').toString() == "false")
+                if ($this.getAttribute('eh-compare-add').toString() == "false")
                 {
-                    this.setAttribute('href', '#popupCompareMax');
-                    this.setAttribute('data-popup', true);
-                    this.removeAttribute('data-ia');
-                    this.removeAttribute('data-msg');
-                    $this.off('click.interactive');
-                    $this.removeData('plugin_interactive');
-                    $this.magnificPopup();
+                    $this.setAttribute('href', '#popupCompareMax');
+                    $this.setAttribute('data-popup', true);
+                    $this.removeAttribute('data-ia');
+                    $this.removeAttribute('data-msg');
+                    $($this).off('click.interactive');
+                    $($this).removeData('plugin_interactive');
+                    $($this).magnificPopup();
                 }
             }
         });
-        EventHandler.AddClick('compare-click', function () {
-            let $this = this;
+        EventHandler.AddClick('compare-click',  function(e){
+            let $this = e.target;
             let id = $this.getAttribute('eh-compare-id');
             let name = $this.getAttribute('eh-compare-name');
             let type = $this.getAttribute('eh-compare-type').toLowerCase();
@@ -102,7 +102,7 @@
                 }
             } else {
                 removeItem('compare', obj);
-                this.setAttribute('eh-compare-add', false);
+                $this.setAttribute('eh-compare-add', false);
                 if(compare.length == 7){
                     $('[eh-compare][eh-compare-add=false]').each(function (idx, ele) {
                         ele.setAttribute('href', 'javascript:;');
@@ -117,28 +117,28 @@
     });
 
 
-        EventHandler.AddOnExec('focus-init', function () {
-            let $this = $(this);
-            if (isLogin.toLowerCase() === "false") {
-                this.setAttribute("href", "#popupLogin");
-                this.setAttribute('data-popup', true);
-                this.removeAttribute('data-ia');
-                this.removeAttribute('data-msg');
-                $this.off('click.interactive');
-                $this.removeData('plugin_interactive');
-                $this.magnificPopup();
+        EventHandler.AddOnExec('focus-init', function (e) {
+            let $this = e.target;
+            if (!isLogin) {
+                $this.setAttribute("href", "#popupLogin");
+                $this.setAttribute('data-popup', true);
+                $this.removeAttribute('data-ia');
+                $this.removeAttribute('data-msg');
+                $($this).off('click.interactive');
+                $($this).removeData('plugin_interactive');
+                $($this).magnificPopup();
             } else
             {
-                let id = this.getAttribute('eh-focus-id');
+                let id = $this.getAttribute('eh-focus-id');
                 if (checkItemExists('focus', id)) {
-                    $this.addClass('is-active');
-                    this.setAttribute('eh-focus-add', true);
+                    $($this).addClass('is-active');
+                    $this.setAttribute('eh-focus-add', true);
                 };
             }
         });
-        EventHandler.AddClick('focus-click', function () {
-            let $this = this;
-            if (isLogin.toLowerCase() === "true") {
+        EventHandler.AddClick('focus-click', function (e) {
+            let $this = e.target;
+            if (isLogin) {
                 let id = $this.getAttribute('eh-focus-id');
                 let name = $this.getAttribute('eh-focus-name');
                 let type = $this.getAttribute('eh-focus-type').toLowerCase();
@@ -153,62 +153,108 @@
             }
         });
 
-          EventHandler.AddOnExec('subscription-init',function(){
-              let $this = this;
+          EventHandler.AddOnExec('subscription-init',function(e){
+              let $this = e.target;
               let single = document.getElementById("subscriptionSingle");
               let regular = document.getElementById("subscriptionRegular");
-              if (isLogin.toLowerCase() === "false") {
+              if (!isLogin) {
                   $this.setAttribute("href", "#popupLogin");
               }
               else {
                   $this.setAttribute("href", "#popupPurchase");
+                        let singlelink = "";
+                          let regularlink= "";
                   if ($(window).width() < 768) {
-                      $('input[name="platform"]').on('click', function () {
+                      $('input[name="platform"]','#popupPurchase').on('click', function () {
                           let val = $(this).data('name');
                           if (val == "firste") {
-                              single.setAttribute("href", "@MobileESingleLink");
-                              regular.setAttribute("href", "@MobileERegularLink");
-
+                            singlelink = "@MobileESingleLink";
+                             regularlink= "@MobileERegularLink";
                           } else {
-                              single.setAttribute("href", "@MobileIleoSingleLink");
-                              regular.setAttribute("href", "@MobileIleoRegularLink");
+                             singlelink = "@MobileIleoSingleLink";
+                             regularlink= "@MobileIleoRegularLink";
                           }
+                        let singleUrl = new URL(decodeURIComponent(singlelink.replaceAll("&amp;","&")));
+                        let regularUrl = new URL(decodeURIComponent(regularlink.replaceAll("&amp;","&")));
+                        let singleParms = singleUrl.searchParams;
+                        let regularParms = regularUrl.searchParams;
+
+                     if(singleParms.has("link"))
+                    {
+                        let singleInsindeUrl = new URL(singleParms.get("link"));
+                        let regularInsindUrl = new URL(regularParms.get("link"));
+                        singleInsindeUrl.searchParams.delete("FundCode");
+                        singleInsindeUrl.searchParams.append("FundCode",single.getAttribute("eh-subscription-id"));
+                        regularInsindUrl.searchParams.delete("FundCode");
+                        regularInsindUrl.searchParams.append("FundCode",regular.getAttribute("eh-subscription-id"));
+                        singleParms.delete("link",);
+                        singleParms.append("link",singleInsindeUrl);
+                        regularParms.delete("link");
+                        regularParms.append("link",regularInsindUrl);
+
+                    }
+                    single.setAttribute("href",singleUrl);
+                    regular.setAttribute("href",regularUrl);
                           store.set("MobilePlatform", val);
                       });
-                  } else {
-                      single.setAttribute("href", "@SubcriptionSingleLink");
-                      regular.setAttribute("href", "@SubcriptionRegularLink");
-                  }
-                  if (localStorage.hasOwnProperty('MobilePlatform')) {
+
                       let val = store.get('MobilePlatform') || "";
-                      if (val == "firste") {
+                      if (val == "firste" || val == "") {
+                          store.set("MobilePlatform", 'firste');
                           $('input[data-name="firste"]', '#popupPurchase').prop('checked', true);
-                          $('input[data-name="firste"]').trigger('click');
+                          singlelink = "@MobileESingleLink";
+                          regularlink= "@MobileERegularLink";
                       } else {
                           $('input[data-name="ileo"]', '#popupPurchase').prop('checked', true);
-
-                          $('input[data-name="ileo"]', '#popupPurchase').trigger('click');
+                             singlelink = "@MobileIleoSingleLink";
+                             regularlink= "@MobileIleoRegularLink";
                       }
-                  } else {
-                      $('input[data-name="firste"]', '#popupPurchase').trigger('click');
+
+                 single.setAttribute("href", decodeURIComponent(singlelink.replaceAll("&amp;","&")));
+                  regular.setAttribute("href", decodeURIComponent(regularlink.replaceAll("&amp;","&")));
+                  }
+                  else {
+                      singlelink = "@SubcriptionSingleLink";
+                      regularlink= "@SubcriptionRegularLink";
+                      single.setAttribute("href", decodeURIComponent(singlelink.replaceAll("&amp;","&")));
+                      regular.setAttribute("href", decodeURIComponent(regularlink.replaceAll("&amp;","&")));
                   }
               }
           });
 
-            EventHandler.AddClick('subscription-click', function () {
-                let id = this.getAttribute('eh-subscription-id');
-                let lastId = store.get("lastsubscription") || "";
+            EventHandler.AddClick('subscription-click', function (e) {
+              if(isLogin){
+                let $this = e.target;
+                let id = $this.getAttribute('eh-subscription-id');
                 let single = document.getElementById("subscriptionSingle");
                 let regular =  document.getElementById("subscriptionRegular");
-                if (single.getAttribute("href").indexOf("{}") > -1) {
-                    single.setAttribute("href", single.getAttribute("href").replaceAll("{}", id));
-                    regular.setAttribute("href", regular.getAttribute("href").replaceAll("{}", id));
-                    store.set("lastsubscription", id);
-                } else {
-                    single.setAttribute("href", single.getAttribute("href").replaceAll(lastId, id));
-                    regular.setAttribute("href", regular.getAttribute("href").replaceAll(lastId, id));
-                    store.set("lastsubscription", id);
+                single.setAttribute('eh-subscription-id',id);
+                regular.setAttribute('eh-subscription-id',id);
+                let singleUrl = new URL(decodeURIComponent(single.getAttribute("href")));
+                let regularUrl = new URL(decodeURIComponent(regular.getAttribute("href")));
+                let singleParms = singleUrl.searchParams;
+                let regularParms = regularUrl.searchParams;
+                if(singleParms.has("link"))
+                {
+                    let singleInsindeUrl = new URL(singleParms.get("link"));
+                    let regularInsindUrl = new URL(regularParms.get("link"));
+                    singleInsindeUrl.searchParams.delete("FundCode");
+                    singleInsindeUrl.searchParams.append("FundCode",id);
+                    regularInsindUrl.searchParams.delete("FundCode");
+                    regularInsindUrl.searchParams.append("FundCode",id);
+                    singleParms.delete("link",);
+                    singleParms.append("link", singleInsindeUrl);
+                    regularParms.delete("link");
+                    regularParms.append("link",regularInsindUrl);
+                }else{
+                singleParms.delete("FundCode");
+                singleParms.append("FundCode",id);
+                regularParms.delete("FundCode");
+                regularParms.append("FundCode",id);
                 }
+                 single.setAttribute("href",singleUrl);
+                regular.setAttribute("href",regularUrl);
+                 }
             });
 
             })(jQuery, window, document);
