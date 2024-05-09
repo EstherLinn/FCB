@@ -686,7 +686,7 @@
                             </div>
                             @*原幣*@
                             <div class="l-flex__item" data-id="originReturnTable">
-                                <div class="l-table" data-id="originReturnTable">
+                                <div class="l-table">
                                     <table class="c-table u-center u-nowrap" data-fixed-columns="true" data-table="originReturnTable">
                                         <colgroup>
                                             <col style="width: 14.5%;">
@@ -819,8 +819,8 @@
                                 <div class="l-dataNotes"><span class="t-date">資料日期：@Model.FundRateOfReturn.ReturnDataDate</span></div>
                             </div>
                             @*台幣*@
-                            <div class="l-flex__item " data-id="twdReturnTable">
-                                <div class="l-table" data-id="twdReturnTable">
+                            <div class="l-flex__item u-hidden" data-id="twdReturnTable">
+                                <div class="l-table" >
                                     <table class="c-table u-center u-nowrap" data-fixed-columns="true" data-table="twdReturnTable">
                                         <colgroup>
                                             <col style="width: 14.5%;">
@@ -953,8 +953,8 @@
                                 <div class="l-dataNotes"><span class="t-date">資料日期：@Model.FundRateOfReturn.ReturnDataDate</span></div>
                             </div>
                             @*年化*@
-                            <div class="l-flex__item " data-id="annualReturnTable">
-                                <div class="l-table" data-id="annualReturnTable">
+                            <div class="l-flex__item u-hidden" data-id="annualReturnTable">
+                                <div class="l-table">
                                     <table class="c-table u-center u-nowrap" data-fixed-columns="true" data-table="annualReturnTable">
                                         <colgroup>
                                             <col style="width: 14.5%;">
@@ -2747,7 +2747,6 @@
                         break;
                 }
             });
-            $('[name="currency1"]').trigger('change');
             //配息紀錄
             let dividendData = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundDividendRecords)));
           if(dividendData.length > 0){
