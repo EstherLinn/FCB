@@ -16,7 +16,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            [ProductCode]
                            ,[ProductName]
-                           ,CONVERT(decimal(16,4), [NetAssetValue]) [NetAssetValue]
+                           ,[NetAssetValue]
                            ,[CurrencyCode]
                            ,[CurrencyName]
                            ,CONVERT(decimal(16,2), [PercentageChangeInFundPrice]*100) [Change]
@@ -35,7 +35,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            [ProductCode]
                            ,[ProductName]
-                           ,CONVERT(decimal(16,4), [NetAssetValue]) [NetAssetValue]
+                           ,[NetAssetValue]
                            ,[CurrencyCode]
                            ,[CurrencyName]
                            ,CONVERT(decimal(16,2), [PercentageChangeInFundPrice]*100) [Change]
@@ -53,7 +53,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            [ProductCode]
                            ,[ProductName]
-                           ,CONVERT(decimal(16,4), [NetAssetValue]) [NetAssetValue]
+                           ,[NetAssetValue]
                            ,[CurrencyCode]
                            ,[CurrencyName]
                            ,CONVERT(decimal(16,2), [NetAssetValueChangePercentage]) [Change]
@@ -72,7 +72,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            [ProductCode]
                            ,[ProductName]
-                           ,CONVERT(decimal(16,4), [NetAssetValue]) [NetAssetValue]
+                           ,[NetAssetValue]
                            ,[CurrencyCode]
                            ,[CurrencyName]
                            ,CONVERT(decimal(16,2), [NetAssetValueChangePercentage]) [Change]
@@ -92,7 +92,7 @@ namespace Feature.Wealth.Component.Repositories
                 ProductCode = item.ProductCode,
                 ProductName = item.ProductName,
                 Title = item.Title,
-                NetAssetValue = item.NetAssetValue,
+                NetAssetValue = Round4(item.NetAssetValue),
                 CurrencyCode = item.CurrencyCode,
                 CurrencyName = item.CurrencyName,
                 CurrencyLink = item.CurrencyLink,
@@ -103,6 +103,15 @@ namespace Feature.Wealth.Component.Repositories
                 IsLogin = item.IsLogin,
                 IsLike = item.IsLike
             };
+        }
+
+        private static decimal? Round4(decimal? value)
+        {
+            if (value != null)
+            {
+                value = decimal.Round((decimal)value, 4);
+            }
+            return value;
         }
     }
 }
