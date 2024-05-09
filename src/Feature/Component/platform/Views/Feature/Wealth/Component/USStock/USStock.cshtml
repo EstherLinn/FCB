@@ -419,12 +419,12 @@
                     </li>
                 </ul>
             </div>
-        </td>
-        <td class="c-cardTable__footer" data-card-table-width="1/2">
-            <% if (OnlineSubscriptionAvailability == 'Y') { %>
+        </td
+        <% if (OnlineSubscriptionAvailability == 'Y') { %>
+            <td class="c-cardTable__footer" data-card-table-width="1/2">
                 <div class="c-cardTable__content"><a href="#popupLogin" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
-            <% } %>
-        </td>
+            </td>
+        <% } %>
     </tr>
 </script>
 
@@ -575,7 +575,7 @@
                         } else {
                             result = USStockList.filter(function (item) {
                                 return new RegExp(query, 'gi').test(item.value);
-                            });
+                            }).slice(0, 5);
                         }
                         done({
                             suggestions: result
