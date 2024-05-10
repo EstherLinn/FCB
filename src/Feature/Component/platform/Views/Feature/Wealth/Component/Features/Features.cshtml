@@ -27,12 +27,18 @@
                                 </div>
                             </div>
                             <div class="c-productCard__links">
-                                @Html.Sitecore().BeginField(Templates.Features.Fields.Link1.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--xs o-suffixLink--external" })
-                                @Html.Sitecore().Field(Templates.Features.Fields.LinkText1.ToString(), item.Item)
-                                @Html.Sitecore().EndField()
-                                @Html.Sitecore().BeginField(Templates.Features.Fields.Link2.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--xs o-suffixLink--external" })
-                                @Html.Sitecore().Field(Templates.Features.Fields.LinkText2.ToString(), item.Item)
-                                @Html.Sitecore().EndField()
+                                @if (!string.IsNullOrEmpty(item.LinkUrl1) || !string.IsNullOrEmpty(item.LinkText1))
+                                {
+                                    @Html.Sitecore().BeginField(Templates.Features.Fields.Link1.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--xs o-suffixLink--external" })
+                                    @Html.Sitecore().Field(Templates.Features.Fields.LinkText1.ToString(), item.Item)
+                                    @Html.Sitecore().EndField()
+                                }
+                                @if (!string.IsNullOrEmpty(item.LinkUrl2) || !string.IsNullOrEmpty(item.LinkText2))
+                                {
+                                    @Html.Sitecore().BeginField(Templates.Features.Fields.Link2.ToString(), item.Item, new { haschildren = true, @class = "o-suffixLink o-suffixLink--xs o-suffixLink--external" })
+                                    @Html.Sitecore().Field(Templates.Features.Fields.LinkText2.ToString(), item.Item)
+                                    @Html.Sitecore().EndField()
+                                }
                             </div>
                         </div>
                     </div>
