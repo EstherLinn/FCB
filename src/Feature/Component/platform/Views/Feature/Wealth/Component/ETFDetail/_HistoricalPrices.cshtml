@@ -672,8 +672,8 @@
                             $('[data-chart="priceTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                         }
                     }).catch((err) => {
-                        $('[data-chart="priceTrend"]').find('.c-empty').addClass('u-hidden');
-                        $('[data-chart="priceTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                        $('[data-chart="priceTrend"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="priceTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                         console.log(err);
                     });
                 } catch (error) {
