@@ -122,14 +122,14 @@
 
                                                         @foreach (var item in Model.KeywordOptions)
                                                         {
-                                                        <div class="l-pickGroup__item">
-                                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagTitle">
-                                                                <div class="o-btnCheckBox__text" data-filter-value="@item.TagTitle"></div>
-                                                            </label>
-                                                        </div>
+                                                            <div class="l-pickGroup__item">
+                                                                <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                                <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                                <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
+                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagTitle">
+                                                                    <div class="o-btnCheckBox__text" data-filter-value="@item.TagTitle"></div>
+                                                                </label>
+                                                            </div>
                                                         }
 
                                                     </div>
@@ -148,14 +148,14 @@
 
                                                         @foreach (var item in Model.TopicOptions)
                                                         {
-                                                        <div class="l-pickGroup__item">
-                                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                            <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagTitle">
-                                                                <div class="o-btnCheckBox__text" data-filter-value="@item.TagTitle"></div>
-                                                            </label>
-                                                        </div>
+                                                            <div class="l-pickGroup__item">
+                                                                <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                                <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                                <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
+                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagTitle">
+                                                                    <div class="o-btnCheckBox__text" data-filter-value="@item.TagTitle"></div>
+                                                                </label>
+                                                            </div>
                                                         }
 
                                                     </div>
@@ -246,8 +246,8 @@
                                 <option value="股票名稱低至高" data-sorting-column="ProductDisplayName" data-sorting-class="is-asc">股票名稱低至高</option>
                                 <option value="發行機構高至低" data-sorting-column="IssuingInstitution" data-sorting-class="is-desc">發行機構高至低</option>
                                 <option value="發行機構低至高" data-sorting-column="IssuingInstitution" data-sorting-class="is-asc">發行機構低至高</option>
-                                <option value="幣別高至低" data-sorting-column="CurrencyName" data-sorting-class="is-desc">幣別高至低</option>
-                                <option value="幣別低至高" data-sorting-column="CurrencyName" data-sorting-class="is-asc">幣別低至高</option>
+                                <option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
+                                <option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
                                 <option value="到期日近至遠" data-sorting-column="ProductMaturityDate" data-sorting-class="is-desc">到期日近至遠</option>
                                 <option value="到期日遠至近" data-sorting-column="ProductMaturityDate" data-sorting-class="is-asc">到期日遠至近</option>
                                 <option value="參考贖回價高至低" data-sorting-column="BankSellPrice" data-sorting-class="is-desc">參考贖回價高至低</option>
@@ -290,7 +290,7 @@
                                     <div class="c-table__title">
                                         <span>幣別</span>
                                         <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyName"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
                                     </div>
                                 </th>
                                 <th>
@@ -338,7 +338,7 @@
         <td class="c-cardTable__top"></td>
         <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
             <div class="c-cardTable__content">
-                <a href="<%= ProductDetailUrl %>" class="o-contentLink t-bold u-ellipsis-2">
+                <a href="<%= ProductDetailUrl %>" target="_blank" class="o-contentLink t-bold u-ellipsis-2">
                     <%= ProductDisplayName %>
                 </a>
             </div>
@@ -346,7 +346,7 @@
         <td class="c-cardTable__space"></td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">發行機構</div>
-            <div class="c-cardTable__content"><%= IssuingInstitution %></div>
+            <div class="c-cardTable__content"><%= IssuingInstitution_DisplayText %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">
@@ -354,20 +354,20 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
-                <a href="#" class="o-link"><%= CurrencyName %></a>
+                <%= CurrencyHtml %>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">到期日</div>
-            <div class="c-cardTable__content"><%= ProductMaturityDate %></div>
+            <div class="c-cardTable__content"><%= ProductMaturityDate_DisplayText %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-            <div class="c-cardTable__content"><%= BankSellPrice %></div>
+            <div class="c-cardTable__content"><%= BankSellPrice_DisplayText %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">價格日期</div>
-            <div class="c-cardTable__content"><%= PriceBaseDate %></div>
+            <div class="c-cardTable__content"><%= PriceBaseDate_DisplayText %></div>
         </td>
         <td class="c-cardTable__space"></td>
     </tr>
@@ -441,12 +441,39 @@
                     // 申購按鈕
                     return `<div class="c-itemKeyword">
                             <a href="${detailUrl}" class="c-itemKeyword__content">
-                                <div class="c-itemKeyword__title">${suggestion.ProductDisplayName}</div>
+                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue) }</div>
                             </a>
                         </div>`;
                 }
             });
 
+        }
+
+
+        function currencyLink(obj) {
+            let btnHtml = '@Html.CurrencyLink(null, "null")';
+            let $Btn = $(btnHtml);
+            $Btn.text(obj.CurrencyName_DisplayText);
+            return $Btn[0].outerHTML;
+        }
+
+        const resetProps = ['IssuingInstitution', 'CurrencyName', 'ProductMaturityDate', 'BankSellPrice', 'PriceBaseDate'];
+        const dateProps = ['ProductMaturityDate', 'PriceBaseDate'];
+
+        function resetProp(obj) {
+            for (var o in obj) {
+                let value = obj[o];
+
+                if (resetProps.includes(o)) {
+                    let newProp = o + '_DisplayText';
+                    obj[newProp] = value;
+                }
+
+                if (dateProps.includes(o) && value != null) {
+                    obj[o] = new Date(value).getTime().toString();
+                }
+            }
+            return obj;
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -461,8 +488,8 @@
 
             // 資料源Id
             let datasourceId = JSON.parse(JSON.stringify(modelData.DatasourceId));
-
-            // 商品列表
+          
+                // 商品列表
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "StructuredProduct", "GetStructuredProducts")',
                 type: 'POST',
@@ -479,6 +506,18 @@
 
                         // 新增 value 欄位
                         item.value = item.ProductCode + " " + item.ProductName;
+
+                        item.CurrencyHtml = currencyLink(item);
+                        resetProp(item);
+
+                        for (var d in item) {
+                            let value = item[d];
+
+                            if ((value == null || value == undefined || value == '')
+                                && d.includes('_DisplayText')) {
+                                item[d] = '-';
+                            }
+                        }
                     });
 
                     var template = document.getElementById('uid-template').innerHTML;
@@ -514,6 +553,9 @@
 
                             window.loading('hide');
                         },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
+                        }
                     },
                     search: {
                         ele: '#keyword', fields: ['ProductCode', 'ProductName'], start_length: 2, bindEvent: false, multi: function () {
