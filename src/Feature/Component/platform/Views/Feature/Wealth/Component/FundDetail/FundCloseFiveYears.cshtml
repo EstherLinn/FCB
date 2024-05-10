@@ -237,12 +237,16 @@
                             },
                             series: mapData
                         });
+                        let rateSelectHtml = '';
+                        let feeSelectHtml = '';
                         $.each(years, function (index, value) {
-                            $('#rateSelect')[0].innerHTML+= `<option value="${value}報酬率高到低" data-sorting-column="${value}" data-sorting-class="is-desc" data-idx=${index}>${value}報酬率高到低</option>`;
-                            $('#rateSelect')[0].innerHTML +=`<option value="${value}報酬率低到高" data-sorting-column="${value}" data-sorting-class="is-asc"data-idx=${index}>${value}報酬率低到高</option>`;
-                            $('#feeSelect')[0].innerHTML +=`<option value="${value}費用率高到低" data-sorting-column="${value}" data-sorting-class="is-desc" data-idx=${index}>${value}費用率高到低</option>`;
-                            $('#feeSelect')[0].innerHTML +=`<option value="${value}費用率低到高" data-sorting-column="${value}" data-sorting-class="is-asc" data-idx=${index}>${value}費用率低到高</option>`;
+                            rateSelectHtml += `<option value="${value}報酬率高到低" data-sorting-column="${value}" data-sorting-class="is-desc" data-idx=${index}>${value}報酬率高到低</option>`;
+                            rateSelectHtml += `<option value="${value}報酬率低到高" data-sorting-column="${value}" data-sorting-class="is-asc"data-idx=${index}>${value}報酬率低到高</option>`;
+                            feeSelectHtml += `<option value="${value}費用率高到低" data-sorting-column="${value}" data-sorting-class="is-desc" data-idx=${index}>${value}費用率高到低</option>`;
+                            feeSelectHtml += `<option value="${value}費用率低到高" data-sorting-column="${value}" data-sorting-class="is-asc" data-idx=${index}>${value}費用率低到高</option>`;
                         });
+                        $('#rateSelect').html(DOMPurify.sanitize(rateSelectHtml));
+                        $('#feeSelect').html(DOMPurify.sanitize(feeSelectHtml));
                         ShowRateTable(mapData, years);
                         ShowFeeTable(mapData, years);
                         $('[data-fixed-columns]').fixedColumns(); //組完table後 init datatable事件
