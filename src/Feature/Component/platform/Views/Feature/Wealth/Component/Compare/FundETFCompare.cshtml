@@ -1,0 +1,2101 @@
+﻿@using Feature.Wealth.Component.Models.Compare
+@using Foundation.Wealth.Helper
+
+@model FundETFCompareModel
+@{
+    if (!Model.IsValid)
+    {
+        return;
+    }
+    var CompareApiUrl = ClientRoute.GenerateUrl(this, "FundETFCompare", "Compare");
+}
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">基金ETF比較</h1>
+        </div>
+        <div class="l-mainstage__content">
+            <!-- 有基金或ETF待比較資料的畫面 Start -->
+            <div class="l-flex u-flex-col u-flex-gap-lg">
+                <div class="l-flex__item">
+                    <div class="l-flex u-flex-col u-flex-gap-min u-flex-gap-sm@mb-only" id="compare-item-container">
+                        <!---->
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        <div class="l-flex__item u-center">
+                            <span class="t-bold" data-compare-count></span> <span class="t-note">最多可加入7檔標的</span>
+                        </div>
+                        <div class="l-flex__item">
+                            <div class="l-action l-action--inline">
+                                <div class="l-action__item">
+                                    <a href="#popupCompareMax" class="o-btn o-btn--secondary o-btn--sm" data-fund-add>加入基金</a>
+                                </div>
+                                <div class="l-action__item">
+                                    <!-- 此處示意已達上限狀態，未達上限時應導連至ETF搜尋頁: ../etf/search.html -->
+                                    <a href="#popupCompareMax" class="o-btn o-btn--secondary o-btn--sm" data-popup="true" data-etf-add>加入ETF</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 有基金或ETF待比較資料的畫面 End -->
+        </div>
+    </div>
+</div>
+<div class="l-wrap">
+    <div class="c-tab c-tab--wide" data-tab="true">
+        <div class="c-tab__header">
+            <ul class="c-tab__navs">
+                <!-- .is-active: 作用中的項目 -->
+                <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                <li><a href="#" class="c-tab__item is-active" target="_self" title="績效表現" data-tab-target="tab-1">績效表現</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="風險指標" data-tab-target="tab-2">風險指標</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="淨值" data-tab-target="tab-3">淨值</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="持股狀態" data-tab-target="tab-4">持股狀態</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="基本資料" data-tab-target="tab-5">基本資料</a></li>
+            </ul>
+            <div class="c-tab__collapse">
+                <a href="#" class="c-tab__switch"></a>
+                <div class="c-tab__dropdown"><a href="#" class="c-tab__clone is-active" target="_self" title="績效表現" data-tab-target="tab-1">績效表現</a><a href="#" class="c-tab__clone " target="_self" title="風險指標" data-tab-target="tab-2">風險指標</a><a href="#" class="c-tab__clone " target="_self" title="淨值" data-tab-target="tab-3">淨值</a><a href="#" class="c-tab__clone " target="_self" title="持股狀態" data-tab-target="tab-4">持股狀態</a><a href="#" class="c-tab__clone " target="_self" title="基本資料" data-tab-target="tab-5">基本資料</a></div>
+            </div>
+        </div>
+        <!-- is-active: 作用中的項目 -->
+        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+            <div class="c-section">
+                <div class="c-section__content">
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
+                        </div>
+                        <div class="c-empty__desc">沒有資料</div>
+                    </div>
+                    <div class="l-flex u-flex-col u-flex-gap-md u-hidden" data-chart="compare">
+                        <div class="l-flex__item">
+                            <!---->
+                            <div class="c-chartBox">
+                                <div class="c-chartBox__filter">
+                                    <div class="l-flex u-flex-gap-md u-flex-top u-flex-col@lt">
+                                        <div class="l-flex__item">
+                                            <div class="l-pickGroup">
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="sinceYear" data-compare-filter="dateRange" checked>
+                                                        <div class="o-btnRadio__text"><span>今年以來</span></div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="3m" data-compare-filter="dateRange">
+                                                        <div class="o-btnRadio__text"><span>3個月</span></div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="6m" data-compare-filter="dateRange">
+                                                        <div class="o-btnRadio__text"><span>6個月</span></div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="12m" data-compare-filter="dateRange">
+                                                        <div class="o-btnRadio__text"><span>1年</span></div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="24m" data-compare-filter="dateRange">
+                                                        <div class="o-btnRadio__text"><span>2年</span></div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="36m" data-compare-filter="dateRange">
+                                                        <div class="o-btnRadio__text"><span>3年</span></div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="60m" data-compare-filter="dateRange">
+                                                        <div class="o-btnRadio__text"><span>5年</span></div>
+                                                    </label>
+                                                </div>
+                                                <div class="l-pickGroup__item">
+                                                    <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                        <input class="o-btnRadio__input" type="radio" name="dateRange" value="establishment" data-compare-filter="dateRange">
+                                                        <div class="o-btnRadio__text"><span>成立至今</span></div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="l-flex__item">
+                                            <div class="l-flex u-flex-gap-min u-flex-top u-flex-left u-flex-right@dt-only">
+                                                <div class="l-flex__item l-flex__item--auto">
+                                                    <div class="l-form">
+                                                        <div class="l-form__item">
+                                                            <div class="o-calendarBox o-calendarBox--filter">
+                                                                <!-- data-start-date: 請填寫基金成立日期 -->
+                                                                <!-- data-start-date: 若無限制日期，請移除此Attribute -->
+                                                                <!-- data-end-date: 若無限制日期，請移除此Attribute -->
+                                                                <input type="text" class="o-calendarBox__input" data-compare-filter="inputStart" data-calendar="true" data-start-date="2024/01/01" data-end-date="0d" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="l-form__error">
+                                                            <span class="o-errorText"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="l-flex__item l-flex__item--auto">-</div>
+                                                <div class="l-flex__item l-flex__item--auto">
+                                                    <div class="l-form">
+                                                        <div class="l-form__item">
+                                                            <div class="o-calendarBox o-calendarBox--filter">
+                                                                <!-- data-start-date: 請填寫基金成立日期 -->
+                                                                <!-- data-start-date: 若無限制日期，請移除此Attribute -->
+                                                                <!-- data-end-date: 若無限制日期，請移除此Attribute -->
+                                                                <input type="text" class="o-calendarBox__input" data-compare-filter="inputEnd" data-calendar="true" data-start-date="2024/01/01" data-end-date="0d" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="l-form__error">
+                                                            <span class="o-errorText"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="l-flex__item l-flex__item--auto">
+                                                    <button type="submit" class="o-searchBtn" data-compare-filter="submit"></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="c-chartBox__chart">
+                                    <div id="compareChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" data-chart-lengend>
+                            <div class="l-compare">
+                                <div class="l-compare__item" data-stock-add-control>
+                                    <a href="#popupAddIndex" class="c-productItem c-productItem--add" data-popup="true">
+                                        加入指數
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="c-section">
+                <div class="c-section__content">
+                    <div class="c-tab c-tab--capsule" data-tab="true" data-docking="false">
+                        <div class="c-tab__header">
+                            <ul class="c-tab__navs">
+                                <!-- .is-active: 作用中的項目 -->
+                                <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                                <li>
+                                    <a href="#" class="c-tab__item is-active" target="_self" title="短期" data-tab-target="tab-short" data-table-tab>短期</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="c-tab__item" target="_self" title="中長期" data-tab-target="tab-mediumToLong" data-table-tab>中長期</a>
+                                </li>
+                            </ul>
+                            <div class="c-tab__tools u-hidden@dt-only">
+                                <div data-sortingbox-wrap="tab-short">
+                                    <div class="o-sortingbox">
+                                        <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                        <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="shortTermTable">
+                                            <option value="">排序</option>
+                                            <option value="基金名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">基金名稱高至低</option>
+                                            <option value="基金名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">基金名稱低至高</option>
+                                            <option value="1日績效高至低" data-sorting-column="oneDay" data-sorting-class="is-desc">1日績效高至低</option>
+                                            <option value="1日績效低至高" data-sorting-column="oneDay" data-sorting-class="is-asc">1日績效低至高</option>
+                                            <option value="1週績效高至低" data-sorting-column="oneWeek" data-sorting-class="is-desc">1週績效高至低</option>
+                                            <option value="1週績效低至高" data-sorting-column="oneWeek" data-sorting-class="is-asc">1週績效低至高</option>
+                                            <option value="1個月績效高至低" data-sorting-column="oneMonth" data-sorting-class="is-desc">1個月績效高至低</option>
+                                            <option value="1個月績效低至高" data-sorting-column="oneMonth" data-sorting-class="is-asc">1個月績效低至高</option>
+                                            <option value="3個月績效高至低" data-sorting-column="threeMonth" data-sorting-class="is-desc">3個月績效高至低</option>
+                                            <option value="3個月績效低至高" data-sorting-column="threeMonth" data-sorting-class="is-asc">3個月績效低至高</option>
+                                            <option value="6個月績效高至低" data-sorting-column="sixMonth" data-sorting-class="is-desc">6個月績效高至低</option>
+                                            <option value="6個月績效低至高" data-sorting-column="sixMonth" data-sorting-class="is-asc">6個月績效低至高</option>
+                                            <option value="年初至今績效高至低" data-sorting-column="year" data-sorting-class="is-desc">年初至今績效高至低</option>
+                                            <option value="年初至今績效低至高" data-sorting-column="year" data-sorting-class="is-asc">年初至今績效低至高</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="u-hidden" data-sortingbox-wrap="tab-mediumToLong">
+                                    <div class="o-sortingbox">
+                                        <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                        <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="longTermTable">
+                                            <option value="">排序</option>
+                                            <option value="基金名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">基金名稱高至低</option>
+                                            <option value="基金名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">基金名稱低至高</option>
+                                            <option value="1年績效高至低" data-sorting-column="oneYear" data-sorting-class="is-desc">1年績效高至低</option>
+                                            <option value="1年績效低至高" data-sorting-column="oneYear" data-sorting-class="is-asc">1年績效低至高</option>
+                                            <option value="2年績效高至低" data-sorting-column="twoYear" data-sorting-class="is-desc">2年績效高至低</option>
+                                            <option value="2年績效低至高" data-sorting-column="twoYear" data-sorting-class="is-asc">2年績效低至高</option>
+                                            <option value="3年績效高至低" data-sorting-column="threeYear" data-sorting-class="is-desc">3年績效高至低</option>
+                                            <option value="3年績效低至高" data-sorting-column="threeYear" data-sorting-class="is-asc">3年績效低至高</option>
+                                            <option value="5年績效高至低" data-sorting-column="fiveYear" data-sorting-class="is-desc">5年績效高至低</option>
+                                            <option value="5年績效低至高" data-sorting-column="fiveYear" data-sorting-class="is-asc">5年績效低至高</option>
+                                            <option value="年初至今績效高至低" data-sorting-column="year" data-sorting-class="is-desc">年初至今績效高至低</option>
+                                            <option value="年初至今績效低至高" data-sorting-column="year" data-sorting-class="is-asc">年初至今績效低至高</option>
+                                            <option value="成立至今績效高至低" data-sorting-column="established" data-sorting-class="is-desc">成立至今績效高至低</option>
+                                            <option value="成立至今績效低至高" data-sorting-column="established" data-sorting-class="is-asc">成立至今績效低至高</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- is-active: 作用中的項目 -->
+                        <div class="c-tab__panel is-active" data-tab-panel-id="tab-short">
+                            <div class="l-table">
+                                <!---->
+                                <table class="c-table u-center" data-table-name="shortTermTable">
+                                    <colgroup>
+                                        <col style="width: 50%; min-width: 200px;">
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                        <tr class="u-nowrap">
+                                            <th style="min-width: 200px;">
+                                                <div class="c-table__title">
+                                                    <span>基金/ETF名稱</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="name"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1日</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="oneDay"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1週</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="oneWeek"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="oneMonth"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>3個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="threeMonth"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>6個月</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="sixMonth"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>年初至今</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="year"></a>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rateOfReturnTable">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="c-tab__panel" data-tab-panel-id="tab-mediumToLong">
+                            <div class="l-table">
+                                <!---->
+                                <table class="c-table u-center" data-table-name="longTermTable">
+                                    <colgroup>
+                                        <col style="width: 50%; min-width: 200px;">
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                        <tr class="u-nowrap">
+                                            <th style="min-width: 200px;">
+                                                <div class="c-table__title">
+                                                    <span>基金/ETF名稱</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="name"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>1年</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="oneYear"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>2年</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="twoYear"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>3年</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="threeYear"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>5年</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="fiveYear"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>年初至今</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="year"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>成立至今</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="established"></a>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="netAssetValueTable">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-2">
+            <div class="l-flex l-flex--wrap u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    @*風險指標：資產管理公司經常用來作為<a href="#" class="o-link">基金風險綜合評比</a>的指標。*@
+                    @if (Model.Item != null)
+                    {
+                        @Html.Sitecore().Field(Template.FundETFComparePage.Fields.RiskIndicatorsDescription.ToString(), Model.Item)
+                    }
+                </div>
+                <div class="l-flex__item u-right u-hidden@dt-only">
+                    <div class="o-sortingbox">
+                        <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                        <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="riskTable">
+                            <option value="">排序</option>
+                            <option value="基金名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">基金名稱高至低</option>
+                            <option value="基金名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">基金名稱低至高</option>
+                            <option value="風險屬性RR5至RR1" data-sorting-column="risk" data-sorting-class="is-desc">風險屬性RR5至RR1</option>
+                            <option value="風險屬性RR1至RR5" data-sorting-column="risk" data-sorting-class="is-asc">風險屬性RR1至RR5</option>
+                            <option value="Sharpe高至低" data-sorting-column="sharpe" data-sorting-class="is-desc">Sharpe高至低</option>
+                            <option value="Sharpe低至高" data-sorting-column="sharpe" data-sorting-class="is-asc">Sharpe低至高</option>
+                            <option value="Beta高至低" data-sorting-column="beta" data-sorting-class="is-desc">Beta高至低</option>
+                            <option value="Beta低至低" data-sorting-column="beta" data-sorting-class="is-asc">Beta低至低</option>
+                            <option value="Alpha高至低" data-sorting-column="alpha" data-sorting-class="is-desc">Alpha高至低</option>
+                            <option value="Alpha低至高" data-sorting-column="alpha" data-sorting-class="is-asc">Alpha低至高</option>
+                            <option value="年化標準差高至低" data-sorting-column="deviation" data-sorting-class="is-desc">年化標準差高至低</option>
+                            <option value="年化標準差低至高" data-sorting-column="deviation" data-sorting-class="is-asc">年化標準差低至高</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <div class="l-table">
+                        <!---->
+                        <table class="c-table u-center u-nowrap" data-table-name="riskTable">
+                            <colgroup>
+                                <col style="width: 50%; min-width: 200px;">
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 200px;">
+                                        <div class="c-table__title">
+                                            <span>基金/ETF名稱</span>
+                                            <a href="#"></a>
+                                            <a href="#" class="o-sorting" data-sorting-column="name"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>風險屬性</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="risk"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>Sharpe</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="sharpe"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>Beta</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="beta"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>Alpha</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="alpha"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>年化標準差</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="deviation"></a>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="riskindicatorsTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-3">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item u-right u-hidden@dt-only">
+                    <div class="o-sortingbox">
+                        <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                        <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="netWorthTable">
+                            <option value="">排序</option>
+                            <option value="基金名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">基金名稱高至低</option>
+                            <option value="基金名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">基金名稱低至高</option>
+                            <option value="最新淨值高至低" data-sorting-column="netWorth" data-sorting-class="is-desc">最新淨值高至低</option>
+                            <option value="最新淨值低至高" data-sorting-column="netWorth" data-sorting-class="is-asc">最新淨值低至高</option>
+                            <option value="近3個月最高高至低" data-sorting-column="highest" data-sorting-class="is-desc">近3個月最高高至低</option>
+                            <option value="近3個月最高低至高" data-sorting-column="highest" data-sorting-class="is-asc">近3個月最高低至高</option>
+                            <option value="近3個月最低高至低" data-sorting-column="lowest" data-sorting-class="is-desc">近3個月最低高至低</option>
+                            <option value="近3個月最低低至高" data-sorting-column="lowest" data-sorting-class="is-asc">近3個月最低低至高</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <div class="l-table">
+                        <!---->
+                        <table class="c-table u-center" data-table-name="netWorthTable">
+                            <colgroup>
+                                <col style="width: 50%; min-width: 200px;">
+                                <col>
+                                <col>
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr class="u-nowrap">
+                                    <th style="min-width: 200px;">
+                                        <div class="c-table__title">
+                                            <span>基金/ETF名稱</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="name"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title u-center">
+                                            <span>最新淨值<br>(淨值日)</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="netWorth"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>近3個月最高</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="highest"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>近3個月最低</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="lowest"></a>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="thiryDaysNetValueTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-4">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item u-right u-hidden@dt-only">
+                    <div class="o-sortingbox">
+                        <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                        <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="shareholdingTable">
+                            <option value="">排序</option>
+                            <option value="基金名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">基金名稱高至低</option>
+                            <option value="基金名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">基金名稱低至高</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <div class="l-table">
+                        <!---->
+                        <table class="c-table is-top" data-table-name="shareholdingTable">
+                            <colgroup>
+                                <col style="width: 30%; min-width: 200px;">
+                                <col style="width: 17.5%;">
+                                <col style="width: 17.5%;">
+                                <col style="width: 17.5%;">
+                                <col style="width: 17.5%;">
+                            </colgroup>
+                            <thead>
+                                <tr class="u-nowrap">
+                                    <th style="min-width: 200px;">
+                                        <div class="c-table__title">
+                                            <span>基金/ETF名稱</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="name"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>投資類別</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>投資國家</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>投資產業</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>前十大持股</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="holdingStatusTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-5">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item u-right u-hidden@dt-only">
+                    <div class="o-sortingbox">
+                        <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                        <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="baseTable">
+                            <option value="">排序</option>
+                            <option value="基金名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">基金名稱高至低</option>
+                            <option value="基金名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">基金名稱低至高</option>
+                            <option value="幣別高至低" data-sorting-column="currency" data-sorting-class="is-desc">幣別高至低</option>
+                            <option value="幣別低至高" data-sorting-column="currency" data-sorting-class="is-asc">幣別低至高</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <div class="l-table">
+                        <!---->
+                        <table class="c-table u-center u-nowrap" data-table-name="baseTable">
+                            <thead>
+                                <tr>
+                                    <th class="u-rwdWidth" style="--pcWidth: 330px; --mbWidth: 176px;">
+                                        <div class="c-table__title">
+                                            <span>基金/ETF名稱</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="name"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>幣別</span>
+                                            <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                            <a href="#" class="o-sorting" data-sorting-column="currency"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>配息頻率</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>成立日期</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>類型</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>規模(億)</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>發行公司</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>註冊地</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>保管機構</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>申購手續費</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="baseDataTable">
+                                <!-- 表格內文字對齊樣式，可於tr/td標籤上使用(若內容物為flexbox將不會發生作用)：
+                                .u-center: 置中
+                                .u-center@lt: pad(含)以下版本(<= 1199px)置中
+                                .u-center@lt-up: pad(含)以上版本(>= 768px)置中
+                                .u-center@dt-only: 僅桌機版本(>= 1200px)置中
+                                .u-center@lt-only: 僅pad版本(>= 768px and <= 1199px)置中
+                                .u-center@mb-only: 僅手機版本(<= 767px)置中
+                                .u-left/.u-right: 置左/置右，比照置中模式 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<template id="tmpl-compare">
+    <div class="l-flex__item">
+        <div class="c-productItem c-productItem--ltGn">
+            <div class="c-productItem__name">
+                <a href="./detail.html" class="c-legend c-legend--link" style="--legend-color:#238C6C">
+                    <span class="c-legend__name">TA25 安聯收益成長基金-AM穩定月收類股(美元)</span>
+                </a>
+            </div>
+            <div class="c-productItem__action">
+                <div class="c-productItem__btn">
+                    <!-- [data-after-mb]: mobile 自動顯示文字，值為要顯示的文字 -->
+                    <!-- [data-ia="true"]: 互動式按鈕功能，hover 顯示 tooltip，點擊後顯示結果訊息 -->
+                    <!-- [data-msg]: hover/click 時顯示的提示內容，normal / active 狀態的訊息以 "|" 符號分隔 -->
+                    <a href="#popupLogin" class="o-statusBtn o-statusBtn--like" data-after-mb="關注" data-msg="加入關注|取消關注" data-ia="true" data-eh="focus-init,focus-click" eh-focus="" eh-focus-add="false" eh-focus-id="" eh-focus-name="" eh-focus-type=""></a>
+                </div>
+                <div class="c-productItem__btn c-productItem__btn--solid">
+                    <a href="#popupPurchase" data-eh="subscription-init,subscription-click" data-popup="true" eh-subscription-id="" eh-subscription-type="" class="o-tableBtn o-tableBtn--card@mb" data-popup="true">申購</a>
+                </div>
+                <div class="c-productItem__btn">
+                    <!-- [data-fundetf-remove]: 要移除本筆 基金/ETF 的Id -->
+                    <a href="#" class="o-statusBtn o-statusBtn--delete" data-fundetf-remove="" data-after-mb="刪除"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="tmpl">
+    <div class="l-compare__item">
+        <div class="c-productItem">
+            <div class="c-productItem__name">
+                <a data-product-id="" class="c-legend c-legend--link">
+                    <span class="c-legend__name"></span>
+                </a>
+            </div>
+            <div class="c-productItem__rate">
+                <span class="" data-rate="">%</span>
+            </div>
+            <div class="c-productItem__btn">
+                <a href="#" class="o-statusBtn o-statusBtn--delete" data-stock-remove></a>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="tmplLable">
+    <a href="./detail.html" class="c-legend c-legend--link" style="--legend-color:#238C6C">
+        <span class="c-legend__name">TA25 安聯收益成長基金-AM穩定月收類股(美元)</span>
+    </a>
+</template>
+
+<div id="popupAddIndex" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">加入指數</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-form">
+                <div class="l-form__item">
+                    <div class="l-selectbox u-justify-center">
+                        <div class="l-selectbox__item">
+                            <select class="o-selectbox o-selectbox--full o-selectbox--form" data-placeholder="選擇指數" data-stock-select data-width="200px" data-selection-css-class="select2-selection--form" data-selectbox="true">
+                                <option value=""></option>
+                                @foreach (var item in Model.GlobalIndexList)
+                                {
+                                    <option value="@item.IndexCode">@item.IndexName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-form__error u-center">
+                    <span class=" o-errorText"></span>
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-popup-close="true">取消</a>
+                </div>
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-stock-add="">加入</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="template-shortTermTable" type="text/html">
+    <tr>
+        <td class="u-left">
+            <% if (DetailLink) { %>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <% } else { %>
+            <span class="c-legend__name"><%= name %></span>
+            <% } %>
+        </td>
+        <td>
+            <% if (oneDay) { %>
+            <span class="<%= oneDay < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneDay) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (oneWeek) { %>
+            <span class="<%= oneWeek < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneWeek) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (oneMonth) { %>
+            <span class="<%= oneMonth < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneMonth) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (threeMonth) { %>
+            <span class="<%= threeMonth < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(threeMonth) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (sixMonth) { %>
+            <span class="<%= sixMonth < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(sixMonth) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (year) { %>
+            <span class="<%= year < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(year) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+    </tr>
+</script>
+<script id="template-longTermTable" type="text/html">
+    <tr>
+        <td class="u-left">
+            <% if (DetailLink) { %>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <% } else { %>
+            <span class="c-legend__name"><%= name %></span>
+            <% } %>
+        </td>
+        <td>
+            <% if (oneYear) { %>
+            <span class="<%= oneYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneYear) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (twoYear) { %>
+            <span class="<%= twoYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(twoYear) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (threeYear) { %>
+            <span class="<%= threeYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(threeYear) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (fiveYear) { %>
+            <span class="<%= fiveYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(fiveYear) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (year) { %>
+            <span class="<%= year < 0 ? 'o-fall': 'o-rise' %>"><%= (year) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+        <td>
+            <% if (established) { %>
+            <span class="<%= established < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(established) %>%</span>
+            <% } else { %>
+            <span class="c-legend__name">-</span>
+            <% } %>
+        </td>
+    </tr>
+</script>
+<script id="template-riskTable" type="text/html">
+    <tr>
+        <td class="u-left u-wrap">
+            <% if (DetailLink) { %>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <% } else { %>
+            <span class="c-legend__name"><%= name %></span>
+            <% } %>
+        </td>
+        <td>
+            <%switch (risk)
+            {
+            case 'RR1':
+            risk = risk + ' 低度風險';
+            break;
+            case 'RR2':
+            risk = risk + ' 中低度風險';
+            break;
+            case 'RR3':
+            risk = risk + ' 中度風險';
+            break;
+            case 'RR4':
+            risk = risk + ' 中高度風險';
+            break;
+            case 'RR5':
+            risk = risk + ' 高度風險';
+            break;
+            } %>
+            <%= risk ? risk: '-' %>
+        </td>
+        <td>
+            <%= sharpe ? sharpe: '-' %>
+        </td>
+        <td>
+            <%= beta ? beta: '-' %>
+        </td>
+        <td>
+            <%= alpha ? alpha: '-' %>
+        </td>
+        <td>
+            <%= deviation ? deviation + '%': '-' %>
+        </td>
+    </tr>
+</script>
+<script id="template-netWorthTable" type="text/html">
+    <tr>
+        <td class="u-left">
+            <% if (DetailLink) { %>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <% } else { %>
+            <span class="c-legend__name"><%= name %></span>
+            <% } %>
+        </td>
+        <td>
+            <%= netWorth %><br><span class="t-date"><%= date %></span>
+        </td>
+        <td>
+            <%= highest %>
+        </td>
+        <td>
+            <%= lowest %>
+        </td>
+    </tr>
+</script>
+<script id="template-shareholdingTable" type="text/html">
+    <tr>
+        <td class="u-left">
+            <% if (DetailLink) { %>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <% } else { %>
+            <span class="c-legend__name"><%= name %></span>
+            <% } %>
+        </td>
+        <td>
+            <% for (var i = 0; i < investmentCategory.length; i++) { %>
+            <%= investmentCategory[i] %><br>
+            <% } %>
+        </td>
+        <td>
+            <% for (var i = 0; i < investmentCountry.length; i++) { %>
+            <%= investmentCountry[i] %><br>
+            <% } %>
+        </td>
+        <td>
+            <% for (var i = 0; i < investmentIndustry.length; i++) { %>
+            <%= investmentIndustry[i] %><br>
+            <% } %>
+        </td>
+        <td>
+            <% for (var i = 0; i < topTenHoldings.length; i++) { %>
+            <%= topTenHoldings[i] %><br>
+            <% } %>
+        </td>
+    </tr>
+</script>
+<script id="template-baseTable" type="text/html">
+    <tr>
+        <td class="u-left u-wrap">
+            <% if (DetailLink) { %>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <% } else { %>
+            <span class="c-legend__name"><%= name %></span>
+            <% } %>
+        </td>
+        <td>
+            <a href="#popupCurrencyWebSite" class="o-link"><%= currency %></a>
+        </td>
+        <td>
+            <%= dividendFrequency %>
+        </td>
+        <td>
+            <%= dateOfEstablishment %>
+        </td>
+        <td>
+            <%= type %>
+        </td>
+        <td>
+            <%= scale %>
+        </td>
+        <td>
+            <%= publisher %>
+        </td>
+        <td>
+            <%= registration %>
+        </td>
+        <td>
+            <%= depository %>
+        </td>
+        <td>
+            <%= subscriptionHandlingFee %>
+        </td>
+    </tr>
+</script>
+
+<script defer>
+                (function ($, window, document) {
+
+    // 基金ETF比較 – 績效表現
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!jQuery) {
+            return;
+        }
+        var isInit = true;
+        var fundParams = store.get('compare') || [];
+        var stockParams = [];
+
+        itemRendering(fundParams);
+
+        // 計算目前 基金/ETF 比較列表共有幾筆
+        $('[data-compare-count]').text(`${fundParams.length}/7`);
+
+        // 判斷上方比較 基金/ETF 列表區塊，若無資料則跳轉至 未加入標的比較頁
+        judgeCompareList();
+
+        // 加入指數下拉選單已選取的值，僅示意目前模擬的狀況 Start
+        // 正式套頁時，此段程式不需要，下方的加入/移除指數已有撰寫對應程式
+        stockParams.forEach(item => {
+            const element = `[data-stock-select] option[value="${item.id}"]`;
+            $(element).prop('disabled', true).trigger('change');
+        });
+        // 加入指數下拉選單已選取的值，僅示意目前模擬的狀況 End
+
+        var chart;
+        $('[data-compare-filter="dateRange"]').on('change', function () {
+            $('[data-compare-filter="inputStart"], [data-compare-filter="inputEnd"]').val('');
+            $('[data-chart="compare"] .l-form').removeClass('is-error');
+            getParamsAndRedraw();
+        });
+        $('[data-compare-filter="dateRange"]:checked').trigger('change');
+        $('[data-compare-filter="submit"]').on('click', function (e) {
+            if (required($('[data-compare-filter="inputStart"]')) && required($('[data-compare-filter="inputEnd"]')) && dateRange()) {
+                $('[data-compare-filter="dateRange"]').prop('checked', false);
+                getParamsAndRedraw();
+            }
+        });
+
+        // customer lengend click event
+        $('.l-compare').on('click', '[data-product-id]', function (e) {
+            e.preventDefault();
+            var id = $(this).data('product-id'),
+                series = chart.get(id);
+            series.setVisible(!series.visible);
+            $(this).toggleClass('is-disabled', !series.visible);
+        });
+
+        // 移除 基金/ETF 比較列表資料
+        $('.l-mainstage').on('click', '[data-fundetf-remove]', function (e) {
+            e.preventDefault();
+            let id = $(this).data('fundetf-remove');
+            $(this).closest('.l-flex__item').remove();
+            var index = fundParams.findIndex(function (item) {
+                return id == item.id;
+            });
+            let obj = fundParams[index];
+            fundParams.splice(index, 1);
+            $('[data-compare-count]').text(`${fundParams.length}/7`);
+            judgeCompareList();
+            getParamsAndRedraw();
+            removeItem('compare', obj);
+        });
+
+        // 加入指數
+        $('[data-stock-add]').on('click', function (e) {
+            e.preventDefault();
+            var stockId = $('[data-stock-select]').val();
+            const element = `[data-stock-select] option[value="${stockId}"]`;
+            $(element).prop('disabled', true).trigger('change');
+            var result = stockParams.some(function (item) {
+                return item.id == stockId;
+            });
+            let $parent = $('[data-stock-select]').closest('.l-form');
+            if (result) {
+                $parent.addClass('is-error');
+                $parent.find('.o-errorText').text('加入重複項目');
+            } else {
+                $parent.removeClass('is-error');
+                $parent.find('.o-errorText').text('');
+                stockParams.push({
+                    type: 'stock',
+                    id: stockId,
+                    name: $(element).text()
+                });
+                $('[data-stock-select]').val('').trigger('change');
+                getParamsAndRedraw();
+                $.magnificPopup.close();
+            }
+        });
+
+        // 加入基金
+        $('[data-fund-add]').on('click', function (e) {
+            if (fundParams.length < 7) {
+                this.href = new URL('@Model.FundListLinkUrl');
+            }
+        });
+
+        // 加入ETF
+        $('[data-etf-add]').on('click', function (e) {
+            if (fundParams.length < 7) {
+                this.href = new URL('@Model.ETFListLinkUrl');
+            }
+        });
+
+        // 移除指數
+        $('.l-compare').on('click', '[data-stock-remove]', function (e) {
+            e.preventDefault();
+            var stockId = $(this).data('stock-remove');
+            const element = `[data-stock-select] option[value="${stockId}"]`;
+            $(element).prop('disabled', false).trigger('change');
+            var index = stockParams.findIndex(function (item) {
+                return item.id == stockId;
+            });
+            stockParams.splice(index, 1);
+            getParamsAndRedraw();
+        });
+
+        function required($element) {
+            const requiredMsg = '欄位必填';
+            let $parents = $element.closest('.l-form');
+            let $msg = $parents.find('.o-errorText');
+            let isEmpty = $element.val().trim() == '';
+            $parents.toggleClass('is-error', isEmpty);
+            $msg.text(isEmpty ? requiredMsg : '');
+            return !isEmpty;
+        }
+
+        function dateRange() {
+            const dateRangeMsg = '起訖日期區間錯誤';
+            let $inputStart = $('[data-compare-filter="inputStart"]');
+            let $inputEnd = $('[data-compare-filter="inputEnd"]');
+            let startDate = new Date($inputStart.val());
+            let endDate = new Date($inputEnd.val());
+            let $startParents = $inputStart.closest('.l-form');
+            let $endParents = $inputEnd.closest('.l-form');
+            if (endDate < startDate) {
+                $startParents.addClass('is-error');
+                $endParents.addClass('is-error');
+                $startParents.find('.o-errorText').text(dateRangeMsg);
+                return false;
+            } else {
+                $startParents.removeClass('is-error');
+                $endParents.removeClass('is-error');
+                $startParents.find('.o-errorText').text('');
+                return true;
+            }
+        }
+
+        function getParamsAndRedraw() {
+            const obj = {
+                range: $('[data-compare-filter="dateRange"]:checked').val(),
+                startDate: $('[data-compare-filter="inputStart"]').val(),
+                endDate: $('[data-compare-filter="inputEnd"]').val(),
+                stock: new Array()
+            };
+
+            let today = new Date();
+            function calDateRange(month) {
+                let set = new Date().setMonth(new Date().getMonth() - month);
+                let setDate = new Date(set);
+                return setDate.getFullYear() + '-' + ((setDate.getMonth() + 1) < 10 ? '0' + (setDate.getMonth() + 1) : (setDate.getMonth() + 1)) + '-' + setDate.getDate();
+            }
+            if (!obj.startDate && !obj.endDate) {
+                switch (obj.range) {
+                    case 'sinceYear':
+                        obj.startDate = today.getFullYear() + '-' + '01-01';
+                        obj.endDate = today.toISOString().split('T')[0];
+                        break;
+                    case '3m':
+                        obj.startDate = calDateRange(3)
+                        obj.endDate = today.toISOString().split('T')[0];
+                        break;
+                    case '6m':
+                        obj.startDate = calDateRange(6)
+                        obj.endDate = today.toISOString().split('T')[0];
+                        break;
+                    case '12m':
+                        obj.startDate = calDateRange(12);
+                        obj.endDate = today.toISOString().split('T')[0];
+                        break;
+                    case '24m':
+                        obj.startDate = calDateRange(24);
+                        obj.endDate = today.toISOString().split('T')[0];
+                        break;
+                    case '36m':
+                        obj.startDate = calDateRange(36);
+                        obj.endDate = today.toISOString().split('T')[0];
+                        break;
+                    case '60m':
+                        obj.startDate = calDateRange(60);
+                        obj.endDate = today.toISOString().split('T')[0];
+                        break;
+                    case 'establishment':
+                        obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                        obj.endDate = today.toISOString().split('T')[0];
+                        break;
+                }
+            } else {
+                obj.startDate = obj.startDate.replaceAll('/', '-');
+                obj.endDate = obj.endDate.replaceAll('/', '-');
+            }
+            // 有 基金/ETF 比較的json 資料才需要呼叫API
+            if (stockParams.length > 0) {
+                for (var i = 0; i < stockParams.length; i++) {
+                    obj.stock.push(stockParams[i].id);
+                }
+            }
+            if (fundParams.length > 0) {
+                if (chart) {
+                    chart.showLoading();
+                }
+                obj.fund = new Array();
+                obj.etf = new Array();
+                for (var i = 0; i < fundParams.length; i++) {
+                    switch (fundParams[i].type) {
+                        case 'fund':
+                            obj.fund.push(fundParams[i].id);
+                            break;
+                        case 'etf':
+                            obj.etf.push(fundParams[i].id);
+                            break;
+                    }
+                }
+
+                initCompareChart(obj);
+            }
+        }
+
+        function itemRendering(lables) {
+            let container = $('#compare-item-container');
+            container.html('');
+            const template = document.querySelector("#tmpl-compare");
+            lables.sort(function (a, b) {
+                return a.name.localeCompare(b.name);
+            });
+
+            lables.forEach((item, i) => {
+                const cloneTmpl = template.content.cloneNode(true);
+                var legend = cloneTmpl.querySelector('.c-legend');
+                legend.style.setProperty('--legend-color', chartColors[i]);
+                let name = cloneTmpl.querySelector('.c-legend__name');
+                name.textContent = item.id + ' ' + item.name;
+                let id = cloneTmpl.querySelector('[data-fundetf-remove]');
+                id.setAttribute('data-fundetf-remove', item.id);
+                let subscriptionId = cloneTmpl.querySelector('[eh-subscription-id]');
+                subscriptionId.setAttribute('eh-subscription-id', item.id);
+                subscriptionId.setAttribute('eh-subscription-type', capFirst(item.type));
+                let focusnId = cloneTmpl.querySelector('[eh-focus-id]');
+                focusnId.setAttribute('eh-focus-id', item.id);
+                focusnId.setAttribute('eh-focus-type', capFirst(item.type));
+                focusnId.setAttribute('eh-focus-name', item.name);
+                container.append(cloneTmpl);
+            });
+        }
+
+        function capFirst(str) {
+            return str[0].toUpperCase() + str.slice(1);
+        }
+
+        function colorLables(lables) {
+            const template = document.querySelector("#tmplLable");
+            return lables.map((item, i) => {
+                const cloneTmpl = template.content.cloneNode(true);
+                let legend = cloneTmpl.querySelector('.c-legend');
+                legend.style.setProperty('--legend-color', chartColors[i]);
+                let name = cloneTmpl.querySelector('.c-legend__name');
+                name.textContent = item.name;
+                return {
+                    id: item.id,
+                    type: item.type,
+                    legend: '--legend-color',
+                    color: chartColors[i],
+                    element: cloneTmpl.children[0]
+                };
+            });
+        }
+
+        // 依據API所回傳的資料，進行圖表下方 lengend 區塊的渲染
+        function lengendTmpl(lables) {
+            const template = document.querySelector("#tmpl");
+            $('.l-compare__item:not([data-stock-add-control])').remove();
+            lables.reverse().forEach(function (item, i) {
+                const cloneTmpl = template.content.cloneNode(true);
+                var product = cloneTmpl.querySelector('[data-product-id]');
+                product.setAttribute('data-product-id', item.id);
+                var legend = cloneTmpl.querySelector('.c-legend');
+                legend.style.setProperty('--legend-color', chartColors[lables.length - 1 - i]);
+                var name = cloneTmpl.querySelector('.c-legend__name');
+                name.textContent = item.name;
+                var rate = cloneTmpl.querySelector('[data-rate]');
+                var upDownClass = item.upDown == 'up' ? 'o-rise' : 'o-fall';
+                rate.setAttribute('data-rate', item.id);
+                rate.classList.add(upDownClass);
+                rate.textContent = Math.abs(item.value) + '%';
+                var remove = cloneTmpl.querySelector('[data-stock-remove]');
+                remove.setAttribute('data-stock-remove', item.id);
+                if (item.type != 'stock') {
+                    var trash = cloneTmpl.querySelector('.c-productItem__btn');
+                    trash.remove();
+                }
+                $('.l-compare').prepend(cloneTmpl);
+            });
+
+            // 最多10筆
+            let stock = lables.filter(item => item.type == 'stock');
+            $('[data-stock-add-control]').toggleClass('u-hidden', stock.length == 3);
+        }
+
+        function setLengendRate(points) {
+            points.forEach(point => {
+                let upDownClass = '';
+                if (point.point.upDown === 'up') {
+                    upDownClass = 'o-rise';
+                } else {
+                    upDownClass = 'o-fall';
+                }
+                $('[data-rate="' + point.series.name + '"]').removeClass().addClass(upDownClass).text(Math.abs(point.y) + '%');
+            });
+        }
+
+        function roundTo(num, precision) {
+            if (num) {
+                const factor = Math.pow(10, precision)
+                return Math.round(num * factor) / factor;
+            }
+            return '';
+        }
+
+        function formatNumberWithCommas(number) {
+            var parts = number.toFixed(4).toString().split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return parts.join('.');
+        }
+
+        async function initCompareChart(obj) {
+            try {
+                let compareParams = fundParams.concat(stockParams);
+                const params = {
+                    compare: compareParams,
+                    ...obj
+                };
+
+                // 呼叫 API 基金ETF比較 – 績效表現
+                $.ajax({
+                    url: '@CompareApiUrl',
+                    method: 'post',
+                    data: params,
+                    complete: function () {
+                        window.loading('hide');
+                    },
+                    success: function (data) {
+
+                        data.ETFRateOfReturn = new Array();
+                        data.ETFRiskIndicator = new Array();
+                        data.ETFThiryDaysNav = new Array();
+                        data.Compare = new Array();
+                        data.ETFStockHoldings = new Array();
+                        data.ETFBaseData = new Array();
+
+                        // ETF
+                        if (data.etfdata && Object.keys(data.etfdata).length != 0) {
+                            for (let key in data.etfdata) {
+                                let d = data.etfdata[key];
+                                if (d) {
+                                    let result = compareParams.find((item) => item.id == key);
+                                    result.name = d.BasicEtf.ETFName || result.name;
+
+                                    data.ETFRateOfReturn[key] = {
+                                        oneDay: d.BasicEtf.DailyReturnNetValueOriginalCurrency,
+                                        oneWeek: d.BasicEtf.WeeklyReturnNetValueOriginalCurrency,
+                                        oneMonth: d.BasicEtf.MonthlyReturnNetValueOriginalCurrency,
+                                        threeMonth: d.BasicEtf.ThreeMonthReturnNetValueOriginalCurrency,
+                                        sixMonth: d.BasicEtf.SixMonthReturnNetValueOriginalCurrency,
+                                        year: d.BasicEtf.YeartoDateReturnNetValueOriginalCurrency,
+                                        oneYear: d.BasicEtf.OneYearReturnNetValueOriginalCurrency,
+                                        twoYear: d.BasicEtf.TwoYearReturnNetValueOriginalCurrency,
+                                        threeYear: d.BasicEtf.ThreeYearReturnNetValueOriginalCurrency,
+                                        fiveYear: d.BasicEtf.FiveYearReturnNetValueOriginalCurrency,
+                                        established: d.BasicEtf.InceptionDateNetValueOriginalCurrency
+                                    };
+                                    data.ETFRiskIndicator[key] = $.extend({}, d.ETFRiskIndicator, d.BasicEtf);
+                                    data.ETFThiryDaysNav[key] = d.ETFThiryDaysNav;
+                                    data.Compare[key] = $.extend({}, d.Compare, d.BasicEtf);
+                                    data.ETFStockHoldings[key] = {
+                                        IndustryHoldings: d.IndustryHoldings,
+                                        RegionHoldings: d.RegionHoldings,
+                                        StockHoldings: d.ETFStockHoldings
+                                    }
+                                    data.ETFBaseData[key] = $.extend({}, d.Compare, d.BasicEtf);
+                                }
+                            }
+                        }
+
+                        data.respHoldingStatus = data.respHoldingStatus || new Array();
+                        data.respNetAssetValue = data.respNetAssetValue || new Array();
+                        data.respAccumulationRateOfReturn = data.respAccumulationRateOfReturn || new Array();
+                        data.respRateOfReturn = data.respRateOfReturn || new Array();
+                        data.respBaseData = data.respBaseData || new Array();
+                        data.respScaleRecords = data.respScaleRecords || new Array();
+                        data.respRiskindicators = data.respRiskindicators || new Array();
+                        data.respThiryDaysNetValue = data.respThiryDaysNetValue || new Array();
+                        data.respHoldingStatus = data.respHoldingStatus || new Array();
+
+                        data.BaseData = data.BaseData || new Array();
+                        data.RateOfReturn = data.RateOfReturn || new Array();
+
+                        if (Object.keys(data.respHoldingStatus).length != 0) {
+                            let name = [];
+                            for (let key in data.respHoldingStatus) {
+                                let d = data.respHoldingStatus[key];
+                                if (d) {
+                                    let result = compareParams.find((item) => item.id == key);
+                                    if (d.StockHoldings && Object.keys(d.StockHoldings).length != 0) {
+                                        d.StockHoldings.map(item => {
+                                            name[key] = name[key] || item.FundName;
+                                        });
+                                    }
+                                    if (d.AccordingStockHoldings && Object.keys(d.AccordingStockHoldings).length != 0) {
+                                        d.investmentIndustry = d.AccordingStockHoldings.map(item => {
+                                            name[key] = name[key] || item.FundName;
+                                        });
+                                    }
+                                    result.name = name[key] || result.name;
+                                }
+                            }
+                        }
+
+                        if (Object.keys(data.respNetAssetValue).length != 0) {
+                            let lables = new Array();
+
+                            for (let key in data.respNetAssetValue) {
+                                if (params.fund.includes(key)) {
+                                    let result = compareParams.find((item) => item.id == key);
+                                    lables.push({
+                                        id: key,
+                                        name: result.name,
+                                        type: 'fund'
+                                    });
+                                }
+
+                                if (params.etf.includes(key)) {
+                                    let result = compareParams.find((item) => item.id == key);
+                                    lables.push({
+                                        id: key,
+                                        name: result.name,
+                                        type: 'etf'
+                                    });
+                                }
+
+                                if (params.stock.includes(key)) {
+                                    let result = compareParams.find((item) => item.id == key);
+                                    lables.push({
+                                        id: key,
+                                        name: result.name,
+                                        type: 'stock'
+                                    });
+                                }
+                            }
+
+                            itemRendering(lables);
+
+                            data.lables = colorLables(lables);
+                        }
+
+                        if (Object.keys(data.respNetAssetValue).length != 0) {
+                            let mapData = new Array();
+                            let lables = new Array();
+                            for (let key in data.respNetAssetValue) {
+                                if (params.fund.includes(key)) {
+                                    let result = compareParams.find((item) => item.id == key);
+                                    mapData.push({
+                                        id: key,
+                                        name: result.name,
+                                        data: data.respNetAssetValue[key].resultSet.result.map((item, i) => {
+                                            return {
+                                                upDown: Number(item.v2) < 0 ? 'down' : 'up',
+                                                x: new Date(item.v1).getTime(),
+                                                y: roundTo(item.v2, 2)
+                                            };
+                                        }).reverse()
+                                    });
+                                    let mapLable = mapData[mapData.length - 1].data;
+                                    let lableData = mapLable[mapLable.length - 1];
+                                    lables.push({
+                                        id: key,
+                                        name: result.name,
+                                        type: 'fund',
+                                        upDown: lableData.upDown,
+                                        value: lableData.y,
+                                    });
+                                }
+                                if (params.etf.includes(key)) {
+                                    let result = compareParams.find((item) => item.id == key);
+                                    const navDate = data.respNetAssetValue[key].resultSet.result[0].v1.split(',');
+                                    const nav = data.respNetAssetValue[key].resultSet.result[0].v2.split(',');
+                                    mapData.push({
+                                        id: key,
+                                        name: result.name,
+                                        data: navDate.map((date, i) => {
+                                            return {
+                                                upDown: Number(nav[i]) < 0 ? 'down' : 'up',
+                                                x: new Date(date).getTime(),
+                                                y: roundTo(nav[i], 2)
+                                            };
+                                        })
+                                    });
+                                    let mapLable = mapData[mapData.length - 1].data;
+                                    let lableData = mapLable[mapLable.length - 1];
+                                    lables.push({
+                                        id: key,
+                                        name: result.name,
+                                        type: 'etf',
+                                        upDown: lableData.upDown,
+                                        value: lableData.y,
+                                    });
+                                }
+                                if (params.stock.includes(key)) {
+                                    let result = compareParams.find((item) => item.id == key);
+                                    mapData.push({
+                                        id: key,
+                                        name: result.name,
+                                        data: data.respNetAssetValue[key].map((item, i) => {
+                                            return {
+                                                upDown: Number(item.ChangePercentage) < 0 ? 'down' : 'up',
+                                                x: new Date(item.DataDate).getTime(),
+                                                y: roundTo(item.ChangePercentage, 2)
+                                            };
+                                        }).reverse()
+                                    });
+                                    let mapLable = mapData[mapData.length - 1].data;
+                                    let lableData = mapLable[mapLable.length - 1];
+                                    lables.push({
+                                        id: key,
+                                        name: result.name,
+                                        type: 'stock',
+                                        upDown: lableData.upDown,
+                                        value: lableData.y,
+                                    });
+                                }
+                                data.mapData = mapData;
+                            }
+
+                            lengendTmpl(lables);
+                        }
+
+                        if (Object.keys(data.respAccumulationRateOfReturn).length != 0) {
+                            data.yaer = new Array();
+                            data.oneWeek = new Array();
+                            let array = new Array();
+                            for (let key in data.respAccumulationRateOfReturn) {
+                                let d = data.respAccumulationRateOfReturn[key];
+                                if (d) {
+                                    array[key] = d;
+                                }
+                            }
+                            data.RateOfReturn = array;
+                        }
+
+                        if (Object.keys(data.respRateOfReturn).length != 0) {
+                            let array = data.RateOfReturn;
+                            for (let key in data.respRateOfReturn) {
+                                let d = data.respRateOfReturn[key];
+                                if (d && Object.keys(d).length != 0) {
+                                    array[key] = array[key] ? $.extend({}, array[key], d) : d;
+                                }
+                            }
+                            data.RateOfReturn = array;
+                        }
+
+                        if (Object.keys(data.RateOfReturn).length != 0 || Object.keys(data.ETFRateOfReturn).length != 0) {
+                            let array = new Array();
+                            for (let key in data.RateOfReturn) {
+                                let d = data.RateOfReturn[key];
+                                if (d) {
+                                    d.DetailLink = getDetailUrl(data.lables, key);
+                                    let result = compareParams.find((item) => item.id == key);
+                                    d.name = result.name;
+                                    d.lable = data.lables.find((item) => item.id == key);
+                                    if (params.fund.includes(key)) {
+                                        d.oneDay = roundTo(d.OneDayReturnOriginalCurrency, 2);
+                                        d.oneWeek = roundTo(d.OneWeekReturnOriginalCurrency, 2);
+                                        d.oneMonth = roundTo(d.OneMonthReturnOriginalCurrency, 2);
+                                        d.threeMonth = roundTo(d.ThreeMonthReturnOriginalCurrency, 2);
+                                        d.sixMonth = roundTo(d.SixMonthReturnOriginalCurrency, 2);
+                                        d.year = roundTo(d.YeartoDateReturnOriginalCurrency, 2);
+                                        d.oneYear = roundTo(d.OneYearReturnOriginalCurrency, 2);
+                                        d.twoYear = roundTo(d.TwoYearReturnOriginalCurrency, 2);
+                                        d.threeYear = roundTo(d.ThreeYearReturnOriginalCurrency, 2);
+                                        d.fiveYear = roundTo(d.FiveYearReturnOriginalCurrency, 2);
+                                        d.established = roundTo(d.InceptionDateReturnOriginalCurrency, 2);
+                                        array.push(d);
+                                    }
+                                }
+                            }
+                            for (let key in data.ETFRateOfReturn) {
+                                let d = data.ETFRateOfReturn[key];
+                                if (d) {
+                                    d.DetailLink = getDetailUrl(data.lables, key);
+                                    let result = compareParams.find((item) => item.id == key);
+                                    d.name = result.name;
+                                    d.lable = data.lables.find((item) => item.id == key);
+                                    if (params.etf.includes(key)) {
+                                        d.oneDay = roundTo(d.oneDay, 2);
+                                        d.oneWeek = roundTo(d.oneWeek, 2);
+                                        d.oneMonth = roundTo(d.oneMonth, 2);
+                                        d.threeMonth = roundTo(d.threeMonth, 2);
+                                        d.sixMonth = roundTo(d.sixMonth, 2);
+                                        d.year = roundTo(d.year, 2);
+                                        d.oneYear = roundTo(d.oneYear, 2);
+                                        d.twoYear = roundTo(d.twoYear, 2);
+                                        d.threeYear = roundTo(d.threeYear, 2);
+                                        d.fiveYear = roundTo(d.fiveYear, 2);
+                                        d.established = roundTo(d.established, 2);
+                                        array.push(d);
+                                    }
+                                }
+                            }
+                            fjsRendering('longTermTable', 'netAssetValueTable', array, isInit);
+                            fjsRendering('shortTermTable', 'rateOfReturnTable', array, isInit);
+                        }
+
+                        if (Object.keys(data.respBaseData).length != 0) {
+                            let array = new Array();
+                            for (let key in data.respBaseData) {
+                                let d = data.respBaseData[key];
+                                if (d) {
+                                    array[key] = d;
+                                }
+                            }
+                            data.BaseData = array;
+                        }
+
+                        if (Object.keys(data.respScaleRecords).length != 0) {
+                            let array = data.BaseData;
+                            for (let key in data.respScaleRecords) {
+                                let d = data.respScaleRecords[key];
+                                if (d && Object.keys(d).length != 0) {
+                                    array[key] = array[key] ? $.extend({}, array[key], { ScaleRecord: d[0] }) : { ScaleRecord: d[0] };
+                                }
+                            }
+                            data.BaseData = array;
+                        }
+
+                        if (Object.keys(data.respRiskindicators).length != 0 || Object.keys(data.ETFRiskIndicator).length != 0) {
+                            let array = new Array();
+                            for (let key in data.respRiskindicators) {
+                                let d = data.respRiskindicators[key];
+                                if (d && Object.keys(d).length != 0) {
+                                    d = data.BaseData[key] ? $.extend({}, data.BaseData[key], d) : d;
+                                    d.DetailLink = getDetailUrl(data.lables, key);
+                                    let result = compareParams.find((item) => item.id == key);
+                                    d.name = result.name;
+                                    d.lable = data.lables.find((item) => item.id == key);
+
+                                    if (params.fund.includes(key)) {
+                                        d.risk = d.RiskLevel || '-';
+                                        d.sharpe = roundTo(d.OneYearSharpe, 4);
+                                        d.beta = roundTo(d.OneYearBeta, 4);
+                                        d.alpha = roundTo(d.OneYearAlpha, 4);
+                                        d.deviation = roundTo(d.OneYearStandardDeviation, 2);
+                                    }
+                                    array.push(d);
+                                }
+                            }
+                            for (let key in data.ETFRiskIndicator) {
+                                let d = data.ETFRiskIndicator[key];
+                                if (d && Object.keys(d).length != 0) {
+                                    d.DetailLink = getDetailUrl(data.lables, key);
+                                    let result = compareParams.find((item) => item.id == key);
+                                    d.name = result.name;
+                                    d.lable = data.lables.find((item) => item.id == key);
+
+                                    if (params.etf.includes(key)) {
+                                        d.risk = d.RiskLevel || '-';
+                                        d.sharpe = roundTo(d.OneYearSharpe, 4);
+                                        d.beta = roundTo(d.OneYearBeta, 4);
+                                        d.alpha = roundTo(d.OneYearAlpha, 4);
+                                        d.deviation = roundTo(d.OneYearStandardDeviation, 2);
+                                    }
+                                    array.push(d);
+                                }
+                            }
+                            fjsRendering('riskTable', 'riskindicatorsTable', array, isInit);
+                        }
+
+                        if (Object.keys(data.respThiryDaysNetValue).length != 0 || Object.keys(data.ETFThiryDaysNav).length != 0) {
+                            let array = new Array();
+                            for (let key in data.respThiryDaysNetValue) {
+                                let d = data.respThiryDaysNetValue[key];
+                                if (d && Object.keys(d).length != 0) {
+
+                                    if (params.fund.includes(key)) {
+                                        for (var i = 0; i < d.length; i++) {
+                                            d.netWorth = roundTo(d[i].NetAssetValue, 4);
+                                            d.date = d[i].NetAssetValueDate;
+                                            break;
+                                        }
+
+                                        d = data.BaseData[key] ? $.extend({}, data.BaseData[key], d) : d;
+                                        d.DetailLink = getDetailUrl(data.lables, key);
+                                        let result = compareParams.find((item) => item.id == key);
+                                        d.name = result.name;
+                                        d.lable = data.lables.find((item) => item.id == key);
+                                        d.highest = d.MaxNetAssetValueThreeMonths || '-';
+                                        d.lowest = d.MinNetAssetValueThreeMonths || '-';
+
+                                        array.push(d);
+                                    }
+                                }
+                            }
+                            for (let key in data.ETFThiryDaysNav) {
+                                let d = data.ETFThiryDaysNav[key];
+                                if (d && Object.keys(d).length != 0) {
+
+                                    if (params.etf.includes(key)) {
+                                        //for (var i = 0; i < d.length; i++) {
+                                        //    d.netWorth = roundTo(d[i].NetAssetValue, 4);
+                                        //    d.date = d[i].NetAssetValueDate;
+                                        //    break;
+                                        //}
+                                        d = data.Compare[key];
+                                        if (d) {
+                                            d.netWorth = roundTo(d.NetAssetValue, 4);
+                                            d.date = d.NetAssetValueDate;
+                                            d.DetailLink = getDetailUrl(data.lables, key);
+                                            let result = compareParams.find((item) => item.id == key);
+                                            d.name = result.name;
+                                            d.lable = data.lables.find((item) => item.id == key);
+                                            d.highest = d.MaxNetAssetValueThreeMonths || '-';
+                                            d.lowest = d.MinNetAssetValueThreeMonths || '-';
+
+                                            array.push(d);
+                                        }
+                                    }
+                                }
+                            }
+                            fjsRendering('netWorthTable', 'thiryDaysNetValueTable', array, isInit);
+                        }
+
+                        if (Object.keys(data.respHoldingStatus).length != 0 || Object.keys(data.ETFStockHoldings).length != 0) {
+                            let array = new Array();
+                            for (let key in data.respHoldingStatus) {
+                                let d = data.respHoldingStatus[key];
+                                if (d && Object.keys(d).length != 0) {
+                                    d.DetailLink = getDetailUrl(data.lables, key);
+                                    let result = compareParams.find((item) => item.id == key);
+                                    d.name = result.name;
+                                    d.lable = data.lables.find((item) => item.id == key);
+                                    d.investmentCategory = ['-'];
+                                    d.investmentCountry = ['-'];
+                                    d.investmentIndustry = ['-'];
+                                    d.topTenHoldings = ['-'];
+
+                                    if (d.StockHoldings && Object.keys(d.StockHoldings).length != 0) {
+                                        d.investmentCategory = d.StockHoldings.map(item => {
+                                            return item.Category + ' ' + item.Holding + '%';
+                                        });
+                                    }
+                                    if (d.StockAreaHoldings && Object.keys(d.StockAreaHoldings).length != 0) {
+                                        d.investmentCountry = d.StockAreaHoldings.map(item => {
+                                            return item.Category + ' ' + item.Holding + '%';
+                                        });
+                                    }
+                                    if (d.AccordingStockHoldings && Object.keys(d.AccordingStockHoldings).length != 0) {
+                                        d.investmentIndustry = d.AccordingStockHoldings.map(item => {
+                                            return item.Category + ' ' + item.Holding + '%';
+                                        });
+                                    }
+                                    if (d.TopTenStockHolding && Object.keys(d.TopTenStockHolding).length != 0) {
+                                        d.topTenHoldings = d.TopTenStockHolding.map(item => {
+                                            return item.FundName + ' ' + item.Holding + '%';
+                                        });
+                                    }
+                                    array.push(d);
+                                }
+                            }
+                            for (let key in data.ETFStockHoldings) {
+                                let d = data.ETFStockHoldings[key];
+                                if (d && Object.keys(d).length != 0) {
+                                    d.DetailLink = getDetailUrl(data.lables, key);
+                                    let result = compareParams.find((item) => item.id == key);
+                                    d.name = result.name;
+                                    d.lable = data.lables.find((item) => item.id == key);
+                                    d.investmentCategory = ['-'];
+                                    d.investmentCountry = ['-'];
+                                    d.investmentIndustry = ['-'];
+                                    d.topTenHoldings = ['-'];
+
+                                    if (d.IndustryHoldings && Object.keys(d.IndustryHoldings).length != 0) {
+                                        d.investmentCategory = d.IndustryHoldings.map(item => {
+                                            return item.IndustryName + ' ' + item.Percentage + '%';
+                                        });
+                                    }
+                                    if (d.RegionHoldings && Object.keys(d.RegionHoldings).length != 0) {
+                                        d.investmentCountry = d.RegionHoldings.map(item => {
+                                            return item.RegionName + ' ' + item.Percentage + '%';
+                                        });
+                                    }
+                                    if (d.StockHoldings && Object.keys(d.StockHoldings).length != 0) {
+                                        d.topTenHoldings = d.StockHoldings.map(item => {
+                                            return item.StockName + ' ' + item.Percentage;
+                                        });
+                                    }
+                                    array.push(d);
+                                }
+                            }
+                            fjsRendering('shareholdingTable', 'holdingStatusTable', array, isInit);
+                        }
+
+                        if (Object.keys(data.BaseData).length != 0 || Object.keys(data.ETFBaseData).length != 0) {
+                            let array = new Array();
+                            for (let key in data.BaseData) {
+                                let d = data.BaseData[key];
+                                if (d && Object.keys(d).length != 0) {
+                                    d.DetailLink = getDetailUrl(data.lables, key);
+                                    let result = compareParams.find((item) => item.id == key);
+                                    d.name = result.name;
+                                    d.lable = data.lables.find((item) => item.id == key);
+                                    if (params.fund.includes(key)) {
+                                        d.currency = d.ValuationCurrency || '-';
+                                        d.dividendFrequency = d.DividendFrequencyName || '-';
+                                        d.dateOfEstablishment = d.EstablishmentDate || '-';
+                                        d.type = d.FundTypeName || '-';
+                                        d.scale = d.ScaleRecord ? (formatNumberWithCommas(d.ScaleRecord.Scale/100) + ' ' + d.ScaleRecord.Currency) : '-';
+                                        d.publisher = d.OverseasFundIssuerName || '-';
+                                        d.registration = d.RegistrationLocation || '-';
+                                        d.depository = d.CustodianInstitution || '-';
+                                        d.subscriptionHandlingFee = d.SubscriptionFee || '-';
+                                        array.push(d);
+                                    }
+                                }
+                            }
+                            for (let key in data.ETFBaseData) {
+                                let d = data.ETFBaseData[key];
+                                if (d && Object.keys(d).length != 0) {
+                                    d.DetailLink = getDetailUrl(data.lables, key);
+                                    let result = compareParams.find((item) => item.id == key);
+                                    d.name = result.name;
+                                    d.lable = data.lables.find((item) => item.id == key);
+                                    if (params.etf.includes(key)) {
+                                        d.currency = d.QuoteCurrency || '-';
+                                        d.dividendFrequency = d.DividendFrequency || '-';
+                                        d.dateOfEstablishment = d.EstablishmentDate || '-';
+                                        d.type = d.ProductType || '-';
+                                        d.scale = d.ScaleMillions ? (formatNumberWithCommas(d.ScaleMillions / 100) + ' ' + d.QuoteCurrency) : '-';
+                                        d.publisher = d.PublicLimitedCompanyName || '-';
+                                        d.registration = d.RegisteredLocation || '-';
+                                        d.depository = '-';
+                                        d.subscriptionHandlingFee = d.SubscriptionFee || '-';
+                                        array.push(d);
+                                    }
+                                }
+                            }
+                            fjsRendering('baseTable', 'baseDataTable', array, isInit);
+                        }
+
+                        if (data.mapData.length > 0) {
+                            chart = Highcharts.stockChart("compareChart", {
+                                chart: {
+                                    zooming: {
+                                        mouseWheel: {
+                                            enabled: false
+                                        }
+                                    },
+                                    height: 336
+                                },
+                                credits: {
+                                    enabled: false
+                                },
+                                scrollbar: {
+                                    enabled: false
+                                },
+                                navigator: {
+                                    enabled: false
+                                },
+                                rangeSelector: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    type: 'datetime',
+                                    min: Date.UTC(params.startDate.split('-')[0], params.startDate.split('-')[1] - 1, params.startDate.split('-')[2]),
+                                    tickPosition: 'inside',
+                                    tickWidth: 0.5,
+                                    tickLength: 7,
+                                    tickInterval: 24 * 3600 * 1000 * 5,
+                                    labels: {
+                                        formatter: function () {
+                                            const format = {
+                                                day: '%Y/%m/%d',
+                                                week: '%Y/%m',
+                                                month: '%Y/%m'
+                                            }[this.tickPositionInfo.unitName];
+                                            return Highcharts.dateFormat(format, this.value);
+                                        },
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    },
+                                    crosshair: {
+                                        width: 1,
+                                        color: '#c3c3c3'
+                                    },
+                                    lineColor: '#ebebeb',
+                                    tickColor: '#ebebeb'
+                                },
+                                yAxis: {
+                                    showLastLabel: true,
+                                    opposite: false,
+                                    labels: {
+                                        y: 4,
+                                        formatter: function (value) {
+                                            return value.value / 100 + '%';
+                                        },
+                                        style: {
+                                            color: '#6e6e6e'
+                                        }
+                                    },
+                                    plotLines: [{
+                                        color: '#c3c3c3'
+                                    }]
+                                },
+                                plotOptions: {
+                                    series: {
+                                        dataGrouping: false,
+                                        compare: 'percent',
+                                        cursor: 'pointer',
+                                        showInLegend: true,
+                                        enableMouseTracking: true,
+                                        states: {
+                                            hover: {
+                                                enabled: true,
+                                                halo: {
+                                                    size: 8
+                                                }
+                                            }
+                                        },
+                                        marker: {
+                                            symbol: 'circle'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    split: false,
+                                    shared: true,
+                                    outside: true,
+                                    useHTML: true,
+                                    formatter: function () {
+                                        let tooltipText = '';
+                                        setLengendRate(this.points);
+                                        this.points.forEach(point => {
+                                            let upDownClass = '';
+                                            if (point.point.upDown === 'up') {
+                                                upDownClass = 'o-rise';
+                                            } else {
+                                                upDownClass = 'o-fall';
+                                            }
+                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">' + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + '<span>' + point.series.name + ': ' + '</span>' + '</div>' + '<span class="' + upDownClass + '">' + Math.abs(point.y) + '%</span>' + '</div>';
+                                        });
+                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.x) + '</div>' + tooltipText + '</div>';
+                                    },
+                                    shadow: {
+                                        color: 'rgba(0, 0, 0, 0.1)'
+                                    }
+                                },
+                                series: data.mapData
+                            });
+                            $('.c-empty').addClass('u-hidden');
+                            $('[data-chart="compare"]').removeClass('u-hidden');
+                        } else {
+                            $('.c-empty').removeClass('u-hidden');
+                            $('[data-chart="compare"]').addClass('u-hidden');
+                        }
+                        isInit = false;
+                    },
+                    error: function (err) {
+                        $('[data-chart="compare"]').find('.c-empty').removeClass('u-hidden');
+                        //$('[data-chart="compare"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                        console.log(err);
+                    },
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // 判斷上方比較 基金/ETF 列表區塊，若無資料則跳轉至 未加入標的比較頁
+        function judgeCompareList() {
+            if (fundParams.length === 1) {
+                location.href = new URL('@Model.EmptyLinkUrl' || './fundETFcompare-empty.html');
+            }
+        }
+
+        function clearTable(ele) {
+            $('#' + ele + ' tr').remove();
+        }
+
+        function getDetailUrl(lables, id) {
+            let detail = lables.find(item => item.id == id);
+            let url = {
+                fund: '@Model.FundDetailLinkUrl',
+                etf: '@Model.ETFDetailLinkUrl'
+            };
+            return url[detail.type] + '?id=' + id;
+        }
+
+        function fjsRendering(template, ele, data, isInit) {
+
+            clearTable(ele);
+
+            var fjs = FilterJS(data, '#' + ele, {
+                template: '#template-' + template,
+                callbacks: {
+                    afterFilter: function (result) {
+                        window.loading('hide');
+                    },
+                    afterAddRecords: function () {
+                        if (isInit) {
+                            $('[data-table-name="' + template + '"]').attr('data-fixed-columns', true).fixedColumns();
+                        }
+                    },
+                },
+                search: {},
+                order: {
+                    default_sort: 'asc',
+                    sorts: [
+                        { field: 'group1', ele: 'select[data-sorting-linkto="' + template + '"]' },
+                    ],
+                    onSortEvent: function (f, e) {
+                        let $self = $(this);
+                        if (e.type === 'click') {
+                        } else if (e.type === 'change') {
+                            let $selected = $self.find(':selected');
+                            let field = $selected.data('sorting-column');
+                            let order = $selected.data('sorting-class');
+                            f.field = field;
+                            if (!!order) {
+                                if (order === 'is-desc') {
+                                    f.order = 'desc';
+                                } else if (order === 'is-asc') {
+                                    f.order = 'asc';
+                                }
+                            } else {
+                                f.order = f.order === 'desc' ? 'asc' : 'desc';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // table 排序功能
+        $('.o-sorting').on('click.sorting', function (e) {
+            e.preventDefault();
+            // 呼叫 loading
+            window.loading('show');
+            var $this = $(this);
+            var orderby = '';
+            if ($this.hasClass('is-asc')) {
+                $this.removeClass('is-asc').addClass('is-desc');
+                orderby = 'is-desc';
+            } else {
+                $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                $this.addClass('is-asc');
+                orderby = 'is-asc';
+            }
+
+            // 連動 sortingbox
+            var tableName = $(this).closest('[data-table-name]').data('table-name');
+            var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+            var sortingColumn = $(this).data('sorting-column');
+            $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+            $sortingbox.trigger('change');
+        });
+
+        //#popupCompareMax
+    });
+
+                })(jQuery, window, document);
+</script>
