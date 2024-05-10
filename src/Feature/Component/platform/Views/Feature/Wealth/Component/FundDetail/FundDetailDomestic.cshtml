@@ -682,7 +682,7 @@
                                 </div>
                             </div>
                             @*原幣*@
-                            <div class="l-flex__item u-hidden" data-id="originReturnTable">
+                            <div class="l-flex__item" data-id="originReturnTable">
                                 <div class="l-table" >
                                     <table class="c-table u-center u-nowrap" data-fixed-columns="true" data-table="originReturnTable">
                                         <colgroup>
@@ -2739,6 +2739,7 @@
                           });
               $('#dividend_Select').trigger('change');
         }
+        window.loading = () => 0;//蓋掉window.loading function
         //切換基金級別Select
         $.ajax({
             url: `@FundSameLevelApiUrl`,
@@ -2747,18 +2748,21 @@
             {
                 fundId : fundId
             },
-            beforeSend: function () {window.loading('show'); },
             success: function (result) {
                 if (result && result.resultSet.result.length > 0) {
                     const set = new Set();
                     const filterData = result.resultSet.result.filter(item => !set.has(item.v5) ? set.add(item.v5) : false);
                     $.each(filterData, function (index, value) {
                         if (filterData[index].v5 === fundId) {
-                            filterData.unshift(filterData[index]);
-                            filterData.splice(index + 1, 1);
+                            //刪除自己基金資料
+                            filterData.splice(index, 1);
                             return false; //break
                         }
                     });
+                    $('#fundSelect').find("select").append($('<option>', {
+                        value: "",
+                        text: "切換基金級別"
+                    }));
                     $.each(filterData, function (index, value) {
                             $('#fundSelect').find("select").append($('<option>', {
                                 value: value.v5,
@@ -2772,11 +2776,11 @@
                 } else {
                     $('#fundSelect').find("select").addClass('u-hidden');
                 }
-                window.loading('hide');
             },
+            complete: function () { $('.c-loading').loading('hide') },
             error: function (err) {
                 console.log(err);
-                window.loading('hide');},
+                $('.c-loading').loading('hide')},
         });
 
         //國內外基金-PDF
