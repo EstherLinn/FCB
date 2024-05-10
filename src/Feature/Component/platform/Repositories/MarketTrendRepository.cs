@@ -16,7 +16,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            [ProductCode]
                            ,[ProductName]
-                           ,CONVERT(decimal(16,4), [NetAssetValue]) [NetAssetValue]
+                           ,[NetAssetValue]
                            ,[CurrencyCode]
                            ,[CurrencyName]
                            ,CONVERT(decimal(16,2), [PercentageChangeInFundPrice]*100) [Change]
@@ -35,7 +35,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            [ProductCode]
                            ,[ProductName]
-                           ,CONVERT(decimal(16,4), [NetAssetValue]) [NetAssetValue]
+                           ,[NetAssetValue]
                            ,[CurrencyCode]
                            ,[CurrencyName]
                            ,CONVERT(decimal(16,2), [PercentageChangeInFundPrice]*100) [Change]
@@ -53,7 +53,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            [ProductCode]
                            ,[ProductName]
-                           ,CONVERT(decimal(16,4), [NetAssetValue]) [NetAssetValue]
+                           ,[NetAssetValue]
                            ,[CurrencyCode]
                            ,[CurrencyName]
                            ,CONVERT(decimal(16,2), [NetAssetValueChangePercentage]) [Change]
@@ -72,7 +72,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            [ProductCode]
                            ,[ProductName]
-                           ,CONVERT(decimal(16,4), [NetAssetValue]) [NetAssetValue]
+                           ,[NetAssetValue]
                            ,[CurrencyCode]
                            ,[CurrencyName]
                            ,CONVERT(decimal(16,2), [NetAssetValueChangePercentage]) [Change]
@@ -83,6 +83,35 @@ namespace Feature.Wealth.Component.Repositories
             var result = this._dbConnection.Query<RelevantInformation>(sql) ?? new List<RelevantInformation>();
 
             return result;
+        }
+
+        public RelevantInformation CloneRelevantInformation(RelevantInformation item)
+        {
+            return new RelevantInformation()
+            {
+                ProductCode = item.ProductCode,
+                ProductName = item.ProductName,
+                Title = item.Title,
+                NetAssetValue = Round4(item.NetAssetValue),
+                CurrencyCode = item.CurrencyCode,
+                CurrencyName = item.CurrencyName,
+                CurrencyLink = item.CurrencyLink,
+                Change = item.Change,
+                M6Change = item.M6Change,
+                DetailLink = item.DetailLink,
+                OnlineSubscriptionAvailability = item.OnlineSubscriptionAvailability,
+                IsLogin = item.IsLogin,
+                IsLike = item.IsLike
+            };
+        }
+
+        private static decimal? Round4(decimal? value)
+        {
+            if (value != null)
+            {
+                value = decimal.Round((decimal)value, 4);
+            }
+            return value;
         }
     }
 }
