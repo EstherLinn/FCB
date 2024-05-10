@@ -1,8 +1,9 @@
 ﻿using Feature.Wealth.Component.Models.CookieBar;
 using Sitecore.Mvc.Presentation;
+using Sitecore.Web;
 using System;
-using System.Web;
 using System.Web.Mvc;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Controllers
@@ -11,18 +12,22 @@ namespace Feature.Wealth.Component.Controllers
     {
         public ActionResult Index()
         {
-            var dataSource = RenderingContext.CurrentOrNull?.Rendering.Item;
-            var content = ItemUtils.GetFieldValue(dataSource, Templates.CookieBarDatasource.Fields.Content);
-            var buttonText = ItemUtils.GetFieldValue(dataSource, Templates.CookieBarDatasource.Fields.ButtonText);
-            var style = System.Web.HttpContext.Current.Request.Cookies["accept_Cookie"] != null ? "display:none;" : string.Empty;
+            var model = new CookieBarModel();
 
-            var model = new CookieBarModel()
+            if (string.IsNullOrEmpty(WebUtil.GetCookieValue("accept_Cookie")))
             {
-                DataSource = dataSource,
-                Content = content,
-                ButtonText = buttonText,
-                Style = style
-            };
+                var dataSource = RenderingContext.CurrentOrNull?.Rendering.Item;
+                var content = ItemUtils.GetFieldValue(dataSource, Templates.CookieBarDatasource.Fields.Content);
+                var buttonText = ItemUtils.GetFieldValue(dataSource, Templates.CookieBarDatasource.Fields.ButtonText);
+
+                model.DataSource = dataSource;
+                model.Content = content;
+                model.ButtonText = buttonText;
+            }
+            else
+            {
+                model = null;
+            }
 
             return View("/Views/Feature/Wealth/Component/CookieBar/CookieBar.cshtml", model);
         }
@@ -32,24 +37,36 @@ namespace Feature.Wealth.Component.Controllers
         {
             try
             {
-                if (Request.Cookies["accept_Cookie"] == null)
+                if (string.IsNullOrEmpty(WebUtil.GetCookieValue("accept_Cookie")))
                 {
-                    var cookie = new HttpCookie("accept_Cookie")
+                    WebUtil.SetCookieValue("accept_Cookie", "1", DateTime.MinValue, true);
+
+                    var objReturn = new
                     {
-                        Value = "1",
-                        Expires = DateTime.Now.AddDays(1),
-                        Path = "/",
-                        HttpOnly = true
+                        success = true
                     };
 
-                    Response.Cookies.Add(cookie);
+                    return new JsonNetResult(objReturn);
                 }
+                else
+                {
+                    var objReturn = new
+                    {
+                        success = false
+                    };
 
-                return Json(new { success = true });
+                    return new JsonNetResult(objReturn);
+                }
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                var objReturn = new
+                {
+                    success = false,
+                    message = ex.Message
+                };
+
+                return new JsonNetResult(objReturn);
             }
         }
     }

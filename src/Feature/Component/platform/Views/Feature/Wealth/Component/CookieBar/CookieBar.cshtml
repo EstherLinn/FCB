@@ -7,7 +7,7 @@
     return;
 }
 
-<div class="c-cookies" style="@Model.Style" data-cookie>
+<div class="c-cookies" data-cookie>
     <div class="c-cookies__wrap">
         <div class="c-cookies__box">
             <div class="c-cookies__content">
@@ -33,13 +33,12 @@
                     type: "POST",
                     url: '@ClientRoute.GenerateUrl(this, "CookieBar", "UpdateCookie")',
                     success: function (data) {
-                        console.log(data);
                         if (data.success == true) {
-                            $("[data-cookie]").css("display", "none");
+                            $("[data-cookie]").remove();
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.log(data);
+                        console.log(data.message);
                     }
                 });
             });
