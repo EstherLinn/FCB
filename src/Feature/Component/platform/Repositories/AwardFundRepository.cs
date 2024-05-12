@@ -12,6 +12,7 @@ using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
 using Foundation.Wealth.Extensions;
 using System.Runtime.Caching;
 using System.Linq;
+using System.Text;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -47,6 +48,7 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
+            item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
             item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
         }
 

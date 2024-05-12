@@ -1,4 +1,5 @@
-﻿@using Foundation.Wealth.Helper
+﻿@using Foundation.Wealth.Helper;
+@using Feature.Wealth.Component.Models.Invest;
 @using Feature.Wealth.Component.Models.HighRatedFund
 @model HighRatedFundModel
 
@@ -160,7 +161,7 @@
 											@if (item.CurrencyName != null)
 											{
 												<div class="c-cardTable__content">
-													<a href="#popupCurrencyWebSite" class="o-link" data-popup="true">@item.CurrencyName</a>
+													@Html.CurrencyLink(null, item.CurrencyName)
 												</div>
 											}
 											else
@@ -225,10 +226,10 @@
 											<div class="c-cardTable__content">
 												<ul class="l-collect l-collect--divider@lt">
 													<li class="l-collect__item">
-														<a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+														@Html.FocusButton(null, item.ProductCode, item.ProductName, InvestTypeEnum.Fund, true)
 													</li>
 													<li class="l-collect__item">
-														<a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+														@Html.CompareButton(null, item.ProductCode, item.ProductName, InvestTypeEnum.Fund, true)
 													</li>
 												</ul>
 											</div>
@@ -236,7 +237,9 @@
 										@if (item.OnlineSubscriptionAvailability == "Y")
 										{
 											<td class="c-cardTable__footer" data-card-table-width="1/3">
-												<div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+												<div class="c-cardTable__content">
+													@Html.SubscriptionButton(null, item.ProductCode, InvestTypeEnum.Fund, true)
+												</div>
 											</td>
 										}
 									</tr>

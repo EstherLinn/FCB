@@ -3,6 +3,7 @@ using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using Foundation.Wealth.Extensions;
 using static Feature.Wealth.Component.Models.PerformanceFundRank.PerformanceFundRankModel;
+using System.Text;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -34,6 +35,7 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
+            item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
             item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
             item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPercentage(item.SixMonthReturnOriginalCurrency);
             item.SixMonthReturnTWD = NumberExtensions.RoundingPercentage(item.SixMonthReturnTWD);
