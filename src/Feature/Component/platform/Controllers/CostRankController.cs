@@ -8,6 +8,7 @@ using Feature.Wealth.Component.Models.CostRank;
 using Feature.Wealth.Component.Models.FundDetail;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using static Feature.Wealth.Component.Models.CostRank.CostRankModel;
+using Feature.Wealth.Component.Models.ETF;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -24,7 +25,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 Item = dataSourceItem,
                 CostRanks = etfs,
-                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/CostRank/CostRank.cshtml", viewModel);
@@ -52,7 +53,7 @@ namespace Feature.Wealth.Component.Controllers
             var viewModel = new CostRankModel
             {
                 CostRanks = etfs,
-                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/CostRank/CostRankReturnView.cshtml", viewModel);
