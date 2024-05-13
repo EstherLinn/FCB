@@ -26,6 +26,7 @@ namespace Feature.Wealth.Component.Repositories
             var request = await _route.
                 AppendPathSegments("api", "fund", fundId, "most-recent-five-year-roi-and-fee").
                 WithOAuthBearerToken(_token).
+                AllowAnyHttpStatus().
                 GetAsync().
                 ReceiveString();
 
@@ -48,6 +49,7 @@ namespace Feature.Wealth.Component.Repositories
                getTWD = 0
            }).
            WithOAuthBearerToken(_token).
+           AllowAnyHttpStatus().
            GetAsync().
            ReceiveString();
 
@@ -67,6 +69,7 @@ namespace Feature.Wealth.Component.Repositories
            {
                idx = idx,
            }).WithOAuthBearerToken(_token).
+           AllowAnyHttpStatus().
            GetAsync().
            ReceiveString();
 
@@ -86,6 +89,7 @@ namespace Feature.Wealth.Component.Repositories
             var request = await _route.
              AppendPathSegments("api", "fund", isOverseas, fundId, route, type).
              WithOAuthBearerToken(_token).
+             AllowAnyHttpStatus().
              GetAsync().
              ReceiveString();
 
@@ -126,8 +130,9 @@ namespace Feature.Wealth.Component.Repositories
                          enddate = enddate,
                          getTWD = 0
                      }).WithOAuthBearerToken(_token).
-                         GetAsync().
-                         ReceiveString();
+                        AllowAnyHttpStatus().
+                        GetAsync().
+                        ReceiveString();
                     break;
 
                 case nameof(FundRateTrendEnum.twd):
@@ -138,8 +143,9 @@ namespace Feature.Wealth.Component.Repositories
                        enddate = enddate,
                        getTWD = 1
                    }).WithOAuthBearerToken(_token).
-                     GetAsync().
-                     ReceiveString();
+                        AllowAnyHttpStatus().
+                        GetAsync().
+                        ReceiveString();
                     break;
 
                 case nameof(FundRateTrendEnum.networth):
@@ -149,8 +155,9 @@ namespace Feature.Wealth.Component.Repositories
                        startdate = startdate,
                        enddate = enddate,
                    }).WithOAuthBearerToken(_token).
-                     GetAsync().
-                     ReceiveString();
+                        AllowAnyHttpStatus().
+                        GetAsync().
+                        ReceiveString();
                     break;
             }
 
@@ -169,6 +176,7 @@ namespace Feature.Wealth.Component.Repositories
             var request = _route.
             AppendPathSegments("api", "Finance", "finance", "Related", indexCode, type).
             WithOAuthBearerToken(_token).
+            AllowAnyHttpStatus().
             GetAsync().
             ReceiveString().Result;
 
@@ -185,6 +193,7 @@ namespace Feature.Wealth.Component.Repositories
             var request = _route.
             AppendPathSegments("api", "Finance", "finance", "Price", indexCode, cycle).
             WithOAuthBearerToken(_token).
+            AllowAnyHttpStatus().
             GetAsync().
             ReceiveString().Result;
 
@@ -285,8 +294,9 @@ namespace Feature.Wealth.Component.Repositories
         {
             JObject result = null;
             var request = await _route.AppendPathSegments("api", "etf", etfId, "etfdoc")
-                .SetQueryParams(new { idx = idx})
+                .SetQueryParams(new { idx = idx })
                 .WithOAuthBearerToken(_token)
+                .AllowAnyHttpStatus()
                 .GetAsync()
                 .ReceiveString();
 
