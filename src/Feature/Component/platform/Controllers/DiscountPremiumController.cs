@@ -8,6 +8,7 @@ using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.DiscountPremium;
 using static Feature.Wealth.Component.Models.DiscountPremium.DiscountPremiumModel;
+using Feature.Wealth.Component.Models.ETF;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -24,7 +25,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 Item = dataSourceItem,
                 DiscountPremiums = etfs,
-                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/DiscountPremium/DiscountPremium.cshtml", viewModel);
@@ -52,7 +53,7 @@ namespace Feature.Wealth.Component.Controllers
             var viewModel = new DiscountPremiumModel
             {
                 DiscountPremiums = etfs,
-                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/DiscountPremium/DiscountPremiumReturnView.cshtml", viewModel);

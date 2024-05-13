@@ -8,6 +8,7 @@ using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.VolumeRank;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using static Feature.Wealth.Component.Models.VolumeRank.VolumeRankModel;
+using Feature.Wealth.Component.Models.ETF;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -24,7 +25,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 Item = dataSourceItem,
                 VolumeRanks = etfs,
-                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/VolumeRank/VolumeRank.cshtml", viewModel);
@@ -52,7 +53,7 @@ namespace Feature.Wealth.Component.Controllers
             var viewModel = new VolumeRankModel
             {
                 VolumeRanks = etfs,
-                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/VolumeRank/VolumeRankReturnView.cshtml", viewModel);

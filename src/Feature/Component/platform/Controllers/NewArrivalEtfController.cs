@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Component.Models.FundDetail;
+﻿using Feature.Wealth.Component.Models.ETF;
+using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.NewArrivalETF;
 using Feature.Wealth.Component.Models.NewFund;
 using Feature.Wealth.Component.Repositories;
@@ -76,7 +77,7 @@ namespace Feature.Wealth.Component.Controllers
                 CurrentPage = page,
                 PageSize = pageSize,
                 NewETFs = renderDatas,
-                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/NewArrivalEtf/NewArrivalEtfReturnView.cshtml", model);

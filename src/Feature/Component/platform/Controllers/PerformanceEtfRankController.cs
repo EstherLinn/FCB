@@ -8,6 +8,7 @@ using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.PerformanceEtfRank;
 using static Feature.Wealth.Component.Models.PerformanceEtfRank.PerformanceEtfRankModel;
+using Feature.Wealth.Component.Models.ETF;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -24,7 +25,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 Item = dataSourceItem,
                 PerformanceEtfRanks = etfs,
-                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/PerformanceEtfRank/PerformanceEtfRank.cshtml", viewModel);
@@ -52,7 +53,7 @@ namespace Feature.Wealth.Component.Controllers
             var viewModel = new PerformanceEtfRankModel
             {
                 PerformanceEtfRanks = etfs,
-                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
             };
 
             return View("/Views/Feature/Wealth/Component/PerformanceEtfRank/PerformanceEtfRankReturnView.cshtml", viewModel);
