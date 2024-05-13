@@ -9,6 +9,7 @@
         return;
     }
     var etfData = Model.BasicEtf as EtfDetail;
+    string pageId = @Sitecore.Context.Item.ID.ToString();
 }
 
 <div class="l-mainstage">
@@ -45,7 +46,7 @@
                             <h2 class="c-pageHeader__subTitle">@etfData.ETFEnglishName</h2>
                         </div>
                         <div class="c-pageHeader__views">
-                            <div class="o-views o-views--bk">@Model.VisitCount</div>
+                            <div class="o-views o-views--bk" data-eh="visit-update,visit-exec" eh-visit-pageid="@pageId" eh-visit-qs="id=@etfData.ProductCode"></div>
                         </div>
                     </div>
                 </div>

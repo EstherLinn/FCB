@@ -16,44 +16,44 @@
 <script>
     (function ($, window, document, undefined) {
         let isLogin = @(FcbMemberHelper.CheckMemberLogin() ? "true": "false");
-            $.ajax({
-                type: "post",
-                url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
-                data: { "url": '@System.Web.HttpContext.Current.Request.Url.AbsoluteUri' },
-                success: function (msg) {
-                    //設置成功
-                },
-            })
-              window.CompareObj = function (id,type,name) {
-                    this.id = id;
-                    this.type = type;
-                    this.name = name;
-                }
-           window.checkItemExists = function(key, value) {
-               let existingEntries = store.get(key) || [];
-               let idx = existingEntries.findIndex((x) => x.id == value);
-                if (idx < 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+        $.ajax({
+            type: "post",
+            url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
+            data: { "url": '@System.Web.HttpContext.Current.Request.Url.AbsoluteUri' },
+            success: function (msg) {
+                //設置成功
+            },
+        })
+        window.CompareObj = function (id, type, name) {
+            this.id = id;
+            this.type = type;
+            this.name = name;
+        }
+        window.checkItemExists = function (key, value) {
+            let existingEntries = store.get(key) || [];
+            let idx = existingEntries.findIndex((x) => x.id == value);
+            if (idx < 0) {
+                return false;
+            } else {
+                return true;
             }
-            window.addItem = function(key, value) {
-                let existingEntries = store.get(key) || [];
-                let idx = existingEntries.findIndex((x) => x.id == value.id);
-                if (idx < 0 ) {
-                    existingEntries.push(value);
-                    store.set(key, existingEntries)
-                }
+        }
+        window.addItem = function (key, value) {
+            let existingEntries = store.get(key) || [];
+            let idx = existingEntries.findIndex((x) => x.id == value.id);
+            if (idx < 0) {
+                existingEntries.push(value);
+                store.set(key, existingEntries)
             }
-            window.removeItem = function(key, value) {
-                let existingEntries = store.get(key) || [];
-                let idx = existingEntries.findIndex((x) => x.id == value.id);
-                if (idx > -1) {
-                    existingEntries.splice(idx, 1);
-                    store.set(key, existingEntries)
-                }
+        }
+        window.removeItem = function (key, value) {
+            let existingEntries = store.get(key) || [];
+            let idx = existingEntries.findIndex((x) => x.id == value.id);
+            if (idx > -1) {
+                existingEntries.splice(idx, 1);
+                store.set(key, existingEntries)
             }
+        }
 
         EventHandler.AddOnExec('compare-init', function (e) {
             let self = e.target;
@@ -65,8 +65,7 @@
             };
 
             if (compare.length == 7) {
-                if (self.getAttribute('eh-compare-add').toString() == "false")
-                {
+                if (self.getAttribute('eh-compare-add').toString() == "false") {
                     self.setAttribute('href', '#popupCompareMax');
                     self.setAttribute('data-popup', true);
                     self.removeAttribute('data-ia');
@@ -77,7 +76,7 @@
                 }
             }
         });
-        EventHandler.AddClick('compare-click',  function(e){
+        EventHandler.AddClick('compare-click', function (e) {
             let self = e.target;
             let id = self.getAttribute('eh-compare-id');
             let name = self.getAttribute('eh-compare-name');
@@ -90,20 +89,20 @@
                     self.setAttribute('eh-compare-add', true);
                     if (compare.length == 6) {
                         $('[eh-compare][eh-compare-add=false]').each(function (idx, ele) {
-                                   ele.setAttribute('href', '#popupCompareMax');
-                                    ele.setAttribute('data-popup', true);
-                                    ele.removeAttribute('data-ia');
-                                    ele.removeAttribute('data-msg');
-                                    $(ele).off('click.interactive');
-                                    $(ele).removeData('plugin_interactive');
-                                    $(ele).magnificPopup();
+                            ele.setAttribute('href', '#popupCompareMax');
+                            ele.setAttribute('data-popup', true);
+                            ele.removeAttribute('data-ia');
+                            ele.removeAttribute('data-msg');
+                            $(ele).off('click.interactive');
+                            $(ele).removeData('plugin_interactive');
+                            $(ele).magnificPopup();
                         })
                     }
                 }
             } else {
                 removeItem('compare', obj);
                 self.setAttribute('eh-compare-add', false);
-                if(compare.length == 7){
+                if (compare.length == 7) {
                     $('[eh-compare][eh-compare-add=false]').each(function (idx, ele) {
                         ele.setAttribute('href', 'javascript:;');
                         ele.removeAttribute('data-popup');
@@ -111,10 +110,10 @@
                         ele.setAttribute('data-msg', '加入比較|取消比較');
                         $(ele).interactive();
                         $(ele).off('click.magnificPopup');
-                })
+                    })
                 }
             }
-    });
+        });
 
 
         EventHandler.AddOnExec('focus-init', function (e) {
@@ -127,8 +126,7 @@
                 $(self).off('click.interactive');
                 $(self).removeData('plugin_interactive');
                 $(self).magnificPopup();
-            } else
-            {
+            } else {
                 let id = self.getAttribute('eh-focus-id');
                 if (checkItemExists('focus', id)) {
                     $(self).addClass('is-active');
@@ -153,110 +151,143 @@
             }
         });
 
-          EventHandler.AddOnExec('subscription-init',function(e){
-              let self = e.target;
-              let single = document.getElementById("subscriptionSingle");
-              let regular = document.getElementById("subscriptionRegular");
-              if (!isLogin) {
-                  self.setAttribute("href", "#popupLogin");
-              }
-              else {
-                  self.setAttribute("href", "#popupPurchase");
-                        let singlelink = "";
-                          let regularlink= "";
-                  if ($(window).width() < 768) {
-                      $('input[name="platform"]','#popupPurchase').on('click', function () {
-                          let val = $(this).data('name');
-                          if (val == "firste") {
+        EventHandler.AddOnExec('subscription-init', function (e) {
+            let self = e.target;
+            let single = document.getElementById("subscriptionSingle");
+            let regular = document.getElementById("subscriptionRegular");
+            if (!isLogin) {
+                self.setAttribute("href", "#popupLogin");
+            }
+            else {
+                self.setAttribute("href", "#popupPurchase");
+                let singlelink = "";
+                let regularlink = "";
+                if ($(window).width() < 768) {
+                    $('input[name="platform"]', '#popupPurchase').on('click', function () {
+                        let val = $(this).data('name');
+                        if (val == "firste") {
                             singlelink = "@MobileESingleLink";
-                             regularlink= "@MobileERegularLink";
-                          } else {
-                             singlelink = "@MobileIleoSingleLink";
-                             regularlink= "@MobileIleoRegularLink";
-                          }
-                        let singleUrl = new URL(decodeURIComponent(singlelink.replaceAll("&amp;","&")));
-                        let regularUrl = new URL(decodeURIComponent(regularlink.replaceAll("&amp;","&")));
+                            regularlink = "@MobileERegularLink";
+                        } else {
+                            singlelink = "@MobileIleoSingleLink";
+                            regularlink = "@MobileIleoRegularLink";
+                        }
+                        let singleUrl = new URL(decodeURIComponent(singlelink.replaceAll("&amp;", "&")));
+                        let regularUrl = new URL(decodeURIComponent(regularlink.replaceAll("&amp;", "&")));
                         let singleParms = singleUrl.searchParams;
                         let regularParms = regularUrl.searchParams;
 
-                     if(singleParms.has("link"))
-                    {
-                        let singleInsindeUrl = new URL(singleParms.get("link"));
-                        let regularInsindUrl = new URL(regularParms.get("link"));
-                        singleInsindeUrl.searchParams.delete("FundCode");
-                        singleInsindeUrl.searchParams.append("FundCode",single.getAttribute("eh-subscription-id"));
-                        regularInsindUrl.searchParams.delete("FundCode");
-                        regularInsindUrl.searchParams.append("FundCode",regular.getAttribute("eh-subscription-id"));
-                        singleParms.delete("link",);
-                        singleParms.append("link",singleInsindeUrl);
-                        regularParms.delete("link");
-                        regularParms.append("link",regularInsindUrl);
+                        if (singleParms.has("link")) {
+                            let singleInsindeUrl = new URL(singleParms.get("link"));
+                            let regularInsindUrl = new URL(regularParms.get("link"));
+                            singleInsindeUrl.searchParams.delete("FundCode");
+                            singleInsindeUrl.searchParams.append("FundCode", single.getAttribute("eh-subscription-id"));
+                            regularInsindUrl.searchParams.delete("FundCode");
+                            regularInsindUrl.searchParams.append("FundCode", regular.getAttribute("eh-subscription-id"));
+                            singleParms.delete("link",);
+                            singleParms.append("link", singleInsindeUrl);
+                            regularParms.delete("link");
+                            regularParms.append("link", regularInsindUrl);
 
+                        }
+                        single.setAttribute("href", singleUrl);
+                        regular.setAttribute("href", regularUrl);
+                        store.set("MobilePlatform", val);
+                    });
+
+                    let val = store.get('MobilePlatform') || "";
+                    if (val == "firste" || val == "") {
+                        store.set("MobilePlatform", 'firste');
+                        $('input[data-name="firste"]', '#popupPurchase').prop('checked', true);
+                        singlelink = "@MobileESingleLink";
+                        regularlink = "@MobileERegularLink";
+                    } else {
+                        $('input[data-name="ileo"]', '#popupPurchase').prop('checked', true);
+                        singlelink = "@MobileIleoSingleLink";
+                        regularlink = "@MobileIleoRegularLink";
                     }
-                    single.setAttribute("href",singleUrl);
-                    regular.setAttribute("href",regularUrl);
-                          store.set("MobilePlatform", val);
-                      });
 
-                      let val = store.get('MobilePlatform') || "";
-                      if (val == "firste" || val == "") {
-                          store.set("MobilePlatform", 'firste');
-                          $('input[data-name="firste"]', '#popupPurchase').prop('checked', true);
-                          singlelink = "@MobileESingleLink";
-                          regularlink= "@MobileERegularLink";
-                      } else {
-                          $('input[data-name="ileo"]', '#popupPurchase').prop('checked', true);
-                             singlelink = "@MobileIleoSingleLink";
-                             regularlink= "@MobileIleoRegularLink";
-                      }
+                    single.setAttribute("href", decodeURIComponent(singlelink.replaceAll("&amp;", "&")));
+                    regular.setAttribute("href", decodeURIComponent(regularlink.replaceAll("&amp;", "&")));
+                }
+                else {
+                    singlelink = "@SubcriptionSingleLink";
+                    regularlink = "@SubcriptionRegularLink";
+                    single.setAttribute("href", decodeURIComponent(singlelink.replaceAll("&amp;", "&")));
+                    regular.setAttribute("href", decodeURIComponent(regularlink.replaceAll("&amp;", "&")));
+                }
+            }
+        });
 
-                 single.setAttribute("href", decodeURIComponent(singlelink.replaceAll("&amp;","&")));
-                  regular.setAttribute("href", decodeURIComponent(regularlink.replaceAll("&amp;","&")));
-                  }
-                  else {
-                      singlelink = "@SubcriptionSingleLink";
-                      regularlink= "@SubcriptionRegularLink";
-                      single.setAttribute("href", decodeURIComponent(singlelink.replaceAll("&amp;","&")));
-                      regular.setAttribute("href", decodeURIComponent(regularlink.replaceAll("&amp;","&")));
-                  }
-              }
-          });
-
-            EventHandler.AddClick('subscription-click', function (e) {
-              if(isLogin){
+        EventHandler.AddClick('subscription-click', function (e) {
+            if (isLogin) {
                 let self = e.target;
                 let id = self.getAttribute('eh-subscription-id');
                 let single = document.getElementById("subscriptionSingle");
-                let regular =  document.getElementById("subscriptionRegular");
-                single.setAttribute('eh-subscription-id',id);
-                regular.setAttribute('eh-subscription-id',id);
+                let regular = document.getElementById("subscriptionRegular");
+                single.setAttribute('eh-subscription-id', id);
+                regular.setAttribute('eh-subscription-id', id);
                 let singleUrl = new URL(decodeURIComponent(single.getAttribute("href")));
                 let regularUrl = new URL(decodeURIComponent(regular.getAttribute("href")));
                 let singleParms = singleUrl.searchParams;
                 let regularParms = regularUrl.searchParams;
-                if(singleParms.has("link"))
-                {
+                if (singleParms.has("link")) {
                     let singleInsindeUrl = new URL(singleParms.get("link"));
                     let regularInsindUrl = new URL(regularParms.get("link"));
                     singleInsindeUrl.searchParams.delete("FundCode");
-                    singleInsindeUrl.searchParams.append("FundCode",id);
+                    singleInsindeUrl.searchParams.append("FundCode", id);
                     regularInsindUrl.searchParams.delete("FundCode");
-                    regularInsindUrl.searchParams.append("FundCode",id);
+                    regularInsindUrl.searchParams.append("FundCode", id);
                     singleParms.delete("link",);
                     singleParms.append("link", singleInsindeUrl);
                     regularParms.delete("link");
-                    regularParms.append("link",regularInsindUrl);
-                }else{
-                singleParms.delete("FundCode");
-                singleParms.append("FundCode",id);
-                regularParms.delete("FundCode");
-                regularParms.append("FundCode",id);
+                    regularParms.append("link", regularInsindUrl);
+                } else {
+                    singleParms.delete("FundCode");
+                    singleParms.append("FundCode", id);
+                    regularParms.delete("FundCode");
+                    regularParms.append("FundCode", id);
                 }
-                 single.setAttribute("href",singleUrl);
-                regular.setAttribute("href",regularUrl);
-                 }
-            });
+                single.setAttribute("href", singleUrl);
+                regular.setAttribute("href", regularUrl);
+            }
+        });
 
-            })(jQuery, window, document);
+        EventHandler.AddOnce('visit-update', function (e) {
+            let self = e;
+            let params = {
+                pageId: self.getAttribute('eh-visit-pageid'),
+                url: new URL(location.href).href,
+                querystring: self.getAttribute('eh-visit-qs').split('&')
+            };
+
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Update")',
+                type: 'POST',
+                data: params
+            }).done(function (data, textStatus, jqXHR) {
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            });
+        });
+
+        EventHandler.AddOnExec('visit-exec', function (e) {
+            let self = e.target;
+            let params = {
+                pageId: self.getAttribute('eh-visit-pageid'),
+                url: new URL(location.href).href
+            };
+            
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Get")',
+                type: 'GET',
+                data: params
+            }).done(function (data, textStatus, jqXHR) {
+                if (data) {
+                    $(self).html(DOMPurify.sanitize(data.Count));
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            });
+        });
+    })(jQuery, window, document);
 </script>
 @Xcms.Sitecore.Foundation.Assets.Services.RenderAssetsService.Current.ScriptsRender("<script type=\"text/javascript\" src=\"{0}\" async ></script>", "/themes/project/wealth/js/utm.min.js")
