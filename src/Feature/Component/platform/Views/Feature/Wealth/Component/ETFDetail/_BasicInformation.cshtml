@@ -60,7 +60,14 @@
             <div class="c-zebraList">
                 <div class="c-zebraList__item">
                     <div class="c-zebraList__title">發行公司</div>
-                    <div class="c-zebraList__content"><span class="t-bold">@etfData.PublicLimitedCompanyName<br>@*<a href="#" class="o-link" target="_blank">{缺}</a>*@</span></div>
+                    <div class="c-zebraList__content">
+                        <span class="t-bold">@etfData.PublicLimitedCompanyName<br>
+                        @if (!string.IsNullOrEmpty(etfData.Website))
+                        {
+                            <a href="@etfData.Website" class="o-link" target="_blank">@etfData.Website</a>
+                        }
+                        </span>
+                    </div>
                 </div>
                 <div class="c-zebraList__item">
                     <div class="c-zebraList__title">經銷商</div>
