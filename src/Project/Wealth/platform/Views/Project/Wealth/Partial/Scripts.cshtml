@@ -253,13 +253,12 @@
             }
         });
 
-        EventHandler.AddOnExec('visit-exec', function (e) {
-            let self = e.target;
-            let $target = $(self).find('[eh-visit]');
+        EventHandler.AddOnce('visit-update', function (e) {
+            let self = e;
             let params = {
-                pageId: $target[0].getAttribute('eh-visit-pageid'),
+                pageId: self.getAttribute('eh-visit-pageid'),
                 url: new URL(location.href).href,
-                querystring: $target[0].getAttribute('eh-visit-qs').split('&')
+                querystring: self.getAttribute('eh-visit-qs').split('&')
             };
 
             $.ajax({
@@ -267,8 +266,24 @@
                 type: 'POST',
                 data: params
             }).done(function (data, textStatus, jqXHR) {
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            });
+        });
+
+        EventHandler.AddOnExec('visit-exec', function (e) {
+            let self = e.target;
+            let params = {
+                pageId: self.getAttribute('eh-visit-pageid'),
+                url: new URL(location.href).href
+            };
+            
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Get")',
+                type: 'GET',
+                data: params
+            }).done(function (data, textStatus, jqXHR) {
                 if (data) {
-                    $target.text(data.Count);
+                    $(self).html(DOMPurify.sanitize(data.Count));
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
             });
