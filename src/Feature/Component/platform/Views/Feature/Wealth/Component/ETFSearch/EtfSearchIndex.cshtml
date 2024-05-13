@@ -591,7 +591,7 @@
                         // 申購按鈕
                         let $purchase = suggestion.data.purchase ? suggestion.data.isLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
                         return `<div class="c-itemKeyword">
-                <a href="${detailUrl}" class="c-itemKeyword__content">
+                <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
 
                     <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
                 </a>
