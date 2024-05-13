@@ -253,6 +253,9 @@
                         document.getElementById('result').innerHTML = data;
                         Removefall();
                         $('[data-popup]').magnificPopup();
+                        $('[eh-compare]').trigger('exec');
+                        $('[eh-focus]').trigger('exec');
+                        $('[eh-subscription-type]').trigger('exec');
                     },
                     error: function (xhr, status, error) {
                         console.error(error);

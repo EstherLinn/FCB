@@ -217,6 +217,9 @@
 						$('#result').empty();
 						document.getElementById('result').innerHTML = data;
 						$('[data-popup]').magnificPopup();
+						$('[eh-compare]').trigger('exec');
+						$('[eh-focus]').trigger('exec');
+						$('[eh-subscription-type]').trigger('exec');
 						window.loading('hide');
 					},
 					error: function (xhr, status, error) {
