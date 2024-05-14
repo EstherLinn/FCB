@@ -1151,7 +1151,7 @@
                         volume = [];
 
                     // 重新組織 API dataSource 給 技術分析圖使用
-                    data.forEach(item => {
+                    data.sort((a, b) => { return a.date - b.date; }).forEach(item => {
                         ohlc.push([item.date, item.open, item.high, item.low, item.close]);
                         volume.push({
                             x: item.date,
@@ -1235,7 +1235,8 @@
                                     const format = {
                                         day: '%Y/%m',
                                         week: '%Y/%m',
-                                        month: '%Y/%m'
+                                        month: '%Y/%m',
+                                        year: '%Y/%m'
                                     }[this.tickPositionInfo.unitName];
                                     return Highcharts.dateFormat(format, this.value);
                                 },
@@ -1639,7 +1640,9 @@
         function loadTooltip(chart) {
             var points = [];
             chart.series.forEach(function (el, i) {
-                points.push(el.points[el.points.length - 1]);
+                if (el.points.length > 0) {
+                    points.push(el.points[el.points.length - 1]);
+                }
             });
             chart.tooltip.refresh(points);
 
