@@ -636,6 +636,8 @@
                     },
                     formatResult: function (suggestion, currentValue) {
                         let detailUrl = suggestion.DetailLink ? suggestion.DetailLink : '#';
+
+                        // TODO 這裡等 Jason 改了之後再改用公用按鈕
                         let className = suggestion.IsLike ? 'is-active' : '';
 
                         // like 按鈕
@@ -652,12 +654,12 @@
                             `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
 
                         return `<div class="c-itemKeyword">
-                                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                            </a>
-                                            <div class="c-itemKeyword__collections">${$like}</div>
-                                            ${$purchase}
-                                        </div>`;
+                                    <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                    </a>
+                                    <div class="c-itemKeyword__collections">${$like}</div>
+                                    ${$purchase}
+                                </div>`;
                     }
                 });
             });
