@@ -12,6 +12,9 @@ namespace Feature.Wealth.Component.Models.GraphicCards
         public string ButtonLink1 { get; set; }
         public string ButtonLink2 { get; set; }
         public string ButtonLink3 { get; set; }
+        public string ButtonText1 { get; set; }
+        public string ButtonText2 { get; set; }
+        public string ButtonText3 { get; set; }
     }
 
     public struct Templates
