@@ -419,17 +419,14 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                        <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                        <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                        <a href="#popupLogin" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-popup="true"></a>
+                        <%= FocusButtonHtml %>
                     </li>
                 </ul>
             </div>
         </td>
         <td class="c-cardTable__footer" data-card-table-width="1/2">
             <div class="c-cardTable__content">
-                <a href="#popupLogin" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+                <%= SubscribeButtonHtml %>
             </div>
         </td>
         <% } %>
@@ -439,10 +436,7 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                        <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                        <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                        <a href="#popupLogin" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-popup="true"></a>
+                        <%= FocusButtonHtml %>
                     </li>
                 </ul>
             </div>
@@ -482,6 +476,9 @@
                     },
                     afterPagination: function () {
                         $('[data-popup]').magnificPopup();
+                        $('[eh-compare]').trigger('exec');
+                        $('[eh-focus]').trigger('exec');
+                        $('[eh-subscription-type]').trigger('exec');
                     }
                 },
                 search: {

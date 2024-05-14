@@ -1,5 +1,7 @@
 ﻿using Dapper;
+using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.MarketTrend;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using System.Data;
@@ -112,6 +114,16 @@ namespace Feature.Wealth.Component.Repositories
                 value = decimal.Round((decimal)value, 4);
             }
             return value;
+        }
+
+        internal RelevantInformation GetButtonHtml(RelevantInformation item, InvestTypeEnum investTypeEnum)
+        {
+            item.CurrencyLinkHtml = PublicHelpers.CurrencyLink(null, null, item.CurrencyName).ToString();
+            item.FocusButtonHtml = PublicHelpers.FocusButton(null, null, item.ProductCode, item.ProductName, investTypeEnum, true).ToString();
+            item.CompareButtonHtml = PublicHelpers.CompareButton(null, null, item.ProductCode, item.ProductName, investTypeEnum, true).ToString();
+            item.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, item.ProductCode, investTypeEnum, true).ToString();
+
+            return item;
         }
     }
 }

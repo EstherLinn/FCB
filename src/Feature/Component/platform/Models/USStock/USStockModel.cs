@@ -2,6 +2,7 @@
 using Sitecore.Data.Items;
 using System.Collections.Generic;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Feature.Wealth.Component.Models.USStock
 {
@@ -49,6 +50,12 @@ namespace Feature.Wealth.Component.Models.USStock
         public string value { get; set; }
         public bool IsLogin { get; set; }
         public bool IsLike { get; set; }
+        //詳細頁用 MvcHtmlString
+        public MvcHtmlString FocusButton { get; set; }
+        public MvcHtmlString SubscribeButton { get; set; }
+        //列表頁用 string
+        public string FocusButtonHtml { get; set; }
+        public string SubscribeButtonHtml { get; set; }
     }
 
     public struct Template

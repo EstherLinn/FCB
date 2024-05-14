@@ -28,7 +28,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             var model = new USStockDetailModel
             {
-                USStock = uSStock
+                USStock = this._uSStockRepository.GetButtonHtml(uSStock, false)
             };
 
             return model;

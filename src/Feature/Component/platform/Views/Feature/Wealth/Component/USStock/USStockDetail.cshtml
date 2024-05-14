@@ -53,13 +53,10 @@
                     <div class="l-pageHeader__action">
                         <ul class="l-pageWallet">
                             <li class="l-pageWallet__item">
-                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                <a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                @Model.USStock.FocusButton
                             </li>
                             <li class="l-pageWallet__btn">
-                                <a href="#popupPurchase" class="o-fixedBtn" data-popup="true">申購</a>
+                                @Model.USStock.SubscribeButton
                             </li>
                         </ul>
                     </div>
@@ -242,5 +239,10 @@
                 $('#' + val).show();
             }
         });
+
+        $('[data-popup]').magnificPopup();
+        $('[eh-compare]').trigger('exec');
+        $('[eh-focus]').trigger('exec');
+        $('[eh-subscription-type]').trigger('exec');
     });
 </script>
