@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Foundation.Wealth.Manager;
 using static Feature.Wealth.Component.Models.EFirstChoice.EFirstChoiceModel;
 using Foundation.Wealth.Extensions;
+using System.Text;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -26,6 +27,7 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
+            item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
             item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPercentage(item.SixMonthReturnOriginalCurrency);
             item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
             item.PercentageChangeInFundPrice = NumberExtensions.RoundingPercentage((item.PercentageChangeInFundPrice * 100));

@@ -183,6 +183,9 @@
 								}
 							});
 							$('[data-popup]').magnificPopup();
+							$('[eh-compare]').trigger('exec');
+							$('[eh-focus]').trigger('exec');
+							$('[eh-subscription-type]').trigger('exec');
 						} else {
 							console.error("Empty response received from the server.");
 						}

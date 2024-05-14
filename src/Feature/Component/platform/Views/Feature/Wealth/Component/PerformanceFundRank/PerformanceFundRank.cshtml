@@ -415,6 +415,9 @@
                             var tabContent = document.getElementById(tabTarget);
                             tabContent.innerHTML = data;
                             $('[data-popup]').magnificPopup();
+                            $('[eh-compare]').trigger('exec');
+                            $('[eh-focus]').trigger('exec');
+                            $('[eh-subscription-type]').trigger('exec');
 
                             var tabPanel = $('.c-tab__panel[data-tab-panel-id="' + tabTarget + '"]');
                             var totalPages = tabPanel.find('#totalPages').val();
