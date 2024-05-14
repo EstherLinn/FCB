@@ -1,4 +1,5 @@
 ﻿@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.Invest
 @model Feature.Wealth.Component.Models.FundSearch.FundSearchViewModel
 
 <div class="l-mainstage">
@@ -1290,7 +1291,7 @@
                     </div>
                     <div class="c-cardTable__content">
                         <% if (Currency.Value!=null) { %>
-                        <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= Currency.Value %></a>
+                        <%= CurrencyHtml %>
                         <% } else {%>
                         <span>-</span>
                         <% } %>
@@ -1359,21 +1360,21 @@
                     <div class="c-cardTable__content">
                         <ul class="l-collect l-collect--divider@lt">
                             <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                 <%= FocusButtonHtml %>
                             </li>
                             <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                <%= CompareButtonHtml %>
                             </li>
                         </ul>
                     </div>
                 </td>
+                <% if (IsOnlineSubscriptionAvailability) { %>
                 <td class="c-cardTable__footer" data-card-table-width="1/3">
-                    <% if (IsOnlineSubscriptionAvailability) { %>
                     <div class="c-cardTable__content">
-                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+                        <%= SubscribeButtonHtml %>
                     </div>
-                    <% } %>
                 </td>
+                <% } %>
             </tr>
         </script>
         <script id="uid-template-1" type="text/html">
@@ -1412,7 +1413,7 @@
                 <td class="c-cardTable__body" data-card-table-width="1/2">
                     <div class="c-cardTable__title" data-length="4">
                         幣別
-                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                        <%= CurrencyHtml %>
                     </div>
                     <div class="c-cardTable__content">
                         <% if (Currency.Value!=null) { %>
@@ -1484,22 +1485,22 @@
                 <td class="c-cardTable__footer" data-card-table-width="2/3">
                     <div class="c-cardTable__content">
                         <ul class="l-collect l-collect--divider@lt">
-                            <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                             <li class="l-collect__item">
+                                 <%= FocusButtonHtml %>
                             </li>
                             <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                <%= CompareButtonHtml %>
                             </li>
                         </ul>
                     </div>
                 </td>
+                <% if (IsOnlineSubscriptionAvailability) { %>
                 <td class="c-cardTable__footer" data-card-table-width="1/3">
-                    <% if (IsOnlineSubscriptionAvailability) { %>
                     <div class="c-cardTable__content">
-                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+                        <%= SubscribeButtonHtml %>
                     </div>
-                    <% } %>
                 </td>
+                <% } %>
             </tr>
         </script>
         <script id="uid-template-2" type="text/html">
@@ -1590,11 +1591,11 @@
                 <td class="c-cardTable__footer" data-card-table-width="2/3">
                     <div class="c-cardTable__content">
                         <ul class="l-collect l-collect--divider@lt">
-                            <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                             <li class="l-collect__item">
+                                 <%= FocusButtonHtml %>
                             </li>
                             <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                <%= CompareButtonHtml %>
                             </li>
                         </ul>
                     </div>
@@ -1602,7 +1603,7 @@
                 <% if (IsOnlineSubscriptionAvailability) { %>
                 <td class="c-cardTable__footer" data-card-table-width="1/3">
                     <div class="c-cardTable__content">
-                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+                        <%= SubscribeButtonHtml %>
                     </div>
                 </td>
                 <% } %>
@@ -1687,21 +1688,21 @@
                     <div class="c-cardTable__content">
                         <ul class="l-collect l-collect--divider@lt">
                             <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                 <%= FocusButtonHtml %>
                             </li>
                             <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                <%= CompareButtonHtml %>
                             </li>
                         </ul>
                     </div>
                 </td>
+                <% if (IsOnlineSubscriptionAvailability) { %>
                 <td class="c-cardTable__footer" data-card-table-width="1/3">
-                    <% if (IsOnlineSubscriptionAvailability) { %>
                     <div class="c-cardTable__content">
-                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+                        <%= SubscribeButtonHtml %>
                     </div>
-                    <% } %>
                 </td>
+                <% } %>
             </tr>
         </script>
         </table>
@@ -1929,6 +1930,45 @@
             if (!jQuery) {
                 return;
             }
+
+             $.fn.extend({
+                setEleAttribute: function (name, value) {
+                    return this.each(function () {
+                        this.setAttribute(name, value);
+                    });
+                }
+            });
+
+            function currencyLink(obj) {
+                let btnHtml = '@Html.CurrencyLink(null, "null")';
+                let $Btn = $(btnHtml);
+                $Btn.text(obj.Currency.Value);
+                return $Btn[0].outerHTML;
+            }
+
+            function focusButton(obj){
+                let btnHtml = '@Html.FocusButton(null, null, null, InvestTypeEnum.Fund, true)';
+                let $Btn = $(btnHtml);
+                $Btn.eq(0).setEleAttribute('eh-focus-id', obj.ProductCode);
+                $Btn.eq(0).setEleAttribute('eh-focus-name', obj.ProductName);
+                return $Btn[0].outerHTML;
+            }
+
+            function compareButton(obj){
+                let btnHtml = '@Html.CompareButton(null, null, null, InvestTypeEnum.Fund, true)';
+                let $Btn = $(btnHtml);
+                $Btn.eq(0).setEleAttribute('eh-compare-id', obj.ProductCode);
+                $Btn.eq(0).setEleAttribute('eh-compare-name', obj.ProductName);
+                return $Btn[0].outerHTML;
+            }
+
+            function subscriptionButton(obj) {
+                let btnHtml = '@Html.SubscriptionButton(null, null, InvestTypeEnum.Fund, true)';
+                let $Btn = $(btnHtml);
+                $Btn.eq(0).setEleAttribute('eh-subscription-id', obj.ProductCode);
+                return $Btn[0].outerHTML;
+            }
+
             initBind();
             let fjs;
             $.ajax({
@@ -1987,6 +2027,11 @@
                             record.ThreeMonthReturnTWD.Text = Math.abs(record.ThreeMonthReturnTWD.Value).toFixed(dot2);
                             record.SixMonthReturnTWD.Text = Math.abs(record.SixMonthReturnTWD.Value).toFixed(dot2);
                             record.OneYearReturnTWD.Text = Math.abs(record.OneYearReturnTWD.Value).toFixed(dot2);
+
+                            record.FocusButtonHtml = focusButton(record);
+                            record.CompareButtonHtml = compareButton(record);
+                            record.SubscribeButtonHtml = subscriptionButton(record);
+                            record.CurrencyHtml = currencyLink(record);
                         },
                         afterFilter: function (result) {
                             this.paginator.setCurrentPage(1);
@@ -2001,6 +2046,9 @@
                         },
                         afterPagination: function () {
                             $('[data-popup]').magnificPopup();
+                            $('[eh-compare]').trigger('exec');
+                            $('[eh-focus]').trigger('exec');
+                            $('[eh-subscription-type]').trigger('exec');
                         }
                     },
                     search: {
