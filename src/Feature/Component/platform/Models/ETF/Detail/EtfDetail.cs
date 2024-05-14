@@ -226,6 +226,11 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         public string PublicLimitedCompanyName { get; set; }
 
         /// <summary>
+        /// 公司網址
+        /// </summary>
+        public string Website { get; set; }
+
+        /// <summary>
         /// 投資風格 ID
         /// </summary>
         public int InvestmentStyleID { get; set; }
