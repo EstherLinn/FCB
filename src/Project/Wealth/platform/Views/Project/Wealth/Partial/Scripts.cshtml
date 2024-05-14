@@ -57,6 +57,7 @@
 
         EventHandler.AddOnExec('compare-init', function (e) {
             let self = e.target;
+            $(self).interactive();
             let id = self.getAttribute('eh-compare-id');
             let compare = store.get('compare') || [];
             if (checkItemExists('compare', id)) {
@@ -127,6 +128,7 @@
                 $(self).removeData('plugin_interactive');
                 $(self).magnificPopup();
             } else {
+                $(self).interactive();
                 let id = self.getAttribute('eh-focus-id');
                 if (checkItemExists('focus', id)) {
                     $(self).addClass('is-active');
