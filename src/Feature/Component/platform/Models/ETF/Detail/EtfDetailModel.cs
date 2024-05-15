@@ -51,6 +51,11 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         public List<EtfReferenceIndexMonthlyReturn> ETFNetWorthMonthlyReturn { get; set; }
 
         /// <summary>
+        /// 一銀買賣價
+        /// </summary>
+        public EtfTradingPrice ETFTradingPrice { get; set; }
+
+        /// <summary>
         /// 前十大持股明細
         /// </summary>
         public List<EtfStrockHolding> ETFStockHoldings { get; set; }
