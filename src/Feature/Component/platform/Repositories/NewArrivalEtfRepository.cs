@@ -30,7 +30,6 @@ namespace Feature.Wealth.Component.Repositories
                 if (item != null) 
                 {
                     ProcessFundFilterDatas(item);
-                    fundItems.Add(item);
                 }
             }
 
