@@ -1,4 +1,5 @@
 ﻿@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.Invest
 @model Feature.Wealth.Component.Models.FundSearch.FundSearchViewModel
 
 <div class="l-mainstage">
@@ -42,12 +43,12 @@
                                         {
                                             foreach (string tag in Model.HotKeywordTags)
                                             {
-                                                <div class="l-pickGroup__item">
-                                                    <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
-                                                        <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
-                                                    </label>
-                                                </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                                <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
+                                                            </label>
+                                                        </div>
                                             }
                                         }
 
@@ -87,12 +88,12 @@
                                                 {
                                                     foreach (string tag in Model.HotProductTags)
                                                     {
-                                                        <div class="l-pickGroup__item">
-                                                            <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
-                                                                <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
-                                                            </label>
-                                                        </div>
+                                                                <div class="l-pickGroup__item">
+                                                                    <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
+                                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                                        <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
+                                                                    </label>
+                                                                </div>
                                                     }
                                                 }
 
@@ -186,12 +187,12 @@
                                                                         {
                                                                             if (!string.IsNullOrEmpty(type))
                                                                             {
-                                                                                <div class="l-pickGroup__item">
-                                                                                    <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@type">
-                                                                                        <div class="o-btnCheckBox__text" data-filter-value="@type"></div>
-                                                                                    </label>
-                                                                                </div>
+                                                                                        <div class="l-pickGroup__item">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@type">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@type"></div>
+                                                                                            </label>
+                                                                                        </div>
                                                                             }
                                                                         }
 
@@ -246,12 +247,12 @@
                                                                         {
                                                                             if (!string.IsNullOrEmpty(currency))
                                                                             {
-                                                                                <div class="l-pickGroup__item">
-                                                                                    <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@currency">
-                                                                                        <div class="o-btnCheckBox__text" data-filter-value="@currency"></div>
-                                                                                    </label>
-                                                                                </div>
+                                                                                        <div class="l-pickGroup__item">
+                                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@currency">
+                                                                                                <div class="o-btnCheckBox__text" data-filter-value="@currency"></div>
+                                                                                            </label>
+                                                                                        </div>
                                                                             }
                                                                         }
                                                                     </div>
@@ -412,12 +413,12 @@
                                                                                     {
                                                                                         if (!string.IsNullOrEmpty(target))
                                                                                         {
-                                                                                            <div class="l-pickGroup__item">
-                                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@target">
-                                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@target"></div>
-                                                                                                </label>
-                                                                                            </div>
+                                                                                                    <div class="l-pickGroup__item">
+                                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@target">
+                                                                                                            <div class="o-btnCheckBox__text" data-filter-value="@target"></div>
+                                                                                                        </label>
+                                                                                                    </div>
                                                                                         }
                                                                                     }
 
@@ -474,12 +475,12 @@
                                                                                     {
                                                                                         if (!string.IsNullOrEmpty(region))
                                                                                         {
-                                                                                            <div class="l-pickGroup__item">
-                                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@region">
-                                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@region"></div>
-                                                                                                </label>
-                                                                                            </div>
+                                                                                                    <div class="l-pickGroup__item">
+                                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@region">
+                                                                                                            <div class="o-btnCheckBox__text" data-filter-value="@region"></div>
+                                                                                                        </label>
+                                                                                                    </div>
                                                                                         }
                                                                                     }
 
@@ -558,12 +559,12 @@
                                                                                     {
                                                                                         if (!string.IsNullOrEmpty(company))
                                                                                         {
-                                                                                            <div class="l-pickGroup__item">
-                                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@company">
-                                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@company"></div>
-                                                                                                </label>
-                                                                                            </div>
+                                                                                                    <div class="l-pickGroup__item">
+                                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@company">
+                                                                                                            <div class="o-btnCheckBox__text" data-filter-value="@company"></div>
+                                                                                                        </label>
+                                                                                                    </div>
                                                                                         }
                                                                                     }
 
@@ -1174,7 +1175,7 @@
                     <a href="#" class="o-sorting" data-sorting-column="OneYearReturnTWD.Value"></a>
                 </div>
             </th>
-            @*tab-2*@
+                        @*tab-2*@
             <th data-filter-switch-columns="2">
                 <div class="c-table__title">
                     <span>幣別</span>
@@ -1205,7 +1206,7 @@
                     <span>配息頻率</span>
                 </div>
             </th>
-            @*tab-3*@
+                        @*tab-3*@
             <th data-filter-switch-columns="3">
                 <div class="c-table__title">
                     <span>風險屬性</span>
@@ -1236,7 +1237,7 @@
                     <a href="#" class="o-sorting" data-sorting-column="AnnualizedStandardDeviation"></a>
                 </div>
             </th>
-            @*all*@
+                        @*all*@
             <th>
                 <div class="c-table__title">
                     <span>關注/比較</span>
@@ -1355,24 +1356,25 @@
                 </td>
 
                 <td class="c-cardTable__space"></td>
-                <td class="c-cardTable__footer" data-card-table-width="2/3">
+                <td class="c-cardTable__footer" data-card-table-width="<%= IsOnlineSubscriptionAvailability == true ? '2/3' : '1/1' %>">
                     <div class="c-cardTable__content">
                         <ul class="l-collect l-collect--divider@lt">
-                            <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                             <li class="l-collect__item">
+                                        @Html.FocusButton(new { eh_focus_id = "<%= ProductCode %>", eh_focus_name = "<%= ProductName %>" }, string.Empty, string.Empty, InvestTypeEnum.Fund, true)
                             </li>
                             <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                        @Html.CompareButton(new { eh_compare_id = "<%= ProductCode %>", eh_compare_name = "<%= ProductName %>" }, string.Empty, string.Empty, InvestTypeEnum.Fund, true)
                             </li>
                         </ul>
                     </div>
                 </td>
+
                 <td class="c-cardTable__footer" data-card-table-width="1/3">
-                    <% if (IsOnlineSubscriptionAvailability) { %>
                     <div class="c-cardTable__content">
-                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+                        <% if (IsOnlineSubscriptionAvailability) { %>
+                                    @Html.SubscriptionButton(new { eh_subscription_id = "<%= ProductCode %>" }, string.Empty, InvestTypeEnum.Fund, true)
+                        <% } %>
                     </div>
-                    <% } %>
                 </td>
             </tr>
         </script>
@@ -1481,24 +1483,25 @@
                 </td>
 
                 <td class="c-cardTable__space"></td>
-                <td class="c-cardTable__footer" data-card-table-width="2/3">
+                <td class="c-cardTable__footer" data-card-table-width="<%= IsOnlineSubscriptionAvailability == true ? '2/3' : '1/1' %>">
                     <div class="c-cardTable__content">
                         <ul class="l-collect l-collect--divider@lt">
-                            <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                             <li class="l-collect__item">
+                             @Html.FocusButton(new{eh_focus_id="<%= ProductCode %>",eh_focus_name="<%= ProductName %>"},string.Empty,string.Empty,InvestTypeEnum.Fund,true)
                             </li>
                             <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                            @Html.CompareButton(new{eh_compare_id="<%= ProductCode %>",eh_compare_name="<%= ProductName %>"},string.Empty,string.Empty,InvestTypeEnum.Fund,true)
                             </li>
                         </ul>
                     </div>
                 </td>
+
                 <td class="c-cardTable__footer" data-card-table-width="1/3">
-                    <% if (IsOnlineSubscriptionAvailability) { %>
                     <div class="c-cardTable__content">
-                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+                        <% if (IsOnlineSubscriptionAvailability) { %>
+                        @Html.SubscriptionButton(new{eh_subscription_id="<%= ProductCode %>"},string.Empty,InvestTypeEnum.Fund,true)
+                        <% } %>
                     </div>
-                    <% } %>
                 </td>
             </tr>
         </script>
@@ -1587,25 +1590,26 @@
                     <% } %>
                 </td>
                 <td class="c-cardTable__space"></td>
-                <td class="c-cardTable__footer" data-card-table-width="2/3">
+                <td class="c-cardTable__footer" data-card-table-width="<%= IsOnlineSubscriptionAvailability == true ? '2/3' : '1/1' %>">
                     <div class="c-cardTable__content">
                         <ul class="l-collect l-collect--divider@lt">
-                            <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                             <li class="l-collect__item">
+                             @Html.FocusButton(new{eh_focus_id="<%= ProductCode %>",eh_focus_name="<%= ProductName %>"},string.Empty,string.Empty,InvestTypeEnum.Fund,true)
                             </li>
                             <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                            @Html.CompareButton(new{eh_compare_id="<%= ProductCode %>",eh_compare_name="<%= ProductName %>"},string.Empty,string.Empty,InvestTypeEnum.Fund,true)
                             </li>
                         </ul>
                     </div>
                 </td>
-                <% if (IsOnlineSubscriptionAvailability) { %>
+
                 <td class="c-cardTable__footer" data-card-table-width="1/3">
                     <div class="c-cardTable__content">
-                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+                        <% if (IsOnlineSubscriptionAvailability) { %>
+                        @Html.SubscriptionButton(new{eh_subscription_id="<%= ProductCode %>"},string.Empty,InvestTypeEnum.Fund,true)
+                        <% } %>
                     </div>
                 </td>
-                <% } %>
             </tr>
 
         </script>
@@ -1683,31 +1687,32 @@
                     <% } %>
                 </td>
                 <td class="c-cardTable__space"></td>
-                <td class="c-cardTable__footer" data-card-table-width="2/3">
+                <td class="c-cardTable__footer" data-card-table-width="<%= IsOnlineSubscriptionAvailability == true ? '2/3' : '1/1' %>">
                     <div class="c-cardTable__content">
                         <ul class="l-collect l-collect--divider@lt">
-                            <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                             <li class="l-collect__item">
+                             @Html.FocusButton(new{eh_focus_id="<%= ProductCode %>",eh_focus_name="<%= ProductName %>"},string.Empty,string.Empty,InvestTypeEnum.Fund,true)
                             </li>
                             <li class="l-collect__item">
-                                <a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                            @Html.CompareButton(new{eh_compare_id="<%= ProductCode %>",eh_compare_name="<%= ProductName %>"},string.Empty,string.Empty,InvestTypeEnum.Fund,true)
                             </li>
                         </ul>
                     </div>
                 </td>
+
                 <td class="c-cardTable__footer" data-card-table-width="1/3">
-                    <% if (IsOnlineSubscriptionAvailability) { %>
                     <div class="c-cardTable__content">
-                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+                        <% if (IsOnlineSubscriptionAvailability) { %>
+                        @Html.SubscriptionButton(new{eh_subscription_id="<%= ProductCode %>"},string.Empty,InvestTypeEnum.Fund,true)
+                        <% } %>
                     </div>
-                    <% } %>
                 </td>
             </tr>
         </script>
         </table>
-        @{
-            Html.RenderPartial("~/Views/Feature/Wealth/Component/Partial/_Pagination.cshtml");
-        }
+            @{
+                Html.RenderPartial("~/Views/Feature/Wealth/Component/Partial/_Pagination.cshtml");
+            }
         </div>
     </div>
 </div>
@@ -2001,6 +2006,9 @@
                         },
                         afterPagination: function () {
                             $('[data-popup]').magnificPopup();
+                            $('[eh-compare]').trigger('exec');
+                            $('[eh-focus]').trigger('exec');
+                            $('[eh-subscription-type]').trigger('exec');
                         }
                     },
                     search: {

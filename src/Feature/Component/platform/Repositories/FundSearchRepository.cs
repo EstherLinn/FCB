@@ -83,8 +83,8 @@ namespace Feature.Wealth.Component.Repositories
                 //基本資料
                 vm.FundCurrency = new KeyValuePair<string, string>(f.FundCurrencyCode, f.FundCurrencyName);
                 vm.PercentageChangeInFundPrice = Percentage(f.PercentageChangeInFundPrice);
-                vm.FundSizeMillionOriginalCurrency = RoundFundSize(f.FundSizeMillionOriginalCurrency);
-                vm.FundSizeMillionTWD = RoundFundSize(f.FundSizeMillionTWD);
+                vm.FundSizeMillionOriginalCurrency = Round4(f.FundSizeMillionOriginalCurrency);
+                vm.FundSizeMillionTWD = Round4(f.FundSizeMillionTWD);
                 vm.FundType = f.FormatFundType;
 
                 if (f.DividendFrequencyName == "無" || f.DividendFrequencyName == null)
@@ -180,14 +180,6 @@ namespace Feature.Wealth.Component.Repositories
             return value;
         }
 
-        private static decimal? RoundFundSize(decimal? value)
-        {
-            if (value != null)
-            {
-                value = decimal.Round(((decimal)value / 1000000), 4);
-            }
-            return value;
-        }
         private decimal? RoundingPrice(decimal? number)
         {
             if (!number.HasValue)
