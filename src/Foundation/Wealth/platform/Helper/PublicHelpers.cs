@@ -1,4 +1,6 @@
 ﻿
+using System.Text;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Foundation.Wealth.Helper
@@ -15,7 +17,7 @@ namespace Foundation.Wealth.Helper
         /// <param name="investType">投資種類</param>
         /// <param name="isListButton">是否為列表按鈕</param>
         /// <returns>MvcHtmlString</returns>
-        public static MvcHtmlString CompareButton(this HtmlHelper helper, object attributes, string id, string name, object investType, bool isListButton = true)
+        public static MvcHtmlString CompareButton(this HtmlHelper helper, object attributes,string id,string name,object investType,bool isListButton)
         {
             var builder = new TagBuilder("a");
             builder.MergeAttribute("href", "javascript:;");
@@ -27,7 +29,7 @@ namespace Foundation.Wealth.Helper
             builder.MergeAttribute("data-msg", "加入比較|取消比較");
             builder.MergeAttribute("data-ia", "true");
             builder.MergeAttribute("eh-compare-add", "false");
-            builder.MergeAttribute(isListButton == true ? "data-after-lt" : "data-after", "比較");
+            builder.MergeAttribute(isListButton == true ? "data-after-lt":"data-after", "比較");
             builder.AddCssClass("o-statusBtn o-statusBtn--compare");
             if (attributes != null)
             {
@@ -44,7 +46,7 @@ namespace Foundation.Wealth.Helper
         /// <param name="investType">投資種類</param>
         /// <param name="isListButton">是否為列表按鈕</param>
         /// <returns>MvcHtmlString</returns>
-        public static MvcHtmlString FocusButton(this HtmlHelper helper, object attributes, string id, string name, object investType, bool isListButton = true)
+        public static MvcHtmlString FocusButton(this HtmlHelper helper, object attributes, string id,string name, object investType, bool isListButton)
         {
             var builder = new TagBuilder("a");
             builder.MergeAttribute("href", "javascript:;");
@@ -64,6 +66,49 @@ namespace Foundation.Wealth.Helper
             }
             return MvcHtmlString.Create(builder.ToString(TagRenderMode.Normal));
         }
+
+        /// <summary>
+        /// 關注按鈕attributes
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="attributes">自訂屬性</param>
+        /// <param name="id">投資種類代號</param>
+        /// <param name="investType">投資種類</param>
+        /// <returns>HtmlString</returns>
+        public static HtmlString FocusTag(this HtmlHelper helper, object attributes, string id, string name, object investType)
+        {
+            StringBuilder sbBuilder = new StringBuilder();
+            sbBuilder.Append(string.Format("href='{0}' ", "javascript:;"));
+            sbBuilder.Append("eh-focus ");
+            sbBuilder.Append(string.Format("eh-focus-type='{0}' ", investType.ToString()));
+            sbBuilder.Append(string.Format("eh-focus-id='{0}' ", id));
+            sbBuilder.Append(string.Format("eh-focus-name='{0}' ", name));
+            sbBuilder.Append(string.Format("data-eh='{0}' ", "focus-init,focus-click"));
+            sbBuilder.Append(string.Format("data-msg='{0}' ", "加入關注|取消關注"));
+            sbBuilder.Append(string.Format("data-ia='{0}' ", "true"));
+            sbBuilder.Append(string.Format("eh-focus-add='{0}' ", "false"));
+
+            if (attributes != null )
+            {
+                var attr = HtmlHelper.AnonymousObjectToHtmlAttributes(attributes);
+                foreach (var item in attr)
+                {
+                    sbBuilder.Append(string.Format("{0}='{1}' ", item.Key,item.Value));
+                }
+                if (!attr.ContainsKey("class"))
+                {
+                    sbBuilder.Append(string.Format("class='{0}' ", "o-statusBtn o-statusBtn--like"));
+                }
+            }
+            else
+            {
+                //defalut class
+                sbBuilder.Append(string.Format("class='{0}' ", "o-statusBtn o-statusBtn--like"));
+            }
+
+            return new HtmlString(sbBuilder.ToString());
+        }
+
         /// <summary>
         /// 申購按鈕
         /// </summary>
@@ -73,7 +118,7 @@ namespace Foundation.Wealth.Helper
         /// <param name="investType">投資種類</param>
         /// <param name="isListButton">是否為列表按鈕</param>
         /// <returns>MvcHtmlString</returns>
-        public static MvcHtmlString SubscriptionButton(this HtmlHelper helper, object attributes, string id, object investType, bool isListButton = true)
+        public static MvcHtmlString SubscriptionButton(this HtmlHelper helper, object attributes, string id, object investType, bool isListButton)
         {
             var builder = new TagBuilder("a");
             builder.MergeAttribute("href", "#");
@@ -92,17 +137,55 @@ namespace Foundation.Wealth.Helper
         }
 
         /// <summary>
+        /// 申購按鈕attributes
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="attributes">自訂屬性</param>
+        /// <param name="id">投資種類代號</param>
+        /// <param name="investType">投資種類</param>
+        /// <returns>HtmlString</returns>
+        public static HtmlString SubscriptionTag(this HtmlHelper helper, object attributes, string id, string name, object investType)
+        {
+            StringBuilder sbBuilder = new StringBuilder();
+            sbBuilder.Append(string.Format("href='{0}' ", "#"));
+            sbBuilder.Append("eh-subscription ");
+            sbBuilder.Append(string.Format("eh-subscription-type='{0}' ", investType.ToString()));
+            sbBuilder.Append(string.Format("eh-subscription-id='{0}' ", id));
+            sbBuilder.Append(string.Format("data-eh='{0}' ", "subscription-init,subscription-click"));
+            sbBuilder.Append(string.Format("data-popup='{0}' ", "true"));
+            if (attributes != null)
+            {
+                var attr = HtmlHelper.AnonymousObjectToHtmlAttributes(attributes);
+                foreach (var item in attr)
+                {
+                    sbBuilder.Append(string.Format("{0}='{1}' ", item.Key, item.Value));
+                }
+                if (!attr.ContainsKey("class"))
+                {
+                    sbBuilder.Append(string.Format("class='{0}' ", "o-btn o-btn--primary o-btn--auto o-btn--thinest"));
+                }
+            }
+            else
+            {
+                //defalut class
+                sbBuilder.Append(string.Format("class='{0}' ", "o-btn o-btn--primary o-btn--auto o-btn--thinest"));
+            }
+
+            return new HtmlString(sbBuilder.ToString());
+        }
+
+        /// <summary>
         /// 幣別匯率Link
         /// </summary>
         /// <param name="helper"></param>
         /// <param name="attributes">自訂屬性</param>
         /// <param name="currencyName">幣別名稱</param>
         /// <returns>MvcHtmlString</returns>
-        public static MvcHtmlString CurrencyLink(this HtmlHelper helper, object attributes, string currencyName)
+        public static MvcHtmlString CurrencyLink(this HtmlHelper helper, object attributes,string currencyName)
         {
             var builder = new TagBuilder("span");
             if (string.IsNullOrEmpty(currencyName))
-            {
+            {               
                 builder.SetInnerText("-");
                 return MvcHtmlString.Create(builder.ToString(TagRenderMode.Normal));
             }
