@@ -1,11 +1,10 @@
-﻿using Foundation.Wealth.Manager;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Foundation.Wealth.Manager;
+using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.NewArrivalETF.NewArrivalEtfModel;
+using System.Globalization;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -18,7 +17,6 @@ namespace Feature.Wealth.Component.Repositories
             var sql = """
              SELECT *
              FROM [vw_BasicETF]
-             WHERE [ListingDate] >= DATEADD(year, -1, GETDATE())
              ORDER BY SixMonthReturnMarketPriceOriginalCurrency
              DESC
              """;
@@ -44,6 +42,14 @@ namespace Feature.Wealth.Component.Repositories
             item.DiscountPremiumFormat = RoundingPrice(item.DiscountPremium);
             item.SixMonthReturnMarketPriceOriginalCurrencyFormat = RoundingPrice2(item.SixMonthReturnMarketPriceOriginalCurrency);
             item.MarketPriceFormat = RoundingPrice(item.MarketPrice);
+
+            var cultureInfo = new CultureInfo("zh-TW");
+            string dateFormat = "yyyy/MM/dd";
+            if (DateTime.TryParseExact(item.ListingDate, "yyyyMMdd", cultureInfo, DateTimeStyles.None, out DateTime listingDate))
+            {
+                item.ListingDate = listingDate.ToString(dateFormat);
+                item.ListingDateFormat = listingDate;
+            }
         }
 
         private decimal? RoundingPrice(decimal? number)

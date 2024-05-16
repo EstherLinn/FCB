@@ -21,8 +21,11 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
-            var newETF = _repository.GetFundData();
-            var total = newETF.Count;
+
+            var etf = _repository.GetFundData();
+            var newETF = etf.Where(f => f.ListingDateFormat >= DateTime.Today.AddYears(-1));
+
+            var total = newETF.Count();
             var model = new NewArrivalEtfModel()
             {
                 Item = dataSourceItem,
@@ -37,7 +40,8 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetSortedNewArrivalEtf(int page, string pageSize, string orderby, string desc)
         {
-            var etfs = _repository.GetFundData();
+            var etf = _repository.GetFundData();
+            var etfs = etf.Where(f => f.ListingDateFormat >= DateTime.Today.AddYears(-1));
 
             if (page == null) { page = 1; }
             if (pageSize == null) { pageSize = "10"; }
@@ -59,13 +63,13 @@ namespace Feature.Wealth.Component.Controllers
             if (pageSize.Equals("all", StringComparison.OrdinalIgnoreCase))
             {
                 totalPages = 1;
-                renderDatas = etfs;
+                renderDatas = etfs?.ToList();
             }
             else
             {
                 int pageSizeInt = Convert.ToInt32(pageSize);
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSizeInt);
-                renderDatas = etfs
+                renderDatas = etfs?
                     .Skip((page - 1) * pageSizeInt)
                     .Take(pageSizeInt)
                     .ToList();
