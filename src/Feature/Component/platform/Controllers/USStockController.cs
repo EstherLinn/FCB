@@ -34,9 +34,11 @@ namespace Feature.Wealth.Component.Controllers
             var hotproducttags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.hotProduct);
             var product = hotproducttags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.CampaignTypeCode)).ToList();
 
-            foreach (var uSStock in uSStockList)
+            for (int i = 0; i < uSStockList.Count; i++)
             {
+                var uSStock = uSStockList[i];
                 uSStock.DetailLink = detailLink + "?id=" + uSStock.FirstBankCode;
+                uSStock = this._uSStockRepository.GetButtonHtml(uSStock);
 
                 foreach (var f in hotkeywordtags)
                 {

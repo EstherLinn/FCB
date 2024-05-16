@@ -62,6 +62,10 @@ namespace Feature.Wealth.Component.Models.MarketTrend
         public string OnlineSubscriptionAvailability { get; set; }
         public bool IsLogin { get; set; }
         public bool IsLike { get; set; }
+        public string CurrencyLinkHtml { get; set; }
+        public string FocusButtonHtml { get; set; }
+        public string CompareButtonHtml { get; set; }
+        public string SubscribeButtonHtml { get; set; }
     }
 
     public class News

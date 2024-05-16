@@ -1,5 +1,7 @@
 ﻿using Dapper;
+using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.USStock;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using System.Data;
@@ -80,6 +82,16 @@ namespace Feature.Wealth.Component.Repositories
             var para = new { FirstBankCode = firstBankCode };
             updateCount = DbManager.Custom.Execute<int>("sp_USStockViewCountRecord", para, commandType: System.Data.CommandType.StoredProcedure);
             return updateCount == 1;
+        }
+
+        internal USStock GetButtonHtml(USStock item, bool isListButton = true)
+        {
+            item.FocusButton = PublicHelpers.FocusButton(null, null, item.FirstBankCode, item.FullName, InvestTypeEnum.ForeignStocks, isListButton);
+            item.FocusButtonHtml = item.FocusButton.ToString();
+            item.SubscribeButton = PublicHelpers.SubscriptionButton(null, null, item.FirstBankCode, InvestTypeEnum.ForeignStocks, isListButton);
+            item.SubscribeButtonHtml = item.SubscribeButton.ToString();
+
+            return item;
         }
     }
 }

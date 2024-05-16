@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Web;
 using System.Web.Mvc;
+using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.MarketTrend;
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Data.Items;
@@ -206,9 +207,7 @@ namespace Feature.Wealth.Component.Controllers
                             fund.DetailLink = fundLink + "?id=" + fund.ProductCode;
                             fund.Title = marketTrend.Title;
 
-                            // TODO 取得關注
-
-                            // TODO 取得比較
+                            fund = this._marketTrendRepository.GetButtonHtml(fund, InvestTypeEnum.Fund);
 
                             if (!tempFunds.Any(c => c.ProductCode == fund.ProductCode))
                             {
@@ -257,9 +256,7 @@ namespace Feature.Wealth.Component.Controllers
                             etf.DetailLink = etfLink + "?id=" + etf.ProductCode;
                             etf.Title = marketTrend.Title;
 
-                            // TODO 取得關注
-
-                            // TODO 取得比較
+                            etf = this._marketTrendRepository.GetButtonHtml(etf, InvestTypeEnum.ETF);
 
                             if (!tempETFs.Any(c => c.ProductCode == etf.ProductCode))
                             {
