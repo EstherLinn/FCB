@@ -235,7 +235,7 @@
         <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
         <td class="c-cardTable__space"></td>
         <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-        <td class="c-cardTable__footer" data-card-table-width="2/3">
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
@@ -253,11 +253,13 @@
                 </ul>
             </div>
         </td>
-        <% if(CanOnlineSubscription) { %>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
-            <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
+            <div class="c-cardTable__content">
+                <% if(CanOnlineSubscription) { %>
+                <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a>
+                <% } %>
+            </div>
         </td>
-        <% } %>
     </tr>
 </script>
 
@@ -334,7 +336,7 @@
         </td>
 
         <td class="c-cardTable__space"></td>
-        <td class="c-cardTable__footer" data-card-table-width="2/3">
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
@@ -346,13 +348,13 @@
                 </ul>
             </div>
         </td>
-        <% if(CanOnlineSubscription) { %>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <div class="c-cardTable__content">
+                <% if(CanOnlineSubscription) { %>
                 <%= SubscribeButtonHtml %>
+                <% } %>
             </div>
         </td>
-        <% } %>
     </tr>
 </script>
 
@@ -429,7 +431,7 @@
         </td>
 
         <td class="c-cardTable__space"></td>
-        <td class="c-cardTable__footer" data-card-table-width="2/3">
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
@@ -441,13 +443,13 @@
                 </ul>
             </div>
         </td>
-        <% if(CanOnlineSubscription) { %>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <div class="c-cardTable__content">
+                <% if(CanOnlineSubscription) { %>
                 <%= SubscribeButtonHtml %>
+                <% } %>
             </div>
         </td>
-        <% } %>
     </tr>
 </script>
 
@@ -525,7 +527,7 @@
         </td>
 
         <td class="c-cardTable__space"></td>
-        <td class="c-cardTable__footer" data-card-table-width="2/3">
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
@@ -537,13 +539,13 @@
                 </ul>
             </div>
         </td>
-        <% if(CanOnlineSubscription) { %>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <div class="c-cardTable__content">
+                <% if(CanOnlineSubscription) { %>
                 <%= SubscribeButtonHtml %>
+                <% } %>
             </div>
         </td>
-        <% } %>
     </tr>
 </script>
 
@@ -622,7 +624,7 @@
         </td>
 
         <td class="c-cardTable__space"></td>
-        <td class="c-cardTable__footer" data-card-table-width="2/3">
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
@@ -634,13 +636,13 @@
                 </ul>
             </div>
         </td>
-        <% if(CanOnlineSubscription) { %>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <div class="c-cardTable__content">
+                <% if(CanOnlineSubscription) { %>
                 <%= SubscribeButtonHtml %>
+                <% } %>
             </div>
         </td>
-        <% } %>
     </tr>
 </script>
 
@@ -702,7 +704,7 @@
         </td>
 
         <td class="c-cardTable__space"></td>
-        <td class="c-cardTable__footer" data-card-table-width="2/3">
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
@@ -714,13 +716,13 @@
                 </ul>
             </div>
         </td>
-        <% if(CanOnlineSubscription) { %>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <div class="c-cardTable__content">
+                <% if(CanOnlineSubscription) { %>
                 <%= SubscribeButtonHtml %>
+                <% } %>
             </div>
         </td>
-        <% } %>
     </tr>
 </script>
 
@@ -782,7 +784,7 @@
         </td>
 
         <td class="c-cardTable__space"></td>
-        <td class="c-cardTable__footer" data-card-table-width="2/3">
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
@@ -794,13 +796,13 @@
                 </ul>
             </div>
         </td>
-        <% if(CanOnlineSubscription) { %>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <div class="c-cardTable__content">
+                <% if(CanOnlineSubscription) { %>
                 <%= SubscribeButtonHtml %>
+                <% } %>
             </div>
         </td>
-        <% } %>
     </tr>
 </script>
 
@@ -857,7 +859,7 @@
         </td>
 
         <td class="c-cardTable__space"></td>
-        <td class="c-cardTable__footer" data-card-table-width="2/3">
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
@@ -869,13 +871,13 @@
                 </ul>
             </div>
         </td>
-        <% if(CanOnlineSubscription) { %>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <div class="c-cardTable__content">
+                <% if(CanOnlineSubscription) { %>
                 <%= SubscribeButtonHtml %>
+                <% } %>
             </div>
         </td>
-        <% } %>
     </tr>
 </script>
 
@@ -947,7 +949,7 @@
         </td>
 
         <td class="c-cardTable__space"></td>
-        <td class="c-cardTable__footer" data-card-table-width="2/3">
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
@@ -959,12 +961,12 @@
                 </ul>
             </div>
         </td>
-        <% if(CanOnlineSubscription) { %>
         <td class="c-cardTable__footer" data-card-table-width="1/3">
             <div class="c-cardTable__content">
+                <% if(CanOnlineSubscription) { %>
                 <%= SubscribeButtonHtml %>
+                <% } %>
             </div>
         </td>
-        <% } %>
     </tr>
 </script>
