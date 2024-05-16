@@ -34,6 +34,7 @@
             <div class="l-flex">
                 <div class="l-flex__item" id="fundSelect">
                     <select class="o-selectbox o-selectbox--funds" data-selection-css-class="select2-selection--funds" data-selectbox="true" data-width="auto" data-placeholder="切換基金級別" data-dropdown-auto-width="true" data-dropdown-css-class="select2-dropdown--autoWidth">
+                        <option>切換基金級別</option>
                     </select>
                 </div>
                 <div class="l-flex__item u-right u-hidden@lt">
@@ -2797,10 +2798,6 @@
                                 return false; //break
                             }
                         });
-                         $('#fundSelect').find("select").append($('<option>', {
-                                    value: "",
-                                    text: "切換基金級別"
-                                }));
                         $.each(filterData, function (index, value) {
                                 $('#fundSelect').find("select").append($('<option>', {
                                     value: value.v5,

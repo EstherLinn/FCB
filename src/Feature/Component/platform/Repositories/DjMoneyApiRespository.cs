@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using Sitecore.Configuration;
 using System;
 using System.Threading.Tasks;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -23,16 +24,35 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetSameLevelFund(string fundId)
         {
             JObject result = null;
-            var request = await _route.
-                AppendPathSegments("api", "fund", fundId, "most-recent-five-year-roi-and-fee").
-                WithOAuthBearerToken(_token).
-                AllowAnyHttpStatus().
-                GetAsync().
-                ReceiveString();
-
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var request = await _route.
+                    AppendPathSegments("api", "fund", fundId, "most-recent-five-year-roi-and-fee").
+                    WithOAuthBearerToken(_token).
+                    AllowAnyHttpStatus().
+                    GetAsync();
+
+                if (request.StatusCode < 300)
+                {
+                    var resp = await request.GetStringAsync();
+                    if (!string.IsNullOrEmpty(resp))
+                    {
+                        result = JObject.Parse(resp);
+                    }
+                }
+                else
+                {
+                    var error = await request.GetStringAsync();
+                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                }
+            }
+            catch (FlurlHttpException ex)
+            {
+                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Api.Info(ex.Message);
             }
             return result;
         }
@@ -40,22 +60,40 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetGetCloseYearPerformance(string fundId)
         {
             JObject result = null;
-            var request = await _route.
-           AppendPathSegments("api", "fund", fundId, "roi-duringdate").
-           SetQueryParams(new
-           {
-               startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddYears(-1)).ToString("yyyy/MM/dd"),
-               enddate = _today,
-               getTWD = 0
-           }).
-           WithOAuthBearerToken(_token).
-           AllowAnyHttpStatus().
-           GetAsync().
-           ReceiveString();
-
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var request = await _route.
+               AppendPathSegments("api", "fund", fundId, "roi-duringdate").
+               SetQueryParams(new
+               {
+                   startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddYears(-1)).ToString("yyyy/MM/dd"),
+                   enddate = _today,
+                   getTWD = 0
+               }).
+               WithOAuthBearerToken(_token).
+               AllowAnyHttpStatus().
+               GetAsync();
+                if (request.StatusCode < 300)
+                {
+                    var resp = await request.GetStringAsync();
+                    if (!string.IsNullOrEmpty(resp))
+                    {
+                        result = JObject.Parse(resp);
+                    }
+                }
+                else
+                {
+                    var error = await request.GetStringAsync();
+                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                }
+            }
+            catch (FlurlHttpException ex)
+            {
+                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Api.Info(ex.Message);
             }
             return result;
         }
@@ -63,19 +101,37 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetDocLink(string fundId, string idx)
         {
             JObject result = null;
-            var request = await _route.
-           AppendPathSegments("api", "fund", fundId, "funddoc").
-           SetQueryParams(new
-           {
-               idx = idx,
-           }).WithOAuthBearerToken(_token).
-           AllowAnyHttpStatus().
-           GetAsync().
-           ReceiveString();
-
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var request = await _route.
+               AppendPathSegments("api", "fund", fundId, "funddoc").
+               SetQueryParams(new
+               {
+                   idx = idx,
+               }).WithOAuthBearerToken(_token).
+               AllowAnyHttpStatus().
+               GetAsync();
+                if (request.StatusCode < 300)
+                {
+                    var resp = await request.GetStringAsync();
+                    if (!string.IsNullOrEmpty(resp))
+                    {
+                        result = JObject.Parse(resp);
+                    }
+                }
+                else
+                {
+                    var error = await request.GetStringAsync();
+                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                }
+            }
+            catch (FlurlHttpException ex)
+            {
+                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Api.Info(ex.Message);
             }
             return result;
         }
@@ -83,19 +139,36 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetRuleText(string fundId, string type, string indicator)
         {
             JObject result = null;
-            var route = indicator == nameof(FundEnum.D) ? "fundtraderule" : "wfundtraderule";
-            var isOverseas = indicator == nameof(FundEnum.D) ? "domestic" : "foreign";
-
-            var request = await _route.
-             AppendPathSegments("api", "fund", isOverseas, fundId, route, type).
-             WithOAuthBearerToken(_token).
-             AllowAnyHttpStatus().
-             GetAsync().
-             ReceiveString();
-
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var route = indicator == nameof(FundEnum.D) ? "fundtraderule" : "wfundtraderule";
+                var isOverseas = indicator == nameof(FundEnum.D) ? "domestic" : "foreign";
+                var request = await _route.
+                 AppendPathSegments("api", "fund", isOverseas, fundId, route, type).
+                 WithOAuthBearerToken(_token).
+                 AllowAnyHttpStatus().
+                 GetAsync();
+                if (request.StatusCode < 300)
+                {
+                    var resp = await request.GetStringAsync();
+                    if (!string.IsNullOrEmpty(resp))
+                    {
+                        result = JObject.Parse(resp);
+                    }
+                }
+                else
+                {
+                    var error = await request.GetStringAsync();
+                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                }
+            }
+            catch (FlurlHttpException ex)
+            {
+                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Api.Info(ex.Message);
             }
             return result;
         }
@@ -104,7 +177,10 @@ namespace Feature.Wealth.Component.Repositories
         {
             JObject result = null;
             var route = string.Empty;
-            var request = string.Empty;
+            FlurlResponse request = null;
+            try
+            {
+
             switch (trend.ToLower())
             {
                 case nameof(FundRateTrendEnum.ori):
@@ -123,7 +199,7 @@ namespace Feature.Wealth.Component.Repositories
             switch (trend.ToLower())
             {
                 case nameof(FundRateTrendEnum.ori):
-                    request = await _route.AppendPathSegments("api", "fund", fundId, route)
+                    request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
                      .SetQueryParams(new
                      {
                          startdate = startdate,
@@ -131,12 +207,11 @@ namespace Feature.Wealth.Component.Repositories
                          getTWD = 0
                      }).WithOAuthBearerToken(_token).
                         AllowAnyHttpStatus().
-                        GetAsync().
-                        ReceiveString();
+                        GetAsync();
                     break;
 
                 case nameof(FundRateTrendEnum.twd):
-                    request = await _route.AppendPathSegments("api", "fund", fundId, route)
+                    request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
                    .SetQueryParams(new
                    {
                        startdate = startdate,
@@ -144,26 +219,41 @@ namespace Feature.Wealth.Component.Repositories
                        getTWD = 1
                    }).WithOAuthBearerToken(_token).
                         AllowAnyHttpStatus().
-                        GetAsync().
-                        ReceiveString();
+                        GetAsync();
                     break;
 
                 case nameof(FundRateTrendEnum.networth):
-                    request = await _route.AppendPathSegments("api", "fund", fundId, route)
+                    request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
                    .SetQueryParams(new
                    {
                        startdate = startdate,
                        enddate = enddate,
                    }).WithOAuthBearerToken(_token).
                         AllowAnyHttpStatus().
-                        GetAsync().
-                        ReceiveString();
+                        GetAsync();
                     break;
             }
-
-            if (!string.IsNullOrEmpty(request))
+                if (request.StatusCode < 300)
+                {
+                    var resp = await request.GetStringAsync();
+                    if (!string.IsNullOrEmpty(resp))
+                    {
+                        result = JObject.Parse(resp);
+                    }
+                }
+                else
+                {
+                    var error = await request.GetStringAsync();
+                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                }
+            }
+            catch (FlurlHttpException ex)
             {
-                result = JObject.Parse(request);
+                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Api.Info(ex.Message);
             }
             return result;
         }
