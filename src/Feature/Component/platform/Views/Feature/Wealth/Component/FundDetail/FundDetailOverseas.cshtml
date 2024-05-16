@@ -2467,12 +2467,11 @@
                                 <div class="l-table">
                                     <table class="c-table u-nowrap u-center" data-fixed-columns="true">
                                         <colgroup>
-                                            <col style="width: 16.6%;">
-                                            <col style="width: 16.6%;">
-                                            <col style="width: 16.6%;">
-                                            <col style="width: 16.6%;">
-                                            <col style="width: 16.6%;">
-                                            <col style="width: 16.6%;">
+                                            <col style="width: 20%;">
+                                            <col style="width: 20%;">
+                                            <col style="width: 20%;">
+                                            <col style="width: 20%;">
+                                            <col style="width: 20%;">
                                         </colgroup>
                                         <thead>
                                             <tr>
@@ -2491,17 +2490,11 @@
                                                 <th>
                                                     <div class="c-table__title u-center"><span id="dividendCurrency"></span></div>
                                                 </th>
-                                                <th>
-                                                    <div class="c-table__title"><span>年化配息率</span></div>
-                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody id='dividendTable'>
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="l-dataNotes u-left">
-                                    <span class="t-note">說明：因應金管會自2015年07月14日起，統一基金年化配息率計算公式，公式將調整為「每單位配息金額 ÷ 除息日前一日之淨值 × 一年配息次數 × 100%」，提醒您年化配息率為估算值僅供參考，上述配息率資料實際以基金公司公告為主。新規定施行不溯及既往，之前提供的年化配息率，不再依新公式調整。</span>
                                 </div>
                             </div>
                         </div>
@@ -2776,7 +2769,6 @@
                            <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
                            <td>配息</td>
                            <td>${yearData[i].Dividend}</td>
-                           <td>${yearData[i].AnnualizedDividendRate}%</td>
                                  </tr>`
                           }
                           $('#dividendTable').html(dividendTableHtml);
