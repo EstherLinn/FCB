@@ -168,7 +168,7 @@
                             <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                             <div class="c-filter__total" data-filter-collapse>
                                 <div class="o-total o-total--wt">
-                                    搜尋<span id="uid-total">9999</span>筆
+                                    搜尋<span id="uid-total">0</span>筆
                                 </div>
                             </div>
                         </div>
@@ -206,7 +206,7 @@
                 <div class="l-filter__tool">
                     <div class="l-filter__total">
                         <div class="o-total">
-                            共<span id="uid-total">9999</span>項結構型商品
+                            共<span id="uid-total">0</span>項結構型商品
                         </div>
                     </div>
                     <div class="l-filter__reset">
@@ -507,8 +507,8 @@
                         // 新增 value 欄位
                         item.value = item.ProductCode + " " + item.ProductName;
 
-                        item.CurrencyHtml = currencyLink(item);
                         resetProp(item);
+                        item.CurrencyHtml = currencyLink(item);
 
                         for (var d in item) {
                             let value = item[d];
