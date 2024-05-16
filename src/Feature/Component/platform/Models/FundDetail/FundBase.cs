@@ -117,7 +117,7 @@ namespace Feature.Wealth.Component.Models.FundDetail
         /// </summary>
         public string EstablishmentDate { get; set; }
         /// <summary>
-        /// 是否上架
+        /// 已撤銷核備
         /// </summary>
         public string WithdrawnApproval { get; set; }
         /// <summary>
@@ -125,7 +125,7 @@ namespace Feature.Wealth.Component.Models.FundDetail
         /// </summary>
         public string ListingDate { get; set; }
         /// <summary>
-        /// 已撤銷核備
+        /// 是否上架
         /// </summary>
         public string AvailabilityStatus { get; set; }
         /// <summary>
