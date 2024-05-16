@@ -167,8 +167,12 @@
         var _self = this;
         var _name = 'sysjust b2brwd corp';
 
-        function init(val) {
+        function setIframeSrc(val) {
             $(_selector).attr('src', `@(Model.b2brwdDomain)/b2brwdCommon/proxy/gopage.xdjhtm?aspid=firstbank&bid=@(Model.USStock.FirstBankCode)&api=${val}`);
+        }
+
+        function init() {
+            setIframeSrc('1001');
 
             // Add Lister to
             $(_selector)
@@ -265,14 +269,14 @@
         $('select').on('change', function () {
             var val = this.value;
 
-            init(val);
+            setIframeSrc(val);
         });
 
         $('[data-tab-target]').on('click', function () {
             var name = $(this).attr("data-tab-target");
             var val = $(`[data-select-name=${name}`)[0].value;
 
-            init(val);
+            setIframeSrc(val);
         });
 
         $('[data-popup]').magnificPopup();
@@ -280,6 +284,6 @@
         $('[eh-focus]').trigger('exec');
         $('[eh-subscription-type]').trigger('exec');
 
-        init("1001");
+        init();
     });
 </script>
