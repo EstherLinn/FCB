@@ -19,6 +19,7 @@ namespace Feature.Wealth.Component.Models.USStock
     public class USStockDetailModel
     {
         public USStock USStock { get; set; }
+        public string b2brwdDomain { get; set; }
     }
 
     public class USStock
@@ -53,9 +54,12 @@ namespace Feature.Wealth.Component.Models.USStock
         //詳細頁用 MvcHtmlString
         public MvcHtmlString FocusButton { get; set; }
         public MvcHtmlString SubscribeButton { get; set; }
-        //列表頁用 string
+        //列表頁列表用 string
         public string FocusButtonHtml { get; set; }
         public string SubscribeButtonHtml { get; set; }
+        //列表頁自動完成用 string
+        public string AutoFocusButtonHtml { get; set; }
+        public string AutoSubscribeButtonHtml { get; set; }
     }
 
     public struct Template
@@ -80,6 +84,16 @@ namespace Feature.Wealth.Component.Models.USStock
             {
                 public static readonly ID CampaignTypeCode = new ID("{BC124AFC-E27F-420F-9C9F-368028551045}");
                 public static readonly ID FirstBankCodeList = new ID("{AACA00D0-8DF6-4571-9792-7F5EF8556F01}");
+            }
+        }
+
+        public readonly struct USStockDetail
+        {
+            public static readonly ID Id = new ID("{23CB2BBD-8A9F-4529-8847-B8F64DF39982}");
+
+            public readonly struct Fields
+            {
+                public static readonly ID b2brwdDomain = new ID("{845DB51B-8483-4D03-83BC-767649F4A5FB}");
             }
         }
     }

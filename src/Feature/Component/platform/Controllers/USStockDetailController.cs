@@ -3,6 +3,7 @@ using Feature.Wealth.Component.Models.USStock;
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 
 namespace Feature.Wealth.Component.Controllers
@@ -28,7 +29,8 @@ namespace Feature.Wealth.Component.Controllers
         {
             var model = new USStockDetailModel
             {
-                USStock = this._uSStockRepository.GetButtonHtml(uSStock, false)
+                USStock = this._uSStockRepository.GetButtonHtml(uSStock, false),
+                b2brwdDomain = ItemUtils.GetFieldValue(item, Template.USStockDetail.Fields.b2brwdDomain)
             };
 
             return model;
