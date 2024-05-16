@@ -904,8 +904,8 @@
                                 };
                             });
 
-                            mapMarketPriceData.reverse();
-                            mapNetWorthData.reverse();
+                            mapMarketPriceData.sort((a, b) => { return a.x - b.x; });
+                            mapNetWorthData.sort((a, b) => { return a.x - b.x; });
 
                             let series = [{
                                 name: '市價',
@@ -950,8 +950,6 @@
                                                     minPoint = point;
                                                 }
                                             });
-
-                                            allPoints.reverse();
 
                                             var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
                                             var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
@@ -1298,8 +1296,8 @@
                                 };
                             });
 
-                            mapMarketPriceData.reverse();
-                            mapNetWorthData.reverse();
+                            mapMarketPriceData.sort((a, b) => { return a.x - b.x; });
+                            mapNetWorthData.sort((a, b) => { return a.x - b.x; });
                             mapGlobalIndexData.sort(compare);
 
                             let series = [{
@@ -1350,8 +1348,6 @@
                                                     minPoint = point;
                                                 }
                                             });
-
-                                            allPoints.reverse();
 
                                             var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
                                             var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;

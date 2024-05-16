@@ -23,7 +23,6 @@
         <div class="c-section__content">
             @if (Model.ETFScaleRecords != null && Model.ETFScaleRecords.Any())
             {
-
                 <div class="l-flex u-flex-col u-flex-gap-sm">
                     <div class="l-flex__item">
                         <div class="l-selectbox">
@@ -349,10 +348,12 @@
                         });
                         $('[data-chart="scale"]').find('.c-empty').addClass('u-hidden');
                         $('[data-chart="scale"]').find('.c-chartBox').removeClass('u-hidden');
+                    } else {
+                        $('[data-chart="scale"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="scale"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                     }
                 } catch (error) {
                     console.error('Error:', error);
-
                 }
             }
             initRate();

@@ -5,6 +5,7 @@
 @{
     var etfData = Model.BasicEtf as EtfDetail;
     var ETFHistoryPriceApiUrl = ClientRoute.GenerateUrl(this, "EtfDetail", "GetHistoryPrice");
+    var tradingPrice = Model.ETFTradingPrice as EtfTradingPrice;
 
 }
 @*歷史買賣價*@
@@ -19,7 +20,7 @@
                             <div class="c-numerical__title c-numerical__title--dk"><span>價格</span></div>
                             <div class="c-numerical__content">
 
-                                <span>48.9100(美元)</span>
+                                <span>@tradingPrice.BankBuyPrice.FormatDecimalNumber()</span>
                             </div>
                         </div>
                     </div>
@@ -28,7 +29,7 @@
                             <div class="c-numerical__title c-numerical__title--dk"><span>漲跌/漲跌幅</span></div>
                             <div class="c-numerical__content">
 
-                                <span class="o-rise">0.10</span> / <span class="o-rise">0.10%</span>
+                                <span class="@tradingPrice.BuyPriceChangeStyle">@tradingPrice.BuyPriceChange.FormatDecimalNumber()</span> / <span class="@tradingPrice.BuyPriceChangePercentageStyle">@tradingPrice.BuyPriceChangePercentage.FormatDecimalNumber(needPercent: true)</span>
                             </div>
                         </div>
                     </div>
@@ -37,7 +38,7 @@
                             <div class="c-numerical__title c-numerical__title--dk"><span>最高價格(年)</span></div>
                             <div class="c-numerical__content">
 
-                                <span>59.0800</span>
+                                <span>@tradingPrice.MaxBuyPrice.FormatDecimalNumber()</span>
                             </div>
                         </div>
                     </div>
@@ -46,7 +47,7 @@
                             <div class="c-numerical__title c-numerical__title--dk"><span>最低價格(年)</span></div>
                             <div class="c-numerical__content">
 
-                                <span>44.5200</span>
+                                <span>@tradingPrice.MinBuyPrice.FormatDecimalNumber()</span>
                             </div>
                         </div>
                     </div>
@@ -65,7 +66,7 @@
                             <div class="c-numerical__title c-numerical__title--dk"><span>價格</span></div>
                             <div class="c-numerical__content">
 
-                                <span>48.9100(美元)</span>
+                                <span>@tradingPrice.BankSellPrice.FormatDecimalNumber()</span>
                             </div>
                         </div>
                     </div>
@@ -74,7 +75,7 @@
                             <div class="c-numerical__title c-numerical__title--dk"><span>漲跌/漲跌幅</span></div>
                             <div class="c-numerical__content">
 
-                                <span class="o-rise">0.10</span> / <span class="o-rise">0.10%</span>
+                                <span class="@tradingPrice.SellPriceChangeStyle">@tradingPrice.SellPriceChange.FormatDecimalNumber()</span> / <span class="@tradingPrice.SellPriceChangePercentageStyle">@tradingPrice.SellPriceChangePercentage.FormatDecimalNumber(needPercent: true)</span>
                             </div>
                         </div>
                     </div>
@@ -83,7 +84,7 @@
                             <div class="c-numerical__title c-numerical__title--dk"><span>最高價格(年)</span></div>
                             <div class="c-numerical__content">
 
-                                <span>59.0800</span>
+                                <span>@tradingPrice.MaxSellPrice.FormatDecimalNumber()</span>
                             </div>
                         </div>
                     </div>
@@ -92,7 +93,7 @@
                             <div class="c-numerical__title c-numerical__title--dk"><span>最低價格(年)</span></div>
                             <div class="c-numerical__content">
 
-                                <span>44.5200</span>
+                                <span>@tradingPrice.MinSellPrice.FormatDecimalNumber()</span>
                             </div>
                         </div>
                     </div>
@@ -446,7 +447,7 @@
                         ...obj
                     };
 
-                    // 呼叫 API ETF詳細頁 – 績效/淨值 - 市價/淨值走勢
+                    // 呼叫 API ETF詳細頁 – 績效/淨值 - 買賣價走勢
                     var query = apiRequest('@ETFHistoryPriceApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data).length != 0

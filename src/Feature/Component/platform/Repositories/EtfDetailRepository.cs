@@ -127,6 +127,7 @@ namespace Feature.Wealth.Component.Repositories
             model.ETFThiryDaysNav = GetThrityDaysNav();
             model.ETFNetWorthAnnunalReturn = GetAnnualReturn();
             model.ETFNetWorthMonthlyReturn = GetNetWortMonthlyReturn();
+            model.ETFTradingPrice = GetBuyAndSellPriceData() ?? new EtfTradingPrice();
             model.ETFStockHoldings = GetETFStockHolding();
             model.ETFRiskIndicator = GetETFRiskIndicator();
             model.ETFYearReturns = GetETFYearReturnCompare();
@@ -506,6 +507,106 @@ namespace Feature.Wealth.Component.Repositories
             var result = collection.Adapt<List<EtfReferenceIndexMonthlyReturn>>(config);
 
             return result;
+        }
+
+        /// <summary>
+        /// 取得一銀買賣價資料來源
+        /// </summary>
+        /// <returns></returns>
+        private EtfTradingPrice GetBuyAndSellPriceData()
+        {
+            var sql = """
+                WITH [FundETFCTE] AS(
+                    SELECT *
+                    FROM (
+                        SELECT [BankProductCode]
+                            ,[ETFCurrency]
+                            ,CAST([BankBuyPrice] AS DECIMAL(12, 4)) AS [BankBuyPrice]
+                            ,CAST([BankSellPrice] AS DECIMAL(12, 4)) AS [BankSellPrice]
+                            ,CAST(FORMAT( CONVERT(DATE, CONVERT(NVARCHAR(8), [PriceBaseDate] + 19110000), 112), 'yyyy/MM/dd' ) AS Date) AS [PriceBaseDate]
+                            ,[ProductName]
+                            ,[DataDate]
+                            , ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [PriceBaseDate] DESC) AS [RowNumber]
+                        FROM [dbo].[FUND_ETF] WITH (NOLOCK)
+                    ) T1
+                    WHERE [RowNumber] < 3
+                ), [YearPriceCTE] AS (
+                    SELECT [BankProductCode]
+                        ,MAX([BankBuyPrice]) AS [MaxBuyPrice]
+                        ,MIN([BankBuyPrice]) AS [MinBuyPrice]
+                        ,MAX([BankSellPrice]) AS [MaxSellPrice]
+                        ,MIN([BankSellPrice]) AS [MinSellPrice]
+                    FROM (
+                        SELECT [BankProductCode]
+                            ,CAST(FORMAT( CONVERT(DATE, CONVERT(NVARCHAR(8), [PriceBaseDate] + 19110000), 112), 'yyyy/MM/dd' ) AS Date) AS [PriceBaseDate]
+                            ,CAST([BankBuyPrice] AS DECIMAL(12, 4)) AS [BankBuyPrice]
+                            ,CAST([BankSellPrice] AS DECIMAL(12, 4)) AS [BankSellPrice]
+                        FROM [dbo].[FUND_ETF] WITH (NOLOCK)
+                    ) T1
+                    WHERE [PriceBaseDate] >= DATEADD(YEAR, -1, GETDATE())
+                    GROUP BY [BankProductCode]
+                )
+
+                SELECT 
+                     [Table].[BankProductCode]
+                    ,[Table].[ETFCurrency]
+                    ,[Table].[BankBuyPrice]
+                    ,[Table].[BankSellPrice]
+                    ,[Table].[PriceBaseDate]
+                    ,[Table].[ProductName]
+                    ,[PreviousTable].[BankBuyPrice]  AS [PreviousBuyPrice]
+                    ,[PreviousTable].[BankSellPrice] AS [PreviousSellPrice]
+                    ,[PreviousTable].[PriceBaseDate] AS [PreviousPriceBaseDate]
+                    ,CASE WHEN [PreviousTable].[BankBuyPrice] IS NOT NULL
+                        THEN [Table].[BankBuyPrice] - [PreviousTable].[BankBuyPrice]
+                        ELSE NULL
+                    END [BuyPriceChange]
+                    ,CASE WHEN [PreviousTable].[BankBuyPrice] IS NOT NULL
+                        THEN ( [Table].[BankBuyPrice] - [PreviousTable].[BankBuyPrice] ) / [PreviousTable].[BankBuyPrice]
+                        ELSE NULL
+                    END [BuyPriceChangePercentage]
+                    ,CASE WHEN [PreviousTable].[BankSellPrice] IS NOT NULL
+                        THEN [Table].[BankSellPrice] - [PreviousTable].[BankSellPrice]
+                        ELSE NULL
+                    END [SellPriceChange]
+                    ,CASE WHEN [PreviousTable].[BankSellPrice] IS NOT NULL
+                        THEN ( [Table].[BankSellPrice] - [PreviousTable].[BankSellPrice] ) / [PreviousTable].[BankSellPrice]
+                        ELSE NULL
+                    END [SellPriceChangePercentage]
+                    ,[MaxBuyPrice]
+                    ,[MinBuyPrice]
+                    ,[MaxSellPrice]
+                    ,[MinSellPrice]
+                FROM
+                (
+                	SELECT * FROM [FundETFCTE]
+                	WHERE [RowNumber] = 1
+                ) AS [Table]
+                LEFT JOIN 
+                (
+                	SELECT * FROM [FundETFCTE]
+                	WHERE [RowNumber] = 2
+                ) AS [PreviousTable]
+                ON [PreviousTable].[BankProductCode] = [Table].[BankProductCode]
+                LEFT JOIN
+                (
+                    SELECT * FROM [YearPriceCTE]
+                ) AS [YearPriceTable]
+                ON [YearPriceTable].[BankProductCode] = [Table].[BankProductCode]
+                WHERE [Table].[BankProductCode] = @ETFId
+                """;
+            var param = new { ETFId = this.ETFId };
+            var result = DbManager.Custom.ExecuteIList<EtfTradingPrice>(sql, param, CommandType.Text)
+                .Select(r =>
+                {
+                    r.BuyPriceChangeStyle = r.BuyPriceChange.DecimalNumberToStyle();
+                    r.BuyPriceChangePercentageStyle = r.BuyPriceChangePercentage.DecimalNumberToStyle();
+                    r.SellPriceChangeStyle = r.SellPriceChange.DecimalNumberToStyle();
+                    r.SellPriceChangePercentageStyle = r.SellPriceChangePercentage.DecimalNumberToStyle();
+                    return r;
+                });
+
+            return result?.FirstOrDefault();
         }
 
         /// <summary>
