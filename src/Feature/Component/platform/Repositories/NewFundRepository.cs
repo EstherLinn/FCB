@@ -25,7 +25,11 @@ namespace Feature.Wealth.Component.Repositories
 
             foreach (var item in results)
             {
-                ProcessFundFilterDatas(item);
+                if (item != null) 
+                {
+                    ProcessFundFilterDatas(item);
+                    fundItems.Add(item);
+                }
             }
 
             fundItems.AddRange(results);
