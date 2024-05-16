@@ -90,6 +90,8 @@ namespace Feature.Wealth.Component.Repositories
             item.FocusButtonHtml = item.FocusButton.ToString();
             item.SubscribeButton = PublicHelpers.SubscriptionButton(null, null, item.FirstBankCode, InvestTypeEnum.ForeignStocks, isListButton);
             item.SubscribeButtonHtml = item.SubscribeButton.ToString();
+            item.AutoFocusButtonHtml = PublicHelpers.FocusTag(null, null, item.FirstBankCode, item.FullName, InvestTypeEnum.ForeignStocks).ToString();
+            item.AutoSubscribeButtonHtml = PublicHelpers.SubscriptionTag(null, null, item.FirstBankCode, item.FullName, InvestTypeEnum.ForeignStocks).ToString();
 
             return item;
         }
