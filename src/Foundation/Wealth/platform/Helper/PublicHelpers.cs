@@ -203,5 +203,65 @@ namespace Foundation.Wealth.Helper
             }
             return MvcHtmlString.Create(builder.ToString(TagRenderMode.Normal));
         }
+
+        public static string FocusButtonString(object attributes, string id, string name, object investType, bool isListButton)
+        {
+            var builder = new TagBuilder("a");
+            builder.MergeAttribute("href", "javascript:;");
+            builder.MergeAttribute("eh-focus", string.Empty);
+            builder.MergeAttribute("eh-focus-type", investType.ToString());
+            builder.MergeAttribute("eh-focus-id", id);
+            builder.MergeAttribute("eh-focus-name", name);
+            builder.MergeAttribute("data-eh", "focus-init,focus-click");
+            builder.MergeAttribute("data-msg", "加入關注|取消關注");
+            builder.MergeAttribute("data-ia", "true");
+            builder.MergeAttribute("eh-focus-add", "false");
+            builder.MergeAttribute(isListButton == true ? "data-after-lt" : "data-after", "關注");
+            builder.AddCssClass("o-statusBtn o-statusBtn--like");
+            if (attributes != null)
+            {
+                builder.MergeAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
+            }
+            return builder.ToString(TagRenderMode.Normal);
+        }
+
+        public static string SubscriptionButtonString(object attributes, string id, object investType, bool isListButton)
+        {
+            var builder = new TagBuilder("a");
+            builder.MergeAttribute("href", "#");
+            builder.MergeAttribute("eh-subscription", string.Empty);
+            builder.MergeAttribute("eh-subscription-type", investType.ToString());
+            builder.MergeAttribute("eh-subscription-id", id);
+            builder.MergeAttribute("data-eh", "subscription-init,subscription-click");
+            builder.MergeAttribute("data-popup", "true");
+            builder.AddCssClass(isListButton == true ? "o-tableBtn o-tableBtn--card@lt" : "o-fixedBtn");
+            builder.SetInnerText("申購");
+            if (attributes != null)
+            {
+                builder.MergeAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
+            }
+            return builder.ToString(TagRenderMode.Normal);
+        }
+
+        public static string CompareButtonString(object attributes, string id, string name, object investType, bool isListButton)
+        {
+            var builder = new TagBuilder("a");
+            builder.MergeAttribute("href", "javascript:;");
+            builder.MergeAttribute("eh-compare", string.Empty);
+            builder.MergeAttribute("eh-compare-type", investType.ToString());
+            builder.MergeAttribute("eh-compare-id", id);
+            builder.MergeAttribute("eh-compare-name", name);
+            builder.MergeAttribute("data-eh", "compare-init,compare-click");
+            builder.MergeAttribute("data-msg", "加入比較|取消比較");
+            builder.MergeAttribute("data-ia", "true");
+            builder.MergeAttribute("eh-compare-add", "false");
+            builder.MergeAttribute(isListButton == true ? "data-after-lt" : "data-after", "比較");
+            builder.AddCssClass("o-statusBtn o-statusBtn--compare");
+            if (attributes != null)
+            {
+                builder.MergeAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
+            }
+            return builder.ToString(TagRenderMode.Normal);
+        }
     }
 }

@@ -344,6 +344,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
 
         public decimal? ThreeYearReturnTWD { get; set; }
 
+        public string FocusTag { get; set; }
+
+        public string SubscriptionTag { get; set; }
+
+        public string CompareTag { get; set; }
     }
 
     public class SearchBarData

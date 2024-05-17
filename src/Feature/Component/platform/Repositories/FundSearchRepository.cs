@@ -13,6 +13,8 @@ using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using System;
 using Extender = Xcms.Sitecore.Foundation.Basic.Extensions.Extender;
 using Sitecore.Data.Items;
+using Feature.Wealth.Component.Models.Invest;
+using Foundation.Wealth.Helper;
 
 
 namespace Feature.Wealth.Component.Repositories
@@ -140,6 +142,10 @@ namespace Feature.Wealth.Component.Repositories
                 vm.InceptionDateReturnTWD = RoundingPrice(f.InceptionDateReturnTWD);
                 vm.TwoYearReturnTWD = RoundingPrice(f.TwoYearReturnTWD);
                 vm.ThreeYearReturnTWD = RoundingPrice(f.ThreeYearReturnTWD);
+
+                vm.FocusTag = PublicHelpers.FocusButtonString(null, f.ProductCode, f.ProductName, InvestTypeEnum.Fund, true);
+                vm.CompareTag = PublicHelpers.CompareButtonString(null, f.ProductCode, f.ProductName, InvestTypeEnum.Fund, true);
+                vm.SubscriptionTag = PublicHelpers.SubscriptionButtonString(null, f.ProductCode, InvestTypeEnum.Fund, true);
 
                 result.Add(vm);
             }
