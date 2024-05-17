@@ -14,7 +14,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             var model = new CookieBarModel();
 
-            if (string.IsNullOrEmpty(WebUtil.GetCookieValue("accept_Cookie")))
+            if (string.IsNullOrEmpty(WebUtil.GetCookieValue("CookieConsent")))
             {
                 var dataSource = RenderingContext.CurrentOrNull?.Rendering.Item;
                 var content = ItemUtils.GetFieldValue(dataSource, Templates.CookieBarDatasource.Fields.Content);
@@ -37,9 +37,9 @@ namespace Feature.Wealth.Component.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(WebUtil.GetCookieValue("accept_Cookie")))
+                if (string.IsNullOrEmpty(WebUtil.GetCookieValue("CookieConsent")))
                 {
-                    WebUtil.SetCookieValue("accept_Cookie", "1", DateTime.MinValue, true);
+                    WebUtil.SetCookieValue("CookieConsent", "1", DateTime.MinValue, true);
 
                     var objReturn = new
                     {
