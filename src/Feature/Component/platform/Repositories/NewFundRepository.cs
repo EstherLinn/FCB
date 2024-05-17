@@ -1,9 +1,13 @@
-﻿using System.Data;
+﻿using System.Text;
+using System.Data;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
-using static Feature.Wealth.Component.Models.NewFund.NewFundModel;
 using Foundation.Wealth.Extensions;
-using System.Text;
+using static Feature.Wealth.Component.Models.NewFund.NewFundModel;
+using Sitecore.IO;
+using System.Globalization;
+using System.Security.Cryptography;
+using System;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -16,7 +20,6 @@ namespace Feature.Wealth.Component.Repositories
             var sql = """
              SELECT *
              FROM [vw_BasicFund]
-             WHERE [ListingDate] >= DATEADD(year, -1, GETDATE())
              ORDER BY SixMonthReturnOriginalCurrency
              DESC
              """;
@@ -28,7 +31,6 @@ namespace Feature.Wealth.Component.Repositories
                 if (item != null) 
                 {
                     ProcessFundFilterDatas(item);
-                    fundItems.Add(item);
                 }
             }
 
@@ -43,32 +45,15 @@ namespace Feature.Wealth.Component.Repositories
             item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
             item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPercentage(item.SixMonthReturnOriginalCurrency);
             item.PercentageChangeInFundPrice = NumberExtensions.RoundingPercentage((item.PercentageChangeInFundPrice) * 100);
-        }
 
-        /// <summary>
-        /// 取得資料-列表渲染用
-        /// </summary>
-        public List<Funds> GetFundRenderData(List<Funds> funds)
-        {
-            var result = new List<Funds>();
-
-            foreach (var f in funds)
+            var cultureInfo = new CultureInfo("zh-TW");
+            string dateFormat = "yyyy/MM/dd";
+            if (DateTime.TryParseExact(item.ListingDate, "yyyyMMdd", cultureInfo, DateTimeStyles.None, out DateTime listingDate))
             {
-                var vm = new Funds();
-                vm.ProductCode = f.ProductCode;
-                vm.ProductName = f.ProductName;
-                vm.NetAssetValue = f.NetAssetValue;
-                vm.NetAssetValueDate = f.NetAssetValueDate;
-                vm.SixMonthReturnOriginalCurrency = f.SixMonthReturnOriginalCurrency;
-                vm.CurrencyName = f.CurrencyName;
-                vm.RiskRewardLevel = f.RiskRewardLevel;
-                vm.OnlineSubscriptionAvailability = f.OnlineSubscriptionAvailability;
-                vm.PercentageChangeInFundPrice = f.PercentageChangeInFundPrice;
-                vm.TargetName = f.TargetName;
-                vm.FundTypeName = f.FundTypeName;
-                result.Add(vm);
+                item.ListingDate = listingDate.ToString(dateFormat);
+                item.ListingDateFormat = listingDate;
             }
-            return result;
         }
+       
     }
 }

@@ -17,13 +17,16 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
-            var newFund = _repository.GetFundData();
-            var total = newFund.Count;
+
+            var fund = _repository.GetFundData();
+            var newfund = fund.Where(f => f.ListingDateFormat >= DateTime.Today.AddYears(-1));
+
+            var total = newfund.Count();
             var model = new NewFundModel()
             {
                 Item = dataSourceItem,
                 TotalPages = total,
-                NewFunds = newFund
+                NewFunds = newfund
             };
 
             return View("/Views/Feature/Wealth/Component/NewFund/NewFund.cshtml", model);
@@ -33,7 +36,8 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetSortedNewFund(int page, string pageSize, string orderby, string desc)
         {
-            var funds = _repository.GetFundData();
+            var fund = _repository.GetFundData();
+            var newfund = fund.Where(f => f.ListingDateFormat >= DateTime.Today.AddYears(-1));
 
             if (page == null) { page = 1; }
             if (pageSize == null) { pageSize = "10"; }
@@ -43,25 +47,26 @@ namespace Feature.Wealth.Component.Controllers
             var property = typeof(Funds).GetProperty(orderby);
             bool isDesc = desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase);
 
-            funds = isDesc
-                 ? funds.OrderByDescending(f => property.GetValue(f, null)).ToList()
-                 : funds.OrderBy(f => property.GetValue(f, null)).ToList();
+            newfund = isDesc
+                 ? newfund.OrderByDescending(f => property.GetValue(f, null)).ToList()
+                 : newfund.OrderBy(f => property.GetValue(f, null)).ToList();
 
 
-            var totalRecords = funds.Count();
+            var totalRecords = newfund.Count();
             int totalPages;
             List<Funds> renderDatas;
+            
 
             if (pageSize.Equals("all", StringComparison.OrdinalIgnoreCase))
             {
                 totalPages = 1;
-                renderDatas = _repository.GetFundRenderData(funds).ToList();
+                renderDatas = newfund?.ToList();
             }
             else
             {
                 int pageSizeInt = Convert.ToInt32(pageSize);
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSizeInt);
-                renderDatas = _repository.GetFundRenderData(funds)
+                renderDatas = newfund?
                     .Skip((page - 1) * pageSizeInt)
                     .Take(pageSizeInt)
                     .ToList();

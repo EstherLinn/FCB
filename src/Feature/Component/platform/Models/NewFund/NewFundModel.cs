@@ -2,13 +2,15 @@
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
+using Sitecore.IO;
+using System.Globalization;
 
 namespace Feature.Wealth.Component.Models.NewFund
 {
     public class NewFundModel
     {
         public Item Item { get; set; }
-        public IList<Funds> NewFunds { get; set; }
+        public IEnumerable<Funds> NewFunds { get; set; }
         public int TotalPages { get; set; }
         public int CurrentPage { get; set; }
         public string PageSize { get; set; }
@@ -83,6 +85,14 @@ namespace Feature.Wealth.Component.Models.NewFund
             /// 百元標的
             /// </summary>
             public string TargetName { get; set; }
+
+            /// <summary>
+            /// 上架日期
+            /// </summary>
+            public string ListingDate { get; set; }
+
+
+            public DateTime ListingDateFormat { get; set; }
         }
     }
 

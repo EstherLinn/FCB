@@ -11,7 +11,7 @@ namespace Feature.Wealth.Component.Models.NewArrivalETF
     public class NewArrivalEtfModel
     {
         public Item Item { get; set; }
-        public IList<ETFs> NewETFs { get; set; }
+        public IEnumerable<ETFs> NewETFs { get; set; }
         public int TotalPages { get; set; }
         public int CurrentPage { get; set; }
         public string PageSize { get; set; }
@@ -90,6 +90,14 @@ namespace Feature.Wealth.Component.Models.NewArrivalETF
             /// 可否申購
             /// </summary>
             public string OnlineSubscriptionAvailability { get; set; }
+
+            /// <summary>
+            /// 上架日期
+            /// </summary>
+            public string ListingDate { get; set; }
+
+
+            public DateTime ListingDateFormat { get; set; }
 
         }
     }
