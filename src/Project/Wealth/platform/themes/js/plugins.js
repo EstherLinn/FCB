@@ -482,10 +482,10 @@
       $('[data-overflow-action]').off('click.overflow').on('click.overflow', function (e) {
         e.preventDefault();
         const id = $(this).attr('data-overflow-action');
-        const $parent = $(`[data-overflow-hide="${id}"]`);
+        const $parent = $(`[data-overflow-hide="${htmlEncode(id)}"]`);
         let isCollapse = $parent.hasClass('is-collapse');
         $parent.toggleClass('is-collapse is-expand').animate({
-          height: isCollapse ? $(`[data-overflow-content="${id}"]`).outerHeight() : $parent.attr('data-overflow-height')
+          height: isCollapse ? $(`[data-overflow-content="${htmlEncode(id)}"]`).outerHeight() : $parent.attr('data-overflow-height')
         }, 300, function () {
           if (isCollapse) {
             $parent.css('height', 'auto');
@@ -502,7 +502,7 @@
     judge: function ($this) {
       const id = $this.attr('data-overflow-hide');
       let originalH = $this.attr('data-overflow-height');
-      let contentH = $(`[data-overflow-content="${id}"]`).outerHeight();
+      let contentH = $(`[data-overflow-content="${htmlEncode(id)}"]`).outerHeight();
       $this.toggleClass('is-overflow', contentH > originalH);
       $this.toggleClass('not-overflow', !(contentH > originalH));
       if (!$this.hasClass('is-expand')) {
@@ -518,6 +518,9 @@
       }
     });
   };
+  function htmlEncode(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
   $('[data-overflow-hide]').overflowHide();
 })(jQuery);
 

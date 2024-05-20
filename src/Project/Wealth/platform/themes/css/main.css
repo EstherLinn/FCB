@@ -1626,6 +1626,7 @@ textarea {
   align-items: center;
   gap: 22px;
   width: 280px;
+  min-height: 127px;
   margin-bottom: 28px;
   padding: 14px;
   border-radius: 12px;
@@ -2203,12 +2204,24 @@ textarea {
 .o-rise:before {
   content: "▲";
 }
+.o-rise--tw {
+  color: #F00;
+}
+.o-rise--gbl {
+  color: #2E9E40;
+}
 
 .o-fall {
   color: var(--color-fall, #2E9E40);
 }
 .o-fall:before {
   content: "▼";
+}
+.o-fall--tw {
+  color: #2E9E40;
+}
+.o-fall--gbl {
+  color: #F00;
 }
 
 .o-singleBar {

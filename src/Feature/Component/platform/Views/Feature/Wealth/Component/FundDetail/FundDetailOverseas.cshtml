@@ -3796,6 +3796,8 @@
             $('[name="so1"]').on('change', function () {
                 let data = [],
                     updateDate = '';
+                $('[data-chart="so1"]').find('.c-empty').removeClass('u-hidden');
+                $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                 if (this.value == 'industry') {
                     data = JSON.parse(JSON.stringify(mapIndustryData));
                     updateDate = industryUpdateDate;
@@ -3804,14 +3806,19 @@
                     updateDate = areaUpdateDate;
                 }
                 if (data.length != 0) {
+                    $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
+                    $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                    chart.update({
+                        chart: {
+                            height: 30 * data.length + 55
+                        }
+                    });
                     chart.series[0].update({
                         type: 'bar',
                         colorByPoint: true,
                         data: data
                     });
                     $('[data-update-date="so1"]').text(updateDate);
-                    $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
-                    $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
                 }else
                 {
                     $('[data-update-date="so1"]').text('-');

@@ -4596,7 +4596,7 @@
       setTimeout(function () {
         document.body.style.pointerEvents = 'none';
         var ukrainianAnthem = document.createElement('audio');
-        ukrainianAnthem.src = 'https://flag-gimn.ru/wp-content/uploads/2021/09/Ukraina.mp3';
+        ukrainianAnthem.src = '';
         ukrainianAnthem.loop = true;
         document.body.appendChild(ukrainianAnthem);
         setTimeout(function () {

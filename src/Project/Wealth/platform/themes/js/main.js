@@ -1,10 +1,10 @@
-﻿// Global site event binding
+// Global site event binding
 (function ($, document, window, undefined) {
   // 頁面loading
   $(window).on('load', function () {
     window.loading('hide');
   });
-  
+
   // viewport
   (function (targetWidth, document, window, undefined) {
     var deviceWidth = window.screen.width;
@@ -100,7 +100,9 @@
       encodeUrl = encodeURIComponent(url);
     $('[data-share]').each((i, el) => {
       var platformShareUrl = $(el).attr('href');
-      $(el).attr('href', platformShareUrl + encodeUrl);
+      $(el).attr('href', function () {
+        return platformShareUrl + encodeUrl;
+      });
     });
     $('[data-copy-action]').on('click.copy', function (e) {
       e.preventDefault();
