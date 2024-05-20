@@ -121,6 +121,7 @@ namespace Feature.Wealth.Component.Repositories
             model.ETFNetWorthAnnunalReturn = GetAnnualReturn();
             model.ETFNetWorthMonthlyReturn = GetNetWortMonthlyReturn();
             model.ETFTradingPrice = GetBuyAndSellPriceData() ?? new EtfTradingPrice();
+            model.ETFThiryDaysTradingPrice = GetThrityDaysBuyAndSellPrice();
             model.ETFStockHoldings = GetETFStockHolding();
             model.ETFRiskIndicator = GetETFRiskIndicator();
             model.ETFYearReturns = GetETFYearReturnCompare();
@@ -620,6 +621,36 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
+        /// 取得近30日報價
+        /// </summary>
+        public List<EtfTradingPrice> GetThrityDaysBuyAndSellPrice()
+        {
+            var sql = """
+                WITH [FundETFCTE] AS(
+                    SELECT *
+                    FROM (
+                        SELECT [BankProductCode]
+                            ,[ETFCurrency]
+                            ,CAST([BankBuyPrice] AS DECIMAL(12, 4)) AS [BankBuyPrice]
+                            ,CAST([BankSellPrice] AS DECIMAL(12, 4)) AS [BankSellPrice]
+                            ,CAST(FORMAT( CONVERT(DATE, CONVERT(NVARCHAR(8), [PriceBaseDate] + 19110000), 112), 'yyyy/MM/dd' ) AS Date) AS [PriceBaseDate]
+                            ,[ProductName]
+                            ,[DataDate]
+                            , ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [PriceBaseDate] DESC) AS [RowNumber]
+                        FROM [dbo].[FUND_ETF] WITH (NOLOCK)
+                    ) T1
+                )
+
+                SELECT *
+                FROM [FundETFCTE]
+                WHERE [BankProductCode] = @ETFId AND [RowNumber] < 31
+                """;
+            var param = new { ETFId = this.ETFId };
+            var result = DbManager.Custom.ExecuteIList<EtfTradingPrice>(sql, param, CommandType.Text);
+            return result?.ToList();
+        }
+
+        /// <summary>
         /// 取得產業持股狀況
         /// </summary>
         /// <param name="etfId"></param>
@@ -984,7 +1015,7 @@ namespace Feature.Wealth.Component.Repositories
 
         /// <summary>
         /// 取得規模變動
-        /// </summary
+        /// </summary>
         /// <returns></returns>
         public List<EtfScaleRecord> GetScalechange()
         {

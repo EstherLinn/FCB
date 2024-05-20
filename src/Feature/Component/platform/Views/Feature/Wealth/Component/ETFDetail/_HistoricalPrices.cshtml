@@ -207,11 +207,11 @@
         </div>
     </section>
     <section class="c-section u-printBreak">
-        <div class="c-section__title">近30日淨值</div>
+        <div class="c-section__title">近30日報價</div>
         <div class="c-section__content">
-            @if (Model.ETFThiryDaysNav != null && Model.ETFThiryDaysNav.Any())
+            @if (Model.ETFThiryDaysTradingPrice != null && Model.ETFThiryDaysTradingPrice.Any())
             {
-                int count = Model.ETFThiryDaysNav.Count;
+                int count = Model.ETFThiryDaysTradingPrice.Count;
                 int index = 0, groupSize = 10, rowLimit = 5;
 
                 <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{"spaceBetween":20, "autoplay": false, "navigation":{ "enabled":true }, "breakpoints": {"1200": { "navigation":{ "enabled":false }}}}'>
@@ -247,12 +247,12 @@
                                                             </th>
                                                             <th>
                                                                 <div class="c-table__title">
-                                                                    <span>市價</span>
+                                                                    <span>一銀買價</span>
                                                                 </div>
                                                             </th>
                                                             <th>
                                                                 <div class="c-table__title">
-                                                                    <span>淨值</span>
+                                                                    <span>一銀賣價</span>
                                                                 </div>
                                                             </th>
                                                         </tr>
@@ -265,17 +265,17 @@
                                                             {
                                                                 break;
                                                             }
-                                                            var item = Model.ETFThiryDaysNav[index];
+                                                            var item = Model.ETFThiryDaysTradingPrice[index];
 
                                                             <tr>
                                                                 <td>
-                                                                    @DateTimeExtensions.FormatDate(item.NetAssetValueDate)
+                                                                    @DateTimeExtensions.FormatDate(item.PriceBaseDate)
                                                                 </td>
                                                                 <td>
-                                                                    @item.MarketPrice.FormatDecimalNumber(4)
+                                                                    @item.BankBuyPrice.FormatDecimalNumber(4)
                                                                 </td>
                                                                 <td>
-                                                                    @item.NetAssetValue.FormatDecimalNumber(4)
+                                                                    @item.BankSellPrice.FormatDecimalNumber(4)
                                                                 </td>
                                                             </tr>
                                                         }
@@ -470,6 +470,9 @@
                                 };
                             });
 
+                            bankBuyPrice_array.sort((a, b) => { return a.x - b.x; });
+                            bankSellPrice_array.sort((a, b) => { return a.x - b.x; });
+
                             let series = [{
                                 name: '買價',
                                 data: bankBuyPrice_array,
@@ -612,11 +615,16 @@
                                     outside: true,
                                     useHTML: true,
                                     formatter: function () {
+                                        let date = new Date(this.x);
+                                        let formattedDate = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2);
                                         let tooltipText = '';
                                         this.points.forEach(point => {
-                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">' + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + point.series.name + ': ' + point.y + '美元' + '</div>' + '</div>';
+                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">'
+                                                + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>'
+                                                + point.series.name + ': ' + point.y + '美元' + '</div>' + '</div>';
                                         });
-                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.x) + '</div>' + tooltipText + '</div>';
+                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">'
+                                            + formattedDate + '</div>' + tooltipText + '</div>';
                                     },
                                     shadow: {
                                         color: 'rgba(0, 0, 0, 0.1)'
