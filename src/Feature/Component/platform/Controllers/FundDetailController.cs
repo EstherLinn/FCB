@@ -59,6 +59,12 @@ namespace Feature.Wealth.Component.Controllers
 
             return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundCloseFiveYears.cshtml");
         }
+        public ActionResult FundCloseFiveYearsInside()
+        {
+
+            return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundCloseFiveYearsInside.cshtml");
+        }
+
         [HttpPost]
         public ActionResult GetFundRiskGraph(string fundId, string selectType)
         {
