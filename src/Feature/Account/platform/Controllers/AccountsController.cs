@@ -117,7 +117,7 @@ namespace Feature.Wealth.Account.Controllers
         [HttpPost]
         public ActionResult SetUrlCookie(string url)
         {
-            WebUtil.SetCookieValue("NowUrl", url, DateTime.MinValue, true);
+            WebUtil.SetCookieValue("NowUrl", url);
             return new JsonNetResult();
         }
         [HttpPost]
