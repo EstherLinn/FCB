@@ -220,9 +220,9 @@ namespace Feature.Wealth.Component.Repositories
                     dest.MarketPriceChangePercentage = src.MarketPriceChangePercentage.FormatDecimalNumber(needPercent: true);
                     dest.MarketPriceChangeStyle = src.MarketPriceChange.DecimalNumberToStyle();
                     dest.MarketPriceChangePercentageStyle = src.MarketPriceChangePercentage.DecimalNumberToStyle();
-                    dest.AnnualizedStandardDeviationMarketPriceRisk = src.AnnualizedStandardDeviationMarketPriceRisk.FormatDecimalNumber();
-                    dest.SharpeRatioMarketPriceRisk = src.SharpeRatioMarketPriceRisk.FormatDecimalNumber();
-                    dest.BetaMarketPriceRisk = src.BetaMarketPriceRisk.FormatDecimalNumber();
+                    dest.AnnualizedStandardDeviationMarketPriceRisk = src.AnnualizedStandardDeviationMarketPriceRisk.FormatDecimalNumber(needAbs: false);
+                    dest.SharpeRatioMarketPriceRisk = src.SharpeRatioMarketPriceRisk.FormatDecimalNumber(needAbs: false);
+                    dest.BetaMarketPriceRisk = src.BetaMarketPriceRisk.FormatDecimalNumber(needAbs: false);
 
                     #endregion 市價
 
@@ -235,9 +235,9 @@ namespace Feature.Wealth.Component.Repositories
                     dest.NetAssetValueChangePercentage = src.NetAssetValueChangePercentage.FormatDecimalNumber(needPercent: true);
                     dest.NetAssetValueChangeStyle = src.NetAssetValueChange.DecimalNumberToStyle();
                     dest.NetAssetValueChangePercentageStyle = src.NetAssetValueChangePercentage.DecimalNumberToStyle();
-                    dest.AnnualizedStandardDeviationNetValueRisk = src.AnnualizedStandardDeviationNetValueRisk.FormatDecimalNumber();
-                    dest.SharpeNetValueRisk = src.SharpeNetValueRisk.FormatDecimalNumber();
-                    dest.BetaNetValueRisk = src.BetaNetValueRisk.FormatDecimalNumber();
+                    dest.AnnualizedStandardDeviationNetValueRisk = src.AnnualizedStandardDeviationNetValueRisk.FormatDecimalNumber(needAbs: false);
+                    dest.SharpeNetValueRisk = src.SharpeNetValueRisk.FormatDecimalNumber(needAbs: false);
+                    dest.BetaNetValueRisk = src.BetaNetValueRisk.FormatDecimalNumber(needAbs: false);
 
                     #endregion 淨值
 
