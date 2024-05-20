@@ -7,6 +7,7 @@ using Mapster;
 using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Globalization;
 using System.Linq;
@@ -34,17 +35,9 @@ namespace Feature.Wealth.Component.Repositories
         public EtfDetailModel GetETFDetailModel(string etfId, Item dataSource)
         {
             this.Indicator = GetProductIdentifier(etfId);
-
-            //TODO: 瀏覽紀錄
-            //if (TriggerViewCountRecord() == false)
-            //{
-            //    return null;
-            //}
-
             EtfDetailModel model;
             model = GetOrSetETFDetailsCache(etfId);
             GetDatasourceData(model, dataSource);
-
             return model;
         }
 
@@ -301,47 +294,27 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 暫定 觸發紀錄瀏覽 SP
-        /// </summary>
-        /// <returns></returns>
-        public bool TriggerViewCountRecord()
-        {
-            //TODO: 修改ETF
-            var param = new { ETFId = this.ETFId };
-            int updateCount = DbManager.Custom.Execute<int>("sp_FundViewCountRecord", param, CommandType.StoredProcedure);
-            return updateCount == 1;
-        }
-
-        /// <summary>
-        /// 取得瀏覽次數
-        /// </summary>
-        /// <returns></returns>
-        public string GetETFVisiteCount()
-        {
-            //TODO: 修改ETF
-            string sql = """
-                SELECT REPLACE(FORMAT(ViewCount, 'N'), '.00', '') ViewCount
-                FROM [FundViewCount]
-                WHERE ETFId = @ETFId
-                """;
-            var param = new { ETFId = this.ETFId };
-            string count = DbManager.Custom.Execute<string>(sql, param, CommandType.Text);
-            return count;
-        }
-
-        /// <summary>
         /// 近一年市價走勢
         /// </summary>
         /// <returns></returns>
         private List<EtfPriceHistory> GetMarketPriceWithOverPastYear()
         {
             string sql = """
-                SELECT Format([Date], 'yyyy-MM-dd') NetAssetValueDate, [MarketPrice]
-                FROM [Sysjust_ETFPRICE_HIS] WITH (NOLOCK)
-                WHERE [FirstBankCode] = @ETFId AND [Date] >= DATEADD(year, -1, GETDATE())
+                SELECT [NetAssetValueDate], [MarketPrice]
+                FROM [Sysjust_Nav_ETF] WITH (NOLOCK)
+                WHERE [FirstBankCode] = @ETFId AND [NetAssetValueDate] >= DATEADD(year, -1, GETDATE())
                 """;
             var param = new { ETFId = this.ETFId };
-            var result = DbManager.Custom.ExecuteIList<EtfPriceHistory>(sql, param, CommandType.Text)?.ToList();
+            var collection = DbManager.Custom.ExecuteIList<EtfNav>(sql, param, CommandType.Text)?.ToList();
+            var config = new TypeAdapterConfig();
+            config.ForType<EtfNav, EtfPriceHistory>()
+                .AfterMapping((src, dest) =>
+                {
+                    dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
+                    dest.MarketPrice = src.MarketPrice.RoundingValue();
+                });
+
+            var result = collection.Adapt<List<EtfPriceHistory>>(config);
             return result;
         }
 
@@ -352,12 +325,21 @@ namespace Feature.Wealth.Component.Repositories
         private List<EtfPriceHistory> GetNetWorthWithOverPastYear()
         {
             string sql = """
-                SELECT Format([Date], 'yyyy-MM-dd') NetAssetValueDate, [NetAssetValue]
-                FROM [Sysjust_ETFPRICE_HIS] WITH (NOLOCK)
-                WHERE [FirstBankCode] = @ETFId AND [Date] >= DATEADD(year, -1, GETDATE())
+                SELECT [NetAssetValueDate], [NetAssetValue]
+                FROM [Sysjust_Nav_ETF] WITH (NOLOCK)
+                WHERE [FirstBankCode] = @ETFId AND [NetAssetValueDate] >= DATEADD(year, -1, GETDATE())
                 """;
             var param = new { ETFId = this.ETFId };
-            var result = DbManager.Custom.ExecuteIList<EtfPriceHistory>(sql, param, CommandType.Text)?.ToList();
+            var collection = DbManager.Custom.ExecuteIList<EtfNav>(sql, param, CommandType.Text)?.ToList();
+            var config = new TypeAdapterConfig();
+            config.ForType<EtfNav, EtfPriceHistory>()
+                .AfterMapping((src, dest) =>
+                {
+                    dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
+                    dest.NetAssetValue = src.NetAssetValue.RoundingValue();
+                });
+
+            var result = collection.Adapt<List<EtfPriceHistory>>(config);
             return result;
         }
 

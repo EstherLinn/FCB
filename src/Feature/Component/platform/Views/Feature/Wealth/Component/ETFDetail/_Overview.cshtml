@@ -502,14 +502,14 @@
                     }
 
                     if (Object.keys(netWorthNavs).length != 0 && Object.keys(marketPriceNavs).length != 0) {
-                        const mapMarketData = marketPriceNavs.map(item => {
+                        let mapMarketData = marketPriceNavs.map(item => {
                             return {
                                 name: item.NetAssetValueDate,
                                 x: new Date(item.NetAssetValueDate).getTime(),
                                 y: roundToFourNum(item.MarketPrice)
                             };
                         });
-                        const mapNetWorthData = netWorthNavs.map(item => {
+                        let mapNetWorthData = netWorthNavs.map(item => {
                             return {
                                 name: item.NetAssetValueDate,
                                 x: new Date(item.NetAssetValueDate).getTime(),
@@ -524,8 +524,8 @@
                         $('#maxNetWorth').text(roundToFourString(Math.max(...netWorthNavs.map(p => p.NetAssetValue))));
                         $('#minNetWorth').text(roundToFourString(Math.min(...netWorthNavs.map(p => p.NetAssetValue))));
 
-                        mapMarketData.reverse();
-                        mapNetWorthData.reverse();
+                        mapMarketData.sort((a, b) => { return a.x - b.x; });
+                        mapNetWorthData.sort((a, b) => { return a.x - b.x; });
 
                         //const updateDate = data.body.updateDate.replaceAll('-', '/');
                         // 資料日期
