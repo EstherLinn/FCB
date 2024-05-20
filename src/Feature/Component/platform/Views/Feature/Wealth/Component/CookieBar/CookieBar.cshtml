@@ -1,0 +1,48 @@
+﻿@model Feature.Wealth.Component.Models.CookieBar.CookieBarModel
+@using Feature.Wealth.Component.Models.CookieBar
+@using Foundation.Wealth.Helper
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="c-cookies" data-cookie>
+    <div class="c-cookies__wrap">
+        <div class="c-cookies__box">
+            <div class="c-cookies__content">
+                @Html.Sitecore().Field(Templates.CookieBarDatasource.Fields.Content.ToString(), Model.DataSource)
+            </div>
+            <div class="c-cookies__action">
+                <button type="button" id="cookieBarButton" class="o-btn o-btn--primary" data-cookie-close>@Model.ButtonText</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            $("#cookieBarButton").on('click', function(e) {
+                $.ajax({
+                    type: "POST",
+                    url: '@ClientRoute.GenerateUrl(this, "CookieBar", "UpdateCookie")',
+                    success: function (data) {
+                        if (data.success == true) {
+                            $("[data-cookie]").remove();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(data.message);
+                    }
+                });
+            });
+
+        });
+    })(jQuery, window, document);
+</script>
