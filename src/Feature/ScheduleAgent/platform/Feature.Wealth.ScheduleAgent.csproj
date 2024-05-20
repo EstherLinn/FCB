@@ -13,5 +13,8 @@
     <Reference Include="Xcms.Sitecore.Foundation.QuartzSchedule">
       <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.QuartzSchedule.dll</HintPath>
     </Reference>
+    <PackageReference Include="ChoETL.NETStandard" VersionOverride="1.2.1.64" />
+    <PackageReference Include="Dapper" />
+    <PackageReference Include="Quartz" />
   </ItemGroup>
 </Project>
