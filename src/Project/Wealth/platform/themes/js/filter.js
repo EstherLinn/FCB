@@ -56,7 +56,7 @@ $(function () {
   $('[data-slider-val]').on('change.sliderBar', function () {
     let value = $(this).val().split(',');
     // 有前綴詞
-    const prefixText = $(this).attr('data-slider-prefix');
+    const prefixText = $(this).data('slider-prefix');
     if (!!prefixText) {
       value = value.map(item => {
         if (item !== 'min' && item !== 'max') {
@@ -67,7 +67,7 @@ $(function () {
       });
     }
     // 有後綴詞
-    const suffixText = $(this).attr('data-slider-suffix');
+    const suffixText = $(this).data('slider-suffix');
     if (!!suffixText) {
       value = value.map(item => {
         if (item !== 'min' && item !== 'max') {
@@ -94,7 +94,7 @@ $(function () {
     } else {
       value = `${value[0]} ~ ${value[1]}`;
     }
-    $(this).attr('data-filter-bar', value);
+    $(this).data('filter-bar', value);
     setTag();
   });
 
@@ -133,11 +133,11 @@ $(function () {
       allValue.push({
         title: $(item).find('[data-filter-title] span').text(),
         part: isPart,
-        special: $(item).attr('data-filter-group') === 'special',
+        special: $(item).data('filter-group') === 'special',
         val: []
       });
       if (isPart) {
-        $(`[data-part-id="${$(item).find('[data-filter-part]').attr('data-filter-part')}"]`).each((partIndex, partItem) => {
+        $(`[data-part-id="${$(item).find('[data-filter-part]').data('filter-part')}"]`).each((partIndex, partItem) => {
           if (typeof findValue(partItem) === 'string') {
             allValue[index].val.push(findValue(partItem));
             return;
@@ -169,7 +169,7 @@ $(function () {
       }
       if (item.part) {
         let partValue = '';
-        const partDivideVal = $('[data-filter-group]').eq(index).find('[data-part-divide]').attr('data-part-divide');
+        const partDivideVal = $('[data-filter-group]').eq(index).find('[data-part-divide]').data('part-divide');
         const sign = !!partDivideVal ? partDivideVal : '/';
         item.val.forEach((val, index) => {
           const divider = index === 0 ? '' : sign;
@@ -206,7 +206,7 @@ $(function () {
     if ($(filterGroup).find('[data-filter-checkbox] input:checked').length > 0) {
       let pushArray = [];
       $(filterGroup).find('[data-filter-checkbox] input:checked').each((checkIndex, checkItem) => {
-        pushArray.push($(checkItem).closest('[data-filter-checkbox]').find('[data-filter-value]').attr('data-filter-value'));
+        pushArray.push($(checkItem).closest('[data-filter-checkbox]').find('[data-filter-value]').data('filter-value'));
       });
       return pushArray;
     }
@@ -217,13 +217,13 @@ $(function () {
     }
 
     // set slider bar value
-    if (!!$(filterGroup).find('[data-filter-bar]').attr('data-filter-bar')) {
-      return $(filterGroup).find('[data-filter-bar]').attr('data-filter-bar');
+    if (!!$(filterGroup).find('[data-filter-bar]').data('filter-bar')) {
+      return $(filterGroup).find('[data-filter-bar]').data('filter-bar');
     }
 
     // set radio value
     if ($(filterGroup).find('[data-filter-radio] input:checked').length > 0) {
-      return $(filterGroup).find('[data-filter-radio] input:checked').closest('[data-filter-radio]').find('[data-filter-value]').attr('data-filter-value');
+      return $(filterGroup).find('[data-filter-radio] input:checked').closest('[data-filter-radio]').find('[data-filter-value]').data('filter-value');
     }
   }
 

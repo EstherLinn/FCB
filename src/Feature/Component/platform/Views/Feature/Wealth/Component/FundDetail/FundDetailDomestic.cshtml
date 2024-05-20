@@ -684,7 +684,7 @@
                             </div>
                             @*原幣*@
                             <div class="l-flex__item" data-id="originReturnTable">
-                                <div class="l-table" >
+                                <div class="l-table">
                                     <table class="c-table u-center u-nowrap" data-fixed-columns="true" data-table="originReturnTable">
                                         <colgroup>
                                             <col style="width: 14.5%;">
@@ -818,7 +818,7 @@
                             </div>
                             @*台幣*@
                             <div class="l-flex__item u-hidden" data-id="twdReturnTable">
-                                <div class="l-table" >
+                                <div class="l-table">
                                     <table class="c-table u-center u-nowrap" data-fixed-columns="true" data-table="twdReturnTable">
                                         <colgroup>
                                             <col style="width: 14.5%;">
@@ -952,7 +952,7 @@
                             </div>
                             @*年化*@
                             <div class="l-flex__item u-hidden" data-id="annualReturnTable">
-                                <div class="l-table" >
+                                <div class="l-table">
                                     <table class="c-table u-center u-nowrap" data-fixed-columns="true" data-table="annualReturnTable">
                                         <colgroup>
                                             <col style="width: 14.5%;">
@@ -2725,7 +2725,7 @@
                        <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
                        <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
                        <td>配息</td>
-                       <td>${yearData[i].Dividend}</td>                     
+                       <td>${yearData[i].Dividend}</td>
                              </tr>`
                       }
                       $('#dividendTable').html(dividendTableHtml);
@@ -3727,6 +3727,8 @@
         $('[name="so1"]').on('change', function () {
             let data = [],
                 updateDate = '';
+                $('[data-chart="so1"]').find('.c-empty').removeClass('u-hidden');
+                $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
             if (this.value == 'industry') {
                 data = JSON.parse(JSON.stringify(mapIndustryData));
                 updateDate = industryUpdateDate;
@@ -3738,14 +3740,20 @@
                 updateDate = holdingUpdateDate;
             }
             if (data.length != 0) {
+                 $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
+                    $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                    chart.update({
+                        chart: {
+                            height: 30 * data.length + 55
+                        }
+                    });
                 chart.series[0].update({
                     type: 'bar',
                     colorByPoint: true,
                     data: data
                 });
                 $('[data-update-date="so1"]').text(updateDate);
-                $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
-                $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+
             }else
             {
                 $('[data-update-date="so1"]').text('-');

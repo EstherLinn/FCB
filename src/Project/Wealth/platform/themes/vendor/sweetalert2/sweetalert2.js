@@ -4,9 +4,10 @@
 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Sweetalert2 = factory());
-})(this, (function () { 'use strict';
+    typeof define === 'function' && define.amd ? define(factory) :
+      (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Sweetalert2 = factory());
+})(this, (function () {
+  'use strict';
 
   function _iterableToArrayLimit(r, l) {
     var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
@@ -114,7 +115,7 @@
     if (Reflect.construct.sham) return false;
     if (typeof Proxy === "function") return true;
     try {
-      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () { }));
       return true;
     } catch (e) {
       return false;
@@ -645,17 +646,17 @@
     /** @type {NodeListOf<HTMLElement>} */
     var focusableElementsWithTabindex = popup.querySelectorAll('[tabindex]:not([tabindex="-1"]):not([tabindex="0"])');
     var focusableElementsWithTabindexSorted = Array.from(focusableElementsWithTabindex)
-    // sort according to tabindex
-    .sort(function (a, b) {
-      var tabindexA = parseInt(a.getAttribute('tabindex') || '0');
-      var tabindexB = parseInt(b.getAttribute('tabindex') || '0');
-      if (tabindexA > tabindexB) {
-        return 1;
-      } else if (tabindexA < tabindexB) {
-        return -1;
-      }
-      return 0;
-    });
+      // sort according to tabindex
+      .sort(function (a, b) {
+        var tabindexA = parseInt(a.getAttribute('tabindex') || '0');
+        var tabindexB = parseInt(b.getAttribute('tabindex') || '0');
+        if (tabindexA > tabindexB) {
+          return 1;
+        } else if (tabindexA < tabindexB) {
+          return -1;
+        }
+        return 0;
+      });
 
     /** @type {NodeListOf<HTMLElement>} */
     var otherFocusableElements = popup.querySelectorAll(focusable);
@@ -2377,12 +2378,12 @@
       return true;
     }
     if (!isScrollable(container) && target instanceof HTMLElement && target.tagName !== 'INPUT' &&
-    // #1603
-    target.tagName !== 'TEXTAREA' &&
-    // #2266
-    !(isScrollable(htmlContainer) &&
-    // #1944
-    htmlContainer.contains(target))) {
+      // #1603
+      target.tagName !== 'TEXTAREA' &&
+      // #2266
+      !(isScrollable(htmlContainer) &&
+        // #1944
+        htmlContainer.contains(target))) {
       return true;
     }
     return false;
@@ -3613,7 +3614,7 @@
   var handleModalMousedown = function handleModalMousedown(domCache) {
     domCache.popup.onmousedown = function () {
       domCache.container.onmouseup = function (e) {
-        domCache.container.onmouseup = function () {};
+        domCache.container.onmouseup = function () { };
         // We only check if the mouseup target is the container because usually it doesn't
         // have any other direct children aside of the popup
         if (e.target === domCache.container) {
@@ -3629,7 +3630,7 @@
   var handleContainerMousedown = function handleContainerMousedown(domCache) {
     domCache.container.onmousedown = function () {
       domCache.popup.onmouseup = function (e) {
-        domCache.popup.onmouseup = function () {};
+        domCache.popup.onmouseup = function () { };
         // We also need to check if the mouseup target is a child of the popup
         if (e.target === domCache.popup || e.target instanceof HTMLElement && domCache.popup.contains(e.target)) {
           ignoreOutsideClick = true;
@@ -4596,7 +4597,7 @@
       setTimeout(function () {
         document.body.style.pointerEvents = 'none';
         var ukrainianAnthem = document.createElement('audio');
-        ukrainianAnthem.src = 'https://flag-gimn.ru/wp-content/uploads/2021/09/Ukraina.mp3';
+        ukrainianAnthem.src = '';
         ukrainianAnthem.loop = true;
         document.body.appendChild(ukrainianAnthem);
         setTimeout(function () {
@@ -4653,4 +4654,4 @@
   return Swal;
 
 }));
-if (typeof this !== 'undefined' && this.Sweetalert2){this.swal = this.sweetAlert = this.Swal = this.SweetAlert = this.Sweetalert2}
+if (typeof this !== 'undefined' && this.Sweetalert2) { this.swal = this.sweetAlert = this.Swal = this.SweetAlert = this.Sweetalert2 }

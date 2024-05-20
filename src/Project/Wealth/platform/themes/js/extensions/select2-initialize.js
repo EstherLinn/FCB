@@ -76,7 +76,7 @@
     dropdownAutoWidth: true,
     templateResult: function (state, li) {
       if (state.element && state.element.hasAttribute('data-sizebox-option')) {
-        var $input = $(`<input type="number" value="${state.id}" class="select2-results__pager">`).off('click.pagesize').on('click.pagesize', function (e) {
+        var $input = $(`<input type="number" value="${htmlEncode(state.id)}" class="select2-results__pager">`).off('click.pagesize').on('click.pagesize', function (e) {
           e.stopPropagation();
           e.preventDefault();
         }).off('entraKey.pagesize').on('entraKey.pagesize', function () {
@@ -103,7 +103,7 @@
         li.classList.add('select2-results__option--custom');
         return $html;
       }
-      return $(`<label class="select2-results__custom">顯示${state.text}</label>`);
+      return $(`<label class="select2-results__custom">顯示${htmlEncode(state.text)}</label>`);
     }
   };
   function Plugin(element, options) {
@@ -155,6 +155,9 @@
       }
     });
   };
+  function htmlEncode(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
   $('[data-sizebox="true"]').sizebox();
 })(jQuery);
 
