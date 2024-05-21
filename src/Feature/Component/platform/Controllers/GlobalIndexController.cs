@@ -48,6 +48,7 @@ namespace Feature.Wealth.Component.Controllers
             foreach (var globalIndex in globalIndexList)
             {
                 globalIndex.DetailLink = detailLink + "?id=" + globalIndex.IndexCode;
+                globalIndex.IndexNameHtmlString = new MvcHtmlString(globalIndex.IndexName.Replace("(", "<br>("));
                 if (globalIndex.GlobalIndexHistory != null && globalIndex.GlobalIndexHistory.Count > 0)
                 {
                     datas.Add(new GlobalIndexHighchartsData

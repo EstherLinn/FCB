@@ -61,9 +61,11 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), [YeartoDateReturn]) [YeartoDateReturn]
                            ,CONVERT(decimal(16,2), [ChangePercentage]) [ChangePercentage]
                            ,CONVERT(decimal(16,2), [SixMonthReturn]) [SixMonthReturn]
-                           ,B.[ViewCount]
+                           ,B.[OnlineSubscriptionAvailability]
+                           ,C.[ViewCount]
                            FROM [Sysjust_USStockList] A WITH (NOLOCK)
-                           LEFT JOIN [USStockViewCount] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[FirstBankCode]
+                           LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
+                           LEFT JOIN [USStockViewCount] C WITH (NOLOCK) ON A.[FirstBankCode] = C.[FirstBankCode]
                            WHERE A.[FirstBankCode] = @FirstBankCode";
 
             var uSStock = this._dbConnection.Query<USStock>(sql, new { FirstBankCode = firstBankCode })?.FirstOrDefault() ?? new USStock();
