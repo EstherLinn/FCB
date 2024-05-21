@@ -8,4 +8,8 @@
   <ItemGroup>
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentFTP" />
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
 </Project>

@@ -20,6 +20,7 @@
 
     <!-- === misc === -->
     <PackageReference Update="Dapper" Version="2.1.35" />
+    <PackageReference Update="FluentFTP" Version="50.0.1" />
     <PackageReference Update="Flurl" Version="4.0.0" />
     <PackageReference Update="Flurl.Http" Version="4.0.2" />
     <PackageReference Update="HtmlSanitizer" Version="8.0.865" />
@@ -27,7 +28,6 @@
     <PackageReference Update="Quartz" Version="3.9.0" />
     <PackageReference Update="Scriban" Version="5.10.0" />
     <PackageReference Update="X.PagedList" Version="8.4.7" />
-
     <!-- === pin misc === -->
     <PackageReference Update="Mapster" Version="7.3.0" />
   </ItemGroup>
