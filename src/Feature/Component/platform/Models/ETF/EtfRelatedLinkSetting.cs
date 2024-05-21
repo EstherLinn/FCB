@@ -6,16 +6,38 @@ namespace Feature.Wealth.Component.Models.ETF
 {
     public class EtfRelatedLinkSetting
     {
-        public static string GetETFSearchUrl()
+        private static Xcms.Sitecore.Foundation.Basic.FieldTypes.Link GetETFSearchPage()
         {
             Item item = ItemUtils.GetItem(Templates.EtfRelatedLink.RootItemId);
-            return item.GeneralLink(Templates.EtfRelatedLink.Fields.ETFSearch)?.Url;
+            var link = item.GeneralLink(Templates.EtfRelatedLink.Fields.ETFSearch);
+            return link;
+        }
+
+        private static Xcms.Sitecore.Foundation.Basic.FieldTypes.Link ETFDetailPage()
+        {
+            Item item = ItemUtils.GetItem(Templates.EtfRelatedLink.RootItemId);
+            var link = item.GeneralLink(Templates.EtfRelatedLink.Fields.ETFDetail);
+            return link;
+        }
+
+        public static string GetETFSearchUrl()
+        {
+            return GetETFSearchPage()?.Url;
+        }
+
+        public static Item GetETFSearchPageItem()
+        {
+            return GetETFSearchPage()?.TargetItem;
         }
 
         public static string GetETFDetailUrl()
         {
-            Item item = ItemUtils.GetItem(Templates.EtfRelatedLink.RootItemId);
-            return item.GeneralLink(Templates.EtfRelatedLink.Fields.ETFDetail)?.Url;
+            return ETFDetailPage()?.Url;
+        }
+
+        public static Item GetETFDetailPageItem()
+        {
+            return ETFDetailPage()?.TargetItem;
         }
 
         public struct Templates
