@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Feature.Wealth.Component.Models.Navigation;
+@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+
+@{
     Layout = "~/Views/Project/Wealth/Layouts/__SharedLayout.cshtml";
 }
 
@@ -6,9 +9,8 @@
 
 }
 
-
 <!-- .l-navbar--gn: 綠色底色 (預設為無底色) -->
-<div class="l-navbar l-navbar--gn">
+<div class="l-navbar @(ItemUtils.IsChecked(RenderingContext.CurrentOrNull?.ContextItem, Templates.Navigable.Fields.Background) ? "l-navbar--gn" : "")">
     <div class="l-navbar__wrap">
         @Html.Sitecore().Placeholder("breadcrumb")
     </div>
