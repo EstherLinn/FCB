@@ -27,7 +27,7 @@ namespace Feature.Wealth.Component.Controllers
                 viewModel.SelectedId = multilineField;
                 var funds = _HotFundRepository.GetFundData();
                 var hotFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
-                hotFunds = hotFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ToList();
+                hotFunds = hotFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ThenBy(f => f.ProductCode).ToList();
                 viewModel.HotFunds = _HotFundRepository.GetFundRenderData(hotFunds);
                 viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
             }

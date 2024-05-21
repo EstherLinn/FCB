@@ -22,7 +22,7 @@ namespace Feature.Wealth.Component.Controllers
             var viewModel = new AwardFundModel { Item = dataSourceItem };
 
             List<Funds> awardFunds = _repository.GetOrSetAwardFundCache();
-            viewModel.AwardFunds = awardFunds.OrderByDescending(a => a.Year).ToList();
+            viewModel.AwardFunds = awardFunds.OrderByDescending(a => a.Year).ThenByDescending(a=>a.AwardName).ThenBy(a=>a.ProductCode).ToList();
             viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
 
             return View("/Views/Feature/Wealth/Component/AwardFund/AwardFund.cshtml", viewModel);
