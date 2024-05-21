@@ -273,6 +273,9 @@
                 let data = [],
                     updateDate = '';
 
+                $('[data-chart="so1"]').find('.c-empty').removeClass('u-hidden');
+                $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+
                 if (this.value == 'industry') {
                     if (mapIndustryData) {
                         data = JSON.parse(JSON.stringify(mapIndustryData));
@@ -286,6 +289,14 @@
                 }
 
                 if (data.length != 0) {
+                    $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
+                    $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+
+                    chart.update({
+                        chart: {
+                            height: 30 * data.length + 55
+                        }
+                    });
                     chart.series[0].update({
                         type: 'bar',
                         colorByPoint: true,
@@ -293,8 +304,6 @@
                     });
 
                     $('[data-update-date="so1"]').text(updateDate);
-                    $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
-                    $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
                 } else {
                     $('[data-chart="so1"]').find('.c-empty').removeClass('u-hidden');
                     $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');

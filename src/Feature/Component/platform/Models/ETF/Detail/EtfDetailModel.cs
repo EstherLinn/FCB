@@ -56,6 +56,11 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         public EtfTradingPrice ETFTradingPrice { get; set; }
 
         /// <summary>
+        /// 近30日報價
+        /// </summary>
+        public List<EtfTradingPrice> ETFThiryDaysTradingPrice { get; set; }
+
+        /// <summary>
         /// 前十大持股明細
         /// </summary>
         public List<EtfStrockHolding> ETFStockHoldings { get; set; }
@@ -75,7 +80,6 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         /// </summary>
         public Dictionary<int?, List<EtfDividendRecord>> ETFDividendRecords { get; set; }
 
-        /// <summary>
         /// <summary>
         /// 規模變動
         /// </summary>

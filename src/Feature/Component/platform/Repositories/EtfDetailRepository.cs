@@ -7,6 +7,7 @@ using Mapster;
 using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Globalization;
 using System.Linq;
@@ -34,17 +35,9 @@ namespace Feature.Wealth.Component.Repositories
         public EtfDetailModel GetETFDetailModel(string etfId, Item dataSource)
         {
             this.Indicator = GetProductIdentifier(etfId);
-
-            //TODO: 瀏覽紀錄
-            //if (TriggerViewCountRecord() == false)
-            //{
-            //    return null;
-            //}
-
             EtfDetailModel model;
             model = GetOrSetETFDetailsCache(etfId);
             GetDatasourceData(model, dataSource);
-
             return model;
         }
 
@@ -128,6 +121,7 @@ namespace Feature.Wealth.Component.Repositories
             model.ETFNetWorthAnnunalReturn = GetAnnualReturn();
             model.ETFNetWorthMonthlyReturn = GetNetWortMonthlyReturn();
             model.ETFTradingPrice = GetBuyAndSellPriceData() ?? new EtfTradingPrice();
+            model.ETFThiryDaysTradingPrice = GetThrityDaysBuyAndSellPrice();
             model.ETFStockHoldings = GetETFStockHolding();
             model.ETFRiskIndicator = GetETFRiskIndicator();
             model.ETFYearReturns = GetETFYearReturnCompare();
@@ -227,9 +221,9 @@ namespace Feature.Wealth.Component.Repositories
                     dest.MarketPriceChangePercentage = src.MarketPriceChangePercentage.FormatDecimalNumber(needPercent: true);
                     dest.MarketPriceChangeStyle = src.MarketPriceChange.DecimalNumberToStyle();
                     dest.MarketPriceChangePercentageStyle = src.MarketPriceChangePercentage.DecimalNumberToStyle();
-                    dest.AnnualizedStandardDeviationMarketPriceRisk = src.AnnualizedStandardDeviationMarketPriceRisk.FormatDecimalNumber();
-                    dest.SharpeRatioMarketPriceRisk = src.SharpeRatioMarketPriceRisk.FormatDecimalNumber();
-                    dest.BetaMarketPriceRisk = src.BetaMarketPriceRisk.FormatDecimalNumber();
+                    dest.AnnualizedStandardDeviationMarketPriceRisk = src.AnnualizedStandardDeviationMarketPriceRisk.FormatDecimalNumber(needAbs: false);
+                    dest.SharpeRatioMarketPriceRisk = src.SharpeRatioMarketPriceRisk.FormatDecimalNumber(needAbs: false);
+                    dest.BetaMarketPriceRisk = src.BetaMarketPriceRisk.FormatDecimalNumber(needAbs: false);
 
                     #endregion 市價
 
@@ -242,9 +236,9 @@ namespace Feature.Wealth.Component.Repositories
                     dest.NetAssetValueChangePercentage = src.NetAssetValueChangePercentage.FormatDecimalNumber(needPercent: true);
                     dest.NetAssetValueChangeStyle = src.NetAssetValueChange.DecimalNumberToStyle();
                     dest.NetAssetValueChangePercentageStyle = src.NetAssetValueChangePercentage.DecimalNumberToStyle();
-                    dest.AnnualizedStandardDeviationNetValueRisk = src.AnnualizedStandardDeviationNetValueRisk.FormatDecimalNumber();
-                    dest.SharpeNetValueRisk = src.SharpeNetValueRisk.FormatDecimalNumber();
-                    dest.BetaNetValueRisk = src.BetaNetValueRisk.FormatDecimalNumber();
+                    dest.AnnualizedStandardDeviationNetValueRisk = src.AnnualizedStandardDeviationNetValueRisk.FormatDecimalNumber(needAbs: false);
+                    dest.SharpeNetValueRisk = src.SharpeNetValueRisk.FormatDecimalNumber(needAbs: false);
+                    dest.BetaNetValueRisk = src.BetaNetValueRisk.FormatDecimalNumber(needAbs: false);
 
                     #endregion 淨值
 
@@ -301,47 +295,27 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 暫定 觸發紀錄瀏覽 SP
-        /// </summary>
-        /// <returns></returns>
-        public bool TriggerViewCountRecord()
-        {
-            //TODO: 修改ETF
-            var param = new { ETFId = this.ETFId };
-            int updateCount = DbManager.Custom.Execute<int>("sp_FundViewCountRecord", param, CommandType.StoredProcedure);
-            return updateCount == 1;
-        }
-
-        /// <summary>
-        /// 取得瀏覽次數
-        /// </summary>
-        /// <returns></returns>
-        public string GetETFVisiteCount()
-        {
-            //TODO: 修改ETF
-            string sql = """
-                SELECT REPLACE(FORMAT(ViewCount, 'N'), '.00', '') ViewCount
-                FROM [FundViewCount]
-                WHERE ETFId = @ETFId
-                """;
-            var param = new { ETFId = this.ETFId };
-            string count = DbManager.Custom.Execute<string>(sql, param, CommandType.Text);
-            return count;
-        }
-
-        /// <summary>
         /// 近一年市價走勢
         /// </summary>
         /// <returns></returns>
         private List<EtfPriceHistory> GetMarketPriceWithOverPastYear()
         {
             string sql = """
-                SELECT Format([Date], 'yyyy-MM-dd') NetAssetValueDate, [MarketPrice]
-                FROM [Sysjust_ETFPRICE_HIS] WITH (NOLOCK)
-                WHERE [FirstBankCode] = @ETFId AND [Date] >= DATEADD(year, -1, GETDATE())
+                SELECT [NetAssetValueDate], [MarketPrice]
+                FROM [Sysjust_Nav_ETF] WITH (NOLOCK)
+                WHERE [FirstBankCode] = @ETFId AND [NetAssetValueDate] >= DATEADD(year, -1, GETDATE())
                 """;
             var param = new { ETFId = this.ETFId };
-            var result = DbManager.Custom.ExecuteIList<EtfPriceHistory>(sql, param, CommandType.Text)?.ToList();
+            var collection = DbManager.Custom.ExecuteIList<EtfNav>(sql, param, CommandType.Text)?.ToList();
+            var config = new TypeAdapterConfig();
+            config.ForType<EtfNav, EtfPriceHistory>()
+                .AfterMapping((src, dest) =>
+                {
+                    dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
+                    dest.MarketPrice = src.MarketPrice.RoundingValue();
+                });
+
+            var result = collection.Adapt<List<EtfPriceHistory>>(config);
             return result;
         }
 
@@ -352,12 +326,21 @@ namespace Feature.Wealth.Component.Repositories
         private List<EtfPriceHistory> GetNetWorthWithOverPastYear()
         {
             string sql = """
-                SELECT Format([Date], 'yyyy-MM-dd') NetAssetValueDate, [NetAssetValue]
-                FROM [Sysjust_ETFPRICE_HIS] WITH (NOLOCK)
-                WHERE [FirstBankCode] = @ETFId AND [Date] >= DATEADD(year, -1, GETDATE())
+                SELECT [NetAssetValueDate], [NetAssetValue]
+                FROM [Sysjust_Nav_ETF] WITH (NOLOCK)
+                WHERE [FirstBankCode] = @ETFId AND [NetAssetValueDate] >= DATEADD(year, -1, GETDATE())
                 """;
             var param = new { ETFId = this.ETFId };
-            var result = DbManager.Custom.ExecuteIList<EtfPriceHistory>(sql, param, CommandType.Text)?.ToList();
+            var collection = DbManager.Custom.ExecuteIList<EtfNav>(sql, param, CommandType.Text)?.ToList();
+            var config = new TypeAdapterConfig();
+            config.ForType<EtfNav, EtfPriceHistory>()
+                .AfterMapping((src, dest) =>
+                {
+                    dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
+                    dest.NetAssetValue = src.NetAssetValue.RoundingValue();
+                });
+
+            var result = collection.Adapt<List<EtfPriceHistory>>(config);
             return result;
         }
 
@@ -635,6 +618,36 @@ namespace Feature.Wealth.Component.Repositories
                 """;
             string indicator = DbManager.Custom.Execute<string>(sql, param, CommandType.Text);
             return (etfScaleMove, indicator);
+        }
+
+        /// <summary>
+        /// 取得近30日報價
+        /// </summary>
+        public List<EtfTradingPrice> GetThrityDaysBuyAndSellPrice()
+        {
+            var sql = """
+                WITH [FundETFCTE] AS(
+                    SELECT *
+                    FROM (
+                        SELECT [BankProductCode]
+                            ,[ETFCurrency]
+                            ,CAST([BankBuyPrice] AS DECIMAL(12, 4)) AS [BankBuyPrice]
+                            ,CAST([BankSellPrice] AS DECIMAL(12, 4)) AS [BankSellPrice]
+                            ,CAST(FORMAT( CONVERT(DATE, CONVERT(NVARCHAR(8), [PriceBaseDate] + 19110000), 112), 'yyyy/MM/dd' ) AS Date) AS [PriceBaseDate]
+                            ,[ProductName]
+                            ,[DataDate]
+                            , ROW_NUMBER() OVER(PARTITION BY [BankProductCode] ORDER BY [PriceBaseDate] DESC) AS [RowNumber]
+                        FROM [dbo].[FUND_ETF] WITH (NOLOCK)
+                    ) T1
+                )
+
+                SELECT *
+                FROM [FundETFCTE]
+                WHERE [BankProductCode] = @ETFId AND [RowNumber] < 31
+                """;
+            var param = new { ETFId = this.ETFId };
+            var result = DbManager.Custom.ExecuteIList<EtfTradingPrice>(sql, param, CommandType.Text);
+            return result?.ToList();
         }
 
         /// <summary>
@@ -1002,7 +1015,7 @@ namespace Feature.Wealth.Component.Repositories
 
         /// <summary>
         /// 取得規模變動
-        /// </summary
+        /// </summary>
         /// <returns></returns>
         public List<EtfScaleRecord> GetScalechange()
         {

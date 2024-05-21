@@ -178,7 +178,7 @@
         <div class="c-section__title">市價/淨值走勢</div>
         <div class="c-section__content">
             <div class="l-flex u-flex-col u-flex-gap-sm">
-                <div class="l-flex__item">
+                @*<div class="l-flex__item">
                     <div class="o-capsulebox">
                         <label class="o-capsulebox__item">
                             <input type="radio" name="marketCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="marketCurrency">
@@ -189,7 +189,7 @@
                             <span class="o-capsulebox__text">台幣</span>
                         </label>
                     </div>
-                </div>
+                </div>*@
                 <div class="l-flex__item" data-chart="marketTrend">
                     <div class="c-empty">
                         <div class="c-empty__img">
@@ -403,7 +403,7 @@
         <div class="c-section__title">ETF績效圖</div>
         <div class="c-section__content">
             <div class="l-flex u-flex-col u-flex-gap-sm">
-                <div class="l-flex__item">
+                @*<div class="l-flex__item">
                     <div class="o-capsulebox">
                         <label class="o-capsulebox__item">
                             <input type="radio" name="etfCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="etfCurrency">
@@ -414,7 +414,7 @@
                             <span class="o-capsulebox__text">台幣</span>
                         </label>
                     </div>
-                </div>
+                </div>*@
                 <div class="l-flex__item" data-chart="etfTrend">
                     <div class="c-empty">
                         <div class="c-empty__img">
@@ -762,9 +762,9 @@
                 return;
             }
 
-            $('[data-trend-filter="marketCurrency"]').on('change', function () {
-                getParams();
-            });
+            //$('[data-trend-filter="marketCurrency"]').on('change', function () {
+            //    getParams();
+            //});
             $('[data-trend-filter="marketDateRange"]').on('change', function () {
                 $('[data-trend-filter="marketInputStart"], [data-trend-filter="marketInputEnd"]').val('');
                 $('[data-chart="marketTrend"] .l-form').removeClass('is-error');
@@ -778,8 +778,8 @@
                     getParams();
                 }
             });
-            $('[data-trend-filter="marketCurrency"]:checked').trigger('change');
-
+            //$('[data-trend-filter="marketCurrency"]:checked').trigger('change');
+            getParams();
             var chart;
 
             function getParams() {
@@ -898,7 +898,7 @@
                             const nav = data.respNetAssetValue.resultSet.result[0].v2.split(',');
                             let mapNetWorthData = navDate.map((item, index) => {
                                 return {
-                                    name: item, //切版無
+                                    name: item,
                                     x: new Date(item).getTime(),
                                     y: roundToTwo(nav[index])
                                 };
@@ -924,6 +924,9 @@
                             //$('[data-update-date="market"]').text(updateDate);
 
                             chart = Highcharts.stockChart('marketTrendChart', {
+                                time: {
+                                    useUTC: false
+                                },
                                 chart: {
                                     zooming: {
                                         mouseWheel: {
@@ -1053,11 +1056,16 @@
                                     outside: true,
                                     useHTML: true,
                                     formatter: function () {
+                                        let date = new Date(this.x);
+                                        let formattedDate = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2);
                                         let tooltipText = '';
                                         this.points.forEach(point => {
-                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">' + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + point.series.name + ': ' + point.y + '美元' + '</div>' + '</div>';
+                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">'
+                                                + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>'
+                                                + point.series.name + ': ' + point.y + '美元' + '</div>' + '</div>';
                                         });
-                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.x) + '</div>' + tooltipText + '</div>';
+                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">'
+                                            + formattedDate + '</div>' + tooltipText + '</div>';
                                     },
                                     shadow: {
                                         color: 'rgba(0, 0, 0, 0.1)'
@@ -1132,9 +1140,9 @@
                 return;
             }
 
-            $('[data-trend-filter="etfCurrency"]').on('change', function () {
-                getParams();
-            });
+            //$('[data-trend-filter="etfCurrency"]').on('change', function () {
+            //    getParams();
+            //});
             $('[data-trend-filter="etfDateRange"]').on('change', function () {
                 $('[data-trend-filter="etfInputStart"], [data-trend-filter="etfInputEnd"]').val('');
                 $('[data-chart="etfTrend"] .l-form').removeClass('is-error');
@@ -1149,8 +1157,8 @@
                 }
             });
 
-            $('[data-trend-filter="etfCurrency"]:checked').trigger('change');
-
+            //$('[data-trend-filter="etfCurrency"]:checked').trigger('change');
+            getParams();
             var chart;
 
             function getParams() {
@@ -1322,6 +1330,9 @@
                             //$('[data-update-date="etf"]').text(updateDate);
 
                             chart = Highcharts.stockChart('etfTrendChart', {
+                                time: {
+                                    useUTC: false
+                                },
                                 chart: {
                                     zooming: {
                                         mouseWheel: {
@@ -1451,6 +1462,8 @@
                                     outside: true,
                                     useHTML: true,
                                     formatter: function () {
+                                        let date = new Date(this.x);
+                                        let formattedDate = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2);
                                         let tooltipText = '';
                                         this.points.forEach(point => {
                                             let upDownClass = '';
@@ -1459,9 +1472,12 @@
                                             } else {
                                                 upDownClass = 'o-fall';
                                             }
-                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">' + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + '<span>' + point.series.name + ': ' + '</span>' + '</div>' + '<span class="' + upDownClass + '">' + Math.abs(point.y) + '%</span>' + '</div>';
+                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">'
+                                                + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + '<span>'
+                                                + point.series.name + ': ' + '</span>' + '</div>' + '<span class="' + upDownClass + '">' + Math.abs(point.y) + '%</span>' + '</div>';
                                         });
-                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.x) + '</div>' + tooltipText + '</div>';
+                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">'
+                                            + formattedDate + '</div>' + tooltipText + '</div>';
                                     },
                                     shadow: {
                                         color: 'rgba(0, 0, 0, 0.1)'
