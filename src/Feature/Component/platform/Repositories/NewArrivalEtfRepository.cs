@@ -18,7 +18,7 @@ namespace Feature.Wealth.Component.Repositories
              SELECT *
              FROM [vw_BasicETF]
              ORDER BY SixMonthReturnMarketPriceOriginalCurrency
-             DESC
+             DESC,ProductCode
              """;
 
             var results = DbManager.Custom.ExecuteIList<ETFs>(sql, null, CommandType.Text);

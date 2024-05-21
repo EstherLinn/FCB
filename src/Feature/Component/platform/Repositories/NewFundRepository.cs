@@ -21,14 +21,14 @@ namespace Feature.Wealth.Component.Repositories
              SELECT *
              FROM [vw_BasicFund]
              ORDER BY SixMonthReturnOriginalCurrency
-             DESC
+             DESC,ProductCode
              """;
 
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 
             foreach (var item in results)
             {
-                if (item != null) 
+                if (item != null)
                 {
                     ProcessFundFilterDatas(item);
                 }
@@ -54,6 +54,6 @@ namespace Feature.Wealth.Component.Repositories
                 item.ListingDateFormat = listingDate;
             }
         }
-       
+
     }
 }

@@ -18,7 +18,7 @@ namespace Feature.Wealth.Component.Repositories
             FROM [vw_BasicFund]
             WHERE SixMonthReturnOriginalCurrency IS NOT NULL
             ORDER BY SixMonthReturnOriginalCurrency
-            DESC
+            DESC,ProductCode
             """;
 
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);

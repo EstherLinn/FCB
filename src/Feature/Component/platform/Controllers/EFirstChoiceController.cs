@@ -26,7 +26,7 @@ namespace Feature.Wealth.Component.Controllers
                 viewModel.SelectedId = multilineField;
                 var funds = _repository.GetFundData();
                 var eFirstFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
-                eFirstFunds = eFirstFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ToList();
+                eFirstFunds = eFirstFunds.OrderByDescending(f => f.SixMonthReturnOriginalCurrency).ThenBy(f => f.ProductCode).ToList();
                 viewModel.EFirstFunds = _repository.GetFundRenderData(eFirstFunds);
                 viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
             }
