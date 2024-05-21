@@ -16,6 +16,73 @@ namespace Feature.Wealth.Component.Repositories
         private ILog Log { get; } = Logger.General;
 
         /// <summary>
+        /// 指定參數Key取得瀏覽紀錄
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <param name="querystringKeys">參數Key值</param>
+        /// <returns></returns>
+        public IEnumerable<VisitInfo> GetVisitRecords(Guid? pageId, params string[] querystringKeys)
+        {
+            if (!pageId.HasValue || pageId.Value == Guid.Empty)
+            {
+                return null;
+            }
+
+            var records = QueryVisitRecords(pageId);
+
+            if (records == null)
+            {
+                return null;
+            }
+
+            var result = new List<VisitInfo>();
+
+            if (querystringKeys.Any())
+            {
+                querystringKeys = querystringKeys.Select(x => x.ToLower()).ToArray();
+
+                foreach (VisitCountModel record in records)
+                {
+                    if (string.IsNullOrWhiteSpace(record.QueryStrings))
+                    {
+                        continue;
+                    }
+
+                    var record_queryStr = ParseUrlQueryStringToDictionary(Sitecore.Web.WebUtil.ParseQueryString(record.QueryStrings));
+                    var matchKeys = record_queryStr.Keys.Intersect(querystringKeys);
+
+                    if (matchKeys.Any())
+                    {
+                        VisitInfo countEntity = new VisitInfo()
+                        {
+                            VisitCount = record.VisitCount,
+                            QueryStrings = record_queryStr
+                        };
+
+                        result.Add(countEntity);
+                    }
+                }
+            }
+            else
+            {
+                // 無指定參數
+                foreach (VisitCountModel record in records)
+                {
+                    var record_queryStr = ParseUrlQueryStringToDictionary(Sitecore.Web.WebUtil.ParseQueryString(record.QueryStrings));
+                    VisitInfo countEntity = new VisitInfo()
+                    {
+                        VisitCount = record.VisitCount,
+                        QueryStrings = record_queryStr
+                    };
+
+                    result.Add(countEntity);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// 取得瀏覽次數
         /// </summary>
         /// <param name="pageId"></param>
@@ -23,7 +90,7 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public int? GetVisitCount(Guid? pageId, string url)
         {
-            var records = SelectVisitRecords(pageId);
+            var records = QueryVisitRecords(pageId)?.ToList();
 
             if (records == null)
             {
@@ -150,7 +217,7 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="pageId"></param>
         /// <returns></returns>
-        private List<VisitCountModel> SelectVisitRecords(Guid? pageId)
+        private IEnumerable<VisitCountModel> QueryVisitRecords(Guid? pageId)
         {
             IEnumerable<VisitCountModel> result = null;
             string sql = """
@@ -162,7 +229,7 @@ namespace Feature.Wealth.Component.Repositories
                 """;
             var param = new { PageId = pageId.Value };
             result = DbManager.Custom.ExecuteIList<VisitCountModel>(sql, param, CommandType.Text);
-            return result?.ToList();
+            return result;
         }
 
         private Dictionary<string, string> ParseUrlQueryStringToDictionary(SafeDictionary<string> collection)
