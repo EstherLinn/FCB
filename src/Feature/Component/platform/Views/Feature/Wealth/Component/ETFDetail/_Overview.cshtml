@@ -106,7 +106,7 @@
                                         <div id="performanceChart"></div>
                                     </div>
                                 </div>
-                                @*<div class="l-dataNotes u-hidden"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="performance">2023/09/13</span></div>*@
+                                <div class="l-dataNotes u-hidden"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="performance"></span></div>
                             </div>
                         </div>
                     </div>
@@ -157,7 +157,7 @@
                                         <div id="netWorthChart"></div>
                                     </div>
                                 </div>
-                                @*<div class="l-dataNotes u-hidden"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="netWorth">2023/09/13</span></div>*@
+                                <div class="l-dataNotes u-hidden"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="netWorth"></span></div>
                             </div>
                         </div>
                     </div>
@@ -422,12 +422,9 @@
                     var query = apiRequest('@ETFPerformanceTrendApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data.resultSet.result).length != 0) {
-                            //const updateDate = data.body.updateDate.replaceAll('-', '/');
-                            // 資料日期
-                            //$('[data-update-date="performance"]').text(updateDate);
                             let v1 = data.resultSet.result[0].v1.split(',');
                             let v2 = data.resultSet.result[0].v2.split(',');
-                            const mapData = v1.map((item, index) => {
+                            let mapData = v1.map((item, index) => {
                                 let date = item.replaceAll('/', '-');
                                 return {
                                     name: date,
@@ -435,6 +432,11 @@
                                     y: roundToTwoNum(v2[index])
                                 };
                             });
+
+                            mapData.sort((a, b) => { return a.x - b.x; });
+                            let latestDate = mapData[mapData.length - 1].name;
+                            const updateDate = latestDate.replaceAll('-', '/');
+                            $('[data-update-date="performance"]').text(updateDate);
 
                             Highcharts.stockChart('performanceChart', {
                                 ...nearlySetting,
@@ -527,9 +529,11 @@
                         mapMarketData.sort((a, b) => { return a.x - b.x; });
                         mapNetWorthData.sort((a, b) => { return a.x - b.x; });
 
-                        //const updateDate = data.body.updateDate.replaceAll('-', '/');
+                        let latestDate = mapMarketData[mapMarketData.length - 1].name;
+                        const updateDate = latestDate.replaceAll('-', '/');
                         // 資料日期
-                        //$('[data-update-date="netWorth"]').text(updateDate);
+                        $('[data-update-date="netWorth"]').text(updateDate);
+
                         Highcharts.stockChart('netWorthChart', {
                             ...nearlySetting,
                             yAxis: {
@@ -554,11 +558,16 @@
                                 outside: true,
                                 useHTML: true,
                                 formatter: function () {
+                                    let date = new Date(this.x);
+                                    let formattedDate = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2);
                                     let tooltipText = '';
                                     this.points.forEach(point => {
-                                        tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">' + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + point.series.name + ': ' + point.y + '</div>' + '</div>';
+                                        tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">'
+                                            + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>'
+                                            + point.series.name + ': ' + point.y + '</div>' + '</div>';
                                     });
-                                    return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.x) + '</div>' + tooltipText + '</div>';
+                                    return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">'
+                                        + formattedDate + '</div>' + tooltipText + '</div>';
                                 },
                                 shadow: {
                                     color: 'rgba(0, 0, 0, 0.1)'
