@@ -15,7 +15,10 @@ namespace Feature.Wealth.Component.Models.IndexRecommendation
         public IList<Funds> HotFunds { get; set; }
         public IList<ETFs> HotETFs { get; set; }
         public string FundDetailLink { get; set; }
-        public DateTime NetAssetValueDate { get; set; }
+        public string ETFDetailLink { get; set; }
+        public DateTime FundNetAssetValueDate { get; set; }
+        public DateTime ETFNetAssetValueDate { get; set; }
+        public Dictionary<string, string[]> TagsForTopETFs { get; set; }
     }
 
     /// <summary>
@@ -117,31 +120,35 @@ namespace Feature.Wealth.Component.Models.IndexRecommendation
         /// <summary>
         /// 市價
         /// </summary>
-        public decimal MarketPrice { get; set; }
+        public decimal? MarketPrice { get; set; }
+        public decimal? MarketPriceFormat => NumberExtensions.RoundingValue(MarketPrice);
+
 
         /// <summary>
-        /// 折溢價 
+        /// 幣別
         /// </summary>
-        public decimal DiscountPremium { get; set; }
+        public string CurrencyName { get; set; }
 
         /// <summary>
-        /// 最新量
+        /// 市價漲跌幅
         /// </summary>
-        public decimal LatestVolumeTradingVolume { get; set; }
-        public string LatestVolumeTradingVolumeFormat => NumberExtensions.FormatNumber(LatestVolumeTradingVolume);
+        public decimal? MarketPriceChangePercentage { get; set; }
+        public string MarketPriceChangePercentageFormat => NumberExtensions.RoundingPercentage(MarketPriceChangePercentage).ToString();
+
 
         /// <summary>
-        /// 最新量-十日均價
+        /// 六個月報酬(市價原幣)
         /// </summary>
-        public decimal TenDayAverageVolume { get; set; }
-        public string TenDayAverageVolumeFormat => NumberExtensions.FormatNumber(TenDayAverageVolume);
+        public decimal? SixMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public string SixMonthReturnMarketPriceOriginalCurrencyFormat => NumberExtensions.RoundingPercentage(SixMonthReturnMarketPriceOriginalCurrency).ToString();
+
 
         /// <summary>
         /// 可否網路申購
         /// </summary>
         public string OnlineSubscriptionAvailability { get; set; }
 
-
+        public string[] ETFDiscountTags { get; set; }
     }
 
 
