@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.USStock;
 using Feature.Wealth.Component.Repositories;
+using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Sitecore.Services.Core.ComponentModel;
@@ -68,7 +68,7 @@ namespace Feature.Wealth.Component.Controllers
                 Item = item,
                 USStockList = uSStockList,
                 USStockDictionary = uSStockList.ToDictionary(x => x.FirstBankCode, x => x),
-                USStockHtmlString = new HtmlString(JsonSerializer.Serialize(uSStockList)),
+                USStockHtmlString = new HtmlString(JsonConvert.SerializeObject(uSStockList)),
                 HotKeywordTags = keyword,
                 HotProductTags = product
             };

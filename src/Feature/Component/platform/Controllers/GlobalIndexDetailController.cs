@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.GlobalIndex;
 using Feature.Wealth.Component.Repositories;
+using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -176,7 +176,7 @@ namespace Feature.Wealth.Component.Controllers
                 }
             }
 
-            return new HtmlString(JsonSerializer.Serialize(relevantInformations));
+            return new HtmlString(JsonConvert.SerializeObject(relevantInformations));
         }
 
         private HtmlString GetGlobalInedxPriceData(string indexCode, string cycle)
@@ -225,7 +225,7 @@ namespace Feature.Wealth.Component.Controllers
                 }
             }
 
-            return new HtmlString(JsonSerializer.Serialize(priceDatas));
+            return new HtmlString(JsonConvert.SerializeObject(priceDatas));
         }
     }
 }

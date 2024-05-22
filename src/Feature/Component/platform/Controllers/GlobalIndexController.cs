@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.GlobalIndex;
 using Feature.Wealth.Component.Repositories;
+using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Sitecore.Services.Core.ComponentModel;
@@ -65,7 +65,7 @@ namespace Feature.Wealth.Component.Controllers
                 DetailLink = detailLink,
                 GlobalIndexList = globalIndexList,
                 GlobalIndexDictionary = globalIndexList.ToDictionary(x => x.IndexCode, x => x),
-                GlobalIndexHighchartsDataHtmlString = new HtmlString(JsonSerializer.Serialize(datas))
+                GlobalIndexHighchartsDataHtmlString = new HtmlString(JsonConvert.SerializeObject(datas))
             };
 
             return model;
