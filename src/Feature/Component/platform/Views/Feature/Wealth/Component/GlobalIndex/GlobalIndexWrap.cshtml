@@ -15,7 +15,7 @@
                 <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
                 <li><a href="#" class="c-tab__item is-active" target="_self" title="全球指數" data-tab-target="tab-1">全球指數</a></li>
                 <li><a href="#" class="c-tab__item " target="_self" title="區域類股" data-tab-target="tab-2">區域類股</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="道瓊指數" data-tab-target="tab-3">道瓊指數</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="道瓊/標普500指數" data-tab-target="tab-3">道瓊/標普500指數</a></li>
                 <li><a href="#" class="c-tab__item " target="_self" title="分類指數" data-tab-target="tab-4">分類指數</a></li>
                 <li><a href="#" class="c-tab__item " target="_self" title="商品期貨" data-tab-target="tab-5">商品期貨</a></li>
                 <li><a href="#" class="c-tab__item " target="_self" title="債券" data-tab-target="tab-6">債券</a></li>
@@ -27,7 +27,7 @@
                 <div class="c-tab__dropdown">
                     <a href="#" class="c-tab__clone is-active" target="_self" title="全球指數" data-tab-target="tab-1">全球指數</a>
                     <a href="#" class="c-tab__clone " target="_self" title="區域類股" data-tab-target="tab-2">區域類股</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="道瓊指數" data-tab-target="tab-3">道瓊指數</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="道瓊/標普500指數" data-tab-target="tab-3">道瓊/標普500指數</a>
                     <a href="#" class="c-tab__clone " target="_self" title="分類指數" data-tab-target="tab-4">分類指數</a>
                     <a href="#" class="c-tab__clone " target="_self" title="商品期貨" data-tab-target="tab-5">商品期貨</a>
                     <a href="#" class="c-tab__clone " target="_self" title="債券" data-tab-target="tab-6">債券</a>
@@ -57,7 +57,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="亞洲">
+                        <div class="l-flex__item" id="亞洲" data-name="globalIndex">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -73,7 +73,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -159,7 +159,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -223,6 +223,10 @@
                                                 @if (Model.GlobalIndexDictionary.ContainsKey("AI000800"))
                                                 {
                                                     @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000800"])
+                                                }                                                
+                                                @if (Model.GlobalIndexDictionary.ContainsKey("INDA.US"))
+                                                {
+                                                    @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["INDA.US"])
                                                 }
                                             </tbody>
                                         </table>
@@ -230,7 +234,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="美洲" style="display: none;">
+                        <div class="l-flex__item" id="美洲" data-name="globalIndex" style="display: none;">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -246,7 +250,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -312,7 +316,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -367,7 +371,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="歐非中東" style="display: none;">
+                        <div class="l-flex__item" id="歐非中東" data-name="globalIndex" style="display: none;">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -383,7 +387,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -473,7 +477,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -570,7 +574,7 @@
                                         <tr>
                                             <th>
                                                 <div class="c-table__title">
-                                                    <span>指數名稱</span>
+                                                    <span>名稱</span>
                                                 </div>
                                             </th>
                                             <th>
@@ -657,7 +661,7 @@
                                         <tr>
                                             <th>
                                                 <div class="c-table__title">
-                                                    <span>指數名稱</span>
+                                                    <span>名稱</span>
                                                 </div>
                                             </th>
                                             <th>
@@ -767,7 +771,7 @@
                                         <tr>
                                             <th>
                                                 <div class="c-table__title">
-                                                    <span>指數名稱</span>
+                                                    <span>名稱</span>
                                                 </div>
                                             </th>
                                             <th>
@@ -890,7 +894,7 @@
                                         <tr>
                                             <th>
                                                 <div class="c-table__title">
-                                                    <span>指數名稱</span>
+                                                    <span>名稱</span>
                                                 </div>
                                             </th>
                                             <th>
@@ -980,7 +984,7 @@
                                         <tr>
                                             <th>
                                                 <div class="c-table__title">
-                                                    <span>指數名稱</span>
+                                                    <span>名稱</span>
                                                 </div>
                                             </th>
                                             <th>
@@ -1067,7 +1071,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="能源">
+                        <div class="l-flex__item" id="能源" data-name="products">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -1083,7 +1087,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1137,7 +1141,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1180,7 +1184,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="貴金屬" style="display: none;">
+                        <div class="l-flex__item" id="貴金屬" data-name="products" style="display: none;">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -1196,7 +1200,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1262,7 +1266,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1317,7 +1321,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="農作物" style="display: none;">
+                        <div class="l-flex__item" id="農作物" data-name="products" style="display: none;">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -1333,7 +1337,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1395,7 +1399,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1456,12 +1460,12 @@
                                     <input type="radio" name="bonds" value="各國債券利率" checked class="o-pelletbox__input">
                                     <span class="o-pelletbox__text">各國債券利率</span>
                                 </label><label class="o-pelletbox__item">
-                                    <input type="radio" name="bonds" value="債券指數行情" class="o-pelletbox__input">
-                                    <span class="o-pelletbox__text">債券指數行情</span>
+                                    <input type="radio" name="bonds" value="債券行情" class="o-pelletbox__input">
+                                    <span class="o-pelletbox__text">債券行情</span>
                                 </label>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="各國債券利率">
+                        <div class="l-flex__item" id="各國債券利率" data-name="bonds">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -1477,7 +1481,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1567,7 +1571,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1658,7 +1662,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="債券指數行情" style="display: none;">
+                        <div class="l-flex__item" id="債券行情" data-name="bonds" style="display: none;">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -1674,7 +1678,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1740,7 +1744,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="主要匯率">
+                        <div class="l-flex__item" id="主要匯率" data-name="exchangeRate">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -1756,7 +1760,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1814,7 +1818,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1857,7 +1861,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="亞洲匯率" style="display: none;">
+                        <div class="l-flex__item" id="亞洲匯率" data-name="exchangeRate" style="display: none;">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -1873,7 +1877,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1935,7 +1939,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -1990,7 +1994,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="l-flex__item" id="歐非中東匯率" style="display: none;">
+                        <div class="l-flex__item" id="歐非中東匯率" data-name="exchangeRate" style="display: none;">
                             <!-- 左右表格 -->
                             <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
                                 <div class="l-flex__item">
@@ -2006,7 +2010,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -2056,7 +2060,7 @@
                                                 <tr>
                                                     <th>
                                                         <div class="c-table__title">
-                                                            <span>指數名稱</span>
+                                                            <span>名稱</span>
                                                         </div>
                                                     </th>
                                                     <th>
@@ -2117,7 +2121,7 @@
                                         <tr>
                                             <th>
                                                 <div class="c-table__title">
-                                                    <span>指數名稱</span>
+                                                    <span>名稱</span>
                                                 </div>
                                             </th>
                                             <th>
@@ -2183,7 +2187,7 @@
                                         <tr>
                                             <th>
                                                 <div class="c-table__title">
-                                                    <span>指數名稱</span>
+                                                    <span>名稱</span>
                                                 </div>
                                             </th>
                                             <th>
@@ -2242,43 +2246,11 @@
 <script>
     $(function () {
         $('.o-pelletbox__input').each(function (i, el) {
-            var val = $(el).val();
-
-            if (val == '亞洲' || val == '美洲' || val == '歐非中東') {
-                $(el).on("click", function () {
-                    $('#亞洲').hide();
-                    $('#美洲').hide();
-                    $('#歐非中東').hide();
-
-                    $('#' + $(this).val()).show();
-                });
-            }
-            else if (val == '能源' || val == '貴金屬' || val == '農作物') {
-                $(el).on("click", function () {
-                    $('#能源').hide();
-                    $('#貴金屬').hide();
-                    $('#農作物').hide();
-
-                    $('#' + $(this).val()).show();
-                });
-            }
-            else if (val == '各國債券利率' || val == '債券指數行情') {
-                $(el).on("click", function () {
-                    $('#各國債券利率').hide();
-                    $('#債券指數行情').hide();
-
-                    $('#' + $(this).val()).show();
-                });
-            }
-            else if (val == '主要匯率' || val == '亞洲匯率' || val == '歐非中東匯率') {
-                $(el).on("click", function () {
-                    $('#主要匯率').hide();
-                    $('#亞洲匯率').hide();
-                    $('#歐非中東匯率').hide();
-
-                    $('#' + $(this).val()).show();
-                });
-            }
+            $(el).on("click", function () {
+                var name = $(this).attr("name");
+                $(`[data-name="${name}"]`).hide();
+                $('#' + $(this).val()).show();
+            });
         });
     });
 </script>

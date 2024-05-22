@@ -2,6 +2,7 @@
 using Sitecore.Data.Items;
 using System.Collections.Generic;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Feature.Wealth.Component.Models.GlobalIndex
 {
@@ -18,6 +19,7 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
     {
         public string IndexCode { get; set; }
         public string IndexName { get; set; }
+        public MvcHtmlString IndexNameHtmlString { get; set; }
         public string IndexCategoryID { get; set; }
         public string IndexCategoryName { get; set; }
         public string DataDate { get; set; }

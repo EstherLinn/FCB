@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.MarketTrend;
 using Feature.Wealth.Component.Repositories;
+using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -81,14 +81,14 @@ namespace Feature.Wealth.Component.Controllers
             model.Bond = CreateMarketTrendList(item, bondChildren, RelevantInformationType.Bond);
             model.Industry = CreateMarketTrendList(item, industryChildren, RelevantInformationType.Industry);
 
-            model.GlobalIndexHighchartsDataHtmlString = new HtmlString(JsonSerializer.Serialize(this._datas));
+            model.GlobalIndexHighchartsDataHtmlString = new HtmlString(JsonConvert.SerializeObject(this._datas));
 
-            model.StockRelevantFundHtmlString = new HtmlString(JsonSerializer.Serialize(this._stockRelevantFund));
-            model.StockRelevantETFHtmlString = new HtmlString(JsonSerializer.Serialize(this._stockRelevantETF));
-            model.BondRelevantFundHtmlString = new HtmlString(JsonSerializer.Serialize(this._bondRelevantFund));
-            model.BondRelevantETFHtmlString = new HtmlString(JsonSerializer.Serialize(this._bondRelevantETF));
-            model.IndustryRelevantFundHtmlString = new HtmlString(JsonSerializer.Serialize(this._industryRelevantFund));
-            model.IndustryRelevantETFHtmlString = new HtmlString(JsonSerializer.Serialize(this._industryRelevantETF));
+            model.StockRelevantFundHtmlString = new HtmlString(JsonConvert.SerializeObject(this._stockRelevantFund));
+            model.StockRelevantETFHtmlString = new HtmlString(JsonConvert.SerializeObject(this._stockRelevantETF));
+            model.BondRelevantFundHtmlString = new HtmlString(JsonConvert.SerializeObject(this._bondRelevantFund));
+            model.BondRelevantETFHtmlString = new HtmlString(JsonConvert.SerializeObject(this._bondRelevantETF));
+            model.IndustryRelevantFundHtmlString = new HtmlString(JsonConvert.SerializeObject(this._industryRelevantFund));
+            model.IndustryRelevantETFHtmlString = new HtmlString(JsonConvert.SerializeObject(this._industryRelevantETF));
 
             return model;
         }
