@@ -20,6 +20,7 @@
 
     <!-- === misc === -->
     <PackageReference Update="Dapper" Version="2.1.35" />
+    <PackageReference Update="FixedWidthParserWriter" Version="1.1.4" />
     <PackageReference Update="FluentFTP" Version="50.0.1" />
     <PackageReference Update="Flurl" Version="4.0.0" />
     <PackageReference Update="Flurl.Http" Version="4.0.2" />
@@ -30,6 +31,7 @@
     <PackageReference Update="X.PagedList" Version="8.4.7" />
 
     <!-- === pin version === -->
+    <PackageReference Update="CsvHelper" VersionOverride="31.0.0" />
     <PackageReference Update="Mapster" Version="7.3.0" />
     <PackageReference Update="Oracle.ManagedDataAccess" Version="21.14.0" />
   </ItemGroup>
