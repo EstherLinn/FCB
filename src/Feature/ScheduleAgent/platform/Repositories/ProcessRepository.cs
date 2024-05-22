@@ -10,12 +10,12 @@ using System.Security.Cryptography;
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
 {
-    public static class ProcessRepository
+    public  class ProcessRepository
     {
         /// <summary>
         /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)
         /// </summary>
-        public static void BulkInsertToDatabase<T>(List<T> data, string tableName, string uniqueColumn, string key, string filePath)
+        public  void BulkInsertToDatabase<T>(List<T> data, string tableName, string uniqueColumn, string key, string filePath)
         {
             string mergeQuery = GenerateMergeQuery<T>(tableName, uniqueColumn, key);
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
@@ -25,7 +25,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)三個參數比對
         /// </summary>
-        public static void BulkInsertToDatabase<T>(List<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath)
+        public  void BulkInsertToDatabase<T>(List<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -53,7 +53,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 將資料插入最新的資料表中(會刪除舊資料，插入最新的資料=資料表裡僅保留最新的資料)
         /// </summary>
-        public static void BulkInsertToNewDatabase<T>(List<T> data, string tableName, string filePath)
+        public  void BulkInsertToNewDatabase<T>(List<T> data, string tableName, string filePath)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -72,7 +72,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 直接將資料插入資料庫(增量)
         /// </summary>
-        public static void BulkInsertDirectToDatabase<T>(List<T> data, string tableName, string filePath)
+        public  void BulkInsertDirectToDatabase<T>(List<T> data, string tableName, string filePath)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -87,7 +87,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             LogChangeHistory(DateTime.Now, filePath, "資料增量", tableName, line);
         }
 
-        private static string GenerateMergeQuery<T>(string tableName, string uniqueColumn, string key)
+        private  string GenerateMergeQuery<T>(string tableName, string uniqueColumn, string key)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -110,13 +110,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             return mergeQuery;
         }
 
-        private static string GenerateUpdateSet(PropertyInfo[] properties)
+        private  string GenerateUpdateSet(PropertyInfo[] properties)
         {
             string updateColumns = string.Join(",", properties.Select(p => $"target.{p.Name} = source.{p.Name}"));
             return updateColumns;
         }
 
-        public static string CalculateHash(string archiveFilePath)
+        public  string CalculateHash(string archiveFilePath)
         {
             using (var sha256 = SHA256.Create())
             {
@@ -125,7 +125,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
         }
 
-        public static void LogChangeHistory(DateTime timestamp, string filePath, string operationType, string tableName, int line)
+        public  void LogChangeHistory(DateTime timestamp, string filePath, string operationType, string tableName, int line)
         {
             var changeHistory = new ChangeHistory
             {
@@ -138,7 +138,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             InsertChangeHistory(changeHistory);
         }
 
-        public static void InsertChangeHistory(ChangeHistory changeHistory)
+        public  void InsertChangeHistory(ChangeHistory changeHistory)
         {
             string insertHistoryQuery = """
                                         INSERT INTO ChangeHistory (FileName, ModificationDate, ModificationType, DataTable,ModificationLine)
