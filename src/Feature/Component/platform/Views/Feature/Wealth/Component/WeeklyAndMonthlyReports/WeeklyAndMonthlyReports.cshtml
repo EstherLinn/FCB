@@ -1,0 +1,242 @@
+﻿@model Feature.Wealth.Component.Models.WeeklyAndMonthlyReports.WeeklyAndMonthlyReportsModel
+@using Feature.Wealth.Component.Models.WeeklyAndMonthlyReports
+@using Foundation.Wealth.Helper;
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-wrap">
+    <div class="l-stage">
+
+        <div class="l-flex u-flex-col u-flex-gap-sm" data-empty="true" style="display:none;">
+            <div class="l-flex__item">
+                <div class="l-table">
+                    <div class="c-section">
+                        <div class="c-section__content">
+                            <div class="c-empty">
+                                <div class="c-empty__img">
+                                    <img src="@Url.Content("~/themes/images/lions/lion-compare.svg")" alt="">
+                                </div>
+                                <div class="c-empty__desc">目前暫無資料。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="l-flex u-flex-col u-flex-gap-sm" data-empty="false">
+
+            @if (!string.IsNullOrEmpty(Model.Title))
+            {
+                <div class="l-flex__item">@Model.Title</div>
+            }
+
+            <div class="l-flex__item">
+                <div class="l-flex u-flex-stretch@lt u-flex-col@lt u-flex-gap-sm">
+                    <div class="l-flex__item">
+                        <div class="l-selectbox">
+                            <div class="l-selectbox__item">
+                                <select id="type_select" class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true">
+                                    <option value="全部分類">全部分類</option>
+                                    <option value="週報">週報</option>
+                                    <option value="月報">月報</option>
+                                </select>
+                            </div>
+                            <div class="l-selectbox__item">
+                                <select id="year_select" class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true">
+                                    <option value="全部年度">全部年度</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="l-flex__item">
+                <div class="l-table">
+                    <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra" id="table">
+                        <colgroup>
+                            <col style="width: 20%;">
+                            <col style="width: auto;">
+                        </colgroup>
+                        <thead>
+                            <tr class="u-nowrap">
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>日期/時間</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>標題</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="uid-fjs"></tbody>
+
+                        <script id="uid-template" type="text/html">
+                            <tr class="c-cardTable__item u-center@dt-only">
+                                <td class="c-cardTable__body" data-card-table-width="1/2">
+                                    <div class="c-cardTable__content u-nowrap@dt-only"><%= ReportsDate %></div>
+                                </td>
+                                <td class="c-cardTable__body u-left">
+                                    <div class="c-cardTable__content u-line-2@lt-only">
+                                        <% if (ReportsLink != null && ReportsLink != "") { %>
+                                        <a href="<%= ReportsLink %>" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt" target="<%= ReportsTarget %>" title="<%= ReportsLinkTitle %>"><%= ReportsTitle %></a>
+                                        <% } else {%>
+                                        <a class="t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt"><%= ReportsTitle %></a>
+                                        <% } %>
+                                    </div>
+                                </td>
+                            </tr>
+                        </script>
+
+                    </table>
+
+                    @{
+                        Html.RenderPartial("~/Views/Feature/Wealth/Component/Partial/_Pagination.cshtml");
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+
+        function loading() {
+            window.loading('show');
+            setTimeout(() => {
+                window.loading('hide');
+            }, 300);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            let fjs;
+
+            var dataSourceId = "@Model.DataSourceId";
+
+            function initFilter(data) {
+                let opts = {
+                    template: '#uid-template',
+                    callbacks: {
+                        afterFilter: function (result) {
+                            this.paginator.setCurrentPage(1);
+                            window.loading('hide');
+                        }
+                    },
+                    pagination: {
+                        container: '#uid-pagination',
+                        paginationView: '#uid-template-pagination',
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, data.length],
+                            container: '#uid-perPage',
+                            perPageView: '#uid-template-perPage'
+                        }
+                    }
+                };
+
+                fjs = FilterJS(data, '#uid-fjs', opts);
+
+                function fnScrollUp() {
+                    loading();
+
+                    $('#table').scrollPosition('scroll');
+                }
+                $containgerPagination = $('#uid-pagination');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+
+                $('#uid-view-perPage').on('change.pagesize', function () {
+                    fnScrollUp();
+                    fjs.paginator.setCurrentPage(1);
+                }).sizebox();
+            }
+
+            function getReportsData(dataSourceId) {
+                const params = {
+                    id: dataSourceId
+                };
+
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "WeeklyAndMonthlyReports", "GetReportsData")',
+                    type: 'POST',
+                    data: params,
+                }).done(function (data, textStatus, jqXHR) {
+                    if (data != null && data.length != 0) {
+                        getYearSelectOption(data);
+                        initFilter(data);
+
+                        $('[data-filter-switch="#uid-template"]').trigger('change');
+                        $('#year_select').on('change', filterData);
+                        $('#type_select').on('change', filterData);
+                    }
+                    else {
+                        $('[data-empty="true"]').show();
+                        $('[data-empty="false"]').hide();
+                    }
+
+                    function getYearSelectOption(data) {
+                        const yearSelectOption = data
+                            .map((item) => new Date(item.ReportsDate).getFullYear())
+                            .filter((element, index, arr) => arr.indexOf(element) === index)
+                            .sort((a, b) => b - a); 
+
+                        $.each(yearSelectOption, function (index, value) {
+                            $('#year_select').append($('<option>', {
+                                value: value,
+                                text: value
+                            }));
+                        });
+                    }
+
+                    function filterData() {
+                        loading();
+
+                        let rangeData = data;
+                        let year = $('#year_select').val();
+                        let type = $('#type_select').val();
+
+                        if (year !== "全部年度") {
+                            rangeData = rangeData.filter(function (item) {
+                                return item.ReportsDate.startsWith(year);
+                            });
+                        }
+
+                        if (type !== "全部分類") {
+                            rangeData = rangeData.filter(function (item) {
+                                return item.ReportsType === type;
+                            });
+                        }
+
+                        initFilter(rangeData);
+                    }
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                    $('[data-empty="true"]').show();
+                    $('[data-empty="false"]').hide();
+
+                }).always(function () {
+                    window.loading('hide');
+                });
+            }
+
+            getReportsData(dataSourceId);
+
+        });
+    })(jQuery, window, document);
+</script>
