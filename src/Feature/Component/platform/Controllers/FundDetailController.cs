@@ -35,13 +35,11 @@ namespace Feature.Wealth.Component.Controllers
             }
             getfundid = getfundid.ToUpper();
             var fundIndicator = _fundRepository.GetDometicOrOverseas(getfundid);
-
-            if (!_fundRepository.TriggerViewCountRecord(getfundid))
+            fundViewModel = _fundRepository.GetOrSetFundDetailsCache(getfundid, fundIndicator);
+            if (fundViewModel.FundBaseData == null)
             {
                 return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
             }
-            fundViewModel = _fundRepository.GetOrSetFundDetailsCache(getfundid, fundIndicator);
-            fundViewModel.FundBaseData.ViewCount = _fundRepository.GetFundViewCount(getfundid);
             fundViewModel.Item = RenderingContext.CurrentOrNull?.Rendering.Item;
             if (fundIndicator == nameof(FundEnum.D))
             {

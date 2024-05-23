@@ -68,18 +68,6 @@ namespace Feature.Wealth.Component.Repositories
             return fundViewModel;
         }
         /// <summary>
-        /// 暫定 觸發紀錄基金瀏覽sp
-        /// </summary>
-        /// <param name="fundId"></param>
-        /// <returns></returns>
-        public bool TriggerViewCountRecord(string fundId)
-        {
-            int updateCount = 0;
-            var para = new { fundId = fundId };
-            updateCount = DbManager.Custom.Execute<int>("sp_FundViewCountRecord", para, commandType: System.Data.CommandType.StoredProcedure);
-            return updateCount == 1 ;
-        }
-        /// <summary>
         /// 取得國內外註記
         /// </summary>
         /// <param name="fundId"></param>
@@ -132,19 +120,6 @@ namespace Feature.Wealth.Component.Repositories
             var para = new { fundId = fundId };
             overseasFundBase = DbManager.Custom.Execute<OverseasFundBase>("sp_OverseasFundBasicData", para, commandType: System.Data.CommandType.StoredProcedure);
             return overseasFundBase;
-        }
-        /// <summary>
-        /// 取得基金瀏覽次數
-        /// </summary>
-        /// <param name="fundId"></param>
-        /// <returns></returns>
-        public string GetFundViewCount(string fundId)
-        {
-            string count = string.Empty;
-            string sql = "Select  REPLACE(FORMAT(ViewCount, 'N'), '.00', '') ViewCount From [FundViewCount] Where  FundId =@fundId";
-            var para = new { fundId = fundId };
-            count = DbManager.Custom.Execute<string>(sql, para, commandType: System.Data.CommandType.Text);
-            return count;
         }
 
 

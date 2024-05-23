@@ -209,11 +209,6 @@ namespace Feature.Wealth.Component.Models.FundDetail
         public decimal? YeartoDateReturnOriginalCurrency { get; set; }
 
         /// <summary>
-        /// 瀏覽次數
-        /// </summary>
-        public string ViewCount { get; set; }
-
-        /// <summary>
         /// 指標指數名稱
         /// </summary>
         public string IndicatorIndexName { get; set; }
