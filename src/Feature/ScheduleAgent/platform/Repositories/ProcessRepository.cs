@@ -15,7 +15,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)
         /// </summary>
-        public  void BulkInsertToDatabase<T>(List<T> data, string tableName, string uniqueColumn, string key, string filePath)
+        public  void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath)
         {
             string mergeQuery = GenerateMergeQuery<T>(tableName, uniqueColumn, key);
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
@@ -25,7 +25,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)三個參數比對
         /// </summary>
-        public  void BulkInsertToDatabase<T>(List<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath)
+        public  void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -53,7 +53,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 將資料插入最新的資料表中(會刪除舊資料，插入最新的資料=資料表裡僅保留最新的資料)
         /// </summary>
-        public  void BulkInsertToNewDatabase<T>(List<T> data, string tableName, string filePath)
+        public  void BulkInsertToNewDatabase<T>(IEnumerable<T> data, string tableName, string filePath)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -72,7 +72,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 直接將資料插入資料庫(增量)
         /// </summary>
-        public  void BulkInsertDirectToDatabase<T>(List<T> data, string tableName, string filePath)
+        public  void BulkInsertDirectToDatabase<T>(IEnumerable<T> data, string tableName, string filePath)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));

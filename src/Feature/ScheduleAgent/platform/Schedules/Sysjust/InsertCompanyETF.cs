@@ -1,93 +1,47 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
-using Feature.Wealth.ScheduleAgent.Repositories;
-using Sitecore.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
+using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
+using Feature.Wealth.ScheduleAgent.Repositories;
+using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using System.Globalization;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     public class InsertCompanyEtf : SitecronAgentBase
     {
-        protected override Task Execute()
+        private readonly EtlService _etlService;
+        private readonly ProcessRepository _repository = new();
+
+        public InsertCompanyEtf()
         {
-            return Task.Run(() =>
-            {
-                string endDestFolder = Settings.GetSetting("destFolder");
-                string prefix = "SYSJUST-COMPANY-ETF";
-                string newnineFolder = Path.Combine(endDestFolder, "999");
-                string[] files = Directory.GetFiles(newnineFolder);
-                string filePath = files.FirstOrDefault(file => Path.GetFileName(file).Contains(prefix));
-                string currentHash = ProcessRepository.CalculateHash(filePath);
-
-                string preHash = string.Empty;
-                string previousFilePath = Path.Combine(endDestFolder, DateTime.Today.AddDays(-1).ToString("yyyyMMdd"));
-                if (Directory.Exists(previousFilePath))
-                {
-                    string[] prefiles = Directory.GetFiles(previousFilePath);
-                    string prefilePath = prefiles.FirstOrDefault(file => Path.GetFileName(file).Contains(prefix));
-                    preHash = ProcessRepository.CalculateHash(prefilePath);
-                }
-
-                if (File.Exists(filePath))
-                {
-                    if (currentHash.Equals(preHash))
-                    {
-                        Console.WriteLine("資料相同，不需要執行操作。");
-                        ProcessRepository.LogChangeHistory(DateTime.Now, filePath, "資料相同，無執行操作。", "", 0);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            var basic = ParseFileContent(filePath);
-
-                            if (basic.Any())
-                            {
-                                ProcessRepository.BulkInsertToDatabase(basic, "[Sysjust_Company_ETF]", "IssueCompanyID", "IssueCompanyID", filePath);
-                                Console.WriteLine("資料匯入完成。");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error: {ex.Message}");
-                            ProcessRepository.LogChangeHistory(DateTime.Now, filePath, ex.Message, "", 0);
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("ERROR: File not found");
-                }
-            });
+            this._etlService = new EtlService(this.Logger, this.JobItems);
         }
-
-        private List<SysjustCompanyEtf> ParseFileContent(string filePath)
+        protected override async Task Execute()
         {
-            var basicETF = new List<SysjustCompanyEtf>();
+            string filename = "SYSJUST-COMPANY-ETF";
+            bool IsfilePath = await this._etlService.ExtractFile(filename);
 
-            string fileContent = File.ReadAllText(filePath, Encoding.Default);
-
-            foreach (var basic in ChoCSVReader<SysjustCompanyEtf>.LoadText(fileContent)
-                         .WithDelimiter(";@")
-                         .Configure(c => { c.AutoDiscoverColumns = true; }))
+            if (IsfilePath)
             {
-                if (basic.EstablishmentDate != null)
+
+                try
                 {
-                    var cultureInfo = new CultureInfo("zh-TW");
-                    DateTime.TryParseExact(basic.EstablishmentDate, "yyyy/M/ddtth:mm:ss", cultureInfo, DateTimeStyles.None, out var Establishment);
-                    basic.EstablishmentDate = Establishment.ToString("yyyy-MM-dd");
+                    var basic = await this._etlService.ParseCsv<SysjustCompanyEtf>(filename);
+                    _repository.BulkInsertToDatabase(basic, "[Sysjust_Company_ETF]", "IssueCompanyID", "IssueCompanyID", filename);
+
+                }
+                catch (Exception ex)
+                {
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, "", 0);
                 }
 
-                basicETF.Add(basic);
+            }
+            else
+            {
+                _repository.LogChangeHistory(DateTime.UtcNow, "ERROR: File not found", "找不到檔案", "", 0);
             }
 
-            return basicETF;
         }
     }
 }

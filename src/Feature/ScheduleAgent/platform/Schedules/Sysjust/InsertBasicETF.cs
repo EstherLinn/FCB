@@ -1,20 +1,16 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
-using Feature.Wealth.ScheduleAgent.Repositories;
-using Feature.Wealth.ScheduleAgent.Services;
-using Sitecore.Configuration;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
+using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
+using Feature.Wealth.ScheduleAgent.Repositories;
+using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     public class InsertBasicEtf : SitecronAgentBase
     {
         private readonly EtlService _etlService;
+        private readonly ProcessRepository _repository = new();
 
         public InsertBasicEtf()
         {
@@ -23,63 +19,25 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 
         protected override async Task Execute()
         {
-            string endDestFolder = Settings.GetSetting("destFolder");
-            string prefix = "SYSJUST-BASIC-ETF_";
-            string newnineFolder = Path.Combine(endDestFolder, "999");
-            string[] files = Directory.GetFiles(newnineFolder);
-            string filePath = files.FirstOrDefault(file => Path.GetFileName(file).Contains(prefix));
-            string currentHash = ProcessRepository.CalculateHash(filePath);
+            string filename = "SYSJUST-BASIC-ETF";
+            bool IsfilePath = await this._etlService.ExtractFile(filename);
 
-            string preHash = string.Empty;
-            string previousFilePath = Path.Combine(endDestFolder, DateTime.Today.AddDays(-1).ToString("yyyyMMdd"));
-            if (Directory.Exists(previousFilePath))
+            if (IsfilePath)
             {
-                string[] prefiles = Directory.GetFiles(previousFilePath);
-                string prefilePath = prefiles.FirstOrDefault(file => Path.GetFileName(file).Contains(prefix));
-                preHash = ProcessRepository.CalculateHash(prefilePath);
-            }
-
-            if (File.Exists(filePath))
-            {
-                if (currentHash.Equals(preHash))
+                try
                 {
-                    Console.WriteLine("資料相同，不需要執行操作。");
-                    ProcessRepository.LogChangeHistory(DateTime.Now, filePath, "資料相同，無執行操作。", "", 0);
+                    var basic = await this._etlService.ParseCsv<SysjustBasicEtf>(filename);
+                    _repository.BulkInsertToDatabase(basic, "[Sysjust_Basic_ETF]", "FirstBankCode", "FirstBankCode", filename);
                 }
-                else
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        var basic = await this._etlService.ParseCsv<SysjustBasicEtf>(filePath);
-                        ProcessRepository.BulkInsertToDatabase(basic, "[Sysjust_Basic_ETF]", "FirstBankCode", "FirstBankCode", filePath);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error: {ex.Message}");
-                        ProcessRepository.LogChangeHistory(DateTime.Now, filePath, ex.Message, "", 0);
-                    }
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, "", 0);
                 }
             }
             else
             {
-                Console.WriteLine("ERROR: File not found");
+                _repository.LogChangeHistory(DateTime.UtcNow, "ERROR: File not found", "找不到檔案", "", 0);
             }
-        }
-
-        private List<SysjustBasicEtf> ParseFileContent(string filePath)
-        {
-            var basicETF = new List<SysjustBasicEtf>();
-
-            string fileContent = File.ReadAllText(filePath, Encoding.Default);
-
-            foreach (var basic in ChoCSVReader<SysjustBasicEtf>.LoadText(fileContent)
-                         .WithDelimiter(";@")
-                         .Configure(c => { c.AutoDiscoverColumns = true; }))
-            {
-                basicETF.Add(basic);
-            }
-
-            return basicETF;
         }
     }
 }

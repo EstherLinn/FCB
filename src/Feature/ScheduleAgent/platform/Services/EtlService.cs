@@ -1,5 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using FixedWidthParserWriter;
 using FluentFTP;
 using FluentFTP.Helpers;
@@ -10,6 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -72,6 +75,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
 
                         if (await ftpClient.DownloadFile(localFilePath, fileName, FtpLocalExists.Overwrite) == FtpStatus.Success)
                         {
+
                             return true;
                         }
 
@@ -112,10 +116,12 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
         }
 
-        public async Task<IEnumerable<T>> ParseCsv<T>(string filePath)
+        public async Task<IEnumerable<T>> ParseCsv<T>(string fileName)
         {
             var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
-            using (var reader = new StreamReader(filePath))
+            string localFilePath = Path.Combine(this.LocalDirectory, fileName);
+
+            using (var reader = new StreamReader(localFilePath, Encoding.Default))
             using (var csv = new CsvReader(reader, config))
             {
                 var records = csv.GetRecordsAsync<T>().ToListAsync();
@@ -125,13 +131,31 @@ namespace Feature.Wealth.ScheduleAgent.Services
 
         public IEnumerable<T> ParseFixedLength<T>(string filePath) where T : class, new()
         {
-            // TODO: 實作讀檔案
-            var dataLines = new List<string>();
-            return new FixedWidthLinesProvider<T>().Parse(dataLines);
+            string fileContent = File.ReadAllText(filePath, Encoding.Default);
+            var dataLinesA = fileContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<T> dataLines = new FixedWidthLinesProvider<T>().Parse(dataLinesA);
+
+            return dataLines;
         }
 
+        public async Task<IEnumerable<T>> ParseCsv<T>(string fileName, ClassMap<T> map)
+        {
+            var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
+            string localFilePath = Path.Combine(this.LocalDirectory, fileName);
 
+            using (var reader = new StreamReader(localFilePath))
+            using (var csv = new CsvReader(reader, config))
+            {
+                if (map != null)
+                {
+                    csv.Context.RegisterClassMap<ClassMap<T>>();
+                }
+                var records = csv.GetRecordsAsync<T>().ToListAsync();
+                return await records;
+            }
+        }
 
+        ///copyDirectory 備份檔案"yyyyMMdd HH"
 
     }
 }

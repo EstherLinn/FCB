@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Feature.Wealth.ScheduleAgent.Repositories;
+using Feature.Wealth.ScheduleAgent.Services;
 using Sitecore.Configuration;
 using System;
 using System.Collections.Generic;
@@ -13,71 +14,36 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     public class InsertDividendFund : SitecronAgentBase
     {
-        protected override Task Execute()
+        private readonly EtlService _etlService;
+        private readonly ProcessRepository _repository = new();
+
+        public InsertDividendFund()
         {
-            return Task.Run(() =>
-            {
-                string endDestFolder = Settings.GetSetting("destFolder");
-                string prefix = "SYSJUST-DIVIDEND-FUND";
-                string newnineFolder = Path.Combine(endDestFolder, "999");
-                string[] files = Directory.GetFiles(newnineFolder);
-                string filePath = files.FirstOrDefault(file => Path.GetFileName(file).Contains(prefix));
-                string currentHash = ProcessRepository.CalculateHash(filePath);
-                string preHash = string.Empty;
-
-                string previousFilePath = Path.Combine(endDestFolder, DateTime.Today.AddDays(-1).ToString("yyyyMMdd"));
-                if (Directory.Exists(previousFilePath))
-                {
-                    string[] prefiles = Directory.GetFiles(previousFilePath);
-                    string prefilePath = prefiles.FirstOrDefault(file => Path.GetFileName(file).Contains(prefix));
-                    preHash = ProcessRepository.CalculateHash(prefilePath);
-                }
-
-                if (File.Exists(filePath))
-                {
-                    if (currentHash.Equals(preHash))
-                    {
-                        Console.WriteLine("資料相同，不需要執行操作。");
-                        ProcessRepository.LogChangeHistory(DateTime.Now, filePath, "資料相同，無執行操作。", "", 0);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            var basic = ParseFileContent(filePath);
-
-                            if (basic.Any())
-                            {
-                                ProcessRepository.BulkInsertToDatabase(basic, "[Sysjust_Dividend_Fund]", "UpdateTime", "FirstBankCode", "ExDividendDate", filePath);
-                                Console.WriteLine("資料匯入完成。");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error: {ex.Message}");
-                            ProcessRepository.LogChangeHistory(DateTime.Now, filePath, ex.Message, "", 0);
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("ERROR: File not found");
-                }
-            });
+            this._etlService = new EtlService(this.Logger, this.JobItems);
         }
 
-        private List<SysjustDividendFund> ParseFileContent(string filePath)
+        protected override async Task Execute()
         {
-            var basicETF = new List<SysjustDividendFund>();
+            string filename = "SYSJUST-DIVIDEND-FUND";
+            bool IsfilePath = await this._etlService.ExtractFile(filename);
 
-            foreach (var basic in ChoCSVReader<SysjustDividendFund>.LoadText(File.ReadAllText(filePath, Encoding.Default))
-                         .WithDelimiter(";@")
-                         .Configure(c => c.AutoDiscoverColumns = true))
+            if (IsfilePath)
             {
-                basicETF.Add(basic);
-            }
+                try
+                {
+                    var basic = await this._etlService.ParseCsv<SysjustDividendFund>(filename);
 
-            return basicETF;
+                    ProcessRepository.BulkInsertToDatabase(basic, "[Sysjust_Dividend_Fund]", "UpdateTime", "FirstBankCode", "ExDividendDate", filePath);
+                }
+                catch (Exception ex)
+                {
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, "", 0);
+                }
+            }
+            else
+            {
+                _repository.LogChangeHistory(DateTime.UtcNow, "ERROR: File not found", "找不到檔案", "", 0);
+            }
         }
     }
 }

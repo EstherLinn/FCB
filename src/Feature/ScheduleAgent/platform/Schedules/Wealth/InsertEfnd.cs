@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using FixedWidthParserWriter;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
     public class InsertEfnd : SitecronAgentBase
     {
-        private readonly ProcessRepository _repository = new ProcessRepository();
+        private readonly ProcessRepository _repository = new();
         protected override Task Execute()
         {
             string filePath = System.Configuration.ConfigurationManager.AppSettings["EFND"];
