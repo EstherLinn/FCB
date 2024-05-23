@@ -296,7 +296,7 @@
                             <div id="marketTrendChart"></div>
                         </div>
                     </div>
-                    @*<div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="market">2023/09/13</span></div>*@
+                    <div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="market"></span></div>
                 </div>
             </div>
         </div>
@@ -521,7 +521,7 @@
                             <div id="etfTrendChart"></div>
                         </div>
                     </div>
-                    @*<div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="etf">2023/09/13</span></div>*@
+                    <div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="etf"></span></div>
                 </div>
             </div>
         </div>
@@ -919,9 +919,9 @@
                                 turboThreshold: 0,
                             }];
 
-                            //const updateDate = data.body.updateDate.replaceAll('-', '/');
-                            // 資料日期
-                            //$('[data-update-date="market"]').text(updateDate);
+                            let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
+                            const updateDate = latestDate.replaceAll('-', '/');
+                            $('[data-update-date="market"]').text(updateDate);
 
                             chart = Highcharts.stockChart('marketTrendChart', {
                                 time: {
@@ -1325,9 +1325,9 @@
                                 turboThreshold: 0,
                             }];
 
-                            //const updateDate = data.body.updateDate.replaceAll('-', '/');
-                            //// 資料日期
-                            //$('[data-update-date="etf"]').text(updateDate);
+                            let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
+                            const updateDate = latestDate.replaceAll('-', '/');
+                            $('[data-update-date="etf"]').text(updateDate);
 
                             chart = Highcharts.stockChart('etfTrendChart', {
                                 time: {

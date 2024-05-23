@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            @*<div class="l-dataNotes"><span class="t-note">資料日期：@etfData.NetAssetValueDate</span></div>*@
+            <div class="l-dataNotes"><span class="t-note">資料日期：@DateTimeExtensions.FormatDate(tradingPrice.PriceBaseDate)</span></div>
         </div>
     </section>
     <section class="c-section u-printBreak">
@@ -203,7 +203,7 @@
                     <div id="priceTrendChart"></div>
                 </div>
             </div>
-            @*<div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="price">2023/09/13</span></div>*@
+            <div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="price"></span></div>
         </div>
     </section>
     <section class="c-section u-printBreak">
@@ -483,9 +483,9 @@
                                 legendSymbol: 'rectangle',
                             }];
 
-                            //const updateDate = data.body.updateDate.replaceAll('-', '/');
-                            // 資料日期
-                            //$('[data-update-date="etf"]').text(updateDate);
+                            let latestDate = bankBuyPrice_array[bankBuyPrice_array.length - 1].name;
+                            const updateDate = latestDate.replaceAll('-', '/');
+                            $('[data-update-date="price"]').text(updateDate);
 
                             chart = Highcharts.stockChart('priceTrendChart', {
                                 chart: {
