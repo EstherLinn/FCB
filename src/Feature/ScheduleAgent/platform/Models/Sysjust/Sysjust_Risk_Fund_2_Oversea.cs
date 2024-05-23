@@ -1,5 +1,9 @@
-﻿namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
+﻿using CsvHelper.Configuration.Attributes;
+
+namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
 {
+    [Delimiter(";@")]
+    [HasHeaderRecord(false)]
     internal class SysjustRiskFund2Oversea
     {
         public string FirstBankCode { get; set; }

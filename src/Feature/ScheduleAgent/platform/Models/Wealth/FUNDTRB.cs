@@ -1,6 +1,10 @@
-﻿namespace Feature.Wealth.ScheduleAgent.Models.Wealth
+﻿using CsvHelper.Configuration.Attributes;
+
+namespace Feature.Wealth.ScheduleAgent.Models.Wealth
 {
-    public class Fundtrb
+    [Delimiter(";@")]
+    [HasHeaderRecord(false)]
+    public class FundTrb
     {
         public string ProductCode { get; set; }
         public string BankDeferPurchase { get; set; }

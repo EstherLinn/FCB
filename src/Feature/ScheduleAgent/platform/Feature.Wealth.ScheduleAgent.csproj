@@ -16,6 +16,7 @@
     <PackageReference Include="CsvHelper"/>
     <PackageReference Include="Dapper" />
     <PackageReference Include="FixedWidthParserWriter" />
+    <PackageReference Include="FluentFTP" />
     <PackageReference Include="Quartz" />
   </ItemGroup>
 </Project>

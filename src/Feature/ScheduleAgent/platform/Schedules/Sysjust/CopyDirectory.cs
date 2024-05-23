@@ -33,8 +33,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                         Directory.Delete(newnineFolder, true);
                     }
 
-                    CopyDirectory(sourceFolder, newnineFolder);
-                    CopyDirectory(sourceFolder, newFolder);
+                    CopyToDirectory(sourceFolder, newnineFolder);
+                    CopyToDirectory(sourceFolder, newFolder);
                 }
                 catch (Exception ex)
                 {
@@ -43,7 +43,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             });
         }
 
-        private void CopyDirectory(string source, string destination)
+        private void CopyToDirectory(string source, string destination)
         {
             if (!Directory.Exists(destination))
             {
@@ -59,7 +59,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             foreach (string subdirectory in Directory.GetDirectories(source))
             {
                 string destSubdirectory = Path.Combine(destination, Path.GetFileName(subdirectory));
-                CopyDirectory(subdirectory, destSubdirectory);
+                CopyToDirectory(subdirectory, destSubdirectory);
             }
         }
     }

@@ -1,6 +1,10 @@
-﻿namespace Feature.Wealth.ScheduleAgent.Models.Wealth
+﻿using CsvHelper.Configuration.Attributes;
+
+namespace Feature.Wealth.ScheduleAgent.Models.Wealth
 {
-    public class FundNavTfjsnav
+    [Delimiter(";@")]
+    [HasHeaderRecord(false)]
+    public class FundNavTfjsNav
     {
         public string DataDate { get; set; }
         public string ISINCode { get; set; }

@@ -1,5 +1,9 @@
-﻿namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
+﻿using CsvHelper.Configuration.Attributes;
+
+namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
 {
+    [Delimiter(";@")]
+    [HasHeaderRecord(false)]
     public class SysjustCompanyGroupFund
     {
         public string FundCompanyCode { get; set; }

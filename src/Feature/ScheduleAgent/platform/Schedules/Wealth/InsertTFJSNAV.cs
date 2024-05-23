@@ -1,4 +1,4 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.FCB;
+﻿using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Sitecore.Configuration;
 using System;
@@ -44,13 +44,13 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             });
         }
 
-        private List<FundNavTfjsnav> ParseFileContent(string filePath)
+        private List<FundNavTfjsNav> ParseFileContent(string filePath)
         {
-            var basicETF = new List<FundNavTfjsnav>();
+            var basicETF = new List<FundNavTfjsNav>();
 
             string fileContent = File.ReadAllText(filePath, Encoding.Default);
 
-            foreach (var basic in ChoCSVReader<FundNavTfjsnav>.LoadText(fileContent)
+            foreach (var basic in ChoCSVReader<FundNavTfjsNav>.LoadText(fileContent)
                          .WithDelimiter(";")
                          .IgnoreHeader()
                          .Configure(c => { c.AutoDiscoverColumns = true; }))

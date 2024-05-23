@@ -1,4 +1,4 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.FCB;
+﻿using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Sitecore.Configuration;
