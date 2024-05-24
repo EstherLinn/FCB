@@ -145,7 +145,7 @@ namespace Feature.Wealth.Component.Controllers
 
                         if (index.GlobalIndexHistory == null)
                         {
-                            index.GlobalIndexHistory = this._globalIndexRepository.GetGlobalIndexHistoryList(index.IndexCode).OrderBy(c => c.DataDate).ToList();
+                            index.GlobalIndexHistory = this._globalIndexRepository.GetGlobalIndexHistoryList(index.IndexCode);
                         }
 
                         temp.Add(index);
@@ -155,7 +155,7 @@ namespace Feature.Wealth.Component.Controllers
                             this._datas.Add(new Models.GlobalIndex.GlobalIndexHighchartsData
                             {
                                 IndexCode = index.IndexCode,
-                                Data = index.GlobalIndexHistory.Select(c => float.Parse(c.MarketPrice)).ToList()
+                                Data = index.GlobalIndexHistory
                             });
                         }
                     }
