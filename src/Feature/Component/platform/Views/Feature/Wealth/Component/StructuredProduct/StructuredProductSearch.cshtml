@@ -40,11 +40,11 @@
                                     <span>熱門商品</span>
                                 </div>
                                 <div class="c-filterForm__value">
-                                    <div class="l-pickGroup">
+                                    <div class="l-pickGroup" id="ProductIdentifierName">
                                         <div class="l-pickGroup__all">
                                             <!-- 全部checkbox[data-filter-checkall] -->
                                             <label class="o-btnCheckBox">
-                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
+                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
                                                 <div class="o-btnCheckBox__text">全部</div>
                                             </label>
                                         </div>
@@ -53,7 +53,7 @@
                                             <div class="l-pickCollapse" data-overflow-hide="area">
                                                 <!-- 高度過高內容區[data-overflow-content="相對應ID"] -->
                                                 <div class="l-pickCollapse__content" data-overflow-content="area">
-                                                    <div class="l-pickGroup" id="ProductIdentifierName">
+                                                    <div class="l-pickGroup">
                                                         <div class="l-pickGroup__item">
                                                             <label class="o-btnCheckBox" data-filter-checkbox>
                                                                 <input class="o-btnCheckBox__input" type="checkbox" value="國內">
@@ -440,7 +440,7 @@
                     let detailUrl = suggestion.ProductDetailUrl ? suggestion.ProductDetailUrl : '#';
                     // 申購按鈕
                     return `<div class="c-itemKeyword">
-                            <a href="${detailUrl}" class="c-itemKeyword__content">
+                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
                                 <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue) }</div>
                             </a>
                         </div>`;
@@ -539,7 +539,7 @@
                     template: '#uid-template',
                     criterias: [
                         { field: 'KeywordTags', ele: '#KeywordTags input:checkbox' }, { field: 'TopicTags', ele: '#TopicTags input:checkbox' },
-                        { field: 'ProductIdentifierName', ele: '#ProductIdentifierName input:checkbox' }, { field: 'ProductIdentifierName', ele: '#ProductIdentifierName input:checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'ProductIdentifierName', ele: '#ProductIdentifierName input:checkbox' }, { field: 'ProductIdentifierName', ele: '#ProductIdentifierName input:checkbox', all: 'all', selector: ':not(:checked)' }
                     ],
                     callbacks: {
                         afterFilter: function (result) {
