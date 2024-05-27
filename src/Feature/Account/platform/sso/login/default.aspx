@@ -1,22 +1,10 @@
-﻿<%@ Page Language="C#" %>
+﻿<%@ Page Language="C#" Async="true" AutoEventWireup="true" CodeBehind="~/SingleSignOn/PageCodeBehind/LoginPage.cs" Inherits="Feature.Wealth.Account.SingleSignOn.PageCodeBehind.LoginPage" %>
 
 <!DOCTYPE html>
 <html>
 <head id="Head1" runat="server" enableviewstate="false">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>sso login</title>
-    <script runat="server">
-
-        protected override void OnLoad(EventArgs e)
-        {
-            var context = HttpContext.Current;
-            var headers = context.Request.Headers;
-            foreach (string field in headers)
-            {
-                this.Response.Write("<p>" + field + "：" + headers[field] + "</p>");
-            }
-        }
-
-    </script>
 </head>
 <body>
     <form id="form1" runat="server" enableviewstate="false">
