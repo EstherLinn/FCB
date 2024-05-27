@@ -776,7 +776,7 @@
     <tr>
         <td class="u-left">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
             <% } else { %>
             <span class="c-legend__name"><%= name %></span>
             <% } %>
@@ -829,7 +829,7 @@
     <tr>
         <td class="u-left">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
             <% } else { %>
             <span class="c-legend__name"><%= name %></span>
             <% } %>
@@ -882,7 +882,7 @@
     <tr>
         <td class="u-left u-wrap">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
             <% } else { %>
             <span class="c-legend__name"><%= name %></span>
             <% } %>
@@ -926,7 +926,7 @@
     <tr>
         <td class="u-left">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
             <% } else { %>
             <span class="c-legend__name"><%= name %></span>
             <% } %>
@@ -946,7 +946,7 @@
     <tr>
         <td class="u-left">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
             <% } else { %>
             <span class="c-legend__name"><%= name %></span>
             <% } %>
@@ -977,13 +977,13 @@
     <tr>
         <td class="u-left u-wrap">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %>/span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
             <% } else { %>
             <span class="c-legend__name"><%= name %></span>
             <% } %>
         </td>
         <td>
-            <a href="#popupCurrencyWebSite" class="o-link"><%= currency %></a>
+            <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= currency %></a>
         </td>
         <td>
             <%= dividendFrequency %>
@@ -1074,9 +1074,9 @@
             let obj = fundParams[index];
             fundParams.splice(index, 1);
             $('[data-compare-count]').text(`${fundParams.length}/7`);
+            removeItem('compare', obj);
             judgeCompareList();
             getParamsAndRedraw();
-            removeItem('compare', obj);
         });
 
         // 加入指數
@@ -1213,10 +1213,16 @@
                         obj.endDate = today.toISOString().split('T')[0];
                         break;
                 }
-            } else {
+
+                $('[data-compare-filter="inputStart"]').val(obj.startDate.replaceAll('-', '/'));
+                $('[data-compare-filter="inputStart"]').val(obj.endDate.replaceAll('-', '/'));
+                $('[data-compare-filter="inputStart"]').datepicker('setDate', obj.startDate.replaceAll('-', '/'));
+                $('[data-compare-filter="inputEnd"]').datepicker('setDate', obj.endDate.replaceAll('-', '/'));
+            } else {            
                 obj.startDate = obj.startDate.replaceAll('/', '-');
                 obj.endDate = obj.endDate.replaceAll('/', '-');
             }
+
             // 有 基金/ETF 比較的json 資料才需要呼叫API
             if (stockParams.length > 0) {
                 for (var i = 0; i < stockParams.length; i++) {
@@ -1251,8 +1257,7 @@
             lables.sort(function (a, b) {
                 return a.name.localeCompare(b.name);
             });
-
-            lables.forEach((item, i) => {
+            lables.filter(item => item.type != 'stock').forEach((item, i) => {
                 const cloneTmpl = template.content.cloneNode(true);
                 var legend = cloneTmpl.querySelector('.c-legend');
                 legend.style.setProperty('--legend-color', chartColors[i]);
@@ -2007,8 +2012,9 @@
 
         // 判斷上方比較 基金/ETF 列表區塊，若無資料則跳轉至 未加入標的比較頁
         function judgeCompareList() {
-            if (fundParams.length === 1) {
-                location.href = new URL('@Model.EmptyLinkUrl' || './fundETFcompare-empty.html');
+            let emptyLinkUrl = '@Model.EmptyLinkUrl';
+            if (fundParams.length === 0 && emptyLinkUrl) {
+                location.href = new URL(emptyLinkUrl);
             }
         }
 
