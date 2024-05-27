@@ -1,5 +1,6 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Items;
+using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
@@ -28,7 +29,7 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string Change { get; set; }
         public string ChangePercentage { get; set; }
         public bool UpOrDown { get; set; }
-        public IList<GlobalIndex> GlobalIndexHistory { get; set; }
+        public List<float> GlobalIndexHistory { get; set; }
         public string DetailLink { get; set; }
     }
 
@@ -79,6 +80,13 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string YeartoDateReturn { get; set; }
         public string OneYearReturn { get; set; }
         public string ThreeYearReturn { get; set; }
+    }
+
+    public class GlobalIndexTempHistory
+    {
+        public string IndexCode { get; set; }
+        public string Data { get; set; }
+        public DateTime DataDate { get; set; }
     }
 
     public class RelevantInformation

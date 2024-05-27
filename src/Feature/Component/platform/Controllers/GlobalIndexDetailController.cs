@@ -181,49 +181,7 @@ namespace Feature.Wealth.Component.Controllers
 
         private HtmlString GetGlobalInedxPriceData(string indexCode, string cycle)
         {
-            var priceDatas = new List<PriceData>();
-
-            var resp = this._djMoneyApiRespository.GetGlobalInedxPriceData(indexCode, cycle);
-
-            if (resp != null
-                && resp.ContainsKey("resultSet")
-                && resp["resultSet"] != null
-                && resp["resultSet"]["result"] != null
-                && resp["resultSet"]["result"].Any())
-            {
-                var data = resp["resultSet"]["result"][0];
-
-                var dates = data["v1"].ToString().Split(',').ToList();
-                var opens = data["v2"].ToString().Split(',').ToList();
-                var highs = data["v3"].ToString().Split(',').ToList();
-                var lows = data["v4"].ToString().Split(',').ToList();
-                var closes = data["v5"].ToString().Split(',').ToList();
-                var values = data["v6"].ToString().Split(',').ToList();
-
-                for (int i = 0; i < dates.Count; i++)
-                {
-                    var priceData = new PriceData();
-
-                    if (DateTime.TryParse(dates[i], out var date))
-                    {
-                        // 轉成 javascript 時間給 highcharts 用
-                        priceData.date = date.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
-                    }
-                    else
-                    {
-                        // 沒日期跳下一筆
-                        continue;
-                    }
-
-                    priceData.open = _globalIndexRepository.GetDoubleOrZero(opens[i]);
-                    priceData.high = _globalIndexRepository.GetDoubleOrZero(highs[i]);
-                    priceData.low = _globalIndexRepository.GetDoubleOrZero(lows[i]);
-                    priceData.close = _globalIndexRepository.GetDoubleOrZero(closes[i]);
-                    priceData.value = _globalIndexRepository.GetDoubleOrZero(values[i]);
-
-                    priceDatas.Add(priceData);
-                }
-            }
+            var priceDatas = this._globalIndexRepository.GetGlobalInedxPriceData(indexCode, cycle);
 
             return new HtmlString(JsonConvert.SerializeObject(priceDatas));
         }

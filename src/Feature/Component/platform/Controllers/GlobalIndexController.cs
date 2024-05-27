@@ -20,12 +20,12 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            var globalIndexList = _globalIndexRepository.GetCommonGlobalIndexList();
+            var globalIndexList = this._globalIndexRepository.GetCommonGlobalIndexList();
 
             foreach (var globalIndex in globalIndexList)
             {
                 // 排序改成舊到新
-                globalIndex.GlobalIndexHistory = _globalIndexRepository.GetGlobalIndexHistoryList(globalIndex.IndexCode).OrderBy(c => c.DataDate).ToList();
+                globalIndex.GlobalIndexHistory = this._globalIndexRepository.GetGlobalIndexHistoryList(globalIndex.IndexCode);
             }
 
             return View("/Views/Feature/Wealth/Component/GlobalIndex/GlobalIndexMainstage.cshtml", CreateModel(item, globalIndexList));
@@ -35,7 +35,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            var globalIndexList = _globalIndexRepository.GetGlobalIndexList();
+            var globalIndexList = this._globalIndexRepository.GetGlobalIndexList();
 
             return View("/Views/Feature/Wealth/Component/GlobalIndex/GlobalIndexWrap.cshtml", CreateModel(item, globalIndexList));
         }
@@ -54,7 +54,7 @@ namespace Feature.Wealth.Component.Controllers
                     datas.Add(new GlobalIndexHighchartsData
                     {
                         IndexCode = globalIndex.IndexCode,
-                        Data = globalIndex.GlobalIndexHistory.Select(c => float.Parse(c.MarketPrice)).ToList()
+                        Data = globalIndex.GlobalIndexHistory
                     });
                 }
             }

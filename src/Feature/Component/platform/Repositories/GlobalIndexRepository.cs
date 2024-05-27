@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Feature.Wealth.Component.Models.GlobalIndex;
 using Foundation.Wealth.Manager;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -10,6 +12,7 @@ namespace Feature.Wealth.Component.Repositories
     public class GlobalIndexRepository
     {
         private readonly IDbConnection _dbConnection = DbManager.Custom.DbConnection();
+        private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
 
         public IList<GlobalIndex> GetGlobalIndexList()
         {
@@ -60,27 +63,69 @@ namespace Feature.Wealth.Component.Repositories
             return globalIndexs;
         }
 
-        public IList<GlobalIndex> GetGlobalIndexHistoryList(string indexCode)
+        public List<float> GetGlobalIndexHistoryList(string indexCode)
         {
-            // 取近30筆
-            string sql = @"SELECT TOP 30
-                           [IndexCode]
-                           ,[IndexName]
-                           ,[IndexCategoryID]
-                           ,[IndexCategoryName]
-                           ,REPLACE(CONVERT(char(10), [DataDate],126),'-','/') [DataDate]
-                           ,[MarketPrice]
-                           ,CONVERT(nvarchar, CONVERT(MONEY, [MarketPrice]), 1) [MarketPriceText]
-                           ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1) [Change]
-                           ,CONVERT(nvarchar, CONVERT(decimal(16,2), [ChangePercentage])) + '%' [ChangePercentage]
-                           ,CONVERT(bit, IIF([Change] >= 0, 1, 0)) [UpOrDown]
-                           FROM [Sysjust_GlobalIndex_History] WITH (NOLOCK)
-                           WHERE IndexCode = @IndexCode
-                           ORDER BY [DataDate] DESC";
+            List<float> result = new List<float>();
 
-            var globalIndexs = this._dbConnection.Query<GlobalIndex>(sql, new { IndexCode = indexCode })?.ToList() ?? new List<GlobalIndex>();
+            string sqlSelect = @"SELECT * FROM GlobalIndexTempHistory WITH (NOLOCK) WHERE IndexCode = @IndexCode";
 
-            return globalIndexs;
+            var globalIndexTempHistory = this._dbConnection.Query<GlobalIndexTempHistory>(sqlSelect, new { IndexCode = indexCode })?.FirstOrDefault() ?? null;
+
+            if (globalIndexTempHistory != null && globalIndexTempHistory.DataDate.Date == DateTime.Now.Date)
+            {
+                result = JsonConvert.DeserializeObject<List<float>>(globalIndexTempHistory.Data);
+            }
+            else
+            {
+                try
+                {
+                    var priceDatas = GetGlobalInedxPriceData(indexCode, "D");
+
+                    priceDatas = priceDatas.OrderByDescending(c => c.date).ToList();
+
+                    foreach (var priceData in priceDatas)
+                    {
+                        if (result.Count == 30)
+                        {
+                            break;
+                        }
+
+                        result.Insert(0, (float)priceData.close);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+            if (globalIndexTempHistory == null)
+            {
+                // 新增紀錄
+                string sqlInsert = @"INSERT INTO [GlobalIndexTempHistory]
+                                     ([IndexCode]
+                                     ,[Data]
+                                     ,[DataDate])
+                                     VALUES
+                                     (@IndexCode
+                                     ,@Data
+                                     ,@DataDate)"
+                ;
+
+                this._dbConnection.Execute(sqlInsert, new { IndexCode = indexCode, Data = JsonConvert.SerializeObject(result), DataDate = DateTime.Now });
+            }
+            else
+            {
+                // 更新紀錄
+                string sqlUpdate = @"UPDATE [GlobalIndexTempHistory]
+                                     SET [Data] = @Data,
+                                     [DataDate] = @DataDate
+                                     WHERE [IndexCode] = @IndexCode";
+
+                this._dbConnection.Execute(sqlUpdate, new { IndexCode = indexCode, Data = JsonConvert.SerializeObject(result), DataDate = DateTime.Now });
+            }
+
+            return result;
         }
 
         public GlobalIndexDetail GetGlobalIndexDetail(string indexCode)
@@ -148,6 +193,55 @@ namespace Feature.Wealth.Component.Repositories
             {
                 return 0;
             }
+        }
+
+        public List<PriceData> GetGlobalInedxPriceData(string indexCode, string cycle)
+        {
+            var priceDatas = new List<PriceData>();
+
+            var resp = this._djMoneyApiRespository.GetGlobalInedxPriceData(indexCode, cycle);
+
+            if (resp != null
+                && resp.ContainsKey("resultSet")
+                && resp["resultSet"] != null
+                && resp["resultSet"]["result"] != null
+                && resp["resultSet"]["result"].Any())
+            {
+                var data = resp["resultSet"]["result"][0];
+
+                var dates = data["v1"].ToString().Split(',').ToList();
+                var opens = data["v2"].ToString().Split(',').ToList();
+                var highs = data["v3"].ToString().Split(',').ToList();
+                var lows = data["v4"].ToString().Split(',').ToList();
+                var closes = data["v5"].ToString().Split(',').ToList();
+                var values = data["v6"].ToString().Split(',').ToList();
+
+                for (int i = 0; i < dates.Count; i++)
+                {
+                    var priceData = new PriceData();
+
+                    if (DateTime.TryParse(dates[i], out var date))
+                    {
+                        // 轉成 javascript 時間給 highcharts 用
+                        priceData.date = date.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
+                    }
+                    else
+                    {
+                        // 沒日期跳下一筆
+                        continue;
+                    }
+
+                    priceData.open = GetDoubleOrZero(opens[i]);
+                    priceData.high = GetDoubleOrZero(highs[i]);
+                    priceData.low = GetDoubleOrZero(lows[i]);
+                    priceData.close = GetDoubleOrZero(closes[i]);
+                    priceData.value = GetDoubleOrZero(values[i]);
+
+                    priceDatas.Add(priceData);
+                }
+            }
+
+            return priceDatas;
         }
     }
 }
