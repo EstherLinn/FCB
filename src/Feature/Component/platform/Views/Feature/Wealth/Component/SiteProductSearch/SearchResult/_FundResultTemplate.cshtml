@@ -1,0 +1,257 @@
+﻿@model Feature.Wealth.Component.Models.SiteProductSearch.SiteProductSearchDatasource
+
+<script id="uid-template-fund-original" type="text/html">
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+        <td class="c-cardTable__top"></td>
+        @*【基金名稱】*@
+        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+            <div class="c-cardTable__content">
+                <div class="l-target">
+                    <div class="l-target__name">
+                        <a href="@(Model.FundDetailPageLink)?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
+                    </div>
+                    @*標籤*@
+                    <% if (Tags != null) { %>
+                    <div class="l-target__additional">
+                        <ul class="l-tag">
+                            <% for (var i = 0; i < Tags.length; i++) { %>
+                            <li class="l-tag__item">
+                                <!-- <a href="#" class="o-tag">百元基金</a> -->
+                                <a href="#" class="o-tag"><%= Tags[i] %></a>
+                            </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        @*【最新淨值(日期)】=> 績效表現,基本資料,風險指標*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">最新淨值<br>(淨值日)</div>
+            <% if (NetAssetValue != null) { %>
+            <div class="c-cardTable__content"><%= NetAssetValue.toFixed(4) %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
+            <% } else {%>
+            <span>-</span>
+            <% } %>
+        </td>
+        @*【幣別】=> 績效表現,基本資料*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">
+                幣別
+                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+            </div>
+            <div class="c-cardTable__content">
+                <%= CurrencyHtml %>
+            </div>
+        </td>
+        @*【績效表現-報酬(原幣)】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">1個月</div>
+            <div class="c-cardTable__content">
+                <% if (OneMonthReturnOriginalCurrency.Value != null) { %>
+                <% if (OneMonthReturnOriginalCurrency.Key) { %>
+                <span class="o-rise"><%= OneMonthReturnOriginalCurrency.Text %>%</span>
+                <% } else { %>
+                <span class="o-fall"><%= OneMonthReturnOriginalCurrency.Text %>%</span>
+                <% } %>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">3個月</div>
+            <div class="c-cardTable__content">
+                <% if (ThreeMonthReturnOriginalCurrency.Value != null) { %>
+                <% if (ThreeMonthReturnOriginalCurrency.Key) { %>
+                <span class="o-rise"><%= ThreeMonthReturnOriginalCurrency.Text %>%</span>
+                <% } else { %>
+                <span class="o-fall"><%= ThreeMonthReturnOriginalCurrency.Text %>%</span>
+                <% } %>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">6個月</div>
+            <div class="c-cardTable__content">
+                <% if (SixMonthReturnOriginalCurrency.Value != null) { %>
+                <% if (SixMonthReturnOriginalCurrency.Key) { %>
+                <span class="o-rise"><%= SixMonthReturnOriginalCurrency.Text %>%</span>
+                <% } else { %>
+                <span class="o-fall"><%= SixMonthReturnOriginalCurrency.Text %>%</span>
+                <% } %>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">1年</div>
+            <div class="c-cardTable__content">
+                <% if (OneYearReturnOriginalCurrency.Value != null) { %>
+                <% if (OneYearReturnOriginalCurrency.Key) { %>
+                <span class="o-rise"><%= OneYearReturnOriginalCurrency.Text %>%</span>
+                <% } else { %>
+                <span class="o-fall"><%= OneYearReturnOriginalCurrency.Text %>%</span>
+                <% } %>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+
+        <td class="c-cardTable__space"></td>
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <%= FocusButtonHtml %>
+                    </li>
+                    <li class="l-collect__item">
+                        <%= CompareButtonHtml %>
+                    </li>
+                </ul>
+            </div>
+        </td>
+
+        <td class="c-cardTable__footer" data-card-table-width="1/3">
+            <div class="c-cardTable__content">
+                <% if (CanOnlineSubscription) { %>
+                <%= SubscribeButtonHtml %>
+                <% } %>
+            </div>
+        </td>
+    </tr>
+</script>
+
+<script id="uid-template-fund-TWD" type="text/html">
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+        <td class="c-cardTable__top"></td>
+        @*【基金名稱】*@
+        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+            <div class="c-cardTable__content">
+                <div class="l-target">
+                    <div class="l-target__name">
+                        <a href="@(Model.FundDetailPageLink)?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
+                    </div>
+                    @*標籤*@
+                    <% if (Tags != null) { %>
+                    <div class="l-target__additional">
+                        <ul class="l-tag">
+                            <% for (var i = 0; i < Tags.length; i++) { %>
+                            <li class="l-tag__item">
+                                <!-- <a href="#" class="o-tag">百元基金</a> -->
+                                <a href="#" class="o-tag"><%= Tags[i] %></a>
+                            </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        @*【最新淨值(日期)】=> 績效表現,基本資料,風險指標*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">最新淨值<br>(淨值日)</div>
+            <% if (NetAssetValue != null) { %>
+            <div class="c-cardTable__content"><%= NetAssetValue.toFixed(4) %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
+            <% } else {%>
+            <span>-</span>
+            <% } %>
+        </td>
+        @*【幣別】=> 績效表現,基本資料*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">
+                幣別
+                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+            </div>
+            <div class="c-cardTable__content">
+                <%= CurrencyHtml %>
+            </div>
+        </td>
+        @*【績效表現-報酬(台幣)】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">1個月</div>
+            <div class="c-cardTable__content">
+                <% if (OneMonthReturnTWD.Value != null) { %>
+                <% if (OneMonthReturnTWD.Key) { %>
+                <span class="o-rise"><%= OneMonthReturnTWD.Text %>%</span>
+                <% } else { %>
+                <span class="o-fall"><%= OneMonthReturnTWD.Text %>%</span>
+                <% } %>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">3個月</div>
+            <div class="c-cardTable__content">
+                <% if (ThreeMonthReturnTWD.Value != null) { %>
+                <% if (ThreeMonthReturnTWD.Key) { %>
+                <span class="o-rise"><%= ThreeMonthReturnTWD.Text %>%</span>
+                <% } else { %>
+                <span class="o-fall"><%= ThreeMonthReturnTWD.Text %>%</span>
+                <% } %>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">6個月</div>
+            <div class="c-cardTable__content">
+                <% if (SixMonthReturnTWD.Value != null) { %>
+                <% if (SixMonthReturnTWD) { %>
+                <span class="o-rise"><%= SixMonthReturnTWD.Text %>%</span>
+                <% } else { %>
+                <span class="o-fall"><%= SixMonthReturnTWD.Text %>%</span>
+                <% } %>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">1年</div>
+            <div class="c-cardTable__content">
+                <% if (OneYearReturnTWD.Value != null) { %>
+                <% if (OneYearReturnTWD.Key) { %>
+                <span class="o-rise"><%= OneYearReturnTWD.Text %>%</span>
+                <% } else { %>
+                <span class="o-fall"><%= OneYearReturnTWD.Text %>%</span>
+                <% } %>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+
+        <td class="c-cardTable__space"></td>
+        <td class="c-cardTable__footer" data-card-table-width="<%= CanOnlineSubscription == true ? '2/3' : '1/1' %>">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <%= FocusButtonHtml %>
+                    </li>
+                    <li class="l-collect__item">
+                        <%= CompareButtonHtml %>
+                    </li>
+                </ul>
+            </div>
+        </td>
+
+        <td class="c-cardTable__footer" data-card-table-width="1/3">
+            <div class="c-cardTable__content">
+                <% if (CanOnlineSubscription) { %>
+                <%= SubscribeButtonHtml %>
+                <% } %>
+            </div>
+        </td>
+    </tr>
+</script>

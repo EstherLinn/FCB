@@ -378,8 +378,6 @@ namespace Feature.Wealth.Component.Repositories
 
         #region Property
 
-        public static readonly ID TagSourceFolder = new ID("{A83FD682-0D9C-43D0-BE60-261C8E557690}");
-
         private IEnumerable<EtfSearchResult> SearchResults { get; set; }
 
         /// <summary>

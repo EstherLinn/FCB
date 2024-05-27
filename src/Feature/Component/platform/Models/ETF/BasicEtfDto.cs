@@ -29,7 +29,6 @@ namespace Feature.Wealth.Component.Models.ETF
         /// <summary>
         /// 是否上架
         /// </summary>
-
         public string AvailabilityStatus { get; set; }
 
         /// <summary>

@@ -59,7 +59,7 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
     /// <summary>
     /// 優惠標籤設定資料夾
     /// </summary>
-    internal readonly struct StructProductDiscountTagFolder
+    internal struct StructProductDiscountTagFolder
     {
         internal static readonly ID Id = new ID("{91CDBF90-3166-45A4-9563-5259F2AFD68A}");
     }
