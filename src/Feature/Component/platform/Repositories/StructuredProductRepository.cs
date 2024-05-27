@@ -5,7 +5,6 @@ using Sitecore.Data.Items;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -132,10 +131,6 @@ namespace Feature.Wealth.Component.Repositories
                 return null;
             }
 
-            structuredProduct.ProductName = FullWidthToHalfWidth(structuredProduct.ProductName);
-            structuredProduct.ProductIdentifierName = FullWidthToHalfWidth(structuredProduct.ProductIdentifierName);
-            structuredProduct.IssuingInstitution = FullWidthToHalfWidth(structuredProduct.IssuingInstitution);
-
             // 貼標 from 後台
             if (item?.TemplateID == StructProductDetailDatasource.Id)
             {
@@ -249,38 +244,11 @@ namespace Feature.Wealth.Component.Repositories
             foreach (var structuredProduct in structuredProducts)
             {
                 string productCode = structuredProduct.ProductCode;
-                structuredProduct.ProductName = FullWidthToHalfWidth(structuredProduct.ProductName);
-                structuredProduct.ProductIdentifierName = FullWidthToHalfWidth(structuredProduct.ProductIdentifierName);
-                structuredProduct.IssuingInstitution = FullWidthToHalfWidth(structuredProduct.IssuingInstitution);
                 structuredProduct.KeywordTags = GetProductTags(item, _StructProductTagDatasource.Fields.KeywordDatasource, productCode);
                 structuredProduct.TopicTags = GetProductTags(item, _StructProductTagDatasource.Fields.TopicDatasource, productCode);
             }
 
             return structuredProducts;
-        }
-
-        public static string FullWidthToHalfWidth(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return input;
-
-            StringBuilder sb = new StringBuilder();
-            foreach (char c in input)
-            {
-                if (c >= 0xFF01 && c <= 0xFF5E)
-                {
-                    sb.Append((char)(c - 0xFEE0));
-                }
-                else if (c == 0x3000)
-                {
-                    sb.Append((char)0x20);
-                }
-                else
-                {
-                    sb.Append(c);
-                }
-            }
-            return sb.ToString();
         }
     }
 }
