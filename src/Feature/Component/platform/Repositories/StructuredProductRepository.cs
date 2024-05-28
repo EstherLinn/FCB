@@ -80,7 +80,8 @@ namespace Feature.Wealth.Component.Repositories
                 StructuredProduct = GetStructuredProduct(productCode, item),
                 HistoryBankSellPrice = GetHistoryBankSellPrice(productCode),
                 ThirtyDayBankSellPriceWithChange = GetThirtyDayBankSellPriceWithChange(productCode),
-                HistoryDividend = GetHistoryDividend(productCode)
+                HistoryDividend = GetHistoryDividend(productCode),
+                PageId = Sitecore.Context.Item.ID.ToString() ?? string.Empty
             };
             return model;
         }

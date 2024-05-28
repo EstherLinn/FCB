@@ -1,10 +1,11 @@
 ﻿@using System.Web.Script.Serialization
 @model Feature.Wealth.Component.Models.StructuredProduct.StructuredProductDetailViewModel
+@using Foundation.Wealth.Helper;
 
 @{
     string productCode = Model.StructuredProduct.ProductCode;
 
-    string pageview = "999,999,999,999";
+    string pageId = Model.PageId;
 }
 
 <script>
@@ -28,12 +29,11 @@
 
             const resetProps = ['IssuingInstitution', 'CurrencyName', 'ProductMaturityDate', 'BankSellPrice', 'PriceBaseDate'];
             const dateProps = ['ProductMaturityDate', 'PriceBaseDate'];
-            
+
             RenderPageHeader();
             RenderThirtyDaySellPrice();
             RenderDividendFilter();
             RenderDividendList();
-
 
             // 商品資訊Header
             function RenderPageHeader() {
@@ -51,10 +51,47 @@
 
                 var pageHeaderTemplate = $('#page-header-template').html();
 
-                var renderedHTML = pageHeaderTemplate.replace(/%Title%/g, data.ProductCode + " " + data.ProductName).replace(/%Views%/g, "@pageview").replace(/%BankSellPrice%/g, data.BankSellPrice_DisplayText).replace(/%CurrencyName%/g, data.CurrencyName_DisplayText).replace(/%PriceBaseDate%/g, data.PriceBaseDate_DisplayText).replace(/%ProductMaturityDate%/g, data.ProductMaturityDate_DisplayText).replace(/%IssuingInstitution%/g, data.IssuingInstitution_DisplayText);
+                var renderedHTML = pageHeaderTemplate.replace(/%Title%/g, data.ProductCode + " " + data.ProductName).replace(/%BankSellPrice%/g, data.BankSellPrice_DisplayText).replace(/%CurrencyName%/g, data.CurrencyName_DisplayText).replace(/%PriceBaseDate%/g, data.PriceBaseDate_DisplayText).replace(/%ProductMaturityDate%/g, data.ProductMaturityDate_DisplayText).replace(/%IssuingInstitution%/g, data.IssuingInstitution_DisplayText);
 
                 $('#pageHeader').html(renderedHTML);
+
+                handleVisitUpdate();
+                handleVisitExec();
             };
+
+             function handleVisitUpdate() {
+                let params = {
+                    pageId: $('.o-views.o-views--bk').attr('eh-visit-pageid'),
+                    url: new URL(location.href).href,
+                    querystring: $('.o-views.o-views--bk').attr('eh-visit-qs').split('&')
+                };
+
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Update")',
+                    type: 'POST',
+                    data: params
+                }).done(function (data, textStatus, jqXHR) {
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                });
+            }
+
+            function handleVisitExec() {
+                let params = {
+                    pageId: $('.o-views.o-views--bk').attr('eh-visit-pageid'),
+                    url: new URL(location.href).href
+                };
+
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Get")',
+                    type: 'GET',
+                    data: params
+                }).done(function (data, textStatus, jqXHR) {
+                    if (data) {
+                        $('.o-views.o-views--bk').html(DOMPurify.sanitize(data.Count));
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                });
+            }
 
             function resetProp(obj) {
                 for (var o in obj) {
@@ -561,26 +598,26 @@
             };
 
 
-            // 手機版分頁筆數功能
-            $('[data-sortingbox="true"]').on('change.sorting',
-                function (e) {
-                    // 呼叫 loading
-                    window.loading('show');
-                    var sorting = $(this).val();
-                    var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
-                    var sortingColumn = $('option:selected', this).data('sorting-column');
-                    var orderby = $('option:selected', this).data('sorting-class');
+        // 手機版分頁筆數功能
+        $('[data-sortingbox="true"]').on('change.sorting',
+            function (e) {
+                // 呼叫 loading
+                window.loading('show');
+                var sorting = $(this).val();
+                var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+                var sortingColumn = $('option:selected', this).data('sorting-column');
+                var orderby = $('option:selected', this).data('sorting-class');
 
-                    // 連動 table
-                    $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
-                    $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
 
 
-                    DividendData = SortingDividend(DividendData, orderby);
-                    RenderDividendList();
+                DividendData = SortingDividend(DividendData, orderby);
+                RenderDividendList();
 
-                    window.loading('hide');
-                });
+                window.loading('hide');
+            });
 
         });
 
@@ -594,7 +631,7 @@
                 <h1 class="c-pageHeader__title">%Title%</h1>
             </div>
             <div class="c-pageHeader__views">
-                <div class="o-views o-views--bk">%Views%</div>
+                <div class="o-views o-views--bk" data-eh="visit-update,visit-exec" eh-visit-pageid="@pageId" eh-visit-qs="id=@productCode"></div>
             </div>
         </div>
     </div>
