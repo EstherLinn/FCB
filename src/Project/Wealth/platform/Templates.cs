@@ -6,7 +6,7 @@ using Sitecore.Data;
 
 namespace Project.Wealth.Platform
 {
-  public struct Templates
+  public  struct Templates
   {
         public struct Login
         {

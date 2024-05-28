@@ -1,0 +1,796 @@
+﻿
+@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.Invest
+
+<script>
+    (function ($, window, document, undefined) {
+          document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+              }
+             // #region 基金
+
+                         function resetTable()
+            {
+              let fjs;
+            //  window.loading = () => 0;//蓋掉window.loading function
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "FocusList", "GetTrackFunds")',
+                type: 'POST'
+            }).done(function (data, textStatus, jqXHR) {
+                if (data) {
+                    $('[data-focusfund]').removeClass('u-hidden');
+                    $('[data-nofocusfund]').addClass('u-hidden');
+                    initFilter(data);
+                  $('.c-loading').loading('hide');
+                } else {
+                    $('[data-focusfund]').addClass('u-hidden');
+                    $('[data-nofocusfund]').removeClass('u-hidden');
+                    $('.c-loading').loading('hide');
+                }
+
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $('.c-loading').loading('hide');
+            });
+            }
+            function initFilter(data) {
+                let opts = {
+                    template: '#uid-template',
+                    callbacks: {
+
+                        beforeRecordRender: function (record) {
+                            const dot2 = 2;
+                            record.OneMonthReturnOriginalCurrencyStyle = record.OneMonthReturnOriginalCurrency == 0 ? "" : record.OneMonthReturnOriginalCurrency > 0 ? "o-rise" : "o-fall";
+                            record.OneMonthReturnOriginalCurrencyText = Math.abs(record.OneMonthReturnOriginalCurrency).toFixed(dot2);
+                            record.SixMonthReturnOriginalCurrencyStyle = record.SixMonthReturnOriginalCurrency == 0 ? "" : record.SixMonthReturnOriginalCurrency > 0 ? "o-rise" : "o-fall";
+                            record.SixMonthReturnOriginalCurrencyText = Math.abs(record.SixMonthReturnOriginalCurrency).toFixed(dot2);
+                            record.OneYearReturnOriginalCurrencyStyle = record.OneYearReturnOriginalCurrency == 0 ? "" : record.OneYearReturnOriginalCurrency > 0 ? "o-rise" : "o-fall";
+                            record.OneYearReturnOriginalCurrencyText = Math.abs(record.OneYearReturnOriginalCurrency).toFixed(dot2);
+                        },
+                        afterFilter: function (result) {
+                            this.paginator.setCurrentPage(1);
+                            $('[id="fundTrackTotal"]').text(result.length);
+
+                            let isEmpty = result.length == 0;
+                            //$(`[data-filter-empty=${isEmpty}]`).show();
+                            //$(`[data-filter-empty=${!isEmpty}]`).hide();
+
+                            window.loading('hide');
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]','#fundTable').magnificPopup();
+                            $('[eh-compare]', '#fundTable').trigger('exec');
+                            $('[eh-focus]', '#fundTable').trigger('exec');
+                            $('[eh-subscription-type]', '#fundTable').trigger('exec');
+                            $('[eh-tracklist-info]', '#fundTable').trigger('exec');
+                            $('[eh-focus-date]', '#fundTable').trigger('exec');
+                            $('[eh-tracklist-focus]', '#fundTable').interactive();
+                            $('[eh-tracklist-info]', '#fundTable').interactive();
+                            $('[eh-tracklist-focus]', '#fundTable').off('click.interactive');
+                            $('[eh-tracklist-info]', '#fundTable').off('click.interactive');
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select#uid-sortbox' }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') { } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order === 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+                        }
+                    },
+                    pagination: {
+                        container: '#uid-pagination',
+                        paginationView: '#uid-template-pagination',
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, data.length],
+                            container: '#uid-perPage',
+                            perPageView: '#uid-template-perPage'
+                        }
+                    }
+                };
+                fjs = FilterJS(data, '#uid-fjs', opts);
+
+                function fnScrollUp() {
+                    loading();
+                    $('#fundTable').scrollPosition('scroll');
+                }
+
+                 function fnScrollUpPageTo1() {
+                    loading();
+                     $('#fundTable').scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
+
+                let $containgerPagination = $('#uid-pagination');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+                $('#uid-view-perPage').on('change.pagesize', function() {
+                    fnScrollUp();
+                    fjs.paginator.setCurrentPage(1);
+                }).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+                $('[data-keyword-submit]').on('click.loading', function () {
+                    if (!!$('[data-keyword-input]').val().trim()) {
+                        loading();
+                    }
+                });
+                $('.c-loading').loading('hide');
+            }
+
+            // table 排序功能
+            $('#fundTable', '[data-focusfund]').on('click.sorting', '.o-sorting', function (e) {
+                e.preventDefault();
+                window.loading('show');
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                let $sortingbox = $('#uid-sortbox', '[data-focusfund]');
+                var sortingColumn = $this.data('sorting-column');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+                if ($option.length != 0) {
+                    $option.prop('selected', true);
+                    $sortingbox.trigger('change');
+                } else {
+                    $sortingbox.val(null).trigger('change');
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    window.loading('hide');
+                }, 300);
+            });
+
+            // 手機版分頁排序功能
+
+            $('[data-sortingbox]:not(#uid-sortbox)','[data-focusfund]').on('change', function (e) {
+                let self = this;
+                let $self = $(this);
+                let sortingColumn = $('option:selected', self).data('sorting-column');
+                let orderby = $('option:selected', self).data('sorting-class');
+                let $box = $('#uid-sortbox','[data-focusfund]');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                if ($option.length != 0) {
+                    $option.prop('selected', true);
+                    $box.trigger('change');
+                } else {
+                    $box.val(null).trigger('change');
+                }
+            })
+              $('#uid-sortbox', '[data-focusfund]').on('change.select2', function (e) {
+                let self = this;
+                let $self = $(this);
+                let sorting = $self.val();
+                let $linkTable = $('#fundTable');
+                let sortingColumn = $('option:selected', self).data('sorting-column');
+                let orderby = $('option:selected', self).data('sorting-class');
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+
+                let $linkedBox = $('[data-sortingbox]', '[data-focusfund]').not(self);
+
+                for (box of $linkedBox) {
+                    let $box = $(box);
+                    let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                    if ($option.length != 0) {
+                        $option.prop('selected', true);
+                        $box.trigger('change.select2');
+                    } else {
+                        $box.val(null).trigger('change.select2');
+                    }
+                }
+            });
+              resetTable();
+             //  #endregion 基金
+
+               // #region ETF
+                          function resetTable2()
+            {
+              let fjs;
+            //window.loading = () => 0;//蓋掉window.loading function
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "FocusList", "GetTrackEtfs")',
+                type: 'POST'
+            }).done(function (data, textStatus, jqXHR) {
+                if (data) {
+                    $('[data-focusetf]').removeClass('u-hidden');
+                    $('[data-nofocusetf]').addClass('u-hidden');
+                    initFilter2(data);
+                  $('.c-loading').loading('hide');
+                } else {
+                    $('[data-focusetf]').addClass('u-hidden');
+                    $('[data-nofocusetf]').removeClass('u-hidden');
+                    $('.c-loading').loading('hide');
+                }
+
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $('.c-loading').loading('hide');
+            });
+            }
+            function initFilter2(data) {
+                let opts = {
+                    template: '#uid-etf-template',
+                    callbacks: {
+
+                        beforeRecordRender: function (record) {
+                            const dot2 = 2;
+                            record.NetAssetValueChangePercentageText = Math.abs(record.NetAssetValueChangePercentage).toFixed(dot2);
+                            record.SixMonthReturnMarketPriceOriginalCurrencyText = Math.abs(record.SixMonthReturnMarketPriceOriginalCurrency).toFixed(dot2);
+                            record.NetAssetValueChangePercentageStyle = record.NetAssetValueChangePercentage == 0 ? "" : record.NetAssetValueChangePercentage > 0 ? "o-rise" : "o-fall";
+                            record.SixMonthReturnMarketPriceOriginalCurrencyStyle = record.SixMonthReturnMarketPriceOriginalCurrency == 0 ? "" : record.SixMonthReturnMarketPriceOriginalCurrency > 0 ? "o-rise" : "o-fall";
+                        },
+                        afterFilter: function (result) {
+                            this.paginator.setCurrentPage(1);
+                            $('[id="etfTrackTotal"]').text(result.length);
+
+                            let isEmpty = result.length == 0;
+                            //$(`[data-filter-empty=${isEmpty}]`).show();
+                            //$(`[data-filter-empty=${!isEmpty}]`).hide();
+
+                            window.loading('hide');
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]','#etfTable').magnificPopup();
+                            $('[eh-compare]', '#etfTable').trigger('exec');
+                            $('[eh-focus]','#etfTable').trigger('exec');
+                            $('[eh-subscription-type]','#etfTable').trigger('exec');
+                            $('[eh-tracklist-info]','#etfTable').trigger('exec');
+                            $('[eh-focus-date]','#etfTable').trigger('exec');
+                            $('[eh-tracklist-focus]','#etfTable').interactive();
+                            $('[eh-tracklist-info]','#etfTable').interactive();
+                            $('[eh-tracklist-focus]','#etfTable').off('click.interactive');
+                            $('[eh-tracklist-info]','#etfTable').off('click.interactive');
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group2', ele: 'select#uid-etf-sortbox' }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') { } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order === 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+                        }
+                    },
+                    pagination: {
+                        container: '#uid-etf-pagination',
+                        paginationView: '#uid-etf-template-pagination',
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, data.length],
+                            container: '#uid-etf-perPage',
+                            perPageView: '#uid-etf-template-perPage'
+                        }
+                    }
+                };
+                fjs = FilterJS(data, '#uid-etf-fjs', opts);
+
+                function fnScrollUp() {
+                    loading();
+                    $('#etfTable').scrollPosition('scroll');
+                }
+
+                 function fnScrollUpPageTo1() {
+                    loading();
+                     $('#etfTable').scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
+
+                let $containgerPagination = $('#uid-etf-pagination');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+                $('#uid-etf-view-perPage').on('change.pagesize', function() {
+                    fnScrollUp();
+                    fjs.paginator.setCurrentPage(1);
+                }).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+                $('[data-keyword-submit]').on('click.loading', function () {
+                    if (!!$('[data-keyword-input]').val().trim()) {
+                        loading();
+                    }
+                });
+                $('.c-loading').loading('hide');
+            }
+
+            // table 排序功能
+            $('#etfTable', '[data-focusetf]').on('click.sorting', '.o-sorting', function (e) {
+                e.preventDefault();
+                window.loading('show');
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                let $sortingbox = $('#uid-etf-sortbox', '[data-focusetf]');
+                var sortingColumn = $this.data('sorting-column');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+                if ($option.length != 0) {
+                    $option.prop('selected', true);
+                    $sortingbox.trigger('change');
+                } else {
+                    $sortingbox.val(null).trigger('change');
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    window.loading('hide');
+                }, 300);
+            });
+
+            // 手機版分頁排序功能
+
+            $('[data-sortingbox]:not(#uid-etf-sortbox)', '[data-focusetf]').on('change', function (e) {
+                let self = this;
+                let $self = $(this);
+                let sortingColumn = $('option:selected', self).data('sorting-column');
+                let orderby = $('option:selected', self).data('sorting-class');
+                let $box = $('#uid-etf-sortbox','[data-focusetf]');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                if ($option.length != 0) {
+                    $option.prop('selected', true);
+                    $box.trigger('change');
+                } else {
+                    $box.val(null).trigger('change');
+                }
+            })
+            $('#uid-etf-sortbox', '[data-focusetf]').on('change.select2', function (e) {
+                let self = this;
+                let $self = $(this);
+                let sorting = $self.val();
+                let $linkTable = $('#etfTable');
+                let sortingColumn = $('option:selected', self).data('sorting-column');
+                let orderby = $('option:selected', self).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+
+                let $linkedBox = $('#uid-etf-sortbox').not(self);
+                for (box of $linkedBox) {
+                    let $box = $(box);
+                    let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                    if ($option.length != 0) {
+                        $option.prop('selected', true);
+                        $box.trigger('change.select2');
+                    } else {
+                        $box.val(null).trigger('change.select2');
+                    }
+                }
+            });
+            resetTable2();
+
+           //  #endregion ETF
+                // #region 國外股票
+                          function resetTable3()
+            {
+              let fjs;
+            //window.loading = () => 0;//蓋掉window.loading function
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "FocusList", "GetTrackForeignStocks")',
+                type: 'POST'
+                }).done(function (data, textStatus, jqXHR) {
+                if (data) {
+                $('[data-focusforeignStock]').removeClass('u-hidden');
+                $('[data-nofocusforeignStock]').addClass('u-hidden');
+                initFilter3(data);
+                $('.c-loading').loading('hide');
+                } else {
+                $('[data-focusforeignStock]').addClass('u-hidden');
+                $('[data-nofocusforeignStock]').removeClass('u-hidden');
+                $('.c-loading').loading('hide');
+                }
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                $('.c-loading').loading('hide');
+                });
+                }
+                function initFilter3(data) {
+                let opts = {
+                template: '#uid-foreignStock-template',
+                callbacks: {
+
+                    beforeRecordRender: function (record) {
+                        const dot2 = 2;
+                        record.ClosingPrice = record.ClosingPrice.toFixed(dot2);
+                        record.SixMonthReturnText = Math.abs(record.SixMonthReturn).toFixed(dot2);
+                        record.ChangePercentageText = Math.abs(record.ChangePercentage).toFixed(dot2);
+                        record.SixMonthReturnStyle = record.SixMonthReturn == 0 ? "" : record.SixMonthReturn > 0 ? "o-rise" : "o-fall";
+                        record.ChangePercentageStyle = record.ChangePercentage == 0 ? "" : record.ChangePercentage > 0 ? "o-rise" : "o-fall";
+                    },
+                afterFilter: function (result) {
+                this.paginator.setCurrentPage(1);
+                    $('[id="foreignStockTrackTotal"]').text(result.length);
+
+                let isEmpty = result.length == 0;
+                //$(`[data-filter-empty=${isEmpty}]`).show();
+                //$(`[data-filter-empty=${!isEmpty}]`).hide();
+
+                window.loading('hide');
+                },
+                afterPagination: function () {
+                $('[data-popup]','#foreignStockTable').magnificPopup();
+                $('[eh-focus]','#foreignStockTable').trigger('exec');
+                $('[eh-subscription-type]','#foreignStockTable').trigger('exec');
+                $('[eh-tracklist-info]','#foreignStockTable').trigger('exec');
+                $('[eh-focus-date]','#foreignStockTable').trigger('exec');
+                $('[eh-tracklist-focus]','#foreignStockTable').interactive();
+                $('[eh-tracklist-info]','#foreignStockTable').interactive();
+                $('[eh-tracklist-focus]','#foreignStockTable').off('click.interactive');
+                $('[eh-tracklist-info]','#foreignStockTable').off('click.interactive');
+                }
+                },
+                order: {
+                default_sort: 'asc',
+                sorts: [
+                { field: 'group3', ele: 'select#uid-foreignStock-sortbox' }
+                ],
+                onSortEvent: function (f, e) {
+                let $self = $(this);
+                if (e.type === 'click') { } else if (e.type === 'change') {
+                let $selected = $self.find(':selected');
+                let field = $selected.data('sorting-column');
+                let order = $selected.data('sorting-class');
+                f.field = field;
+                if (!!order) {
+                if (order === 'is-desc') {
+                f.order = 'desc';
+                } else if (order === 'is-asc') {
+                f.order = 'asc';
+                }
+                } else {
+                f.order = f.order === 'desc' ? 'asc' : 'desc';
+                }
+                }
+                }
+                },
+                pagination: {
+                    container: '#uid-foreignStock-pagination',
+                paginationView: '#uid-foreignStock-template-pagination',
+                visiblePages: 0,
+                perPage: {
+                values: [10, 50, 100, data.length],
+                    container: '#uid-foreignStock-perPage',
+                perPageView: '#uid-foreignStock-template-perPage'
+                }
+                }
+                };
+                    fjs = FilterJS(data, '#uid-foreignStock-fjs', opts);
+
+                function fnScrollUp() {
+                loading();
+                $('#foreignStockTable').scrollPosition('scroll');
+                }
+
+                function fnScrollUpPageTo1() {
+                loading();
+                $('#foreignStockTable').scrollPosition('scroll');
+                fjs.paginator.setCurrentPage(1);
+                }
+
+                    let $containgerPagination = $('#uid-foreignStock-pagination');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                if (e.which === 13) {
+                fnScrollUp();
+                }
+                });
+                    $('#uid-foreignStock-view-perPage').on('change.pagesize', function() {
+                fnScrollUp();
+                fjs.paginator.setCurrentPage(1);
+                }).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+                $('[data-keyword-submit]').on('click.loading', function () {
+                if (!!$('[data-keyword-input]').val().trim()) {
+                loading();
+                }
+                });
+                $('.c-loading').loading('hide');
+                }
+
+                // table 排序功能
+              $('#foreignStockTable', '[data-focusforeignStock]').on('click.sorting', '.o-sorting', function (e) {
+                e.preventDefault();
+                window.loading('show');
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                $this.removeClass('is-asc').addClass('is-desc');
+                orderby = 'is-desc';
+                } else {
+                $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                $this.addClass('is-asc');
+                orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                  let $sortingbox = $('#uid-foreignStock-sortbox', '[data-focusforeignStock]');
+                var sortingColumn = $this.data('sorting-column');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+                if ($option.length != 0) {
+                $option.prop('selected', true);
+                $sortingbox.trigger('change');
+                } else {
+                $sortingbox.val(null).trigger('change');
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                window.loading('hide');
+                }, 300);
+                });
+
+                // 手機版分頁排序功能
+
+              $('[data-sortingbox]:not(#uid-foreignStock-sortbox)', '[data-focusforeignStock]').on('change', function (e) {
+                let self = this;
+                let $self = $(this);
+                let sortingColumn = $('option:selected', self).data('sorting-column');
+                let orderby = $('option:selected', self).data('sorting-class');
+                  let $box = $('#uid-foreignStock-sortbox','[data-focusforeignStock]');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                if ($option.length != 0) {
+                $option.prop('selected', true);
+                $box.trigger('change');
+                } else {
+                $box.val(null).trigger('change');
+                }
+                })
+              $('#uid-foreignStock-sortbox', '[data-focusforeignStock]').on('change.select2', function (e) {
+                let self = this;
+                let $self = $(this);
+                let sorting = $self.val();
+                  let $linkTable = $('#foreignStockTable');
+                let sortingColumn = $('option:selected', self).data('sorting-column');
+                let orderby = $('option:selected', self).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+
+                let $linkedBox = $('#uid-foreignStock-sortbox').not(self);
+                for (box of $linkedBox) {
+                let $box = $(box);
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                if ($option.length != 0) {
+                $option.prop('selected', true);
+                $box.trigger('change.select2');
+                } else {
+                $box.val(null).trigger('change.select2');
+                }
+                }
+                });
+                resetTable3();
+
+                //  #endregion 國外股票
+              // #region 共用
+
+              function dateRange() {
+                  const dateRangeMsg = '起訖日期區間錯誤';
+                  let $inputStart = $('[data-trend-filter="inputStart"]');
+                  let $inputEnd = $('[data-trend-filter="inputEnd"]');
+                  let startDate = new Date($inputStart.val());
+                  let endDate = new Date($inputEnd.val());
+                  let $startParents = $inputStart.closest('.l-form');
+                  let $endParents = $inputEnd.closest('.l-form');
+                  if (endDate < startDate) {
+                      $startParents.addClass('is-error');
+                      $endParents.addClass('is-error');
+                      $startParents.find('.o-errorText').text(dateRangeMsg);
+                      return false;
+                  } else {
+                      $startParents.removeClass('is-error');
+                      $endParents.removeClass('is-error');
+                      $startParents.find('.o-errorText').text('');
+                      return true;
+                  }
+              }
+              function required($element) {
+                  const requiredMsg = '欄位必填';
+                  let $parents = $element.closest('.l-form');
+                  let $msg = $parents.find('.o-errorText');
+                  let isEmpty = $element.val().trim() == '';
+                  $parents.toggleClass('is-error', isEmpty);
+                  $msg.text(isEmpty ? requiredMsg : '');
+                  return !isEmpty;
+              }
+              //取消關注確認
+              $('[data-set-cancel-focus]', '#popupCancelFocus').on('click', function (e)
+              {
+                  let self = e.target;
+                  let cancelId = self.getAttribute('data-cancel-id');
+                  let cancelType = self.getAttribute('data-cancel-type');
+
+                  let obj = new CompareObj(cancelId, cancelType);
+                  removeItem('focus', obj);
+                  $.ajax({
+                    type: "post",
+                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
+                    data: { "trackList": store.get("focus") || [] },
+                    beforeSend: function () { $('.c-loading').loading('show'); },
+                      success: function (msg) {
+                          switch (cancelType) {
+
+                              case "Fund":
+                                  resetTable();
+                                  break;
+                              case "ETF":
+                                  resetTable2();
+                                  break;
+                          }
+
+                     },
+                    error: function (msg) {
+                         //設置成功
+                     },
+                    complete: function () { $('.c-loading').loading('hide'); }
+                })
+              });
+                //設定到價通知
+              $('[data-set-alert]', '#popupAlert').on('click', function ()
+              {
+                  let self = this;
+                  let title = $(self).data('purpose');
+                  var reachInfoPopUp = $("#popupAlert");
+                  let productType = $(self).data('type');
+                  let _obj = {};
+                  let id = reachInfoPopUp.find('[data-id]').data("id");
+                  let newNetValue = Number(reachInfoPopUp.find('[data-netvalue]').data("netvalue"));
+
+                  if (title == "目標價格") {
+                      if (!$('[data-alert-price]').val()) {
+                          return;
+                      }
+                      _obj =
+                      {
+                          InvestType: productType,
+                          InvestId: id,
+                          NewNetValue: newNetValue,
+                          InfoType: 1,
+                          ReachValue: Number($('[data-alert-price]').val()),
+                          InfoStartDate: $('[data-infoStart]', '[data-price-calendar]').val(),
+                          InfoEndDate: $('[data-infoEnd]', '[data-price-calendar]').val(),
+                          OpenInfo: $('input[name="price"]').prop("checked")
+                      }
+                  } else
+                  {
+
+                      let rise = $('[data-alert-rise]');
+                      let fall = $('[data-alert-fall]');
+
+                      if (rise.val() === '' && fall.val() === '' ) {
+                          return;
+                      }
+                      if (rise.val() === '') {
+                          rise.val(0);
+                      }
+                      if (fall.val() === '') {
+                          fall.val(0);
+                      }
+                      let riseValue = 0;
+                      let fallValue = 0;
+                      let risePercent = 0;
+                      let fallPercent = 0;
+
+                      _obj =
+                      {
+                          InvestType: productType,
+                          InvestId: id,
+                          NewNetValue: newNetValue,
+                          InfoType: "2",
+                          InfoStartDate: $('[data-quotestart]', '[data-quoteChange-calendar]').val(),
+                          InfoEndDate: $('[data-quoteend]', '[data-quoteChange-calendar]').val(),
+                          OpenInfo: $('input[name="price"]').prop("checked")
+                      }
+
+                      if (Number(rise.val()) > 0 && !Number(fall.val())) {
+                          risePercent = Number(rise.val());
+                          riseValue = newNetValue + (newNetValue / Number(rise.val()));
+                          riseValue = riseValue.toFixed(4);
+                          _obj.RiseValue = riseValue;
+                          _obj.RisePercent = risePercent;
+                      } else if (!Number(rise.val()) && Number(fall.val()) > 0) {
+                          fallPercent = Number(fall.val());
+                          fallValue = newNetValue - (newNetValue / fallPercent);
+                          fallValue = fallValue.toFixed(4);
+                          _obj.FallValue = fallValue;
+                          _obj.FallPercent = fallPercent;
+                      } else if (Number(rise.val()) > 0 && Number(fall.val()) > 0) {
+                          risePercent = Number(rise.val());
+                          riseValue = newNetValue + (newNetValue / Number(rise.val()));
+                          riseValue = riseValue.toFixed(4);
+                          fallPercent = Number(fall.val());
+                          fallValue = newNetValue - (newNetValue / fallPercent);
+                          fallValue = fallValue.toFixed(4);
+                          _obj.RiseValue = riseValue;
+                          _obj.RisePercent = risePercent;
+                          _obj.FallValue = fallValue;
+                          _obj.FallPercent = fallPercent;
+                      }
+                  }
+
+                        $.ajax({
+                          url: '@ClientRoute.GenerateUrl(this, "ReachInfo", "SetReachInfo")',
+                          method: 'post',
+                          data: _obj,
+                          beforeSend: function () { $('.c-loading').loading('show');},
+                            success: function (resp) {
+                                switch (productType.toLowerCase()) {
+                                    case "fund":
+                                        resetTable();
+                                        break;
+                                    case "etf":
+                                        resetTable2();
+                                        break;
+                                    case "foreignstocks":
+                                        resetTable3();
+                                        break;
+                                }
+                          },
+                          error: function (xhr) {
+                              console.log(xhr)
+                          },
+                          complete: function () {
+                              $('.c-loading').loading('hide');
+                          }
+                      });
+              })
+              // #endregion 共用
+
+          });
+    })(jQuery, window, document);
+</script>

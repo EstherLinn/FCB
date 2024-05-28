@@ -5,19 +5,31 @@ namespace Feature.Wealth.Account.Helpers
 {
    public class FcbMemberHelper
     {
+        public static FcbMemberModel fcbMemberModel => JsonConvert.DeserializeObject<FcbMemberModel>(Sitecore.Context.User.Profile.GetCustomProperty("MemberInfo"));
         public static bool CheckMemberLogin()
         {
-            return Sitecore.Context.IsLoggedIn && GetMemberAllInfo() != null;
+            return Sitecore.Context.IsLoggedIn && fcbMemberModel != null;
 
         }
         public static FcbMemberModel GetMemberAllInfo()
         {
-            return JsonConvert.DeserializeObject<FcbMemberModel>(Sitecore.Context.User.Profile.GetCustomProperty("MemberInfo"));
+            return fcbMemberModel;
         }
-
+        public static QuoteChangeEunm GetMemberStyle()
+        {
+            return fcbMemberModel.StockShowColor;
+        }
         public static string GetMemberPlatFormId()
         {
-            return GetMemberAllInfo().PlatFormId;
+            return fcbMemberModel.PlatFormId;
+        }
+        public static PlatFormEunm GetMemberPlatForm()
+        {
+            return fcbMemberModel.PlatForm ;
+        }
+        public static string GetMemberWebBankId()
+        {
+            return fcbMemberModel.WebBankId;
         }
     }
 }

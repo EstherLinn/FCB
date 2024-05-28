@@ -1,0 +1,99 @@
+﻿@using Feature.Wealth.Account.Helpers;
+@using Feature.Wealth.Account.Models.OAuth;
+@using Feature.Wealth.Account.Models.MemberCard;
+@model MemberCardModel
+@{
+    var member = FcbMemberHelper.fcbMemberModel;
+    var isOauthLogin = true;
+    if (member.PlatForm == PlatFormEunm.WebBank)
+    {
+        isOauthLogin = false;
+    }
+}
+<div class="l-mainstage l-mainstage--member">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__content">
+            <div class="l-member @(isOauthLogin ? "l-member--nodata" : string.Empty)">
+                <div class="l-member__content">
+                    <div class="c-member @(isOauthLogin ? "c-member--nodata" : string.Empty)">
+                        <div class="c-member__head">
+                            <div class="c-member__name">Hi @member.MemberName</div>
+                            <div class="c-member__set">
+                                <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--icon no-text@lt">
+                                    <img src="~/themes/images/icons/green/gear-solid.svg" class="o-btn__icon" alt="">
+                                    <span>設定</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="c-member__content">
+                            @if (isOauthLogin)
+                            {
+                                <div class="l-flex u-flex-gap-min u-flex-left">
+                                    <div class="l-flex__item l-flex__item--auto">
+                                        <span class="t-tip t-tip--lt">由@(member.PlatForm.ToString())帳號登入</span>
+                                    </div>
+                                    <div class="l-flex__item l-flex__item--auto">
+                                        <a href="#" class="o-btn o-btn--primary o-btn--thin o-btn--auto" data-eh="fcblogin-click">綁定網銀帳戶</a>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+
+                                <div class="c-member__info">
+                                    <div class="c-member__title">
+                                        <img src="~/themes/images/icons/member/chart.svg" alt="">
+                                        <span>投資風險屬性</span>
+                                    </div>
+                                    <div class="c-member__value">
+                                        @if (!string.IsNullOrEmpty(member.Risk))
+                                        {
+                                            <b>@member.Risk</b>
+
+                                        }
+                                        else
+                                        {
+                                            <a href="#" class="o-link t4">進行風險屬性評估</a>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="c-member__info">
+                                    <div class="c-member__title">
+                                        <img src="~/themes/images/icons/member/businessman.svg" alt="">
+                                        <span>您的理專</span>
+                                    </div>
+                                    <div class="c-member__value">
+                                        <b>@member.Advisror</b>
+                                    </div>
+                                </div>
+                                <div class="c-member__info">
+                                    <div class="c-member__title">
+                                        <img src="~/themes/images/icons/member/appointment.svg" alt="">
+                                        <span>理財諮詢</span>
+                                    </div>
+                                    <div class="c-member__value">
+                                        <a href="#" class="o-btn o-btn--primary o-btn--thin o-btn--auto">預約線上諮詢</a>
+                                        @*<b>還有 <span class="t-warning">8</span> 天 </b>
+                                        <div class="t-date u-inline@lt">(2023/11/03)</div>*@
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="l-member__ad">
+                    <div class="c-adCard">
+                        <div class="c-adCard__title">
+                            @Html.Sitecore().Field(Templates.MemberCard.Fields.Title.ToString(), Model.DataSource)
+                        </div>
+                        <div class="c-adCard__action">
+                            @Html.Sitecore().BeginField(Templates.MemberCard.Fields.ButtonLink.ToString(), Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--wt o-btn--thin o-btn--auto u-noShadow" })
+                            了解更多
+                            @Html.Sitecore().EndField()
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

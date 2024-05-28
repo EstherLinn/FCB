@@ -13,12 +13,12 @@
     <div class="c-modal__wrap">
         <div class="c-loginModal">
             <div class="c-loginModal__item">
-                <div class="c-loginBox">
+                <div class="c-loginBox" data-login-box>
                     <div class="c-loginBox__main">
                         <header class="c-loginBox__title">網銀登入</header>
                         <p class="c-loginBox__greeting">使用完整服務，請使用網銀帳號登入</p>
                         <div class="c-loginBox__actions">
-                            <a href="#" class="o-btn o-btn--primary o-btn--sm o-btn--flat">網銀登入</a>
+                            <a href="javascript:;" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-eh="fcblogin-click">網銀登入</a>
                         </div>
                     </div>
                     <div class="c-loginBox__social">
@@ -26,10 +26,10 @@
                             <div class="c-socialBox__title">社群登入</div>
                             <ul class="c-socialBox__list">
                                 <li class="c-socialBox__item">
-                                    <a href="#" class="o-social o-social--fb"></a>
+                                    <a href="@fbAuthUrl" class="o-social o-social--fb"></a>
                                 </li>
                                 <li class="c-socialBox__item">
-                                    <a href="#" class="o-social o-social--line" data-login></a>
+                                    <a href="@lineAuthUrl" class="o-social o-social--line"></a>
                                 </li>
                             </ul>
                         </div>
@@ -111,7 +111,7 @@
             <h2 class="c-modal__title">外匯匯率</h2>
         </header>
         <div class="c-modal__content">
-            <iframe src="@CurrencyWebSite" style="width:100%; height:660px;">
+            <iframe loading="lazy" src="@CurrencyWebSite" style="width:100%; height:660px;">
             </iframe>
         </div>
     </div>
@@ -124,7 +124,7 @@
         <div class="c-modal__content">
             <div class="c-modalResult">
                 <div class="c-modalResult__icon">
-                    <img src=@Url.Content("~/themes/images/icons/orange/x-solid.svg") class="c-modalResult__img" alt="">
+                    <img src="~/themes/images/icons/orange/x-solid.svg" class="c-modalResult__img" alt="">
                 </div>
                 <div class="c-modalResult__title">基金商品比較已達上限</div>
                 <p class="c-modalResult__msg">您一次最多可比較7個基金</p>
@@ -139,3 +139,324 @@
         </div>
     </div>
 </div>
+<div id="popupRemind" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">理財諮詢提醒</h2>
+        </header>
+        <div class="c-modal__content">
+            提醒您，您今日 12:00、15:30 有預約理專遠距諮詢，請準時參與！
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true" data-check-consult>查看預約</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="popupCancelFocus" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">取消關注</h2>
+        </header>
+        <div class="c-modal__content">
+            您正在關注此檔基金，確定要取消關注嗎？
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-popup-close="true">取消</a>
+                </div>
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true" data-set-cancel-focus>確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupAlert" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">設定到價通知</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="c-box c-box--product c-box--og u-noShadow">
+                        <a href="#" data-title data-id class="o-contentLink t-bold u-ellipsis-2 t3"></a>
+                        <hr>
+                        <div class="l-flex">
+                            <div class="l-flex__item" data-set-title>
+                                最新淨值
+                            </div>
+                            <div class="l-flex__item l-flex__item--auto">
+                                <span class="t3" data-netvalue></span>
+                                <span class="t-date" data-netvaluedate></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <div class="c-tab c-tab--equally" data-tab="true" data-docking="false" data-scroll="false">
+                        <div class="c-tab__header">
+                            <ul class="c-tab__navs">
+                                <li>
+                                    <a href="#" class="c-tab__item is-active" target="_self" title="目標價格" data-tab-target="tab-popup-1" data-infovalue-tab>目標價格</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="c-tab__item" target="_self" title="漲跌幅" data-tab-target="tab-popup-2" data-infovalue-tab>漲跌幅</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- is-active: 作用中的項目 -->
+                        <div class="c-tab__panel c-tab__panel--closer is-active" data-tab-panel-id="tab-popup-1">
+                            <div class="l-flex u-flex-col u-flex-gap-lg">
+                                <div class="l-flex__item">
+                                    <div class="l-flex">
+                                        <div class="l-flex__item">
+                                            <span class="t3 t-bold">設定目標價格</span>
+                                        </div>
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <div class="o-switch o-switch--reverse u-flex-gap-min">
+                                                <input class="o-switch__input" type="checkbox" name="price" id="price" checked>
+                                                <label class="o-switch__label" for="price"></label>
+                                                <div class="o-switch__text s4" data-close="關閉通知" data-open="開啟通知"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item" data-price-calendar>
+                                    <div class="l-flex u-flex-gap-sm u-flex-gap-min@mb-only u-flex-bottom">
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <div class="l-flex u-flex-col u-flex-gap-min">
+                                                <div class="l-flex__item u-center"><span class="s4">通知開始日</span></div>
+                                                <div class="l-flex__item">
+                                                    <div class="o-calendarBox o-calendarBox--popRange">
+                                                        <input type="text" class="o-calendarBox__input" data-trend-filter="inputStart" data-infostart data-calendar="true" readonly="">
+                                                    </div>
+                                                </div>
+                                                <div class="l-form__error">
+                                                    <span class="o-errorText"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="l-flex__item l-flex__item--auto u-mb-min">-</div>
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <div class="l-flex u-flex-col u-flex-gap-min">
+                                                <div class="l-flex__item u-center"><span class="s4">通知結束日</span></div>
+                                                <div class="l-flex__item">
+                                                    <div class="o-calendarBox o-calendarBox--popRange">
+                                                        <input type="text" class="o-calendarBox__input" data-trend-filter="inputEnd" data-infoend data-calendar="true" readonly="">
+                                                    </div>
+                                                </div>
+                                                <div class="l-form__error">
+                                                    <span class="o-errorText"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="c-box c-box--gy c-box--gapless u-noShadow">
+                                        <div class="c-box__main">
+                                            <div class="l-flex u-flex-col u-flex-gap-sm">
+                                                <div class="l-flex__item">
+                                                    <div class="c-count" data-count>
+                                                        <button class="c-count__minus" data-count-btn="-1"></button>
+                                                        <div class="c-count__value">
+                                                            <input type="number" class="c-count__input" value="0" data-count-input>
+                                                            <div class="c-count__text" data-after="%"></div>
+                                                        </div>
+                                                        <button class="c-count__plus" data-count-btn="1"></button>
+                                                    </div>
+                                                </div>
+                                                <div class="l-flex__item">
+                                                    <input type="number" class="o-textbox o-textbox--full o-textbox--form" value="0" data-alert-price>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-tab__panel c-tab__panel--closer" data-tab-panel-id="tab-popup-2">
+                            <div class="l-flex u-flex-col u-flex-gap-lg">
+                                <div class="l-flex__item">
+                                    <div class="l-flex">
+                                        <div class="l-flex__item">
+                                            <span class="t3 t-bold">設定目標漲跌幅</span>
+                                        </div>
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <div class="o-switch o-switch--reverse u-flex-gap-min">
+                                                <input class="o-switch__input" type="checkbox" name="quoteChange" id="quoteChange" checked>
+                                                <label class="o-switch__label" for="quoteChange"></label>
+                                                <div class="o-switch__text s4" data-close="關閉通知" data-open="開啟通知"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item" data-quoteChange-calendar>
+                                    <div class="l-flex u-flex-gap-sm u-flex-gap-min@mb-only u-flex-bottom">
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <div class="l-flex u-flex-col u-flex-gap-min">
+                                                <div class="l-flex__item u-center"><span class="s4">通知開始日</span></div>
+                                                <div class="l-flex__item">
+                                                    <div class="o-calendarBox o-calendarBox--popRange">
+                                                        <input type="text" class="o-calendarBox__input" data-quotestart data-calendar="true" readonly="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="l-flex__item l-flex__item--auto u-mb-min">-</div>
+                                        <div class="l-flex__item l-flex__item--auto">
+                                            <div class="l-flex u-flex-col u-flex-gap-min">
+                                                <div class="l-flex__item u-center"><span class="s4">通知結束日</span></div>
+                                                <div class="l-flex__item">
+                                                    <div class="o-calendarBox o-calendarBox--popRange">
+                                                        <input type="text" class="o-calendarBox__input" data-quoteend data-calendar="true" readonly="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-flex__item">
+                                    <div class="c-box c-box--gy c-box--gapless u-noShadow">
+                                        <div class="c-box__main">
+                                            <div class="l-flex u-flex-gap-max">
+                                                <div class="l-flex__item">
+                                                    <div class="l-flex u-flex-gap-sm">
+                                                        <div class="l-flex__item l-flex__item--auto">
+                                                            漲幅
+                                                        </div>
+                                                        <div class="l-flex__item">
+                                                            <div data-suffix-box="%">
+                                                                <input type="number" class="o-textbox o-textbox--full o-textbox--form" data-alert-rise>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class=" l-flex__item">
+                                                    <div class="l-flex u-flex-gap-sm">
+                                                        <div class="l-flex__item l-flex__item--auto">
+                                                            跌幅
+                                                        </div>
+                                                        <div class="l-flex__item">
+                                                            <div data-suffix-box="%">
+                                                                <input type="number" class="o-textbox o-textbox--full o-textbox--form" data-alert-fall>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-popup-close="true">取消</a>
+                </div>
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true" data-set-alert data-purpose="目標價格">確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('[data-calendar]').datepickerExtend();
+    $('[data-tab="true"]').tab();
+
+    //切換確認按鈕 辨別哪個頁籤下
+    $('[data-infovalue-tab]', '#popupAlert').on('click', function () {
+        let title = this.getAttribute('title');
+        $('[data-set-alert]', '#popupAlert').data('purpose', title);
+    });
+
+
+    $('[data-set-alert]').on('click.setAlert', function () {
+        let alertId = $(this).data('alertid');
+        // 若為加入狀態請加上'is-active'，反之請移除'is-active'，並觸發'update.tooltip'以更新tooltip
+        if ($('input[name="price"]').prop("checked") || $('input[name="quoteChange"]').prop("checked")) {
+
+            $(`[data-alert="${alertId}"]`).addClass('is-active').trigger('update.tooltip');
+        } else {
+            $(`[data-alert="${alertId}"]`).removeClass('is-active').trigger('update.tooltip');
+        }
+    });
+    $('input[name="price"],input[name="quoteChange"]').on('click', function (e) {
+        let $this = $(this);
+        if ($this.prop("checked")) {
+            $('[data-set-alert]').removeClass('is-disabled');
+        } else {
+            $('[data-set-alert]').addClass('is-disabled');
+        }
+    });
+
+    // 示意取消關注
+    $('[data-focus]').off('click.interactive');
+    $('[data-set-cancel-focus]').on('click.cancelFocus', function () {
+        Swal.fire({
+            iconHtml: '<i class="o-icon o-icon--tickSolid o-icon--wt o-icon--xl o-icon--nonhover"></i>',
+            customClass: {
+                container: 'c-swal',
+                popup: 'c-swal__popup',
+                icon: 'c-swal__icon',
+                title: 'c-swal__title',
+                timerProgressBar: 'c-swal__timerProgressBar'
+            },
+            position: 'center',
+            showConfirmButton: false,
+            backdrop: false,
+            timerProgressBar: true,
+            returnFocus: false,
+            timer: 1500,
+            titleText: '關注已取消'
+        });
+    });
+
+    // 數值-+
+    var percent = 0;
+    var triggerType = '';
+
+    // +/-點擊
+    $('[data-count-btn]').on('click.count', function () {
+        triggerType = 'click';
+        percent = Number(percent) + $(this).attr('data-count-btn') * 1;
+        if (percent <= -100) { percent = -100 }
+        $('[data-count-input]').val(percent).trigger('change.count');
+    });
+    // 更新%數顯示
+    $('[data-count-input]').on('change.count', function (e) {
+        let latestNetWorth = Number($("#popupAlert").find('[data-netvalue]').data('netvalue'));
+        $(this).closest('[data-count]').find('.c-count__text').text(Number(percent).toFixed(2));
+        if (triggerType === 'click') {
+            var val = latestNetWorth + latestNetWorth * e.target.value * 0.01;
+            $('[data-alert-price]').val(val.toFixed(4));
+        }
+    }).trigger('change.count');
+
+    // 目標價格輸入
+    $('[data-alert-price]').on('blur', function (e) {
+        let priceValue = e.target.value;
+        let latestNetWorth = Number($("#popupAlert").find('[data-netvalue]').data('netvalue'));
+        if (priceValue === '' || Number(priceValue) <= 0) {
+            latestNetWorth == 0;
+            $('[data-alert-price]').val(0);
+        }
+        triggerType = 'input';
+        var newPercent = (Number(priceValue) - latestNetWorth) / latestNetWorth * 100;
+        percent = newPercent.toFixed(2);
+        $('[data-count-input]').val(percent).trigger('change.count');
+    });
+</script>

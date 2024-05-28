@@ -10,12 +10,24 @@
     var MobileERegularLink = Settings.GetSetting("MobileERegular");
     var MobileIleoSingleLink = Settings.GetSetting("MobileIleoSingle");
     var MobileIleoRegularLink = Settings.GetSetting("MobileIleoRegular");
-
+    var AppPayLoginUrl = Settings.GetSetting("AppPay.CallLoginUrl");
 }
 
 <script>
     (function ($, window, document, undefined) {
         let isLogin = @(FcbMemberHelper.CheckMemberLogin() ? "true": "false");
+        let TestSession = @(Session["AppPayResult"] == null ? "true": "false");
+        window.IsLogin = isLogin;
+        if (!TestSession) {
+             $.ajax({
+            type: "post",
+            url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetWebBankResult")",
+                 success: function (msg) {
+                     console.log('網銀登入結果');
+                     console.log(msg);
+            },
+        })
+        }
         $.ajax({
             type: "post",
             url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
@@ -23,6 +35,31 @@
             success: function (msg) {
                 //設置成功
             },
+        })
+        if (isLogin) {
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackListFromDb")",
+                success: function (msg) {
+                    console.log("TrackListFromDb :");
+                    console.log(msg);
+
+                },
+            })
+        }
+        $.ajax({
+            type: "post",
+            url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackListFromFcb")",
+            data: { "promotionCode": '123456' },
+            success: function (msg) {
+                console.log("TrackListFromFcb :");
+                console.log(msg);
+            },
+            error: function (msg)
+            {
+                console.log("TrackListFromFcb :");
+                console.log(msg);
+            }
         })
         window.CompareObj = function (id, type, name) {
             this.id = id;
@@ -55,6 +92,16 @@
             }
         }
 
+        window.getNowDate = function ()
+        {
+            let now = new Date();
+            let year = now.getFullYear();
+            let month = now.getMonth() + 1;
+            let day = now.getDate();
+            if (month < 10) month = '0' + month
+            if (day < 10) day = '0' + day
+            return year + "/" + month + "/" + day ;
+        }
         EventHandler.AddOnExec('compare-init', function (e) {
             let self = e.target;
             $(self).interactive();
@@ -63,8 +110,10 @@
             if (checkItemExists('compare', id)) {
                 $(self).addClass('is-active');
                 self.setAttribute('eh-compare-add', true);
+            }else{
+                  $(self).removeClass('is-active');
+                self.setAttribute('eh-compare-add', false);
             };
-
             if (compare.length == 7) {
                 if (self.getAttribute('eh-compare-add').toString() == "false") {
                     self.setAttribute('href', '#popupCompareMax');
@@ -114,6 +163,8 @@
                     })
                 }
             }
+            //reload 側邊比較工具
+            window.SetCompareList();
         });
 
 
@@ -130,10 +181,15 @@
             } else {
                 $(self).interactive();
                 let id = self.getAttribute('eh-focus-id');
-                if (checkItemExists('focus', id)) {
-                    $(self).addClass('is-active');
-                    self.setAttribute('eh-focus-add', true);
-                };
+                if (id) {
+                    if (checkItemExists('focus', id)) {
+                        $(self).addClass('is-active');
+                        self.setAttribute('eh-focus-add', true);
+                    };
+                } else {
+                    $(self).off('click.interactive');
+                    $(self).removeData('plugin_interactive');
+                }
             }
         });
         EventHandler.AddClick('focus-click', function (e) {
@@ -141,15 +197,38 @@
             if (isLogin) {
                 let id = self.getAttribute('eh-focus-id');
                 let name = self.getAttribute('eh-focus-name');
-                let type = self.getAttribute('eh-focus-type').toLowerCase();
-                let obj = new CompareObj(id, type, name);
-                if (self.getAttribute('eh-focus-add').toString() == "false") {
-                    addItem('focus', obj);
-                    self.setAttribute('eh-focus-add', true);
-                } else {
-                    removeItem('focus', obj);
-                    self.setAttribute('eh-focus-add', false);
+                let type = self.getAttribute('eh-focus-type');
+                if (id && name && type) {
+                    let obj = new CompareObj(id, type, name);
+                    obj.trackDate = getNowDate();
+                    if (self.getAttribute('eh-focus-add').toString() == "false") {
+                        addItem('focus', obj);
+                        self.setAttribute('eh-focus-add', true);
+                    } else {
+                        removeItem('focus', obj);
+                        self.setAttribute('eh-focus-add', false);
+                    }
+                   $.ajax({
+                    type: "post",
+                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
+                    data: { "trackList": store.get("focus") || [] },
+                    beforeSend: function () { $('.c-loading').loading('show'); },
+                       success: function (msg) {
+                           $('.c-loading').loading('hide');
+                     },
+                    error: function (msg) {
+                         //設置error
+                        if (self.getAttribute('eh-focus-add').toString() == "false") {
+                            removeItem('focus', obj);
+                            self.setAttribute('eh-focus-add', false);
+                        } else {
+                            addItem('focus', obj);
+                            self.setAttribute('eh-focus-add', true);
+                        }
+                     },
+                })
                 }
+
             }
         });
 
@@ -278,7 +357,7 @@
                 pageId: self.getAttribute('eh-visit-pageid'),
                 url: new URL(location.href).href
             };
-            
+
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Get")',
                 type: 'GET',
@@ -290,6 +369,152 @@
             }).fail(function (jqXHR, textStatus, errorThrown) {
             });
         });
+
+        EventHandler.AddClick('fcblogin-click', function (e) {
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "WebBankLogin")",
+                beforeSend: function () { $('.c-loading').loading('show'); },
+                success: function (resp) {
+                    console.log(resp)
+                    let postDataUrl = '@AppPayLoginUrl';
+                    let postdata =
+                    {
+                        merchantId: resp.merchantId,
+                        txReqId: resp.txReqId,
+                        sign: resp.sign,
+                    };
+                    let form = document.createElement("form");
+                    form.setAttribute("method", "post");
+                    form.setAttribute("action", postDataUrl);
+                    for (let key in postdata) {
+                        let hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type","hidden");
+                        hiddenField.setAttribute("name", key);
+                        hiddenField.setAttribute("value", postdata[key]);
+                        form.appendChild(hiddenField);
+                    }
+                    document.body.appendChild(form);
+                    form.submit();
+                },
+                error: function (err)
+                {
+                    console.log(err);
+                },
+                complete: function () { $('.c-loading').loading('hide');  }
+            });
+        });
+
+        EventHandler.AddClick('focuscancel-click', function (e) {
+            let self = e.target;
+            let id = self.getAttribute('eh-focus-id');
+            let type = self.getAttribute('eh-focus-type');
+            let cancelBtn = document.querySelector('[data-set-cancel-focus]');
+            cancelBtn.setAttribute('data-cancel-id', id);
+            cancelBtn.setAttribute('data-cancel-type', type);
+        });
+        EventHandler.AddOnExec('focusdate-init', function (e) {
+            let focusStore = store.get('focus') || [];
+            let focusId = e.target.getAttribute('eh-focus-id');
+            if (focusStore.length > 0 && focusId != '') {
+                let idx = focusStore.findIndex((x) => x.id == focusId);
+                if (idx >= 0) {
+                    e.target.innerText = focusStore[idx].trackDate + "加入關注";
+                }
+            }
+        });
+        EventHandler.AddOnExec('info-init', function (e) {
+            let self = e.target;
+            let isHasInfo = $(self).closest("tr").find('[data-infostatus]').data('infostatus');
+            if (isHasInfo == true) {
+                $(self).addClass('is-active');
+            }
+        });
+        EventHandler.AddClick('info-click', function (e) {
+            let self = e.target;
+            let type = self.getAttribute('eh-info-type');
+            let id = self.getAttribute('eh-info-id');
+            $('[data-set-alert]', '#popupAlert').data('type', type);
+            if (type.toLowerCase() != "fund") {
+                $("#popupAlert").find('[data-set-title]').text('收盤價');
+            } else {
+                $("#popupAlert").find('[data-set-title]').text('最新淨值');
+            }
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "FocusList", "GetProductReachInfo")",
+                data: { "type": type, "id": id},
+                beforeSend: function () { $('.c-loading').loading('show'); },
+                success: function (data) {
+                        $("#popupAlert").find('[data-title]').data('id', $(self).closest("tr").find('[data-id]').data('id'));
+                        $("#popupAlert").find('[data-netvalue]').data('netvalue', $(self).closest("tr").find('[data-netvalue]').data('netvalue'));
+                        $("#popupAlert").find('[data-netvaluedate]').data('netvaluedate', $(this).closest("tr").find('[data-netvaluedate]').data('netvaluedate'));
+                        $("#popupAlert").find('[data-title]').text($(self).closest("tr").find('[data-id]').text());
+                        $("#popupAlert").find('[data-netvalue]').text($(self).closest("tr").find('[data-netvalue]').data('netvalue'));
+                        $("#popupAlert").find('[data-netvaluedate]').text($(self).closest("tr").find('[data-netvaluedate]').data('netvaluedate'));
+                    if (data && data.body.length > 0)
+                    {
+                        $.each(data.body, function (idx, item) {
+                            let startDate = '';
+                            let endDate = '';
+                            switch (item.infoType) {
+                                case "1":
+                                    if (item.openInfo) {
+                                        $('input[name="price"]').prop("checked")
+                                    }
+
+                                    $("#popupAlert").find('[data-alert-price]').val(item.reachValue).trigger('change.count');
+                                    startDate = item.infoStartDate.split('T')[0].replaceAll('-','/');
+                                    endDate= item.infoEndDate.split('T')[0].replaceAll('-','/');
+                                    $('[data-infostart]').val(startDate);
+                                    $('[data-infoend]').val(endDate);
+                                    $('[data-infostart]').datepicker('setDate', startDate);
+                                    $('[data-infoend]').datepicker('setDate', endDate);
+                                    break;
+                                case "2":
+                                    if (item.openInfo) {
+                                        $('input[name="quoteChange"]').prop("checked")
+                                    }
+                                    startDate = item.infoStartDate.split('T')[0].replaceAll('-','/');
+                                    endDate= item.infoEndDate.split('T')[0].replaceAll('-','/');
+                                    $("#popupAlert").find('[data-alert-rise]').val(item.risePercent);
+                                    $("#popupAlert").find('[data-alert-fall]').val(item.fallPercent);
+                                    $('[data-quotestart]').val(startDate);
+                                    $('[data-quoteend]').val(endDate);
+                                    $('[data-quotestart]').datepicker('setDate', startDate);
+                                    $('[data-quoteend]').datepicker('setDate', endDate);
+                                    break;
+                            }
+                        });
+                    } else
+                    {
+                        let nowDate = getNowDate();
+
+                        $('[data-infostart]').datepicker('setDate', nowDate);
+                        $('[data-infoend]').datepicker('setDate', nowDate);
+                        $('[data-infostart]').val('');
+                        $('[data-infoend]').val('');
+                        $('[data-quotestart]').datepicker('setDate', nowDate);
+                        $('[data-quoteend]').datepicker('setDate', nowDate);
+                        $('[data-quotestart]').val('');
+                        $('[data-quoteend]').val('');
+                        $("#popupAlert").find('[data-alert-price]').val($(self).closest("tr").find('[data-netvalue]').data('netvalue'));
+                        $("#popupAlert").find('[data-alert-rise]').val('');
+                        $("#popupAlert").find('[data-alert-fall]').val('');
+                        $("#popupAlert").find('[data-count-input]').val(0);
+                        $("#popupAlert").find('.c-count__text').text(0);
+
+                    }
+                    $('.c-loading').loading('hide');
+                },
+                error: function (msg) {
+                    console.log(msg)
+                },
+            });
+
+        });
+
+
     })(jQuery, window, document);
 </script>
 @Xcms.Sitecore.Foundation.Assets.Services.RenderAssetsService.Current.ScriptsRender("<script type=\"text/javascript\" src=\"{0}\" async ></script>", "/themes/project/wealth/js/utm.min.js")

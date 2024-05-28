@@ -1,0 +1,143 @@
+﻿using Feature.Wealth.Account.Helpers;
+using Feature.Wealth.Account.Models.ReachInfo;
+using Foundation.Wealth.Manager;
+using log4net;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xcms.Sitecore.Foundation.Basic.Logging;
+
+namespace Feature.Wealth.Account.Repositories
+{
+  public  class ReachInfoRepository
+    {
+        private ILog Log { get; } = Logger.Account;
+        public List<ReachInfo> GetAllProductReachInfos(string platFormId, string type )
+        {
+            string sql = $@" Select * FROM MemberReachInfo Where PlatFormId = @id and InvestType =@type";
+            var para = new { id =  FcbMemberHelper.GetMemberPlatFormId(), type =type};
+            var results = DbManager.Custom.ExecuteIList<ReachInfo>(sql, para, CommandType.Text)?.ToList();
+            return results;
+        }
+
+        public List<ReachInfo> GetReachInfoLists(string id)
+        {
+            string sql = $@" SELECT * from MemberReachInfo  where PlatFormId=@id";
+            var para = new { id = id };
+            var results = DbManager.Custom.ExecuteIList<ReachInfo>(sql, para, CommandType.Text)?.ToList();
+            return results;
+        }
+
+        public List<ReachInfo> GetProductReachInfo(string platFormId, string type, string id)
+        {
+            string sql = $@" SELECT PlatFormId,InvestType,InvestId,NewNetValue,InfoType,ReachValue,RiseValue,RisePercent,FallValue,FallPercent,
+                Format(InfoStartDate,'yyyy/MM/dd')InfoStartDate,Format(InfoEndDate,'yyyy/MM/dd')InfoEndDate,Format(SetDateTime,'yyyy/MM/dd')SetDateTime,OpenInfo,HaveRead
+                from MemberReachInfo  where PlatFormId=@platFormId and InvestType=@type and InvestId=@id";
+            var para = new { platFormId = platFormId, type = type, id = id };
+            var results = DbManager.Custom.ExecuteIList<ReachInfo>(sql, para, CommandType.Text)?.ToList();
+            return results;
+        }
+
+        public bool SetReachInfo(ReachInfo reachInfo)
+        {
+            bool success = false;
+            string strSql = @$"MERGE MemberReachInfo AS target 
+USING (SELECT @PlatFormId,@InvestId,@InfoType ) AS source (PlatFormId,InvestId,InfoType) 
+ON (target.PlatFormId = source.PlatFormId and target.InvestId = source.InvestId and target.InfoType = source.InfoType) 
+WHEN MATCHED THEN UPDATE SET ReachValue = @ReachValue,RiseValue =@RiseValue,RisePercent =@RisePercent,FallValue=@FallValue,FallPercent=@FallPercent,
+InfoStartDate=@InfoStartDate,InfoEndDate=@InfoEndDate,SetDateTime=@SetDateTime,OpenInfo=@OpenInfo,HaveRead=@HaveRead
+WHEN NOT MATCHED BY TARGET THEN INSERT (PlatFormId,InvestType,InvestId,NewNetValue,InfoType,ReachValue,RiseValue,RisePercent,FallValue,FallPercent,
+                InfoStartDate,InfoEndDate,SetDateTime,OpenInfo,HaveRead) values 
+               (@PlatFormId,@InvestType,@InvestId,@NewNetValue,@InfoType,@ReachValue,@RiseValue,@RisePercent,@FallValue,@FallPercent,
+            @InfoStartDate,@InfoEndDate,@SetDateTime,@OpenInfo,@HaveRead);";
+            var para = new ReachInfo()
+            {
+                PlatFormId = FcbMemberHelper.GetMemberPlatFormId(),
+                InvestType = reachInfo.InvestType,
+                InvestId = reachInfo.InvestId,
+                NewNetValue = reachInfo.NewNetValue,
+                InfoType = reachInfo.InfoType,
+                ReachValue = reachInfo.ReachValue,
+                RiseValue = reachInfo.RiseValue,
+                RisePercent = reachInfo.RisePercent,
+                FallValue = reachInfo.FallValue,
+                FallPercent = reachInfo.FallPercent,
+                InfoStartDate = reachInfo.InfoStartDate,
+                InfoEndDate = reachInfo.InfoEndDate,
+                SetDateTime = DateTime.Now,
+                OpenInfo = reachInfo.OpenInfo,
+                HaveRead = false
+            };
+            try
+            {
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
+                success = affectedRows != 0;
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+            return success;
+        }
+
+        //public bool SetBothReachInfo(ReachInfo reachInfo)
+        //{
+        //    bool success = false;
+        //    string strSql = $"INSERT INTO [MemberReachInfo] (PlatFormId,InvestType,InvestId,NewNetValue,InfoType,InfoValue,InfoStartDate,InfoEndDate,SetDateTime,OpenInfo,HaveRead) values " +
+        //        $"(@PlatFormId,@InvestType,@InvestId,@NewNetValue,@InfoType,@InfoValue,@InfoStartDate,@InfoEndDate,@SetDateTime,@OpenInfo,@HaveRead)";
+        //    var para = new List<ReachInfo>();
+        //     para.Add(new ReachInfo()
+        //    {
+        //        PlatFormId = FcbMemberHelper.GetMemberPlatFormId(),
+        //        InvestType = reachInfo.InvestType,
+        //        InvestId = reachInfo.InvestId,
+        //        NewNetValue = reachInfo.NewNetValue,
+        //        InfoType = "2",
+        //        InfoValue = reachInfo.RiseValue,
+        //        InfoStartDate = reachInfo.InfoStartDate,
+        //        InfoEndDate = reachInfo.InfoEndDate,
+        //        SetDateTime = DateTime.Now,
+        //        OpenInfo = reachInfo.OpenInfo,
+        //        HaveRead = false
+        //    });
+        //    para.Add(new ReachInfo()
+        //    {
+        //        PlatFormId = FcbMemberHelper.GetMemberPlatFormId(),
+        //        InvestType = reachInfo.InvestType,
+        //        InvestId = reachInfo.InvestId,
+        //        NewNetValue = reachInfo.NewNetValue,
+        //        InfoType = "3",
+        //        InfoValue = reachInfo.FallValue,
+        //        InfoStartDate = reachInfo.InfoStartDate,
+        //        InfoEndDate = reachInfo.InfoEndDate,
+        //        SetDateTime = DateTime.Now,
+        //        OpenInfo = reachInfo.OpenInfo,
+        //        HaveRead = false
+        //    });
+        //    try
+        //    {
+        //        var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
+        //        success = affectedRows != 0;
+        //    }
+        //    catch (SqlException ex)
+        //    {
+        //        Log.Error(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error(ex.Message);
+        //    }
+        //    return success;
+        //}
+
+
+    }
+}

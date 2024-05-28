@@ -110,6 +110,69 @@ namespace Foundation.Wealth.Helper
         }
 
         /// <summary>
+        /// 取消關注按鈕attributes
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="attributes">自訂屬性</param>
+        /// <param name="id">投資種類代號</param>
+        /// <param name="investType">投資種類</param>
+        /// <returns>HtmlString</returns>
+        public static HtmlString FocusCancelButton(this HtmlHelper helper, object attributes, string id, string name, object investType)
+        {
+            var builder = new TagBuilder("a");
+            builder.MergeAttribute("href", "#popupCancelFocus");
+            builder.MergeAttribute("eh-tracklist-focus",string.Empty);
+            builder.MergeAttribute("eh-focus-type", investType.ToString());
+            builder.MergeAttribute("eh-focus-id", id);
+            builder.MergeAttribute("eh-focus-name ", name);
+            builder.MergeAttribute("data-eh", "focuscancel-click");
+            builder.MergeAttribute("data-msg", "加入關注|取消關注");
+            builder.MergeAttribute("data-ia", "true");
+            builder.MergeAttribute("data-ia-toast", "false");
+            builder.MergeAttribute("data-popup", "true");
+            builder.MergeAttribute("data-after-lt", "關注");
+            builder.MergeAttribute("data-focus", string.Empty);
+
+            builder.AddCssClass("o-statusBtn o-statusBtn--like is-active");
+            if (attributes != null)
+            {
+                builder.MergeAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
+            }
+            return MvcHtmlString.Create(builder.ToString(TagRenderMode.Normal));
+        }
+        /// <summary>
+        /// 通知按鈕attributes
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="attributes">自訂屬性</param>
+        /// <param name="id">投資種類代號</param>
+        /// <param name="investType">投資種類</param>
+        /// <returns>HtmlString</returns>
+        public static HtmlString InfoButton(this HtmlHelper helper, object attributes, string id, string name, object investType)
+        {
+            var builder = new TagBuilder("a");
+            builder.MergeAttribute("href", "#popupAlert");
+            builder.MergeAttribute("eh-tracklist-info", string.Empty);
+            builder.MergeAttribute("eh-info-type", investType.ToString());
+            builder.MergeAttribute("eh-info-id", id);
+            builder.MergeAttribute("eh-info-name ", name);
+            builder.MergeAttribute("data-eh", "info-init,info-click");
+            builder.MergeAttribute("data-msg", "加入通知|取消通知");
+            builder.MergeAttribute("data-ia", "true");
+            builder.MergeAttribute("data-ia-toast", "false");
+            builder.MergeAttribute("data-popup", "true");
+            builder.MergeAttribute("data-after-lt", "通知");
+            builder.MergeAttribute("data-alert",id);
+
+            builder.AddCssClass("o-statusBtn o-statusBtn--alert");
+            if (attributes != null)
+            {
+                builder.MergeAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
+            }
+            return MvcHtmlString.Create(builder.ToString(TagRenderMode.Normal));
+        }
+
+        /// <summary>
         /// 申購按鈕
         /// </summary>
         /// <param name="helper"></param>

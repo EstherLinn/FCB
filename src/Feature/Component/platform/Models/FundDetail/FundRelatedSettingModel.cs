@@ -20,6 +20,8 @@ namespace Feature.Wealth.Component.Models.FundDetail
                     public static readonly ID FundDetails = new ID("{E9D1628F-C48D-4353-8526-FEDAB06A8050}");
                     public static readonly ID FundCloseFiveYears = new ID("{8805B824-C351-4703-A3EC-D7C17EFCBD31}");
                     public static readonly ID FundExpose = new ID("{97A54554-F36A-4B0C-9C25-014FE8ECF596}");
+                    public static readonly ID FundEtfCompare = new ID("{BF15DB31-1977-4605-959A-ADDBA77093E7}");
+
                 }
             }
 
@@ -45,7 +47,11 @@ namespace Feature.Wealth.Component.Models.FundDetail
             Item FundRealtedItem = ItemUtils.GetItem(Template.FundRelatedLink.Root);
             return FundRealtedItem.GeneralLink(Template.FundRelatedLink.Fields.FundExpose)?.Url;
         }
-
+        public static string GetFundEtfCompareUrl()
+        {
+            Item FundRealtedItem = ItemUtils.GetItem(Template.FundRelatedLink.Root);
+            return FundRealtedItem.GeneralLink(Template.FundRelatedLink.Fields.FundEtfCompare)?.Url;
+        }
 
     }
 }

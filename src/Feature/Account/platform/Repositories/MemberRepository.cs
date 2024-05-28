@@ -1,9 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Net;
+using Feature.Wealth.Account.Helpers;
+using Feature.Wealth.Account.Models.Api;
+using Feature.Wealth.Account.Models.FundTrackList;
 using Feature.Wealth.Account.Models.OAuth;
 using Foundation.Wealth.Manager;
 using log4net;
+using Newtonsoft.Json;
 using Xcms.Sitecore.Foundation.Basic.Logging;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Account.Repositories
 {
@@ -14,8 +22,19 @@ namespace Feature.Wealth.Account.Repositories
         public bool CheckUserExists(PlatFormEunm platForm, string id)
         {
             bool exists = false;
-            string strSql = $"SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [dbo].[FCB_Member] WHERE PlatForm=@platForm and PlatFormId = @id) THEN 1 ELSE 0 END as BIT)";
-            var para = new { platForm = nameof(platForm), id = id };
+            string strSql = string.Empty;
+            if (platForm == PlatFormEunm.WebBank)
+            {
+                strSql = @$"SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@platForm
+                 and PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @id)) THEN 1 ELSE 0 END as BIT)";
+            }
+            else
+            {
+                strSql = @$"SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@platForm
+                 and PlatFormId = @id ) THEN 1 ELSE 0 END as BIT)";
+            }
+            
+            var para = new { platForm = platForm.ToString(), id = id };
             try
             {
                 exists = DbManager.Custom.Execute<bool>(strSql, para, commandType: System.Data.CommandType.Text);
@@ -39,22 +58,23 @@ namespace Feature.Wealth.Account.Repositories
                 return success;
             }
 
-            string strSql = $"INSERT INTO [dbo].[FCB_Member] (PlatForm,PlatFormId,MemberName,MemberEmail,VideoInfoOpen,ArrivedInfoOpen,StockShowColor,UpdateTime) values " +
-                $"(@PlatForm,@PlatFormId,@MemberName,@MemberEmail,@VideoInfoOpen,@ArrivedInfoOpen,@StockShowColor,@Datetime)";
+            string strSql = $"INSERT INTO [FCB_Member] (WebBankId,PlatForm,PlatFormId,MemberName,MemberEmail,VideoInfoOpen,ArrivedInfoOpen,StockShowColor,CreateTime) values " +
+                $"(@WebBankId,@PlatForm,@PlatFormId,@MemberName,@MemberEmail,@VideoInfoOpen,@ArrivedInfoOpen,@StockShowColor,@Datetime)";
             var para = new
             {
-                PlatForm = nameof(fcbMemberModel.PlatForm),
+                WebBankId = fcbMemberModel.WebBankId,
+                PlatForm = fcbMemberModel.PlatForm.ToString(),
                 PlatFormId = fcbMemberModel.PlatFormId,
                 VideoInfoOpen = fcbMemberModel.VideoInfoOpen,
                 ArrivedInfoOpen = fcbMemberModel.VideoInfoOpen,
-                StockShowColor = nameof(fcbMemberModel.StockShowColor),
+                StockShowColor = fcbMemberModel.StockShowColor.ToString(),
                 MemberName = fcbMemberModel.MemberName,
                 MemberEmail = fcbMemberModel.MemberEmail,
                 Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
             try
             {
-                var affectedRows = DbManager.Custom.Execute<int>(strSql, para, commandType: System.Data.CommandType.Text);
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
             }
             catch (SqlException ex)
@@ -73,10 +93,10 @@ namespace Feature.Wealth.Account.Repositories
             bool success = false;
             try
             {
-                string strSql = $"UPDATE  [dbo].[FCB_Member] Set WebBankId=@WebBankId WHERE [PlatForm]=@PlatForm and PlatFormId = @id";
+                string strSql = $"UPDATE [FCB_Member] Set WebBankId=@WebBankId,UpdateTime=@Time WHERE [PlatForm]=@PlatForm and PlatFormId = @id";
 
-                var para = new { WebBankId = webBankId, PlatForm = nameof(platForm), id = platFormId };
-                var affectedRows = DbManager.Custom.Execute<int>(strSql, para, commandType: System.Data.CommandType.Text);
+                var para = new { WebBankId = webBankId, Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), PlatForm = platForm.ToString(), id = platFormId };
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
             }
             catch (SqlException ex)
@@ -90,14 +110,99 @@ namespace Feature.Wealth.Account.Repositories
             return success;
         }
 
+        public CIFMember GetWebBankUserInfo(string id)
+        {
+            CIFMember member = null;
+            var strSql = @$"  Select a.CIF_CUST_NAME,a.CIF_E_MAIL_ADDRESS,a.CIF_EMP_RISK,a.CIF_AO_EMPNO,b.EmployeeName as CIF_AO_EMPName,C.PROMOTION_CODE as CIF_PROMO_CODE FROM [CIF]  as a
+                        left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, 3, len(EmployeeCode - 3))
+                        left join [CFMBSEL] as C on CIF_ID_NO = CUST_ID
+                        WHERE CIF_ID_NO = id ";
+            var para = new { id = id };
+            try
+            {
+                member = DbManager.Custom.Execute<CIFMember>(strSql, para, commandType: System.Data.CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+            return member;
+
+        }
+
+        public FcbMemberModel GetMemberInfo(PlatFormEunm platFormEunm, string id)
+        {
+            FcbMemberModel fcbMemberModel = null;
+            var strSql = $"  Select A.*,B.CIF_EMP_RISK as Risk,B.CIF_ESTABL_BIRTH_DATE as Birthday,C.EmployeeName as Advisror FROM[FCB_Member] as A" +
+                              " left join [CIF] as B on B.CIF_ID_NO = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)" +
+                              " left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, 3, len(EmployeeCode - 3))  " +
+                              " WHERE PlatForm = @Platform and ";
+            if (platFormEunm == PlatFormEunm.WebBank)
+            {
+                strSql += "PlatFormId =(SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @id)";
+            }
+            else
+            {
+                strSql += "PlatFormId = @id";
+            }
+            var para = new { Platform = platFormEunm.ToString(), id = id };
+            fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
+
+            return fcbMemberModel;
+        }
+
+        public List<TrackListModel> GetTrackListFromDb(string id)
+        {
+            List<TrackListModel> trackLists = new List<TrackListModel>();
+            var jsonStr = string.Empty;
+            var strSql = $"SELECT TrackList FROM TrackList WHERE PlatFormId= @id";
+            var para = new { id = id };
+            jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
+            if (string.IsNullOrEmpty(jsonStr))
+            {
+                jsonStr = "[]";
+            }
+            trackLists = JsonConvert.DeserializeObject<List<TrackListModel>>(jsonStr);
+            return trackLists;
+
+        }
+
+        public bool InSertTrackList(List<TrackListModel> trackLists)
+        {
+            var success = false;
+            try
+            {
+                var jsonStr = JsonConvert.SerializeObject(trackLists);
+                var strSql = @$"Merge TrackList as target  using (select @id) as source (PlatFormId) on (target.PlatFormId = source.PlatFormId)
+                      WHEN MATCHED THEN UPDATE SET TrackList = @jsonStr 
+                      WHEN NOT MATCHED BY TARGET THEN INSERT (PlatFormId , TrackList ) VALUES (@id, @jsonStr);";
+                var para = new { id = FcbMemberHelper.GetMemberPlatFormId(), jsonStr = jsonStr };
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
+                success = affectedRows != 0;
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+            return success;
+        }
         public bool SetMemberEmail(string id, string email)
         {
             bool success = false;
-            string strSql = $"UPDATE [dbo].[FCB_Member] Set MemberEmail=@email WHERE  PlatFormId = @id";
-            var para = new { id = id, email = email };
+            string strSql = $"UPDATE [FCB_Member] Set MemberEmail=@email,UpdateTime =@time WHERE  PlatFormId = @id";
+            var para = new { id = id, email = email, time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
             try
             {
-                var affectedRows = DbManager.Custom.Execute<int>(strSql, para, commandType: System.Data.CommandType.Text);
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
             }
             catch (SqlException ex)
@@ -114,11 +219,11 @@ namespace Feature.Wealth.Account.Repositories
         public bool SetVideoInfo(string id, bool open)
         {
             bool success = false;
-            string strSql = $"UPDATE [dbo].[FCB_Member] Set VideoInfoOpen=@open WHERE  PlatFormId = @id";
-            var para = new { id = id, open = Convert.ToInt32(open) };
+            string strSql = $"UPDATE [FCB_Member] Set VideoInfoOpen=@open,UpdateTime =@time WHERE  PlatFormId = @id";
+            var para = new { id = id, open = Convert.ToInt32(open), time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
             try
             {
-                var affectedRows = DbManager.Custom.Execute<int>(strSql, para, commandType: System.Data.CommandType.Text);
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
             }
             catch (SqlException ex)
@@ -134,11 +239,11 @@ namespace Feature.Wealth.Account.Repositories
         public bool SetArriedInfo(string id, bool open)
         {
             bool success = false;
-            string strSql = $"UPDATE [dbo].[FCB_Member] Set ArrivedInfoOpen=@open WHERE  PlatFormId = @id";
-            var para = new { id = id, open = open };
+            string strSql = $"UPDATE [FCB_Member] Set ArrivedInfoOpen=@open,UpdateTime =@time WHERE  PlatFormId = @id";
+            var para = new { id = id, open = open, time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
             try
             {
-                var affectedRows = DbManager.Custom.Execute<int>(strSql, para, commandType: System.Data.CommandType.Text);
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
             }
             catch (SqlException ex)
@@ -157,9 +262,9 @@ namespace Feature.Wealth.Account.Repositories
             try
             {
                 var type = (QuoteChangeEunm)Enum.Parse(typeof(QuoteChangeEunm), colorType);
-                string strSql = $"UPDATE [dbo].[FCB_Member] Set StockShowColor=@colorType WHERE  PlatFormId = @id";
-                var para = new { id = id, colorType = Convert.ToInt32(type) };
-                var affectedRows = DbManager.Custom.Execute<int>(strSql, para, commandType: System.Data.CommandType.Text);
+                string strSql = $"UPDATE [FCB_Member] Set StockShowColor=@colorType,UpdateTime =@time WHERE  PlatFormId = @id";
+                var para = new { id = id, colorType = type.ToString(), time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
             }
             catch (SqlException ex)
@@ -173,6 +278,78 @@ namespace Feature.Wealth.Account.Repositories
             return success;
         }
 
+        public bool SetCommonFunctions(string id, List<string> commons)
+        {
+            bool success = false;
+            try
+            {
+                var jsonStr = JsonConvert.SerializeObject(commons);
+                var strSql = @$"UPDATE [FCB_Member] Set CommonFunction=@jsonStr,UpdateTime=@Time WHERE  PlatFormId = @PlatFormId ;";
+                var para = new { jsonStr = jsonStr,Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") , PlatFormId = id };
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
+                success = affectedRows != 0;
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+            return success;
+        }
+        public CommonFuncrionsResp GetCommonFunctions(string id)
+        {
+            CommonFuncrionsResp commonFuncrionsResp = new();
+            try
+            {
+                var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId=@id ";
+                var para = new { id = id};
+                var jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
+                if (jsonStr!= null)
+                {
+                    List<string> CommonFunctions = JsonConvert.DeserializeObject<List<string>>(jsonStr);
+                    commonFuncrionsResp.Body = GetCommonFunctionsInfo(CommonFunctions);
+                }
+                else
+                {
+                    commonFuncrionsResp.Body = Enumerable.Empty<CommonFunctionsModel>().ToList();
+                }
+            }
+            catch (SqlException ex)
+            {
+                commonFuncrionsResp.StatusCode = HttpStatusCode.InternalServerError;
+                commonFuncrionsResp.Message = ex.Message;
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                commonFuncrionsResp.StatusCode = HttpStatusCode.InternalServerError;
+                commonFuncrionsResp.Message = ex.Message;
+                Log.Error(ex.Message);
+            }
+
+            
+            return commonFuncrionsResp;
+        }
+
+        public List<CommonFunctionsModel> GetCommonFunctionsInfo(List<string> CommonFunctions)
+        {
+            List<CommonFunctionsModel> commonFunctionsModels = new();
+
+            foreach (var item in CommonFunctions)
+            {
+                CommonFunctionsModel commonFunctionsModel = new();
+                var pageItem = ItemUtils.GetItem(item);
+                commonFunctionsModel.PageName = pageItem.Fields["Navigation Title"].Value;
+                commonFunctionsModel.PageUrl = pageItem.Url();
+                commonFunctionsModel.PageGuid = item;
+                commonFunctionsModels.Add(commonFunctionsModel);
+            }
+
+            return commonFunctionsModels;
+        }
 
     }
 }

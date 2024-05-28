@@ -1,5 +1,7 @@
 ﻿
 
+using System.Text.RegularExpressions;
+
 namespace Foundation.Wealth.Extensions
 {
     public static class StringExtension
@@ -13,7 +15,6 @@ namespace Foundation.Wealth.Extensions
         {
             return string.IsNullOrEmpty(str) ? "-" : str;
         }
-
         /// <summary>
         /// Y/N -> 有/無,Null -> NA
         /// </summary>
@@ -83,5 +84,15 @@ namespace Foundation.Wealth.Extensions
             return string.Format("{0}/{1}", outputLeftValue, outputRightValue);
         }
 
+        /// <summary>
+        /// 檢查email格式
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public static bool IsValidEmail(this string email)
+        {
+            string pattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
+            return Regex.IsMatch(email, pattern);
+        }
     }
 }
