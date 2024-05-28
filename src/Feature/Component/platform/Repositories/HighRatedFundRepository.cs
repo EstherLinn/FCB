@@ -19,7 +19,7 @@ namespace Feature.Wealth.Component.Repositories
                    JOIN [Fund_HighRated] h
                    ON b.ProductCode = h.ProductCode
                    ORDER BY SixMonthReturnOriginalCurrency
-                   DESC,ProductCode
+                   DESC,b.ProductCode
                    """;
 
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
