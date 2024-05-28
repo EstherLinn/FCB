@@ -138,22 +138,6 @@ namespace Feature.Wealth.ScheduleAgent.Services
             return dataLines;
         }
 
-        public async Task<IEnumerable<T>> ParseCsv<T>(string fileName, ClassMap<T> map)
-        {
-            var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
-            string localFilePath = Path.Combine(this.LocalDirectory, fileName);
-
-            using (var reader = new StreamReader(localFilePath))
-            using (var csv = new CsvReader(reader, config))
-            {
-                if (map != null)
-                {
-                    csv.Context.RegisterClassMap<ClassMap<T>>();
-                }
-                var records = csv.GetRecordsAsync<T>().ToListAsync();
-                return await records;
-            }
-        }
 
         ///copyDirectory 備份檔案"yyyyMMdd HH"
 

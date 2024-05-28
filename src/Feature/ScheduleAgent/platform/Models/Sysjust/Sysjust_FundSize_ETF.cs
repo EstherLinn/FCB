@@ -3,11 +3,11 @@
 namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
 {
     /// <summary>
-    /// 基金 – 淨值，檔案名稱：Sysjust-Nav-Fund.txt
+    /// 規模變動(境外)，檔案名稱：SYSJUST-FUND-SIZE-ETF.txt
     /// </summary>
     [Delimiter(";@")]
     [HasHeaderRecord(false)]
-    internal class SysjustNavFund
+    internal class SysjustFundSizeEtf
     {
         /// <summary>
         /// 一銀代碼
@@ -15,18 +15,23 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         public string FirstBankCode { get; set; }
 
         /// <summary>
-        /// 淨值日期
+        /// 基金代碼
         /// </summary>
-        public string NetAssetValueDate { get; set; }
+        public string FundCode { get; set; }
 
         /// <summary>
-        /// 淨值
+        /// 規模日期
         /// </summary>
-        public string NetAssetValue { get; set; }
+        public string ScaleDate { get; set; }
 
         /// <summary>
-        ///嘉實代碼
+        /// 規模(百萬)
         /// </summary>
-        public string SysjustCode { get; set; }
+        public string ScaleMillions { get; set; }
+
+        /// <summary>
+        /// 幣別
+        /// </summary>
+        public string Currency { get; set; }
     }
 }

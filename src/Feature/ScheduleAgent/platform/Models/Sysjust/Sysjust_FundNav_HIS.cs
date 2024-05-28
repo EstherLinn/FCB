@@ -3,11 +3,11 @@
 namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
 {
     /// <summary>
-    /// 國內外基金-持股資料-依照區域，檔案名稱：Sysjust-Holding-Fund-2.txt
+    /// 基金歷史淨值，檔案名稱：SYSJUST-FUNDNAV-HIS.txt
     /// </summary>
     [Delimiter(";@")]
     [HasHeaderRecord(false)]
-    internal class SysjustHoldingFund2
+    internal class SysjustFundNavHis
     {
         /// <summary>
         /// 一銀代碼
@@ -15,38 +15,28 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         public string FirstBankCode { get; set; }
 
         /// <summary>
-        /// 嘉實代碼
-        /// </summary>
-        public string SysjustCode { get; set; }
-
-        /// <summary>
         /// 日期
         /// </summary>
         public string Date { get; set; }
 
         /// <summary>
-        /// 基金名稱
+        /// 淨值
         /// </summary>
-        public string FundName { get; set; }
+        public string NetAssetValue { get; set; }
 
         /// <summary>
-        /// 區域
+        /// 贖回
         /// </summary>
-        public string Area { get; set; }
+        public string Redemption { get; set; }
 
         /// <summary>
-        /// 比例 Holding%(Area)
+        /// 申購
         /// </summary>
-        public string HoldingArea { get; set; }
+        public string Subscription { get; set; }
 
         /// <summary>
         /// 幣別
         /// </summary>
         public string Currency { get; set; }
-
-        /// <summary>
-        /// 投資金額
-        /// </summary>
-        public string InvestmentAmount { get; set; }
     }
 }
