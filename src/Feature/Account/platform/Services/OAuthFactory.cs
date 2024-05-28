@@ -20,7 +20,6 @@ namespace Feature.Wealth.Account.Services
                 case PlatFormEunm.Line:
                     string lineAppId = Settings.GetSetting("Line.ClientId");
                     string lineAuthUrl = Settings.GetSetting("Line.AuthUrl");
-                    //string lineRedirectUrl = $"https://{HttpContext.Current.Request.Url.Host}/Demo/Jason/Oauth";
                     string lineRedirectUrl = $"https://{HttpContext.Current.Request.Url.Host}/api/client/Accounts/SignInLine";
 
                     return lineAuthUrl.Replace("{scope}", HttpUtility.UrlEncode("profile email openid")).Replace("{state}", state.ToString()).Replace("{RedirectUrl}", lineRedirectUrl).Replace("{clientid}", lineAppId);

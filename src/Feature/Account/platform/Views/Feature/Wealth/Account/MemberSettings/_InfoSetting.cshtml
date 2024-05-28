@@ -1,0 +1,161 @@
+﻿@model Feature.Wealth.Account.Models.OAuth.FcbMemberModel
+@using Feature.Wealth.Account.Models.OAuth
+@using Foundation.Wealth.Helper;
+
+@{
+    var member = Model;
+}
+
+<!-- is-active: 作用中的項目 -->
+<div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+    <div class="c-section c-section--article">
+        <div class="c-section__title u-mb-min">Email設定</div>
+        <div class="c-section__desc">設定常用Email以即時收到系統通知</div>
+        <div class="c-section__content">
+            <div class="c-box u-padding-md u-padding-xl@dt-only">
+                <div class="c-form c-form--setting">
+                    <div class="c-form__title">常用Email</div>
+                    <div class="c-form__content">
+                        <div class="l-flex u-flex-gap-sm">
+                            <div class="l-flex__item l-flex__item--auto">
+                                <span class="t-bold" id="emailText">@member.MemberEmail</span>
+                            </div>
+                            <div class="l-flex__item">
+                                <a href="#popupEmail" class="o-icon o-icon--edit" data-popup="true"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="c-section c-section--article">
+        <div class="c-section__title">Email通知</div>
+        <div class="c-section__content">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <div class="c-box u-padding-md u-padding-xl@dt-only">
+                        <div class="c-form c-form--setting c-form--hor u-flex-center">
+                            <div class="c-form__title">理財視訊通知</div>
+                            <div class="c-form__content">
+                                <div class="o-switch">
+                                    <input class="o-switch__input" type="checkbox" name="videoCall" id="videoCall"
+                                           @(member.VideoInfoOpen ? "checked" : string.Empty)>
+                                    <label class="o-switch__label" for="videoCall"></label>
+                                    <div class="o-switch__text" data-close="關閉" data-open="已開啟"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <div class="c-box u-padding-md u-padding-xl@dt-only">
+                        <div class="c-form c-form--setting c-form--hor u-flex-center">
+                            <div class="c-form__title">到價通知</div>
+                            <div class="c-form__content">
+                                <div class="o-switch">
+                                    <input class="o-switch__input" type="checkbox" name="price" id="price"
+                                           @(member.ArrivedInfoOpen ? "checked" : string.Empty)>
+                                    <label class="o-switch__label" for="price"></label>
+                                    <div class="o-switch__text" data-close="關閉" data-open="已開啟"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupEmail" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">Email設定</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="c-form c-form--ver">
+                <div class="c-form__title">請輸入常用電子信箱</div>
+                <div class="c-form__content">
+                    <div class="l-form" id="emailDiv">
+                        <div class="l-form__item">
+                            <input type="text" id="email" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入電子信箱">
+                        </div>
+                        <div class="l-form__text l-form__text--error u-hidden" id="emailErrorMsg">
+                            <div class="o-errorText"><span class="s4">請輸入電子信箱</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" id="emailBtn" class="o-btn o-btn--primary o-btn--sm">確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+        $('#emailBtn').on('click', function (e) {
+            let val = $('#email').val();
+            if (val !== "") {
+                 $('#emailDiv').removeClass('is-error');
+                $('#emailErrorMsg').addClass('u-hidden');
+                    $.ajax({
+                        type: "post",
+                        url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetMemberEmail")",
+                        beforeSend: function () { window.loading('show'); },
+                        data: { "email": val },
+                        success: function (resp) {
+                            if (resp.success) {
+                                //設置成功
+                                $.magnificPopup.close();
+                                $('#email').val('');
+                                $('#emailText').text(val);
+                            } else {
+                                $('#emailErrorMsg').find('span').text(resp.errorMessage);
+                                $('#emailDiv').addClass('is-error');
+                                $('#emailErrorMsg').removeClass('u-hidden');
+                            }
+                        },
+                        complete: function () { window.loading('hide');}
+                    })
+                } else {
+                    $('#emailDiv').addClass('is-error');
+                    $('#emailErrorMsg').removeClass('u-hidden');
+                }
+        });
+        $('#videoCall').on('change', function (e) {
+            let self = e.target;
+            let val = $(self).prop("checked");
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetVideoInfo")",
+                beforeSend: function () { window.loading('show'); },
+                data: { "open": val },
+                success: function (msg) {
+                    //設置成功
+                },
+                complete: function () { window.loading('hide'); }
+            })
+        });
+        $('#price').on('change', function (e) {
+            let self = e.target;
+            let val = $(self).prop("checked");
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetArriedInfo")",
+                beforeSend: function () { window.loading('show'); },
+                data: { "open": val },
+                success: function (msg) {
+                    //設置成功
+                },
+                complete: function () { window.loading('hide'); }
+            })
+        });
+    })(jQuery, window, document);
+</script>

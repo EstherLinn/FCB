@@ -1,0 +1,72 @@
+﻿@model Feature.Wealth.Account.Models.OAuth.FcbMemberModel
+@using Feature.Wealth.Account.Models.OAuth
+@using Foundation.Wealth.Helper;
+
+@{
+    var member = Model;
+}
+<div class="c-tab__panel" data-tab-panel-id="tab-3">
+    <div class="c-box u-padding-md u-padding-xl@dt-only">
+        <div class="c-form c-form--setting">
+            <div class="c-form__title">漲跌顯示顏色</div>
+            <div class="c-form__content">
+                <table class="l-alignTable u-align-gapX-md u-align-gapY-md" id="quoteTable">
+                    <tr>
+                        <td width="135px">
+                            <label class="o-radio">
+                                <input class="o-radio__input" type="radio" name="color" data-color="Taiwan"
+                                       @(member.StockShowColor == QuoteChangeEunm.Taiwan ? "checked" : string.Empty)>
+                                <div class="o-radio__text">
+                                    臺灣樣式 (預設)
+                                </div>
+                            </label>
+                        </td>
+                        <td>
+                            <div class="l-slash">
+                                <div class="l-slash__item"><span class="o-rise">1.00%</span></div>
+                                <div class="l-slash__item"><span class="o-fall">1.00%</span></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="o-radio">
+                                <input class="o-radio__input" type="radio" name="color" data-color="International"
+                                       @(member.StockShowColor == QuoteChangeEunm.International ? "checked" : string.Empty)>
+                                <div class="o-radio__text">
+                                    國際樣式
+                                </div>
+                            </label>
+                        </td>
+                        <td>
+                            <div class="l-slash">
+                                <div class="l-slash__item"><span class="o-rise o-rise--gbl">1.00%</span></div>
+                                <div class="l-slash__item"><span class="o-fall o-fall--gbl">1.00%</span></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+            $('input[name="color"]', '#quoteTable').on('change', function (e) {
+                let val = $('input[name="color"]:checked', '#quoteTable').data('color');
+                if (val) {
+                    $.ajax({
+                        type: "post",
+                        url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetQuoteChangeColor")",
+                        beforeSend: function () { window.loading('show'); },
+                        data: { "color": val },
+                        success: function (msg) {
+                            //設置成功
+                        },
+                        complete: function () { window.loading('hide');}
+                    })
+                }
+        });
+    })(jQuery, window, document);
+</script>

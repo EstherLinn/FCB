@@ -1,0 +1,280 @@
+﻿@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.ETF
+@using Feature.Wealth.Component.Models.Invest
+@{
+    var searchUrl = EtfRelatedLinkSetting.GetETFSearchUrl();
+    var detailUrl = EtfRelatedLinkSetting.GetETFDetailUrl();
+}
+
+<div class="l-flex u-flex-col u-flex-gap-xs u-hidden" data-nofocusetf>
+    <div class="l-flex__item">
+        <div class="c-empty">
+            <div class="c-empty__img">
+                <img src="~/themes/images/lions/lion-compare.svg" alt="">
+            </div>
+            <div class="c-empty__desc">目前還沒關注任何國外股票</div>
+        </div>
+    </div>
+    <div class="l-flex__item u-center">
+        <a href="@searchUrl" class="o-btn o-btn--secondary o-btn--sm o-btn--flat">國外股票搜尋</a>
+    </div>
+</div>
+
+<div class="l-flex u-flex-col u-flex-gap-sm" data-focusetf>
+    <div class="l-flex__item u-right u-hidden@dt-only">
+        <div class="o-sortingbox">
+            <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="EtfListTable" id="uid-etf-sortbox">
+                <option value="">排序</option>
+                <option value="ETF名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">ETF名稱高至低</option>
+                <option value="ETF名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">ETF名稱低至高</option>
+                <option value="收盤價高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">收盤價高至低</option>
+                <option value="收盤價低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">收盤價低至高</option>
+                <option value="幣別高至低" data-sorting-column="CurrencyName" data-sorting-class="is-desc">幣別高至低</option>
+                <option value="幣別低至高" data-sorting-column="CurrencyName" data-sorting-class="is-asc">幣別低至高</option>
+                <option value="漲跌幅高至低" data-sorting-column="NetAssetValueChangePercentage" data-sorting-class="is-desc">漲跌幅高至低</option>
+                <option value="漲跌幅低至高" data-sorting-column="NetAssetValueChangePercentage" data-sorting-class="is-asc">漲跌幅低至高</option>
+                <option value="6個月績效高至低" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency" data-sorting-class="is-desc">6個月績效高至低</option>
+                <option value="6個月績效低至高" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency" data-sorting-class="is-asc">6個月績效低至高</option>
+
+            </select>
+        </div>
+    </div>
+    <div class="l-flex__item">
+        <div class="l-table">
+            <table class="c-table@dt-only c-cardTable@lt" data-table-name="EtfListTable" id="etfTable">
+                <colgroup>
+                    <col style="width: auto;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                </colgroup>
+                <thead>
+                    <tr class="u-nowrap">
+                        <th>
+                            <div class="c-table__title">
+                                <span>ETF名稱</span>
+                                <!-- .is-asc: 升冪 -->
+                                <!-- .is-desc: 降冪 -->
+                                <a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>收盤價</span>
+                                <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>幣別</span>
+                                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                <a href="#" class="o-sorting" data-sorting-column="CurrencyName"></a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>漲跌幅</span>
+                                <a href="#" class="o-sorting" data-sorting-column="NetAssetValueChangePercentage"></a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>6個月績效</span>
+                                <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency"></a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>淨值/<br>漲跌幅通知</span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>通知/關注/比較</span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>申購</span>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="uid-etf-fjs"></tbody>
+                <script id="uid-etf-template" type="text/html">
+                <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+                    <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+                    <td class="c-cardTable__top"></td>
+                    <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+                    <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
+                    <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+                        <div class="c-cardTable__content">
+                            <div class="l-target">
+                                <div class="l-target__name">
+                                    <a href="@(detailUrl)?id=<%= ProductCode %>" data-id="<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= ProductCode %> <%= ProductName %></a>
+                                </div>
+                                <% if (Tags!=null) { %>
+                                <div class="l-target__additional">
+                                    <ul class="l-tag">
+                                        <% for(var i = 0; i < Tags.length; i++ ) { %>
+                                        <li class="l-tag__item">
+                                            <a href="#" class="o-tag"><%= Tags[i] %></a>
+                                        </li>
+                                        <% } %>
+                                    </ul>
+                                </div>
+                                <% } %>
+                                <div class="l-target__additional">
+                                    <div class="t-date" eh-focus-id="<%= ProductCode %>" data-eh="focusdate-init" eh-focus-date></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+                    <td class="c-cardTable__space"></td>
+                    <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+                    <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                        <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                        <div class="c-cardTable__title" data-length="4">收盤價</div>
+                        <% if (NetAssetValue != null) { %>
+                        <div class="c-cardTable__content" data-netvalue="<%= NetAssetValue.toFixed(4) %>"><%= NetAssetValue.toFixed(4) %></div>
+                        <% } else {%>
+                        <span>-</span>
+                        <% } %>
+                    </td>
+                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                        <div class="c-cardTable__title" data-length="4">
+                            幣別
+                            <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                        </div>
+                        <div class="c-cardTable__content">
+                            <% if (CurrencyName != null) { %>
+                            <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= CurrencyName %></a>
+                            <% } else {%>
+                            <span>-</span>
+                            <% } %>
+                        </div>
+                    </td>
+                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                        <div class="c-cardTable__title" data-length="4">漲跌幅</div>
+                        <div class="c-cardTable__content">
+                            <% if (NetAssetValueChangePercentage != null ) { %>
+                            <span class="<%= NetAssetValueChangePercentageStyle %>">
+                                <%= NetAssetValueChangePercentageText %>%
+                            </span>
+                            <% } else {%>
+                            <span>-</span>
+                            <% } %>
+                        </div>
+                    </td>
+                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                        <div class="c-cardTable__title" data-length="4">6個月績效</div>
+                        <div class="c-cardTable__content">
+                            <% if (SixMonthReturnMarketPriceOriginalCurrency != null ) { %>
+                            <span class="<%= SixMonthReturnMarketPriceOriginalCurrencyStyle %>">
+                                <%= SixMonthReturnMarketPriceOriginalCurrencyText %>%
+                            </span>
+                            <% } else {%>
+                            <span>-</span>
+                            <% } %>
+                        </div>
+                    </td>
+                    <td class="c-cardTable__body c-cardTable__body--line" data-card-table-width="1/1">
+                        <div class="c-cardTable__title" data-length="5">淨值/<br>漲跌幅通知</div>
+                        <div class="c-cardTable__content" data-infostatus="<% if (Info != null){%><%= 'true' %><% } else {%><%= 'false' %> <%}%>">
+                            <% if (Info  == null ) { %>
+                            <div class="t-tip--lt">點鈴鐺設定到價通知</div>
+                            <% } else {%>
+                            <% if (Info.ReachValue  != null ) { %>
+                            <div class="<% if (NetAssetValue >= Info.ReachValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
+                            <% } %>
+                            <% if (Info.RisePercent  != null  || Info.FallPercent) { %>
+                            <div class="l-straight@lt">
+                                <% if (Info.RisePercent  != null ) { %>
+                                <div class="l-straight__item">
+                                    <span class="<% if (NetAssetValue >= Info.RiseValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="漲幅 <%= Info.RisePercent %>%"></span>
+                                </div>
+                                <% } %>
+                                <% if (Info.FallPercent  != null ) { %>
+                                <div class="l-straight__item">
+                                    <span class="<% if (NetAssetValue <= Info.FallValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="跌幅 <%= Info.FallPercent %>%"></span>
+                                </div>
+                                <% } %>
+                            </div>
+                            <% } %>
+                            <% } %>
+                        </div>
+                    </td>
+                    <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+                    <td class="c-cardTable__space"></td>
+                    <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+                    <td class="c-cardTable__footer" data-card-table-width="<% if (OnlineSubscriptionAvailability == 'Y'){%><%= '3/4' %><% } else {%><%= '1/1' %> <%}%>">
+                        <div class="c-cardTable__content">
+                            <ul class="l-collect l-collect--divider@lt">
+                                <li class="l-collect__item">
+                                    <%= Button.InfoButtonHtml %>
+                                </li>
+                                <li class="l-collect__item">
+                                    <%= Button.FocusButtonHtml %>
+
+                                </li>
+                                <li class="l-collect__item">
+                                    <%= Button.CompareButtonHtml %>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td class="c-cardTable__footer" data-card-table-width="1/4">
+                        <div class="c-cardTable__content">
+                            <% if (OnlineSubscriptionAvailability == "Y") { %>
+                            <%= Button.SubscriptionButtonHtml %>
+                            <% } %>
+                        </div>
+                    </td>
+                </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
+                </script>
+            </table>
+            <div class="l-pagination">
+                <div class="l-pagination__size" id="uid-etf-perPage">
+                </div>
+                <script id="uid-etf-template-perPage" type="text/html">
+                    <span>每頁顯示</span>
+                    <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+                    <select id="uid-etf-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+                        <% for(var i = 0; i < values.length - 1; i++ ) { %>
+                        <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+                        <% } %>
+                        <option value="<%= values[values.length - 1] %>">全部</option>
+                    </select>
+                </script>
+                <div class="l-pagination__switch" id="uid-etf-pagination">
+                </div>
+                <script id="uid-etf-template-pagination" type="text/html">
+                    <div class="o-pagination">
+                        <% if (currentPage > 1) { %>
+                        <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+                        <% } else { %>
+                        <!-- .is-disabled: 停用狀態，無法點擊 -->
+                        <a href="#" class="o-pagination__prev is-disabled"></a>
+                        <% } %>
+                        <span class="o-pagination__pager">
+                            <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+                            <span class="o-pagination__total"><%= totalPages %></span>
+                        </span>
+                        <% if (currentPage < totalPages ) { %>
+                        <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+                        <% } else { %>
+                        <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+                        <% } %>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

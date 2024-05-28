@@ -1,0 +1,97 @@
+﻿@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+@using Feature.Wealth.Account
+@using Foundation.Wealth.Helper;
+
+@{
+    var commonFuncItem = ItemUtils.GetItem(Templates.CommonFunction.Root.ToString());
+    if (commonFuncItem == null)
+    {
+        return;
+    }
+    var list = commonFuncItem.GetMultiListValueItems(Templates.CommonFunction.Fields.CommonFunctionList);
+}
+
+<div class="c-tab__panel" data-tab-panel-id="tab-2">
+    <div class="c-section">
+        <div class="c-section__desc">最多可設定7個常用功能 (<span data-common-length>0</span>/7)</div>
+        <div class="c-section__content">
+            <div class="c-box u-padding-md u-padding-xl@dt-only">
+                <div class="l-flex u-flex-col u-flex-gap-max">
+                    <div class="l-flex_item">
+                        <div class="l-pickGroup l-pickGroup--formCol">
+                            @foreach (var item in list)
+                            {
+                                <div class="l-pickGroup__item">
+                                    <label class="o-checkbox">
+                                        <input class="o-checkbox__input" type="checkbox" data-common-input data-itemid="@item.ID.ToString()">
+                                        <div class="o-checkbox__text">
+                                            @item.Fields["Navigation Title"].Value
+                                        </div>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="l-flex_item">
+                        <button id="commonBtn" type="submit" class="o-btn o-btn--primary o-btn--lg">儲存設定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('[data-common-input]').on('change', function () {
+        var len = $('[data-common-input]:checked').length;
+        if (len > 7) {
+            $(this).prop('checked', false);
+            len = 7;
+        }
+        $('[data-common-length]').text(len);
+    });
+</script>
+
+<script>
+    let commonArray = [];
+
+    $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetCommonFunctions")",
+                success: function (resp) {
+                    if (resp && resp.statusCode == 200) {
+                        if (resp.body.length >0) {
+                            for (var i = 0; i < resp.body.length; i++) {
+                                let itemId = resp.body[i].pageGuid;
+                                commonArray.push(itemId);
+                                $('[data-itemid="' + itemId + '"]').prop('checked', 'checked');
+                            }
+                        }
+                    }
+                },
+            })
+    $('[data-common-input]').on('change', function (e) {
+        let self = e.target;
+        let val = $(self).data('itemid');
+
+        if ($(self).prop("checked")) {
+            commonArray.push(val);
+        } else {
+            let idx = commonArray.indexOf(val);
+            commonArray.splice(idx, 1);
+        }
+    });
+    $('#commonBtn').on('click', function () {
+        $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetCommonFunctions")",
+                beforeSend: function () { window.loading('show'); },
+                data: { "commons": commonArray },
+                success: function (resp) {
+                    //設置成功
+                    window.SetCommonFunctionList();
+                },
+                complete: function () { window.loading('hide'); }
+            })
+    });
+</script>
