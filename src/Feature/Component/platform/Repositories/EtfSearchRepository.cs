@@ -172,7 +172,11 @@ namespace Feature.Wealth.Component.Repositories
                     };
                     dest.TotalManagementFee = ParseVolume(src.TotalManagementFee.RoundingPercentage(), "%");
                     dest.ScaleMillions = ParseVolume(src.ScaleMillions.RoundingValue());
-                    dest.CanOnlineSubscription = src.OnlineSubscriptionAvailability?.ToUpper() == "Y";
+
+                    bool availability = Xcms.Sitecore.Foundation.Basic.Extensions.Extender.ToBoolean(src.AvailabilityStatus);
+                    bool onlinePurchaseAvailability = Xcms.Sitecore.Foundation.Basic.Extensions.Extender.ToBoolean(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
+                    //「是否上架」= Y 且「是否可於網路申購」= Y或空白, 顯示申購鈕
+                    dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
 
                     if (dicTag.ContainsKey(TagType.Discount))
                     {
