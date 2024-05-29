@@ -44,7 +44,8 @@ namespace Feature.Wealth.Component.Models.USStock
         public int ViewCount { get; set; }
         public string OnlineSubscriptionAvailability { get; set; }
         public List<string> HotKeywordTags { get; set; } = new List<string>();
-        public List<string> HoProductTags { get; set; } = new List<string>();
+        public List<string> HotProductTags { get; set; } = new List<string>();
+        public List<string> Discount { get; set; } = new List<string>();
         /// <summary>
         /// 同 FullName 但是是 Autocomplete 要用的
         /// </summary>
@@ -71,8 +72,9 @@ namespace Feature.Wealth.Component.Models.USStock
             public readonly struct Fields
             {
                 public static readonly ID DetailLink = new ID("{E0C4643A-ED70-4F1E-B218-050AAF12F8B4}");
-                public static readonly ID hotKeyword = new ID("{07A7EA84-24C9-4028-BE96-6374872CAA73}");
-                public static readonly ID hotProduct = new ID("{D93B63C2-E682-4FB9-BB26-66B7EB04FBFF}");
+                public static readonly ID HotKeyword = new ID("{07A7EA84-24C9-4028-BE96-6374872CAA73}");
+                public static readonly ID HotProduct = new ID("{D93B63C2-E682-4FB9-BB26-66B7EB04FBFF}");
+                public static readonly ID Discount = new ID("{5254C85F-FC8C-42FF-A911-F615F7A2F380}");
             }
         }
 
@@ -82,8 +84,8 @@ namespace Feature.Wealth.Component.Models.USStock
 
             public readonly struct Fields
             {
-                public static readonly ID CampaignTypeCode = new ID("{BC124AFC-E27F-420F-9C9F-368028551045}");
-                public static readonly ID FirstBankCodeList = new ID("{AACA00D0-8DF6-4571-9792-7F5EF8556F01}");
+                public static readonly ID TagName = new ID("{BC124AFC-E27F-420F-9C9F-368028551045}");
+                public static readonly ID ProductCodeList = new ID("{AACA00D0-8DF6-4571-9792-7F5EF8556F01}");
             }
         }
 
@@ -94,6 +96,18 @@ namespace Feature.Wealth.Component.Models.USStock
             public readonly struct Fields
             {
                 public static readonly ID b2brwdDomain = new ID("{845DB51B-8483-4D03-83BC-767649F4A5FB}");
+            }
+        }
+
+        public readonly struct USStockTagFolder
+        {
+            public static readonly ID Id = new ID("{11080F3C-C242-450E-B4FA-73DE8E2E5AAF}");
+
+            public readonly struct Fields
+            {
+                public static readonly ID HotKeywordTag = new ID("{47E526C1-E041-4C90-82F5-713AD5ECA6B1}");
+                public static readonly ID HotProductTag = new ID("{134A1E87-CAEF-4470-B619-662DA3CA1416}");
+                public static readonly ID Discount = new ID("{AFEACB28-F841-47B6-8BA8-867988633D41}");
             }
         }
     }

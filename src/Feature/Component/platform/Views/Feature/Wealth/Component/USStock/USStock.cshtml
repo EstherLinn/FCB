@@ -311,12 +311,12 @@
                     <div class="l-target__name">
                         <a href="<%= DetailLink %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FullName %></a>
                     </div>
-                    <% if (HoProductTags != null && HoProductTags.length > 0) { %>
+                    <% if (Discount != null && Discount.length > 0) { %>
                         <div class="l-target__additional">
                             <ul class="l-tag">
-                                <% for(var i = 0; i < HoProductTags.length; i++ ) { %>
+                                <% for (var i = 0; i < Discount.length; i++) { %>
                                     <li class="l-tag__item">
-                                        <a href="#" class="o-tag"><%= HoProductTags[i] %></a>
+                                        <a href="#" class="o-tag"><%= Discount[i] %></a>
                                     </li>
                                 <% } %>
                             </ul>
@@ -539,7 +539,7 @@
             });
 
             fjs.addCriteria({ field: 'HotKeywordTags', ele: '#hotkeywordtags input:checkbox' });
-            fjs.addCriteria({ field: 'HoProductTags', ele: '#hotproducttags input:checkbox' });
+            fjs.addCriteria({ field: 'HotProductTags', ele: '#hotproducttags input:checkbox' });
 
             fjs.bindEvent('[data-filter-reset]', 'click.reset');
             fjs.bindEvent('[data-tag-close]', 'click.tag');

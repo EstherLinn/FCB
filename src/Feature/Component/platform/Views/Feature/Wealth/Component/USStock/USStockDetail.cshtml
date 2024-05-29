@@ -14,6 +14,20 @@
                     <div class="c-pageHeader">
                         <div class="c-pageHeader__main">
                             <h1 class="c-pageHeader__title">@(Model.USStock.FirstBankCode + " " + Model.USStock.ChineseName)</h1>
+                            <!-- 如果沒有tag，不要放 div.c-pageHeader__tags 區塊 -->
+                            @if (Model.USStock.Discount != null && Model.USStock.Discount.Any())
+                            {
+                                <div class="c-pageHeader__tags">
+                                    <ul class="l-tag">
+                                        @foreach (var tag in Model.USStock.Discount)
+                                        {
+                                            <li class="l-tag__item">
+                                                <a href="#" class="o-tag">@tag</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
                         </div>
                         <div class="c-pageHeader__subContent">
                             <h2 class="c-pageHeader__subTitle">@Model.USStock.EnglishName</h2>
@@ -144,6 +158,23 @@
             </section>
         </div>
         <iframe id="SysJustIFRAME" width="100%" scrolling="no"></iframe>
+        @if (Model.USStock.HotProductTags != null && Model.USStock.HotProductTags.Any())
+        {
+            <div class="c-hashTags">
+                <div class="c-hashTags__title">Tags</div>
+                <div class="c-hashTags__content">
+                    <ul class="l-divideList l-divideList--sm">
+                        @foreach (var tag in Model.USStock.HotProductTags)
+                        {
+                            <li class="l-divideList__item l-divideList__item--auto">
+                                <a href="" class="o-hashTag u-nowrap">#@tag</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+        
     </div>
 </div>
 
