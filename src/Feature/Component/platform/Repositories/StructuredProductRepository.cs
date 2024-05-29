@@ -52,8 +52,8 @@ namespace Feature.Wealth.Component.Repositories
             {
                 tagWithProductsList.Add(new TagWithProducts
                 {
-                    TagTitle = item.GetFieldValue(StructProductTag.Fields.TagTitle),
-                    StructProductList = item.GetMultiLineText(StructProductTag.Fields.StructList)?.ToList()
+                    TagName = item.GetFieldValue(StructProductTag.Fields.TagName),
+                    ProductCodeList = item.GetMultiLineText(StructProductTag.Fields.ProductCodeList)?.ToList()
                 });
             }
 
@@ -96,7 +96,7 @@ namespace Feature.Wealth.Component.Repositories
         private IList<string> GetProductTags(Item structuredDatasource, ID tagDatasourceFieldId, string productId)
         {
             var tagWithProductsList = GetTagOptionsWithProducts(structuredDatasource, tagDatasourceFieldId);
-            return tagWithProductsList?.Where(t => t.StructProductList.Contains(productId)).Select(x => x.TagTitle).ToList();
+            return tagWithProductsList?.Where(t => t.ProductCodeList.Contains(productId)).Select(x => x.TagName).ToList();
         }
 
         /// <summary>
@@ -210,8 +210,8 @@ namespace Feature.Wealth.Component.Repositories
             {
                 tagWithProductsList.Add(new TagWithProducts
                 {
-                    TagTitle = item.GetFieldValue(StructProductTag.Fields.TagTitle),
-                    StructProductList = item.GetMultiLineText(StructProductTag.Fields.StructList)?.ToList()
+                    TagName = item.GetFieldValue(StructProductTag.Fields.TagName),
+                    ProductCodeList = item.GetMultiLineText(StructProductTag.Fields.ProductCodeList)?.ToList()
                 });
             }
 

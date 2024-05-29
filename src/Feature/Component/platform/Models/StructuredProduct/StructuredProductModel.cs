@@ -57,7 +57,7 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
 
     public class TagWithProducts
     {
-        public string TagTitle { get; set; }
-        public IList<string> StructProductList { get; set; }
+        public string TagName { get; set; }
+        public IList<string> ProductCodeList { get; set; }
     }
 }
