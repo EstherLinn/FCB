@@ -74,7 +74,6 @@ namespace Feature.Wealth.Component.Models.USStock
                 public static readonly ID DetailLink = new ID("{E0C4643A-ED70-4F1E-B218-050AAF12F8B4}");
                 public static readonly ID HotKeyword = new ID("{07A7EA84-24C9-4028-BE96-6374872CAA73}");
                 public static readonly ID HotProduct = new ID("{D93B63C2-E682-4FB9-BB26-66B7EB04FBFF}");
-                public static readonly ID Discount = new ID("{5254C85F-FC8C-42FF-A911-F615F7A2F380}");
             }
         }
 
