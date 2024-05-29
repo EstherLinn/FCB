@@ -1,9 +1,6 @@
 ﻿using Feature.Wealth.Account.Helpers;
-using System;
 using System.Web.Mvc;
 using System.Web.Mvc.Filters;
-using System.Web.Routing;
-
 namespace Feature.Wealth.Account.Filter
 {
     public class MemberAuthenticationFilter : ActionFilterAttribute, IAuthenticationFilter

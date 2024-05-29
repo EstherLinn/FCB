@@ -9,6 +9,8 @@
     {
         isOauthLogin = false;
     }
+    var memberSettingUrl = MemberRelatedLinkHelper.GetMemberSettingUrl();
+    var memberReserveUrl = MemberRelatedLinkHelper.GetReserveConsultingUrl();
 }
 <div class="l-mainstage l-mainstage--member">
     <div class="l-mainstage__wrap">
@@ -19,7 +21,7 @@
                         <div class="c-member__head">
                             <div class="c-member__name">Hi @member.MemberName</div>
                             <div class="c-member__set">
-                                <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--icon no-text@lt">
+                                <a href="@memberSettingUrl" class="o-btn o-btn--secondary o-btn--thin o-btn--icon no-text@lt">
                                     <img src="~/themes/images/icons/green/gear-solid.svg" class="o-btn__icon" alt="">
                                     <span>設定</span>
                                 </a>
@@ -33,7 +35,7 @@
                                         <span class="t-tip t-tip--lt">由@(member.PlatForm.ToString())帳號登入</span>
                                     </div>
                                     <div class="l-flex__item l-flex__item--auto">
-                                        <a href="#" class="o-btn o-btn--primary o-btn--thin o-btn--auto" data-eh="fcblogin-click">綁定網銀帳戶</a>
+                                        <a href="javascript:;" class="o-btn o-btn--primary o-btn--thin o-btn--auto" data-eh="fcblogin-click">綁定網銀帳戶</a>
                                     </div>
                                 </div>
                             }
@@ -72,7 +74,7 @@
                                         <span>理財諮詢</span>
                                     </div>
                                     <div class="c-member__value">
-                                        <a href="#" class="o-btn o-btn--primary o-btn--thin o-btn--auto">預約線上諮詢</a>
+                                        <a href="@memberReserveUrl" class="o-btn o-btn--primary o-btn--thin o-btn--auto">預約線上諮詢</a>
                                         @*<b>還有 <span class="t-warning">8</span> 天 </b>
                                         <div class="t-date u-inline@lt">(2023/11/03)</div>*@
                                     </div>

@@ -1,12 +1,12 @@
 ﻿@using Foundation.Wealth.Helper
-@using Feature.Wealth.Component.Models.ETF
+@using Feature.Wealth.Component.Models.USStock
 @using Feature.Wealth.Component.Models.Invest
 @{
-    var searchUrl = EtfRelatedLinkSetting.GetETFSearchUrl();
-    var detailUrl = EtfRelatedLinkSetting.GetETFDetailUrl();
+    var searchUrl = USStockRelatedLinkSetting.GetUSStockSearchUrl();
+    var detailUrl = USStockRelatedLinkSetting.GetUSStockDetailsUrl();
 }
 
-<div class="l-flex u-flex-col u-flex-gap-xs u-hidden" data-nofocusforeignStock="ETF">
+<div class="l-flex u-flex-col u-flex-gap-xs u-hidden" data-nofocusforeignStock>
     <div class="l-flex__item">
         <div class="c-empty">
             <div class="c-empty__img">

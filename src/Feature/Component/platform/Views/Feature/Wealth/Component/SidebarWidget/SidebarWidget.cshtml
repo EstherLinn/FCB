@@ -9,7 +9,6 @@
     var etfDetailUrl = EtfRelatedLinkSetting.GetETFDetailUrl();
     var fundEtfCompareUrl = FundRelatedSettingModel.GetFundEtfCompareUrl();
     var memberSettingUrl = MemberRelatedLinkHelper.GetMemberSettingUrl();
-
 }
 <div class="c-sidebar__navs">
     <a href="https://firstbk.tw/4s7bjv" target="_blank" class="c-sideBtn c-sideBtn--round">
@@ -134,7 +133,9 @@
                     $('#compareBadge').text(compareStore.length);
                     $('#compareBadge').removeClass('u-hidden');
                     if (compareStore.length == 7) {
-                        $('#compareLimit > .c-sideDialog__msg').removeClass('u-hidden');
+                        $('.c-sideDialog__msg','#compareLimit').removeClass('u-hidden');
+                    }else{
+                        $('.c-sideDialog__msg','#compareLimit').addClass('u-hidden');
                     }
                     for (var i = 0; i < compareStore.length; i++) {
                         let url = compareStore[i].type.toLowerCase() == "fund" ? "@(fundDetailUrl)" : "@(etfDetailUrl)"
@@ -181,8 +182,10 @@
                                         </a>
                                     </li>`;
                                     }
-                                    if (resp.body.length >= 7) {
-                                        $('#commonFunctionLimit > .c-sideDialog__msg').removeClass('u-hidden');
+                                    if (resp.body.length == 7) {
+                                        $('.c-sideDialog__msg','#commonFunctionLimit').removeClass('u-hidden');
+                                    }else{
+                                    $('.c-sideDialog__msg','#commonFunctionLimit').addClass('u-hidden');
                                     }
                                     $('#commonList', '[data-sidebar-id="common"]').html(commonHtml);
                                     $('[data-hasValue="false"]', '[data-sidebar-id="common"]').addClass('u-hidden');
