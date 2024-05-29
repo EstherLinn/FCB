@@ -20,6 +20,7 @@ namespace Feature.Wealth.Account.Services
             {
                 var reqObj = new { promotionCode = promotionCode, channel = "wms" };
                 var request = await _route.
+                    AllowAnyHttpStatus().
                     PostJsonAsync(reqObj);
                 if (request.StatusCode < 300)
                 {

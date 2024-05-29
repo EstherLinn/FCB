@@ -55,7 +55,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), A.[SixMonthReturn]) [SixMonthReturn]
                            ,B.[OnlineSubscriptionAvailability]
                            FROM [Sysjust_USStockList] A WITH (NOLOCK)
-                           LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode] WHERE ProductCode in @foreignStockList order by [SixMonthReturn]
+                           LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode] WHERE FirstBankCode in @foreignStockList order by [SixMonthReturn]
                 ";
             var para = new { foreignStockList = foreignStockFocusList };
             var results = DbManager.Custom.ExecuteIList<ForeignStockListModel>(sql, para, CommandType.Text)?.ToList();

@@ -663,14 +663,16 @@
                     data: { "trackList": store.get("focus") || [] },
                     beforeSend: function () { $('.c-loading').loading('show'); },
                       success: function (msg) {
-                          switch (cancelType) {
-
-                              case "Fund":
+                         switch (cancelType.toLowerCase()) {
+                              case "fund":
                                   resetTable();
                                   break;
-                              case "ETF":
+                              case "etf":
                                   resetTable2();
-                                  break;
+                                 break;
+                             case "foreignstocks":
+                                 resetTable3();
+                                 break;
                           }
 
                      },
