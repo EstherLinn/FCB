@@ -27,11 +27,11 @@ namespace Feature.Wealth.Component.Controllers
 
         protected USStockDetailModel CreateModel(Item item, USStock uSStock)
         {
-            var hotKeywordTagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Fields.HotKeywordTag);
+            var hotKeywordTagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.HotKeywordTag);
             var hotKeywordTags = ItemUtils.GetChildren(hotKeywordTagFolder, Template.USStockTag.Id);
-            var hotProductTagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Fields.HotProductTag);
+            var hotProductTagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.HotProductTag);
             var hotProductTags = ItemUtils.GetChildren(hotProductTagFolder, Template.USStockTag.Id);
-            var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Fields.Discount);
+            var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
             var discounts = ItemUtils.GetChildren(discountFolder, Template.USStockTag.Id);
 
             foreach (var f in hotKeywordTags)

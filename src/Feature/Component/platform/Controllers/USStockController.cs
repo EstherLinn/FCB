@@ -33,7 +33,7 @@ namespace Feature.Wealth.Component.Controllers
             var keyword = hotkKeywordTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
             var hotProductTags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.HotProduct);
             var product = hotProductTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
-            var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Fields.Discount);
+            var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
             var discounts = ItemUtils.GetChildren(discountFolder, Template.USStockTag.Id);
 
             for (int i = 0; i < uSStockList.Count; i++)

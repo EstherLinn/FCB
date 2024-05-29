@@ -102,7 +102,7 @@ namespace Feature.Wealth.Component.Models.USStock
         {
             public static readonly ID Id = new ID("{11080F3C-C242-450E-B4FA-73DE8E2E5AAF}");
 
-            public readonly struct Fields
+            public readonly struct Children
             {
                 public static readonly ID HotKeywordTag = new ID("{47E526C1-E041-4C90-82F5-713AD5ECA6B1}");
                 public static readonly ID HotProductTag = new ID("{134A1E87-CAEF-4470-B619-662DA3CA1416}");
