@@ -233,7 +233,7 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 取得Tag篩選選項及其商品
+        /// 取得優惠Tag篩選選項及其商品
         /// </summary>
         /// <param name="datasource">資料源</param>
         /// <returns>篩選項List</returns>
