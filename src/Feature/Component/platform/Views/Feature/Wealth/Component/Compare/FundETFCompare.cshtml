@@ -1245,12 +1245,12 @@
                             break;
                     }
                 }
-
+                window.loading = () => 0;//蓋掉window.loading function
                 initCompareChart(obj);
             }
         }
 
-        function itemRendering(lables) {
+        function itemRendering(lables, attrs) {
             let container = $('#compare-item-container');
             container.html('');
             const template = document.querySelector("#tmpl-compare");
@@ -1273,6 +1273,9 @@
                 focusnId.setAttribute('eh-focus-type', capFirst(item.type));
                 focusnId.setAttribute('eh-focus-name', item.name);
                 container.append(cloneTmpl);
+                if (attrs && attrs[item.id] === false) {
+                    subscriptionId.classList.add('u-hidden');
+                }
             });
         }
 
@@ -1368,9 +1371,6 @@
                     url: '@CompareApiUrl',
                     method: 'post',
                     data: params,
-                    complete: function () {
-                        window.loading('hide');
-                    },
                     success: function (data) {
 
                         data.ETFRateOfReturn = new Array();
@@ -1379,6 +1379,7 @@
                         data.Compare = new Array();
                         data.ETFStockHoldings = new Array();
                         data.ETFBaseData = new Array();
+                        data.CanOnlineSubscription = new Array();
 
                         // ETF
                         if (data.etfdata && Object.keys(data.etfdata).length != 0) {
@@ -1410,6 +1411,7 @@
                                         StockHoldings: d.ETFStockHoldings
                                     }
                                     data.ETFBaseData[key] = $.extend({}, d.Compare, d.BasicEtf);
+                                    data.CanOnlineSubscription[key] = d.BasicEtf.CanOnlineSubscription;
                                 }
                             }
                         }
@@ -1426,6 +1428,17 @@
 
                         data.BaseData = data.BaseData || new Array();
                         data.RateOfReturn = data.RateOfReturn || new Array();
+
+                        if (Object.keys(data.respBaseData).length != 0) {
+                            let array = data.CanOnlineSubscription;
+                            for (let key in data.respBaseData) {
+                                let d = data.respBaseData[key];
+                                if (d) {
+                                    array[key] = d.AvailabilityStatus != 'N' && (d.OnlineSubscriptionAvailability || 'Y' == 'Y');
+                                }
+                            }
+                            data.CanOnlineSubscription = array;
+                        }
 
                         if (Object.keys(data.respHoldingStatus).length != 0) {
                             let name = [];
@@ -1480,7 +1493,7 @@
                                 }
                             }
 
-                            itemRendering(lables);
+                            itemRendering(lables, data.CanOnlineSubscription);
 
                             data.lables = colorLables(lables);
                         }
@@ -1491,28 +1504,30 @@
                             for (let key in data.respNetAssetValue) {
                                 if (params.fund.includes(key)) {
                                     let result = compareParams.find((item) => item.id == key);
-                                    mapData.push({
-                                        id: key,
-                                        name: result.name,
-                                        data: data.respNetAssetValue[key].resultSet.result.map((item, i) => {
-                                            return {
-                                                upDown: Number(item.v2) < 0 ? 'down' : 'up',
-                                                x: new Date(item.v1).getTime(),
-                                                y: roundTo(item.v2, 2)
-                                            };
-                                        }).reverse()
-                                    });
-                                    let mapLable = mapData[mapData.length - 1].data;
-                                    let lableData = mapLable[mapLable.length - 1];
-                                    lables.push({
-                                        id: key,
-                                        name: result.name,
-                                        type: 'fund',
-                                        upDown: lableData.upDown,
-                                        value: lableData.y,
-                                    });
+                                    if (data.respNetAssetValue[key].resultSet) {
+                                        mapData.push({
+                                            id: key,
+                                            name: result.name,
+                                            data: data.respNetAssetValue[key].resultSet.result.map((item, i) => {
+                                                return {
+                                                    upDown: Number(item.v2) < 0 ? 'down' : 'up',
+                                                    x: new Date(item.v1).getTime(),
+                                                    y: roundTo(item.v2, 2)
+                                                };
+                                            }).reverse()
+                                        });
+                                        let mapLable = mapData[mapData.length - 1].data;
+                                        let lableData = mapLable[mapLable.length - 1];
+                                        lables.push({
+                                            id: key,
+                                            name: result.name,
+                                            type: 'fund',
+                                            upDown: lableData.upDown,
+                                            value: lableData.y,
+                                        });
+                                    }
                                 }
-                                if (params.etf.includes(key)) {
+                                if (params.etf.includes(key) && data.respNetAssetValue[key].resultSet) {
                                     let result = compareParams.find((item) => item.id == key);
                                     const navDate = data.respNetAssetValue[key].resultSet.result[0].v1.split(',');
                                     const nav = data.respNetAssetValue[key].resultSet.result[0].v2.split(',');
@@ -1875,6 +1890,11 @@
                                 }
                             }
                             fjsRendering('baseTable', 'baseDataTable', array, isInit);
+                            if (isInit) {
+                                $('[eh-focus]').trigger('exec');
+                                $('[eh-subscription-type]').trigger('exec');
+                                $('[data-popup]').magnificPopup();
+                            }
                         }
 
                         if (data.mapData.length > 0) {
@@ -1988,7 +2008,7 @@
                                         color: 'rgba(0, 0, 0, 0.1)'
                                     }
                                 },
-                                series: data.mapData
+                                series: data.mapData,
                             });
                             $('.c-empty').addClass('u-hidden');
                             $('[data-chart="compare"]').removeClass('u-hidden');
@@ -2002,7 +2022,9 @@
                         $('[data-chart="compare"]').find('.c-empty').removeClass('u-hidden');
                         //$('[data-chart="compare"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                         console.log(err);
-                    },
+                    }
+                }).always(function () {
+                    $('.c-loading').loading('hide');
                 });
 
             } catch (error) {
@@ -2013,8 +2035,17 @@
         // 判斷上方比較 基金/ETF 列表區塊，若無資料則跳轉至 未加入標的比較頁
         function judgeCompareList() {
             let emptyLinkUrl = '@Model.EmptyLinkUrl';
-            if (fundParams.length === 0 && emptyLinkUrl) {
-                location.href = new URL(emptyLinkUrl);
+            if (fundParams.length === 0) { //&& emptyLinkUrl) {
+                //location.href = new URL(location.origin + emptyLinkUrl);
+                $('.c-empty').removeClass('u-hidden');
+                $('[data-chart="compare"]').addClass('u-hidden');
+                
+                clearTable('netAssetValueTable');
+                clearTable('rateOfReturnTable');
+                clearTable('riskindicatorsTable');
+                clearTable('thiryDaysNetValueTable');
+                clearTable('holdingStatusTable');
+                clearTable('baseDataTable');
             }
         }
 
@@ -2039,7 +2070,6 @@
                 template: '#template-' + template,
                 callbacks: {
                     afterFilter: function (result) {
-                        window.loading('hide');
                     },
                     afterAddRecords: function () {
                         if (isInit) {
