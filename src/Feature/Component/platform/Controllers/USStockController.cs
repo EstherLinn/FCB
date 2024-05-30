@@ -30,9 +30,9 @@ namespace Feature.Wealth.Component.Controllers
             string detailLink = ItemUtils.GeneralLink(item, Template.USStock.Fields.DetailLink)?.Url;
 
             var hotKeywordTags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.HotKeyword);
-            var keyword = hotKeywordTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
+            var keywords = hotKeywordTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
             var hotProductTags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.HotProduct);
-            var product = hotProductTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
+            var products = hotProductTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
             var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
             var discounts = ItemUtils.GetChildren(discountFolder, Template.USStockTag.Id);
 
@@ -82,8 +82,8 @@ namespace Feature.Wealth.Component.Controllers
                 USStockList = uSStockList,
                 USStockDictionary = uSStockList.ToDictionary(x => x.FirstBankCode, x => x),
                 USStockHtmlString = new HtmlString(JsonConvert.SerializeObject(uSStockList)),
-                HotKeywordTags = keyword,
-                HotProductTags = product
+                HotKeywordTags = keywords,
+                HotProductTags = products
             };
 
             return model;
