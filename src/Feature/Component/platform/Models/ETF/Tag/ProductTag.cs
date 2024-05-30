@@ -36,6 +36,12 @@ namespace Feature.Wealth.Component.Models.ETF.Tag
         /// 分類標籤
         /// </summary>
         [Description("分類標籤")]
-        Category
+        Category,
+
+        /// <summary>
+        /// 熱門關鍵字
+        /// </summary>
+        [Description("熱門關鍵字")]
+        Keywords
     }
 }

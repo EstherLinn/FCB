@@ -198,6 +198,7 @@
                 , 'PublicLimitedCompany',
                 , 'DiscountTags'
                 , 'CategoryTags'
+                , 'KeywordsTags'
             ];
 
             function initBind() {
@@ -311,7 +312,7 @@
                 var fjs = FilterJS(window.ETFSearch.Result.List, '#uid-fjs', {
                     template: '#uid-template-marketPrice-original',
                     criterias: [
-                        { field: 'DiscountTags', ele: '#uid-criteria-discountTags :checkbox' },
+                        { field: 'KeywordsTags', ele: '#uid-criteria-keywordsTags :checkbox' },
                         { field: 'CategoryTags', ele: '#uid-criteria-categoryTags :checkbox' },
                         { field: 'RegionType', ele: '#uid-criteria-regionType :checkbox' },
                         { field: 'RegionType', ele: '#uid-criteria-regionType :checkbox', all: 'all', selector: ':not(:checked)' },
