@@ -81,15 +81,26 @@ namespace Feature.Wealth.Component.Repositories
             return indicator;
         }
 
-        public Dictionary<FundTagEnum, List<FundTagModel>> GetTagsById(string fundId)
+        public Dictionary<FundTagEnum, List<string>> GetTagsById(string fundId)
         {
-            var dic = new Dictionary<FundTagEnum, List<FundTagModel>>();
-            var data = FundTagsRespository.GetAllTagListFromCache();
+            TagsRepository tagsRepository = new TagsRepository();
+            var dic = new Dictionary<FundTagEnum, List<string>>() {
+                {FundTagEnum.DiscountTag, new List<string>() },
+                {FundTagEnum.SortTag, new List<string>() }
+            };         
+            var data = tagsRepository.GetFundTagData();
             if (data != null)
             {
                 foreach (var item in data)
                 {
-                    dic.Add(item.Key, item.Value.Where(x => x.FundIdList.Contains(fundId)).ToList());
+                    if (item.FundTagType == FundTagEnum.KeywordTag)
+                    {
+                        continue;
+                    }
+                    if (item.ProductCodes.Contains(fundId))
+                    {
+                        dic[item.FundTagType].Add(item.TagName);
+                    }
                 }
                
             }

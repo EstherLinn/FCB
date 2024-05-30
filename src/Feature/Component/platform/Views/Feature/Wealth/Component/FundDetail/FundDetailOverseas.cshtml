@@ -50,14 +50,14 @@
                         <div class="c-pageHeader__main">
                             <h1 class="c-pageHeader__title">@BasicData.ProductCode @BasicData.FundName</h1>
                             <!-- 如果沒有tag，不要放 div.c-pageHeader__tags 區塊 -->
-                            @if (Model.TagsDic[FundTagEnum.DiscountTag].Any())
+                            @if (Model.TagsDic.ContainsKey(FundTagEnum.DiscountTag) &&　Model.TagsDic[FundTagEnum.DiscountTag].Any())
                             {
                                 <div class="c-pageHeader__tags">
                                     <ul class="l-tag">
                                         @foreach (var item in Model.TagsDic[FundTagEnum.DiscountTag])
                                         {
                                             <li class="l-tag__item">
-                                                <a href="#" class="o-tag">@item.FundTagTitle</a>
+                                                <a href="#" class="o-tag">@item</a>
                                             </li>
                                         }
                                     </ul>
@@ -142,7 +142,7 @@
                             <li class="l-pageWallet__item">
                                 @Html.CompareButton(null, BasicData.ProductCode, BasicData.FundName, InvestTypeEnum.Fund, false)
                             </li>
-                            @if (BasicData.OnlineSubscriptionAvailability.ToBoolean())
+                            @if (BasicData.AvailabilityStatus.ToBoolean() && (string.IsNullOrEmpty(BasicData.OnlineSubscriptionAvailability) || BasicData.OnlineSubscriptionAvailability.ToBoolean()))
                             {
                                 <li class="l-pageWallet__btn">
                                     @Html.SubscriptionButton(null, BasicData.ProductCode, InvestTypeEnum.Fund, false)
@@ -427,7 +427,7 @@
                     }
                 </div>
             </section>
-            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
+            @if (Model.TagsDic.ContainsKey(FundTagEnum.SortTag) && Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -436,7 +436,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -1378,7 +1378,7 @@
 
                 </div>
             </section>
-            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
+            @if (Model.TagsDic.ContainsKey(FundTagEnum.SortTag) && Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -1387,7 +1387,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -1733,7 +1733,7 @@
                     </div>
                 </div>
             </section>
-            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
+            @if (Model.TagsDic.ContainsKey(FundTagEnum.SortTag) && Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -1742,7 +1742,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -1830,7 +1830,7 @@
                 </div>
 
             </section>
-            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
+            @if (Model.TagsDic.ContainsKey(FundTagEnum.SortTag) && Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -1839,7 +1839,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -2401,7 +2401,7 @@
                     }
                 </div>
             </section>
-            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
+            @if (Model.TagsDic.ContainsKey(FundTagEnum.SortTag) && Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -2410,7 +2410,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -2512,7 +2512,7 @@
                     }
                 </div>
             </section>
-            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
+            @if (Model.TagsDic.ContainsKey(FundTagEnum.SortTag) && Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -2521,7 +2521,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -2575,7 +2575,7 @@
                     }
                 </div>
             </section>
-            @if (Model.TagsDic[FundTagEnum.SortTag].Any())
+            @if (Model.TagsDic.ContainsKey(FundTagEnum.SortTag) && Model.TagsDic[FundTagEnum.SortTag].Any())
             {
                 <div class="c-hashTags">
                     <div class="c-hashTags__title">Tags</div>
@@ -2584,7 +2584,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item.FundTagTitle</a>
+                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
