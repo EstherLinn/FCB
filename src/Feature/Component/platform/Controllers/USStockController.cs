@@ -29,38 +29,19 @@ namespace Feature.Wealth.Component.Controllers
         {
             string detailLink = ItemUtils.GeneralLink(item, Template.USStock.Fields.DetailLink)?.Url;
 
-            var hotkeywordtags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.hotKeyword);
-            var keyword = hotkeywordtags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.CampaignTypeCode)).ToList();
-            var hotproducttags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.hotProduct);
-            var product = hotproducttags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.CampaignTypeCode)).ToList();
+            var hotKeywordTags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.HotKeyword);
+            var keywords = hotKeywordTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
+            var hotProductTags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.HotProduct);
+            var products = hotProductTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
+            var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
+            var discounts = ItemUtils.GetChildren(discountFolder, Template.USStockTag.Id);
 
             for (int i = 0; i < uSStockList.Count; i++)
             {
                 var uSStock = uSStockList[i];
                 uSStock.DetailLink = detailLink + "?id=" + uSStock.FirstBankCode;
                 uSStock = this._uSStockRepository.GetButtonHtml(uSStock);
-
-                foreach (var f in hotkeywordtags)
-                {
-                    string campaignTypeCode = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.CampaignTypeCode);
-                    string firstBankCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.FirstBankCodeList);
-
-                    if (firstBankCodeList.Contains(uSStock.FirstBankCode))
-                    {
-                        uSStock.HotKeywordTags.Add(campaignTypeCode);
-                    }
-                }
-
-                foreach (var f in hotproducttags)
-                {
-                    string campaignTypeCode = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.CampaignTypeCode);
-                    string firstBankCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.FirstBankCodeList);
-
-                    if (firstBankCodeList.Contains(uSStock.FirstBankCode))
-                    {
-                        uSStock.HoProductTags.Add(campaignTypeCode);
-                    }
-                }
+                uSStock = this._uSStockRepository.SetTags(uSStock, hotKeywordTags, hotProductTags, discounts);
             }
 
             var model = new USStockModel
@@ -69,8 +50,8 @@ namespace Feature.Wealth.Component.Controllers
                 USStockList = uSStockList,
                 USStockDictionary = uSStockList.ToDictionary(x => x.FirstBankCode, x => x),
                 USStockHtmlString = new HtmlString(JsonConvert.SerializeObject(uSStockList)),
-                HotKeywordTags = keyword,
-                HotProductTags = product
+                HotKeywordTags = keywords,
+                HotProductTags = products
             };
 
             return model;

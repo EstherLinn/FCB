@@ -1484,7 +1484,7 @@
         </td>
         <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
         <td class="c-cardTable__space"></td>
-        <% if (OnlineSubscriptionAvailability == 'Y') { %>
+        <% if (OnlineSubscriptionAvailability != 'N') { %>
             <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
             <td class="c-cardTable__footer" data-card-table-width="2/3">
                 <div class="c-cardTable__content">
@@ -1504,7 +1504,7 @@
                 </div>
             </td>
         <% } %>
-        <% if (OnlineSubscriptionAvailability != 'Y') { %>
+        <% if (OnlineSubscriptionAvailability == 'N') { %>
             <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
             <td class="c-cardTable__footer" data-card-table-width="2/2">
                 <div class="c-cardTable__content">
@@ -1585,7 +1585,7 @@
         </td>
         <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
         <td class="c-cardTable__space"></td>
-        <% if (OnlineSubscriptionAvailability == 'Y') { %>
+        <% if (OnlineSubscriptionAvailability != 'N') { %>
             <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
             <td class="c-cardTable__footer" data-card-table-width="2/3">
                 <div class="c-cardTable__content">
@@ -1605,7 +1605,7 @@
                 </div>
             </td>
         <% } %>
-        <% if (OnlineSubscriptionAvailability != 'Y') { %>
+        <% if (OnlineSubscriptionAvailability == 'N') { %>
             <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
             <td class="c-cardTable__footer" data-card-table-width="2/2">
                 <div class="c-cardTable__content">
