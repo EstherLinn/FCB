@@ -1,21 +1,14 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Text;
+using System.Linq;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
-using Feature.Wealth.Component.Models.FundSearch;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Feature.Wealth.Component.Models.FundDetail;
-using System.Linq;
-using JSNLog.Infrastructure;
-using Sitecore.Pipelines.InsertRenderings.Processors;
-using Template = Feature.Wealth.Component.Models.FundSearch.Template;
-using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-using System;
-using Extender = Xcms.Sitecore.Foundation.Basic.Extensions.Extender;
-using Sitecore.Data.Items;
 using Feature.Wealth.Component.Models.Invest;
-using Foundation.Wealth.Helper;
-
+using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Feature.Wealth.Component.Models.FundSearch;
+using Feature.Wealth.Component.Models.FundDetail;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -37,7 +30,7 @@ namespace Feature.Wealth.Component.Repositories
         public List<Funds> GetFundRenderData(IList<FundSearchModel> funds)
         {
             var _tagsRepository = new TagsRepository();
-            var tags = _tagsRepository.GetTagData();
+            var tags = _tagsRepository.GetFundTagData();
 
             var result = new List<Funds>();
 
@@ -45,11 +38,13 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var vm = new Funds();
                 vm.Tags = [];
+                vm.HotProductsTags = [];
 
                 // 共用欄位
                 if (f.TargetName == "Y")
                 {
                     vm.Tags.Add("百元基金");
+                    vm.HotProductsTags.Add("百元基金");
                 }
 
                 vm.Tags.AddRange(from tagModel in tags.Where(t => t.FundType == "DiscountTag")
@@ -57,7 +52,11 @@ namespace Feature.Wealth.Component.Repositories
                                  select tagModel.TagName);
 
                 vm.HotKeyWordTags = [];
-                vm.HotKeyWordTags.AddRange(from tagModel in tags
+                vm.HotKeyWordTags.AddRange(from tagModel in tags.Where(t => t.FundType == "HotKeyword")
+                                           where tagModel.ProductCodes.Contains(f.ProductCode)
+                                           select tagModel.TagName);
+
+                vm.HotProductsTags.AddRange(from tagModel in tags.Where(t => t.FundType == "SortTag")
                                            where tagModel.ProductCodes.Contains(f.ProductCode)
                                            select tagModel.TagName);
 
@@ -66,7 +65,12 @@ namespace Feature.Wealth.Component.Repositories
                 vm.ProductName = FullWidthToHalfWidth(f.ProductName);
                 vm.NetAssetValue = Round4(f.NetAssetValue);
                 vm.NetAssetValueDate = f.NetAssetValueDateFormat;
-                vm.IsOnlineSubscriptionAvailability = Extender.ToBoolean(f.OnlineSubscriptionAvailability);
+
+                vm.IsOnlineSubscriptionAvailability = f.AvailabilityStatus == "Y" &&
+                                  (f.OnlineSubscriptionAvailability == "Y" ||
+                                   string.IsNullOrEmpty(f.OnlineSubscriptionAvailability));
+
+
                 //績效表現
                 if (f.CurrencyCode == null || f.FundCurrency == "TWD")
                 {

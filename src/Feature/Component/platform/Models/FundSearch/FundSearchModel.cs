@@ -260,6 +260,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// </summary>
         public decimal? ThreeYearReturnTWD { get; set; }
 
+        /// <summary>
+        /// 是否上架
+        /// </summary>
+        public string AvailabilityStatus { get; set; }
+
     }
 
     /// <summary>
@@ -313,6 +318,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
 
         public List<string> Tags { get; set; }
         public List<string> HotKeyWordTags { get; set; }
+        public List<string> HotProductsTags { get; set; }
 
         public string FundCompanyName { get; set; }
 
