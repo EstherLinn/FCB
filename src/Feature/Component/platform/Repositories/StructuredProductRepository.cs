@@ -41,14 +41,14 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns>篩選項List</returns>
         private IList<TagWithProducts> GetTagOptionsWithProducts(Item structuredDatasource, ID fieldId)
         {
-            if (structuredDatasource == null || (!structuredDatasource.GetReferenceFieldItem(fieldId).GetChildren(StructProductTag.Id)?.Any() ?? true))
+            if (structuredDatasource == null || (!ItemUtils.GetMultiListValueItems(structuredDatasource, fieldId)?.Any() ?? true))
             {
                 return new List<TagWithProducts>();
             }
 
             var tagWithProductsList = new List<TagWithProducts>();
 
-            foreach (var item in structuredDatasource.GetReferenceFieldItem(fieldId).GetChildren(StructProductTag.Id))
+            foreach (var item in ItemUtils.GetMultiListValueItems(structuredDatasource, fieldId))
             {
                 tagWithProductsList.Add(new TagWithProducts
                 {
@@ -100,6 +100,18 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
+        /// 取得單一商品的優惠Tags
+        /// </summary>
+        /// <param name="datasource">資料源</param>
+        /// <param name="productId">欲查詢的商品Id</param>
+        /// <returns>某類別的Tag List</returns>
+        private IList<string> GetProductDiscountTags(Item datasource, string productId)
+        {
+            var tagWithProductsList = GetProductsDiscountTags(datasource);
+            return tagWithProductsList?.Where(t => t.ProductCodeList.Contains(productId)).Select(x => x.TagName).ToList();
+        }
+
+        /// <summary>
         /// 取得單一商品資訊
         /// </summary>
         /// <param name="productCode">商品代號</param>
@@ -137,11 +149,13 @@ namespace Feature.Wealth.Component.Repositories
             {
                 structuredProduct.KeywordTags = GetProductTags(item, _StructProductTagDatasource.Fields.KeywordDatasource, productCode);
                 structuredProduct.TopicTags = GetProductTags(item, _StructProductTagDatasource.Fields.TopicDatasource, productCode);
+                structuredProduct.DiscountTags = GetProductDiscountTags(ItemUtils.GetContentItem(StructProductDiscountTagFolder.Id), productCode);
             }
             else
             {
                 structuredProduct.KeywordTags = new List<string>();
                 structuredProduct.TopicTags = new List<string>();
+                structuredProduct.DiscountTags = new List<string>();
             }
 
             return structuredProduct;
@@ -199,14 +213,40 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns>篩選項List</returns>
         private IList<TagWithProducts> GetTagOptionsWithProducts(Item structuredDatasource, ID fieldId)
         {
-            if (structuredDatasource == null || (!structuredDatasource.GetReferenceFieldItem(fieldId).GetChildren(StructProductTag.Id)?.Any() ?? true))
+            if (structuredDatasource == null || (!ItemUtils.GetMultiListValueItems(structuredDatasource, fieldId)?.Any() ?? true))
             {
                 return new List<TagWithProducts>();
             }
 
             var tagWithProductsList = new List<TagWithProducts>();
 
-            foreach (var item in structuredDatasource.GetReferenceFieldItem(fieldId).GetChildren(StructProductTag.Id))
+            foreach (var item in ItemUtils.GetMultiListValueItems(structuredDatasource, fieldId))
+            {
+                tagWithProductsList.Add(new TagWithProducts
+                {
+                    TagName = item.GetFieldValue(StructProductTag.Fields.TagName),
+                    ProductCodeList = item.GetMultiLineText(StructProductTag.Fields.ProductCodeList)?.ToList()
+                });
+            }
+
+            return tagWithProductsList;
+        }
+
+        /// <summary>
+        /// 取得優惠Tag篩選選項及其商品
+        /// </summary>
+        /// <param name="datasource">資料源</param>
+        /// <returns>篩選項List</returns>
+        private IList<TagWithProducts> GetProductsDiscountTags(Item datasource)
+        {
+            if (datasource == null || (!ItemUtils.GetChildren(datasource, StructProductTag.Id)?.Any() ?? true))
+            {
+                return new List<TagWithProducts>();
+            }
+
+            var tagWithProductsList = new List<TagWithProducts>();
+
+            foreach (var item in ItemUtils.GetChildren(datasource, StructProductTag.Id))
             {
                 tagWithProductsList.Add(new TagWithProducts
                 {
@@ -247,6 +287,7 @@ namespace Feature.Wealth.Component.Repositories
                 string productCode = structuredProduct.ProductCode;
                 structuredProduct.KeywordTags = GetProductTags(item, _StructProductTagDatasource.Fields.KeywordDatasource, productCode);
                 structuredProduct.TopicTags = GetProductTags(item, _StructProductTagDatasource.Fields.TopicDatasource, productCode);
+                structuredProduct.DiscountTags = GetProductDiscountTags(ItemUtils.GetContentItem(StructProductDiscountTagFolder.Id), productCode);
             }
 
             return structuredProducts;

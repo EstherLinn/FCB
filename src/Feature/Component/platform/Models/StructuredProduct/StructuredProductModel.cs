@@ -24,6 +24,7 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
 
         public IList<string> KeywordTags { get; set; }
         public IList<string> TopicTags { get; set; }
+        public IList<string> DiscountTags { get; set; }
 
         #endregion
     }
