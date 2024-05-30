@@ -43,6 +43,7 @@ namespace Feature.Wealth.Component.Models.USStock
         public string DetailLink { get; set; }
         public int ViewCount { get; set; }
         public string OnlineSubscriptionAvailability { get; set; }
+        public string AvailabilityStatus { get; set; }
         public List<string> HotKeywordTags { get; set; } = new List<string>();
         public List<string> HotProductTags { get; set; } = new List<string>();
         public List<string> Discount { get; set; } = new List<string>();

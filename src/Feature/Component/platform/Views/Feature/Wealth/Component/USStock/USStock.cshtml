@@ -413,7 +413,7 @@
         <td class="c-cardTable__space"></td>
         @* 申購按鈕不顯示時，前面的關注按鈕的 data-card-table-width 也要改成 1/1
         手機板的時候版型才會對 *@
-        <% if (OnlineSubscriptionAvailability != 'N') { %>
+        <% if (AvailabilityStatus != 'N' && OnlineSubscriptionAvailability != 'N') { %>
         <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
         <td class="c-cardTable__footer" data-card-table-width="1/2">
             <div class="c-cardTable__content">
@@ -430,7 +430,7 @@
             </div>
         </td>
         <% } %>
-        <% if (OnlineSubscriptionAvailability == 'N') { %>
+        <% if (AvailabilityStatus == 'N' || OnlineSubscriptionAvailability == 'N') { %>
         <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
         <td class="c-cardTable__footer" data-card-table-width="1/1">
             <div class="c-cardTable__content">
@@ -645,8 +645,8 @@
                         let $like = `<a ${suggestion.AutoFocusButtonHtml}></a>`;
 
                         // 申購按鈕
-                        let $purchase = suggestion.OnlineSubscriptionAvailability == 'N' ?
-                        '' : `<div class="c-itemKeyword__actions"><a ${suggestion.AutoSubscribeButtonHtml}>申購</a></div>`;
+                        let $purchase = (suggestion.AvailabilityStatus == 'N' || suggestion.OnlineSubscriptionAvailability == 'N') ?
+                            '' : `<div class="c-itemKeyword__actions"><a ${suggestion.AutoSubscribeButtonHtml}>申購</a></div>`;
 
                         return `<div class="c-itemKeyword">
                                     <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">

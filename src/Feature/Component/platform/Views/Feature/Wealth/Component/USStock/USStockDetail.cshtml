@@ -69,7 +69,7 @@
                             <li class="l-pageWallet__item">
                                 @Model.USStock.FocusButton
                             </li>
-                            @if (Model.USStock.OnlineSubscriptionAvailability != "N")
+                            @if (Model.USStock.AvailabilityStatus != "N" && Model.USStock.OnlineSubscriptionAvailability != "N")
                             {
                                 <li class="l-pageWallet__btn">
                                     @Model.USStock.SubscribeButton
@@ -174,7 +174,7 @@
                 </div>
             </div>
         }
-        
+
     </div>
 </div>
 

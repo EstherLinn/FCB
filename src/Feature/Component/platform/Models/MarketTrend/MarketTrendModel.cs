@@ -60,6 +60,7 @@ namespace Feature.Wealth.Component.Models.MarketTrend
         public decimal? M6Change { get; set; }
         public string DetailLink { get; set; }
         public string OnlineSubscriptionAvailability { get; set; }
+        public string AvailabilityStatus { get; set; }
         public bool IsLogin { get; set; }
         public bool IsLike { get; set; }
         public string CurrencyLinkHtml { get; set; }
