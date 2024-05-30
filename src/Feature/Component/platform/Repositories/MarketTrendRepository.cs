@@ -24,6 +24,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), [PercentageChangeInFundPrice]*100) [Change]
                            ,CONVERT(decimal(16,2), [SixMonthReturnOriginalCurrency]) [M6Change]
                            ,[OnlineSubscriptionAvailability]
+                           ,[AvailabilityStatus]
                            FROM [vw_BasicFund]
                            WHERE [ProductCode] = @ProductCode";
 
@@ -43,6 +44,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), [PercentageChangeInFundPrice]*100) [Change]
                            ,CONVERT(decimal(16,2), [SixMonthReturnOriginalCurrency]) [M6Change]
                            ,[OnlineSubscriptionAvailability]
+                           ,[AvailabilityStatus]
                            FROM [vw_BasicFund]";
 
             var result = this._dbConnection.Query<RelevantInformation>(sql) ?? new List<RelevantInformation>();
@@ -61,6 +63,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), [NetAssetValueChangePercentage]) [Change]
                            ,CONVERT(decimal(16,2), [SixMonthReturnNetValueOriginalCurrency]) [M6Change]
                            ,[OnlineSubscriptionAvailability]
+                           ,[AvailabilityStatus]
                            FROM [vw_BasicETF]
                            WHERE [ProductCode] = @ProductCode";
 
@@ -80,6 +83,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), [NetAssetValueChangePercentage]) [Change]
                            ,CONVERT(decimal(16,2), [SixMonthReturnNetValueOriginalCurrency]) [M6Change]
                            ,[OnlineSubscriptionAvailability]
+                           ,[AvailabilityStatus]
                            FROM [vw_BasicETF]";
 
             var result = this._dbConnection.Query<RelevantInformation>(sql) ?? new List<RelevantInformation>();

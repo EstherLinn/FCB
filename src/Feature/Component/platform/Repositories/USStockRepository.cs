@@ -36,6 +36,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), A.[ChangePercentage]) [ChangePercentage]
                            ,CONVERT(decimal(16,2), A.[SixMonthReturn]) [SixMonthReturn]
                            ,B.[OnlineSubscriptionAvailability]
+                           ,B.[AvailabilityStatus]
                            FROM [Sysjust_USStockList] A WITH (NOLOCK)
                            LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]";
 
@@ -64,6 +65,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), [ChangePercentage]) [ChangePercentage]
                            ,CONVERT(decimal(16,2), [SixMonthReturn]) [SixMonthReturn]
                            ,B.[OnlineSubscriptionAvailability]
+                           ,B.[AvailabilityStatus]
                            ,C.[ViewCount]
                            FROM [Sysjust_USStockList] A WITH (NOLOCK)
                            LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
