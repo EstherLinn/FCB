@@ -649,6 +649,19 @@
         <div class="c-pageHeader">
             <div class="c-pageHeader__main">
                 <h1 class="c-pageHeader__title">%Title%</h1>
+                @if (Model.StructuredProduct.DiscountTags != null && Model.StructuredProduct.DiscountTags.Any())
+                {
+                    <div class="c-pageHeader__tags">
+                        <ul class="l-tag">
+                            @foreach (var tag in Model.StructuredProduct.DiscountTags)
+                            {
+                                <li class="l-tag__item">
+                                    <a href="#" class="o-tag">@tag</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
             </div>
             <div class="c-pageHeader__views">
                 <div class="o-views o-views--bk" data-eh="visit-update,visit-exec" eh-visit-pageid="@pageId" eh-visit-qs="id=@productCode"></div>
