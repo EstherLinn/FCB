@@ -316,6 +316,11 @@ namespace Feature.Wealth.Component.Models.ETF
         public DateTime? NetAssetValueDate { get; set; }
 
         /// <summary>
+        /// 市價日期
+        /// </summary>
+        public DateTime? MarketPriceDate { get; set; }
+
+        /// <summary>
         /// 計價(市價)幣別
         /// </summary>
         public string QuoteCurrency { get; set; }
@@ -677,6 +682,6 @@ namespace Feature.Wealth.Component.Models.ETF
         /// </summary>
         public string Currency { get; set; }
 
-        #endregion
+        #endregion Currency
     }
 }
