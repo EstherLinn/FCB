@@ -7,6 +7,8 @@ namespace Feature.Wealth.Component.Models.FundDetail
         [Description("優惠標籤")]
         DiscountTag,
         [Description("分類標籤")]
-        SortTag
+        SortTag,
+        [Description("關鍵字標籤")]
+        KeywordTag
     }
 }

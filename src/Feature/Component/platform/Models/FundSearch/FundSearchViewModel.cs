@@ -11,6 +11,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public SearchBarData SearchBarData { get; set; }
         public List<string> HotKeywordTags { get; set; }
         public List<string> HotProductTags { get; set; }
+        public List<string> TopicNameTags { get; set; }
         public string Content { get; set; }
         public HtmlString RiskIndicatorContent { get; set; }
     }

@@ -43,22 +43,21 @@ namespace Feature.Wealth.Component.Repositories
                 // 共用欄位
                 if (f.TargetName == "Y")
                 {
-                    vm.Tags.Add("百元基金");
                     vm.HotProductsTags.Add("百元基金");
                 }
 
-                vm.Tags.AddRange(from tagModel in tags.Where(t => t.FundType == "DiscountTag")
+                vm.Tags.AddRange(from tagModel in tags.Where(t => t.FundTagType == FundTagEnum.DiscountTag)
                                  where tagModel.ProductCodes.Contains(f.ProductCode)
                                  select tagModel.TagName);
 
                 vm.HotKeyWordTags = [];
-                vm.HotKeyWordTags.AddRange(from tagModel in tags.Where(t => t.FundType == "HotKeyword")
+                vm.HotKeyWordTags.AddRange(from tagModel in tags.Where(t => t.FundTagType == FundTagEnum.KeywordTag)
                                            where tagModel.ProductCodes.Contains(f.ProductCode)
                                            select tagModel.TagName);
 
-                vm.HotProductsTags.AddRange(from tagModel in tags.Where(t => t.FundType == "SortTag")
-                                           where tagModel.ProductCodes.Contains(f.ProductCode)
-                                           select tagModel.TagName);
+                vm.HotProductsTags.AddRange(from tagModel in tags.Where(t => t.FundTagType == FundTagEnum.SortTag)
+                                            where tagModel.ProductCodes.Contains(f.ProductCode)
+                                            select tagModel.TagName);
 
                 vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator;
                 vm.ProductCode = f.ProductCode;
@@ -175,7 +174,7 @@ namespace Feature.Wealth.Component.Repositories
             bool isUp = true;
             if (value != null)
             {
-                isUp = value >= 0; 
+                isUp = value >= 0;
                 value = decimal.Round((decimal)value * 100, 2);
             }
             return new KeyValuePair<bool, decimal?>(isUp, value);

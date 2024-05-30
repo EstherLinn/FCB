@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Feature.Wealth.Component.Models.FundDetail;
 
 namespace Feature.Wealth.Component.Models.Tags
 {
@@ -12,7 +9,7 @@ namespace Feature.Wealth.Component.Models.Tags
         {
             public string TagName { get; set; }
             public List<string> ProductCodes { get; set; }
-            public string FundType { get; set; }
+            public FundTagEnum FundTagType { get; set; }
         }
 
         public struct Template
@@ -65,7 +62,7 @@ namespace Feature.Wealth.Component.Models.Tags
                 /// <summary>
                 /// 熱門關鍵字標籤
                 /// </summary>
-                public static readonly string HotKeywordTag = "{84218B07-D105-47DE-8435-7EC8EFDBC969}";
+                public static readonly string KeywordTag = "{84218B07-D105-47DE-8435-7EC8EFDBC969}";
             }
 
         }

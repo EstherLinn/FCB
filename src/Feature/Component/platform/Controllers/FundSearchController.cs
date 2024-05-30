@@ -15,7 +15,8 @@ namespace Feature.Wealth.Component.Controllers
 {
     public class FundSearchController : Controller
     {
-        private FundSearchRepository _repository = new FundSearchRepository();
+        private FundSearchRepository _fundsearchrepository = new FundSearchRepository();
+        private TagsRepository _tagrepository = new TagsRepository();
 
         public ActionResult Index()
         {
@@ -38,8 +39,9 @@ namespace Feature.Wealth.Component.Controllers
             string content = ItemUtils.GetFieldValue(dataSourceItem, Template.FundSearch.Fields.Content);
             HtmlString riskcontent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.RiskIndicatorContent);
 
+            var topicnames = _tagrepository.GetFundTenTagNameData();
 
-            var items = _repository.GetFundSearchData();
+            var items = _fundsearchrepository.GetFundSearchData();
 
             var regions = items
                         .OrderBy(f=>f.InvestmentRegionID)
@@ -76,6 +78,7 @@ namespace Feature.Wealth.Component.Controllers
                 SearchBarData = searchbar,
                 HotKeywordTags = keywords,
                 HotProductTags = products,
+                TopicNameTags = topicnames,
                 Content = content,
                 RiskIndicatorContent = riskcontent
             };
@@ -90,8 +93,8 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetAllFunds()
         {
-            var items = _repository.GetFundSearchData();
-            var funds = _repository.GetFundRenderData(items);
+            var items = _fundsearchrepository.GetFundSearchData();
+            var funds = _fundsearchrepository.GetFundRenderData(items);
             return new JsonNetResult(funds);
         }
 
@@ -101,7 +104,7 @@ namespace Feature.Wealth.Component.Controllers
         [HttpGet]
         public JsonResult GetFundNames()
         {
-            var fundItems = _repository.GetAutoCompleteData();
+            var fundItems = _fundsearchrepository.GetAutoCompleteData();
             return Json(fundItems, JsonRequestBehavior.AllowGet);
         }
 

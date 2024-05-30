@@ -74,15 +74,19 @@
                                         <div class="c-filterForm__value">
                                             <div class="l-pickGroup" id="hotproducts_criteria">
 
+                                                @if (Model.TopicNameTags != null)
+                                                {
+                                                    foreach (string tag in Model.TopicNameTags)
+                                                    {
+                                                                <div class="l-pickGroup__item">
+                                                                    <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
+                                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                                        <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
+                                                                    </label>
+                                                                </div>
+                                                    }
+                                                }
 
-                                                <div class="l-pickGroup__item">
-                                                    <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                    <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                    <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                        <input class="o-btnCheckBox__input" type="checkbox" value="百元基金">
-                                                        <div class="o-btnCheckBox__text" data-filter-value="百元基金"></div>
-                                                    </label>
-                                                </div>
 
                                                 @if (Model.HotProductTags != null)
                                                 {
@@ -1954,7 +1958,7 @@
                 let opts = {
                     template: '#uid-template',
                     criterias: [
-						{ field: 'HotProductsTags', ele: '#hotproducts_criteria input:checkbox' }, { field: 'HotKeyWordTags', ele: '#hotkey_criteria input:checkbox' },
+                        { field: 'HotProductsTags', ele: '#hotproducts_criteria input:checkbox' }, { field: 'HotKeyWordTags', ele: '#hotkey_criteria input:checkbox' },
                         { field: 'DomesticForeignFundIndicator', ele: '#DomesticForeignFundIndicator input:checkbox' }, { field: 'DomesticForeignFundIndicator', ele: '#DomesticForeignFundIndicator input:checkbox', all: 'all', selector: ':not(:checked)' },
                         { field: 'Currency.Value', ele: '#currencies_criteria input:checkbox' }, { field: 'Currency.Value', ele: '#currencies_criteria input:checkbox', all: 'all', selector: ':not(:checked)' },
                         { field: 'FundCompanyName', ele: '#companies_criteria input:checkbox' }, { field: 'FundCompanyName', ele: '#companies_criteria input:checkbox', all: 'all', selector: ':not(:checked)' },
