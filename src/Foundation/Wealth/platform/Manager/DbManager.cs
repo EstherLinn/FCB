@@ -8,7 +8,8 @@ namespace Foundation.Wealth.Manager
     {
         [ThreadStatic]
         private static IDataAccess _custom;
-
+        [ThreadStatic]
+        private static IDataAccess _cif;
 
         public static IDataAccess Custom
         {
@@ -21,11 +22,30 @@ namespace Foundation.Wealth.Manager
 
                 var cp = new ConnectionParameter
                 {
-                    ConnectionSetting = ConfigurationManager.ConnectionStrings["custom"],
+                    ConnectionString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString,
                     DataBaseType = DataBaseType.MsSql
                 };
                 _custom = DataAccessFactory.Create(cp);
                 return _custom;
+            }
+        }
+
+        public static IDataAccess Cif
+        {
+            get
+            {
+                if (_cif != null)
+                {
+                    return _cif;
+                }
+
+                var cp = new ConnectionParameter
+                {
+                    ConnectionString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString,
+                    DataBaseType = DataBaseType.Oracle
+                };
+                _cif = DataAccessFactory.Create(cp);
+                return _cif;
             }
         }
     }
