@@ -235,7 +235,7 @@
                     <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
                     <td class="c-cardTable__space"></td>
                     <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                    <td class="c-cardTable__footer" data-card-table-width="<% if (OnlineSubscriptionAvailability == 'Y'){%><%= '3/4' %><% } else {%><%= '1/1' %> <%}%>">
+                    <td class="c-cardTable__footer" data-card-table-width="<% if (AvailabilityStatus == 'Y' && OnlineSubscriptionAvailability != 'N'){%><%= '3/4' %><% } else {%><%= '1/1' %> <%}%>">
                         <div class="c-cardTable__content">
                             <ul class="l-collect l-collect--divider@lt">
                                 <li class="l-collect__item">
@@ -253,7 +253,7 @@
                     </td>
                     <td class="c-cardTable__footer" data-card-table-width="1/4">
                         <div class="c-cardTable__content">
-                            <% if (OnlineSubscriptionAvailability == "Y") { %>
+                            <% if (AvailabilityStatus == "Y" && OnlineSubscriptionAvailability != "N") { %>
                             <%= Button.SubscriptionButtonHtml %>
                             <% } %>
                         </div>

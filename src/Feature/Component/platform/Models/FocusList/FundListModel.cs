@@ -11,6 +11,8 @@ namespace Feature.Wealth.Component.Models.FocusList
 {
      public  class FundListModel : FocusListBaseModel
     {
+        public decimal? NetAssetValue { get; set; }
+        public string NetAssetValueDate { get; set; }
         public decimal? OneMonthReturnOriginalCurrency { get; set; }
         public decimal? SixMonthReturnOriginalCurrency { get; set; }
         public decimal? OneYearReturnOriginalCurrency { get; set; }
