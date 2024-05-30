@@ -4,6 +4,8 @@ using Foundation.Wealth.Manager;
 using static Feature.Wealth.Component.Models.EFirstChoice.EFirstChoiceModel;
 using Foundation.Wealth.Extensions;
 using System.Text;
+using System.Linq;
+using Feature.Wealth.Component.Models.FundDetail;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -16,11 +18,18 @@ namespace Feature.Wealth.Component.Repositories
             string sql = "SELECT * FROM [vw_BasicFund]";
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 
+            var _tagsRepository = new TagsRepository();
+            var tags = _tagsRepository.GetFundTagData();
             foreach (var item in results)
             {
                 ProcessFundFilterDatas(item);
+                item.Tags = [];
+                item.Tags.AddRange(from tagModel in tags.Where(t => t.FundTagType == FundTagEnum.DiscountTag)
+                                   where tagModel.ProductCodes.Contains(item.ProductCode)
+                                   select tagModel.TagName);
                 fundItems.Add(item);
             }
+
             return fundItems;
 
         }

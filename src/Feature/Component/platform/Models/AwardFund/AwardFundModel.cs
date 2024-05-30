@@ -71,6 +71,13 @@ namespace Feature.Wealth.Component.Models.AwardFund
             /// 得獎名稱
             /// </summary>
             public string AwardName { get; set; }
+
+            /// <summary>
+            /// 是否上架
+            /// </summary>
+            public string AvailabilityStatus { get; set; }
+
+            public List<string> Tags { get; set; }
         }
     }
 

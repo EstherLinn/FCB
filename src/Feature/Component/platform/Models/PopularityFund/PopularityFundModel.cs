@@ -74,7 +74,14 @@ namespace Feature.Wealth.Component.Models.PopularityFund
             /// <summary>
             /// 點擊次數
             /// </summary>
-            public int? ViewCount { get; set; }
+            public string ViewCount { get; set; }
+
+            /// <summary>
+            /// 是否上架
+            /// </summary>
+            public string AvailabilityStatus { get; set; }
+
+            public List<string> Tags { get; set; }
         }
     }
 

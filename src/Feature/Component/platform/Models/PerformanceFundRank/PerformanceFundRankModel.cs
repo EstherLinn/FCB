@@ -96,15 +96,22 @@ namespace Feature.Wealth.Component.Models.PerformanceFundRank
             /// </summary>
             public string TargetName { get; internal set; }
 
+            /// <summary>
+            /// 是否上架
+            /// </summary>
+            public string AvailabilityStatus { get; set; }
+
+            public List<string> Tags { get; set; }
+
         }
     }
 
-   
 
-/// <summary>
-/// 上稿內容
-/// </summary>
-public struct Template
+
+    /// <summary>
+    /// 上稿內容
+    /// </summary>
+    public struct Template
     {
         public struct PerformanceFundRank
         {

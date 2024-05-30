@@ -93,6 +93,13 @@ namespace Feature.Wealth.Component.Models.NewFund
 
 
             public DateTime ListingDateFormat { get; set; }
+
+            /// <summary>
+            /// 是否上架
+            /// </summary>
+            public string AvailabilityStatus { get; set; }
+
+            public List<string> Tags { get; set; }
         }
     }
 

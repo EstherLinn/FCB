@@ -71,6 +71,13 @@ namespace Feature.Wealth.Component.Models.VolumeRank
             /// </summary>
             public string OnlineSubscriptionAvailability { get; set; }
 
+            /// <summary>
+            /// 是否上架
+            /// </summary>
+            public string AvailabilityStatus { get; set; }
+
+            public string[] ETFDiscountTags { get; set; }
+
 
         }
     }

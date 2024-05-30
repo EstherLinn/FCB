@@ -86,6 +86,13 @@ namespace Feature.Wealth.Component.Models.IndexRecommendation
         /// 點擊次數
         /// </summary>
         public int? ViewCount { get; set; }
+
+        /// <summary>
+        /// 是否上架
+        /// </summary>
+        public string AvailabilityStatus { get; set; }
+
+        public List<string> Tags { get; set; }
     }
 
     /// <summary>
@@ -149,6 +156,11 @@ namespace Feature.Wealth.Component.Models.IndexRecommendation
         public string OnlineSubscriptionAvailability { get; set; }
 
         public string[] ETFDiscountTags { get; set; }
+
+        /// <summary>
+        /// 是否上架
+        /// </summary>
+        public string AvailabilityStatus { get; set; }
     }
 
 

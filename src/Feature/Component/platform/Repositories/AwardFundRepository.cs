@@ -13,6 +13,7 @@ using Foundation.Wealth.Extensions;
 using System.Runtime.Caching;
 using System.Linq;
 using System.Text;
+using Feature.Wealth.Component.Models.FundDetail;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -36,10 +37,15 @@ namespace Feature.Wealth.Component.Repositories
 
 
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, parameters, CommandType.Text);
-
+            var _tagsRepository = new TagsRepository();
+            var tags = _tagsRepository.GetFundTagData();
             foreach (var item in results)
             {
                 ProcessFundFilterDatas(item);
+                item.Tags = [];
+                item.Tags.AddRange(from tagModel in tags.Where(t => t.FundTagType == FundTagEnum.DiscountTag)
+                                   where tagModel.ProductCodes.Contains(item.ProductCode)
+                                   select tagModel.TagName);
                 fundItems.Add(item);
             }
 
