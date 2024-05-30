@@ -1,10 +1,11 @@
 ﻿@using System.Web.Script.Serialization
 @model Feature.Wealth.Component.Models.StructuredProduct.StructuredProductDetailViewModel
+@using Foundation.Wealth.Helper;
 
 @{
     string productCode = Model.StructuredProduct.ProductCode;
 
-    string pageview = "999,999,999,999";
+    string pageId = Model.PageId;
 }
 
 <script>
@@ -28,12 +29,11 @@
 
             const resetProps = ['IssuingInstitution', 'CurrencyName', 'ProductMaturityDate', 'BankSellPrice', 'PriceBaseDate'];
             const dateProps = ['ProductMaturityDate', 'PriceBaseDate'];
-            
+
             RenderPageHeader();
             RenderThirtyDaySellPrice();
             RenderDividendFilter();
             RenderDividendList();
-
 
             // 商品資訊Header
             function RenderPageHeader() {
@@ -51,10 +51,47 @@
 
                 var pageHeaderTemplate = $('#page-header-template').html();
 
-                var renderedHTML = pageHeaderTemplate.replace(/%Title%/g, data.ProductCode + " " + data.ProductName).replace(/%Views%/g, "@pageview").replace(/%BankSellPrice%/g, data.BankSellPrice_DisplayText).replace(/%CurrencyName%/g, data.CurrencyName_DisplayText).replace(/%PriceBaseDate%/g, data.PriceBaseDate_DisplayText).replace(/%ProductMaturityDate%/g, data.ProductMaturityDate_DisplayText).replace(/%IssuingInstitution%/g, data.IssuingInstitution_DisplayText);
+                var renderedHTML = pageHeaderTemplate.replace(/%Title%/g, data.ProductCode + " " + data.ProductName).replace(/%BankSellPrice%/g, data.BankSellPrice_DisplayText).replace(/%CurrencyName%/g, data.CurrencyName_DisplayText).replace(/%PriceBaseDate%/g, data.PriceBaseDate_DisplayText).replace(/%ProductMaturityDate%/g, data.ProductMaturityDate_DisplayText).replace(/%IssuingInstitution%/g, data.IssuingInstitution_DisplayText);
 
                 $('#pageHeader').html(renderedHTML);
+
+                handleVisitUpdate();
+                handleVisitExec();
             };
+
+             function handleVisitUpdate() {
+                let params = {
+                    pageId: $('.o-views.o-views--bk').attr('eh-visit-pageid'),
+                    url: new URL(location.href).href,
+                    querystring: $('.o-views.o-views--bk').attr('eh-visit-qs').split('&')
+                };
+
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Update")',
+                    type: 'POST',
+                    data: params
+                }).done(function (data, textStatus, jqXHR) {
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                });
+            }
+
+            function handleVisitExec() {
+                let params = {
+                    pageId: $('.o-views.o-views--bk').attr('eh-visit-pageid'),
+                    url: new URL(location.href).href
+                };
+
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Get")',
+                    type: 'GET',
+                    data: params
+                }).done(function (data, textStatus, jqXHR) {
+                    if (data) {
+                        $('.o-views.o-views--bk').html(DOMPurify.sanitize(data.Count));
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                });
+            }
 
             function resetProp(obj) {
                 for (var o in obj) {
@@ -89,6 +126,15 @@
 
             // 配息 列表
             function RenderDividendList() {
+
+                if (DividendData.length != 0) {
+                    $('#dividendContent').removeClass('u-hidden');
+                    $('#dividendEmpty').addClass('u-hidden');
+                }
+                else {
+                    $('#dividendContent').addClass('u-hidden');
+                    $('#dividendEmpty').removeClass('u-hidden');
+                }
 
                 var data = DividendData;
                 var orderby = '';
@@ -207,74 +253,85 @@
 
             // 參考贖回價 近30日
             function RenderThirtyDaySellPrice() {
-                let ThirtyDayHtml = '';
 
-                var thirtyDayBankSellPriceWithChange = ThirtyDayBankSellPriceWithChange;
-                var data = thirtyDayBankSellPriceWithChange.map(function (item) {
-                    return {
-                        "date": item.PriceBaseDate,
-                        "value": item.BankSellPriceValue,
-                        "diff": item.BankSellPriceChange
-                    };
-                });
+                if (ThirtyDayBankSellPriceWithChange.length != 0) {
 
-                var length = Math.min(data.length, 30);
-                var count = 1;
-                var percolumn = 5;
+                    let ThirtyDayHtml = '';
 
-                for (var i = 0; i < length; i++) {
+                    var thirtyDayBankSellPriceWithChange = ThirtyDayBankSellPriceWithChange;
+                    var data = thirtyDayBankSellPriceWithChange.map(function (item) {
+                        return {
+                            "date": item.PriceBaseDate,
+                            "value": item.BankSellPriceValue,
+                            "diff": item.BankSellPriceChange
+                        };
+                    });
 
-                    // slide框
-                    if (count % (percolumn * 2) == 1) {
-                        ThirtyDayHtml += '<div class="swiper-slide c-swiper__slide">';
-                        ThirtyDayHtml += '<div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>';
+                    var length = Math.min(data.length, 30);
+                    var count = 1;
+                    var percolumn = 5;
+
+                    for (var i = 0; i < length; i++) {
+
+                        // slide框
+                        if (count % (percolumn * 2) == 1) {
+                            ThirtyDayHtml += '<div class="swiper-slide c-swiper__slide">';
+                            ThirtyDayHtml += '<div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>';
+                        }
+
+                        var tbodyHtml = '';
+
+                        // thead、tbody開頭
+                        if (count % percolumn == 1) {
+                            ThirtyDayHtml += '<div class="l-flex__item">';
+                            ThirtyDayHtml += '<div class="l-table">';
+                            ThirtyDayHtml += '<table class="c-table u-center">';
+                            ThirtyDayHtml += '<colgroup>';
+                            ThirtyDayHtml += '<col style="width: 33.3%;">';
+                            ThirtyDayHtml += '<col style="width: 33.3%;">';
+                            ThirtyDayHtml += '<col style="width: 33.3%;">';
+                            ThirtyDayHtml += '</colgroup>';
+
+                            var theadClass = ((count + percolumn - 1) % (percolumn * 2) == 0) ? ' class="u-hidden@lt"' : '';
+                            var theadHtml = '<thead' + theadClass + '>' + $('#thirty-theadtr').html() + '</thead>';
+                            ThirtyDayHtml += theadHtml;
+
+                            tbodyHtml += '<tbody>';
+                        }
+
+                        // tbody內容
+                        var tr = $('#thirty-tbodytr').html();
+
+                        tr = tr.replace(/%Date%/gi, data[i].date);
+                        tr = tr.replace(/%Price%/gi, data[i].value);
+
+                        var diffClass = data[i].diff > 0 ? 'o-rise' : 'o-fall';
+                        tr = tr.replace(/%Diff%/gi, "<span class='" + diffClass + "'>" + data[i].diff + "</span>");
+
+                        tbodyHtml += tr;
+
+                        // tbody end
+                        if (count % percolumn == 0) {
+                            tbodyHtml += '</tbody></table></div></div>';
+                        }
+                        ThirtyDayHtml += tbodyHtml;
+
+                        if (count % (percolumn * 2) == 0) {
+                            ThirtyDayHtml += '</div></div>';
+                        }
+
+                        count++;
                     }
 
-                    var tbodyHtml = '';
+                    $('#thirtydaytable').html(ThirtyDayHtml);
 
-                    // thead、tbody開頭
-                    if (count % percolumn == 1) {
-                        ThirtyDayHtml += '<div class="l-flex__item">';
-                        ThirtyDayHtml += '<div class="l-table">';
-                        ThirtyDayHtml += '<table class="c-table u-center">';
-                        ThirtyDayHtml += '<colgroup>';
-                        ThirtyDayHtml += '<col style="width: 33.3%;">';
-                        ThirtyDayHtml += '<col style="width: 33.3%;">';
-                        ThirtyDayHtml += '<col style="width: 33.3%;">';
-                        ThirtyDayHtml += '</colgroup>';
-
-                        var theadClass = ((count + percolumn - 1) % (percolumn * 2) == 0) ? ' class="u-hidden@lt"' : '';
-                        var theadHtml = '<thead' + theadClass + '>' + $('#thirty-theadtr').html() + '</thead>';
-                        ThirtyDayHtml += theadHtml;
-
-                        tbodyHtml += '<tbody>';
-                    }
-
-                    // tbody內容
-                    var tr = $('#thirty-tbodytr').html();
-
-                    tr = tr.replace(/%Date%/gi, data[i].date);
-                    tr = tr.replace(/%Price%/gi, data[i].value);
-
-                    var diffClass = data[i].diff > 0 ? 'o-rise' : 'o-fall';
-                    tr = tr.replace(/%Diff%/gi, "<span class='" + diffClass + "'>" + data[i].diff + "</span>");
-
-                    tbodyHtml += tr;
-
-                    // tbody end
-                    if (count % percolumn == 0) {
-                        tbodyHtml += '</tbody></table></div></div>';
-                    }
-                    ThirtyDayHtml += tbodyHtml;
-
-                    if (count % (percolumn * 2) == 0) {
-                        ThirtyDayHtml += '</div></div>';
-                    }
-
-                    count++;
+                    $('#thirtyDayContent').removeClass('u-hidden');
+                    $('#thirtyDayEmpty').addClass('u-hidden');
                 }
-
-                $('#thirtydaytable').html(ThirtyDayHtml);
+                else {
+                    $('#thirtyDayContent').addClass('u-hidden');
+                    $('#thirtyDayEmpty').removeClass('u-hidden');
+                }
             };
 
             // 參考贖回價 走勢圖
@@ -416,7 +473,7 @@
                     var data = _data;
 
 
-                    if (Object.keys(data).length != 0) {
+                    if (Object.keys(data).length != 0 && Object.keys(data.navs).length != 0) {
                         const mapData = data.navs.map(item => {
                             return {
                                 x: new Date(item.date).getTime(),
@@ -561,26 +618,26 @@
             };
 
 
-            // 手機版分頁筆數功能
-            $('[data-sortingbox="true"]').on('change.sorting',
-                function (e) {
-                    // 呼叫 loading
-                    window.loading('show');
-                    var sorting = $(this).val();
-                    var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
-                    var sortingColumn = $('option:selected', this).data('sorting-column');
-                    var orderby = $('option:selected', this).data('sorting-class');
+        // 手機版分頁筆數功能
+        $('[data-sortingbox="true"]').on('change.sorting',
+            function (e) {
+                // 呼叫 loading
+                window.loading('show');
+                var sorting = $(this).val();
+                var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+                var sortingColumn = $('option:selected', this).data('sorting-column');
+                var orderby = $('option:selected', this).data('sorting-class');
 
-                    // 連動 table
-                    $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
-                    $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
 
 
-                    DividendData = SortingDividend(DividendData, orderby);
-                    RenderDividendList();
+                DividendData = SortingDividend(DividendData, orderby);
+                RenderDividendList();
 
-                    window.loading('hide');
-                });
+                window.loading('hide');
+            });
 
         });
 
@@ -594,7 +651,7 @@
                 <h1 class="c-pageHeader__title">%Title%</h1>
             </div>
             <div class="c-pageHeader__views">
-                <div class="o-views o-views--bk">%Views%</div>
+                <div class="o-views o-views--bk" data-eh="visit-update,visit-exec" eh-visit-pageid="@pageId" eh-visit-qs="id=@productCode"></div>
             </div>
         </div>
     </div>
@@ -856,7 +913,15 @@
             </section>
             <section class="c-section">
                 <div class="c-section__title">近30日參考贖回價</div>
-                <div class="c-section__content">
+                <div class="c-section__content" id="thirtyDayEmpty">
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
+                        </div>
+                        <div class="c-empty__desc">沒有資料</div>
+                    </div>
+                </div>
+                <div class="c-section__content" id="thirtyDayContent">
                     <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{"spaceBetween":20, "autoplay": false, "navigation":{ "enabled":true }, "breakpoints": {"1200": { "navigation":{ "enabled":false }}}}'>
                         <div class="swiper-wrapper c-swiper__wrapper" id="thirtydaytable"></div>
                         <div class="swiper-button-next c-swiper__next"></div>
@@ -867,7 +932,15 @@
             </section>
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-2">
-            <section class="l-flex u-flex-col u-flex-gap-sm">
+            <section class="l-flex u-flex-col u-flex-gap-sm" id="dividendEmpty">
+                <div class="c-empty">
+                    <div class="c-empty__img">
+                        <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
+                    </div>
+                    <div class="c-empty__desc">沒有資料</div>
+                </div>
+            </section>
+            <section class="l-flex u-flex-col u-flex-gap-sm" id="dividendContent">
                 <div class="l-flex__item">
                     <div class="l-selectbox">
                         <div class="l-selectbox__item">
@@ -892,17 +965,20 @@
             </section>
         </div>
     </div>
-    <div class="c-hashTags">
-        <div class="c-hashTags__title">Tags</div>
-        <div class="c-hashTags__content">
-            <ul class="l-divideList l-divideList--sm">
-                @foreach (string topic in Model.StructuredProduct.TopicTags)
-                {
-                    <li class="l-divideList__item l-divideList__item--auto">
-                        <a href="#" class="o-hashTag u-nowrap">#@topic</a>
-                    </li>
-                }
-            </ul>
+    @if (Model.StructuredProduct.TopicTags.Any())
+    {
+        <div class="c-hashTags">
+            <div class="c-hashTags__title">Tags</div>
+            <div class="c-hashTags__content">
+                <ul class="l-divideList l-divideList--sm">
+                    @foreach (string topic in Model.StructuredProduct.TopicTags)
+                    {
+                        <li class="l-divideList__item l-divideList__item--auto">
+                            <a href="#" class="o-hashTag u-nowrap">#@topic</a>
+                        </li>
+                    }
+                </ul>
+            </div>
         </div>
-    </div>
+    }
 </div>

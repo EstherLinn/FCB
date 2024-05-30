@@ -53,8 +53,8 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
 
         internal struct Fields
         {
-            internal static readonly ID TagTitle = new ID("{0BEABC41-00D1-464E-A94D-2C4DC04D171D}");
-            internal static readonly ID StructList = new ID("{B764C38B-DA68-47BB-82DC-3443E4BF6B6D}");
+            internal static readonly ID TagName = new ID("{0BEABC41-00D1-464E-A94D-2C4DC04D171D}");
+            internal static readonly ID ProductCodeList = new ID("{B764C38B-DA68-47BB-82DC-3443E4BF6B6D}");
         }
     }
 }
