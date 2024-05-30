@@ -11,10 +11,10 @@ namespace Feature.Wealth.Component.Models.FocusList
     {
         public string ProductCode { get; set; }
         public string ProductName { get; set; }
-        public decimal? NetAssetValue { get; set; }
-        public string NetAssetValueDate { get; set; }
         public string CurrencyName { get; set; }
-        public List<string> Tags { get; set; }
+
+        public List<string> Tags { get; set; } = new List<string>();
+        public string AvailabilityStatus { get; set; }
         public string OnlineSubscriptionAvailability { get; set; }
         public Button Button { get; set; }
 

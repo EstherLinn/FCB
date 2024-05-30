@@ -8,6 +8,15 @@
     string lineAuthUrl = OAuthFactory.GetAuthUrl(PlatFormEunm.Line);
     var CurrencyWebSite = Settings.GetSetting("CurrencyWebSite");
     var loginItem = ItemUtils.GetItem(Templates.Login.Root);
+    var SubcriptionSingleLink = Settings.GetSetting("WebSubscriptionSingle");
+    var SubcriptionRegularLink = Settings.GetSetting("WebSubscriptionRegular");
+    var MobileESingleLink = Settings.GetSetting("MobileESingle");
+    var MobileERegularLink = Settings.GetSetting("MobileERegular");
+    var MobileIleoSingleLink = Settings.GetSetting("MobileIleoSingle");
+    var MobileIleoRegularLink = Settings.GetSetting("MobileIleoRegular");
+    var WebEntrustLink = Settings.GetSetting("WebEntrust");
+    var MobileEntrustLink = Settings.GetSetting("MobileEntrust");
+    var IleoEntrustLink = Settings.GetSetting("IleoEntrust");
 }
 <div id="popupLogin" class="c-modal mfp-hide">
     <div class="c-modal__wrap">
@@ -90,6 +99,9 @@
                 </div>
                 <div class="l-action__item">
                     <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionRegular" data-type="Regular">定期定額</a>
+                </div>
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionGo" data-type="Regular">前往</a>
                 </div>
             </div>
         </div>
@@ -459,4 +471,88 @@
         percent = newPercent.toFixed(2);
         $('[data-count-input]').val(percent).trigger('change.count');
     });
+    //申購deeplink init
+                let single = document.getElementById("subscriptionSingle");
+                let regular = document.getElementById("subscriptionRegular");
+                let go = document.getElementById("subscriptionGo");
+                let singlelink = "";
+                let regularlink = "";
+                let golink = "";
+                if ($(window).width() < 768) {
+                    $('input[name="platform"]', '#popupPurchase').on('click', function () {
+                        let val = $(this).data('name');
+                        if (val == "firste") {
+                            singlelink = "@MobileESingleLink";
+                            regularlink = "@MobileERegularLink";
+                            golink = "@MobileEntrustLink";
+                        } else {
+                            singlelink = "@MobileIleoSingleLink";
+                            regularlink = "@MobileIleoRegularLink";
+                            golink = "@IleoEntrustLink";
+                        }
+                        let singleUrl = new URL(decodeURIComponent(singlelink.replaceAll("&amp;", "&")));
+                        let regularUrl = new URL(decodeURIComponent(regularlink.replaceAll("&amp;", "&")));
+                        let goUrl = new URL(decodeURIComponent(golink.replaceAll("&amp;", "&")));
+                        let singleParms = singleUrl.searchParams;
+                        let regularParms = regularUrl.searchParams;
+                        let goParms = goUrl.searchParams;
+
+                        if (singleParms.has("link")) {
+                            let singleInsindeUrl = new URL(singleParms.get("link"));
+                            let regularInsindUrl = new URL(regularParms.get("link"));
+                            let goInsideUrl = new URL(goParms.get("link"));
+                            singleInsindeUrl.searchParams.delete("FundCode");
+                            singleInsindeUrl.searchParams.append("FundCode", single.getAttribute("eh-subscription-id"));
+                            regularInsindUrl.searchParams.delete("FundCode");
+                            regularInsindUrl.searchParams.append("FundCode", regular.getAttribute("eh-subscription-id"));
+                            singleParms.delete("link",);
+                            singleParms.append("link", singleInsindeUrl);
+                            regularParms.delete("link");
+                            regularParms.append("link", regularInsindUrl);
+
+                            if (val == "firste") {
+                                if (goParms.has("prdCode")) {
+                                    goParms.delete("prdCode");
+                                    goParms.append("prdCode", go.getAttribute("eh-subscription-id"));
+                                }
+                            } else {
+                                goInsideUrl.searchParams.delete("FundCode");
+                                goInsideUrl.searchParams.append("FundCode", go.getAttribute("eh-subscription-id"));
+                                goParms.delete("link");
+                                goParms.append("link", goInsideUrl);
+                            }
+                        }
+                        single.setAttribute("href", singleUrl);
+                        regular.setAttribute("href", regularUrl);
+                        go.setAttribute("href", goUrl);
+                        store.set("MobilePlatform", val);
+                    });
+
+                    let val = store.get('MobilePlatform') || "";
+                    if (val == "firste" || val == "") {
+                        store.set("MobilePlatform", 'firste');
+                        $('input[data-name="firste"]', '#popupPurchase').prop('checked', true);
+                        singlelink = "@MobileESingleLink";
+                        regularlink = "@MobileERegularLink";
+                        golink = "@MobileEntrustLink";
+                    } else {
+                        $('input[data-name="ileo"]', '#popupPurchase').prop('checked', true);
+                        singlelink = "@MobileIleoSingleLink";
+                        regularlink = "@MobileIleoRegularLink";
+                        golink = "@IleoEntrustLink";
+                    }
+
+                    single.setAttribute("href", decodeURIComponent(singlelink.replaceAll("&amp;", "&")));
+                    regular.setAttribute("href", decodeURIComponent(regularlink.replaceAll("&amp;", "&")));
+                    go.setAttribute("href", decodeURIComponent(golink.replaceAll("&amp;", "&")));
+                }
+                else {
+                    singlelink = "@SubcriptionSingleLink";
+                    regularlink = "@SubcriptionRegularLink";
+                    golink = "@WebEntrustLink";
+                    single.setAttribute("href", decodeURIComponent(singlelink.replaceAll("&amp;", "&")));
+                    regular.setAttribute("href", decodeURIComponent(regularlink.replaceAll("&amp;", "&")));
+                    go.setAttribute("href", decodeURIComponent(golink.replaceAll("&amp;", "&")));
+                }
+
 </script>

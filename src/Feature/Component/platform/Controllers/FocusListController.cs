@@ -112,9 +112,8 @@ namespace Feature.Wealth.Component.Controllers
             var items = _focusListRespository.GetETFFocusData(etfFocusList);
             var itemsWithButton = _focusListRespository.SetButtonToFocusList(items, InvestTypeEnum.ETF);
             var itemsWithButtonAndInfo = _focusListRespository.SetReachInfoToFocusList(itemsWithButton, InvestTypeEnum.ETF);
-            //var finalItems = _focusListRespository.SetTagsToFund(itemsWithButtonAndInfo);
-
-            return itemsWithButtonAndInfo;
+            var finalItems = _focusListRespository.SetTagsToEtf(itemsWithButtonAndInfo);
+            return finalItems;
         }
 
         private List<ForeignStockListModel> GetForeignStockList(List<string> foreignStockFocusList)
@@ -122,9 +121,8 @@ namespace Feature.Wealth.Component.Controllers
             var items = _focusListRespository.GetForeignStockFocusData(foreignStockFocusList);
             var itemsWithButton = _focusListRespository.SetButtonToFocusList(items, InvestTypeEnum.ForeignStocks);
             var itemsWithButtonAndInfo = _focusListRespository.SetReachInfoToFocusList(itemsWithButton, InvestTypeEnum.ForeignStocks);
-            //var finalItems = _focusListRespository.SetTagsToFund(itemsWithButtonAndInfo);
-
-            return itemsWithButtonAndInfo;
+            var finalItems = _focusListRespository.SetTagsToForeignStock(itemsWithButtonAndInfo);
+            return finalItems;
         }
     }
 }

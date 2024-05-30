@@ -2,7 +2,6 @@
 using Feature.Wealth.Account.Models.ReachInfo;
 using Feature.Wealth.Account.Repositories;
 using Feature.Wealth.Component.Models.FocusList;
-using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.Invest;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
@@ -12,6 +11,9 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Feature.Wealth.Component.Models.USStock;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using Feature.Wealth.Component.Models.ETF.Tag;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -20,7 +22,7 @@ namespace Feature.Wealth.Component.Repositories
         public List<FundListModel> GetFundFocusData(List<string> fundFocusList)
         {
             string sql = $@"
-                  SELECT ProductCode,ProductName,NetAssetValue,Format(NetAssetValueDate,'yyyy/MM/dd') NetAssetValueDate,
+                  SELECT ProductCode,ProductName,NetAssetValue,AvailabilityStatus,Format(NetAssetValueDate,'yyyy/MM/dd') NetAssetValueDate,
                     CurrencyName,OnlineSubscriptionAvailability,OneMonthReturnOriginalCurrency,SixMonthReturnOriginalCurrency,OneYearReturnOriginalCurrency
                 FROM [vw_BasicFund] WHERE ProductCode in @fundlist
                   ORDER BY SixMonthReturnOriginalCurrency DESC
@@ -33,7 +35,7 @@ namespace Feature.Wealth.Component.Repositories
         public List<EtfListModel> GetETFFocusData(List<string> etfFocusList)
         {
             string sql = $@"
-                  SELECT ProductCode,ProductName,NetAssetValue,Format(NetAssetValueDate,'yyyy/MM/dd') NetAssetValueDate,
+                  SELECT ProductCode,ProductName,AvailabilityStatus,MarketPrice,Format(MarketPriceDate,'yyyy/MM/dd') MarketPriceDate,
                     CurrencyName,OnlineSubscriptionAvailability,SixMonthReturnMarketPriceOriginalCurrency,NetAssetValueChangePercentage
                     FROM [vw_BasicETF] WHERE ProductCode in @etfList
                   ORDER BY SixMonthReturnMarketPriceOriginalCurrency DESC
@@ -54,6 +56,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), A.[ChangePercentage]) [ChangePercentage]
                            ,CONVERT(decimal(16,2), A.[SixMonthReturn]) [SixMonthReturn]
                            ,B.[OnlineSubscriptionAvailability]
+                           ,B.[AvailabilityStatus]
                            FROM [Sysjust_USStockList] A WITH (NOLOCK)
                            LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode] WHERE FirstBankCode in @foreignStockList order by [SixMonthReturn]
                 ";
@@ -88,7 +91,45 @@ namespace Feature.Wealth.Component.Repositories
 
         //    return baseList;
         //}
+        public List<EtfListModel> SetTagsToEtf(List<EtfListModel> baseList)
+        {
+            EtfTagRepository TagRepositor = new EtfTagRepository();
+            var dicTag = TagRepositor.GetTagCollection();
+            var tags = dicTag[TagType.Discount];
+            if (tags != null)
+            {
+                foreach (var item in baseList)
+                {
+                    foreach (var d in tags)
+                    {
+                        if (d.ProductCodes.Contains(item.ProductCode))
+                        {
+                            item.Tags.Add(d.TagKey);
+                        }
+                    }
+                }
 
+            }
+            return baseList;
+        }
+        public List<ForeignStockListModel> SetTagsToForeignStock(List<ForeignStockListModel> baseList)
+        {
+            var discountFolder = ItemUtils.GetContentItem(Feature.Wealth.Component.Models.USStock.Template.USStockTagFolder.Children.Discount);
+            var discounts = ItemUtils.GetChildren(discountFolder, Feature.Wealth.Component.Models.USStock.Template.USStockTag.Id);
+            foreach (var item in baseList)
+            {
+                foreach (var d in discounts)
+                {
+                    string tagName = ItemUtils.GetFieldValue(d, Feature.Wealth.Component.Models.USStock.Template.USStockTag.Fields.TagName);
+                    string productCodeList = ItemUtils.GetFieldValue(d, Feature.Wealth.Component.Models.USStock.Template.USStockTag.Fields.ProductCodeList);
+                    if (productCodeList.Contains(item.ProductCode))
+                    {
+                        item.Tags.Add(tagName);
+                    }
+                }
+            }
+            return baseList;
+        }
 
         public List<T> SetButtonToFocusList<T>(List<T> baseList, InvestTypeEnum typeEnum) where T : FocusListBaseModel
         {

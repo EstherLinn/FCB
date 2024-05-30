@@ -13,12 +13,11 @@
                          function resetTable()
             {
               let fjs;
-            //  window.loading = () => 0;//蓋掉window.loading function
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "FocusList", "GetTrackFunds")',
                 type: 'POST'
             }).done(function (data, textStatus, jqXHR) {
-                if (data) {
+                if (data && data.length > 0) {
                     $('[data-focusfund]').removeClass('u-hidden');
                     $('[data-nofocusfund]').addClass('u-hidden');
                     initFilter(data);
@@ -50,11 +49,6 @@
                         afterFilter: function (result) {
                             this.paginator.setCurrentPage(1);
                             $('[id="fundTrackTotal"]').text(result.length);
-
-                            let isEmpty = result.length == 0;
-                            //$(`[data-filter-empty=${isEmpty}]`).show();
-                            //$(`[data-filter-empty=${!isEmpty}]`).hide();
-
                             window.loading('hide');
                         },
                         afterPagination: function () {
@@ -222,7 +216,7 @@
                 url: '@ClientRoute.GenerateUrl(this, "FocusList", "GetTrackEtfs")',
                 type: 'POST'
             }).done(function (data, textStatus, jqXHR) {
-                if (data) {
+                if (data && data.length > 0) {
                     $('[data-focusetf]').removeClass('u-hidden');
                     $('[data-nofocusetf]').addClass('u-hidden');
                     initFilter2(data);
@@ -252,11 +246,6 @@
                         afterFilter: function (result) {
                             this.paginator.setCurrentPage(1);
                             $('[id="etfTrackTotal"]').text(result.length);
-
-                            let isEmpty = result.length == 0;
-                            //$(`[data-filter-empty=${isEmpty}]`).show();
-                            //$(`[data-filter-empty=${!isEmpty}]`).hide();
-
                             window.loading('hide');
                         },
                         afterPagination: function () {
@@ -424,7 +413,7 @@
                 url: '@ClientRoute.GenerateUrl(this, "FocusList", "GetTrackForeignStocks")',
                 type: 'POST'
                 }).done(function (data, textStatus, jqXHR) {
-                if (data) {
+                    if (data && data.length > 0) {
                 $('[data-focusforeignStock]').removeClass('u-hidden');
                 $('[data-nofocusforeignStock]').addClass('u-hidden');
                 initFilter3(data);
@@ -455,11 +444,6 @@
                 afterFilter: function (result) {
                 this.paginator.setCurrentPage(1);
                     $('[id="foreignStockTrackTotal"]').text(result.length);
-
-                let isEmpty = result.length == 0;
-                //$(`[data-filter-empty=${isEmpty}]`).show();
-                //$(`[data-filter-empty=${!isEmpty}]`).hide();
-
                 window.loading('hide');
                 },
                 afterPagination: function () {

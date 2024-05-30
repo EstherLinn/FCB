@@ -28,8 +28,8 @@
                 <option value="">排序</option>
                 <option value="ETF名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">ETF名稱高至低</option>
                 <option value="ETF名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">ETF名稱低至高</option>
-                <option value="收盤價高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">收盤價高至低</option>
-                <option value="收盤價低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">收盤價低至高</option>
+                <option value="收盤價高至低" data-sorting-column="MarketPrice" data-sorting-class="is-desc">收盤價高至低</option>
+                <option value="收盤價低至高" data-sorting-column="MarketPrice" data-sorting-class="is-asc">收盤價低至高</option>
                 <option value="幣別高至低" data-sorting-column="CurrencyName" data-sorting-class="is-desc">幣別高至低</option>
                 <option value="幣別低至高" data-sorting-column="CurrencyName" data-sorting-class="is-asc">幣別低至高</option>
                 <option value="漲跌幅高至低" data-sorting-column="NetAssetValueChangePercentage" data-sorting-class="is-desc">漲跌幅高至低</option>
@@ -65,8 +65,8 @@
                         </th>
                         <th>
                             <div class="c-table__title">
-                                <span>收盤價</span>
-                                <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                                <span>收盤價<br>(收盤日)</span>
+                                <a href="#" class="o-sorting" data-sorting-column="MarketPrice"></a>
                             </div>
                         </th>
                         <th>
@@ -141,9 +141,9 @@
                     <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
                     <td class="c-cardTable__body" data-card-table-width="1/2">
                         <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                        <div class="c-cardTable__title" data-length="4">收盤價</div>
-                        <% if (NetAssetValue != null) { %>
-                        <div class="c-cardTable__content" data-netvalue="<%= NetAssetValue.toFixed(4) %>"><%= NetAssetValue.toFixed(4) %></div>
+                        <div class="c-cardTable__title" data-length="4">收盤價<br>(收盤日)</div>
+                        <% if (MarketPrice != null) { %>
+                        <div class="c-cardTable__content" data-netvalue="<%= MarketPrice.toFixed(2) %>"><%= MarketPrice.toFixed(4) %><br><span class="t-date" data-netvaluedate="<%= MarketPriceDate %>"><%= MarketPriceDate %></span></div>
                         <% } else {%>
                         <span>-</span>
                         <% } %>
@@ -192,18 +192,18 @@
                             <div class="t-tip--lt">點鈴鐺設定到價通知</div>
                             <% } else {%>
                             <% if (Info.ReachValue  != null ) { %>
-                            <div class="<% if (NetAssetValue >= Info.ReachValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
+                            <div class="<% if (MarketPrice >= Info.ReachValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
                             <% } %>
                             <% if (Info.RisePercent  != null  || Info.FallPercent) { %>
                             <div class="l-straight@lt">
                                 <% if (Info.RisePercent  != null ) { %>
                                 <div class="l-straight__item">
-                                    <span class="<% if (NetAssetValue >= Info.RiseValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="漲幅 <%= Info.RisePercent %>%"></span>
+                                    <span class="<% if (MarketPrice >= Info.RiseValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="漲幅 <%= Info.RisePercent %>%"></span>
                                 </div>
                                 <% } %>
                                 <% if (Info.FallPercent  != null ) { %>
                                 <div class="l-straight__item">
-                                    <span class="<% if (NetAssetValue <= Info.FallValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="跌幅 <%= Info.FallPercent %>%"></span>
+                                    <span class="<% if (MarketPrice <= Info.FallValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="跌幅 <%= Info.FallPercent %>%"></span>
                                 </div>
                                 <% } %>
                             </div>
@@ -214,7 +214,7 @@
                     <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
                     <td class="c-cardTable__space"></td>
                     <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                    <td class="c-cardTable__footer" data-card-table-width="<% if (OnlineSubscriptionAvailability == 'Y'){%><%= '3/4' %><% } else {%><%= '1/1' %> <%}%>">
+                    <td class="c-cardTable__footer" data-card-table-width="<% if (AvailabilityStatus == 'Y' && OnlineSubscriptionAvailability != 'N'){%><%= '3/4' %><% } else {%><%= '1/1' %> <%}%>">
                         <div class="c-cardTable__content">
                             <ul class="l-collect l-collect--divider@lt">
                                 <li class="l-collect__item">
@@ -232,7 +232,7 @@
                     </td>
                     <td class="c-cardTable__footer" data-card-table-width="1/4">
                         <div class="c-cardTable__content">
-                            <% if (OnlineSubscriptionAvailability == "Y") { %>
+                            <% if (AvailabilityStatus == "Y" && OnlineSubscriptionAvailability != "N") { %>
                             <%= Button.SubscriptionButtonHtml %>
                             <% } %>
                         </div>
