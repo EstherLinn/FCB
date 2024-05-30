@@ -3,9 +3,11 @@ using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.USStock;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Sitecore.Data.Items;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -96,6 +98,44 @@ namespace Feature.Wealth.Component.Repositories
             item.AutoSubscribeButtonHtml = PublicHelpers.SubscriptionTag(null, null, item.FirstBankCode, item.FullName, InvestTypeEnum.ForeignStocks).ToString();
 
             return item;
+        }
+
+        internal USStock SetTags(USStock uSStock, IEnumerable<Item> hotKeywordTags, IEnumerable<Item> hotProductTags, IEnumerable<Item> discounts)
+        {
+            foreach (var f in hotKeywordTags)
+            {
+                string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
+                string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
+
+                if (productCodeList.Contains(uSStock.FirstBankCode))
+                {
+                    uSStock.HotKeywordTags.Add(tagName);
+                }
+            }
+
+            foreach (var f in hotProductTags)
+            {
+                string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
+                string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
+
+                if (productCodeList.Contains(uSStock.FirstBankCode))
+                {
+                    uSStock.HotProductTags.Add(tagName);
+                }
+            }
+
+            foreach (var f in discounts)
+            {
+                string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
+                string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
+
+                if (productCodeList.Contains(uSStock.FirstBankCode))
+                {
+                    uSStock.Discount.Add(tagName);
+                }
+            }
+
+            return uSStock;
         }
     }
 }

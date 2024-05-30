@@ -34,42 +34,12 @@ namespace Feature.Wealth.Component.Controllers
             var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
             var discounts = ItemUtils.GetChildren(discountFolder, Template.USStockTag.Id);
 
-            foreach (var f in hotKeywordTags)
-            {
-                string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
-                string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
-
-                if (productCodeList.Contains(uSStock.FirstBankCode))
-                {
-                    uSStock.HotKeywordTags.Add(tagName);
-                }
-            }
-
-            foreach (var f in hotProductTags)
-            {
-                string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
-                string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
-
-                if (productCodeList.Contains(uSStock.FirstBankCode))
-                {
-                    uSStock.HotProductTags.Add(tagName);
-                }
-            }
-
-            foreach (var f in discounts)
-            {
-                string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
-                string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
-
-                if (productCodeList.Contains(uSStock.FirstBankCode))
-                {
-                    uSStock.Discount.Add(tagName);
-                }
-            }
+            uSStock = this._uSStockRepository.GetButtonHtml(uSStock, false);
+            uSStock = this._uSStockRepository.SetTags(uSStock, hotKeywordTags, hotProductTags, discounts);
 
             var model = new USStockDetailModel
             {
-                USStock = this._uSStockRepository.GetButtonHtml(uSStock, false),
+                USStock = uSStock,
                 b2brwdDomain = ItemUtils.GetFieldValue(item, Template.USStockDetail.Fields.b2brwdDomain)
             };
 
