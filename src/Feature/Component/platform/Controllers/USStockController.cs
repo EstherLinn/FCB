@@ -29,8 +29,8 @@ namespace Feature.Wealth.Component.Controllers
         {
             string detailLink = ItemUtils.GeneralLink(item, Template.USStock.Fields.DetailLink)?.Url;
 
-            var hotkKeywordTags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.HotKeyword);
-            var keyword = hotkKeywordTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
+            var hotKeywordTags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.HotKeyword);
+            var keyword = hotKeywordTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
             var hotProductTags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.HotProduct);
             var product = hotProductTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
             var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
@@ -42,7 +42,7 @@ namespace Feature.Wealth.Component.Controllers
                 uSStock.DetailLink = detailLink + "?id=" + uSStock.FirstBankCode;
                 uSStock = this._uSStockRepository.GetButtonHtml(uSStock);
 
-                foreach (var f in hotkKeywordTags)
+                foreach (var f in hotKeywordTags)
                 {
                     string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
                     string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
