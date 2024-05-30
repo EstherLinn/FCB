@@ -42,6 +42,11 @@
         public string NetAssetValueDate { get; set; }
 
         /// <summary>
+        /// 市價日期
+        /// </summary>
+        public string MarketPriceDate { get; set; }
+
+        /// <summary>
         /// 幣別
         /// </summary>
         /// <remarks>Key: 幣別代碼，Value: 幣別名稱</remarks>

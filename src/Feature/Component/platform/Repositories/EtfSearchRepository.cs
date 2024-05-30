@@ -90,6 +90,7 @@ namespace Feature.Wealth.Component.Repositories
                         Text = string.IsNullOrEmpty(src.RiskLevel) ? "-" : src.RiskLevel
                     };
                     dest.NetAssetValueDate = DateTimeFormat(src.NetAssetValueDate);
+                    dest.MarketPriceDate = DateTimeFormat(src.MarketPriceDate);
                     dest.MarketPrice = ParseVolume(src.MarketPrice.RoundingValue());
                     dest.NetAssetValue = ParseVolume(src.NetAssetValue.RoundingValue());
 
