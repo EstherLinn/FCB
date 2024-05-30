@@ -7,6 +7,9 @@ using Foundation.Wealth.Extensions;
 using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Tag;
 using Feature.Wealth.Component.Models.IndexRecommendation;
+using Sitecore.IO;
+using System.Security.Cryptography;
+using Feature.Wealth.Component.Models.FundDetail;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -19,17 +22,22 @@ namespace Feature.Wealth.Component.Repositories
             List<Funds> fundItems = new List<Funds>();
 
             string sql = """
-                   SELECT Top 5 *
+                   SELECT *
                    FROM [vw_BasicFund] 
-                   ORDER BY ViewCount
-                   DESC,ProductCode
+                   ORDER BY ProductCode
                    """;
 
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 
+            var _tagsRepository = new TagsRepository();
+            var tags = _tagsRepository.GetFundTagData();
             foreach (var item in results)
             {
                 ProcessFundFilterDatas(item);
+                item.Tags = [];
+                item.Tags.AddRange(from tagModel in tags.Where(t => t.FundTagType == FundTagEnum.DiscountTag)
+                                   where tagModel.ProductCodes.Contains(item.ProductCode)
+                                   select tagModel.TagName);
                 fundItems.Add(item);
             }
             return fundItems;
@@ -51,6 +59,37 @@ namespace Feature.Wealth.Component.Repositories
                 item.PercentageChangeInFundPriceFormat = item.PercentageChangeInFundPrice.ToString().Substring(1);
             }
         }
+
+        public IList<Funds> GetFundsDatas()
+        {
+            var queryitem = FundRelatedSettingModel.GetFundDetailPageItem();
+            var query = queryitem.ID.ToGuid();
+            var etfData = GetFundData();
+
+            var funds = _repository.GetVisitRecords(query, "id");
+
+            if (funds == null || !funds.Any())
+            {
+                return new List<Funds>();
+            }
+
+            var fundIds = funds
+                        .OrderByDescending(x => x.VisitCount)
+                        .Take(5)
+                        .SelectMany(x => x.QueryStrings)
+                        .Where(x => x.Key.Equals("id"))
+                        .Select(x => x.Value)
+                        .ToList();
+
+
+            var results = etfData
+            .Where(e => fundIds.Contains(e.ProductCode))
+            .OrderBy(e => fundIds.IndexOf(e.ProductCode.ToString()))
+            .ToList();
+
+            return results;
+        }
+
 
         public IList<ETFs> GetETFData()
         {
@@ -107,7 +146,7 @@ namespace Feature.Wealth.Component.Repositories
                 if (dicTag.ContainsKey(TagType.Discount))
                 {
                     var discountTags = dicTag[TagType.Discount]
-                        .Where(tag => tag.ProductCodes.Contains(item.ProductCode.ToString()))
+                        .Where(tag => tag.ProductCodes.Any() && tag.ProductCodes.Contains(item.ProductCode))
                         .Select(tag => tag.TagKey)
                         .ToArray();
 

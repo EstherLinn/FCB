@@ -3,6 +3,8 @@ using System.Text;
 using System.Collections.Generic;
 using Foundation.Wealth.Manager;
 using static Feature.Wealth.Component.Models.CostRank.CostRankModel;
+using Feature.Wealth.Component.Models.ETF.Tag;
+using System.Linq;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -18,11 +20,26 @@ namespace Feature.Wealth.Component.Repositories
                    """;
 
             var results = DbManager.Custom.ExecuteIList<ETFs>(sql, null, CommandType.Text);
+
+            EtfTagRepository tagRepository = new EtfTagRepository();
+            var dicTag = tagRepository.GetTagCollection();
+
             foreach (var item in results)
             {
                 ProcessFundFilterDatas(item);
+                if (dicTag.ContainsKey(TagType.Discount))
+                {
+                    var discountTags = dicTag[TagType.Discount]
+                       .Where(tag => tag.ProductCodes.Any() && tag.ProductCodes.Contains(item.ProductCode))
+                       .Select(tag => tag.TagKey)
+                       .ToArray();
+
+                    item.ETFDiscountTags = discountTags;
+                }
                 ETFItems.Add(item);
+
             }
+           
             return ETFItems;
 
         }

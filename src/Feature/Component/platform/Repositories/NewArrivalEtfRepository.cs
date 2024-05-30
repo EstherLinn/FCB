@@ -5,6 +5,9 @@ using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.NewArrivalETF.NewArrivalEtfModel;
 using System.Globalization;
+using System.Linq;
+using Feature.Wealth.Component.Models.FundDetail;
+using Feature.Wealth.Component.Models.ETF.Tag;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -23,11 +26,23 @@ namespace Feature.Wealth.Component.Repositories
 
             var results = DbManager.Custom.ExecuteIList<ETFs>(sql, null, CommandType.Text);
 
+            EtfTagRepository tagRepository = new EtfTagRepository();
+            var dicTag = tagRepository.GetTagCollection();
+
             foreach (var item in results)
             {
                 if (item != null) 
                 {
                     ProcessFundFilterDatas(item);
+                    if (dicTag.ContainsKey(TagType.Discount))
+                    {
+                        var discountTags = dicTag[TagType.Discount]
+                           .Where(tag => tag.ProductCodes.Any() && tag.ProductCodes.Contains(item.ProductCode))
+                           .Select(tag => tag.TagKey)
+                           .ToArray();
+
+                        item.ETFDiscountTags = discountTags;
+                    }
                 }
             }
 

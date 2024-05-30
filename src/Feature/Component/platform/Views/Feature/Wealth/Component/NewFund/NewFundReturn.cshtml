@@ -32,17 +32,19 @@
 							}
 
 						</div>
-						@if (item.TargetName == "Y")
+						@if (item.Tags != null)
 						{
 							<div class="l-target__additional">
 								<ul class="l-tag">
-									<li class="l-tag__item">
-										<a href="#" class="o-tag">百元基金</a>
-									</li>
+									@for (var i = 0; i < item.Tags.Count; i++)
+									{
+										<li class="l-tag__item">
+											<a href="#" class="o-tag">@item.Tags[i] </a>
+										</li>
+									}
 								</ul>
 							</div>
 						}
-
 					</div>
 				</div>
 			</td>
@@ -130,7 +132,7 @@
 				}
 			</td>
 			<td class="c-cardTable__space"></td>
-			<td class="c-cardTable__footer" data-card-table-width="@((item.OnlineSubscriptionAvailability == "Y") ? "2/3" : "1/1")">
+			<td class="c-cardTable__footer" data-card-table-width="@((item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability))) ? "2/3" : "1/1")">
 				<div class="c-cardTable__content">
 					<ul class="l-collect l-collect--divider@lt">
 						<li class="l-collect__item">
@@ -144,7 +146,7 @@
 			</td>
 			<td class="c-cardTable__footer" data-card-table-width="1/3">
 				<div class="c-cardTable__content">
-					@if (item.OnlineSubscriptionAvailability == "Y")
+					@if (item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
 					{
 						@Html.SubscriptionButton(null, item.ProductCode, InvestTypeEnum.Fund, true)
 					}

@@ -75,6 +75,14 @@ namespace Feature.Wealth.Component.Models.HighRatedFund
             /// 百元標的
             /// </summary>
             public string TargetName { get; internal set; }
+
+            /// <summary>
+            /// 是否上架
+            /// </summary>
+            public string AvailabilityStatus { get; set; }
+
+            public List<string> Tags { get; set; }
+
         }
     }
 

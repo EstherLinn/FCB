@@ -53,5 +53,16 @@ namespace Feature.Wealth.Component.Models.FundDetail
             return FundRealtedItem.GeneralLink(Template.FundRelatedLink.Fields.FundEtfCompare)?.Url;
         }
 
+        private static Xcms.Sitecore.Foundation.Basic.FieldTypes.Link FundDetailPage()
+        {
+            Item FundRealtedItem = ItemUtils.GetItem(Template.FundRelatedLink.Root);
+            var link = FundRealtedItem.GeneralLink(Template.FundRelatedLink.Fields.FundDetails);
+            return link;
+        }
+        public static Item GetFundDetailPageItem()
+        {
+            return FundDetailPage()?.TargetItem;
+        }
+
     }
 }

@@ -16,7 +16,7 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
-            var funds = _repository.GetFundData();
+            var funds = _repository.GetFundsDatas();
             var etfs = _repository.GetETFDatas();
 
             var viewModel = new IndexRecommendationModel

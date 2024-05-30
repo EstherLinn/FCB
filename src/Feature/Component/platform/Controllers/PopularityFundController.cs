@@ -29,8 +29,8 @@ namespace Feature.Wealth.Component.Controllers
                 viewModel.SelectedId = multilineField;
                 var funds = _popularityFundRepository.GetFundData();
                 var popularFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
-                popularFunds=popularFunds.OrderByDescending(f => f.ViewCount).ToList();
-                viewModel.PopularFunds = _popularityFundRepository.GetFundRenderData(popularFunds);
+                var newfunds = popularFunds.OrderByDescending(f => f.ViewCount).ToList();
+                viewModel.PopularFunds = _popularityFundRepository.GetFundRenderData(newfunds);
                 viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
             }
 

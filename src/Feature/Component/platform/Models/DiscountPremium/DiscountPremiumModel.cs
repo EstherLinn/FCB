@@ -64,7 +64,13 @@ namespace Feature.Wealth.Component.Models.DiscountPremium
             /// 可否申購
             /// </summary>
             public string OnlineSubscriptionAvailability { get; set; }
-            
+
+            /// <summary>
+            /// 是否上架
+            /// </summary>
+            public string AvailabilityStatus { get; set; }
+
+            public string[] ETFDiscountTags { get; set; }
         }
     }
 
