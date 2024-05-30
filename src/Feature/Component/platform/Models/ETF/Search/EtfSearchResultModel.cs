@@ -37,7 +37,7 @@ namespace Feature.Wealth.Component.Models.ETF.Search
                 public static readonly ID NetWorthRiskIntro = new ID("{222994D3-23C5-4B79-BF60-6FFE59EA5F8D}");
                 public static readonly ID TransactionStatusIntro = new ID("{50445FDF-AE92-432D-A723-2D22C8858B9D}");
                 public static readonly ID InformationIntro = new ID("{4EA3226D-9632-4F66-88AF-CD34AD274572}");
-                public static readonly ID HotKeyword = new ID("{B29BDB52-5899-4F80-A909-C54735395DF7}");
+                public static readonly ID HotKeywords = new ID ("{51B8F96A-A2EE-4478-929A-900040F5931F}");
                 public static readonly ID HotProduct = new ID("{26A932EB-7E4F-4DE6-9AD9-205FBC9BAFE5}");
             }
         }

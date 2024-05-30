@@ -15,53 +15,84 @@ namespace Feature.Wealth.Component.Repositories
 
         public Dictionary<TagType, List<ProductTag>> GetTagCollection()
         {
-            var dic = GetTagItemSource()
-                .GroupBy(i => i.TagType)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.ToList()
-                );
-            
+            var dic = GetTagItemSource();
             return dic;
         }
 
-        private List<ProductTag> GetTagItemSource()
+        private Dictionary<TagType, List<ProductTag>> GetTagItemSource()
         {
             Item tagSource = ItemUtils.GetItem(TagSourceFolder);
-            var tags = tagSource.GetDescendants(ComponentTemplates.TagContent.Id);
+            var categoryList = tagSource.GetDescendants(ComponentTemplates.Category.Id);
 
-            if (tags == null || !tags.Any())
+            if (categoryList == null || !categoryList.Any())
             {
                 return null;
             }
 
-            var result = ParseTagContent(tags);
-            return result?.ToList();
+            var dicTag = new Dictionary<TagType, List<ProductTag>>();
+
+            foreach (Item categoryItem in categoryList)
+            {
+                Item typeItem = categoryItem.TargetItem(ComponentTemplates.Category.Fields.TagType);
+                string typeValue = typeItem.GetFieldValue(ComponentTemplates.DropdownOption.Fields.OptionValue);
+
+                if (!Enum.TryParse(typeValue, out TagType type))
+                {
+                    type = TagType.None;
+                }
+
+                List<ProductTag> list = ParseTagContent(categoryItem, type)?.ToList();
+
+                if (dicTag.ContainsKey(type))
+                {
+                    dicTag[type].AddRange(list);
+                }
+                else
+                {
+                    dicTag[type] = list;
+                }
+            }
+
+            return dicTag;
+        }
+
+        private IEnumerable<ProductTag> ParseTagContent(Item categoryItem, TagType tagType)
+        {
+            var tags = categoryItem.GetDescendants(ComponentTemplates.TagContent.Id);
+
+            foreach (Item tagItem in tags)
+            {
+                string key = tagItem.GetFieldValue(ComponentTemplates.TagContent.Fields.TagName);
+
+                ProductTag productTag = new ProductTag()
+                {
+                    TagKey = key,
+                    ProductCodes = tagItem.GetMultiLineText(ComponentTemplates.TagContent.Fields.ProductCodeList)?.ToList(),
+                    TagType = tagType
+                };
+
+                yield return productTag;
+            }
         }
 
         public IEnumerable<ProductTag> ParseTagContent(IEnumerable<Item> items)
         {
             foreach (Item tagItem in items)
             {
-                string key = tagItem.GetFieldValue(ComponentTemplates.TagContent.Fields.TagKey);
-
-                if (string.IsNullOrWhiteSpace(key))
-                {
-                    continue;
-                }
-
-                var typeItem = tagItem.TargetItem(ComponentTemplates.TagContent.Fields.Type);
+                string key = tagItem.GetFieldValue(ComponentTemplates.TagContent.Fields.TagName);
+                var categoryItem = tagItem.GetAncestor(ComponentTemplates.Category.Id);
+                var typeItem = categoryItem.TargetItem(ComponentTemplates.Category.Fields.TagType);
                 string typeValue = typeItem.GetFieldValue(ComponentTemplates.DropdownOption.Fields.OptionValue);
 
                 if (!Enum.TryParse(typeValue, out TagType type))
                 {
-                    continue;
+                    type = TagType.None;
                 }
 
                 ProductTag productTag = new ProductTag()
                 {
                     TagKey = key,
-                    ProductCodes = tagItem.GetMultiLineText(ComponentTemplates.TagContent.Fields.ProductCode)?.ToList(),
+                    ProductCodes = tagItem.GetMultiLineText(ComponentTemplates.TagContent.Fields.ProductCodeList)?.ToList(),
                     TagType = type
                 };
 

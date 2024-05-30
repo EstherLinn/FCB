@@ -364,6 +364,11 @@
         public string[] DiscountTags { get; set; }
 
         /// <summary>
+        /// 熱門關鍵字標籤
+        /// </summary>
+        public string[] KeywordsTags { get; set; }
+
+        /// <summary>
         /// 分類標籤
         /// </summary>
         public string[] CategoryTags { get; set; }

@@ -28,15 +28,24 @@ namespace Feature.Wealth.Component
             }
         }
 
-        public struct TagContent
+        public struct Category
+        {
+            public static readonly ID Id = new ID("{44DAE333-F9A8-45B1-A876-310C13E5A50A}");
+
+            public struct Fields
+            {
+                public static readonly ID TagType = new ID("{E043FDCE-AF2F-4847-A024-D1ABAFF8E3B9}");
+            }
+        }
+
+        public struct TagContent    
         {
             public static readonly ID Id = new ID("{6132D100-78A2-440A-8CF8-B9AE3146BE8B}");
 
             public struct Fields
             {
-                public static readonly ID TagKey = new ID("{EB50204C-7637-4247-9734-E3A2493B61E8}");
-                public static readonly ID ProductCode = new ID("{2396DFEA-C6DA-4720-AAE2-44B4BC373AAA}");
-                public static readonly ID Type = new ID("{E043FDCE-AF2F-4847-A024-D1ABAFF8E3B9}");
+                public static readonly ID TagName = new ID("{EB50204C-7637-4247-9734-E3A2493B61E8}");
+                public static readonly ID ProductCodeList = new ID("{2396DFEA-C6DA-4720-AAE2-44B4BC373AAA}");
             }
         }
     }

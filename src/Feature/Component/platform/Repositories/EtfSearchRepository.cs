@@ -183,11 +183,29 @@ namespace Feature.Wealth.Component.Repositories
                         dest.DiscountTags = dicTag[TagType.Discount].Where(i => i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
                                                                     .Select(i => i.TagKey).ToArray();
                     }
+                    else
+                    {
+                        dest.DiscountTags = [];
+                    }
 
                     if (dicTag.ContainsKey(TagType.Category))
                     {
                         dest.CategoryTags = dicTag[TagType.Category].Where(i => i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
                                                                     .Select(i => i.TagKey).ToArray();
+                    }
+                    else
+                    {
+                        dest.CategoryTags = [];
+                    }
+
+                    if (dicTag.ContainsKey(TagType.Keywords))
+                    {
+                        dest.KeywordsTags = dicTag[TagType.Keywords].Where(i => i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
+                                                                    .Select(i => i.TagKey).ToArray();
+                    }
+                    else
+                    {
+                        dest.KeywordsTags = [];
                     }
                 });
 
@@ -247,7 +265,7 @@ namespace Feature.Wealth.Component.Repositories
                 return;
             }
 
-            var hotKeywords = dataSource.GetMultiListValueItems(Templates.EtfSearchDatasource.Fields.HotKeyword);
+            var hotKeywords = dataSource.GetMultiListValueItems(Templates.EtfSearchDatasource.Fields.HotKeywords);
             var hotProducts = dataSource.GetMultiListValueItems(Templates.EtfSearchDatasource.Fields.HotProduct);
             this.HotKeywordList = TagRepository.ParseTagContent(hotKeywords)?.ToList();
             this.HotProductList = TagRepository.ParseTagContent(hotProducts)?.ToList();
