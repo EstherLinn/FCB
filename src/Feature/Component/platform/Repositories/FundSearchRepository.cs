@@ -29,7 +29,7 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         public List<Funds> GetFundRenderData(IList<FundSearchModel> funds)
         {
-            var _tagsRepository = new TagsRepository();
+            var _tagsRepository = new FundTagRepository();
             var tags = _tagsRepository.GetFundTagData();
 
             var result = new List<Funds>();

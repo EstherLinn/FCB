@@ -83,7 +83,7 @@ namespace Feature.Wealth.Component.Repositories
 
         public Dictionary<FundTagEnum, List<string>> GetTagsById(string fundId)
         {
-            TagsRepository tagsRepository = new TagsRepository();
+            FundTagRepository tagsRepository = new FundTagRepository();
             var dic = new Dictionary<FundTagEnum, List<string>>() {
                 {FundTagEnum.DiscountTag, new List<string>() },
                 {FundTagEnum.SortTag, new List<string>() }

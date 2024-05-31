@@ -18,7 +18,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = "SELECT * FROM [vw_BasicFund]";
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 
-            var _tagsRepository = new TagsRepository();
+            var _tagsRepository = new FundTagRepository();
             var tags = _tagsRepository.GetFundTagData();
             foreach (var item in results)
             {
@@ -62,6 +62,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.OnlineSubscriptionAvailability = f.OnlineSubscriptionAvailability;
                 vm.PercentageChangeInFundPrice = f.PercentageChangeInFundPrice;
                 vm.TargetName = f.TargetName;
+                vm.Tags = f.Tags;
                 result.Add(vm);
             }
             return result;

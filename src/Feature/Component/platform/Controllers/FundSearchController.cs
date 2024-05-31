@@ -16,7 +16,7 @@ namespace Feature.Wealth.Component.Controllers
     public class FundSearchController : Controller
     {
         private FundSearchRepository _fundsearchrepository = new FundSearchRepository();
-        private TagsRepository _tagrepository = new TagsRepository();
+        private FundTagRepository _tagrepository = new FundTagRepository();
 
         public ActionResult Index()
         {
