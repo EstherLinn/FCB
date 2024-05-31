@@ -62,6 +62,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.OnlineSubscriptionAvailability = f.OnlineSubscriptionAvailability;
                 vm.PercentageChangeInFundPrice = f.PercentageChangeInFundPrice;
                 vm.TargetName = f.TargetName;
+                vm.Tags = f.Tags;
                 result.Add(vm);
             }
             return result;

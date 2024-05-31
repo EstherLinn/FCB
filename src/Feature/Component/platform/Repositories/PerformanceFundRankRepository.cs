@@ -77,7 +77,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.TargetName = f.TargetName;
                 vm.FundTypeName = f.FundTypeName;
                 vm.InvestmentTargetName = f.InvestmentTargetName;
-                
+                vm.Tags = f.Tags;
                 result.Add(vm);
             }
             return result;

@@ -64,6 +64,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.PercentageChangeInFundPrice = f.PercentageChangeInFundPrice;
                 vm.DomesticInvestmentRatio = f.DomesticInvestmentRatio;
                 vm.TargetName = f.TargetName;
+                vm.Tags = f.Tags
                 result.Add(vm);
             }
             return result;
