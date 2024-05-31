@@ -10,7 +10,7 @@ using Template = Feature.Wealth.Component.Models.Tags.FundTagsModel.Template;
 
 namespace Feature.Wealth.Component.Repositories
 {
-    public class TagsRepository
+    public class FundTagRepository
     {
         public List<Tags> GetFundTagData()
         {

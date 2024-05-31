@@ -18,7 +18,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = "SELECT * FROM [vw_BasicFund]";
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 
-            var _tagsRepository = new TagsRepository();
+            var _tagsRepository = new FundTagRepository();
             var tags = _tagsRepository.GetFundTagData();
             foreach (var item in results)
             {
