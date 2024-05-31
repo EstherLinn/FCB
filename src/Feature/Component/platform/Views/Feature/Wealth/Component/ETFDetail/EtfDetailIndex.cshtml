@@ -191,25 +191,22 @@
         @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_DividendHistory.cshtml")
         @Html.Partial("/Views/Feature/Wealth/Component/ETFDetail/_ScaleHistory.cshtml")
 
-        @*<div class="c-hashTags">
+        @if (Model.CategoryTags != null && Model.CategoryTags.Any())
+        {
+            <div class="c-hashTags">
                 <div class="c-hashTags__title">Tags</div>
                 <div class="c-hashTags__content">
                     <ul class="l-divideList l-divideList--sm">
-                        <li class="l-divideList__item l-divideList__item--auto">
-                            <a href="" class="o-hashTag u-nowrap">#攻守兼備</a>
-                        </li>
-                        <li class="l-divideList__item l-divideList__item--auto">
-                            <a href="" class="o-hashTag u-nowrap">#新興崛起</a>
-                        </li>
-                        <li class="l-divideList__item l-divideList__item--auto">
-                            <a href="" class="o-hashTag u-nowrap">#優質首選</a>
-                        </li>
-                        <li class="l-divideList__item l-divideList__item--auto">
-                            <a href="" class="o-hashTag u-nowrap">#愛地球</a>
-                        </li>
+                        @foreach (var tag in Model.CategoryTags)
+                        {
+                            <li class="l-divideList__item l-divideList__item--auto">
+                                <a href="" class="o-hashTag u-nowrap">#@tag</a>
+                            </li>
+                        }
                     </ul>
                 </div>
-            </div>*@
+            </div>
+        }
     </div>
 
 </div>

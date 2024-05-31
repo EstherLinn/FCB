@@ -7,7 +7,6 @@ using Mapster;
 using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
 using System.Globalization;
 using System.Linq;
@@ -31,6 +30,11 @@ namespace Feature.Wealth.Component.Repositories
         /// 產品註記
         /// </summary>
         public string Indicator { get; set; }
+
+        /// <summary>
+        /// 標籤
+        /// </summary>
+        public Dictionary<TagType, List<ProductTag>> TagCollection { get; set; }
 
         public EtfDetailModel GetETFDetailModel(string etfId, Item dataSource)
         {
@@ -112,8 +116,10 @@ namespace Feature.Wealth.Component.Repositories
 
             model.BasicEtf = result;
 
-            //model.VisitCount = GetETFVisiteCount();   //TODO: 待修改ETF
+            EtfTagRepository tagRepository = new EtfTagRepository();
+            this.TagCollection = tagRepository.GetTagCollection();
             model.DiscountTags = GetTags(TagType.Discount);
+            model.CategoryTags = GetTags(TagType.Category);
             model.ETFMarketPriceOverPastYear = GetMarketPriceWithOverPastYear();
             model.ETFNetWorthOverPastYear = GetNetWorthWithOverPastYear();
             model.ETFTypeRanks = GetSameTypeETFRank();
@@ -139,8 +145,7 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private string[] GetTags(TagType tagType)
         {
-            EtfTagRepository tagRepository = new EtfTagRepository();
-            var dicTag = tagRepository.GetTagCollection();
+            var dicTag = this.TagCollection;
 
             if (dicTag.TryGetValue(tagType, out List<ProductTag> productTags))
             {
@@ -534,7 +539,7 @@ namespace Feature.Wealth.Component.Repositories
                     GROUP BY [BankProductCode]
                 )
 
-                SELECT 
+                SELECT
                      [Table].[BankProductCode]
                     ,[Table].[ETFCurrency]
                     ,[Table].[BankBuyPrice]
@@ -569,7 +574,7 @@ namespace Feature.Wealth.Component.Repositories
                 	SELECT * FROM [FundETFCTE]
                 	WHERE [RowNumber] = 1
                 ) AS [Table]
-                LEFT JOIN 
+                LEFT JOIN
                 (
                 	SELECT * FROM [FundETFCTE]
                 	WHERE [RowNumber] = 2

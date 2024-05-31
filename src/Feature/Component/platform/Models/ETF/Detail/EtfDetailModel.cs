@@ -21,6 +21,11 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         public string[] DiscountTags { get; set; }
 
         /// <summary>
+        /// 分類標籤
+        /// </summary>
+        public string[] CategoryTags { get; set; }
+
+        /// <summary>
         /// 近一年市價表現
         /// </summary>
         public List<EtfPriceHistory> ETFMarketPriceOverPastYear { get; set; }
