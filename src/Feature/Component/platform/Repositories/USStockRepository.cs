@@ -66,10 +66,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), [SixMonthReturn]) [SixMonthReturn]
                            ,B.[OnlineSubscriptionAvailability]
                            ,B.[AvailabilityStatus]
-                           ,C.[ViewCount]
                            FROM [Sysjust_USStockList] A WITH (NOLOCK)
                            LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
-                           LEFT JOIN [USStockViewCount] C WITH (NOLOCK) ON A.[FirstBankCode] = C.[FirstBankCode]
                            WHERE A.[FirstBankCode] = @FirstBankCode";
 
             var uSStock = this._dbConnection.Query<USStock>(sql, new { FirstBankCode = firstBankCode })?.FirstOrDefault() ?? new USStock();
@@ -78,7 +76,7 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 暫定 觸發紀錄指數瀏覽sp
+        /// 暫定 觸發紀錄指數瀏覽sp 已棄用
         /// </summary>
         /// <param name="indexCode"></param>
         /// <returns></returns>

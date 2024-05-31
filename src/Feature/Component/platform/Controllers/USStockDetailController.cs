@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using Feature.Wealth.Component.Models.USStock;
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Data.Items;
@@ -11,6 +12,9 @@ namespace Feature.Wealth.Component.Controllers
     public class USStockDetailController : Controller
     {
         private readonly USStockRepository _uSStockRepository = new USStockRepository();
+        private readonly ViewCountRepository _viewCountrepository = new ViewCountRepository();
+
+        private string _currentUrl = string.Empty;
 
         public ActionResult Index()
         {
@@ -18,8 +22,12 @@ namespace Feature.Wealth.Component.Controllers
 
             string firstBankCode = Sitecore.Web.WebUtil.GetSafeQueryString("id");
 
-            this._uSStockRepository.TriggerViewCountRecord(firstBankCode);
+            this._currentUrl = this.ControllerContext.HttpContext.Request.Url.GetLeftPart(UriPartial.Authority);
 
+            if (item != null)
+            {
+                this._viewCountrepository.UpdateViewCountInfo(item.ID.ToString(), this._currentUrl);
+            }
             var uSStock = this._uSStockRepository.GetUSStock(firstBankCode);
 
             return View("/Views/Feature/Wealth/Component/USStock/USStockDetail.cshtml", CreateModel(item, uSStock));
@@ -36,6 +44,11 @@ namespace Feature.Wealth.Component.Controllers
 
             uSStock = this._uSStockRepository.GetButtonHtml(uSStock, false);
             uSStock = this._uSStockRepository.SetTags(uSStock, hotKeywordTags, hotProductTags, discounts);
+
+            if (item != null)
+            {
+                uSStock.ViewCount = this._viewCountrepository.GetViewCountInfo(item.ID.ToString(), this._currentUrl);
+            }
 
             var model = new USStockDetailModel
             {

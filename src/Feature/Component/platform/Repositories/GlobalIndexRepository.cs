@@ -141,7 +141,6 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(nvarchar, CONVERT(MONEY, A.[Change]), 1) [Change]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), A.[ChangePercentage])) + '%' [ChangePercentage]
                            ,CONVERT(bit, IIF(A.[Change] >= 0, 1, 0)) [UpOrDown]
-                           ,B.[ViewCount]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[DailyReturn])) + '%' [DailyReturn]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[WeeklyReturn])) + '%' [WeeklyReturn]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[OneMonthReturn])) + '%' [OneMonthReturn]
@@ -151,7 +150,6 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[OneYearReturn])) + '%' [OneYearReturn]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[ThreeYearReturn])) + '%' [ThreeYearReturn]
                            FROM [Sysjust_GlobalIndex] A WITH (NOLOCK)
-                           LEFT JOIN [GlobalIndexViewCount] B WITH (NOLOCK) ON A.[IndexCode] = B.[IndexCode]
                            LEFT JOIN [Sysjust_GlobalIndex_ROI] C WITH (NOLOCK) ON A.[IndexCode] = C.[IndexID]
                            WHERE A.[IndexCode] = @IndexCode
                            ORDER BY C.[DataDate] DESC";
@@ -162,7 +160,7 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 暫定 觸發紀錄指數瀏覽sp
+        /// 暫定 觸發紀錄指數瀏覽sp 已棄用
         /// </summary>
         /// <param name="indexCode"></param>
         /// <returns></returns>
