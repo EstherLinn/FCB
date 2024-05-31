@@ -137,10 +137,7 @@
                                                     <div class="l-form">
                                                         <div class="l-form__item">
                                                             <div class="o-calendarBox o-calendarBox--filter">
-                                                                <!-- data-start-date: 請填寫基金成立日期 -->
-                                                                <!-- data-start-date: 若無限制日期，請移除此Attribute -->
-                                                                <!-- data-end-date: 若無限制日期，請移除此Attribute -->
-                                                                <input type="text" class="o-calendarBox__input" data-compare-filter="inputStart" data-calendar="true" data-start-date="2024/01/01" data-end-date="0d" readonly>
+                                                                <input type="text" class="o-calendarBox__input" data-compare-filter="inputStart" data-calendar="true" data-end-date="0d" readonly>
                                                             </div>
                                                         </div>
                                                         <div class="l-form__error">
@@ -153,10 +150,7 @@
                                                     <div class="l-form">
                                                         <div class="l-form__item">
                                                             <div class="o-calendarBox o-calendarBox--filter">
-                                                                <!-- data-start-date: 請填寫基金成立日期 -->
-                                                                <!-- data-start-date: 若無限制日期，請移除此Attribute -->
-                                                                <!-- data-end-date: 若無限制日期，請移除此Attribute -->
-                                                                <input type="text" class="o-calendarBox__input" data-compare-filter="inputEnd" data-calendar="true" data-start-date="2024/01/01" data-end-date="0d" readonly>
+                                                                <input type="text" class="o-calendarBox__input" data-compare-filter="inputEnd" data-calendar="true" data-end-date="0d" readonly>
                                                             </div>
                                                         </div>
                                                         <div class="l-form__error">
@@ -690,8 +684,8 @@
     <div class="l-flex__item">
         <div class="c-productItem c-productItem--ltGn">
             <div class="c-productItem__name">
-                <a href="./detail.html" class="c-legend c-legend--link" style="--legend-color:#238C6C">
-                    <span class="c-legend__name">TA25 安聯收益成長基金-AM穩定月收類股(美元)</span>
+                <a href="#" class="c-legend c-legend--link" style="--legend-color:#238C6C">
+                    <span class="c-legend__name"></span>
                 </a>
             </div>
             <div class="c-productItem__action">
@@ -731,7 +725,7 @@
 </template>
 <template id="tmplLable">
     <a href="./detail.html" class="c-legend c-legend--link" style="--legend-color:#238C6C">
-        <span class="c-legend__name">TA25 安聯收益成長基金-AM穩定月收類股(美元)</span>
+        <span class="c-legend__name"></span>
     </a>
 </template>
 
@@ -1109,14 +1103,14 @@
         // 加入基金
         $('[data-fund-add]').on('click', function (e) {
             if (fundParams.length < 7) {
-                this.href = new URL('@Model.FundListLinkUrl');
+                this.href = new URL(location.origin + '@Model.FundListLinkUrl');
             }
         });
 
         // 加入ETF
         $('[data-etf-add]').on('click', function (e) {
             if (fundParams.length < 7) {
-                this.href = new URL('@Model.ETFListLinkUrl');
+                this.href = new URL(location.origin + '@Model.ETFListLinkUrl');
             }
         });
 
@@ -1209,16 +1203,15 @@
                         obj.endDate = today.toISOString().split('T')[0];
                         break;
                     case 'establishment':
-                        obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                        obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-') || '1900-01-01';
                         obj.endDate = today.toISOString().split('T')[0];
                         break;
                 }
-
                 $('[data-compare-filter="inputStart"]').val(obj.startDate.replaceAll('-', '/'));
-                $('[data-compare-filter="inputStart"]').val(obj.endDate.replaceAll('-', '/'));
-                $('[data-compare-filter="inputStart"]').datepicker('setDate', obj.startDate.replaceAll('-', '/'));
-                $('[data-compare-filter="inputEnd"]').datepicker('setDate', obj.endDate.replaceAll('-', '/'));
-            } else {            
+                $('[data-compare-filter="inputEnd"]').val(obj.endDate.replaceAll('-', '/'));
+                $('[data-compare-filter="inputStart"]').datepicker('setDate', obj.startDate);
+                $('[data-compare-filter="inputEnd"]').datepicker('setDate', obj.endDate);
+            } else {
                 obj.startDate = obj.startDate.replaceAll('/', '-');
                 obj.endDate = obj.endDate.replaceAll('/', '-');
             }
@@ -1261,6 +1254,7 @@
                 const cloneTmpl = template.content.cloneNode(true);
                 var legend = cloneTmpl.querySelector('.c-legend');
                 legend.style.setProperty('--legend-color', chartColors[i]);
+                legend.setAttribute('href', getDetailUrl(lables, item.id));
                 let name = cloneTmpl.querySelector('.c-legend__name');
                 name.textContent = item.id + ' ' + item.name;
                 let id = cloneTmpl.querySelector('[data-fundetf-remove]');
@@ -1504,7 +1498,7 @@
                             for (let key in data.respNetAssetValue) {
                                 if (params.fund.includes(key)) {
                                     let result = compareParams.find((item) => item.id == key);
-                                    if (data.respNetAssetValue[key].resultSet) {
+                                    if (data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
                                         mapData.push({
                                             id: key,
                                             name: result.name,
@@ -1527,7 +1521,7 @@
                                         });
                                     }
                                 }
-                                if (params.etf.includes(key) && data.respNetAssetValue[key].resultSet) {
+                                if (params.etf.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
                                     let result = compareParams.find((item) => item.id == key);
                                     const navDate = data.respNetAssetValue[key].resultSet.result[0].v1.split(',');
                                     const nav = data.respNetAssetValue[key].resultSet.result[0].v2.split(',');
@@ -1982,7 +1976,8 @@
                                         },
                                         marker: {
                                             symbol: 'circle'
-                                        }
+                                        },
+                                        turboThreshold: 1000000
                                     }
                                 },
                                 tooltip: {
@@ -2012,7 +2007,7 @@
                             });
                             $('.c-empty').addClass('u-hidden');
                             $('[data-chart="compare"]').removeClass('u-hidden');
-                        } else {
+                        } else if (isInit) {
                             $('.c-empty').removeClass('u-hidden');
                             $('[data-chart="compare"]').addClass('u-hidden');
                         }
@@ -2039,7 +2034,7 @@
                 //location.href = new URL(location.origin + emptyLinkUrl);
                 $('.c-empty').removeClass('u-hidden');
                 $('[data-chart="compare"]').addClass('u-hidden');
-                
+
                 clearTable('netAssetValueTable');
                 clearTable('rateOfReturnTable');
                 clearTable('riskindicatorsTable');
