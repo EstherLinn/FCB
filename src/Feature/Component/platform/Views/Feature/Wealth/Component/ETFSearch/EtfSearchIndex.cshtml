@@ -12,49 +12,6 @@
 @Html.Partial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchFilter.cshtml", Model.FilterModel)
 @Html.Partial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchResult.cshtml", Model.SearchResultModel)
 
-<div id="popupPurchase" class="c-modal c-modal--sm mfp-hide">
-    <div class="c-modal__wrap">
-        <header class="c-modal__header">
-            <h2 class="c-modal__title">立即申購</h2>
-        </header>
-        <div class="c-modal__content">
-            <div class="u-hidden@lt-up">
-                <div class="l-flex u-flex-col u-flex-gap-xs">
-                    <div class="l-flex__item">
-                        <span class="t-bold">選擇申購平台：</span>
-                    </div>
-                    <div class="l-flex__item">
-                        <div class="l-pickGroup">
-                            <div class="l-pickGroup__item">
-                                <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform" checked>
-                                    <div class="o-btnRadio__text"><span>第e行動</span></div>
-                                </label>
-                            </div>
-                            <div class="l-pickGroup__item">
-                                <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform">
-                                    <div class="o-btnRadio__text"><span>iLEO</span></div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="c-modal__action">
-            <div class="l-action l-action--inline">
-                <div class="l-action__item">
-                    <a href="#" class="o-btn o-btn--primary o-btn--sm">單筆申購</a>
-                </div>
-                <div class="l-action__item">
-                    <a href="#" class="o-btn o-btn--primary o-btn--sm">定期定額</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <template id="tmplKeywordNotFound">
     <div class="c-empty">
         <div class="c-empty__img">
