@@ -5,7 +5,6 @@
 @{
     var logoutUrl = ClientRoute.GenerateUrl(this, "Accounts", "Logout");
     var member = FcbMemberHelper.GetMemberAllInfo();
-    var loginItem = ItemUtils.GetItem(HeaderWidgetModel.Template.Login.Root);
 }
 <div class="l-header__tools">
     <div class="l-topbar">
@@ -110,31 +109,31 @@
                     <nav class="c-popover__content">
                         <ul class="c-listGroup">
                             <li class="c-listGroup__item">
-                                <a href="#" class="o-itemLink">
+                                <a href="@MemberRelatedLinkHelper.GetFocusListUrl()" class="o-itemLink">
                                     <span class="o-itemLink__title t-bold">關注清單</span>
                                     <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
                                 </a>
                             </li>
                             <li class="c-listGroup__item">
-                                <a href="#" class="o-itemLink">
+                                <a href="@MemberRelatedLinkHelper.GetExclusiveRecommendationUrl()" class="o-itemLink">
                                     <span class="o-itemLink__title t-bold">專屬推薦</span>
                                     <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
                                 </a>
                             </li>
                             <li class="c-listGroup__item">
-                                <a href="#" class="o-itemLink">
+                                <a href="@MemberRelatedLinkHelper.GetFinancialManagementTrialUrl()" class="o-itemLink">
                                     <span class="o-itemLink__title t-bold">理財試算</span>
                                     <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
                                 </a>
                             </li>
                             <li class="c-listGroup__item">
-                                <a href="#" class="o-itemLink">
+                                <a href="@MemberRelatedLinkHelper.GetFavoriteNewsUrl()" class="o-itemLink">
                                     <span class="o-itemLink__title t-bold">收藏新聞</span>
                                     <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
                                 </a>
                             </li>
                             <li class="c-listGroup__item">
-                                <a href="#" class="o-itemLink">
+                                <a href="@MemberRelatedLinkHelper.GetRemoteFinancialConsultingUrl()" class="o-itemLink">
                                     <span class="o-itemLink__title t-bold">遠距理財諮詢</span>
                                     <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
                                 </a>
@@ -142,48 +141,8 @@
                         </ul>
                     </nav>
                     <div class="c-popover__footer">
-                        <a href="#" class="o-btn o-btn--primary o-btn--sm o-btn--flat">預約諮詢</a>
-                    </div>
-                    @*<nav class="c-popover__content">
-            <ul class="c-listGroup">
-                <li class="c-listGroup__item">
-                    @Html.Sitecore().BeginField(HeaderWidgetModel.Template.Login.Fields.FocusListLink.ToString(), loginItem, new { haschildren = true, @class = "o-itemLink" })
-                    <span class="o-itemLink__title t-bold">關注清單</span>
-                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                    @Html.Sitecore().EndField()
-                </li>
-                <li class="c-listGroup__item">
-                    @Html.Sitecore().BeginField(HeaderWidgetModel.Template.Login.Fields.ExclusiveRecommendationLink.ToString(), loginItem, new { haschildren = true, @class = "o-itemLink" })
-                    <span class="o-itemLink__title t-bold">專屬推薦</span>
-                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                    @Html.Sitecore().EndField()
-
-                </li>
-                <li class="c-listGroup__item">
-                    @Html.Sitecore().BeginField(HeaderWidgetModel.Template.Login.Fields.FinancialManagementTrialCalculationLink.ToString(), loginItem, new { haschildren = true, @class = "o-itemLink" })
-                    <span class="o-itemLink__title t-bold">理財試算</span>
-                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                    @Html.Sitecore().EndField()
-                </li>
-                <li class="c-listGroup__item">
-                    @Html.Sitecore().BeginField(HeaderWidgetModel.Template.Login.Fields.FavoriteNewsLink.ToString(), loginItem, new { haschildren = true, @class = "o-itemLink" })
-                    <span class="o-itemLink__title t-bold">收藏新聞</span>
-                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                    @Html.Sitecore().EndField()
-                </li>
-                <li class="c-listGroup__item">
-                    @Html.Sitecore().BeginField(HeaderWidgetModel.Template.Login.Fields.RemoteFinancialConsultingLink.ToString(), loginItem, new { haschildren = true, @class = "o-itemLink" })
-                        <span class="o-itemLink__title t-bold">遠距理財諮詢</span>
-                        <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                    @Html.Sitecore().EndField()
-                </li>
-            </ul>
-        </nav>
-        <div class="c-popover__footer">
-            @Html.Sitecore().BeginField(HeaderWidgetModel.Template.Login.Fields.ReserveConsultingLink.ToString(), loginItem, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--sm o-btn--flat" })
-            預約諮詢
-            @Html.Sitecore().EndField()
-        </div>*@
+                        <a href="@MemberRelatedLinkHelper.GetReserveConsultingUrl()" class="o-btn o-btn--primary o-btn--sm o-btn--flat">預約諮詢</a>
+                    </div>                  
                 </div>
             </div>
         </div>
