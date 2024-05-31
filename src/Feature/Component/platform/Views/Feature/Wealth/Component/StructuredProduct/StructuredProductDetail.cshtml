@@ -128,6 +128,78 @@
             function RenderDividendList() {
 
                 if (DividendData.length != 0) {
+                    var data = DividendData;
+                    var orderby = '';
+                    var $this = $('[data-tab-panel-id="tab-2"] .o-sorting');
+
+                    if ($this.hasClass('is-asc')) {
+                        orderby = 'is-asc';
+                    } else if ($this.hasClass('is-desc')) {
+                        orderby = 'is-desc';
+                    };
+
+
+                    // 選取年份
+                    var selectedYear = parseInt($("#dividendyear").val());
+                    var filteredData = data.filter(function (item) {
+                        return new Date(item.DepositDay).getFullYear() == selectedYear;
+                    });
+
+
+                    // html
+                    var length = Math.min(filteredData.length, 12);
+                    var count = 1;
+                    var percolumn = 6;
+
+                    var DividendHtml = '';
+
+                    for (var i = 0; i < length; i++) {
+
+                        var tbodyHtml = '';
+
+                        // thead、tbody開頭
+                        if (count % percolumn == 1) {
+                            DividendHtml += '<div class="l-flex__item">';
+                            DividendHtml += '<div class="l-table">';
+                            DividendHtml += '<table class="c-table u-center" data-table-name="dividendTable">';
+                            DividendHtml += '<colgroup>';
+                            DividendHtml += '<col style="width: 33.3%;">';
+                            DividendHtml += '<col style="width: 33.3%;">';
+                            DividendHtml += '<col style="width: 33.3%;">';
+                            DividendHtml += '</colgroup>';
+
+                            var theadClass = ((count + percolumn - 1) % (percolumn * 2) == 0) ? ' class="u-hidden@lt"' : '';
+
+                            //sort
+                            var htr = $('#dividend-theadtr').html().replace(/%Sort%/gi, orderby);
+
+                            var theadHtml = '<thead' + theadClass + '>' + htr + '</thead>';
+                            DividendHtml += theadHtml;
+
+                            tbodyHtml += '<tbody>';
+                        }
+
+                        // tbody內容
+                        var tr = $('#dividend-tbodytr').html();
+
+                        tr = tr.replace(/%DepositDay%/gi, filteredData[i].DepositDay);
+                        tr = tr.replace(/%CurrencyName%/gi, filteredData[i].CurrencyName);
+                        tr = tr.replace(/%DividendValue%/gi, filteredData[i].DividendValue);
+
+                        tbodyHtml += tr;
+
+                        // tbody end
+                        if (count % percolumn == 0) {
+                            tbodyHtml += '</tbody></table></div></div>';
+                        }
+
+                        DividendHtml += tbodyHtml;
+
+                        count++;
+                    }
+
+                    $('#dividendtable').html(DividendHtml);
+
                     $('#dividendContent').removeClass('u-hidden');
                     $('#dividendEmpty').addClass('u-hidden');
                 }
@@ -135,78 +207,6 @@
                     $('#dividendContent').addClass('u-hidden');
                     $('#dividendEmpty').removeClass('u-hidden');
                 }
-
-                var data = DividendData;
-                var orderby = '';
-                var $this = $('[data-tab-panel-id="tab-2"] .o-sorting');
-
-                if ($this.hasClass('is-asc')) {
-                    orderby = 'is-asc';
-                } else if ($this.hasClass('is-desc')) {
-                    orderby = 'is-desc';
-                };
-
-
-                // 選取年份
-                var selectedYear = parseInt($("#dividendyear").val());
-                var filteredData = data.filter(function (item) {
-                    return new Date(item.DepositDay).getFullYear() == selectedYear;
-                });
-
-
-                // html
-                var length = Math.min(filteredData.length, 12);
-                var count = 1;
-                var percolumn = 6;
-
-                var DividendHtml = '';
-
-                for (var i = 0; i < length; i++) {
-
-                    var tbodyHtml = '';
-
-                    // thead、tbody開頭
-                    if (count % percolumn == 1) {
-                        DividendHtml += '<div class="l-flex__item">';
-                        DividendHtml += '<div class="l-table">';
-                        DividendHtml += '<table class="c-table u-center" data-table-name="dividendTable">';
-                        DividendHtml += '<colgroup>';
-                        DividendHtml += '<col style="width: 33.3%;">';
-                        DividendHtml += '<col style="width: 33.3%;">';
-                        DividendHtml += '<col style="width: 33.3%;">';
-                        DividendHtml += '</colgroup>';
-
-                        var theadClass = ((count + percolumn - 1) % (percolumn * 2) == 0) ? ' class="u-hidden@lt"' : '';
-
-                        //sort
-                        var htr = $('#dividend-theadtr').html().replace(/%Sort%/gi, orderby);
-
-                        var theadHtml = '<thead' + theadClass + '>' + htr + '</thead>';
-                        DividendHtml += theadHtml;
-
-                        tbodyHtml += '<tbody>';
-                    }
-
-                    // tbody內容
-                    var tr = $('#dividend-tbodytr').html();
-
-                    tr = tr.replace(/%DepositDay%/gi, filteredData[i].DepositDay);
-                    tr = tr.replace(/%CurrencyName%/gi, filteredData[i].CurrencyName);
-                    tr = tr.replace(/%DividendValue%/gi, filteredData[i].DividendValue);
-
-                    tbodyHtml += tr;
-
-                    // tbody end
-                    if (count % percolumn == 0) {
-                        tbodyHtml += '</tbody></table></div></div>';
-                    }
-
-                    DividendHtml += tbodyHtml;
-
-                    count++;
-                }
-
-                $('#dividendtable').html(DividendHtml);
             };
 
             // 配息排序(幣別)
@@ -449,31 +449,30 @@
                         obj
                     };
 
-                    var historyBankSellPrice = HistoryBankSellPrice;
-                    var _data = {
-                        "updateDate": historyBankSellPrice.UpdateDate,
-                        "navs": historyBankSellPrice.BankSellPrice.map(function (item) {
-                            return {
-                                "date": item.PriceBaseDate,
-                                "value": parseFloat(item.BankSellPriceValue)
-                            };
-                        })
-                    };
+                    if (HistoryBankSellPrice.BankSellPrice.length != 0) {
+                        var historyBankSellPrice = HistoryBankSellPrice;
+                        var _data = {
+                            "updateDate": historyBankSellPrice.UpdateDate,
+                            "navs": historyBankSellPrice.BankSellPrice.map(function (item) {
+                                return {
+                                    "date": item.PriceBaseDate,
+                                    "value": parseFloat(item.BankSellPriceValue)
+                                };
+                            })
+                        };
 
-                    // 日期排序
-                    _data.navs.sort((a, b) => new Date(a.date) - new Date(b.date));
+                        // 日期排序
+                        _data.navs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-                    // 根據日期區間filter data
-                    const filteredData = _data.navs.filter(nav => {
-                        const navDate = new Date(nav.date);
-                        return navDate >= obj.startDate && navDate <= obj.endDate;
-                    });
+                        // 根據日期區間filter data
+                        const filteredData = _data.navs.filter(nav => {
+                            const navDate = new Date(nav.date);
+                            return navDate >= obj.startDate && navDate <= obj.endDate;
+                        });
 
-                    _data.navs = filteredData;
-                    var data = _data;
+                        _data.navs = filteredData;
+                        var data = _data;
 
-
-                    if (Object.keys(data).length != 0 && Object.keys(data.navs).length != 0) {
                         const mapData = data.navs.map(item => {
                             return {
                                 x: new Date(item.date).getTime(),
@@ -608,7 +607,8 @@
                             });
                         $('[data-chart="trend"]').find('.c-empty').addClass('u-hidden');
                         $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
-                    } else {
+                    }
+                    else {
                         $('[data-chart="trend"]').find('.c-empty').removeClass('u-hidden');
                         $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                     }
