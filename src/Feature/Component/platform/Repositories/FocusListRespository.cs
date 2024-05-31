@@ -114,14 +114,14 @@ namespace Feature.Wealth.Component.Repositories
         }
         public List<ForeignStockListModel> SetTagsToForeignStock(List<ForeignStockListModel> baseList)
         {
-            var discountFolder = ItemUtils.GetContentItem(Feature.Wealth.Component.Models.USStock.Template.USStockTagFolder.Children.Discount);
-            var discounts = ItemUtils.GetChildren(discountFolder, Feature.Wealth.Component.Models.USStock.Template.USStockTag.Id);
+            var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
+            var discounts = ItemUtils.GetChildren(discountFolder, Template.USStockTag.Id);
             foreach (var item in baseList)
             {
                 foreach (var d in discounts)
                 {
-                    string tagName = ItemUtils.GetFieldValue(d, Feature.Wealth.Component.Models.USStock.Template.USStockTag.Fields.TagName);
-                    string productCodeList = ItemUtils.GetFieldValue(d, Feature.Wealth.Component.Models.USStock.Template.USStockTag.Fields.ProductCodeList);
+                    string tagName = ItemUtils.GetFieldValue(d, Template.USStockTag.Fields.TagName);
+                    string productCodeList = ItemUtils.GetFieldValue(d, Template.USStockTag.Fields.ProductCodeList);
                     if (productCodeList.Contains(item.ProductCode))
                     {
                         item.Tags.Add(tagName);

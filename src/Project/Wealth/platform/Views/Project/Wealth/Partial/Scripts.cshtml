@@ -19,6 +19,10 @@
 <script>
     (function ($, window, document, undefined) {
         let isLogin = @(FcbMemberHelper.CheckMemberLogin() ? "true": "false");
+        let isGlobalization =@(FcbMemberHelper.IsMemberStyleGlobal() ? "true" : "false");
+        if (isGlobalization) {
+            $('html').addClass('is-globalization');
+        }
         let TestSession = @(Session["AppPayResult"] == null ? "true": "false");
         window.IsLogin = isLogin;
         if (!TestSession) {

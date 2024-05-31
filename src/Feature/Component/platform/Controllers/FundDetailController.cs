@@ -54,13 +54,15 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult FundCloseFiveYears()
         {
-
-            return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundCloseFiveYears.cshtml");
-        }
-        public ActionResult FundCloseFiveYearsInside()
-        {
-
-            return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundCloseFiveYearsInside.cshtml");
+            var getTarget = Sitecore.Web.WebUtil.GetSafeQueryString("target");
+            if (string.IsNullOrEmpty(getTarget) || getTarget.ToUpper() == "OUTSIDE")
+            {
+                return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundCloseFiveYears.cshtml");
+            }
+            else
+            {
+                return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundCloseFiveYearsInside.cshtml");
+            }
         }
 
         [HttpPost]
