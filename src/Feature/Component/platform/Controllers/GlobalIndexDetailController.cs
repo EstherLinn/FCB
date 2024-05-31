@@ -16,6 +16,9 @@ namespace Feature.Wealth.Component.Controllers
     {
         private readonly GlobalIndexRepository _globalIndexRepository = new GlobalIndexRepository();
         private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
+        private readonly ViewCountRepository _viewCountrepository = new ViewCountRepository();
+
+        private string _currentUrl = string.Empty;
 
         public ActionResult Mainstage()
         {
@@ -23,7 +26,12 @@ namespace Feature.Wealth.Component.Controllers
 
             string indexCode = Sitecore.Web.WebUtil.GetSafeQueryString("id");
 
-            this._globalIndexRepository.TriggerViewCountRecord(indexCode);
+            this._currentUrl = this.ControllerContext.HttpContext.Request.Url.ToString();
+
+            if (item != null)
+            {
+                this._viewCountrepository.UpdateViewCountInfo(item.ID.ToString(), this._currentUrl);
+            }
 
             return View("/Views/Feature/Wealth/Component/GlobalIndex/GlobalIndexDetailMainstage.cshtml", CreateModel(item, indexCode));
         }
@@ -105,6 +113,11 @@ namespace Feature.Wealth.Component.Controllers
             string etfLink = ItemUtils.GeneralLink(item, Template.GlobalIndexDetail.Fields.ETFLink)?.Url;
 
             var globalIndexDetail = this._globalIndexRepository.GetGlobalIndexDetail(indexCode);
+
+            if (item != null)
+            {
+                globalIndexDetail.ViewCount = this._viewCountrepository.GetViewCountInfo(item.ID.ToString(), this._currentUrl);
+            }
 
             var model = new GlobalIndexDetailModel
             {

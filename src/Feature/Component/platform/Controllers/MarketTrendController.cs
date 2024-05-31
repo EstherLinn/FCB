@@ -37,7 +37,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            _rootPath = ControllerContext.HttpContext.Request.Url.GetLeftPart(UriPartial.Authority);
+            this._rootPath = this.ControllerContext.HttpContext.Request.Url.GetLeftPart(UriPartial.Authority);
 
             var model = CreateModel(item);
 
@@ -311,7 +311,7 @@ namespace Feature.Wealth.Component.Controllers
                             };
 
                             // 取得觀看數
-                            news.ViewCount = _viewCountrepository.GetViewCountInfo(newsLinkItem.ID.ToString(), _rootPath + news.DetailLink);
+                            news.ViewCount = this._viewCountrepository.GetViewCountInfo(newsLinkItem.ID.ToString(), this._rootPath + news.DetailLink);
 
                             // TODO 取得收藏
 

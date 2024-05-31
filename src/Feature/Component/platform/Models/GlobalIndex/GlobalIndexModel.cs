@@ -20,7 +20,7 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
     {
         public string IndexCode { get; set; }
         public string IndexName { get; set; }
-        public MvcHtmlString IndexNameHtmlString { get; set; }
+        public HtmlString IndexNameHtmlString { get; set; }
         public string IndexCategoryID { get; set; }
         public string IndexCategoryName { get; set; }
         public string DataDate { get; set; }
