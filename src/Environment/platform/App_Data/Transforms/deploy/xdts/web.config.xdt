@@ -1,8 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1">
-  <system.codedom xdt:Transform="InsertIfMissing">
-    <compilers xdt:Transform="InsertIfMissing">
-      <compiler xdt:Transform="InsertIfMissing" xdt:Locator="Match(language)" language="c#;cs;csharp" extension=".cs" warningLevel="4" compilerOptions="/langversion:default /nowarn:1659;1699;1701;612;618" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
-    </compilers>
-  </system.codedom>
+    <system.codedom xdt:Transform="InsertIfMissing">
+        <compilers xdt:Transform="InsertIfMissing">
+            <compiler xdt:Transform="InsertIfMissing" xdt:Locator="Match(language)" language="c#;cs;csharp" extension=".cs" warningLevel="4" compilerOptions="/langversion:default /nowarn:1659;1699;1701;612;618" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+        </compilers>
+    </system.codedom>
+    <system.web>
+        <customErrors mode="RemoteOnly" defaultRedirect="~/errorpages/error.html" redirectMode="ResponseRewrite" xdt:Transform="SetAttributes">
+            <error statusCode="500" xdt:Transform="InsertIfMissing" />
+            <error statusCode="500" redirect="~/errorpages/500.aspx" xdt:Transform="Replace" />
+        </customErrors>
+    </system.web>
+    <system.webServer>
+        <handlers>
+            <add type="Xcms.Sitecore.Feature.ErrorHandling.Handlers.MediaRequestHandler, Xcms.Sitecore.Feature.ErrorHandling" name="Sitecore.MediaRequestHandler"
+                 xdt:Locator="Match(name)"
+                 xdt:Transform="SetAttributes" />
+        </handlers>
+        <httpErrors xdt:Transform="InsertIfMissing">
+
+        </httpErrors>
+        <httpErrors errorMode="DetailedLocalOnly" existingResponse="Auto" xdt:Transform="Replace">
+            <remove statusCode="404" subStatusCode="-1"/>
+            <error statusCode="404" path="errorpages\404.html" responseMode="File" />
+        </httpErrors>
+    </system.webServer>
 </configuration>

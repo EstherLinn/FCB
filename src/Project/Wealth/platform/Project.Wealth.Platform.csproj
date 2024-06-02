@@ -17,6 +17,9 @@
     <Reference Include="Xcms.Sitecore.Foundation.Assets">
       <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.Assets.dll</HintPath>
     </Reference>
+    <Reference Include="Xcms.Sitecore.Feature.ErrorHandling">
+      <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Feature.ErrorHandling.dll</HintPath>
+    </Reference>
     <Reference Include="Xcms.Sitecore.Feature.Metadata">
       <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Feature.Metadata.dll</HintPath>
     </Reference>
