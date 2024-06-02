@@ -1,0 +1,184 @@
+﻿@using Feature.Wealth.Component.Models.CommonTools
+@using Foundation.Wealth.Helper
+
+@model CommonToolsModel
+@if (!Model.IsValid)
+{
+    return;
+}
+<div class="l-navbar__tools @(Model.CanRenderTools? string.Empty: "u-hidden")">
+    <div class="l-flex l-flex--inline u-flex-gap-sm">
+        <div class="l-flex__item">
+            <!-- [data-after="名稱"]: 按鈕要顯示的文字 -->
+            <!-- [data-text-on="名稱"]: 按鈕在 active 狀態下要顯示的文字 -->
+            <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+            <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+            <!-- [data-ia-tooltip="true"]: 是否要啟用 tooltip 提示 mouse hover 的訊息，預設為 true -->
+            <a href="#" class="o-statusBtn o-statusBtn--btn o-statusBtn--tool u-hidden" data-tools-input data-after="加入常用" data-text-on="已加入" data-msg="加入常用工具|移出常用工具" data-ia="true" data-ia-tooltip="false"></a>
+        </div>
+        <div class="l-flex__item">
+            <!-- [data-popover]: 彈跳視窗功能，值為彈跳視窗的 selector -->
+            <a href="#" class="o-btn o-btn--primary o-btn--icon" data-popover="#popoverShare">
+                <img src="~/themes/images/icons/white/share.svg" alt="分享">分享
+            </a>
+            <div id="popoverShare" class="c-popover c-popover--auto u-left">
+                <div class="c-popover__wrap">
+                    <nav class="c-popover__main">
+                        <ul class="l-flex u-flex-col u-flex-gap-md s4">
+                            <li class="l-flex__item">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=" class="o-social o-social--sm o-social--fb" target="_blank" data-share>
+                                    <span class="u-hidden@mb-only">Facebook</span>
+                                </a>
+                            </li>
+                            <li class="l-flex__item">
+                                <a href="https://social-plugins.line.me/lineit/share?url=" class="o-social o-social--sm o-social--line" target="_blank" data-share>
+                                    <span class="u-hidden@mb-only">LINE</span>
+                                </a>
+                            </li>
+                            <li class="l-flex__item">
+                                <div class="l-copy" data-copy>
+                                    <div class="l-copy__action">
+                                        <a href="#" class="o-social o-social--sm o-social--copy" data-copy-action>
+                                            <span class="u-hidden@mb-only">複製網址</span>
+                                        </a>
+                                    </div>
+                                    <div class="l-copy__msg">
+                                        <div class="o-tooltip o-tooltip--relative o-tooltip--top" data-copy-msg>
+                                            <div class="o-tooltip__content u-nowrap">已複製</div>
+                                            <div class="o-tooltip__arrow"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+                (function ($, window, document) {
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!jQuery) {
+            return;
+        }
+        let itemId = SC_DATA.ItemId;
+
+        if (SC_DATA.Tools === undefined) {
+            let toolsArray = [];
+            let commonArray = [];
+            $.ajax({
+                type: 'post',
+                url: '@ClientRoute.GenerateUrl(this, "Accounts", "GetCommonTools")',
+                success: function (resp) {
+                    if (resp && resp.statusCode == 200) {
+                        if (resp.body.length > 0) {
+                            for (let i = 0; i < resp.body.length; i++) {
+                                let itemId = resp.body[i].pageGuid;
+                                commonArray.push(itemId);
+                            }
+                        }
+                        if (resp.tools.length > 0) {
+                            for (let i = 0; i < resp.tools.length; i++) {
+                                let itemId = resp.tools[i].pageGuid;
+                                toolsArray.push(itemId);
+                            }
+                        }
+                    }
+                }
+            }).always(function () {
+                activeTools(toolsArray, commonArray);
+                commonActive(commonArray);
+                SC_DATA.Tools = commonArray;
+            });
+        }        
+
+        function activeTools(toolsArray, commonArray) {
+            let isShow = false;
+            toolsArray.forEach(id => {
+                if (id == itemId) {
+                    $('.o-statusBtn--tool').removeClass('u-hidden');
+                    isShow = true;
+                }
+            });
+            commonArray.forEach(common => {
+                let id = typeof (common) === 'string' ? common : common.PageGuid;
+                if (id == itemId) {
+                    $('.o-statusBtn--tool').addClass('is-active');
+                    isActive = true;
+                }
+            });
+
+            if (!isShow) {
+                $('.o-statusBtn--tool').addClass('u-hidden');
+            }
+            if (!isActive) {
+                $('.o-statusBtn--tool').removeClass('is-active');
+            }
+            
+            SC_DATA.CommonTools_isShow = isShow;
+            SC_DATA.CommonTools_isActive = isActive;
+            commonActive();
+        }
+
+        function commonActive() {
+            if (SC_DATA.CommonTools_isActive) {
+                $('.o-statusBtn--tool').addClass('is-active');
+            } else {
+                $('.o-statusBtn--tool').removeClass('is-active');
+            }
+        }
+
+        $('[data-tools-input]').on('click', function (e) {
+            SC_DATA.CommonTools_isActive = $(e.target).hasClass("is-active");
+            $.ajax({
+                type: 'post',
+                url: '@ClientRoute.GenerateUrl(this, "Accounts", "SetCommonTools")',
+                data: { itemId: itemId, isActive: SC_DATA.CommonTools_isActive },
+                success: function (resp) {
+                    if (resp && resp.Item1 && resp.Item2) {
+                        commonActive();
+                        //if (window.SetCommonFunctionList) {
+                        //    window.SetCommonFunctionList();
+                        //}
+                        let result = resp.Item2;
+                        SC_DATA.CommonTools = result.body;
+                        if (result.statusCode == 200 && result.body.length > 0) {
+                            let commonHtml = '';
+                            for (var i = 0; i < result.body.length; i++) {
+                                commonHtml += `<li class="c-listGroup__item">
+                                      <a href="${result.body[i].PageUrl}" class="o-itemLink o-itemLink--sm">
+                                          <span class="o-itemLink__title t-bold">${result.body[i].PageName}</span>
+                                          <img src="/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                      </a>
+                                  </li>`;
+                            }
+                            if (result.body.length == 7) {
+                                $('.c-sideDialog__msg', '#commonFunctionLimit').removeClass('u-hidden');
+                            } else {
+                                $('.c-sideDialog__msg', '#commonFunctionLimit').addClass('u-hidden');
+                            }
+                            $('#commonList', '[data-sidebar-id="common"]').html(commonHtml);
+                            $('[data-hasValue="false"]', '[data-sidebar-id="common"]').addClass('u-hidden');
+                            $('[data-hasValue="true"]', '[data-sidebar-id="common"]').removeClass('u-hidden');
+                        } else {
+                            $('[data-hasValue="false"]', '[data-sidebar-id="common"]').removeClass('u-hidden');
+                            $('[data-hasValue="true"]', '[data-sidebar-id="common"]').addClass('u-hidden');
+                        }
+                    }
+
+                }
+            });
+        });
+
+     });
+
+             }) (jQuery, window, document);
+
+</script>
+@if (Model.CanColneTools)
+{
+    Html.RenderPartial("/Views/Feature/Wealth/Component/CommonTools/ColneTools.cshtml");
+}

@@ -1,6 +1,14 @@
 ﻿@using Feature.Wealth.Account.Helpers;
-@if (FcbMemberHelper.CheckMemberLogin())
+@{
+    var isLogin = FcbMemberHelper.CheckMemberLogin();
+}
+@if (isLogin)
 {
+    <script>
+       addObjectValue(SC_DATA, 'IsLoggedIn', @(isLogin ? "true" : "false"));
+       addObjectValue(SC_DATA, 'ItemId', '@Sitecore.Context.Item.ID');
+    </script>
+
     Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LoginState.cshtml");
 }
 else
