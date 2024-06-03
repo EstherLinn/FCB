@@ -1,64 +1,41 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using Feature.Wealth.ScheduleAgent.Repositories;
-using Sitecore.Configuration;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
+using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
+using Feature.Wealth.ScheduleAgent.Repositories;
+using Feature.Wealth.ScheduleAgent.Models.Wealth;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
     public class InsertFundTrb : SitecronAgentBase
     {
-        protected override Task Execute()
+        private readonly EtlService _etlService;
+        private readonly ProcessRepository _repository = new();
+
+        public InsertFundTrb()
         {
-            return Task.Run(() =>
-            {
-                string filePath = Settings.GetSetting("FundTRB");
-
-                if (File.Exists(filePath))
-                {
-                    try
-                    {
-                        var basic = ParseFileContent(filePath);
-
-                        if (basic.Any())
-                        {
-                            ProcessRepository.BulkInsertToDatabase(basic, "[FUNDTRB]", "ProductCode", "ProductCode", filePath);
-                            Console.WriteLine("資料匯入完成。");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error: {ex.Message}");
-                        ProcessRepository.LogChangeHistory(DateTime.Now, filePath, ex.Message, "", 0);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("ERROR: File not found");
-                }
-            });
+            this._etlService = new EtlService(this.Logger, this.JobItems);
         }
-
-        private List<FundTrb> ParseFileContent(string filePath)
+        protected override async Task Execute()
         {
-            var basicETF = new List<FundTrb>();
-
-            string fileContent = File.ReadAllText(filePath, Encoding.Default);
-
-            foreach (var basic in ChoCSVReader<FundTrb>.LoadText(fileContent)
-                         .WithDelimiter(";")
-                         .Configure(c => { c.AutoDiscoverColumns = true; }))
+            string filename = "FundTRB";
+            bool IsfilePath = await this._etlService.ExtractFile(filename);
+            if (IsfilePath)
             {
-                basic.UpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                basicETF.Add(basic);
+                try
+                {
+                    var basic = await this._etlService.ParseCsv<FundTrb>(filename);
+                    _repository.BulkInsertToDatabase(basic, "[FUNDTRB]", "ProductCode", "ProductCode", filename);
+                }
+                catch (Exception ex)
+                {
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, "", 0);
+                }
             }
-
-            return basicETF;
+            else
+            {
+                _repository.LogChangeHistory(DateTime.UtcNow, "ERROR: File not found", "找不到檔案", "", 0);
+            }
         }
     }
 }

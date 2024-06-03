@@ -19,7 +19,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
         protected override async Task Execute()
         {
-            string filePath = System.Configuration.ConfigurationManager.AppSettings["FundSize"];
+            string filePath = "FUND_SIZE";
             string tableName = "[FUND_SIZE]";
 
             bool IsfilePath = await this._etlService.ExtractFile("FUND_SIZE");

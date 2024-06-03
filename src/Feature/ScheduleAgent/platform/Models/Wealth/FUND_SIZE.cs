@@ -44,7 +44,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
             set => _referenceExchangeRate = value / 100000;
         }
 
-        public DefaultConfig GetDefaultConfig(int StructureTypeId)
+        public DefaultConfig GetDefaultConfig(int structureTypeId)
         {
             var defaultConfig = new DefaultConfig();
 

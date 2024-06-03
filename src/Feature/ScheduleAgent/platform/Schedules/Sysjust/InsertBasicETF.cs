@@ -4,7 +4,6 @@ using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
