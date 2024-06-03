@@ -9,11 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Feature.Wealth.Component.Models.USStock;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Feature.Wealth.Component.Models.ETF.Tag;
+using Feature.Wealth.Component.Models.FundDetail;
+using Template = Feature.Wealth.Component.Models.USStock.Template;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -64,39 +63,35 @@ namespace Feature.Wealth.Component.Repositories
             var results = DbManager.Custom.ExecuteIList<ForeignStockListModel>(sql, para, CommandType.Text)?.ToList();
             return results;
         }
-        //public List<FundListModel> SetTagsToFund(List<FundListModel> baseList)
-        //{
-        //    var data = FundTagsRespository.GetAllTagListFromCache();
-        //    var tags = new List<string>();
-        //    if (data != null)
-        //    {
-        //        var fundTagsList = data[0];
-        //        if (fundTagsList != null && fundTagsList.Any())
-        //        {
-        //            foreach (var item in baseList)
-        //            {
-        //                tags.Clear();
-        //                foreach (var item2 in fundTagsList)
-        //                {
-        //                    if (item2.FundIdList.Contains(item.ProductCode))
-        //                    {
-        //                        tags.Add(item2.FundTagTitle);
-        //                    }
-        //                    item.Tags.AddRange(tags);
-        //                }
-        //            }
-        //        }
+        public List<FundListModel> SetTagsToFund(List<FundListModel> baseList)
+        {
+            FundTagRepository fundTagRepository = new FundTagRepository();
+            var data = fundTagRepository.GetFundTagData();
+            var sortTags = data.Where(x => x.FundTagType == FundTagEnum.DiscountTag);
+            var tags = new List<string>();
+            if (sortTags != null && sortTags.Any())
+            {
+                foreach (var item in baseList)
+                {
+                    foreach (var item2 in data)
+                    {
+                        if (item2.ProductCodes.Contains(item.ProductCode))
+                        {
+                            item.Tags.Add(item2.TagName);
+                        }
+                    }
+                }
 
-        //    }
+            }
 
-        //    return baseList;
-        //}
+            return baseList;
+        }
         public List<EtfListModel> SetTagsToEtf(List<EtfListModel> baseList)
         {
             EtfTagRepository TagRepositor = new EtfTagRepository();
             var dicTag = TagRepositor.GetTagCollection();
             var tags = dicTag[TagType.Discount];
-            if (tags != null)
+            if (tags != null && tags.Any())
             {
                 foreach (var item in baseList)
                 {
@@ -133,7 +128,7 @@ namespace Feature.Wealth.Component.Repositories
 
         public List<T> SetButtonToFocusList<T>(List<T> baseList, InvestTypeEnum typeEnum) where T : FocusListBaseModel
         {
-           
+
             foreach (var item in baseList)
             {
                 item.Button = new Button
@@ -141,7 +136,7 @@ namespace Feature.Wealth.Component.Repositories
                     CompareButtonHtml = PublicHelpers.CompareButton(null, null, item.ProductCode, item.ProductName, typeEnum, true).ToString(),
                     InfoButtonHtml = PublicHelpers.InfoButton(null, null, item.ProductCode, item.ProductName, typeEnum).ToString(),
                     FocusButtonHtml = PublicHelpers.FocusCancelButton(null, null, item.ProductCode, item.ProductName, typeEnum).ToString(),
-                    SubscriptionButtonHtml = PublicHelpers.SubscriptionButton(null,null,item.ProductCode, typeEnum, true).ToString(),
+                    SubscriptionButtonHtml = PublicHelpers.SubscriptionButton(null, null, item.ProductCode, typeEnum, true).ToString(),
                 };
             }
             return baseList;
@@ -152,7 +147,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             var reachInfoRepository = new ReachInfoRepository();
 
-            var reachInfos = reachInfoRepository.GetAllProductReachInfos(FcbMemberHelper.GetMemberPlatFormId(),typeEnum.ToString());
+            var reachInfos = reachInfoRepository.GetAllProductReachInfos(FcbMemberHelper.GetMemberPlatFormId(), typeEnum.ToString());
             if (reachInfos == null)
             {
                 return baseList;
@@ -188,7 +183,7 @@ namespace Feature.Wealth.Component.Repositories
                                 };
                                 break;
                         }
-                       
+
                     }
                     else
                     {
@@ -205,7 +200,7 @@ namespace Feature.Wealth.Component.Repositories
                                 break;
                         }
                     }
-                    
+
                 }
             }
             return baseList;
