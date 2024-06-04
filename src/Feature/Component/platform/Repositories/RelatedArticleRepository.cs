@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.RelatedArticles;
 using Sitecore.Data.Items;
+using Sitecore.Mvc.Extensions;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class RelatedArticleRepository
     {
+        private readonly VisitCountRepository _visitCountRepository = new VisitCountRepository();
+
         public RelatedArticlesModel GetRelatedArticleInfo()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering?.Item;
@@ -46,9 +49,27 @@ namespace Feature.Wealth.Component.Repositories
                     cardItem.MobileImage = ItemUtils.ImageUrl(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.MobileImage);
                     cardItem.Title = ItemUtils.GetFieldValue(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Title);
                     cardItem.Date = date != DateTime.MinValue ? date.ToString("yyyy/MM/dd") : string.Empty;
-                    cardItem.Link = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).Url;
+                   
                     var targetItem = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).TargetItem;
-                    cardItem.TargetItemID = targetItem != null ? targetItem.ID.ToString() : string.Empty;
+
+                    if (targetItem != null)
+                    {
+                        string pageItemId = targetItem.ID.ToString();
+
+                        cardItem.Link = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).Url + "?id=" + pageItemId;
+                        cardItem.LinkTarget = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).Target;
+                        cardItem.LinkTitle = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).Title;
+
+                        var visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), cardItem.Link);
+                        cardItem.ViewCount = visitCount?.ToString("N0") ?? "0";
+                    }
+                    else
+                    {
+                        cardItem.Link = string.Empty;
+                        cardItem.LinkTarget = string.Empty;
+                        cardItem.LinkTitle = string.Empty;
+                        cardItem.ViewCount = string.Empty;
+                    }
 
                     ((List<RelatedArticleCardItemModel>)relatedArticlesInfo.CardList).Add(cardItem);
                 }

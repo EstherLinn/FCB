@@ -24,13 +24,13 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     Item = prevPageItem,
                     Title = prevPageItem != null ? ItemUtils.GetFieldValue(prevPageItem, Templates.PageNavigationTitle.Fields.NavigationTitle) : string.Empty,
-                    Link = prevPageItem != null ? prevPageItem.Url() : string.Empty
+                    Link = prevPageItem != null ? prevPageItem.Url() + "?id=" + prevPageItem.ID.ToString() : string.Empty
                 },
                 NextPage = new PaginatorItem
                 {
                     Item = nextPageItem,
                     Title = nextPageItem != null ? ItemUtils.GetFieldValue(nextPageItem, Templates.PageNavigationTitle.Fields.NavigationTitle) : string.Empty,
-                    Link = nextPageItem != null ? nextPageItem.Url() : string.Empty
+                    Link = nextPageItem != null ? nextPageItem.Url() + "?id=" + nextPageItem.ID.ToString() : string.Empty
                 }
             };
 

@@ -1,14 +1,16 @@
 ﻿using Feature.Wealth.Component.Models.ArticleCardList;
+using Sitecore.Mvc.Extensions;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
     public class ArticleCardListRepository
     {
+        private readonly VisitCountRepository _visitCountRepository = new VisitCountRepository();
+
         public ArticleCardListModel GetArticleCardList()
         {
             var dataSource = RenderingContext.CurrentOrNull?.Rendering?.Item;
@@ -34,10 +36,28 @@ namespace Feature.Wealth.Component.Repositories
                 cardItem.Title = ItemUtils.GetFieldValue(child, Templates.ArticleCardItem.Fields.Title);
                 cardItem.Content = ItemUtils.GetFieldValue(child, Templates.ArticleCardItem.Fields.Content);
                 cardItem.Date = date != DateTime.MinValue ? date.ToString("yyyy/MM/dd") : string.Empty;
-                cardItem.Link = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).Url;
+                
                 var targetItem = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).TargetItem;
-                cardItem.TargetItemID = targetItem != null ? targetItem.ID.ToString() : string.Empty;
 
+                if (targetItem != null)
+                {
+                    string pageItemId = targetItem.ID.ToString();
+
+                    cardItem.Link = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).Url + "?id=" + pageItemId;
+                    cardItem.LinkTarget = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).Target;
+                    cardItem.LinkTitle = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).Title;
+
+                    var visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), cardItem.Link);
+                    cardItem.ViewCount = visitCount?.ToString("N0") ?? "0";
+                }
+                else
+                {
+                    cardItem.Link = string.Empty;
+                    cardItem.LinkTarget = string.Empty;
+                    cardItem.LinkTitle = string.Empty;
+                    cardItem.ViewCount = string.Empty;
+                }
+                
                 cardList.Add(cardItem);
             }
 
