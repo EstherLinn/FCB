@@ -102,9 +102,9 @@ namespace Feature.Wealth.Component.Controllers
             var items = _focusListRespository.GetFundFocusData(fundFocusList);
             var itemsWithButton = _focusListRespository.SetButtonToFocusList(items, InvestTypeEnum.Fund);
             var itemsWithButtonAndInfo = _focusListRespository.SetReachInfoToFocusList(itemsWithButton, InvestTypeEnum.Fund);
-            //var finalItems = _focusListRespository.SetTagsToFund(itemsWithButtonAndInfo);
+            var finalItems = _focusListRespository.SetTagsToFund(itemsWithButtonAndInfo);
 
-            return itemsWithButtonAndInfo;
+            return finalItems;
         }
 
         private List<EtfListModel> GetEtfList(List<string> etfFocusList)

@@ -16,6 +16,10 @@ namespace Feature.Wealth.Account.Services
         public async Task<JObject> GetTrackList(string promotionCode)
         {
             JObject result = null;
+            if (string.IsNullOrEmpty(_route))
+            {
+                return result;
+            }
             try
             {
                 var reqObj = new { promotionCode = promotionCode, channel = "wms" };
