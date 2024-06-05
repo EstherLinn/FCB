@@ -13,10 +13,11 @@
     <Reference Include="Xcms.Sitecore.Foundation.QuartzSchedule">
       <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.QuartzSchedule.dll</HintPath>
     </Reference>
-    <PackageReference Include="CsvHelper"/>
+    <PackageReference Include="CsvHelper" />
     <PackageReference Include="Dapper" />
     <PackageReference Include="FixedWidthParserWriter" />
     <PackageReference Include="FluentFTP" />
     <PackageReference Include="Quartz" />
+    <PackageReference Include="SSH.NET" VersionOverride="2024.0.0" />
   </ItemGroup>
 </Project>
