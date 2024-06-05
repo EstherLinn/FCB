@@ -21,16 +21,10 @@ namespace Feature.Wealth.Account.Models.Api
 
     public class CommonToolsRespResp : CommonFuncrionsResp
     {
-        public IEnumerable<CommonFunctionsModel> Tools { get; set; }
+        public string Tools { get; set; }
 
         public CommonToolsRespResp() : base()
         {
-           var tools = Enumerable.Empty<CommonFunctionsModel>().ToList();
-            tools.Add(new CommonFunctionsModel
-            {
-                PageGuid = "{1D04400C-B8CF-4D54-BC3B-F642D77E1296}"
-            });
-            this.Tools = tools;
         }
     }
 }
