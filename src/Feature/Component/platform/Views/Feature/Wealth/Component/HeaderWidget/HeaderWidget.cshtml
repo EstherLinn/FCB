@@ -15,3 +15,8 @@ else
 {
     Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LogoutState.cshtml");
 }
+<script>
+@{
+@:addObjectValue(SC_DATA, 'LoginStatus', '@ViewData["LoginStatus"]');
+}
+</script>
