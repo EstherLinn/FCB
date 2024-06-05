@@ -378,8 +378,8 @@
                                 break;
                         }
 
-                        if (Object.keys(data.body).length != 0) {
-                            let mapData = data.body.map((item, index) => {
+                        if (Object.keys(data.Body).length != 0) {
+                            let mapData = data.Body.map((item, index) => {
                                 return {
                                     id: item.firstBankCode,
                                     name: item.firstBankCode + ' ' + item.etfName,
@@ -389,7 +389,7 @@
                             });
 
                             mapData.splice(mapData.findIndex(x => x.id == etfId), 1);
-                            const selfData = data.body.filter((item) => item.firstBankCode == etfId);
+                            const selfData = data.Body.filter((item) => item.firstBankCode == etfId);
 
                             const otherData = {
                                 id: 'group',

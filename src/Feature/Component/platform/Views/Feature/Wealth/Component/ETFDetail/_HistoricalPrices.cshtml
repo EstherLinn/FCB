@@ -451,10 +451,10 @@
                     var query = apiRequest('@ETFHistoryPriceApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data).length != 0
-                            && Object.keys(data.Item1).length != 0 ) {
+                            && Object.keys(data.Body.Item1).length != 0 ) {
                             let bankSellPrice_array = [];
 
-                            bankBuyPrice_array = data.Item1.map(item => {
+                            bankBuyPrice_array = data.Body.Item1.map(item => {
                                 let date = new Date(item.Date).getTime();
                                 bankSellPrice_array.push(
                                     {
