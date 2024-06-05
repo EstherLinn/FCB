@@ -388,6 +388,13 @@ namespace Feature.Wealth.Account.Repositories
             return commonResp;
         }
 
+        public bool CheckCommonTools(string itemId)
+        {
+            var commonFuncItem = ItemUtils.GetItem(Templates.CommonFunction.Root.ToString());
+            var settings = commonFuncItem?.GetFieldValue(Templates.CommonFunction.Fields.CommonFunctionList)?.Split('|') ?? Array.Empty<string>();
+            return settings.Contains(itemId);
+        }
+
         public (bool, CommonFuncrionsResp) SetCommonTools(string itemId, bool isActive)
         {
             var id = FcbMemberHelper.GetMemberPlatFormId();

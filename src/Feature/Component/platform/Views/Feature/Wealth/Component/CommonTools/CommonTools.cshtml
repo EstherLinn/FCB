@@ -80,11 +80,8 @@
                                 commonArray.push(itemId);
                             }
                         }
-                        if (resp.tools.length > 0) {
-                            for (let i = 0; i < resp.tools.length; i++) {
-                                let itemId = resp.tools[i].pageGuid;
-                                toolsArray.push(itemId);
-                            }
+                        if (resp.tools) {
+                            toolsArray = resp.tools.split('|');
                         }
                     }
                 }
@@ -97,6 +94,7 @@
 
         function activeTools(toolsArray, commonArray) {
             let isShow = false;
+            let isActive = false;
             toolsArray.forEach(id => {
                 if (id == itemId) {
                     $('.o-statusBtn--tool').removeClass('u-hidden');

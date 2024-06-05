@@ -18,6 +18,7 @@ using Feature.Wealth.Account.Filter;
 using Foundation.Wealth.Helper;
 using System;
 using Newtonsoft.Json.Linq;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Account.Controllers
 {
@@ -393,6 +394,8 @@ namespace Feature.Wealth.Account.Controllers
                 return new EmptyResult();
             }
             CommonToolsRespResp resp = _memberRepository.GetCommonTools(FcbMemberHelper.GetMemberPlatFormId());
+            var commonFuncItem = ItemUtils.GetItem(Templates.CommonFunction.Root.ToString());
+            resp.Tools = commonFuncItem?.GetFieldValue(Templates.CommonFunction.Fields.CommonFunctionList);
             var serialSetting = new JsonSerializerSettings()
             {
                 ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
@@ -401,7 +404,8 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        public ActionResult SetCommonTools(string itemId, bool isActive) => FcbMemberHelper.CheckMemberLogin() ? new JsonNetResult(_memberRepository.SetCommonTools(itemId, isActive)) :
+        public ActionResult SetCommonTools(string itemId, bool isActive) => FcbMemberHelper.CheckMemberLogin() && _memberRepository.CheckCommonTools(itemId) ?
+            new JsonNetResult(_memberRepository.SetCommonTools(itemId, isActive)) :
             new EmptyResult();
     }
 }
