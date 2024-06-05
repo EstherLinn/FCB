@@ -10,6 +10,8 @@ using Feature.Wealth.Account.Models.OAuth;
 using Foundation.Wealth.Manager;
 using log4net;
 using Newtonsoft.Json;
+using Sitecore.ContentSearch.Utilities;
+using Sitecore.Data;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -33,7 +35,7 @@ namespace Feature.Wealth.Account.Repositories
                 strSql = @$"SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@platForm
                  and PlatFormId = @id ) THEN 1 ELSE 0 END as BIT)";
             }
-            
+
             var para = new { platForm = platForm.ToString(), id = id };
             try
             {
@@ -285,7 +287,7 @@ namespace Feature.Wealth.Account.Repositories
             {
                 var jsonStr = JsonConvert.SerializeObject(commons);
                 var strSql = @$"UPDATE [FCB_Member] Set CommonFunction=@jsonStr,UpdateTime=@Time WHERE  PlatFormId = @PlatFormId ;";
-                var para = new { jsonStr = jsonStr,Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") , PlatFormId = id };
+                var para = new { jsonStr = jsonStr, Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), PlatFormId = id };
                 var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
             }
@@ -299,46 +301,47 @@ namespace Feature.Wealth.Account.Repositories
             }
             return success;
         }
+
         public CommonFuncrionsResp GetCommonFunctions(string id)
         {
-            CommonFuncrionsResp commonFuncrionsResp = new();
+            CommonFuncrionsResp commonResp = new();
             try
             {
                 var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId=@id ";
-                var para = new { id = id};
+                var para = new { id = id };
                 var jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
-                if (jsonStr!= null)
+                if (jsonStr != null)
                 {
                     List<string> CommonFunctions = JsonConvert.DeserializeObject<List<string>>(jsonStr);
-                    commonFuncrionsResp.Body = GetCommonFunctionsInfo(CommonFunctions);
+                    commonResp.Body = GetCommonFunctionsInfo(CommonFunctions);
                 }
                 else
                 {
-                    commonFuncrionsResp.Body = Enumerable.Empty<CommonFunctionsModel>().ToList();
+                    commonResp.Body = Enumerable.Empty<CommonFunctionsModel>().ToList();
                 }
             }
             catch (SqlException ex)
             {
-                commonFuncrionsResp.StatusCode = HttpStatusCode.InternalServerError;
-                commonFuncrionsResp.Message = ex.Message;
+                commonResp.StatusCode = HttpStatusCode.InternalServerError;
+                commonResp.Message = ex.Message;
                 Log.Error(ex.Message);
             }
             catch (Exception ex)
             {
-                commonFuncrionsResp.StatusCode = HttpStatusCode.InternalServerError;
-                commonFuncrionsResp.Message = ex.Message;
+                commonResp.StatusCode = HttpStatusCode.InternalServerError;
+                commonResp.Message = ex.Message;
                 Log.Error(ex.Message);
             }
 
-            
-            return commonFuncrionsResp;
+
+            return commonResp;
         }
 
-        public List<CommonFunctionsModel> GetCommonFunctionsInfo(List<string> CommonFunctions)
+        public List<CommonFunctionsModel> GetCommonFunctionsInfo(List<string> commonFunctions)
         {
             List<CommonFunctionsModel> commonFunctionsModels = new();
 
-            foreach (var item in CommonFunctions)
+            foreach (var item in commonFunctions)
             {
                 CommonFunctionsModel commonFunctionsModel = new();
                 var pageItem = ItemUtils.GetItem(item);
@@ -351,5 +354,87 @@ namespace Feature.Wealth.Account.Repositories
             return commonFunctionsModels;
         }
 
+        public CommonToolsRespResp GetCommonTools(string id)
+        {
+            CommonToolsRespResp commonResp = new();
+            try
+            {
+                var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId=@id";
+                var para = new { id = id };
+                var jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
+                if (jsonStr != null)
+                {
+                    List<string> CommonFunctions = JsonConvert.DeserializeObject<List<string>>(jsonStr);
+                    commonResp.Body = GetCommonFunctionsInfo(CommonFunctions);
+                }
+                else
+                {
+                    commonResp.Body = Enumerable.Empty<CommonFunctionsModel>().ToList();
+                }
+            }
+            catch (SqlException ex)
+            {
+                commonResp.StatusCode = HttpStatusCode.InternalServerError;
+                commonResp.Message = ex.Message;
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                commonResp.StatusCode = HttpStatusCode.InternalServerError;
+                commonResp.Message = ex.Message;
+                Log.Error(ex.Message);
+            }
+
+            return commonResp;
+        }
+
+        public (bool, CommonFuncrionsResp) SetCommonTools(string itemId, bool isActive)
+        {
+            var id = FcbMemberHelper.GetMemberPlatFormId();
+            var commons = GetCommonFunctions(id);
+            var tools = commons.Body.Select(c => c.PageGuid);
+            if (isActive && ID.IsID(itemId))
+            {
+                tools = tools.Append(itemId).Distinct();
+            }
+            else
+            {
+                tools = tools.RemoveWhere(i => i == itemId);
+            }
+            bool success = false;
+            try
+            {
+                var jsonStr = JsonConvert.SerializeObject(tools);
+                var strSql = @$"UPDATE [FCB_Member] Set CommonFunction=@jsonStr,UpdateTime=@Time WHERE  PlatFormId = @PlatFormId;";
+                var para = new { jsonStr = jsonStr, Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), PlatFormId = id };
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
+                success = affectedRows != 0;
+
+                commons.Body = GetCommonToolsInfo(tools);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+            return (success, commons);
+        }
+
+        public IEnumerable<CommonFunctionsModel> GetCommonToolsInfo(IEnumerable<string> itemTools)
+        {
+            foreach (var item in itemTools)
+            {
+                var pageItem = ItemUtils.GetItem(item);
+                yield return new CommonFunctionsModel
+                {
+                    PageName = pageItem?.Fields["Navigation Title"].Value,
+                    PageUrl = pageItem?.Url(),
+                    PageGuid = item
+                };
+            }
+        }
     }
 }

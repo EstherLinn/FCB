@@ -1,0 +1,97 @@
+﻿<div class="l-sharebar u-hidden">
+    <div class="l-sharebar__wrap">
+        <div class="l-sharebar__content">
+            <div class="l-flex l-flex--inline u-flex-gap-sm">
+                <div class="l-flex__item">
+                    <a href="#" class="o-statusBtn o-statusBtn--btn o-statusBtn--tool u-hidden" data-tools-input data-after="加入常用" data-text-on="已加入" data-msg="加入常用工具|移出常用工具" data-ia="true" data-ia-tooltip="false"></a>
+                </div>
+                <div class="l-flex__item">
+                    <!-- [data-popover]: 彈跳視窗功能，值為彈跳視窗的 selector -->
+                    <a href="#" class="o-btn o-btn--primary o-btn--icon" data-popover="#popoverShare2">
+                        <img src="~/themes/images/icons/white/share.svg" alt="分享">分享
+                    </a>
+                    <div id="popoverShare2" class="c-popover c-popover--auto u-left">
+                        <div class="c-popover__wrap">
+                            <nav class="c-popover__main">
+                                <ul class="l-flex u-flex-col u-flex-gap-md s4">
+                                    <li class="l-flex__item">
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u=" class="o-social o-social--sm o-social--fb" target="_blank" data-share>
+                                            <span class="u-hidden@mb-only">Facebook</span>
+                                        </a>
+                                    </li>
+                                    <li class="l-flex__item">
+                                        <a href="https://social-plugins.line.me/lineit/share?url=" class="o-social o-social--sm o-social--line" target="_blank" data-share>
+                                            <span class="u-hidden@mb-only">LINE</span>
+                                        </a>
+                                    </li>
+                                    <li class="l-flex__item">
+                                        <div class="l-copy" data-copy>
+                                            <div class="l-copy__action">
+                                                <a href="#" class="o-social o-social--sm o-social--copy" data-copy-action>
+                                                    <span class="u-hidden@mb-only">複製網址</span>
+                                                </a>
+                                            </div>
+                                            <div class="l-copy__msg">
+                                                <div class="o-tooltip o-tooltip--relative o-tooltip--top" data-copy-msg>
+                                                    <div class="o-tooltip__content u-nowrap">已複製</div>
+                                                    <div class="o-tooltip__arrow"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+                (function ($, window, document) {
+
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!jQuery) {
+            return;
+        }
+        //let isInit = false;
+        toolsColneTmpl();
+        // 依據API所回傳的資料，進行圖表下方 lengend 區塊的渲染
+        function toolsColneTmpl() {
+            //const template = ;
+            //if (isInit) {
+            //    $('.l-sharebar').last().remove();
+            //}
+            //const cloneTmpl = template.content;
+            //var product = cloneTmpl.querySelector('[data-product-id]');
+            //product.setAttribute('data-product-id', item.id);
+            //var legend = cloneTmpl.querySelector('.c-legend');
+            //legend.style.setProperty('--legend-color', chartColors[lables.length - 1 - i]);
+            //var name = cloneTmpl.querySelector('.c-legend__name');
+            //name.textContent = item.name;
+            //var rate = cloneTmpl.querySelector('[data-rate]');
+            //var upDownClass = item.upDown == 'up' ? 'o-rise' : 'o-fall';
+            //rate.setAttribute('data-rate', item.id);
+            //rate.classList.add(upDownClass);
+            //rate.textContent = Math.abs(item.value) + '%';
+            //var remove = cloneTmpl.querySelector('[data-stock-remove]');
+            //remove.setAttribute('data-stock-remove', item.id);
+            //if (item.type != 'stock') {
+            //    var trash = cloneTmpl.querySelector('.c-productItem__btn');
+            //    trash.remove();
+            //}
+            let sharebar = document.querySelector('.l-sharebar');
+            sharebar.classList.remove("u-hidden");
+            $('.l-wrap').first().append(sharebar);
+            // 綁定 like icon 的互動功能
+            //$('.l-sharebar').find('[data-ia]').interactive();
+            // 綁定 like icon 的彈跳登入畫面
+            //$('.l-sharebar').find('[data-popover]').popover();
+            isInit = true;
+        }
+     });
+
+             }) (jQuery, window, document);
+
+</script>

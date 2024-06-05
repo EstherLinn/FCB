@@ -164,8 +164,7 @@
                 $('[eh-compare]').trigger('exec');
                 window.SetCompareList();
             });
-     let userLogin = @(FcbMemberHelper.CheckMemberLogin() ? "true": "false");
-          if (userLogin) {
+            if (SC_DATA.IsLoggedIn) {
                 window.SetCommonFunctionList = function () {
                     $.ajax({
                         type: "post",
@@ -183,9 +182,9 @@
                                     </li>`;
                                     }
                                     if (resp.body.length == 7) {
-                                        $('.c-sideDialog__msg','#commonFunctionLimit').removeClass('u-hidden');
-                                    }else{
-                                    $('.c-sideDialog__msg','#commonFunctionLimit').addClass('u-hidden');
+                                        $('.c-sideDialog__msg', '#commonFunctionLimit').removeClass('u-hidden');
+                                    } else {
+                                        $('.c-sideDialog__msg', '#commonFunctionLimit').addClass('u-hidden');
                                     }
                                     $('#commonList', '[data-sidebar-id="common"]').html(commonHtml);
                                     $('[data-hasValue="false"]', '[data-sidebar-id="common"]').addClass('u-hidden');
@@ -196,20 +195,18 @@
                                 }
                             }
                         },
-                        error: function (err)
-                        {
+                        error: function (err) {
                             console.log(err);
                         },
                     });
-            };
-                        window.SetCommonFunctionList();
-                } else
-                {
-                    let CommonBtn = document.getElementById('setCommonBtn');
-                    CommonBtn.setAttribute('href','#popupLogin');
-                    CommonBtn.setAttribute('data-popup','true');
-                    $('[data-hasValue="false"]', '[data-sidebar-id="common"]').removeClass('u-hidden');
-                    $('[data-hasValue="true"]', '[data-sidebar-id="common"]').addClass('u-hidden');
-                }
+                };
+                window.SetCommonFunctionList();
+            } else {
+                let CommonBtn = document.getElementById('setCommonBtn');
+                CommonBtn.setAttribute('href', '#popupLogin');
+                CommonBtn.setAttribute('data-popup', 'true');
+                $('[data-hasValue="false"]', '[data-sidebar-id="common"]').removeClass('u-hidden');
+                $('[data-hasValue="true"]', '[data-sidebar-id="common"]').addClass('u-hidden');
+            }
     })(jQuery, window, document);
     </script>

@@ -74,7 +74,7 @@ namespace Feature.Wealth.Account.Controllers
                 user.Profile.Name = member.MemberName;
                 user.Profile.Email = member.MemberEmail;
             }
-            
+
             string objToJson = JsonConvert.SerializeObject(member);
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
             user.Profile.Save();
@@ -134,7 +134,7 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        public ActionResult WebBankResult(string txReqId,string LoginResult, string LoginDttm, string errMsg, string fnct, WebBankResultModel.custDataModel custData,string sign)
+        public ActionResult WebBankResult(string txReqId, string LoginResult, string LoginDttm, string errMsg, string fnct, WebBankResultModel.custDataModel custData, string sign)
         {
             if (!string.IsNullOrEmpty(txReqId))
             {
@@ -278,8 +278,7 @@ namespace Feature.Wealth.Account.Controllers
         [MemberAuthenticationFilter]
         public ActionResult GetCommonFunctions()
         {
-            CommonFuncrionsResp resp = new();
-            resp = _memberRepository.GetCommonFunctions(FcbMemberHelper.GetMemberPlatFormId());
+            CommonFuncrionsResp resp = _memberRepository.GetCommonFunctions(FcbMemberHelper.GetMemberPlatFormId());
             var serialSetting = new JsonSerializerSettings()
             {
                 ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
@@ -294,7 +293,7 @@ namespace Feature.Wealth.Account.Controllers
             object objReturn = null;
             if (string.IsNullOrEmpty(email) || !email.IsValidEmail())
             {
-                 objReturn = new
+                objReturn = new
                 {
                     success = false,
                     errorMessage = "不符合Email格式，請重新輸入。"
@@ -316,7 +315,7 @@ namespace Feature.Wealth.Account.Controllers
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return Redirect("/");
+                return new EmptyResult();
             }
             object objReturn = new
             {
@@ -332,7 +331,7 @@ namespace Feature.Wealth.Account.Controllers
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return Redirect("/");
+                return new EmptyResult();
             }
             object objReturn = new
             {
@@ -347,7 +346,7 @@ namespace Feature.Wealth.Account.Controllers
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return Redirect("/");
+                return new EmptyResult();
             }
             object objReturn = new
             {
@@ -363,7 +362,7 @@ namespace Feature.Wealth.Account.Controllers
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return Redirect("/");
+                return new EmptyResult();
             }
             if (commons == null || !commons.Any())
             {
@@ -386,5 +385,23 @@ namespace Feature.Wealth.Account.Controllers
             user.Profile.Save();
         }
 
+        [HttpPost]
+        public ActionResult GetCommonTools()
+        {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
+            CommonToolsRespResp resp = _memberRepository.GetCommonTools(FcbMemberHelper.GetMemberPlatFormId());
+            var serialSetting = new JsonSerializerSettings()
+            {
+                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
+            };
+            return new JsonNetResult(resp, serialSetting);
+        }
+
+        [HttpPost]
+        public ActionResult SetCommonTools(string itemId, bool isActive) => FcbMemberHelper.CheckMemberLogin() ? new JsonNetResult(_memberRepository.SetCommonTools(itemId, isActive)) :
+            new EmptyResult();
     }
 }
