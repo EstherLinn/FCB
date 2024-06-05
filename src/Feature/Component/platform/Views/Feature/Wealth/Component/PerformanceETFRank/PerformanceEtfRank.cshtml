@@ -146,18 +146,21 @@
 													<div class="l-target__name">
 														<a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.ProductName</a>
 													</div>
-													@if (item.ETFDiscountTags.Length > 0)
+													@if (ETFDiscountTags != null)
 													{
-														<div class="l-target__additional">
-															<ul class="l-tag">
-																@for (var i = 0; i < item.ETFDiscountTags.Length; i++)
-																{
-																	<li class="l-tag__item">
-																		<a href="#" class="o-tag"> @item.ETFDiscountTags[i]</a>
-																	</li>
-																}
-															</ul>
-														</div>
+														if (item.ETFDiscountTags.Length > 0)
+														{
+															<div class="l-target__additional">
+																<ul class="l-tag">
+																	@for (var i = 0; i < item.ETFDiscountTags.Length; i++)
+																	{
+																		<li class="l-tag__item">
+																			<a href="#" class="o-tag"> @item.ETFDiscountTags[i]</a>
+																		</li>
+																	}
+																</ul>
+															</div>
+														}
 													}
 												</div>
 											</div>
