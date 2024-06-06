@@ -42,11 +42,11 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 持股比例
         /// </summary>
-        public string Shareholding { get; set; }
+        public decimal? Shareholding { get; set; }
 
         /// <summary>
         /// 基金規模(億)
         /// </summary>
-        public string FundSizeMillion { get; set; }
+        public decimal? FundSizeMillion { get; set; }
     }
 }

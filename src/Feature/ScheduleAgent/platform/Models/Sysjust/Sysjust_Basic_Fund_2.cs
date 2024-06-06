@@ -27,7 +27,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 基金評等
         /// </summary>
-        public string FundRating { get; set; }
+        public decimal? FundRating { get; set; }
 
         /// <summary>
         /// 費用備註
@@ -37,7 +37,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 一年配息次數
         /// </summary>
-        public string DividendFrequencyOneYear { get; set; }
+        public int? DividendFrequencyOneYear { get; set; }
 
         /// <summary>
         /// 指標指數名稱
@@ -77,12 +77,12 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 最高經理費
         /// </summary>
-        public string MaxManagerFee { get; set; }
+        public decimal? MaxManagerFee { get; set; }
 
         /// <summary>
         /// 最高保管費
         /// </summary>
-        public string MaxStorageFee { get; set; }
+        public decimal? MaxStorageFee { get; set; }
 
         /// <summary>
         /// 單一報價

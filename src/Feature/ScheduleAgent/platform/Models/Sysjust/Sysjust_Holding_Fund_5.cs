@@ -42,16 +42,16 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 持股比例
         /// </summary>
-        public string Shareholding { get; set; }
+        public decimal? Shareholding { get; set; }
 
         /// <summary>
         /// 持股(千股)
         /// </summary>
-        public string ShareholdingThousands { get; set; }
+        public decimal? ShareholdingThousands { get; set; }
 
         /// <summary>
         /// 增減(%)
         /// </summary>
-        public string Change { get; set; }
+        public decimal? Change { get; set; }
     }
 }

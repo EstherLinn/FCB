@@ -57,9 +57,10 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
             else
             {
                 var cultureInfo = new CultureInfo("zh-TW");
-                if (DateTime.TryParseExact(text, "yyyy/M/ddtth:mm:ss", cultureInfo, DateTimeStyles.None, out DateTime Establishment))
+                var formats = new[] { "yyyy/M/ddtth:mm:ss", "yyyy/M/dtth:mm:ss" };
+                if (DateTime.TryParseExact(text, formats, cultureInfo, DateTimeStyles.None, out DateTime establishment))
                 {
-                    return Establishment.ToString("yyyyMMdd");
+                    return establishment.ToString("yyyyMMdd");
                 }
             }
             return base.ConvertFromString(text, row, memberMapData);

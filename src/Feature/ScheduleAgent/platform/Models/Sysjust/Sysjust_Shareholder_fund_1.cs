@@ -22,11 +22,11 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 持股數
         /// </summary>
-        public string ShareQuantity { get; set; }
+        public decimal? ShareQuantity { get; set; }
 
         /// <summary>
         /// 持股比例
         /// </summary>
-        public string SharePercentage { get; set; }
+        public decimal? SharePercentage { get; set; }
     }
 }

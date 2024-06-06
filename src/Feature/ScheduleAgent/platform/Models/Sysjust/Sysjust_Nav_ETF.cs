@@ -27,11 +27,11 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 市價
         /// </summary>
-        public string MarketPrice { get; set; }
+        public decimal? MarketPrice { get; set; }
 
         /// <summary>
         /// 淨值
         /// </summary>
-        public string NetAssetValue { get; set; }
+        public decimal? NetAssetValue { get; set; }
     }
 }

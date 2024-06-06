@@ -32,37 +32,37 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 整年報酬
         /// </summary>
-        public string AnnualReturn { get; set; }
+        public float? AnnualReturn { get; set; }
 
         /// <summary>
         /// 年化標準差
         /// </summary>
-        public string AnnualizedStandardDeviation { get; set; }
+        public decimal? AnnualizedStandardDeviation { get; set; }
 
         /// <summary>
         /// Beta
         /// </summary>
-        public string Beta { get; set; }
+        public decimal? Beta { get; set; }
 
         /// <summary>
         /// Sharpe
         /// </summary>
-        public string Sharpe { get; set; }
+        public decimal? Sharpe { get; set; }
 
         /// <summary>
         /// Information Ratio
         /// </summary>
-        public string InformationRatio { get; set; }
+        public decimal? InformationRatio { get; set; }
 
         /// <summary>
         /// Jensen Index
         /// </summary>
-        public string JensenIndex { get; set; }
+        public decimal? JensenIndex { get; set; }
 
         /// <summary>
         /// Treynor Index
         /// </summary>
-        public string TreynorIndex { get; set; }
+        public decimal? TreynorIndex { get; set; }
 
         /// <summary>
         /// 境內/外基金 O:境內 D:境外

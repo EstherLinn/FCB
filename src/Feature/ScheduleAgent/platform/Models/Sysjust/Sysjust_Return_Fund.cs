@@ -22,347 +22,347 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 近一日報酬(原幣)
         /// </summary>
-        public string OneDayReturnOriginalCurrency { get; set; }
+        public decimal? OneDayReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 近一週報酬(原幣)
         /// </summary>
-        public string OneWeekReturnOriginalCurrency { get; set; }
+        public decimal? OneWeekReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 本月以來報酬(原幣)
         /// </summary>
-        public string MonthtoDateReturnOriginalCurrency { get; set; }
+        public decimal? MonthtoDateReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 今年以來報酬(原幣)
         /// </summary>
-        public string YeartoDateReturnOriginalCurrency { get; set; }
+        public decimal? YeartoDateReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一個月報酬(原幣)
         /// </summary>
-        public string OneMonthReturnOriginalCurrency { get; set; }
+        public decimal? OneMonthReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三個月報酬(原幣)
         /// </summary>
-        public string ThreeMonthReturnOriginalCurrency { get; set; }
+        public decimal? ThreeMonthReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 六個月報酬(原幣)
         /// </summary>
-        public string SixMonthReturnOriginalCurrency { get; set; }
+        public decimal? SixMonthReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年報酬(原幣)
         /// </summary>
-        public string OneYearReturnOriginalCurrency { get; set; }
+        public decimal? OneYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 二年報酬(原幣)
         /// </summary>
-        public string TwoYearReturnOriginalCurrency { get; set; }
+        public decimal? TwoYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年報酬(原幣)
         /// </summary>
-        public string ThreeYearReturnOriginalCurrency { get; set; }
+        public decimal? ThreeYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 五年報酬(原幣)
         /// </summary>
-        public string FiveYearReturnOriginalCurrency { get; set; }
+        public decimal? FiveYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 十年報酬(原幣)
         /// </summary>
-        public string TenYearReturnOriginalCurrency { get; set; }
+        public decimal? TenYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 成立以來(原幣)
         /// </summary>
-        public string InceptionDateReturnOriginalCurrency { get; set; }
+        public decimal? InceptionDateReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 近一週報酬(台幣)
         /// </summary>
-        public string OneWeekReturnTWD { get; set; }
+        public decimal? OneWeekReturnTWD { get; set; }
 
         /// <summary>
         /// 本月以來報酬(台幣)
         /// </summary>
-        public string MonthtoDateReturnTWD { get; set; }
+        public decimal? MonthtoDateReturnTWD { get; set; }
 
         /// <summary>
         /// 今年以來報酬(台幣)
         /// </summary>
-        public string YeartoDateReturnTWD { get; set; }
+        public decimal? YeartoDateReturnTWD { get; set; }
 
         /// <summary>
         /// 一個月報酬(台幣)
         /// </summary>
-        public string OneMonthReturnTWD { get; set; }
+        public decimal? OneMonthReturnTWD { get; set; }
 
         /// <summary>
         /// 三個月報酬(台幣)
         /// </summary>
-        public string ThreeMonthReturnTWD { get; set; }
+        public decimal? ThreeMonthReturnTWD { get; set; }
 
         /// <summary>
         /// 六個月報酬(台幣)
         /// </summary>
-        public string SixMonthReturnTWD { get; set; }
+        public decimal? SixMonthReturnTWD { get; set; }
 
         /// <summary>
         /// 一年報酬(台幣)
         /// </summary>
-        public string OneYearReturnTWD { get; set; }
+        public decimal? OneYearReturnTWD { get; set; }
 
         /// <summary>
         /// 二年報酬(台幣)
         /// </summary>
-        public string TwoYearReturnTWD { get; set; }
+        public decimal? TwoYearReturnTWD { get; set; }
 
         /// <summary>
         /// 三年報酬(台幣)
         /// </summary>
-        public string ThreeYearReturnTWD { get; set; }
+        public decimal? ThreeYearReturnTWD { get; set; }
 
         /// <summary>
         /// 五年報酬(台幣)
         /// </summary>
-        public string FiveYearReturnTWD { get; set; }
+        public decimal? FiveYearReturnTWD { get; set; }
 
         /// <summary>
         /// 十年報酬(台幣)
         /// </summary>
-        public string TenYearReturnTWD { get; set; }
+        public decimal? TenYearReturnTWD { get; set; }
 
         /// <summary>
         /// 成立以來(台幣)
         /// </summary>
-        public string InceptionDateReturnTWD { get; set; }
+        public decimal? InceptionDateReturnTWD { get; set; }
 
         /// <summary>
         /// 本月以來報酬(台幣)(定期定額)
         /// </summary>
-        public string MonthtoDateReturnTWDRegularInvestment { get; set; }
+        public decimal? MonthtoDateReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 今年以來報酬(台幣)(定期定額)
         /// </summary>
-        public string YeartoDateReturnTWDRegularInvestment { get; set; }
+        public decimal? YeartoDateReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 一個月報酬(台幣)(定期定額)
         /// </summary>
-        public string OneMonthReturnTWDRegularInvestment { get; set; }
+        public decimal? OneMonthReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 三個月報酬(台幣)(定期定額)
         /// </summary>
-        public string ThreeMonthReturnTWDRegularInvestment { get; set; }
+        public decimal? ThreeMonthReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 六個月報酬(台幣)(定期定額)
         /// </summary>
-        public string SixMonthReturnTWDRegularInvestment { get; set; }
+        public decimal? SixMonthReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 一年報酬(台幣)(定期定額)
         /// </summary>
-        public string OneYearReturnTWDRegularInvestment { get; set; }
+        public decimal? OneYearReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 二年報酬(台幣)(定期定額)
         /// </summary>
-        public string TwoYearReturnTWDRegularInvestment { get; set; }
+        public decimal? TwoYearReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 三年報酬(台幣)(定期定額)
         /// </summary>
-        public string ThreeYearReturnTWDRegularInvestment { get; set; }
+        public decimal? ThreeYearReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 五年報酬(台幣)(定期定額)
         /// </summary>
-        public string FiveYearReturnTWDRegularInvestment { get; set; }
+        public decimal? FiveYearReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 十年報酬(台幣)(定期定額)
         /// </summary>
-        public string TenYearReturnTWDRegularInvestment { get; set; }
+        public decimal? TenYearReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 成立以來(台幣)(定期定額)
         /// </summary>
-        public string InceptionDateReturnTWDRegularInvestment { get; set; }
+        public decimal? InceptionDateReturnTWDRegularInvestment { get; set; }
 
         /// <summary>
         /// 本月以來報酬(原幣)(定期定額)
         /// </summary>
-        public string MonthtoDateReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? MonthtoDateReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 今年以來報酬(原幣)(定期定額)
         /// </summary>
-        public string YeartoDateReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? YeartoDateReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 一個月報酬(原幣)(定期定額)
         /// </summary>
-        public string OneMonthReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? OneMonthReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 三個月報酬(原幣)(定期定額)
         /// </summary>
-        public string ThreeMonthReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? ThreeMonthReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 六個月報酬(原幣)(定期定額)
         /// </summary>
-        public string SixMonthReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? SixMonthReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 一年報酬(原幣)(定期定額)
         /// </summary>
-        public string OneYearReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? OneYearReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 二年報酬(原幣)(定期定額)
         /// </summary>
-        public string TwoYearReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? TwoYearReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 三年報酬(原幣)(定期定額)
         /// </summary>
-        public string ThreeYearReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? ThreeYearReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 五年報酬(原幣)(定期定額)
         /// </summary>
-        public string FiveYearReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? FiveYearReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 十年報酬(原幣)(定期定額)
         /// </summary>
-        public string TenYearReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? TenYearReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 成立以來(原幣)(定期定額)
         /// </summary>
-        public string InceptionDateReturnOriginalCurrencyRegularInvestment { get; set; }
+        public decimal? InceptionDateReturnOriginalCurrencyRegularInvestment { get; set; }
 
         /// <summary>
         /// 本月以來報酬(原幣)(年化報酬)
         /// </summary>
-        public string MonthtoDateReturnOriginalCurrencyAnnualizedReturn { get; set; }
+        public decimal? MonthtoDateReturnOriginalCurrencyAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 一個月報酬(原幣)(年化報酬)
         /// </summary>
-        public string OneMonthReturnOriginalCurrencyAnnualizedReturn { get; set; }
+        public decimal? OneMonthReturnOriginalCurrencyAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 三個月報酬(原幣)(年化報酬)
         /// </summary>
-        public string ThreeMonthReturnOriginalCurrencyAnnualizedReturn { get; set; }
+        public decimal? ThreeMonthReturnOriginalCurrencyAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 六個月報酬(原幣)(年化報酬)
         /// </summary>
-        public string SixMonthReturnOriginalCurrencyAnnualizedReturn { get; set; }
+        public decimal? SixMonthReturnOriginalCurrencyAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 一年報酬(原幣)(年化報酬)
         /// </summary>
-        public string OneYearReturnOriginalCurrencyAnnualizedReturn { get; set; }
+        public decimal? OneYearReturnOriginalCurrencyAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 二年報酬(原幣)(年化報酬)
         /// </summary>
-        public string TwoYearReturnOriginalCurrencyAnnualizedReturn { get; set; }
+        public decimal? TwoYearReturnOriginalCurrencyAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 三年報酬(原幣)(年化報酬)
         /// </summary>
-        public string ThreeYearReturnOriginalCurrencyAnnualizedReturn { get; set; }
+        public decimal? ThreeYearReturnOriginalCurrencyAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 五年報酬(原幣)(年化報酬)
         /// </summary>
-        public string FiveYearReturnOriginalCurrencyAnnualizedReturn { get; set; }
+        public decimal? FiveYearReturnOriginalCurrencyAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 十年報酬(原幣)(年化報酬)
         /// </summary>
-        public string TenYearReturnOriginalCurrencyAnnualizedReturn { get; set; }
+        public decimal? TenYearReturnOriginalCurrencyAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 成立以來(原幣)(年化報酬)
         /// </summary>
-        public string InceptionDateReturnOriginalCurrencyAnnualizedReturn { get; set; }
+        public decimal? InceptionDateReturnOriginalCurrencyAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 一個月報酬(定期定額)(年化報酬)
         /// </summary>
-        public string OneMonthReturnRegularInvestmentAnnualizedReturn { get; set; }
+        public decimal? OneMonthReturnRegularInvestmentAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 三個月報酬(定期定額)(年化報酬)
         /// </summary>
-        public string ThreeMonthReturnRegularInvestmentAnnualizedReturn { get; set; }
+        public decimal? ThreeMonthReturnRegularInvestmentAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 六個月報酬(定期定額)(年化報酬)
         /// </summary>
-        public string SixMonthReturnRegularInvestmentAnnualizedReturn { get; set; }
+        public decimal? SixMonthReturnRegularInvestmentAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 一年報酬(定期定額)(年化報酬)
         /// </summary>
-        public string OneYearReturnRegularInvestmentAnnualizedReturn { get; set; }
+        public decimal? OneYearReturnRegularInvestmentAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 二年報酬(定期定額)(年化報酬)
         /// </summary>
-        public string TwoYearReturnRegularInvestmentAnnualizedReturn { get; set; }
+        public decimal? TwoYearReturnRegularInvestmentAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 三年報酬(定期定額)(年化報酬)
         /// </summary>
-        public string ThreeYearReturnRegularInvestmentAnnualizedReturn { get; set; }
+        public decimal? ThreeYearReturnRegularInvestmentAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 五年報酬(定期定額)(年化報酬)
         /// </summary>
-        public string FiveYearReturnRegularInvestmentAnnualizedReturn { get; set; }
+        public decimal? FiveYearReturnRegularInvestmentAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 十年報酬(定期定額)(年化報酬)
         /// </summary>
-        public string TenYearReturnRegularInvestmentAnnualizedReturn { get; set; }
+        public decimal? TenYearReturnRegularInvestmentAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 成立以來(定期定額)(年化報酬)
         /// </summary>
-        public string InceptionDateReturnRegularInvestmentAnnualizedReturn { get; set; }
+        public decimal? InceptionDateReturnRegularInvestmentAnnualizedReturn { get; set; }
 
         /// <summary>
         /// 年化標準差
         /// </summary>
-        public string AnnualizedStandardDeviation { get; set; }
+        public decimal? AnnualizedStandardDeviation { get; set; }
 
         /// <summary>
         /// Sharpe
         /// </summary>
-        public string Sharpe { get; set; }
+        public decimal? Sharpe { get; set; }
 
         /// <summary>
         /// Beta
         /// </summary>
-        public string Beta { get; set; }
+        public decimal? Beta { get; set; }
         public string DataDate { get; set; }
     }
 }

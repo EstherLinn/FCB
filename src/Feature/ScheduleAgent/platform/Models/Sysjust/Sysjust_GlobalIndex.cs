@@ -12,7 +12,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         public string IndexCategoryName { get; set; }
         public string DataDate { get; set; }
         public string MarketPrice { get; set; }
-        public string Change { get; set; }
-        public string ChangePercentage { get; set; }
+        public decimal? Change { get; set; }
+        public decimal? ChangePercentage { get; set; }
     }
 }

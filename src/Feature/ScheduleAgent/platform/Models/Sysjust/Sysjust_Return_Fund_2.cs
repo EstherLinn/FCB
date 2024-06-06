@@ -27,16 +27,16 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 整年報酬率(原幣)
         /// </summary>
-        public string AnnualReturnRateOriginalCurrency { get; set; }
+        public float? AnnualReturnRateOriginalCurrency { get; set; }
 
         /// <summary>
         /// 整年報酬率(台幣)
         /// </summary>
-        public string AnnualReturnRateTWD { get; set; }
+        public float? AnnualReturnRateTWD { get; set; }
 
         /// <summary>
         /// 指標指數漲跌幅
         /// </summary>
-        public string IndicatorIndexPriceChange { get; set; }
+        public float? IndicatorIndexPriceChange { get; set; }
     }
 }

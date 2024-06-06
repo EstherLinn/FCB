@@ -32,7 +32,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 百分比例
         /// </summary>
-        public string Percentage { get; set; }
+        public decimal? Percentage { get; set; }
 
         /// <summary>
         /// 幣別
@@ -42,6 +42,6 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 金額
         /// </summary>
-        public string Amount { get; set; }
+        public decimal? Amount { get; set; }
     }
 }

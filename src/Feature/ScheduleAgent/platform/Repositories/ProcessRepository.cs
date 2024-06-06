@@ -26,7 +26,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         {
             string mergeQuery = GenerateMergeQuery<T>(tableName, uniqueColumn, key);
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
-            LogChangeHistory(DateTime.Now, filePath, "資料差異更新", tableName, line);
+            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
              ";
 
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
-            LogChangeHistory(DateTime.Now, filePath, "資料差異更新", tableName, line);
+            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line);
         }
 
         /// <summary>
@@ -76,25 +76,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             ";
 
             int line = ExecuteNonQuery(insertQuery, data, CommandType.Text,true);
-            LogChangeHistory(DateTime.Now, filePath, "最新資料", tableName, line);
-        }
-
-        /// <summary>
-        /// 直接將資料插入資料庫(增量)
-        /// </summary>
-        public void BulkInsertDirectToDatabase<T>(IEnumerable<T> data, string tableName, string filePath)
-        {
-            var properties = typeof(T).GetProperties();
-            string columns = string.Join(",", properties.Select(p => p.Name));
-            string parameters = string.Join(",", properties.Select(p => "@" + p.Name));
-
-            string insertQuery = $@"
-            INSERT INTO {tableName} ({columns})
-            VALUES ({parameters});
-            ";
-
-            int line = ExecuteNonQuery(insertQuery, data, CommandType.Text,true);
-            LogChangeHistory(DateTime.Now, filePath, "資料增量", tableName, line);
+            LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, line);
         }
 
 

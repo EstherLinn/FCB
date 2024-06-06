@@ -32,31 +32,31 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 年化標準差(市價)
         /// </summary>
-        public string AnnualizedStandardDeviationMarketPrice { get; set; }
+        public float? AnnualizedStandardDeviationMarketPrice { get; set; }
 
         /// <summary>
         /// Beta(市價)
         /// </summary>
-        public string BetaMarketPrice { get; set; }
+        public float? BetaMarketPrice { get; set; }
 
         /// <summary>
         /// Sharpe(市價)
         /// </summary>
-        public string SharpeMarketPrice { get; set; }
+        public float? SharpeMarketPrice { get; set; }
 
         /// <summary>
         /// Information Ratio(市價)
         /// </summary>
-        public string InformationRatioMarketPrice { get; set; }
+        public float? InformationRatioMarketPrice { get; set; }
 
         /// <summary>
         /// Jensen Index(市價)
         /// </summary>
-        public string JensenIndexMarketPrice { get; set; }
+        public float? JensenIndexMarketPrice { get; set; }
 
         /// <summary>
         /// Treynor Index(市價)
         /// </summary>
-        public string TreynorIndexMarketPrice { get; set; }
+        public float? TreynorIndexMarketPrice { get; set; }
     }
 }

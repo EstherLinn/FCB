@@ -27,7 +27,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 規模
         /// </summary>
-        public string Scale { get; set; }
+        public decimal? Scale { get; set; }
 
         /// <summary>
         /// 幣別

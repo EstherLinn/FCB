@@ -4,39 +4,43 @@ using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
+using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
     public class InsertFundEtf : SitecronAgentBase
     {
-        private readonly EtlService _etlService;
         private readonly ProcessRepository _repository = new();
-        public InsertFundEtf()
-        {
-            this._etlService = new EtlService(this.Logger, this.JobItems);
-        }
 
         protected override async Task Execute()
         {
-            string filename = "FUND_ETF";
-            bool IsfilePath = await this._etlService.ExtractFile("FUND_ETF");
-
-            if (IsfilePath)
+            if (this.JobItems != null)
             {
-                try
-                {
-                    var basic = _etlService.ParseFixedLength<FundEtf>(filename);
-                    _repository.BulkInsertToNewDatabase(basic, "[FUND_ETF]", filename);
-                }
-                catch (Exception ex)
-                {
-                    _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, "", 0);
-                }
+                var jobitem = this.JobItems.FirstOrDefault();
+                var etlService = new EtlService(this.Logger, jobitem);
 
-            }
-            else
-            {
-                _repository.LogChangeHistory(DateTime.UtcNow, "ERROR: File not found", "找不到檔案", "", 0);
+                string filename = "FUND_ETF";
+                bool IsfilePath = etlService.ExtractFile("FUND_ETF");
+
+                if (IsfilePath)
+                {
+                    try
+                    {
+                        var basic = await etlService.ParseFixedLength<FundEtf>(filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[FUND_ETF]", filename);
+                        etlService.FinishJob(filename);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Logger.Error(ex.Message, ex);
+                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
+                    }
+                }
+                else
+                {
+                    this.Logger.Error("ERROR: File not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
+                }
             }
         }
     }

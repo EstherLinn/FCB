@@ -1,18 +1,15 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
-using System.Linq;
-using Quartz;
-using System.IO;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     public class InsertBasicEtf : SitecronAgentBase
     {
-        private EtlService _etlService;
         private readonly ProcessRepository _repository = new();
 
         protected override async Task Execute()
@@ -20,32 +17,30 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             if (this.JobItems != null)
             {
                 var jobitem = this.JobItems.FirstOrDefault();
-                this._etlService = new EtlService(this.Logger, jobitem);
+                var etlService = new EtlService(this.Logger, jobitem);
 
                 string filename = "SYSJUST-BASIC-ETF";
-                bool IsfilePath = this._etlService.Extract(filename);
+                bool IsfilePath = etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {
                     try
                     {
-                        var basic = await this._etlService.ParseCsv<SysjustBasicEtf>(filename);
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Basic_ETF]", "FirstBankCode", "FirstBankCode", filename);
-
-                        filename = Path.ChangeExtension(filename, "txt");
-                        string localFilePath = Path.Combine(this._etlService.LocalDirectory, filename);
-                        string doneFileName = $"{Path.GetFileNameWithoutExtension(filename)}_done.txt";
-                        string localDoneFilePath = Path.Combine(this._etlService.LocalDirectory, doneFileName);
-                        File.Move(localFilePath, localDoneFilePath);
+                        var basic = await etlService.ParseCsv<SysjustBasicEtf>(filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Basic_ETF]", filename);
+                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Basic_ETF_History]", "FirstBankCode", "FirstBankCode", filename);
+                        etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
                     {
+                        this.Logger.Error(ex.Message, ex);
                         _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
                     }
                 }
                 else
                 {
-                    _repository.LogChangeHistory(DateTime.UtcNow, "ERROR: File not found", "找不到檔案", " ", 0);
+                    this.Logger.Error("ERROR: File not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
                 }
             }
         }

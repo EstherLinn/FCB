@@ -7,7 +7,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
     /// </summary>
     [Delimiter(";@")]
     [HasHeaderRecord(false)]
-    public class SysjustCompanyGroupFund
+    public class SysjustCompanyFund4
     {
         /// <summary>
         /// 基金公司代碼
@@ -32,12 +32,12 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 持股數
         /// </summary>
-        public string Shareholding { get; set; }
+        public decimal? Shareholding { get; set; }
 
         /// <summary>
         /// 持股比例
         /// </summary>
-        public string ShareholdingPercentage { get; set; }
+        public decimal? ShareholdingPercentage { get; set; }
 
         /// <summary>
         /// 主要學經歷

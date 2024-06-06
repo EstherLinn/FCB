@@ -22,7 +22,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 淨值
         /// </summary>
-        public string NetAssetValue { get; set; }
+        public decimal? NetAssetValue { get; set; }
 
         /// <summary>
         ///嘉實代碼

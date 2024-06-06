@@ -27,11 +27,11 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 整月報酬率
         /// </summary>
-        public string MonthlyReturnRate { get; set; }
+        public float? MonthlyReturnRate { get; set; }
 
         /// <summary>
         /// 指標指數漲跌幅
         /// </summary>
-        public string IndicatorIndexPriceChange { get; set; }
+        public float? IndicatorIndexPriceChange { get; set; }
     }
 }

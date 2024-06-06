@@ -27,201 +27,201 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 一年報酬率(年平均報酬)
         /// </summary>
-        public string OneYearReturnRateAnnualAverageReturn { get; set; }
+        public decimal? OneYearReturnRateAnnualAverageReturn { get; set; }
 
         /// <summary>
         /// 一年報酬率(同類型平均)
         /// </summary>
-        public string OneYearReturnRateAverageType { get; set; }
+        public decimal? OneYearReturnRateAverageType { get; set; }
 
         /// <summary>
         /// 一年報酬率(同類型排名)
         /// </summary>
-        public string OneYearReturnRateRankingType { get; set; }
+        public int? OneYearReturnRateRankingType { get; set; }
 
         /// <summary>
         /// 一年報酬率(同類型排名基金數)
         /// </summary>
-        public string OneYearReturnRateFundsRankingType { get; set; }
+        public int? OneYearReturnRateFundsRankingType { get; set; }
 
         /// <summary>
         /// 一年報酬率(同標的平均)
         /// </summary>
-        public string OneYearReturnRateAverageTarget { get; set; }
+        public decimal? OneYearReturnRateAverageTarget { get; set; }
 
         /// <summary>
         /// 一年報酬率(同標的排名)
         /// </summary>
-        public string OneYearReturnRateRankingTarget { get; set; }
+        public int? OneYearReturnRateRankingTarget { get; set; }
 
         /// <summary>
         /// 一年報酬率(同標的排名基金數)
         /// </summary>
-        public string OneYearReturnRateFundsRankingTarget { get; set; }
+        public int? OneYearReturnRateFundsRankingTarget { get; set; }
 
         /// <summary>
         /// 一年報酬率(同區域平均)
         /// </summary>
-        public string OneYearReturnRateAverageRegion { get; set; }
+        public decimal? OneYearReturnRateAverageRegion { get; set; }
 
         /// <summary>
         /// 一年報酬率(同區域排名)
         /// </summary>
-        public string OneYearReturnRateRankingRegion { get; set; }
+        public int? OneYearReturnRateRankingRegion { get; set; }
 
         /// <summary>
         /// 一年報酬率(同區域排名基金數)
         /// </summary>
-        public string OneYearReturnRateFundsRankingRegion { get; set; }
+        public int? OneYearReturnRateFundsRankingRegion { get; set; }
 
         /// <summary>
         /// Sharpe
         /// </summary>
-        public string Sharpe { get; set; }
+        public decimal? Sharpe { get; set; }
 
         /// <summary>
         /// Sharpe(同類型平均)
         /// </summary>
-        public string SharpeAverageType { get; set; }
+        public decimal? SharpeAverageType { get; set; }
 
         /// <summary>
         /// Sharpe(同類型排名)
         /// </summary>
-        public string SharpeRankingType { get; set; }
+        public int? SharpeRankingType { get; set; }
 
         /// <summary>
         /// Sharpe(同類型排名基金數)
         /// </summary>
-        public string SharpeFundsRankingType { get; set; }
+        public int? SharpeFundsRankingType { get; set; }
 
         /// <summary>
         /// Sharpe(同標的平均)
         /// </summary>
-        public string SharpeAverageTarget { get; set; }
+        public decimal? SharpeAverageTarget { get; set; }
 
         /// <summary>
         /// Sharpe(同標的排名)
         /// </summary>
-        public string SharpeRankingTarget { get; set; }
+        public int? SharpeRankingTarget { get; set; }
 
         /// <summary>
         /// Sharpe(同標的排名基金數)
         /// </summary>
-        public string SharpeFundsRankingTarget { get; set; }
+        public int? SharpeFundsRankingTarget { get; set; }
 
         /// <summary>
         /// Sharpe(同區域平均)
         /// </summary>
-        public string SharpeAverageRegion { get; set; }
+        public decimal? SharpeAverageRegion { get; set; }
 
         /// <summary>
         /// Sharpe(同區域排名)
         /// </summary>
-        public string SharpeRankingRegion { get; set; }
+        public int? SharpeRankingRegion { get; set; }
 
         /// <summary>
         /// Sharpe(同區域排名基金數)
         /// </summary>
-        public string SharpeFundsRankingRegion { get; set; }
+        public int? SharpeFundsRankingRegion { get; set; }
 
         /// <summary>
         /// Beta
         /// </summary>
-        public string Beta { get; set; }
+        public decimal? Beta { get; set; }
 
         /// <summary>
         /// Beta(同類型平均)
         /// </summary>
-        public string BetaAverageType { get; set; }
+        public decimal? BetaAverageType { get; set; }
 
         /// <summary>
         /// Beta(同類型排名)
         /// </summary>
-        public string BetaRankingType { get; set; }
+        public int? BetaRankingType { get; set; }
 
         /// <summary>
         /// Beta(同類型排名基金數)
         /// </summary>
-        public string BetaFundsRankingType { get; set; }
+        public int? BetaFundsRankingType { get; set; }
 
         /// <summary>
         /// Beta(同標的平均)
         /// </summary>
-        public string BetaAverageTarget { get; set; }
+        public decimal? BetaAverageTarget { get; set; }
 
         /// <summary>
         /// Beta(同標的排名)
         /// </summary>
-        public string BetaRankingTarget { get; set; }
+        public int? BetaRankingTarget { get; set; }
 
         /// <summary>
         /// Beta(同標的排名基金數)
         /// </summary>
-        public string BetaFundsRankingTarget { get; set; }
+        public int? BetaFundsRankingTarget { get; set; }
 
         /// <summary>
         /// Beta(同區域平均)
         /// </summary>
-        public string BetaAverageRegion { get; set; }
+        public decimal? BetaAverageRegion { get; set; }
 
         /// <summary>
         /// Beta(同區域排名)
         /// </summary>
-        public string BetaRankingRegion { get; set; }
+        public int? BetaRankingRegion { get; set; }
 
         /// <summary>
         /// Beta(同區域排名基金數)
         /// </summary>
-        public string BetaFundsRankingRegion { get; set; }
+        public int? BetaFundsRankingRegion { get; set; }
 
         /// <summary>
         /// 標準差
         /// </summary>
-        public string StandardDeviation { get; set; }
+        public decimal? StandardDeviation { get; set; }
 
         /// <summary>
         /// 標準差(同類型平均)
         /// </summary>
-        public string StandardDeviationAverageType { get; set; }
+        public decimal? StandardDeviationAverageType { get; set; }
 
         /// <summary>
         /// 標準差(同類型排名)
         /// </summary>
-        public string StandardDeviationRankingType { get; set; }
+        public int? StandardDeviationRankingType { get; set; }
 
         /// <summary>
         /// 標準差(同類型排名基金數)
         /// </summary>
-        public string StandardDeviationFundsRankingType { get; set; }
+        public int? StandardDeviationFundsRankingType { get; set; }
 
         /// <summary>
         /// 標準差(同標的平均)
         /// </summary>
-        public string StandardDeviationAverageTarget { get; set; }
+        public decimal? StandardDeviationAverageTarget { get; set; }
 
         /// <summary>
         /// 標準差(同標的排名)
         /// </summary>
-        public string StandardDeviationRankingTarget { get; set; }
+        public int? StandardDeviationRankingTarget { get; set; }
 
         /// <summary>
         /// 標準差(同標的排名基金數)
         /// </summary>
-        public string StandardDeviationFundsRankingTarget { get; set; }
+        public int? StandardDeviationFundsRankingTarget { get; set; }
 
         /// <summary>
         /// 標準差(同區域平均)
         /// </summary>
-        public string StandardDeviationAverageRegion { get; set; }
+        public decimal? StandardDeviationAverageRegion { get; set; }
 
         /// <summary>
         /// 標準差(同區域排名)
         /// </summary>
-        public string StandardDeviationRankingRegion { get; set; }
+        public int? StandardDeviationRankingRegion { get; set; }
 
         /// <summary>
         /// 標準差(同區域排名基金數)
         /// </summary>
-        public string StandardDeviationFundsRankingRegion { get; set; }
+        public int? StandardDeviationFundsRankingRegion { get; set; }
     }
 }

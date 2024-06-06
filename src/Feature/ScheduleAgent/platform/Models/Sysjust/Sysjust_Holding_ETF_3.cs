@@ -37,11 +37,11 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 百分比
         /// </summary>
-        public string Percentage { get; set; }
+        public decimal? Percentage { get; set; }
 
         /// <summary>
         /// 持有股數
         /// </summary>
-        public string NumberofSharesHeld { get; set; }
+        public decimal? NumberofSharesHeld { get; set; }
     }
 }

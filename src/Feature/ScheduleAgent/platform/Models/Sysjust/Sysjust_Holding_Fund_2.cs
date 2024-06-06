@@ -37,7 +37,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 比例 Holding%(Area)
         /// </summary>
-        public string HoldingArea { get; set; }
+        public decimal? HoldingArea { get; set; }
 
         /// <summary>
         /// 幣別
@@ -47,6 +47,6 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 投資金額
         /// </summary>
-        public string InvestmentAmount { get; set; }
+        public decimal? InvestmentAmount { get; set; }
     }
 }

@@ -9,15 +9,15 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         public string IndexID { get; set; }
         public string IndexName { get; set; }
         public string DataDate { get; set; }
-        public string Closing { get; set; }
-        public string Change { get; set; }
-        public string DailyReturn { get; set; }
-        public string WeeklyReturn { get; set; }
-        public string OneMonthReturn { get; set; }
-        public string ThreeMonthReturn { get; set; }
-        public string SixMonthReturn { get; set; }
-        public string YeartoDateReturn { get; set; }
-        public string OneYearReturn { get; set; }
-        public string ThreeYearReturn { get; set; }
+        public decimal? Closing { get; set; }
+        public decimal? Change { get; set; }
+        public decimal? DailyReturn { get; set; }
+        public decimal? WeeklyReturn { get; set; }
+        public decimal? OneMonthReturn { get; set; }
+        public decimal? ThreeMonthReturn { get; set; }
+        public decimal? SixMonthReturn { get; set; }
+        public decimal? YeartoDateReturn { get; set; }
+        public decimal? OneYearReturn { get; set; }
+        public decimal? ThreeYearReturn { get; set; }
     }
 }

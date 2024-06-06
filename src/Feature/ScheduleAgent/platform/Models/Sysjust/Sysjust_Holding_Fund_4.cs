@@ -37,6 +37,6 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 持股比例
         /// </summary>
-        public string Shareholding { get; set; }
+        public decimal? Shareholding { get; set; }
     }
 }

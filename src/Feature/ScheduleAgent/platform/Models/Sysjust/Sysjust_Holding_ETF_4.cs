@@ -27,136 +27,136 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 投資國內有價證券比例-上市股票
         /// </summary>
-        public string DomesticSecuritiesListedStocks { get; set; }
+        public decimal? DomesticSecuritiesListedStocks { get; set; }
 
         /// <summary>
         /// 投資國內有價證券比例-基金
         /// </summary>
-        public string DomesticSecuritiesFund { get; set; }
+        public decimal? DomesticSecuritiesFund { get; set; }
 
         /// <summary>
         /// 投資國內有價證券比例-上櫃股票
         /// </summary>
-        public string DomesticSecuritiesOTCStocks { get; set; }
+        public decimal? DomesticSecuritiesOTCStocks { get; set; }
 
         /// <summary>
         /// 投資國內有價證券比例-債券(買斷)
         /// </summary>
-        public string DomesticSecuritiesBondsPurchased { get; set; }
+        public decimal? DomesticSecuritiesBondsPurchased { get; set; }
 
         /// <summary>
         /// 投資國內有價證券比例-附買回債券
         /// </summary>
-        public string DomesticSecuritiesBondsRepo { get; set; }
+        public decimal? DomesticSecuritiesBondsRepo { get; set; }
 
         /// <summary>
         /// 投資國內有價證券比例-其他
         /// </summary>
-        public string DomesticSecuritiesOthers { get; set; }
+        public decimal? DomesticSecuritiesOthers { get; set; }
 
         /// <summary>
         /// 投資國內有價證券比例-小計
         /// </summary>
-        public string DomesticSecuritiesSubtotal { get; set; }
+        public decimal? DomesticSecuritiesSubtotal { get; set; }
 
         /// <summary>
         /// 國內短期投資比例-短期票券
         /// </summary>
-        public string DomesticShortTermCommercialPapers { get; set; }
+        public decimal? DomesticShortTermCommercialPapers { get; set; }
 
         /// <summary>
         /// 國內短期投資比例-一般型存款
         /// </summary>
-        public string DomesticShortTermOrdinaryDeposits { get; set; }
+        public decimal? DomesticShortTermOrdinaryDeposits { get; set; }
 
         /// <summary>
         /// 國內短期投資比例-其他
         /// </summary>
-        public string DomesticShortTermOthers { get; set; }
+        public decimal? DomesticShortTermOthers { get; set; }
 
         /// <summary>
         /// 國內短期投資比例-小計
         /// </summary>
-        public string DomesticShortTermSubtotal { get; set; }
+        public decimal? DomesticShortTermSubtotal { get; set; }
 
         /// <summary>
         /// 投資國內合計
         /// </summary>
-        public string TotalDomestic { get; set; }
+        public decimal? TotalDomestic { get; set; }
 
         /// <summary>
         /// 投資國外有價證券比例-北美
         /// </summary>
-        public string ForeignSecuritiesNorthAmerica { get; set; }
+        public decimal? ForeignSecuritiesNorthAmerica { get; set; }
 
         /// <summary>
         /// 投資國外有價證券比例-日本
         /// </summary>
-        public string ForeignSecuritiesJapan { get; set; }
+        public decimal? ForeignSecuritiesJapan { get; set; }
 
         /// <summary>
         /// 投資國外有價證券比例-已開發歐洲
         /// </summary>
-        public string ForeignSecuritiesDevelopedEurope { get; set; }
+        public decimal? ForeignSecuritiesDevelopedEurope { get; set; }
 
         /// <summary>
         /// 投資國外有價證券比例-亞洲不含日本
         /// </summary>
-        public string ForeignSecuritiesAsiaexcludingJapan { get; set; }
+        public decimal? ForeignSecuritiesAsiaexcludingJapan { get; set; }
 
         /// <summary>
         /// 投資國外有價證券比例-紐澳
         /// </summary>
-        public string ForeignSecuritiesAustraliaNewZealand { get; set; }
+        public decimal? ForeignSecuritiesAustraliaNewZealand { get; set; }
 
         /// <summary>
         /// 投資國外有價證券比例-其他
         /// </summary>
-        public string ForeignSecuritiesOthers { get; set; }
+        public decimal? ForeignSecuritiesOthers { get; set; }
 
         /// <summary>
         /// 投資國外有價證券比例-小計
         /// </summary>
-        public string ForeignSecuritiesSubtotal { get; set; }
+        public decimal? ForeignSecuritiesSubtotal { get; set; }
 
         /// <summary>
         /// 國外其他投資-現金存款
         /// </summary>
-        public string OtherForeignInvestmentsCashDeposits { get; set; }
+        public decimal? OtherForeignInvestmentsCashDeposits { get; set; }
 
         /// <summary>
         /// 國外其他投資-其他
         /// </summary>
-        public string OtherForeignInvestmentsOthers { get; set; }
+        public decimal? OtherForeignInvestmentsOthers { get; set; }
 
         /// <summary>
         /// 國外其他投資-小計
         /// </summary>
-        public string OtherForeignInvestmentsSubtotal { get; set; }
+        public decimal? OtherForeignInvestmentsSubtotal { get; set; }
 
         /// <summary>
         /// 投資國外合計
         /// </summary>
-        public string TotalForeignInvestment { get; set; }
+        public decimal? TotalForeignInvestment { get; set; }
 
         /// <summary>
         /// 投資國內有價證券比例-資產證券化商品
         /// </summary>
-        public string DomesticSecuritiesAssetBackedSecurities { get; set; }
+        public decimal? DomesticSecuritiesAssetBackedSecurities { get; set; }
 
         /// <summary>
         /// 國內短期投資比例--短期票券(附買回)
         /// </summary>
-        public string DomesticShortTermCommercialPapersRepo { get; set; }
+        public decimal? DomesticShortTermCommercialPapersRepo { get; set; }
 
         /// <summary>
         /// 投資國外有價證券比例-新興歐洲
         /// </summary>
-        public string ForeignSecuritiesEmergingEurope { get; set; }
+        public decimal? ForeignSecuritiesEmergingEurope { get; set; }
 
         /// <summary>
         /// 投資國外有價證券比例-拉丁美洲
         /// </summary>
-        public string ForeignSecuritiesLatinAmerica { get; set; }
+        public decimal? ForeignSecuritiesLatinAmerica { get; set; }
     }
 }

@@ -27,206 +27,206 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 六個月標準差
         /// </summary>
-        public string SixMonthStandardDeviation { get; set; }
+        public decimal? SixMonthStandardDeviation { get; set; }
 
         /// <summary>
         /// 一年標準差
         /// </summary>
-        public string OneYearStandardDeviation { get; set; }
+        public decimal? OneYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 三年標準差
         /// </summary>
-        public string ThreeYearStandardDeviation { get; set; }
+        public decimal? ThreeYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 五年標準差
         /// </summary>
-        public string FiveYearStandardDeviation { get; set; }
+        public decimal? FiveYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 十年標準差
         /// </summary>
-        public string TenYearStandardDeviation { get; set; }
+        public decimal? TenYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 六個月Sharpe
         /// </summary>
-        public string SixMonthSharpe { get; set; }
+        public decimal? SixMonthSharpe { get; set; }
 
         /// <summary>
         /// 一年Sharpe
         /// </summary>
-        public string OneYearSharpe { get; set; }
+        public decimal? OneYearSharpe { get; set; }
 
         /// <summary>
         /// 三年Sharpe
         /// </summary>
-        public string ThreeYearSharpe { get; set; }
+        public decimal? ThreeYearSharpe { get; set; }
 
         /// <summary>
         /// 五年Sharpe
         /// </summary>
-        public string FiveYearSharpe { get; set; }
+        public decimal? FiveYearSharpe { get; set; }
 
         /// <summary>
         /// 十年Sharpe
         /// </summary>
-        public string TenYearSharpe { get; set; }
+        public decimal? TenYearSharpe { get; set; }
 
         /// <summary>
         /// 六個月Alpha
         /// </summary>
-        public string SixMonthAlpha { get; set; }
+        public decimal? SixMonthAlpha { get; set; }
 
         /// <summary>
         /// 一年Alpha
         /// </summary>
-        public string OneYearAlpha { get; set; }
+        public decimal? OneYearAlpha { get; set; }
 
         /// <summary>
         /// 三年Alpha
         /// </summary>
-        public string ThreeYearAlpha { get; set; }
+        public decimal? ThreeYearAlpha { get; set; }
 
         /// <summary>
         /// 五年Alpha
         /// </summary>
-        public string FiveYearAlpha { get; set; }
+        public decimal? FiveYearAlpha { get; set; }
 
         /// <summary>
         /// 十年Alpha
         /// </summary>
-        public string TenYearAlpha { get; set; }
+        public decimal? TenYearAlpha { get; set; }
 
         /// <summary>
         /// 六個月Beta
         /// </summary>
-        public string SixMonthBeta { get; set; }
+        public decimal? SixMonthBeta { get; set; }
 
         /// <summary>
         /// 一年Beta
         /// </summary>
-        public string OneYearBeta { get; set; }
+        public decimal? OneYearBeta { get; set; }
 
         /// <summary>
         /// 三年Beta
         /// </summary>
-        public string ThreeYearBeta { get; set; }
+        public decimal? ThreeYearBeta { get; set; }
 
         /// <summary>
         /// 五年Beta
         /// </summary>
-        public string FiveYearBeta { get; set; }
+        public decimal? FiveYearBeta { get; set; }
 
         /// <summary>
         /// 十年Beta
         /// </summary>
-        public string TenYearBeta { get; set; }
+        public decimal? TenYearBeta { get; set; }
 
         /// <summary>
         /// 六個月RSquared
         /// </summary>
-        public string SixMonthRsquared { get; set; }
+        public decimal? SixMonthRsquared { get; set; }
 
         /// <summary>
         /// 一年RSquared
         /// </summary>
-        public string OneYearRsquared { get; set; }
+        public decimal? OneYearRsquared { get; set; }
 
         /// <summary>
         /// 三年RSquared
         /// </summary>
-        public string ThreeYearRsquared { get; set; }
+        public decimal? ThreeYearRsquared { get; set; }
 
         /// <summary>
         /// 五年RSquared
         /// </summary>
-        public string FiveYearRsquared { get; set; }
+        public decimal? FiveYearRsquared { get; set; }
 
         /// <summary>
         /// 十年RSquared
         /// </summary>
-        public string TenYearRsquared { get; set; }
+        public decimal? TenYearRsquared { get; set; }
 
         /// <summary>
         /// 六個月與指數相關係數
         /// </summary>
-        public string SixMonthCorrelationCoefficientIndex { get; set; }
+        public decimal? SixMonthCorrelationCoefficientIndex { get; set; }
 
         /// <summary>
         /// 一年與指數相關係數
         /// </summary>
-        public string OneYearCorrelationCoefficientIndex { get; set; }
+        public decimal? OneYearCorrelationCoefficientIndex { get; set; }
 
         /// <summary>
         /// 三年與指數相關係數
         /// </summary>
-        public string ThreeYearCorrelationCoefficientIndex { get; set; }
+        public decimal? ThreeYearCorrelationCoefficientIndex { get; set; }
 
         /// <summary>
         /// 五年與指數相關係數
         /// </summary>
-        public string FiveYearCorrelationCoefficientIndex { get; set; }
+        public decimal? FiveYearCorrelationCoefficientIndex { get; set; }
 
         /// <summary>
         /// 十年與指數相關係數
         /// </summary>
-        public string TenYearCorrelationCoefficientIndex { get; set; }
+        public decimal? TenYearCorrelationCoefficientIndex { get; set; }
 
         /// <summary>
         /// 六個月 Tracking Error
         /// </summary>
-        public string SixMonthTrackingError { get; set; }
+        public decimal? SixMonthTrackingError { get; set; }
 
         /// <summary>
         /// 一年 Tracking Error
         /// </summary>
-        public string OneYearTrackingError { get; set; }
+        public decimal? OneYearTrackingError { get; set; }
 
         /// <summary>
         /// 三年 Tracking Error
         /// </summary>
-        public string ThreeYearTrackingError { get; set; }
+        public decimal? ThreeYearTrackingError { get; set; }
 
         /// <summary>
         /// 五年 Tracking Error
         /// </summary>
-        public string FiveYearTrackingError { get; set; }
+        public decimal? FiveYearTrackingError { get; set; }
 
         /// <summary>
         /// 十年 Tracking Error
         /// </summary>
-        public string TenYearTrackingError { get; set; }
+        public decimal? TenYearTrackingError { get; set; }
 
         /// <summary>
         /// 六個月Variance
         /// </summary>
-        public string SixMonthVariance { get; set; }
+        public decimal? SixMonthVariance { get; set; }
 
         /// <summary>
         /// 一年 Variance
         /// </summary>
-        public string OneYearVariance { get; set; }
+        public decimal? OneYearVariance { get; set; }
 
         /// <summary>
         /// 三年 Variance
         /// </summary>
-        public string ThreeYearVariance { get; set; }
+        public decimal? ThreeYearVariance { get; set; }
 
         /// <summary>
         /// 五年 Variance
         /// </summary>
-        public string FiveYearVariance { get; set; }
+        public decimal? FiveYearVariance { get; set; }
 
         /// <summary>
         /// 十年 Variance
         /// </summary>
-        public string TenYearVariance { get; set; }
+        public decimal? TenYearVariance { get; set; }
 
         /// <summary>
         /// 二年標準差
         /// </summary>
-        public string TwoYearStandardDeviation { get; set; }
+        public decimal? TwoYearStandardDeviation { get; set; }
     }
 }

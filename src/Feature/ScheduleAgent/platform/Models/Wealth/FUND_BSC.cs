@@ -3,7 +3,7 @@
 namespace Feature.Wealth.ScheduleAgent.Models.Wealth
 {
     /// <summary>
-    /// 基金基本資料，檔案名稱：FUND_BSC.txt
+    /// 基金基本資料，檔案名稱：TFJSBSC.YYMMDD.1000.TXT
     /// </summary>
     [Delimiter(";")]
     [HasHeaderRecord(false)]
@@ -112,7 +112,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         /// <summary>
         /// 基金規模(百萬)
         /// </summary>
-        public string FundScaleMillion { get; set; }
+        public decimal? FundScaleMillion { get; set; }
 
         /// <summary>
         /// 成立日期
@@ -122,7 +122,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         /// <summary>
         /// 成立規模(百萬)
         /// </summary>
-        public string EstablishmentScaleMillion { get; set; }
+        public decimal? EstablishmentScaleMillion { get; set; }
 
         /// <summary>
         /// 計價幣別
@@ -132,17 +132,17 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         /// <summary>
         /// 銷售費(%)
         /// </summary>
-        public string SalesFee { get; set; }
+        public decimal? SalesFee { get; set; }
 
         /// <summary>
         /// 經理費(%)
         /// </summary>
-        public string ManagementFee { get; set; }
+        public decimal? ManagementFee { get; set; }
 
         /// <summary>
         /// 保管費(%)
         /// </summary>
-        public string CustodyFee { get; set; }
+        public decimal? CustodyFee { get; set; }
 
         /// <summary>
         /// 註冊地

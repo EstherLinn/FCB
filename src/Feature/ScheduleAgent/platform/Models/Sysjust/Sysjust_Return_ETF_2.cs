@@ -27,11 +27,11 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 淨值原幣年報酬
         /// </summary>
-        public string NetValueAnnualReturnOriginalCurrency { get; set; }
+        public float? NetValueAnnualReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 參考指數年報酬
         /// </summary>
-        public string ReferenceIndexAnnualReturn { get; set; }
+        public float? ReferenceIndexAnnualReturn { get; set; }
     }
 }

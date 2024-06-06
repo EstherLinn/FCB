@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
-    internal class InsertGlobalIndexRoi : SitecronAgentBase
+    public class InsertCompanyFund4 : SitecronAgentBase
     {
         private readonly ProcessRepository _repository = new();
 
@@ -18,16 +18,17 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             {
                 var jobitem = this.JobItems.FirstOrDefault();
                 var etlService = new EtlService(this.Logger, jobitem);
-                string filename = "SYSJUST-GLOBALINDEX-ROI";
+
+                string filename = "SYSJUST-COMPANY-FUND-4";
                 bool IsfilePath = etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsv<SysjustGlobalIndexRoi>(filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[Sysjust_GlobalIndex_ROI]", filename);
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_GlobalIndex_ROI_History]", "IndexID", "DataDate", filename);
+                        var basic = await etlService.ParseCsv<SysjustCompanyFund4>(filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Company_fund_4]", filename);
+                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Company_fund_4_History]", "FundCompanyCode", "Name","Title", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)

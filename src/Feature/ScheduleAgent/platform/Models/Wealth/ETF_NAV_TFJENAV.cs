@@ -6,307 +6,367 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
     /// ETF淨值及報酬率資料檔案，檔案名稱：TFJENAV.YYMMDD.1000.TXT (ETF_NAV.TXT)
     /// </summary>
     [Delimiter(";")]
-    [HasHeaderRecord(false)]
+    [HasHeaderRecord(true)]
     public class EtfNavTfjeNav
     {
         /// <summary>
         /// 資料日期
         /// </summary>
+        [Index(0)]
         public string DataDate { get; set; }
 
         /// <summary>
         /// ISIN Code
         /// </summary>
+        [Index(1)]
         public string ISINCode { get; set; }
 
         /// <summary>
         /// 銀行商品代碼
         /// </summary>
+        [Index(2)]
         public string BankProductCode { get; set; }
 
         /// <summary>
         /// 淨值日期
         /// </summary>
+        [Index(3)]
         public string NetAssetValueDate { get; set; }
 
         /// <summary>
         /// 基金幣別
         /// </summary>
+        [Index(4)]
         public string FundCurrency { get; set; }
 
         /// <summary>
         /// 淨值
         /// </summary>
-        public string NetAssetValue { get; set; }
+        [Index(5)]
+        public decimal? NetAssetValue { get; set; }
 
         /// <summary>
         /// 申購價
         /// </summary>
-        public string SubscriptionFee { get; set; }
+        [Index(6)]
+        public decimal? SubscriptionFee { get; set; }
 
         /// <summary>
         /// 贖回價
         /// </summary>
-        public string RedemptionFee { get; set; }
+        [Index(7)]
+        public decimal? RedemptionFee { get; set; }
 
         /// <summary>
         /// 一日報酬率(台幣)
         /// </summary>
-        public string DailyReturnTWD { get; set; }
+        [Index(8)]
+        public decimal? DailyReturnTWD { get; set; }
 
         /// <summary>
         /// 一週報酬率(台幣)
         /// </summary>
-        public string WeeklyReturnTWD { get; set; }
+        [Index(9)]
+        public decimal? WeeklyReturnTWD { get; set; }
 
         /// <summary>
         /// 一個月報酬率(台幣)
         /// </summary>
-        public string OneMonthReturnTWD { get; set; }
+        [Index(10)]
+        public decimal? OneMonthReturnTWD { get; set; }
 
         /// <summary>
         /// 三個月報酬率(台幣)
         /// </summary>
-        public string ThreeMonthReturnTWD { get; set; }
+        [Index(11)]
+        public decimal? ThreeMonthReturnTWD { get; set; }
 
         /// <summary>
         /// 六個月報酬率(台幣)
         /// </summary>
-        public string SixMonthReturnTWD { get; set; }
+        [Index(12)]
+        public decimal? SixMonthReturnTWD { get; set; }
 
         /// <summary>
         /// 一年報酬率(台幣)
         /// </summary>
-        public string OneYearReturnTWD { get; set; }
+        [Index(13)]
+        public decimal? OneYearReturnTWD { get; set; }
 
         /// <summary>
         /// 二年報酬率(台幣)
         /// </summary>
-        public string TwoYearReturnTWD { get; set; }
+        [Index(14)]
+        public decimal? TwoYearReturnTWD { get; set; }
 
         /// <summary>
         /// 三年報酬率(台幣)
         /// </summary>
-        public string ThreeYearReturnTWD { get; set; }
+        [Index(15)]
+        public decimal? ThreeYearReturnTWD { get; set; }
 
         /// <summary>
         /// 五年報酬率(台幣)
         /// </summary>
-        public string FiveYearReturnTWD { get; set; }
+        [Index(16)]
+        public decimal? FiveYearReturnTWD { get; set; }
 
         /// <summary>
         /// 十年報酬率(台幣)
         /// </summary>
-        public string TenYearReturnTWD { get; set; }
+        [Index(17)]
+        public decimal? TenYearReturnTWD { get; set; }
 
         /// <summary>
         /// 一日報酬率(原幣)
         /// </summary>
-        public string DailyReturnOriginalCurrency { get; set; }
+        [Index(18)]
+        public decimal? DailyReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一週報酬率(原幣)
         /// </summary>
-        public string WeeklyReturnOriginalCurrency { get; set; }
+        [Index(19)]
+        public decimal? WeeklyReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一個月報酬率(原幣)
         /// </summary>
-        public string OneMonthReturnOriginalCurrency { get; set; }
+        [Index(20)]
+        public decimal? OneMonthReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三個月報酬率(原幣)
         /// </summary>
-        public string ThreeMonthReturnOriginalCurrency { get; set; }
+        [Index(21)]
+        public decimal? ThreeMonthReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 六個月報酬率(原幣)
         /// </summary>
-        public string SixMonthReturnOriginalCurrency { get; set; }
+        [Index(22)]
+        public decimal? SixMonthReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年報酬率(原幣)
         /// </summary>
-        public string OneYearReturnOriginalCurrency { get; set; }
+        [Index(23)]
+        public decimal? OneYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 二年報酬率(原幣)
         /// </summary>
-        public string TwoYearReturnOriginalCurrency { get; set; }
+        [Index(24)]
+        public decimal? TwoYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年報酬率(原幣)
         /// </summary>
-        public string ThreeYearReturnOriginalCurrency { get; set; }
+        [Index(25)]
+        public decimal? ThreeYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 五年報酬率(原幣)
         /// </summary>
-        public string FiveYearReturnOriginalCurrency { get; set; }
+        [Index(26)]
+        public decimal? FiveYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 十年報酬率(原幣)
         /// </summary>
-        public string TenYearReturnOriginalCurrency { get; set; }
+        [Index(27)]
+        public decimal? TenYearReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年Alpha值(台幣)
         /// </summary>
-        public string OneYearAlphaTWD { get; set; }
+        [Index(28)]
+        public decimal? OneYearAlphaTWD { get; set; }
 
         /// <summary>
         /// 三年Alpha值(台幣)
         /// </summary>
-        public string ThreeYearAlphaTWD { get; set; }
+        [Index(29)]
+        public decimal? ThreeYearAlphaTWD { get; set; }
 
         /// <summary>
         /// 五年Alpha值(台幣)
         /// </summary>
-        public string FiveYearAlphaTWD { get; set; }
+        [Index(30)]
+        public decimal? FiveYearAlphaTWD { get; set; }
 
         /// <summary>
         /// 十年Alpha值(台幣)
         /// </summary>
-        public string TenYearAlphaTWD { get; set; }
+        [Index(31)]
+        public decimal? TenYearAlphaTWD { get; set; }
 
         /// <summary>
         /// 一年Beta值(台幣)
         /// </summary>
-        public string OneYearBetaTWD { get; set; }
+        [Index(32)]
+        public decimal? OneYearBetaTWD { get; set; }
 
         /// <summary>
         /// 三年Beta值(台幣)
         /// </summary>
-        public string ThreeYearBetaTWD { get; set; }
+        [Index(33)]
+        public decimal? ThreeYearBetaTWD { get; set; }
 
         /// <summary>
         /// 五年Beta值(台幣)
         /// </summary>
-        public string FiveYearBetaTWD { get; set; }
+        [Index(34)]
+        public decimal? FiveYearBetaTWD { get; set; }
 
         /// <summary>
         /// 十年Beta值(台幣)
         /// </summary>
-        public string TenYearBetaTWD { get; set; }
+        [Index(35)]
+        public decimal? TenYearBetaTWD { get; set; }
 
         /// <summary>
         /// 一年Sharpe值(台幣)
         /// </summary>
-        public string OneYearSharpeTWD { get; set; }
+        [Index(36)]
+        public decimal? OneYearSharpeTWD { get; set; }
 
         /// <summary>
         /// 三年Sharpe值(台幣)
         /// </summary>
-        public string ThreeYearSharpeTWD { get; set; }
+        [Index(37)]
+        public decimal? ThreeYearSharpeTWD { get; set; }
 
         /// <summary>
         /// 五年Sharpe值(台幣)
         /// </summary>
-        public string FiveYearSharpeTWD { get; set; }
+        [Index(38)]
+        public decimal? FiveYearSharpeTWD { get; set; }
 
         /// <summary>
         /// 十年Sharpe值(台幣)
         /// </summary>
-        public string TenYearSharpeTWD { get; set; }
+        [Index(39)]
+        public decimal? TenYearSharpeTWD { get; set; }
 
         /// <summary>
         /// 一年標準差(台幣)
         /// </summary>
-        public string OneYearStandardDeviationTWD { get; set; }
+        [Index(40)]
+        public decimal? OneYearStandardDeviationTWD { get; set; }
 
         /// <summary>
         /// 三年標準差(台幣)
         /// </summary>
-        public string ThreeYearStandardDeviationTWD { get; set; }
+        [Index(41)]
+        public decimal? ThreeYearStandardDeviationTWD { get; set; }
 
         /// <summary>
         /// 五年標準差(台幣)
         /// </summary>
-        public string FiveYearStandardDeviationTWD { get; set; }
+        [Index(42)]
+        public decimal? FiveYearStandardDeviationTWD { get; set; }
 
         /// <summary>
         /// 十年標準差(台幣)
         /// </summary>
-        public string TenYearStandardDeviationTWD { get; set; }
+        [Index(43)]
+        public decimal? TenYearStandardDeviationTWD { get; set; }
 
         /// <summary>
         /// 一年Alpha值(原幣)
         /// </summary>
-        public string OneYearAlphaOriginalCurrency { get; set; }
+        [Index(44)]
+        public decimal? OneYearAlphaOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年Alpha值(原幣)
         /// </summary>
-        public string ThreeYearAlphaOriginalCurrency { get; set; }
+        [Index(45)]
+        public decimal? ThreeYearAlphaOriginalCurrency { get; set; }
 
         /// <summary>
         /// 五年Alpha值(原幣)
         /// </summary>
-        public string FiveYearAlphaOriginalCurrency { get; set; }
+        [Index(46)]
+        public decimal? FiveYearAlphaOriginalCurrency { get; set; }
 
         /// <summary>
         /// 十年Alpha值(原幣)
         /// </summary>
-        public string TenYearAlphaOriginalCurrency { get; set; }
+        [Index(47)]
+        public decimal? TenYearAlphaOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年Beta值(原幣)
         /// </summary>
-        public string OneYearBetaOriginalCurrency { get; set; }
+        [Index(48)]
+        public decimal? OneYearBetaOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年Beta值(原幣)
         /// </summary>
-        public string ThreeYearBetaOriginalCurrency { get; set; }
+        [Index(49)]
+        public decimal? ThreeYearBetaOriginalCurrency { get; set; }
 
         /// <summary>
         /// 五年Beta值(原幣)
         /// </summary>
-        public string FiveYearBetaOriginalCurrency { get; set; }
+        [Index(50)]
+        public decimal? FiveYearBetaOriginalCurrency { get; set; }
 
         /// <summary>
         /// 十年Beta值(原幣)
         /// </summary>
-        public string TenYearBetaOriginalCurrency { get; set; }
+        [Index(51)]
+        public decimal? TenYearBetaOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年Sharpe值(原幣)
         /// </summary>
-        public string OneYearSharpeOriginalCurrency { get; set; }
+        [Index(52)]
+        public decimal? OneYearSharpeOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年Sharpe值(原幣)
         /// </summary>
-        public string ThreeYearSharpeOriginalCurrency { get; set; }
+        [Index(53)]
+        public decimal? ThreeYearSharpeOriginalCurrency { get; set; }
 
         /// <summary>
         /// 五年Sharpe值(原幣)
         /// </summary>
-        public string FiveYearSharpeOriginalCurrency { get; set; }
+        [Index(54)]
+        public decimal? FiveYearSharpeOriginalCurrency { get; set; }
 
         /// <summary>
         /// 十年Sharpe值(原幣)
         /// </summary>
-        public string TenYearSharpeOriginalCurrency { get; set; }
+        [Index(55)]
+        public decimal? TenYearSharpeOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年標準差(原幣)
         /// </summary>
-        public string OneYearStandardDeviationOriginalCurrency { get; set; }
+        [Index(56)]
+        public decimal? OneYearStandardDeviationOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年標準差(原幣)
         /// </summary>
-        public string ThreeYearStandardDeviationOriginalCurrency { get; set; }
+        [Index(57)]
+        public decimal? ThreeYearStandardDeviationOriginalCurrency { get; set; }
 
         /// <summary>
         /// 五年標準差(原幣)
         /// </summary>
-        public string FiveYearStandardDeviationOriginalCurrency { get; set; }
+        [Index(58)]
+        public decimal? FiveYearStandardDeviationOriginalCurrency { get; set; }
 
         /// <summary>
         /// 十年標準差(原幣)
         /// </summary>
-        public string TenYearStandardDeviationOriginalCurrency { get; set; }
+        [Index(59)]
+        public decimal? TenYearStandardDeviationOriginalCurrency { get; set; }
     }
 }

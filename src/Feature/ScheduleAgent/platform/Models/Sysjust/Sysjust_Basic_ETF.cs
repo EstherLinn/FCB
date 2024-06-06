@@ -57,7 +57,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 規模(百萬)
         /// </summary>
-        public string ScaleMillions { get; set; }
+        public decimal? ScaleMillions { get; set; }
 
         /// <summary>
         /// 註冊地
@@ -72,7 +72,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 發行公司ID
         /// </summary>
-        public string PublicLimitedCompanyID { get; set; }
+        public int? PublicLimitedCompanyID { get; set; }
 
         /// <summary>
         /// 發行公司名稱
@@ -82,7 +82,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 投資風格 ID
         /// </summary>
-        public string InvestmentStyleID { get; set; }
+        public int? InvestmentStyleID { get; set; }
 
         /// <summary>
         /// 投資風格名稱
@@ -92,7 +92,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 投資標的 ID 
         /// </summary>
-        public string InvestmentTargetID { get; set; }
+        public int? InvestmentTargetID { get; set; }
 
         /// <summary>
         /// 投資標的名稱
@@ -102,7 +102,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 投資區域 ID
         /// </summary>
-        public string InvestmentRegionID { get; set; }
+        public int? InvestmentRegionID { get; set; }
 
         /// <summary>
         /// 投資區域名稱
@@ -112,7 +112,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 總管理費用(%)
         /// </summary>
-        public string TotalManagementFee { get; set; }
+        public decimal? TotalManagementFee { get; set; }
 
         /// <summary>
         /// 經銷商

@@ -1,11 +1,9 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using Feature.Wealth.ScheduleAgent.Models.Sysjust;
-using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using FixedWidthParserWriter;
-using FluentFTP;
 using FluentFTP.Helpers;
 using Renci.SshNet;
+using Renci.SshNet.Sftp;
 using Sitecore.Configuration;
 using Sitecore.Data.Items;
 using Sitecore.IO;
@@ -53,7 +51,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         private string BackUpDirectory { get; } = Settings.GetSetting("BackUpDirectory");
         private string WorkingDirectory { get; }
 
-        public bool Extract(string fileName)
+        public bool ExtractFile(string fileName)
         {
 
             if (this._settings != null)
@@ -71,18 +69,17 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         }
                         sftpClient.ChangeDirectory(this._settings["WorkingDirectory"]);
                         string localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.txt");
-
                         fileName = Path.ChangeExtension(fileName, "txt");
 
                         if (!sftpClient.Exists(fileName))
                         {
                             // 文件不存在
+                            this._logger.Error($"File {fileName} not found.");
                             return false;
                         }
 
                         string localFilePath = Path.Combine(this.LocalDirectory, fileName);
                         string backupFilePath = Path.Combine(this.BackUpDirectory, fileName);
-                        
 
                         // 下载文件
                         using (var fileStream = new FileStream(localFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -99,7 +96,8 @@ namespace Feature.Wealth.ScheduleAgent.Services
                                 string localFiledoneHash = CalculateHash(localFiledonePath);
                                 if (localFileHash.Equals(localFiledoneHash))
                                 {
-                                    // 文件内容相同，跳過下载
+                                    // 文件内容相同，跳過排程
+                                    this._logger.Error("Same file content, skip download.");
                                     return false;
                                 }
                             }
@@ -117,71 +115,75 @@ namespace Feature.Wealth.ScheduleAgent.Services
         }
 
 
-
-        /// <summary>
-        /// 提取檔案
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public async Task<bool> ExtractFile(string fileName)
+        public bool ExtractFileContainsDate(string fileName)
         {
+
             if (this._settings != null)
             {
-                try
+                using (var sftpClient = new SftpClient(this._settings["Ip"], this._settings.GetInteger("Port") ?? 21, this._settings["UserName"], this._settings["Password"]))
                 {
-                    using (var sftpClient = new SftpClient(this._settings["Ip"], this._settings.GetInteger("Port") ?? 21, this._settings["UserName"], this._settings["Password"]))
+                    try
                     {
                         sftpClient.Connect();
 
                         if (!sftpClient.IsConnected)
                         {
-                            throw new Exception("Unable to connect to SFTP server.");
+                            this._logger.Error("SFTP connection failed.");
+                            return false;
                         }
+                        sftpClient.ChangeDirectory(this._settings["WorkingDirectory"]);
+                        string localFiledonePath = Directory.GetFiles(this.LocalDirectory, $"*{fileName}_done.txt").FirstOrDefault();
 
+                        IEnumerable<ISftpFile> files = sftpClient.ListDirectory(sftpClient.WorkingDirectory);
 
-                        if (!sftpClient.Exists(fileName))
+                        var matchingFiles = files
+                            .Where(file => file.Name.Contains(fileName))
+                            .OrderByDescending(file => file.LastWriteTime)
+                            .ToList();
+
+                        if (matchingFiles.Count == 0)
                         {
-                            // TODO: 無檔案可下載
+                            // 文件不存在
+                            this._logger.Error($"No file exisits.");
                             return false;
                         }
 
+                        var latestFile = matchingFiles[0];
 
-                        // TODO: 實作組合路徑名稱
-                        string localFilePath = Path.Combine(this.LocalDirectory, fileName);
-                        string backupFilePath = Path.Combine(this.BackUpDirectory, fileName);
+                        string localFilePath = Path.Combine(this.LocalDirectory, latestFile.Name);
+                        localFilePath = Path.ChangeExtension(localFilePath, "txt");
 
-                        string currentHash = CalculateHash(localFilePath);
-
-                        
-                        //if (File.Exists(localFilePath) )
-                        //{
-                        //    // TODO: 相同檔案所以 skip
-                        //    return false;
-                        //}
-
-
-
-                        if (sftpClient.Exists(fileName))
+                        // 下载最新的文件
+                        using (var fileStream = new FileStream(localFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
                         {
-                            using (var file = new FileStream(localFilePath, FileMode.Create))
-                            {
-                                await Task.Run(() => sftpClient.DownloadFile(fileName, file));
-                            }
-
-                            File.Copy(localFilePath, backupFilePath, true);
-                            return true;
+                            sftpClient.DownloadFile(latestFile.FullName, fileStream);
                         }
 
-                        // TODO: 下載失敗
-                        return false;
+                        if (File.Exists(localFilePath))
+                        {
+                            // 如果本地文件已存在，检查是否与服务器文件相同
+                            string localFileHash = CalculateHash(localFilePath);
+                            if (File.Exists(localFiledonePath))
+                            {
+                                string localFiledoneHash = CalculateHash(localFiledonePath);
+                                if (localFileHash.Equals(localFiledoneHash))
+                                {
+                                    // 文件内容相同，跳过下载
+                                    this._logger.Error("Same file content, skip download.");
+                                    return false;
+                                }
+                            }
+                        }
+
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        this._logger.Error($"Error while connecting to SFTP server: {ex.Message}", ex);
+                        throw;
                     }
                 }
-                catch (Exception ex)
-                {
-                    // TODO: 發生錯誤
-                }
             }
-
             return false;
         }
 
@@ -222,11 +224,12 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 return BitConverter.ToString(hashBytes);
             }
         }
-        
+
 
         public async Task<IEnumerable<T>> ParseCsv<T>(string fileName)
         {
             var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
+            config.BadDataFound = null;
             fileName = Path.ChangeExtension(fileName, "txt");
             string localFilePath = Path.Combine(this.LocalDirectory, fileName);
 
@@ -238,14 +241,36 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
         }
 
-        public IEnumerable<T> ParseFixedLength<T>(string filePath) where T : class, new()
+        public async Task<IEnumerable<T>> ParseCsvContainsDate<T>(string fileName)
+        {
+            var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
+            config.BadDataFound = null;
+
+            string[] files = Directory.GetFiles(this.LocalDirectory)
+                          .Where(f => f.Contains(fileName))
+                          .ToArray();
+            string localFiledonePath = files.FirstOrDefault();
+
+            using (var reader = new StreamReader(localFiledonePath, Encoding.Default))
+            using (var csv = new CsvReader(reader, config))
+            {
+                var records = csv.GetRecordsAsync<T>().ToListAsync();
+                return await records;
+            }
+        }
+
+        public async Task<IEnumerable<T>> ParseFixedLength<T>(string filePath) where T : class, new()
         {
             filePath = Path.ChangeExtension(filePath, "txt");
-            string fileContent = File.ReadAllText(filePath, Encoding.Default);
-            var dataLinesA = fileContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            List<T> dataLines = new FixedWidthLinesProvider<T>().Parse(dataLinesA);
+            string localFilePath = Path.Combine(this.LocalDirectory, filePath);
 
-            return dataLines;
+            using (var reader = new StreamReader(localFilePath, Encoding.Default))
+            {
+                string fileContent = await reader.ReadToEndAsync();
+                var dataLinesA = fileContent.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                var dataLines = new FixedWidthLinesProvider<T>().Parse(dataLinesA);
+                return dataLines;
+            }
         }
 
 
@@ -256,6 +281,39 @@ namespace Feature.Wealth.ScheduleAgent.Services
         {
 
 
+        }
+
+        /// <summary>
+        /// 完成資料插入後，檔案改名加_done
+        /// </summary>
+        /// <param name="filename"></param>
+        public void FinishJob(string filename)
+        {
+            filename = Path.ChangeExtension(filename, "txt");
+            string localFilePath = Path.Combine(LocalDirectory, filename);
+            string doneFileName = $"{Path.GetFileNameWithoutExtension(filename)}_done.txt";
+            string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
+            if (File.Exists(localDoneFilePath))
+            {
+                File.Delete(localDoneFilePath);
+            }
+            File.Move(localFilePath, localDoneFilePath);
+        }
+
+        public void FinishJobContainsDate(string filename)
+        {
+            string[] files = Directory.GetFiles(this.LocalDirectory)
+                          .Where(f => f.Contains(filename))
+                          .ToArray();
+            string localFiledonePath = files.FirstOrDefault();
+
+            string doneFileName = $"{Path.GetFileNameWithoutExtension(filename)}_done.txt";
+            string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
+            if (File.Exists(localDoneFilePath))
+            {
+                File.Delete(localDoneFilePath);
+            }
+            File.Move(localFiledonePath, localDoneFilePath);
         }
     }
 }

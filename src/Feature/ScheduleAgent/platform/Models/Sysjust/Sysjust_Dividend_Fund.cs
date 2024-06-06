@@ -42,7 +42,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 年化配息率
         /// </summary>
-        public string AnnualizedDividendRate { get; set; }
+        public decimal? AnnualizedDividendRate { get; set; }
 
         /// <summary>
         /// 幣別

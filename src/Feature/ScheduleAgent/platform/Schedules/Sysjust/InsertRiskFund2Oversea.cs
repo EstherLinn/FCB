@@ -14,35 +14,37 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     public class InsertRiskFund2Oversea : SitecronAgentBase
     {
-        private readonly EtlService _etlService;
         private readonly ProcessRepository _repository = new();
-
-        public InsertRiskFund2Oversea()
-        {
-            this._etlService = new EtlService(this.Logger, this.JobItems);
-        }
 
         protected override async Task Execute()
         {
-            string filename = "SYSJUST-RISK-FUND-2-OVERSEA";
-            bool IsfilePath = await this._etlService.ExtractFile(filename);
+            if (this.JobItems != null)
+            {
+                var jobitem = this.JobItems.FirstOrDefault();
+                var etlService = new EtlService(this.Logger, jobitem);
+                string filename = "SYSJUST-RISK-FUND-2-OVERSEA";
+                bool IsfilePath = etlService.ExtractFile(filename);
 
-            if (IsfilePath)
-            {
-                try
+                if (IsfilePath)
                 {
-                    var basic = await this._etlService.ParseCsv<SysjustRiskFund2Oversea>(filename);
-                    _repository.BulkInsertDirectToDatabase(basic, "[Sysjust_Risk_Fund_2_Oversea_History]", filename);
-                    _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Risk_Fund_2_Oversea]", filename);
+                    try
+                    {
+                        var basic = await etlService.ParseCsv<SysjustRiskFund2Oversea>(filename);
+                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Risk_Fund_2_Oversea_History]", "FirstBankCode", "Date", filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Risk_Fund_2_Oversea]", filename);
+                        etlService.FinishJob(filename);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Logger.Error(ex.Message, ex);
+                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, "", 0);
+                    this.Logger.Error("ERROR: File not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
                 }
-            }
-            else
-            {
-                _repository.LogChangeHistory(DateTime.UtcNow, "ERROR: File not found", "找不到檔案", "", 0);
             }
         }
     }

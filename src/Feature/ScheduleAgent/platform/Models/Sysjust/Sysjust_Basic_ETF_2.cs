@@ -32,7 +32,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 淨值
         /// </summary>
-        public string NetAssetValue { get; set; }
+        public decimal? NetAssetValue { get; set; }
 
         /// <summary>
         /// 淨值日期
@@ -42,12 +42,12 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 最高淨值(年)
         /// </summary>
-        public string HighestNetAssetValue { get; set; }
+        public decimal? HighestNetAssetValue { get; set; }
 
         /// <summary>
         /// 最低淨值(年)
         /// </summary>
-        public string LowestNetAssestValue { get; set; }
+        public decimal? LowestNetAssestValue { get; set; }
 
         /// <summary>
         /// 市價日期
@@ -57,36 +57,36 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 市價
         /// </summary>
-        public string MarketPrice { get; set; }
+        public decimal? MarketPrice { get; set; }
 
         /// <summary>
         /// 最高市價(年)
         /// </summary>
-        public string HighestMarketPrice { get; set; }
+        public decimal? HighestMarketPrice { get; set; }
 
         /// <summary>
         /// 最低市價(年)
         /// </summary>
-        public string LowestMarketPrice { get; set; }
+        public decimal? LowestMarketPrice { get; set; }
 
         /// <summary>
         /// 市價漲跌
         /// </summary>
-        public string MarketPriceChange { get; set; }
+        public decimal? MarketPriceChange { get; set; }
 
         /// <summary>
         /// 市價漲跌幅
         /// </summary>
-        public string MarketPriceChangePercentage { get; set; }
+        public decimal? MarketPriceChangePercentage { get; set; }
 
         /// <summary>
         /// 淨值漲跌
         /// </summary>
-        public string NetAssetValueChange { get; set; }
+        public decimal? NetAssetValueChange { get; set; }
 
         /// <summary>
         /// 淨值漲跌幅
         /// </summary>
-        public string NetAssetValueChangePercentage { get; set; }
+        public decimal? NetAssetValueChangePercentage { get; set; }
     }
 }

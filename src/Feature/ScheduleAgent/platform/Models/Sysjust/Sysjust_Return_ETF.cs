@@ -27,12 +27,12 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 價格(市價)
         /// </summary>
-        public string MarketPrice { get; set; }
+        public decimal? MarketPrice { get; set; }
 
         /// <summary>
         /// 價格(淨值)
         /// </summary>
-        public string NetAssetValue { get; set; }
+        public decimal? NetAssetValue { get; set; }
 
         /// <summary>
         /// 計價(市價)幣別
@@ -42,311 +42,316 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 年化標準差(淨值風險)
         /// </summary>
-        public string AnnualizedStandardDeviationNetValueRisk { get; set; }
+        public decimal? AnnualizedStandardDeviationNetValueRisk { get; set; }
 
         /// <summary>
         /// Sharpe(淨值風險)
         /// </summary>
-        public string SharpeNetValueRisk { get; set; }
+        public decimal? SharpeNetValueRisk { get; set; }
 
         /// <summary>
         /// beta(淨值風險)
         /// </summary>
-        public string BetaNetValueRisk { get; set; }
+        public decimal? BetaNetValueRisk { get; set; }
 
         /// <summary>
         /// 年化標準差(市價風險)
         /// </summary>
-        public string AnnualizedStandardDeviationMarketPriceRisk { get; set; }
+        public decimal? AnnualizedStandardDeviationMarketPriceRisk { get; set; }
 
         /// <summary>
         /// Sharpe(市價風險)
         /// </summary>
-        public string SharpeRatioMarketPriceRisk { get; set; }
+        public decimal? SharpeRatioMarketPriceRisk { get; set; }
 
         /// <summary>
         /// beta(市價風險)
         /// </summary>
-        public string BetaMarketPriceRisk { get; set; }
+        public decimal? BetaMarketPriceRisk { get; set; }
 
         /// <summary>
         /// 自今年以來報酬(淨值原幣)
         /// </summary>
-        public string YeartoDateReturnNetValueOriginalCurrency { get; set; }
+        public decimal? YeartoDateReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一日報酬(淨值原幣)
         /// </summary>
-        public string DailyReturnNetValueOriginalCurrency { get; set; }
+        public decimal? DailyReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一週報酬(淨值原幣)
         /// </summary>
-        public string WeeklyReturnNetValueOriginalCurrency { get; set; }
+        public decimal? WeeklyReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一個月報酬(淨值原幣)
         /// </summary>
-        public string MonthlyReturnNetValueOriginalCurrency { get; set; }
+        public decimal? MonthlyReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三個月報酬(淨值原幣)
         /// </summary>
-        public string ThreeMonthReturnNetValueOriginalCurrency { get; set; }
+        public decimal? ThreeMonthReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 六個月報酬(淨值原幣)
         /// </summary>
-        public string SixMonthReturnNetValueOriginalCurrency { get; set; }
+        public decimal? SixMonthReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年報酬(淨值原幣)
         /// </summary>
-        public string OneYearReturnNetValueOriginalCurrency { get; set; }
+        public decimal? OneYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 二年報酬(淨值原幣)
         /// </summary>
-        public string TwoYearReturnNetValueOriginalCurrency { get; set; }
+        public decimal? TwoYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年報酬(淨值原幣)
         /// </summary>
-        public string ThreeYearReturnNetValueOriginalCurrency { get; set; }
+        public decimal? ThreeYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 五年報酬(淨值原幣)
         /// </summary>
-        public string FiveYearReturnNetValueOriginalCurrency { get; set; }
+        public decimal? FiveYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 十年報酬(淨值原幣)
         /// </summary>
-        public string TenYearReturnNetValueOriginalCurrency { get; set; }
+        public decimal? TenYearReturnNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 自今年以來報酬(市價原幣)
         /// </summary>
-        public string YeartoDateReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? YeartoDateReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一日報酬(市價原幣)
         /// </summary>
-        public string DailyReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? DailyReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一週報酬(市價原幣)
         /// </summary>
-        public string WeeklyReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? WeeklyReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一個月報酬(市價原幣)
         /// </summary>
-        public string MonthlyReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? MonthlyReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三個月報酬(市價原幣)
         /// </summary>
-        public string ThreeMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? ThreeMonthReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 六個月報酬(市價原幣)
         /// </summary>
-        public string SixMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? SixMonthReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 一年報酬(市價原幣)
         /// </summary>
-        public string OneYearReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? OneYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 二年報酬(市價原幣)
         /// </summary>
-        public string TwoYearReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? TwoYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 三年報酬(市價原幣)
         /// </summary>
-        public string ThreeYearReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? ThreeYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 五年報酬(市價原幣)
         /// </summary>
-        public string FiveYearReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? FiveYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 十年報酬(市價原幣)
         /// </summary>
-        public string TenYearReturnMarketPriceOriginalCurrency { get; set; }
+        public decimal? TenYearReturnMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 自今年以來報酬(淨值台幣)
         /// </summary>
-        public string YeartoDateReturnNetValueTWD { get; set; }
+        public decimal? YeartoDateReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 一日報酬(淨值台幣)
         /// </summary>
-        public string DailyReturnNetValueTWD { get; set; }
+        public decimal? DailyReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 一週報酬(淨值台幣)
         /// </summary>
-        public string WeeklyReturnNetValueTWD { get; set; }
+        public decimal? WeeklyReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 一個月報酬(淨值台幣)
         /// </summary>
-        public string MonthlyReturnNetValueTWD { get; set; }
+        public decimal? MonthlyReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 三個月報酬(淨值台幣)
         /// </summary>
-        public string ThreeMonthReturnNetValueTWD { get; set; }
+        public decimal? ThreeMonthReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 六個月報酬(淨值台幣)
         /// </summary>
-        public string SixMonthReturnNetValueTWD { get; set; }
+        public decimal? SixMonthReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 一年報酬(淨值台幣)
         /// </summary>
-        public string OneYearReturnNetValueTWD { get; set; }
+        public decimal? OneYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 二年報酬(淨值台幣)
         /// </summary>
-        public string TwoYearReturnNetValueTWD { get; set; }
+        public decimal? TwoYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 三年報酬(淨值台幣)
         /// </summary>
-        public string ThreeYearReturnNetValueTWD { get; set; }
+        public decimal? ThreeYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 五年報酬(淨值台幣)
         /// </summary>
-        public string FiveYearReturnNetValueTWD { get; set; }
+        public decimal? FiveYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 十年報酬(淨值台幣)
         /// </summary>
-        public string TenYearReturnNetValueTWD { get; set; }
+        public decimal? TenYearReturnNetValueTWD { get; set; }
 
         /// <summary>
         /// 自今年以來報酬(淨值台幣)
         /// </summary>
-        public string YeartoDateReturnMarketPriceTWD { get; set; }
+        public decimal? YeartoDateReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 一日報酬(市價台幣)
         /// </summary>
-        public string DailyReturnMarketPriceTWD { get; set; }
+        public decimal? DailyReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 一週報酬(市價台幣)
         /// </summary>
-        public string WeeklyReturnMarketPriceTWD { get; set; }
+        public decimal? WeeklyReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 一個月報酬(市價台幣)
         /// </summary>
-        public string MonthlyReturnMarketPriceTWD { get; set; }
+        public decimal? MonthlyReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 三個月報酬(市價台幣)
         /// </summary>
-        public string ThreeMonthReturnMarketPriceTWD { get; set; }
+        public decimal? ThreeMonthReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 六個月報酬(市價台幣)
         /// </summary>
-        public string SixMonthReturnMarketPriceTWD { get; set; }
+        public decimal? SixMonthReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 一年報酬(市價台幣)
         /// </summary>
-        public string OneYearReturnMarketPriceTWD { get; set; }
+        public decimal? OneYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 二年報酬(市價台幣)
         /// </summary>
-        public string TwoYearReturnMarketPriceTWD { get; set; }
+        public decimal? TwoYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 三年報酬(市價台幣)
         /// </summary>
-        public string ThreeYearReturnMarketPriceTWD { get; set; }
+        public decimal? ThreeYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 五年報酬(市價台幣)
         /// </summary>
-        public string FiveYearReturnMarketPriceTWD { get; set; }
+        public decimal? FiveYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 十年報酬(市價台幣)
         /// </summary>
-        public string TenYearReturnMarketPriceTWD { get; set; }
+        public decimal? TenYearReturnMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 折溢價
         /// </summary>
-        public string DiscountPremium { get; set; }
+        public decimal? DiscountPremium { get; set; }
 
         /// <summary>
         /// 最新量(成交量)
         /// </summary>
-        public string LatestVolumeTradingVolume { get; set; }
+        public decimal? LatestVolumeTradingVolume { get; set; }
 
         /// <summary>
         /// 十日均量
         /// </summary>
-        public string TenDayAverageVolume { get; set; }
+        public decimal? TenDayAverageVolume { get; set; }
 
         /// <summary>
         /// 最新量(成交量) – 十日均量 
         /// </summary>
-        public string LatestVolumeTradingVolumeTenDayAverageVolume { get; set; }
+        public decimal? LatestVolumeTradingVolumeTenDayAverageVolume { get; set; }
 
         /// <summary>
         /// 本月以來(淨值原幣)
         /// </summary>
-        public string MonthtoDateNetValueOriginalCurrency { get; set; }
+        public decimal? MonthtoDateNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 本月以來(淨值台幣)
         /// </summary>
-        public string MonthtoDateNetValueTWD { get; set; }
+        public decimal? MonthtoDateNetValueTWD { get; set; }
 
         /// <summary>
         /// 本月以來(市價原幣)
         /// </summary>
-        public string MonthtoDateMarketPriceOriginalCurrency { get; set; }
+        public decimal? MonthtoDateMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 本月以來(市價台幣)
         /// </summary>
-        public string MonthtoDateMarketPriceTWD { get; set; }
+        public decimal? MonthtoDateMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 成立以來報酬(市價原幣)
         /// </summary>
-        public string InceptionDateMarketPriceOriginalCurrency { get; set; }
+        public decimal? InceptionDateMarketPriceOriginalCurrency { get; set; }
 
         /// <summary>
         /// 成立以來報酬(市價台幣)
         /// </summary>
-        public string InceptionDateMarketPriceTWD { get; set; }
+        public decimal? InceptionDateMarketPriceTWD { get; set; }
 
         /// <summary>
         /// 成立以來報酬(淨值原幣)
         /// </summary>
-        public string InceptionDateNetValueOriginalCurrency { get; set; }
+        public decimal? InceptionDateNetValueOriginalCurrency { get; set; }
 
         /// <summary>
         /// 成立以來報酬(淨值台幣)
         /// </summary>
-        public string InceptionDateNetValueTWD { get; set; }
+        public decimal? InceptionDateNetValueTWD { get; set; }
+
+        /// <summary>
+        /// 市價日期
+        /// </summary>
+        public string MarketPriceDate { get; set; }
     }
 }

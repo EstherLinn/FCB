@@ -4,39 +4,43 @@ using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
+using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
     public class InsertTfjsNav : SitecronAgentBase
     {
-        private readonly EtlService _etlService;
         private readonly ProcessRepository _repository = new();
-        public InsertTfjsNav()
-        {
-            this._etlService = new EtlService(this.Logger, this.JobItems);
-        }
 
         protected override async Task Execute()
         {
-            string filename = "FUND_NAV_TFJSNAV";
-            bool IsfilePath = await this._etlService.ExtractFile(filename);
-            if (IsfilePath)
+            if (this.JobItems != null)
             {
-                try
-                {
-                    var basic = await this._etlService.ParseCsv<FundNavTfjsNav>(filename);
-                    _repository.BulkInsertToNewDatabase(basic, "[FUND_NAV_TFJSNAV]", filename);
+                var jobitem = this.JobItems.FirstOrDefault();
+                var etlService = new EtlService(this.Logger, jobitem);
 
-                }
-                catch (Exception ex)
-                {
-                    _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, "", 0);
-                }
+                string filename = "TFJSNAV";
+                bool IsfilePath = etlService.ExtractFileContainsDate(filename);
 
-            }
-            else
-            {
-                _repository.LogChangeHistory(DateTime.UtcNow, "ERROR: File not found", "找不到檔案", "", 0);
+                if (IsfilePath)
+                {
+                    try
+                    {
+                        var basic = await etlService.ParseCsvContainsDate<FundNavTfjsNav>(filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[FUND_NAV_TFJSNAV]", filename);
+                        etlService.FinishJobContainsDate(filename);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Logger.Error(ex.Message, ex);
+                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
+                    }
+                }
+                else
+                {
+                    this.Logger.Error("ERROR: File not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
+                }
             }
         }
     }

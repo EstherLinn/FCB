@@ -37,46 +37,46 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 收盤價
         /// </summary>
-        public string ClosingPrice { get; set; }
+        public decimal? ClosingPrice { get; set; }
 
         /// <summary>
         /// 一日報酬(漲跌幅)
         /// </summary>
-        public string DailyReturn { get; set; }
+        public decimal? DailyReturn { get; set; }
 
         /// <summary>
         /// 一週報酬
         /// </summary>
-        public string WeeklyReturn { get; set; }
+        public decimal? WeeklyReturn { get; set; }
 
         /// <summary>
         /// 一個月報酬
         /// </summary>
-        public string MonthlyReturn { get; set; }
+        public decimal? MonthlyReturn { get; set; }
 
         /// <summary>
         /// 三個月報酬
         /// </summary>
-        public string ThreeMonthReturn { get; set; }
+        public decimal? ThreeMonthReturn { get; set; }
 
         /// <summary>
         /// 一年報酬
         /// </summary>
-        public string OneYearReturn { get; set; }
+        public decimal? OneYearReturn { get; set; }
 
         /// <summary>
         /// 今年以來報酬
         /// </summary>
-        public string YeartoDateReturn { get; set; }
+        public decimal? YeartoDateReturn { get; set; }
 
         /// <summary>
         /// 漲跌
         /// </summary>
-        public string ChangePercentage { get; set; }
+        public decimal? ChangePercentage { get; set; }
 
         /// <summary>
         /// 六個月報酬
         /// </summary>
-        public string SixMonthReturn { get; set; }
+        public decimal? SixMonthReturn { get; set; }
     }
 }

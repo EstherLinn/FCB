@@ -37,7 +37,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 配息總額
         /// </summary>
-        public string TotalDividendAmount { get; set; }
+        public decimal? TotalDividendAmount { get; set; }
 
         /// <summary>
         /// 配息頻率
@@ -47,12 +47,12 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 短期資本利得
         /// </summary>
-        public string ShortTermCapitalGains { get; set; }
+        public decimal? ShortTermCapitalGains { get; set; }
 
         /// <summary>
         /// 長期資本利得
         /// </summary>
-        public string LongTermCapitalGains { get; set; }
+        public decimal? LongTermCapitalGains { get; set; }
 
         /// <summary>
         /// 幣別

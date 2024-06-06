@@ -55,12 +55,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         /// </summary>
         [FixedWidthLineField(Start = 50, Length = 42)]
         public string ProductName { get; set; }
-
-        /// <summary>
-        /// 預留欄位
-        /// </summary>
-        [FixedWidthLineField(Start = 93, Length = 28)]
-        public string ReservedColumn { get; set; }
+       
 
         public DefaultConfig GetDefaultConfig(int structureTypeId)
         {

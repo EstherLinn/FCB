@@ -28,7 +28,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 基金評等
         /// </summary>
-        public string FundRating { get; set; }
+        public decimal? FundRating { get; set; }
 
 
         /// <summary>

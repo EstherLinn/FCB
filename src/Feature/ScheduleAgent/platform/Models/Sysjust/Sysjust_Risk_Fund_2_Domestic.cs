@@ -27,141 +27,141 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 一年報酬率(年平均報酬)
         /// </summary>
-        public string OneYearReturnRateAnnualAverageReturn { get; set; }
+        public decimal? OneYearReturnRateAnnualAverageReturn { get; set; }
 
         /// <summary>
         /// 一年報酬率(同類型平均)
         /// </summary>
-        public string OneYearReturnRateAverage { get; set; }
+        public decimal? OneYearReturnRateAverage { get; set; }
 
         /// <summary>
         /// 一年報酬率(同類型排名)
         /// </summary>
-        public string OneYearReturnRateRanking { get; set; }
+        public int? OneYearReturnRateRanking { get; set; }
 
         /// <summary>
         /// 一年報酬率(排名基金數)
         /// </summary>
-        public string OneYearReturnRateFundsRanking { get; set; }
+        public int? OneYearReturnRateFundsRanking { get; set; }
 
         /// <summary>
         /// Sharp
         /// </summary>
-        public string Sharpe { get; set; }
+        public decimal? Sharpe { get; set; }
 
         /// <summary>
         /// Sharp(同類型平均)
         /// </summary>
-        public string SharpeAverage { get; set; }
+        public decimal? SharpeAverage { get; set; }
 
         /// <summary>
         /// Sharp(同類型排名)
         /// </summary>
-        public string SharpeRanking { get; set; }
+        public int? SharpeRanking { get; set; }
 
         /// <summary>
         /// Sharp(排名基金數)
         /// </summary>
-        public string SharpeFundsRanking { get; set; }
+        public int? SharpeFundsRanking { get; set; }
 
         /// <summary>
         /// Beta
         /// </summary>
-        public string Beta { get; set; }
+        public decimal? Beta { get; set; }
 
         /// <summary>
         /// Beta(同類型平均)
         /// </summary>
-        public string BetaAverage { get; set; }
+        public decimal? BetaAverage { get; set; }
 
         /// <summary>
         /// Beta(同類型排名)
         /// </summary>
-        public string BetaRanking { get; set; }
+        public int? BetaRanking { get; set; }
 
         /// <summary>
         /// Beta(排名基金數)
         /// </summary>
-        public string BetaFundsRanking { get; set; }
+        public int? BetaFundsRanking { get; set; }
 
         /// <summary>
         /// 年化標準差
         /// </summary>
-        public string AnnualizedStandardDeviation { get; set; }
+        public decimal? AnnualizedStandardDeviation { get; set; }
 
         /// <summary>
         /// 年化標準差(同類型平均)
         /// </summary>
-        public string AnnualizedStandardDeviationAverage { get; set; }
+        public decimal? AnnualizedStandardDeviationAverage { get; set; }
 
         /// <summary>
         /// 年化標準差(同類型排名)
         /// </summary>
-        public string AnnualizedStandardDeviationRanking { get; set; }
+        public int? AnnualizedStandardDeviationRanking { get; set; }
 
         /// <summary>
         /// 年化標準差(排名基金數)
         /// </summary>
-        public string AnnualizedStandardDeviationFundsRanking { get; set; }
+        public int? AnnualizedStandardDeviationFundsRanking { get; set; }
 
         /// <summary>
         /// Information Ratio
         /// </summary>
-        public string InformationRatio { get; set; }
+        public decimal? InformationRatio { get; set; }
 
         /// <summary>
         /// Information Ratio(同類型平均)
         /// </summary>
-        public string InformationRatioAverage { get; set; }
+        public decimal? InformationRatioAverage { get; set; }
 
         /// <summary>
         /// Information Ratio(同類型排名)
         /// </summary>
-        public string InformationRatioRanking { get; set; }
+        public int? InformationRatioRanking { get; set; }
 
         /// <summary>
         /// Information Ratio(排名基金數)
         /// </summary>
-        public string InformationRatioFundsRanking { get; set; }
+        public int? InformationRatioFundsRanking { get; set; }
 
         /// <summary>
         /// Jensen
         /// </summary>
-        public string JensenIndex { get; set; }
+        public decimal? JensenIndex { get; set; }
 
         /// <summary>
         /// Jensen(同類型平均)
         /// </summary>
-        public string JensenIndexAverage { get; set; }
+        public decimal? JensenIndexAverage { get; set; }
 
         /// <summary>
         /// Jensen(同類型排名)
         /// </summary>
-        public string JensenIndexRanking { get; set; }
+        public int? JensenIndexRanking { get; set; }
 
         /// <summary>
         /// Jensen(排名基金數)
         /// </summary>
-        public string JensenIndexFundsRanking { get; set; }
+        public int? JensenIndexFundsRanking { get; set; }
 
         /// <summary>
         /// Treynor Index
         /// </summary>
-        public string TreynorIndex { get; set; }
+        public decimal? TreynorIndex { get; set; }
 
         /// <summary>
         /// Treynor Index(同類型平均)
         /// </summary>
-        public string TreynorIndexAverage { get; set; }
+        public decimal? TreynorIndexAverage { get; set; }
 
         /// <summary>
         /// Treynor Index(同類型排名)
         /// </summary>
-        public string TreynorIndexRanking { get; set; }
+        public int? TreynorIndexRanking { get; set; }
 
         /// <summary>
         /// Treynor Index(排名基金數)
         /// </summary>
-        public string TreynorIndexFundsRanking { get; set; }
+        public int? TreynorIndexFundsRanking { get; set; }
     }
 }

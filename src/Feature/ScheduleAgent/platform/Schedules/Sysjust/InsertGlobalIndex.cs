@@ -11,7 +11,6 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     public class InsertGlobalIndex : SitecronAgentBase
     {
-        private EtlService _etlService;
         private readonly ProcessRepository _repository = new();
 
         protected override async Task Execute()
@@ -19,33 +18,30 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             if (this.JobItems != null)
             {
                 var jobitem = this.JobItems.FirstOrDefault();
-                this._etlService = new EtlService(this.Logger, jobitem);
+                var etlService = new EtlService(this.Logger, jobitem);
 
                 string filename = "SYSJUST-GLOBALINDEX";
-                bool IsfilePath = this._etlService.Extract(filename);
+                bool IsfilePath = etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {
                     try
                     {
-                        var basic = await this._etlService.ParseCsv<SysjustGlobalIndex>(filename);
-                        _repository.BulkInsertDirectToDatabase(basic, "[Sysjust_GlobalIndex_History]", filename);
+                        var basic = await etlService.ParseCsv<SysjustGlobalIndex>(filename);
                         _repository.BulkInsertToNewDatabase(basic, "[Sysjust_GlobalIndex]", filename);
-
-                        filename = Path.ChangeExtension(filename, "txt");
-                        string localFilePath = Path.Combine(this._etlService.LocalDirectory, filename);
-                        string doneFileName = $"{Path.GetFileNameWithoutExtension(filename)}_done.txt";
-                        string localDoneFilePath = Path.Combine(this._etlService.LocalDirectory, doneFileName);
-                        File.Move(localFilePath, localDoneFilePath);
+                        _repository.BulkInsertToDatabase(basic, "[Sysjust_GlobalIndex_History]", "IndexCode", "DataDate", filename);
+                        etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
                     {
-                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, "", 0);
+                        this.Logger.Error(ex.Message, ex);
+                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
                     }
                 }
                 else
                 {
-                    _repository.LogChangeHistory(DateTime.UtcNow, "ERROR: File not found", "找不到檔案", "", 0);
+                    this.Logger.Error("ERROR: File not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
                 }
             }
         }

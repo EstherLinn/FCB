@@ -32,51 +32,51 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 一年標準差
         /// </summary>
-        public string OneYearStandardDeviation { get; set; }
+        public decimal? OneYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 二年標準差
         /// </summary>
-        public string TwoYearStandardDeviation { get; set; }
+        public decimal? TwoYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 三年標準差
         /// </summary>
-        public string ThreeYearStandardDeviation { get; set; }
+        public decimal? ThreeYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 四年標準差
         /// </summary>
-        public string FourYearStandardDeviation { get; set; }
+        public decimal? FourYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 五年標準差
         /// </summary>
-        public string FiveYearStandardDeviation { get; set; }
+        public decimal? FiveYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 六年標準差
         /// </summary>
-        public string SixYearStandardDeviation { get; set; }
+        public decimal? SixYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 七年標準差
         /// </summary>
-        public string SevenYearStandardDeviation { get; set; }
+        public decimal? SevenYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 八年標準差
         /// </summary>
-        public string EightYearStandardDeviation { get; set; }
+        public decimal? EightYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 九年標準差
         /// </summary>
-        public string NineYearStandardDeviation { get; set; }
+        public decimal? NineYearStandardDeviation { get; set; }
 
         /// <summary>
         /// 十年標準差
         /// </summary>
-        public string TenYearStandardDeviation { get; set; }
+        public decimal? TenYearStandardDeviation { get; set; }
     }
 }

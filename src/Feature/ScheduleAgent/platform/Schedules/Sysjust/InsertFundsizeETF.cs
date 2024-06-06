@@ -4,40 +4,43 @@ using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     public class InsertFundsizeEtf : SitecronAgentBase
     {
-        private readonly EtlService _etlService;
         private readonly ProcessRepository _repository = new();
-
-        public InsertFundsizeEtf()
-        {
-            this._etlService = new EtlService(this.Logger, this.JobItems);
-        }
 
         protected override async Task Execute()
         {
-            string filename = "SYSJUST-FUNDSIZE-ETF";
-            bool IsfilePath = await this._etlService.ExtractFile(filename);
-
-            if (IsfilePath)
+            if (this.JobItems != null)
             {
-                try
-                {
-                    var basic = await this._etlService.ParseCsv<SysjustFundSizeEtf>(filename);
+                var jobitem = this.JobItems.FirstOrDefault();
+                var etlService = new EtlService(this.Logger, jobitem);
+                string filename = "SYSJUST-FUNDSIZE-ETF";
+                bool IsfilePath = etlService.ExtractFile(filename);
 
-                    _repository.BulkInsertToDatabase(basic, "[Sysjust_Fundsize_ETF]", "ScaleDate", "FirstBankCode", filename);
-                }
-                catch (Exception ex)
+                if (IsfilePath)
                 {
-                    _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, "", 0);
+                    try
+                    {
+                        var basic = await etlService.ParseCsv<SysjustFundSizeEtf>(filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Fundsize_ETF]", filename);
+                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Fundsize_ETF_History]", "ScaleDate", "FirstBankCode", filename);
+                        etlService.FinishJob(filename);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Logger.Error(ex.Message, ex);
+                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
+                    }
                 }
-            }
-            else
-            {
-                _repository.LogChangeHistory(DateTime.UtcNow, "ERROR: File not found", "找不到檔案", "", 0);
+                else
+                {
+                    this.Logger.Error("ERROR: File not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
+                }
             }
         }
     }
