@@ -43,11 +43,11 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     string pageItemId = targetItem.ID.ToString();
 
-                    cardItem.Link = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).Url + "?id=" + pageItemId;
+                    cardItem.Link = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).Url;
                     cardItem.LinkTarget = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).Target;
                     cardItem.LinkTitle = ItemUtils.GeneralLink(child, Templates.ArticleCardItem.Fields.Link).Title;
 
-                    var visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), cardItem.Link);
+                    var visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), cardItem.Link + "?id=" + pageItemId);
                     cardItem.ViewCount = visitCount?.ToString("N0") ?? "0";
                 }
                 else

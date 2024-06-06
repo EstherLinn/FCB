@@ -72,10 +72,12 @@
 <script>
     (function ($, window, document, undefined) {
         document.addEventListener('DOMContentLoaded', function () {
+            let url = new URL(location.href);
+
             let params = {
                 pageId: '@Sitecore.Context.Item.ID.ToString()',
-                url: new URL(location.href).href.replace(/%7B/g, '{').replace(/%7D/g, '}'),
-                querystring: ['id=' + new URL(location.href).searchParams.get('id')]
+                url: url.origin + url.pathname + "?id=" + '@Sitecore.Context.Item.ID.ToString()',
+                querystring: ['id=' + '@Sitecore.Context.Item.ID.ToString()']
             };
 
             $.ajax({
