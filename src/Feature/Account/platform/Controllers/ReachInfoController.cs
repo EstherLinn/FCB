@@ -8,7 +8,6 @@ using Xcms.Sitecore.Foundation.Basic.Extensions;
 
 namespace Feature.Wealth.Account.Controllers
 {
-    [MemberAuthenticationFilter]
     public class ReachInfoController : JsonNetController
     {
         private readonly ReachInfoRepository _reachInfoRepository;

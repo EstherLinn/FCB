@@ -8,15 +8,15 @@
     string lineAuthUrl = OAuthFactory.GetAuthUrl(PlatFormEunm.Line);
     var CurrencyWebSite = Settings.GetSetting("CurrencyWebSite");
     var loginItem = ItemUtils.GetItem(Templates.Login.Root);
-    var SubcriptionSingleLink = Settings.GetSetting("WebSubscriptionSingle");
-    var SubcriptionRegularLink = Settings.GetSetting("WebSubscriptionRegular");
-    var MobileESingleLink = Settings.GetSetting("MobileESingle");
-    var MobileERegularLink = Settings.GetSetting("MobileERegular");
-    var MobileIleoSingleLink = Settings.GetSetting("MobileIleoSingle");
-    var MobileIleoRegularLink = Settings.GetSetting("MobileIleoRegular");
-    var WebEntrustLink = Settings.GetSetting("WebEntrust");
-    var MobileEntrustLink = Settings.GetSetting("MobileEntrust");
-    var IleoEntrustLink = Settings.GetSetting("IleoEntrust");
+    var SubcriptionSingleLink = WebUtility.UrlDecode(Settings.GetSetting("WebSubscriptionSingle"));
+    var SubcriptionRegularLink = WebUtility.UrlDecode(Settings.GetSetting("WebSubscriptionRegular"));
+    var MobileESingleLink = WebUtility.UrlDecode(Settings.GetSetting("MobileESingle"));
+    var MobileERegularLink = WebUtility.UrlDecode(Settings.GetSetting("MobileERegular"));
+    var MobileIleoSingleLink = WebUtility.UrlDecode(Settings.GetSetting("MobileIleoSingle"));
+    var MobileIleoRegularLink = WebUtility.UrlDecode(Settings.GetSetting("MobileIleoRegular"));
+    var WebEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("WebEntrust"));
+    var MobileEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("MobileEntrust"));
+    var IleoEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("IleoEntrust"));
 }
 <div id="popupLogin" class="c-modal mfp-hide">
     <div class="c-modal__wrap">
@@ -26,8 +26,14 @@
                     <div class="c-loginBox__main">
                         <header class="c-loginBox__title">網銀登入</header>
                         <p class="c-loginBox__greeting">使用完整服務，請使用網銀帳號登入</p>
-                        <div class="c-loginBox__actions">
+                        <div class="c-loginBox__actions u-hidden@mb-only">
                             <a href="javascript:;" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-eh="fcblogin-click">網銀登入</a>
+                        </div>
+                        <div class="c-loginBox__actions u-hidden@lt-up">
+                            <a href="#" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-eh="fcbapplogin-init,fcbapplogin-click" eh-login-type="firste">第ｅ行動</a>
+                        </div>
+                        <div class="c-loginBox__actions u-hidden@lt-up">
+                            <a href="#" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-eh="fcbapplogin-init,fcbapplogin-click" eh-login-type="ileo">ileo</a>
                         </div>
                     </div>
                     <div class="c-loginBox__social">
@@ -385,7 +391,26 @@
         </div>
     </div>
 </div>
+<div id="loginFail" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">登入失敗</h2>
+        </header>
+        <div class="c-modal__content">
+            <p>「您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!」</p>
+        </div>
+    </div>
+</div>
+
 <script>
+    if (SC_DATA.LoginStatus) {
+        $.magnificPopup.open({
+            items: {
+                src: '#loginFail'
+            },
+            type: 'inline'
+        });
+    }
     $('[data-calendar]').datepickerExtend();
     $('[data-tab="true"]').tab();
 
@@ -490,9 +515,9 @@
                             regularlink = "@MobileIleoRegularLink";
                             golink = "@IleoEntrustLink";
                         }
-                        let singleUrl = new URL(decodeURIComponent(singlelink.replaceAll("&amp;", "&")));
-                        let regularUrl = new URL(decodeURIComponent(regularlink.replaceAll("&amp;", "&")));
-                        let goUrl = new URL(decodeURIComponent(golink.replaceAll("&amp;", "&")));
+                        let singleUrl = new URL(singlelink.replaceAll("&amp;","&"));
+                        let regularUrl = new URL(regularlink.replaceAll("&amp;", "&"));
+                        let goUrl = new URL(golink.replaceAll("&amp;", "&"));
                         let singleParms = singleUrl.searchParams;
                         let regularParms = regularUrl.searchParams;
                         let goParms = goUrl.searchParams;
@@ -542,17 +567,17 @@
                         golink = "@IleoEntrustLink";
                     }
 
-                    single.setAttribute("href", decodeURIComponent(singlelink.replaceAll("&amp;", "&")));
-                    regular.setAttribute("href", decodeURIComponent(regularlink.replaceAll("&amp;", "&")));
-                    go.setAttribute("href", decodeURIComponent(golink.replaceAll("&amp;", "&")));
+                    single.setAttribute("href", singlelink.replaceAll("&amp;", "&"));
+                    regular.setAttribute("href", regularlink.replaceAll("&amp;", "&"));
+                    go.setAttribute("href", golink.replaceAll("&amp;", "&"));
                 }
                 else {
                     singlelink = "@SubcriptionSingleLink";
                     regularlink = "@SubcriptionRegularLink";
                     golink = "@WebEntrustLink";
-                    single.setAttribute("href", decodeURIComponent(singlelink.replaceAll("&amp;", "&")));
-                    regular.setAttribute("href", decodeURIComponent(regularlink.replaceAll("&amp;", "&")));
-                    go.setAttribute("href", decodeURIComponent(golink.replaceAll("&amp;", "&")));
+                    single.setAttribute("href", singlelink.replaceAll("&amp;", "&"));
+                    regular.setAttribute("href", regularlink.replaceAll("&amp;", "&"));
+                    go.setAttribute("href", golink.replaceAll("&amp;", "&"));
                 }
 
 </script>

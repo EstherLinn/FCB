@@ -52,6 +52,27 @@ namespace Feature.Wealth.Account.Repositories
             return exists;
         }
 
+        public bool CheckAppUserExists(PlatFormEunm platForm, string promotionCOde)
+        {
+            bool exists = false;
+            string strSql = @$"SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@platForm
+                 and PlatFormId = @promotionCOde) THEN 1 ELSE 0 END as BIT)";
+            var para = new { platForm = platForm.ToString(), promotionCOde = promotionCOde };
+            try
+            {
+                exists = DbManager.Custom.Execute<bool>(strSql, para, commandType: System.Data.CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+            return exists;
+        }
+
         public bool CreateNewMember(FcbMemberModel fcbMemberModel)
         {
             bool success = false;
@@ -137,6 +158,31 @@ namespace Feature.Wealth.Account.Repositories
 
         }
 
+        public CIFMember GetAppUserInfo(string promotioncode)
+        {
+            CIFMember member = null;
+            var strSql = @$"  Select a.CIF_CUST_NAME,a.CIF_E_MAIL_ADDRESS,a.CIF_EMP_RISK,a.CIF_AO_EMPNO,b.EmployeeName as CIF_AO_EMPName,C.PROMOTION_CODE as CIF_PROMO_CODE FROM [CIF]  as a
+                        left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, 3, len(EmployeeCode - 3))
+                        left join [CFMBSEL] as C on CIF_ID_NO = CUST_ID
+                        WHERE C.PROMOTION_CODE = @promotioncode ";
+            var para = new { promotioncode = promotioncode };
+            try
+            {
+                member = DbManager.Custom.Execute<CIFMember>(strSql, para, commandType: System.Data.CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+            return member;
+
+        }
+
         public FcbMemberModel GetMemberInfo(PlatFormEunm platFormEunm, string id)
         {
             FcbMemberModel fcbMemberModel = null;
@@ -153,6 +199,20 @@ namespace Feature.Wealth.Account.Repositories
                 strSql += "PlatFormId = @id";
             }
             var para = new { Platform = platFormEunm.ToString(), id = id };
+            fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
+
+            return fcbMemberModel;
+        }
+
+        public FcbMemberModel GetAppMemberInfo(PlatFormEunm platFormEunm, string promotionCode)
+        {
+            FcbMemberModel fcbMemberModel = null;
+            var strSql = $"  Select A.*,B.CIF_EMP_RISK as Risk,B.CIF_ESTABL_BIRTH_DATE as Birthday,C.EmployeeName as Advisror FROM[FCB_Member] as A" +
+                              " left join [CIF] as B on B.CIF_ID_NO = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)" +
+                              " left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, 3, len(EmployeeCode - 3))  " +
+                              " WHERE PlatForm = @Platform and PlatFormId = @promotionCode ";
+
+            var para = new { Platform = platFormEunm.ToString(), promotionCode = promotionCode };
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
 
             return fcbMemberModel;

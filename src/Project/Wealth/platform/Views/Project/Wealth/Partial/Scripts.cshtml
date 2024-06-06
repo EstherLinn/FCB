@@ -1,30 +1,22 @@
 ﻿@using Sitecore.Configuration;
-@using Foundation.Wealth.Extensions;
-@using Sitecore.Web;
 @using Foundation.Wealth.Helper;
 @using Feature.Wealth.Account.Helpers;
 @{
-    var SubcriptionSingleLink = Settings.GetSetting("WebSubscriptionSingle");
-    var SubcriptionRegularLink = Settings.GetSetting("WebSubscriptionRegular");
-    var MobileESingleLink = Settings.GetSetting("MobileESingle");
-    var MobileERegularLink = Settings.GetSetting("MobileERegular");
-    var MobileIleoSingleLink = Settings.GetSetting("MobileIleoSingle");
-    var MobileIleoRegularLink = Settings.GetSetting("MobileIleoRegular");
-    var WebEntrustLink = Settings.GetSetting("WebEntrust");
-    var MobileEntrustLink = Settings.GetSetting("MobileEntrust");
-    var IleoEntrustLink = Settings.GetSetting("IleoEntrust");
-    var AppPayLoginUrl = Settings.GetSetting("AppPay.CallLoginUrl");
+    var AppPayLoginUrl = WebUtility.UrlDecode(Settings.GetSetting("AppPay.CallLoginUrl"));
+    var MobileFristeLogin = WebUtility.UrlDecode(Settings.GetSetting("MobileFirste"));
+    var MobileIleoLogin = WebUtility.UrlDecode(Settings.GetSetting("MobileIleo"));
 }
-
 <script>
     (function ($, window, document, undefined) {
-        let isLogin = @(FcbMemberHelper.CheckMemberLogin() ? "true": "false");
+        let isLogin = false;
+        if (SC_DATA.IsLoggedIn) {
+            isLogin = true ;
+        }
         let isGlobalization =@(FcbMemberHelper.IsMemberStyleGlobal() ? "true" : "false");
         if (isGlobalization) {
             $('html').addClass('is-globalization');
         }
         let TestSession = @(Session["AppPayResult"] == null ? "true": "false");
-        window.IsLogin = isLogin;
         if (!TestSession) {
              $.ajax({
             type: "post",
@@ -265,9 +257,9 @@
                     single.setAttribute('eh-subscription-id', id);
                     regular.setAttribute('eh-subscription-id', id);
                     go.setAttribute('eh-subscription-id', id);
-                    let singleUrl = new URL(decodeURIComponent(single.getAttribute("href")));
-                    let regularUrl = new URL(decodeURIComponent(regular.getAttribute("href")));
-                    let goUrl = new URL(decodeURIComponent(go.getAttribute("href")));
+                    let singleUrl = new URL(single.getAttribute("href"));
+                    let regularUrl = new URL(regular.getAttribute("href"));
+                    let goUrl = new URL(go.getAttribute("href"));
                     let singleParms = singleUrl.searchParams;
                     let regularParms = regularUrl.searchParams;
                     let goParms = goUrl.searchParams;
@@ -359,40 +351,59 @@
             }).fail(function (jqXHR, textStatus, errorThrown) {
             });
         });
+        EventHandler.AddOnExec('fcbapplogin-init', function (e) {
+            let self = e.target;
+            let loginType = self.getAttribute('eh-login-type');
+                let mobileLoginLink = "@MobileFristeLogin";
+                if (loginType == "ileo") {
+                    mobileLoginLink ="@MobileIleoLogin";
+                }
+            let mobileLoginUrl = new URL(mobileLoginLink.replaceAll('&amp;', '&'));
+                let mobileLoginParms = mobileLoginUrl.searchParams;
+                mobileLoginParms.delete("returnUrl");
+                 mobileLoginParms.append("returnUrl", location.href);
+                 self.setAttribute('href', mobileLoginUrl);
+        });
+
+         EventHandler.AddClick('fcbapplogin-click', function (e) {
+            let self = e.target;
+            let loginType = self.getAttribute('eh-login-type');
+             store.set("MobilePlatform", loginType);
+        });
 
         EventHandler.AddClick('fcblogin-click', function (e) {
-            $.ajax({
-                type: "post",
-                url: "@ClientRoute.GenerateUrl(this, "Accounts", "WebBankLogin")",
-                beforeSend: function () { $('.c-loading').loading('show'); },
-                success: function (resp) {
-                    console.log(resp)
-                    let postDataUrl = '@AppPayLoginUrl';
-                    let postdata =
-                    {
-                        merchantId: resp.merchantId,
-                        txReqId: resp.txReqId,
-                        sign: resp.sign,
-                    };
-                    let form = document.createElement("form");
-                    form.setAttribute("method", "post");
-                    form.setAttribute("action", postDataUrl);
-                    for (let key in postdata) {
-                        let hiddenField = document.createElement("input");
-                        hiddenField.setAttribute("type","hidden");
-                        hiddenField.setAttribute("name", key);
-                        hiddenField.setAttribute("value", postdata[key]);
-                        form.appendChild(hiddenField);
-                    }
-                    document.body.appendChild(form);
-                    form.submit();
-                },
-                error: function (err)
-                {
-                    console.log(err);
-                },
-                complete: function () { $('.c-loading').loading('hide');  }
-            });
+                $.ajax({
+                    type: "post",
+                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "WebBankLogin")",
+                    beforeSend: function () { $('.c-loading').loading('show'); },
+                    success: function (resp) {
+                        console.log(resp)
+                        let postDataUrl = '@AppPayLoginUrl';
+                        let postdata =
+                        {
+                            merchantId: resp.merchantId,
+                            txReqId: resp.txReqId,
+                            sign: resp.sign,
+                        };
+                        let form = document.createElement("form");
+                        form.setAttribute("method", "post");
+                        form.setAttribute("action", postDataUrl);
+                        for (let key in postdata) {
+                            let hiddenField = document.createElement("input");
+                            hiddenField.setAttribute("type", "hidden");
+                            hiddenField.setAttribute("name", key);
+                            hiddenField.setAttribute("value", postdata[key]);
+                            form.appendChild(hiddenField);
+                        }
+                        document.body.appendChild(form);
+                        form.submit();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                    complete: function () { $('.c-loading').loading('hide'); }
+                });
+
         });
 
         EventHandler.AddClick('focuscancel-click', function (e) {

@@ -19,6 +19,7 @@ using Foundation.Wealth.Helper;
 using System;
 using Newtonsoft.Json.Linq;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using System.Web;
 
 namespace Feature.Wealth.Account.Controllers
 {
@@ -28,7 +29,7 @@ namespace Feature.Wealth.Account.Controllers
         private readonly LineService _lineService;
         private readonly FacebookService _facebookService;
         private readonly MemberRepository _memberRepository;
-        private readonly string callBackUrl;
+        private string callBackUrl;
 
         public AccountsController()
         {
@@ -220,6 +221,13 @@ namespace Feature.Wealth.Account.Controllers
         }
         public ActionResult Logout()
         {
+            var nowUrl = new Uri(callBackUrl);
+            var qs = HttpUtility.ParseQueryString(nowUrl.Query);
+            qs.Remove("promotionCode");
+            qs.Remove("rtCode");
+            string pagePathWithoutQueryString = nowUrl.GetLeftPart(UriPartial.Path);
+            string newUrl = qs.Count > 0 ? string.Format("{0}?{1}", pagePathWithoutQueryString, qs) : pagePathWithoutQueryString ;
+            callBackUrl = newUrl;
             Authentication.LogOutUser();
             return Redirect(callBackUrl);
         }
@@ -234,7 +242,6 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        [MemberAuthenticationFilter]
         public ActionResult InsertTrack(List<TrackListModel> trackList)
         {
             if (trackList == null)
@@ -249,14 +256,12 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        [MemberAuthenticationFilter]
         public ActionResult GetTrackListFromDb()
         {
             var listdb = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
             //var fundData = 
             return new JsonNetResult(listdb);
         }
-
 
 
         [HttpPost]
@@ -276,7 +281,6 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        [MemberAuthenticationFilter]
         public ActionResult GetCommonFunctions()
         {
             CommonFuncrionsResp resp = _memberRepository.GetCommonFunctions(FcbMemberHelper.GetMemberPlatFormId());
@@ -288,7 +292,6 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        [MemberAuthenticationFilter]
         public ActionResult SetMemberEmail(string email)
         {
             object objReturn = null;
@@ -311,7 +314,6 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        [MemberAuthenticationFilter]
         public ActionResult SetVideoInfo(bool open)
         {
             if (!FcbMemberHelper.CheckMemberLogin())
@@ -327,7 +329,6 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        [MemberAuthenticationFilter]
         public ActionResult SetArriedInfo(bool open)
         {
             if (!FcbMemberHelper.CheckMemberLogin())
@@ -342,7 +343,6 @@ namespace Feature.Wealth.Account.Controllers
             return new JsonNetResult(objReturn);
         }
         [HttpPost]
-        [MemberAuthenticationFilter]
         public ActionResult SetQuoteChangeColor(string color)
         {
             if (!FcbMemberHelper.CheckMemberLogin())
@@ -358,7 +358,6 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        [MemberAuthenticationFilter]
         public ActionResult SetCommonFunctions(List<string> commons)
         {
             if (!FcbMemberHelper.CheckMemberLogin())
