@@ -1,5 +1,6 @@
 ﻿using Sitecore.Data;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Feature.Wealth.Component.Models.ETF.Detail
 {
@@ -9,6 +10,11 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         /// ETF 基本資訊
         /// </summary>
         public EtfDetail BasicEtf { get; set; }
+
+        /// <summary>
+        /// ETF 地區
+        /// </summary>
+        public RegionType RegionType { get; set; }
 
         /// <summary>
         /// 瀏覽次數
@@ -89,6 +95,30 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         /// 規模變動
         /// </summary>
         public List<EtfScaleRecord> ETFScaleRecords { get; set; }
+    }
+
+    public enum RegionType
+    {
+        [Description("None")]
+        None,
+
+        /// <summary>
+        /// 國內
+        /// </summary>
+        [Description("國內")]
+        Domestic,
+
+        /// <summary>
+        /// 境外
+        /// </summary>
+        [Description("境外")]
+        Overseas,
+
+        /// <summary>
+        /// 舊境外
+        /// </summary>
+        [Description("舊境外")]
+        OverseasOld
     }
 
     public struct Templates
