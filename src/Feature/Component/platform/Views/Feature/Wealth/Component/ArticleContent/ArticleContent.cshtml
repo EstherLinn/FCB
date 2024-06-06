@@ -72,23 +72,24 @@
 <script>
     (function ($, window, document, undefined) {
         document.addEventListener('DOMContentLoaded', function () {
-            var pageItemId = '@Sitecore.Context.Item.ID.ToString()';
-            var currentUrl = window.location.href;
+            let url = new URL(location.href);
+
+            let params = {
+                pageId: '@Sitecore.Context.Item.ID.ToString()',
+                url: url.origin + url.pathname + "?id=" + '@Sitecore.Context.Item.ID.ToString()',
+                querystring: ['id=' + '@Sitecore.Context.Item.ID.ToString()']
+            };
 
             $.ajax({
                 type: "POST",
-                url: '@ClientRoute.GenerateUrl(this, "ViewCount", "UpdateViewCount")',
-                data: {
-                    pageItemId: pageItemId,
-                    currentUrl: currentUrl
-                },
+                url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Update")',
+                data: params,
                 success: function (res) {
-                    if (res.success) {
-                        var viewCount = res.viewCount;
-
-                        $("#articleViewCount").text(viewCount);
-                    } else {
-                        console.error("Error: " + res.message);
+                    if (res.Status == "Success" && res.Count != null) {
+                        $("#articleViewCount").text(res.Count.toLocaleString('en-US'));
+                    }
+                    else {
+                        $("#articleViewCount").text("0");
                     }
                 },
                 error: function (xhr, status, error) {

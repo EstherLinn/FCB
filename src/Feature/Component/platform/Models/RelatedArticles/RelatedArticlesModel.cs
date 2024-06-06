@@ -19,7 +19,9 @@ namespace Feature.Wealth.Component.Models.RelatedArticles
         public string Title { get; set; }
         public string Date { get; set; }
         public string Link { get; set; }
-        public string TargetItemID { get; set; }
+        public string LinkTarget { get; set; }
+        public string LinkTitle { get; set; }
+        public string ViewCount { get; set; }
     }
 
     public struct Templates
