@@ -40,12 +40,12 @@
             <footer class="c-sidebox__footer" id="commonFunctionLimit">
                 <!-- 不論內容多高，置底的工具連結，放此處 -->
                 <div class="c-sidebox__tools">
-                    <a href="@memberSettingUrl" class="o-prefixLink o-prefixLink--gear">編輯常用功能</a>
+                    <a href="@memberSettingUrl?tab=tab-2" class="o-prefixLink o-prefixLink--gear">編輯常用功能</a>
                 </div>
                 <div class="c-sideDialog">
-                    <div class="c-sideDialog__msg u-hidden">
-                        <span class="t-bold">7/7</span>
-                        <span class="t-tip">常用功能到上限嚕！</span>
+                    <div class="c-sideDialog__msg">
+                        <span class="t-bold" data-common-count></span>
+                        <span class="t-tip" data-common-msg></span>
                     </div>
                     <img src="~/themes/images/lions/lion01.svg" class="c-sideDialog__img" alt="">
                 </div>
@@ -66,7 +66,7 @@
                     <div class="c-sidebox__actions">
                         <ul class="l-list">
                             <li class="l-list__item">
-                                <a href="@memberSettingUrl" class="o-btn o-btn--primary o-btn--sm o-btn--flat" id="setCommonBtn">設定常用功能</a>
+                                <a href="@memberSettingUrl?tab=tab-2" class="o-btn o-btn--primary o-btn--sm o-btn--flat" id="setCommonBtn">設定常用功能</a>
                             </li>
                         </ul>
                     </div>
@@ -89,9 +89,9 @@
             </div>
             <footer class="c-sidebox__footer" id="compareLimit">
                 <div class="c-sideDialog">
-                    <div class="c-sideDialog__msg u-hidden">
-                        <span class="t-bold">7/7</span>
-                        <span class="t-tip">標的到上限嚕！</span>
+                    <div class="c-sideDialog__msg">
+                        <span class="t-bold" data-compare-count></span>
+                        <span class="t-tip" data-compare-msg ></span>
                     </div>
                     <img src="~/themes/images/lions/lion01.svg" class="c-sideDialog__img" alt="">
                 </div>
@@ -132,10 +132,11 @@
                 if (compareStore && compareStore.length > 0) {
                     $('#compareBadge').text(compareStore.length);
                     $('#compareBadge').removeClass('u-hidden');
+                    $('[data-compare-count]', '#compareLimit').text(compareStore.length + '/7');
                     if (compareStore.length == 7) {
-                        $('.c-sideDialog__msg','#compareLimit').removeClass('u-hidden');
+                        $('[data-compare-msg]', '#compareLimit').text('標的到上限嚕！');
                     }else{
-                        $('.c-sideDialog__msg','#compareLimit').addClass('u-hidden');
+                        $('[data-compare-msg]', '#compareLimit').text('標的最多加入7檔！');
                     }
                     for (var i = 0; i < compareStore.length; i++) {
                         let url = compareStore[i].type.toLowerCase() == "fund" ? "@(fundDetailUrl)" : "@(etfDetailUrl)"
@@ -181,10 +182,11 @@
                                         </a>
                                     </li>`;
                                     }
+                                    $('[data-common-count]', '#commonFunctionLimit').text(resp.body.length + '/7');
                                     if (resp.body.length == 7) {
-                                        $('.c-sideDialog__msg', '#commonFunctionLimit').removeClass('u-hidden');
+                                        $('[data-common-msg]', '#commonFunctionLimit').text('常用功能到上限嚕！');
                                     } else {
-                                        $('.c-sideDialog__msg', '#commonFunctionLimit').addClass('u-hidden');
+                                        $('[data-common-msg]', '#commonFunctionLimit').text('常用功能最多7個喔！');
                                     }
                                     $('#commonList', '[data-sidebar-id="common"]').html(commonHtml);
                                     $('[data-hasValue="false"]', '[data-sidebar-id="common"]').addClass('u-hidden');
