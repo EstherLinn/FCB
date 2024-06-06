@@ -5,7 +5,6 @@ using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Caching;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 
@@ -64,7 +63,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GetMarketNewsDetailData(string newsId, string pageItemId, string currentUrl)
+        public ActionResult GetMarketNewsDetailData(string newsId)
         {
             MarketNewsDetailModel datas;
 
@@ -82,9 +81,6 @@ namespace Feature.Wealth.Component.Controllers
                 // 儲存 MarketNewsDetailCache 一小時
                 _cache.Set(MarketNewsDetailCacheKey + newsId, datas, DateTimeOffset.Now.AddMinutes(60));
             }
-
-            // 取得 MarketNewsDetail 瀏覽次數
-            datas = await _newsRespository.GetMarketNewsDetailViewCount(datas, newsId, pageItemId, currentUrl);
 
             return new JsonNetResult(datas);
         }

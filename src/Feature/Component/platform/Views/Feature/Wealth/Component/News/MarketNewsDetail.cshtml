@@ -24,8 +24,7 @@
                     <span class="t-date" id="newsDate"></span>
                 </div>
                 <div class="c-minorInfo__like">
-                    <span class="o-views o-views--xs" id="newsViewCount"></span>
-                    @*<a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like " data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>*@
+                    <span class="o-views o-views--xs" data-eh="visit-update,visit-exec" eh-visit-pageid="@Sitecore.Context.Item.ID.ToString()" eh-visit-qs="id=@HttpUtility.UrlEncode(Request.QueryString["id"])"></span>
                 </div>
             </div>
         </div>
@@ -66,16 +65,12 @@
             }
 
             var newsId = new URL(location.href).searchParams.get('id');
-            var pageItemId = '@Sitecore.Context.Item.ID.ToString()';
-            var currentUrl = new URL(location.href).href.replace(/%7B/g, '{').replace(/%7D/g, '}');
 
             $.ajax({
                 type: "POST",
                 url: '@ClientRoute.GenerateUrl(this, "News", "GetMarketNewsDetailData")',
                 data: {
                     newsId: newsId,
-                    pageItemId: pageItemId,
-                    currentUrl: currentUrl
                 },
                 success: function (data) {
                     console.log(data);
@@ -103,7 +98,6 @@
 
                         $('#newsDate').text(data.MarketNewsDetailData.NewsDetailDate);
                         $('#newsContent').html(data.MarketNewsDetailData.NewsContent);
-                        $('#newsViewCount').text(data.MarketNewsDetailData.NewsViewCount);
 
                         if (data.MarketNewsDetailData.PreviousPageLink != null &&
                             data.MarketNewsDetailData.PreviousPageLink != "" &&

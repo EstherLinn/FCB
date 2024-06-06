@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -220,7 +221,7 @@ namespace Feature.Wealth.Component.Repositories
 
                 foreach (var item in datas)
                 {
-                    var currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + item.NewsSerialNumber.ToString();
+                    var currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(item.NewsSerialNumber.ToString());
                     var visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
                     item.NewsViewCount = visitCount?.ToString("N0") ?? "0";
                 }
@@ -408,10 +409,10 @@ namespace Feature.Wealth.Component.Repositories
                 detailData.NewsType = _datas.NewsType;
                 detailData.PreviousPageId = _datas.PreviousPageId;
                 detailData.PreviousPageTitle = _datas.PreviousPageTitle;
-                detailData.PreviousPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + _datas.PreviousPageId;
+                detailData.PreviousPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(_datas.PreviousPageId);
                 detailData.NextPageId = _datas.NextPageId;
                 detailData.NextPageTitle = _datas.NextPageTitle;
-                detailData.NextPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + _datas.NextPageId;
+                detailData.NextPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(_datas.NextPageId);
                 detailData.NewsListUrl = MarketNewsRelatedLinkSetting.GetMarketNewsListUrl();
 
                 model.MarketNewsDetailData = detailData;
@@ -422,23 +423,6 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             return model;
-        }
-
-        /// <summary>
-        ///  取得市場新聞詳細頁瀏覽人次
-        /// </summary>
-        public async Task<MarketNewsDetailModel> GetMarketNewsDetailViewCount(MarketNewsDetailModel datas, string newsId, string pageItemId, string currentUrl)
-        {
-            if (datas != null && datas.MarketNewsDetailData != null)
-            {
-                string[] querystring = new string[] { $"id={newsId}" };
-
-                var visitCountData = await _visitCountRepository.UpdateVisitCount(pageItemId.ToGuid(), currentUrl, querystring);
-
-                datas.MarketNewsDetailData.NewsViewCount = visitCountData?.VisitCount.ToString("N0") ?? "0";
-            }
-
-            return datas;
         }
         #endregion
 
@@ -524,13 +508,13 @@ namespace Feature.Wealth.Component.Repositories
                 string pageItemId = MarketNewsRelatedLinkSetting.GetMarketNewsDetailPageItemId();
                 string rootPath = System.Web.HttpContext.Current.Request.Url.GetLeftPart(System.UriPartial.Authority);
 
-                currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + datas.LatestHeadlines.NewsSerialNumber;
+                currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.LatestHeadlines.NewsSerialNumber);
                 visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
                 datas.LatestHeadlines.NewsViewCount = visitCount?.ToString("N0") ?? "0";
 
                 for (int i = 0; i < datas.Headlines.Count; i++)
                 {
-                    currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + datas.Headlines[i].NewsSerialNumber;
+                    currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.Headlines[i].NewsSerialNumber);
                     visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
                     datas.Headlines[i].NewsViewCount = visitCount?.ToString("N0") ?? "0";
                 }
