@@ -17,6 +17,7 @@ namespace Feature.Wealth.Account.Services
 {
     public class LineService : IOAuthTokenService<LineTokenResponse>, IOAuthProfileService<LineUser>
     {
+        private readonly string domain = string.IsNullOrEmpty(Sitecore.Context.Site.TargetHostName) ? HttpContext.Current.Request.Url.Host : Sitecore.Context.Site.TargetHostName;
         private readonly string _AppId = Settings.GetSetting("Line.ClientId");
         private readonly string _AppSecret = Settings.GetSetting("Line.ClientSecret");
         private readonly string _TokenUrl = Settings.GetSetting("Line.TokenUrl");
@@ -38,7 +39,7 @@ namespace Feature.Wealth.Account.Services
               {
                 new KeyValuePair<string, string>("grant_type", "authorization_code"),
                 new KeyValuePair<string, string>("code", code),
-                new KeyValuePair<string, string>("redirect_uri",RedirectUrl),
+                new KeyValuePair<string, string>("redirect_uri",_RedirectUrl.Replace(HttpContext.Current.Request.Url.Host,domain)),
                 new KeyValuePair<string, string>("client_id", _AppId),
                 new KeyValuePair<string, string>("client_secret", _AppSecret),
                 });

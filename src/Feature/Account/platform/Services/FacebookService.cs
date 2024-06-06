@@ -13,6 +13,7 @@ namespace Feature.Wealth.Account.Services
 {
     public class FacebookService : IOAuthTokenService<FBTokenResponse>, IOAuthProfileService<FacebookUser>
     {
+        private readonly string domain = string.IsNullOrEmpty(Sitecore.Context.Site.TargetHostName) ? HttpContext.Current.Request.Url.Host : Sitecore.Context.Site.TargetHostName;
         private readonly string _AppId = Settings.GetSetting("Facebook.AppId");
         private readonly string _AppSecret = Settings.GetSetting("Facebook.AppSecret");
         private readonly string _TokenUrl = Settings.GetSetting("Facebook.TokenUrl");
@@ -20,7 +21,7 @@ namespace Feature.Wealth.Account.Services
         private readonly string _RedirectUrl = $"https://{HttpContext.Current.Request.Url.Host}/api/client/Accounts/SignInFacebook";
         public string AppId => _AppId;
         public string AppSecret => _AppSecret;
-        public string TokenUrl => _TokenUrl.Replace("{AppId}", _AppId).Replace("{RedirectUrl}", _RedirectUrl).Replace("{AppSecret}", _AppSecret);
+        public string TokenUrl => _TokenUrl.Replace("{AppId}", _AppId).Replace("{RedirectUrl}", _RedirectUrl.Replace(HttpContext.Current.Request.Url.Host, domain)).Replace("{AppSecret}", _AppSecret);
         public string ProfileUrl => _ProfileUrl;
         public string RedirectUrl => _RedirectUrl;
 
