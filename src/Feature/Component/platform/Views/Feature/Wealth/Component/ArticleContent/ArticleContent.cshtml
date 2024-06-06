@@ -85,10 +85,11 @@
                 url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Update")',
                 data: params,
                 success: function (res) {
-                    if (res.Status == "Success") {
-                        $("#articleViewCount").text(res.Count);
-                    } else {
-                        console.error("Error: " + res.message);
+                    if (res.Status == "Success" && res.Count != null) {
+                        $("#articleViewCount").text(res.Count.toLocaleString('en-US'));
+                    }
+                    else {
+                        $("#articleViewCount").text("0");
                     }
                 },
                 error: function (xhr, status, error) {
