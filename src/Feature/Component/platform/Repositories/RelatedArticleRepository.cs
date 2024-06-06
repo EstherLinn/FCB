@@ -5,6 +5,7 @@ using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
@@ -56,11 +57,11 @@ namespace Feature.Wealth.Component.Repositories
                     {
                         string pageItemId = targetItem.ID.ToString();
 
-                        cardItem.Link = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).Url;
+                        cardItem.Link = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).Url + "?articleId=" + HttpUtility.UrlEncode(pageItemId);
                         cardItem.LinkTarget = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).Target;
                         cardItem.LinkTitle = ItemUtils.GeneralLink(settingItem, Models.ArticleCardList.Templates.ArticleCardItem.Fields.Link).Title;
 
-                        var visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), cardItem.Link + "?id=" + pageItemId);
+                        var visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), cardItem.Link);
                         cardItem.ViewCount = visitCount?.ToString("N0") ?? "0";
                     }
                     else

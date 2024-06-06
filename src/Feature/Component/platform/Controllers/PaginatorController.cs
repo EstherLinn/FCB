@@ -2,6 +2,7 @@
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
+using System.Web;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -24,13 +25,13 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     Item = prevPageItem,
                     Title = prevPageItem != null ? ItemUtils.GetFieldValue(prevPageItem, Templates.PageNavigationTitle.Fields.NavigationTitle) : string.Empty,
-                    Link = prevPageItem != null ? prevPageItem.Url() : string.Empty
+                    Link = prevPageItem != null ? prevPageItem.Url() + "?articleId=" + HttpUtility.UrlEncode(prevPageItem.ID.ToString()) : string.Empty
                 },
                 NextPage = new PaginatorItem
                 {
                     Item = nextPageItem,
                     Title = nextPageItem != null ? ItemUtils.GetFieldValue(nextPageItem, Templates.PageNavigationTitle.Fields.NavigationTitle) : string.Empty,
-                    Link = nextPageItem != null ? nextPageItem.Url() : string.Empty
+                    Link = nextPageItem != null ? nextPageItem.Url() + "?articleId=" + HttpUtility.UrlEncode(nextPageItem.ID.ToString()) : string.Empty
                 }
             };
 
