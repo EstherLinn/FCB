@@ -5,6 +5,9 @@
     var AppPayLoginUrl = WebUtility.UrlDecode(Settings.GetSetting("AppPay.CallLoginUrl"));
     var MobileFristeLogin = WebUtility.UrlDecode(Settings.GetSetting("MobileFirste"));
     var MobileIleoLogin = WebUtility.UrlDecode(Settings.GetSetting("MobileIleo"));
+    var domain = HttpContext.Current.Request.Url.Host;
+    var sitecoredomain = Sitecore.Context.Site.TargetHostName;
+    var url = HttpContext.Current.Request.Url.AbsoluteUri.Replace(domain, string.IsNullOrEmpty(sitecoredomain) ? domain : sitecoredomain);
 }
 <script>
     (function ($, window, document, undefined) {
@@ -30,7 +33,7 @@
         $.ajax({
             type: "post",
             url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
-            data: { "url": '@System.Web.HttpContext.Current.Request.Url.AbsoluteUri' },
+            data: { "url": '@url' },
             success: function (msg) {
                 //設置成功
             },
