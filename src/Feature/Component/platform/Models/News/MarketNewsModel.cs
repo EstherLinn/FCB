@@ -1,6 +1,4 @@
-﻿using Sitecore.Data;
-
-namespace Feature.Wealth.Component.Models.MarketNews
+﻿namespace Feature.Wealth.Component.Models.MarketNews
 {
     public class MarketNewsModel
     {
@@ -27,18 +25,5 @@ namespace Feature.Wealth.Component.Models.MarketNews
         public bool IsLike { get; set; }
         public string DetailUrl { get; set; }
         public bool Purchase { get; set; }
-    }
-
-    public struct Template
-    {
-        public readonly struct MarketNewsRelatedLink
-        {
-            public static readonly ID Root = new ID("{B1AC6A99-3E1B-4CE6-9C8D-D03DBD288717}");
-
-            public readonly struct Fields
-            {
-                public static readonly ID DetailLink = new ID("{1A44958A-1092-4B95-A3E3-D83E626BAF4D}");
-            }
-        }
     }
 }

@@ -310,10 +310,10 @@ namespace Feature.Wealth.Component.Repositories
             return result;
         }
 
-        public async Task<JObject> GetMarketNewsData(string id, string count, string startDatetime, string endDatetime)
+        public JObject GetMarketNewsData(string id, string count, string startDatetime, string endDatetime)
         {
             JObject result = null;
-            var request = await _route.
+            var request = _route.
            AppendPathSegments("api", "News", "kmdjnews", "type", id, count).
            SetQueryParams(new
            {
@@ -322,7 +322,7 @@ namespace Feature.Wealth.Component.Repositories
            }).
            WithOAuthBearerToken(_token).
            GetAsync().
-           ReceiveString();
+           ReceiveString().Result;
 
             if (!string.IsNullOrEmpty(request))
             {
@@ -331,14 +331,14 @@ namespace Feature.Wealth.Component.Repositories
             return result;
         }
 
-        public async Task<JObject> GetMarketNewsDetailData(string guid)
+        public JObject GetMarketNewsDetailData(string guid)
         {
             JObject result = null;
-            var request = await _route.
+            var request = _route.
            AppendPathSegments("api", "News", "kmdjnews", "content", guid).
            WithOAuthBearerToken(_token).
            GetAsync().
-           ReceiveString();
+           ReceiveString().Result;
 
             if (!string.IsNullOrEmpty(request))
             {

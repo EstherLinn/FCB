@@ -7,7 +7,7 @@
                 <div class="c-section__content">
                     <div class="c-empty">
                         <div class="c-empty__img">
-                            <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                            <img src="@Url.Content("~/themes/images/lions/lion-compare.svg")" alt="">
                         </div>
                         <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
                     </div>
@@ -22,7 +22,7 @@
                     <div class="c-box c-box--gapless u-shadow-animation">
                         <div class="c-gridview">
                             <div class="c-gridview__media">
-                                <img src="~/themes/images/articles/market_news.jpg" class="c-gridview__img" srcset="~/themes/images/articles/market_news__3x.jpg 3x" alt="">
+                                <img src="@Url.Content("~/themes/images/articles/market_news.jpg")" class="c-gridview__img" srcset="@Url.Content("~/themes/images/articles/market_news__3x.jpg") 3x" alt="">
                             </div>
                             <div class="c-gridview__content">
                                 <a href="" class="c-gridview__title s3 u-ellipsis-2" id="latestHeadlinesTitle"></a>
@@ -32,9 +32,9 @@
                                             <span class="t-date" id="latestHeadlinesDate"></span>
                                             <span class="o-views o-views--xs" id="latestHeadlinesViewCount"></span>
                                         </div>
-                                        <div class="c-minorInfo__like">
-                                            <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
-                                        </div>
+                                        @*<div class="c-minorInfo__like">
+                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                            </div>*@
                                     </div>
                                 </div>
                             </div>
@@ -47,9 +47,8 @@
             </div>
         </div>
     </div>
-</div>
 
-<script>
+    <script>
     (function ($, window, document, undefined) {
         document.addEventListener('DOMContentLoaded', function () {
             if (!jQuery) {
@@ -66,7 +65,7 @@
                         // 添加最新第一筆頭條新聞
                         $('#latestHeadlinesTitle').text(data.LatestHeadlines.NewsTitle);
                         $("#latestHeadlinesTitle").attr("href", data.LatestHeadlines.NewsDetailLink);
-                        $('#latestHeadlinesDate').text(data.LatestHeadlines.NewsDate);
+                        $('#latestHeadlinesDate').text(data.LatestHeadlines.NewsDate + " " + data.LatestHeadlines.NewsTime);
                         $('#latestHeadlinesViewCount').text(data.LatestHeadlines.NewsViewCount);
 
                         // 添加其他四筆頭條新聞
@@ -74,16 +73,16 @@
                             var listItem = '<li class="c-listGroup__item">' +
                                 '<div class="c-gridview">' +
                                 '<div class="c-gridview__content">' +
-                                '<a href="' + item.NewsDetailLink + '" class="c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only">' + item.NewsTitle + '</a>' +
+                                '<a href="' + item.NewsDetailLink + '" class="c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" target="_blank">' + item.NewsTitle + '</a>' +
                                 '<div class="c-gridview__minor">' +
                                 '<div class="c-minorInfo s4">' +
                                 '<div class="c-minorInfo__main">' +
-                                '<span class="t-date">' + item.NewsDate + '</span>' +
+                                '<span class="t-date">' + item.NewsDate + ' ' + item.NewsTime + '</span>' +
                                 '<span class="o-views o-views--xs">' + item.NewsViewCount + '</span>' +
                                 '</div>' +
-                                '<div class="c-minorInfo__like">' +
-                                '<a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>' +
-                                '</div>' +
+                                //'<div class="c-minorInfo__like">' +
+                                //'<a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>' +
+                                //'</div>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>' +
@@ -105,4 +104,5 @@
             });
         });
     })(jQuery, window, document);
-</script>
+    </script>
+</div>

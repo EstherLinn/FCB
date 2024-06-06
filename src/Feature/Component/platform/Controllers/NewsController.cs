@@ -4,7 +4,7 @@ using Feature.Wealth.Component.Repositories;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
@@ -13,9 +13,12 @@ namespace Feature.Wealth.Component.Controllers
 {
     public class NewsController : Controller
     {
-        private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
         private readonly NewsRepository _newsRespository = new NewsRepository();
-        private readonly ViewCountRepository _viewCountRepository = new ViewCountRepository();
+
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly string MarketNewsCacheKey = $"Fcb_MarketNewsCache";
+        private readonly string MarketNewsDetailCacheKey = $"Fcb_MarketNewsDetailCache_NewsId=";
+        private readonly string HeadlineNewsCacheKey = $"Fcb_HeadlineNewsCache";
 
         public ActionResult NewsDetails()
         {
@@ -29,53 +32,28 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GetMarketNewsData(string id, string count, string startDatetime, string endDatetime)
+        public ActionResult GetMarketNewsData(string id, string startDatetime, string endDatetime)
         {
-            var datas = new List<MarketNewsModel>();
+            List<MarketNewsModel> _datas;
+            List<MarketNewsModel> datas;
 
-            var resp = await _djMoneyApiRespository.GetMarketNewsData(id, count, startDatetime, endDatetime);
+            // 取得 MarketNewsCache 資料
+            _datas = (List<MarketNewsModel>)_cache.Get(MarketNewsCacheKey);
 
-            if (resp != null
-                && resp.ContainsKey("resultSet")
-                && resp["resultSet"] != null
-                && resp["resultSet"]["result"] != null
-                && resp["resultSet"]["result"].Any())
+            if (_datas == null)
             {
-                var resultList = resp["resultSet"]["result"];
+                // 取得 MarketNews 資料庫資料
+                _datas = (List<MarketNewsModel>)_newsRespository.GetMarketNewsDbData();
 
-                string pageItemId = _newsRespository.GetMarketNewsDetailsPageItemId();
-                string rootPath = ControllerContext.HttpContext.Request.Url.GetLeftPart(UriPartial.Authority);
-
-                foreach (var item in resultList)
-                {
-                    var newsData = new MarketNewsModel();
-
-                    // 若是頭條新聞 HotNews 為 string.Empty，若不是則為 "u-invisible"
-                    newsData.HotNews = item["v5"].ToString() == "頭條新聞" ? string.Empty : "u-invisible";
-                    newsData.NewsType = item["v5"].ToString();
-                    newsData.NewsDate = item["v1"].ToString() + " " + item["v2"].ToString();
-                    newsData.NewsTitle = _newsRespository.FullWidthToHalfWidth(item["v3"].ToString());
-                    newsData.NewsSerialNumber = item["v4"].ToString();
-                    newsData.NewsDetailLink = _newsRespository.GetMarketNewsDetailsUrl() + "?id=" + item["v4"].ToString();
-
-                    var currentUrl = rootPath + _newsRespository.GetMarketNewsDetailsUrl() + "?id=" + item["v4"].ToString();
-                    newsData.NewsViewCount = _viewCountRepository.GetViewCountInfo(pageItemId, currentUrl).ToString("N0");
-
-                    newsData.Data = new MarketNewsData
-                    {
-                        Type = item["v5"].ToString(),
-                        IsLogin = false,
-                        IsNews = false,
-                        IsLike = false,
-                        DetailUrl = _newsRespository.GetMarketNewsDetailsUrl() + "?id=" + item["v4"].ToString(),
-                        Purchase = false
-                    };
-
-                    newsData.value = _newsRespository.FullWidthToHalfWidth(item["v3"].ToString());
-
-                    datas.Add(newsData);
-                }
+                // 儲存 MarketNewsCache 一小時
+                _cache.Set(MarketNewsCacheKey, _datas, DateTimeOffset.Now.AddMinutes(60));
             }
+
+            // 整理 MarketNews 資料庫資料
+            datas = _newsRespository.OrganizeMarketNewsDbData(_datas, id, startDatetime, endDatetime);
+
+            // 取得 MarketNews 瀏覽次數
+            datas = _newsRespository.GetMarketNewsViewCount(datas);
 
             return new JsonNetResult(datas);
         }
@@ -88,31 +66,27 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetMarketNewsDetailData(string newsId, string pageItemId, string currentUrl)
         {
-            var resp = await _djMoneyApiRespository.GetMarketNewsDetailData(newsId);
+            MarketNewsDetailModel datas;
 
-            var model = new MarketNewsDetailModel();
+            // 取得 MarketNewsDetailCache 資料
+            datas = (MarketNewsDetailModel)_cache.Get(MarketNewsDetailCacheKey + newsId);
 
-            var detailData = new MarketNewsDetailData();
-
-            if (resp != null
-                && resp.ContainsKey("resultSet")
-                && resp["resultSet"] != null
-                && resp["resultSet"]["result"] != null
-                && resp["resultSet"]["result"].Any())
+            if (datas == null)
             {
-                var result = resp["resultSet"]["result"][0];
+                // 取得 MarketNewsDetail 資料庫資料
+                var dbData = _newsRespository.GetMarketNewsDbDetailData(newsId);
 
-                // detailData.NewsType = "台股";
-                detailData.NewsDate = result["v1"].ToString();
-                detailData.NewsTitle = result["v2"].ToString();
-                detailData.NewsContent = _newsRespository.FullWidthToHalfWidth(result["v3"].ToString());
-                detailData.NewsRelatedProducts = result["v4"].ToString();
-                detailData.NewsViewCount = _viewCountRepository.UpdateViewCountInfo(pageItemId, currentUrl).ToString("N0");
+                // 整理 MarketNewsDetail 資料
+                datas = _newsRespository.OrganizeMarketNewsDetailDbData(dbData);
+
+                // 儲存 MarketNewsDetailCache 一小時
+                _cache.Set(MarketNewsDetailCacheKey + newsId, datas, DateTimeOffset.Now.AddMinutes(60));
             }
 
-            model.MarketNewsDetailData = detailData;
+            // 取得 MarketNewsDetail 瀏覽次數
+            datas = await _newsRespository.GetMarketNewsDetailViewCount(datas, newsId, pageItemId, currentUrl);
 
-            return new JsonNetResult(model);
+            return new JsonNetResult(datas);
         }
 
         public ActionResult HeadlineNews()
@@ -121,47 +95,27 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GetHeadlineNewsData()
+        public ActionResult GetHeadlineNewsData()
         {
-            var datas = new HeadlineNewsModel();
+            HeadlineNewsModel datas;
 
-            var startDatetime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow).ToString("yyyy-MM-dd");
-            var endDatetime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow).ToString("yyyy-MM-dd");
+            // 取得 MarketNewsCache 資料
+            datas = (HeadlineNewsModel)_cache.Get(HeadlineNewsCacheKey);
 
-            var resp = await _djMoneyApiRespository.GetMarketNewsData("2", "5", startDatetime, endDatetime);
-
-            if (resp != null
-                && resp.ContainsKey("resultSet")
-                && resp["resultSet"] != null
-                && resp["resultSet"]["result"] != null
-                && resp["resultSet"]["result"].Any())
+            if (datas == null)
             {
-                var resultList = resp["resultSet"]["result"];
+                // 取得 HeadlineNews 資料庫資料
+                var _datas = (List<HeadlineNewsData>)_newsRespository.GetHeadlineNewsDbData();
 
-                string pageItemId = _newsRespository.GetMarketNewsDetailsPageItemId();
-                string rootPath = ControllerContext.HttpContext.Request.Url.GetLeftPart(UriPartial.Authority);
+                // 整理 HeadlineNews 資料庫資料
+                datas = _newsRespository.OrganizeHeadlineNewsDbData(_datas);
 
-                datas.LatestHeadlines = new HeadlineNewsData();
-                datas.LatestHeadlines.NewsDate = resultList[0]["v1"].ToString() + " " + resultList[0]["v2"].ToString();
-                datas.LatestHeadlines.NewsTitle = _newsRespository.FullWidthToHalfWidth(resultList[0]["v3"].ToString());
-                datas.LatestHeadlines.NewsSerialNumber = resultList[0]["v4"].ToString();
-                datas.LatestHeadlines.NewsDetailLink = _newsRespository.GetMarketNewsDetailsUrl() + "?id=" + resultList[0]["v4"].ToString();
-                var currentUrl = rootPath + _newsRespository.GetMarketNewsDetailsUrl() + "?id=" + resultList[0]["v4"].ToString();
-                datas.LatestHeadlines.NewsViewCount = _viewCountRepository.GetViewCountInfo(pageItemId, currentUrl).ToString("N0");
-
-                datas.Headlines = new List<HeadlineNewsData>();
-                for (int i = 1; i < resultList.Count(); i++)
-                {
-                    var newsData = new HeadlineNewsData();
-                    newsData.NewsDate = resultList[i]["v1"].ToString() + " " + resultList[i]["v2"].ToString();
-                    newsData.NewsTitle = _newsRespository.FullWidthToHalfWidth(resultList[i]["v3"].ToString());
-                    newsData.NewsSerialNumber = resultList[i]["v4"].ToString();
-                    newsData.NewsDetailLink = _newsRespository.GetMarketNewsDetailsUrl() + "?id=" + resultList[i]["v4"].ToString();
-                    currentUrl = rootPath + _newsRespository.GetMarketNewsDetailsUrl() + "?id=" + resultList[i]["v4"].ToString();
-                    newsData.NewsViewCount = _viewCountRepository.GetViewCountInfo(pageItemId, currentUrl).ToString("N0");
-                    datas.Headlines.Add(newsData);
-                }
+                // 儲存 HeadlineNewsCache 一小時
+                _cache.Set(HeadlineNewsCacheKey, datas, DateTimeOffset.Now.AddMinutes(60));
             }
+
+            // 取得 HeadlineNews 瀏覽人次
+            datas = _newsRespository.GetHeadlineNewsViewCount(datas);
 
             return new JsonNetResult(datas);
         }

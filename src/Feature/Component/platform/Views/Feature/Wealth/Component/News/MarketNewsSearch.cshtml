@@ -47,7 +47,7 @@
                                                         <div class="l-pickGroup" id="newstype_criteria">
                                                             <div class="l-pickGroup__all">
                                                                 <label class="o-btnCheckBox">
-                                                                    <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all" newsType="2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20">
+                                                                    <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all" newsType="1">
                                                                     <div class="o-btnCheckBox__text">全部</div>
                                                                 </label>
                                                             </div>
@@ -238,7 +238,7 @@
                                         <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                                         <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
                                             展開進階篩選
-                                            <img src="~/themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                            <img src="@Url.Content("~/themes/images/icons/white/corner-down-sm.svg")" class="o-btn__icon o-btn__icon--xs" alt="">
                                         </a>
                                     </div>
                                 </div>
@@ -247,7 +247,7 @@
                                         <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                                         <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
                                             收合進階篩選
-                                            <img src="~/themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                            <img src="@Url.Content("~/themes/images/icons/white/corner-up-sm.svg")" class="o-btn__icon o-btn__icon--xs" alt="">
                                         </a>
                                     </div>
                                 </div>
@@ -312,7 +312,7 @@
                         <div class="c-section__content">
                             <div class="c-empty">
                                 <div class="c-empty__img">
-                                    <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                                    <img src="@Url.Content("~/themes/images/lions/lion-compare.svg")" alt="">
                                 </div>
                                 <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
                             </div>
@@ -328,7 +328,7 @@
                             <col style="width: 1%;">
                             <col style="width: auto;">
                             <col style="width: 1%;">
-                            <col style="width: 1%;">
+                            @*<col style="width: 1%;">*@
                         </colgroup>
                         <thead>
                             <tr class="u-nowrap">
@@ -364,11 +364,11 @@
                                         <a href="#" class="o-sorting" data-sorting-column="NewsViewCount"></a>
                                     </div>
                                 </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>收藏</span>
-                                    </div>
-                                </th>
+                                @*<th>
+                                        <div class="c-table__title">
+                                            <span>收藏</span>
+                                        </div>
+                                    </th>*@
                             </tr>
                         </thead>
                         <tbody id="uid-fjs"></tbody>
@@ -386,13 +386,20 @@
                             </td>
                             <td class="c-cardTable__body" data-card-table-width="1/2">
                                 <div class="c-cardTable__content u-right@lt">
-                                    <span class="o-hangTag o-hangTag--gn"><%= NewsType %></span>
+                                    <% if (NewsType != null && NewsType != "") { %>
+                                    <div class="c-cardTable__content u-right@lt">
+                                        <% var newsTypes = NewsType.split(','); %>
+                                        <% for(var i = 0; i < newsTypes.length; i++ ) { %>
+                                        <span class="o-hangTag o-hangTag--gn"><%= newsTypes[i].trim() %></span>
+                                        <% } %>
+                                    </div>
+                                    <% } %>
                                 </div>
                             </td>
                             <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
                             <td class="c-cardTable__body u-left@dt-only">
                                 <div class="c-cardTable__content u-line-2@lt-only">
-                                    <a href="<%= NewsDetailLink %>" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt"><%= NewsTitle %></a>
+                                    <a href="<%= NewsDetailLink %>" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt" target="_blank"><%= NewsTitle %></a>
                                 </div>
                             </td>
                             <td class="c-cardTable__body" data-card-table-width="1/2">
@@ -403,18 +410,18 @@
                             <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
                             <td class="c-cardTable__space"></td>
                             <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                            <td class="c-cardTable__footer" data-card-table-width="1/1">
+                            <!--<td class="c-cardTable__footer" data-card-table-width="1/1">
                                 <div class="c-cardTable__content">
                                     <ul class="l-collect l-collect--divider@lt">
-                                        <li class="l-collect__item">
-                                            <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                            <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                            <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                            <a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
+                                        <li class="l-collect__item">-->
+                            <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                            <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+                            <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+                            <!--<a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
                                         </li>
                                     </ul>
                                 </div>
-                            </td>
+                            </td>-->
                         </tr>
                         </script>
 
@@ -459,26 +466,9 @@
             </div>
         </div>
     </div>
-</div>
 
-<template id="tmplKeywordNotFound">
-    <div class="c-empty">
-        <div class="c-empty__img">
-            <img src="~/themes/images/lions/lion-keyword.svg" alt="">
-        </div>
-        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
-    </div>
-</template>
-
-<script>
+    <script>
     (function ($, window, document, undefined) {
-
-        //function loading() {
-        //    window.loading('show');
-        //    setTimeout(() => {
-        //        window.loading('hide');
-        //    }, 300);
-        //}
 
         function initAutocomplete(data) {
             // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
@@ -536,23 +526,28 @@
                 },
                 formatResult: function (suggestion, currentValue) {
                     let detailUrl = suggestion.Data.DetailUrl ? suggestion.Data.DetailUrl : '#';
-                    let className = suggestion.Data.IsLike ? 'is-active' : '';
+                    //let className = suggestion.Data.IsLike ? 'is-active' : '';
 
-                    // like 按鈕
-                    let likeWord = suggestion.Data.IsNews ? '加入收藏|取消收藏' : '加入關注|取消關注';
-                    let $like = suggestion.Data.IsLike != null ? suggestion.Data.IsLogin == true ?
-                        // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
-                        `<a href="#" class="o-statusBtn o-statusBtn--like ${className}" data-msg="${likeWord}" data-ia="true"></a>` :
-                        // <!-- [data-popup]: 未登入開啟登入彈跳視窗 -->
-                        `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
+                    //// like 按鈕
+                    //let likeWord = suggestion.Data.IsNews ? '加入收藏|取消收藏' : '加入關注|取消關注';
+                    //let $like = suggestion.Data.IsLike != null ? suggestion.Data.IsLogin == true ?
+                    //    // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
+                    //    `<a href="#" class="o-statusBtn o-statusBtn--like ${className}" data-msg="${likeWord}" data-ia="true"></a>` :
+                    //    // <!-- [data-popup]: 未登入開啟登入彈跳視窗 -->
+                    //    `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
+
+                    //return `<div class="c-itemKeyword">
+                    //            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                    //                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                    //            </a>
+                    //            <div class="c-itemKeyword__collections">${$like}</div>
+                    //        </div>`;
 
                     return `<div class="c-itemKeyword">
-                                <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-
-                                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                </a>
-                                <div class="c-itemKeyword__collections">${$like}</div>
-                            </div>`;
+                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                            </a>
+                        </div>`;
                 }
             });
         }
@@ -562,8 +557,10 @@
                 return;
             }
 
-            let fjs;
+            let hashStringProcessed = false;
 
+            let fjs;
+            
             function initFilter(data) {
                 let opts = {
                     template: '#uid-template',
@@ -627,8 +624,8 @@
                 };
 
                 fjs = FilterJS(data, '#uid-fjs', opts);
-                fjs.bindEvent('[data-filter-reset]', 'click.reset');
-                fjs.bindEvent('[data-tag-close]', 'click.tag');
+                //fjs.bindEvent('[data-filter-reset]', 'click.reset');
+                fjs.bindEvent('[data-filter-tag="關鍵字"] [data-tag-close]', 'click.tag');
                 fjs.bindEvent('[data-keyword-submit]', 'click.loading');
 
                 $('[data-keyword-input]').on('keypress.loading', function (e) {
@@ -664,10 +661,10 @@
                     }
                 });
             }
-            
+
             // 日期區間
             let range = [];
-            $('[data-filter-part="range"] input').on('change', function () {
+            $('[data-filter-part="range"] input').on('change.range', function () {
                 window.loading('show');
 
                 $('[data-filter-part="range"]').find('input').each((index, item) => {
@@ -679,7 +676,7 @@
                     isSameOrBefore = true;
 
                     var newstype = getMarketNewsType();
-                    var startdate = moment().format('YYYY/MM/DD').replaceAll("/", "-");
+                    var startdate = moment().add(-6, 'M').format('YYYY/MM/DD').replaceAll("/", "-");
                     var enddate = moment().format('YYYY/MM/DD').replaceAll("/", "-");
 
                     getMarketNewsData(newstype, startdate, enddate);
@@ -697,14 +694,14 @@
                 //  2. 開始日在結束日之前
                 // 若父層[data-filter-group]的值為'special'，則不會印出已選擇的tag
                 $('[data-filter-part="range"]').toggleClass('is-error', !isSameOrBefore).find('[data-error-text]').toggleClass('u-hidden', isSameOrBefore);
-                $(this).closest('[data-filter-group]').attr('data-filter-group', hasValue && isSameOrBefore ? '' : 'special');
+                $(this).closest('[data-filter-group]').data('filter-group', hasValue && isSameOrBefore ? '' : 'special');
                 $('[data-filter-part="range"] [data-filter-input]').trigger('change.filter');
             });
 
             // 日期區間預設半年(示意)
             $('[data-filter-part="range"] input').eq(0).on('change.default', function () {
                 if (!$(this).val()) {
-                    $(this).val(moment().format('YYYY/MM/DD')).datepicker('update');
+                    $(this).val(moment().add(-6, 'M').format('YYYY/MM/DD')).datepicker('update');
                 }
             }).trigger('change.default');
             $('[data-filter-part="range"] input').eq(1).on('change.default', function () {
@@ -714,9 +711,9 @@
             }).trigger('change.default');
 
             function getMarketNewsData(newstype, startdate, enddate) {
+
                 const params = {
                     id: newstype,
-                    count: "5000",
                     startDatetime: startdate,
                     endDatetime: enddate,
                 };
@@ -731,9 +728,24 @@
                     initFilter(data);
                     initAutocomplete(data);
                     $('[data-filter-switch="#uid-template"]').trigger('change');
+
+                    if (!hashStringProcessed) {
+                        hashStringProcessed = true;
+
+                        var hash = window.location.hash;
+                        var hashStringNewsType = hash ? decodeURIComponent(hash.split('=')[1]) : null;
+
+                        if (hashStringNewsType != null && hashStringNewsType != "") {
+                            $("input[value='" + hashStringNewsType + "']").prop('checked', true).change();
+                        }
+
+                        window.location.hash = '';
+                    }
+
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     console.log(errorThrown);
-
+                    $('[data-filter-empty="true"]').show();
+                    $('[data-filter-empty="false"]').hide();
                 }).always(function () {
                     window.loading('hide');
                 });
@@ -770,11 +782,15 @@
                 window.loading('show');
 
                 $("[data-keyword-input]").val("");
+                $('[data-filter-tag="關鍵字"]').each(function () {
+                    $('[data-filter-tag="關鍵字"] .o-pickedTag__button').trigger('click');
+                });
+
                 $("[data-filter-checkbox] input").prop("checked", !1);
                 $('[data-filter-checkall]').prop('checked', true);
+                $("[data-filter-input]").val("").trigger("change");
                 $("[data-filter-tags]").empty();
                 $('[data-filter-block]').addClass('no-picked');
-                $("[data-filter-input]").val("").trigger("change");
             });
 
             // table 排序功能
@@ -846,4 +862,14 @@
 
         });
     })(jQuery, window, document);
-</script>
+    </script>
+</div>
+
+<template id="tmplKeywordNotFound">
+    <div class="c-empty">
+        <div class="c-empty__img">
+            <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
+        </div>
+        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
+    </div>
+</template>

@@ -6,7 +6,7 @@
             <div class="c-section__content">
                 <div class="c-empty">
                     <div class="c-empty__img">
-                        <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                        <img src="@Url.Content("~/themes/images/lions/lion-compare.svg")" alt="">
                     </div>
                     <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
                 </div>
@@ -15,11 +15,8 @@
     </div>
 
     <div class="c-article" data-empty="false">
-        <div class="c-article__head">
-            @*<div class="c-article__tag">
-                <span class="o-hangTag o-hangTag--gn" id="newsTopTag"></span>
-            </div>*@
-            <div class="c-article__title" id="newsTitle"></div>
+        <div class="c-article__head" id="newsHead">
+            
         </div>
         <div class="c-article__extra">
             <div class="c-minorInfo s4">
@@ -28,34 +25,35 @@
                 </div>
                 <div class="c-minorInfo__like">
                     <span class="o-views o-views--xs" id="newsViewCount"></span>
-                    <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like " data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                    @*<a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like " data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>*@
                 </div>
             </div>
         </div>
         <div class="c-article__content">
-            <div class="c-section" id="newsContent">
+            <div class="c-section">
+                <div class="l-paragraph" id="newsContent">
+
+                </div>
             </div>
-            @*<div class="c-hashTags">
+            <div class="c-hashTags" id="newsBottomTags">
                 <div class="c-hashTags__title">Tags</div>
                 <div class="c-hashTags__content">
-                    <ul class="l-divideList l-divideList--sm">
-                        <li class="l-divideList__item l-divideList__item--auto">
-                            <a href="" class="o-hashTag u-nowrap" id="newsBottomTag"></a>
-                        </li>
+                    <ul class="l-divideList l-divideList--sm" id="newsBottomTagsUl">
+                        
                     </ul>
                 </div>
-            </div>*@
+            </div>
         </div>
-        @*<div class="o-record">
-                <a href="#" class="o-record__nav o-record__nav--prev">
-                    <span class="o-record__prev"></span>
-                    <span class="o-record__title">今年每股純益7.9~8元？群電：以公告為準</span>
-                </a>
-                <a href="#" class="o-record__nav o-record__nav--next">
-                    <span class="o-record__title">昶瑞機電現增案代收及存儲股款行庫</span>
-                    <span class="o-record__next"></span>
-                </a>
-            </div>*@
+        <div class="o-record">
+            <a class="o-record__nav o-record__nav--prev" id="prevBrnLink">
+                <span class="o-record__prev"></span>
+                <span class="o-record__title" id="prevBrnTitle"></span>
+            </a>
+            <a class="o-record__nav o-record__nav--next"  id="nextBrnLink">
+                <span class="o-record__title" id="nextBrnTitle"></span>
+                <span class="o-record__next"></span>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -69,7 +67,7 @@
 
             var newsId = new URL(location.href).searchParams.get('id');
             var pageItemId = '@Sitecore.Context.Item.ID.ToString()';
-            var currentUrl = location.href;
+            var currentUrl = new URL(location.href).href.replace(/%7B/g, '{').replace(/%7D/g, '}');
 
             $.ajax({
                 type: "POST",
@@ -83,12 +81,53 @@
                     console.log(data);
 
                     if (data.MarketNewsDetailData != null) {
-                        //$('#newsTopTag').text(data.MarketNewsDetailData.NewsType);
-                        $('#newsTitle').text(data.MarketNewsDetailData.NewsTitle);
-                        $('#newsDate').text(data.MarketNewsDetailData.NewsDate);
+
+                        if (data.MarketNewsDetailData.NewsType != null && data.MarketNewsDetailData.NewsType != "") {
+                            var newsType = data.MarketNewsDetailData.NewsType.split(',');
+
+                            $.each(newsType, function (index, value) {
+                                var $li = $('<li>', { class: 'l-divideList__item l-divideList__item--auto' });
+                                var $a = $('<a>', { href: data.MarketNewsDetailData.NewsListUrl + "#newsType=" + value, class: 'o-hashTag u-nowrap', text: '#' + value });
+                                $li.append($a);
+                                $('#newsBottomTagsUl').append($li);
+                            });
+                        }
+                        else {
+                            $("#newsBottomTags").remove();
+                        }
+
+                        if (data.MarketNewsDetailData.NewsTitle != null && data.MarketNewsDetailData.NewsTitle != "") {
+                            var $newsTitle = $('<div>', { class: 'c-article__title', text: data.MarketNewsDetailData.NewsTitle });
+                            $('#newsHead').append($newsTitle);
+                        }
+
+                        $('#newsDate').text(data.MarketNewsDetailData.NewsDetailDate);
                         $('#newsContent').html(data.MarketNewsDetailData.NewsContent);
-                        //$('#newsBottomTag').text("#" + data.NewsType);
                         $('#newsViewCount').text(data.MarketNewsDetailData.NewsViewCount);
+
+                        if (data.MarketNewsDetailData.PreviousPageLink != null &&
+                            data.MarketNewsDetailData.PreviousPageLink != "" &&
+                            data.MarketNewsDetailData.PreviousPageTitle != null &&
+                            data.MarketNewsDetailData.PreviousPageTitle != "") {
+
+                            $('#prevBrnLink').attr("href", data.MarketNewsDetailData.PreviousPageLink);
+                            $('#prevBrnTitle').text(data.MarketNewsDetailData.PreviousPageTitle);
+                        }
+                        else {
+                            $("#prevBrnLink").remove();
+                        }
+
+                        if (data.MarketNewsDetailData.NextPageLink != null &&
+                            data.MarketNewsDetailData.NextPageLink != "" &&
+                            data.MarketNewsDetailData.NextPageTitle != null &&
+                            data.MarketNewsDetailData.NextPageTitle != "") {
+
+                            $('#nextBrnLink').attr("href", data.MarketNewsDetailData.NextPageLink);
+                            $('#nextBrnTitle').text(data.MarketNewsDetailData.NextPageTitle);
+                        }
+                        else {
+                            $('#nextBrnLink').remove();
+                        }
                     }
                     else {
                         $('[data-empty="true"]').show();

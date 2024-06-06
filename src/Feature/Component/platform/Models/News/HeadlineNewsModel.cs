@@ -11,6 +11,7 @@ namespace Feature.Wealth.Component.Models.News
     public class HeadlineNewsData
     {
         public string NewsDate { get; set; }
+        public string NewsTime { get; set; }
         public string NewsTitle { get; set; }
         public string NewsSerialNumber { get; set; }
         public string NewsViewCount { get; set; }
