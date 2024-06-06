@@ -54,6 +54,7 @@ namespace Feature.Wealth.Account.Controllers
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
             var responseProfile = await _lineService.GetProfileByToken(responseToken.AccessToken);
+    
             var responseVerify = await _lineService.GetVerifyAccessToken(responseToken.IdToken, responseProfile.UserId);
 
             User user = Authentication.BuildVirtualUser("extranet", responseProfile.UserId, true);
@@ -148,10 +149,12 @@ namespace Feature.Wealth.Account.Controllers
             {
                 Session["AppPayResult"] = "傳入參數錯誤";
             }
+
             //if (FcbMemberHelper.CheckMemberLogin())
             //{
+            //    //第三方綁定網銀
             //    var isBind = false;
-            //    isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), webBankResultModel.custData.custId);
+            //    isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), custData.custId);
             //    if (isBind)
             //    {
             //        //成功綁定
@@ -170,11 +173,11 @@ namespace Feature.Wealth.Account.Controllers
             //else
             //{
             //    //網銀登入
-            //    var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, webBankResultModel.custData.custId);
+            //    var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, custData.custId);
             //    if (!isExist)
             //    {
             //        //創建會員
-            //        var cifMember = _memberRepository.GetWebBankUserInfo(webBankResultModel.custData.custId);
+            //        var cifMember = _memberRepository.GetWebBankUserInfo(custData.custId);
             //        //創建會員
             //        FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME, cifMember.CIF_E_MAIL_ADDRESS,
             //            cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE);
@@ -191,7 +194,7 @@ namespace Feature.Wealth.Account.Controllers
             //    else
             //    {
             //        //登入
-            //        FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, webBankResultModel.custData.custId);
+            //        FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank,custData.custId);
             //        User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
             //        user.Profile.Name = member.MemberName;
             //        user.Profile.Email = member.MemberEmail;
@@ -201,8 +204,6 @@ namespace Feature.Wealth.Account.Controllers
             //        Authentication.LoginVirtualUser(user);
             //    }
             //}
-            //var resp = await _webBankService.LoginResultInfo();
-
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
 

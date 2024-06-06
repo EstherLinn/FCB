@@ -63,7 +63,7 @@ namespace Feature.Wealth.Account.Services
             }
             catch (FlurlHttpException ex)
             {
-                Logger.Account.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                Logger.Account.Info($"Error returned from {ex.Call.Request.Url}, StatusCode :{ex.StatusCode} , Error Message : {ex.Message}");
             }
             catch (Exception ex)
             {
