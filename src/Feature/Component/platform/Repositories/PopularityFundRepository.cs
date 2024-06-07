@@ -43,7 +43,8 @@ namespace Feature.Wealth.Component.Repositories
                                        where tagModel.ProductCodes.Contains(item.ProductCode)
                                        select tagModel.TagName);
                     var viewCountFund = viewcountFunds.FirstOrDefault(f => f.ProductCode == item.ProductCode);
-                    item.ViewCount = viewCountFund != null ? viewCountFund.ViewCount.ToString() : null; 
+                    item.ViewCount = viewCountFund?.ViewCount.ToString();
+                    item.ViewCountOrderBy = viewCountFund?.ViewCountOrderBy;
                 }
             }
 
@@ -104,15 +105,16 @@ namespace Feature.Wealth.Component.Repositories
             foreach (var fund in funds)
             {
                 var productCode = fund.QueryStrings.ContainsKey("id") ? fund.QueryStrings["id"] : null;
-                var visitCount = fund.VisitCount;
+                int? visitCount = fund.VisitCount;
 
                 var vm = new Funds();
                 vm.ProductCode = productCode;
-                vm.ViewCount = visitCount.ToString(); 
+                vm.ViewCount = visitCount.ToString();
+                vm.ViewCountOrderBy = visitCount;
                 result.Add(vm);
             }
 
-                return result;
+            return result;
         }
 
 

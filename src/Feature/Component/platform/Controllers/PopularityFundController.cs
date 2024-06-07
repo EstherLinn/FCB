@@ -29,7 +29,7 @@ namespace Feature.Wealth.Component.Controllers
                 viewModel.SelectedId = multilineField;
                 var funds = _popularityFundRepository.GetFundData();
                 var popularFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
-                var newfunds = popularFunds.OrderByDescending(f => f.ViewCount).ToList();
+                var newfunds = popularFunds.OrderByDescending(f => f.ViewCountOrderBy).ToList();
                 viewModel.PopularFunds = _popularityFundRepository.GetFundRenderData(newfunds);
                 viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
             }
@@ -40,7 +40,7 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetSortedPopularityFund(string[] selectedId,string orderby, string desc)
         {
-            if (orderby==null) { orderby = "ViewCount"; }
+            if (orderby==null) { orderby = "ViewCountOrderBy"; }
             if (desc==null) { desc = "is-desc"; }
 
             var funds = _popularityFundRepository.GetFundData();
