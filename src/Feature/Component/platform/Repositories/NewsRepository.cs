@@ -61,7 +61,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var existingNews = DbManager.Custom.ExecuteIList<MarketNewsModel>(@"
         SELECT [NewsSerialNumber]
-        FROM [FCB_sitecore_Custom].[dbo].[NewsList]", null, CommandType.Text);
+        FROM [dbo].[NewsList]", null, CommandType.Text);
 
                 var existingSerialNumbers = existingNews.Select(news => news.NewsSerialNumber).ToList();
 
@@ -74,7 +74,7 @@ namespace Feature.Wealth.Component.Repositories
                     foreach (var news in newData)
                     {
                         DbManager.Custom.ExecuteNonQuery(@"
-                INSERT INTO [FCB_sitecore_Custom].[dbo].[NewsList] ([NewsDate], [NewsTime], [NewsTitle], [NewsSerialNumber])
+                INSERT INTO [dbo].[NewsList] ([NewsDate], [NewsTime], [NewsTitle], [NewsSerialNumber])
                 VALUES (@NewsDate, @NewsTime, @NewsTitle, @NewsSerialNumber)", new
                         {
                             NewsDate = news.NewsDate,
@@ -119,9 +119,9 @@ namespace Feature.Wealth.Component.Repositories
 	        nd.[NewsRelatedProducts],
 	        nd.[NewsType]
         FROM 
-            [FCB_sitecore_Custom].[dbo].[NewsList] nl
+            [dbo].[NewsList] nl
         LEFT JOIN 
-            [FCB_sitecore_Custom].[dbo].[NewsDetail] nd
+            [dbo].[NewsDetail] nd
         ON 
             nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
         ORDER BY 
@@ -242,10 +242,10 @@ namespace Feature.Wealth.Component.Repositories
             string query = @"
         WITH DetailSerialNumbers AS (
             SELECT NewsSerialNumber
-            FROM [FCB_sitecore_Custom].[dbo].[NewsDetail]
+            FROM [dbo].[NewsDetail]
         )
         SELECT DISTINCT nl.NewsSerialNumber
-        FROM [FCB_sitecore_Custom].[dbo].[NewsList] nl
+        FROM [dbo].[NewsList] nl
         LEFT JOIN DetailSerialNumbers ds
         ON nl.NewsSerialNumber = ds.NewsSerialNumber
         WHERE ds.NewsSerialNumber IS NULL";
@@ -298,7 +298,7 @@ namespace Feature.Wealth.Component.Repositories
             if (datas.MarketNewsDetailData != null)
             {
                 DbManager.Custom.ExecuteNonQuery(@"
-                INSERT INTO [FCB_sitecore_Custom].[dbo].[NewsDetail] ([NewsSerialNumber], [NewsDetailDate], [NewsTitle], [NewsContent], [NewsRelatedProducts], [NewsType])
+                INSERT INTO [dbo].[NewsDetail] ([NewsSerialNumber], [NewsDetailDate], [NewsTitle], [NewsContent], [NewsRelatedProducts], [NewsType])
                 VALUES (@NewsSerialNumber, @NewsDetailDate, @NewsTitle, @NewsContent, @NewsRelatedProducts, @NewsType)", new
                 {
                     NewsSerialNumber = datas.MarketNewsDetailData.NewsSerialNumber,
@@ -340,7 +340,7 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         public MarketNewsDetailData GetMarketNewsDbDetailData(string newsId)
         {
-            string serchQuery = "SELECT COUNT(*) FROM [FCB_sitecore_Custom].[dbo].[NewsDetail] WHERE [NewsSerialNumber] = @NewsSerialNumber";
+            string serchQuery = "SELECT COUNT(*) FROM [dbo].[NewsDetail] WHERE [NewsSerialNumber] = @NewsSerialNumber";
 
             int count = DbManager.Custom.ExecuteScalar<int>(serchQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
 
@@ -361,9 +361,9 @@ namespace Feature.Wealth.Component.Repositories
                         nd.[NewsType],
                         ROW_NUMBER() OVER (ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC) AS RowNumber
                     FROM 
-                        [FCB_sitecore_Custom].[dbo].[NewsList] nl
+                        [dbo].[NewsList] nl
                     LEFT JOIN 
-                        [FCB_sitecore_Custom].[dbo].[NewsDetail] nd
+                        [dbo].[NewsDetail] nd
                     ON 
                         nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
                 )
@@ -444,9 +444,9 @@ namespace Feature.Wealth.Component.Repositories
 	                nd.[NewsRelatedProducts],
 	                nd.[NewsType]
                 FROM 
-                    [FCB_sitecore_Custom].[dbo].[NewsList] nl
+                    [dbo].[NewsList] nl
                 LEFT JOIN 
-                    [FCB_sitecore_Custom].[dbo].[NewsDetail] nd
+                    [dbo].[NewsDetail] nd
                 ON 
                     nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
                 WHERE 
