@@ -1,11 +1,14 @@
-﻿using Feature.Wealth.Component.Models.ETF.Detail;
+﻿using Feature.Wealth.Component.Models.ETF;
+using Feature.Wealth.Component.Models.ETF.Detail;
 using Feature.Wealth.Component.Repositories;
+using log4net;
 using Sitecore.Mvc.Presentation;
-using System.Linq;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Controllers
@@ -14,6 +17,7 @@ namespace Feature.Wealth.Component.Controllers
     {
         private readonly EtfDetailRepository _detailRepository = new EtfDetailRepository();
         private readonly DjMoneyApiRespository _djMoneyApiRespository;
+        private readonly ILog _log = Logger.General;
 
         /// <summary>
         /// 建構子
@@ -46,7 +50,19 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetPerformanceTrend(string etfId)
         {
-            var resp = await _djMoneyApiRespository.GetPerformanceTrend(etfId?.ToUpper());
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+
+            try
+            {
+                resp.Body = await _djMoneyApiRespository.GetPerformanceTrend(etfId?.ToUpper());
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("EtfDetail－近一年績效走勢", ex);
+            }
+
             return new JsonNetResult(resp);
         }
 
@@ -60,15 +76,27 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetReturnChartData(string etfId, string startDate, string endDate)
         {
-            etfId = etfId?.ToUpper();
-            var respMarketPrice = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.MarketPrice, startDate, endDate);
-            var respNetAssetValue = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.NetAssetValue, startDate, endDate);
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
 
-            return new JsonNetResult(new
+            try
             {
-                respMarketPrice,
-                respNetAssetValue
-            });
+                etfId = etfId?.ToUpper();
+                var respMarketPrice = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.MarketPrice, startDate, endDate);
+                var respNetAssetValue = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.NetAssetValue, startDate, endDate);
+                resp.Body = new
+                {
+                    respMarketPrice,
+                    respNetAssetValue,
+                };
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("EtfDetail－市價/淨值走勢", ex);
+            }
+
+            return new JsonNetResult(resp);
         }
 
         /// <summary>
@@ -81,17 +109,30 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetReturnReferenceIndexChartData(string etfId, string startDate, string endDate)
         {
-            etfId = etfId?.ToUpper();
-            var respMarketPrice = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.MarketPrice, startDate, endDate);
-            var respNetAssetValue = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.NetAssetValue, startDate, endDate);
-            var respGlobalIndex = _detailRepository.GetGlobalIndexWithCloseYear(etfId, startDate, endDate);
-            // ReferenceIndexID
-            return new JsonNetResult(new
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+
+            try
             {
-                respMarketPrice,
-                respNetAssetValue,
-                respGlobalIndex
-            });
+                etfId = etfId?.ToUpper();
+                var respMarketPrice = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.MarketPrice, startDate, endDate);
+                var respNetAssetValue = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.NetAssetValue, startDate, endDate);
+                var respGlobalIndex = _detailRepository.GetGlobalIndexWithCloseYear(etfId, startDate, endDate);
+
+                resp.Body = new
+                {
+                    respMarketPrice,
+                    respNetAssetValue,
+                    respGlobalIndex
+                };
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("EtfDetail－ETF績效圖", ex);
+            }
+
+            return new JsonNetResult(resp);
         }
 
         /// <summary>
@@ -104,8 +145,19 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetHistoryPrice(string etfId, string startDate, string endDate)
         {
-            // 買賣價走勢
-            var resp = _detailRepository.GetHistoryPrice(etfId?.ToUpper(), startDate, endDate);
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+
+            try
+            {
+                resp.Body = _detailRepository.GetHistoryPrice(etfId?.ToUpper(), startDate, endDate);
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("EtfDetail－買賣價走勢圖", ex);
+            }
+
             return new JsonNetResult(resp);
         }
 
@@ -118,7 +170,19 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetKLineChart(string etfId, string type)
         {
-            var resp = await _djMoneyApiRespository.GetKLineChart(etfId?.ToUpper(), type);
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+
+            try
+            {
+                resp.Body = await _djMoneyApiRespository.GetKLineChart(etfId?.ToUpper(), type);
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("EtfDetail－K線圖", ex);
+            }
+
             return new JsonNetResult(resp);
         }
 
@@ -131,7 +195,19 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetDocLink(string etfId, string idx)
         {
-            var resp = await _djMoneyApiRespository.GetEtfDocLink(etfId?.ToUpper(), idx);
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+
+            try
+            {
+                resp.Body = await _djMoneyApiRespository.GetEtfDocLink(etfId?.ToUpper(), idx);
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("EtfDetail－ETF PDF文件下載點", ex);
+            }
+
             return new JsonNetResult(resp);
         }
 
@@ -143,12 +219,24 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetETFHoldings(string etfId)
         {
-            etfId = etfId?.ToUpper();
-            var resp = new RespHolding()
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+
+            try
             {
-                IndustryHoldings = _detailRepository.GetETFIndustryPercent(etfId),
-                RegionHoldings = _detailRepository.GetETFRegionPercent(etfId)
-            };
+                etfId = etfId?.ToUpper();
+                resp.Body = new RespHolding()
+                {
+                    IndustryHoldings = _detailRepository.GetETFIndustryPercent(etfId),
+                    RegionHoldings = _detailRepository.GetETFRegionPercent(etfId)
+                };
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("EtfDetail－產業、區域持股狀況", ex);
+            }
+
             return new JsonNetResult(resp);
         }
 
@@ -161,16 +249,22 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetETFRiskGraph(string etfId, string selectType)
         {
-            selectType = string.IsNullOrEmpty(selectType) ? "Type" : selectType;
-            var resp = new EtfRiskGraphRespModel() { Body = Enumerable.Empty<EtfRiskGraph>() };
-            resp.Body = _detailRepository.GetRiskindicatorsGraph(etfId?.ToUpper(), selectType);
-            resp.StatusCode = HttpStatusCode.OK;
-            resp.Message = "Success";
-            var serialSetting = new Newtonsoft.Json.JsonSerializerSettings()
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+
+            try
             {
-                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
-            };
-            return new JsonNetResult(resp, serialSetting);
+                selectType = string.IsNullOrEmpty(selectType) ? "Type" : selectType;
+                resp.Body = _detailRepository.GetRiskindicatorsGraph(etfId?.ToUpper(), selectType);
+                return new JsonNetResult(resp);
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("EtfDetail－風險象限圖", ex);
+            }
+
+            return new JsonNetResult(resp);
         }
     }
 }

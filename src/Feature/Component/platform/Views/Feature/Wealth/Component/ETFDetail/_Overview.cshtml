@@ -421,9 +421,9 @@
                     // 呼叫 API ETF概況 – 近一年績效走勢
                     var query = apiRequest('@ETFPerformanceTrendApiUrl', params);
                     query.then((data) => {
-                        if (Object.keys(data.resultSet.result).length != 0) {
-                            let v1 = data.resultSet.result[0].v1.split(',');
-                            let v2 = data.resultSet.result[0].v2.split(',');
+                        if (Object.keys(data.Body.resultSet.result).length != 0) {
+                            let v1 = data.Body.resultSet.result[0].v1.split(',');
+                            let v2 = data.Body.resultSet.result[0].v2.split(',');
                             let mapData = v1.map((item, index) => {
                                 let date = item.replaceAll('/', '-');
                                 return {

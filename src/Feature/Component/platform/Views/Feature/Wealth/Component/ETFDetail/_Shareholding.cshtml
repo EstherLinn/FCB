@@ -234,26 +234,26 @@
 
                     var query = apiRequest('@EETFHoldingsaApiUrl', params);
                     query.then((data) => {
-                        if (data.IndustryHoldings.length > 0) {
-                            mapIndustryData = data.IndustryHoldings.map((item, index) => {
+                        if (data.Body.IndustryHoldings.length > 0) {
+                            mapIndustryData = data.Body.IndustryHoldings.map((item, index) => {
                                 return {
                                     ...item,
                                     name: item.IndustryName,
                                     y: item.Percentage
                                 };
                             });
-                            industryUpdateDate = data.IndustryHoldings[0].Date.replaceAll('-', '/');
+                            industryUpdateDate = data.Body.IndustryHoldings[0].Date.replaceAll('-', '/');
                         }
 
-                        if (data.RegionHoldings.length > 0) {
-                            mapAreaData = data.RegionHoldings.map((item, index) => {
+                        if (data.Body.RegionHoldings.length > 0) {
+                            mapAreaData = data.Body.RegionHoldings.map((item, index) => {
                                 return {
                                     ...item,
                                     name: item.RegionName,
                                     y: item.Percentage
                                 };
                             });
-                            areaUpdateDate = data.RegionHoldings[0].Date.replaceAll('-', '/');
+                            areaUpdateDate = data.Body.RegionHoldings[0].Date.replaceAll('-', '/');
                         }
                     }).catch((err) => {
                         console.log(err);

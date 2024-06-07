@@ -882,10 +882,10 @@
                     var query = apiRequest('@ETFReturnChartDataApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data).length != 0
-                            && data.respMarketPrice
-                            && data.respNetAssetValue) {
-                            const mpDate = data.respMarketPrice.resultSet.result[0].v1.split(',');
-                            const mp = data.respMarketPrice.resultSet.result[0].v2.split(',');
+                            && data.Body.respMarketPrice
+                            && data.Body.respNetAssetValue) {
+                            const mpDate = data.Body.respMarketPrice.resultSet.result[0].v1.split(',');
+                            const mp = data.Body.respMarketPrice.resultSet.result[0].v2.split(',');
                             let mapMarketPriceData = mpDate.map((item, index) => {
                                 return {
                                     name: item,
@@ -894,8 +894,8 @@
                                 };
                             });
 
-                            const navDate = data.respNetAssetValue.resultSet.result[0].v1.split(',');
-                            const nav = data.respNetAssetValue.resultSet.result[0].v2.split(',');
+                            const navDate = data.Body.respNetAssetValue.resultSet.result[0].v1.split(',');
+                            const nav = data.Body.respNetAssetValue.resultSet.result[0].v2.split(',');
                             let mapNetWorthData = navDate.map((item, index) => {
                                 return {
                                     name: item,
@@ -1271,10 +1271,10 @@
                     var query = apiRequest('@ETFReturnReferenceIndexChartDataApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data).length != 0
-                            && data.respMarketPrice
-                            && data.respNetAssetValue) {
-                            const mpDate = data.respMarketPrice.resultSet.result[0].v1.split(',');
-                            const mp = data.respMarketPrice.resultSet.result[0].v2.split(',');
+                            && data.Body.respMarketPrice
+                            && data.Body.respNetAssetValue) {
+                            const mpDate = data.Body.respMarketPrice.resultSet.result[0].v1.split(',');
+                            const mp = data.Body.respMarketPrice.resultSet.result[0].v2.split(',');
                             let mapMarketPriceData = mpDate.map((item, index) => {
                                 return {
                                     name: item,
@@ -1284,8 +1284,8 @@
                                 };
                             });
 
-                            const navDate = data.respNetAssetValue.resultSet.result[0].v1.split(',');
-                            const nav = data.respNetAssetValue.resultSet.result[0].v2.split(',');
+                            const navDate = data.Body.respNetAssetValue.resultSet.result[0].v1.split(',');
+                            const nav = data.Body.respNetAssetValue.resultSet.result[0].v2.split(',');
                             let mapNetWorthData = navDate.map((item, index) => {
                                 return {
                                     name: item,
@@ -1295,7 +1295,7 @@
                                 };
                             });
 
-                            let mapGlobalIndexData = data.respGlobalIndex.Item1.map(item => {
+                            let mapGlobalIndexData = data.Body.respGlobalIndex.Item1.map(item => {
                                 return {
                                     name: item.NetAssetValueDate,
                                     upDown: item.NetAssetValue < 0 ? 'down' : 'up',
@@ -1319,7 +1319,7 @@
                                 legendSymbol: 'rectangle',
                                 turboThreshold: 0,
                             }, {
-                                name: data.respGlobalIndex.Item2,
+                                name: data.Body.respGlobalIndex.Item2,
                                 data: mapGlobalIndexData,
                                 legendSymbol: 'rectangle',
                                 turboThreshold: 0,

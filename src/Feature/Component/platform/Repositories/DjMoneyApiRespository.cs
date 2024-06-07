@@ -2,6 +2,7 @@
 using Feature.Wealth.Component.Models.FundDetail;
 using Flurl;
 using Flurl.Http;
+using log4net;
 using Newtonsoft.Json.Linq;
 using Sitecore.Configuration;
 using System;
@@ -180,59 +181,58 @@ namespace Feature.Wealth.Component.Repositories
             FlurlResponse request = null;
             try
             {
+                switch (trend.ToLower())
+                {
+                    case nameof(FundRateTrendEnum.ori):
+                    case nameof(FundRateTrendEnum.twd):
+                        route = "roi-duringdate";
+                        break;
 
-            switch (trend.ToLower())
-            {
-                case nameof(FundRateTrendEnum.ori):
-                case nameof(FundRateTrendEnum.twd):
-                    route = "roi-duringdate";
-                    break;
+                    case nameof(FundRateTrendEnum.networth):
+                        route = "nav-duringdate";
+                        break;
+                }
+                if (range.Equals("60m", StringComparison.OrdinalIgnoreCase) || range.Equals("establishment", StringComparison.OrdinalIgnoreCase) || range.Equals("custom", StringComparison.OrdinalIgnoreCase))
+                {
+                    route += "-all";
+                }
+                switch (trend.ToLower())
+                {
+                    case nameof(FundRateTrendEnum.ori):
+                        request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
+                         .SetQueryParams(new
+                         {
+                             startdate = startdate,
+                             enddate = enddate,
+                             getTWD = 0
+                         }).WithOAuthBearerToken(_token).
+                            AllowAnyHttpStatus().
+                            GetAsync();
+                        break;
 
-                case nameof(FundRateTrendEnum.networth):
-                    route = "nav-duringdate";
-                    break;
-            }
-            if (range.Equals("60m", StringComparison.OrdinalIgnoreCase) || range.Equals("establishment", StringComparison.OrdinalIgnoreCase) || range.Equals("custom", StringComparison.OrdinalIgnoreCase))
-            {
-                route += "-all";
-            }
-            switch (trend.ToLower())
-            {
-                case nameof(FundRateTrendEnum.ori):
-                    request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
-                     .SetQueryParams(new
-                     {
-                         startdate = startdate,
-                         enddate = enddate,
-                         getTWD = 0
-                     }).WithOAuthBearerToken(_token).
-                        AllowAnyHttpStatus().
-                        GetAsync();
-                    break;
+                    case nameof(FundRateTrendEnum.twd):
+                        request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
+                       .SetQueryParams(new
+                       {
+                           startdate = startdate,
+                           enddate = enddate,
+                           getTWD = 1
+                       }).WithOAuthBearerToken(_token).
+                            AllowAnyHttpStatus().
+                            GetAsync();
+                        break;
 
-                case nameof(FundRateTrendEnum.twd):
-                    request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
-                   .SetQueryParams(new
-                   {
-                       startdate = startdate,
-                       enddate = enddate,
-                       getTWD = 1
-                   }).WithOAuthBearerToken(_token).
-                        AllowAnyHttpStatus().
-                        GetAsync();
-                    break;
-
-                case nameof(FundRateTrendEnum.networth):
-                    request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
-                   .SetQueryParams(new
-                   {
-                       startdate = startdate,
-                       enddate = enddate,
-                   }).WithOAuthBearerToken(_token).
-                        AllowAnyHttpStatus().
-                        GetAsync();
-                    break;
-            }
+                    case nameof(FundRateTrendEnum.networth):
+                        request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
+                       .SetQueryParams(new
+                       {
+                           startdate = startdate,
+                           enddate = enddate,
+                       }).WithOAuthBearerToken(_token).
+                            AllowAnyHttpStatus().
+                            GetAsync();
+                        break;
+                }
                 if (request.StatusCode < 300)
                 {
                     var resp = await request.GetStringAsync();
@@ -312,88 +312,174 @@ namespace Feature.Wealth.Component.Repositories
 
         #region ETF
 
+        private readonly ILog _log = Logger.Api;
+
+        /// <summary>
+        /// ETF - 績效走勢資訊
+        /// </summary>
+        /// <param name="etfId">ETF 代碼</param>
+        /// <param name="type">市價/淨值</param>
+        /// <param name="startdate">起日</param>
+        /// <param name="enddate">迄日</param>
+        /// <returns></returns>
         public async Task<JObject> GetReturnChartData(string etfId, EtfReturnTrend type, string startdate, string enddate)
         {
             JObject result = null;
             var request = string.Empty;
-
-            switch (type)
+            try
             {
-                case EtfReturnTrend.MarketPrice:
-                    request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
-                        .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 1 })
-                        .WithOAuthBearerToken(_token)
-                        .AllowAnyHttpStatus()
-                        .GetAsync()
-                        .ReceiveString();
-                    break;
+                switch (type)
+                {
+                    case EtfReturnTrend.MarketPrice:
+                        request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
+                            .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 1 })
+                            .WithOAuthBearerToken(_token)
+                            .AllowAnyHttpStatus()
+                            .GetAsync()
+                            .ReceiveString();
+                        break;
 
-                case EtfReturnTrend.NetAssetValue:
-                    request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
-                        .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 2 })
-                        .WithOAuthBearerToken(_token)
-                        .AllowAnyHttpStatus()
-                        .GetAsync()
-                        .ReceiveString();
-                    break;
+                    case EtfReturnTrend.NetAssetValue:
+                        request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
+                            .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 2 })
+                            .WithOAuthBearerToken(_token)
+                            .AllowAnyHttpStatus()
+                            .GetAsync()
+                            .ReceiveString();
+                        break;
+                }
+
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
             }
-
-            if (!string.IsNullOrEmpty(request))
+            catch (FlurlHttpException ex)
             {
-                result = JObject.Parse(request);
+                this._log.Error($"Error returned from {ex.Call.Request.Url}: {ex}");
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
             }
             return result;
         }
 
+        /// <summary>
+        /// ETF - 近一年績效走勢資訊
+        /// </summary>
+        /// <param name="etfId"></param>
+        /// <returns></returns>
         public async Task<JObject> GetPerformanceTrend(string etfId)
         {
             JObject result = null;
-            var request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
-                .SetQueryParams(new { etfId = etfId, startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddYears(-1)).ToString("yyyy/MM/dd"), enddate = _today })
-                .WithOAuthBearerToken(_token)
-                .AllowAnyHttpStatus()
-                .GetAsync()
-                .ReceiveString();
-
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
+                    .SetQueryParams(new { etfId = etfId, startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddYears(-1)).ToString("yyyy/MM/dd"), enddate = _today })
+                    .WithOAuthBearerToken(_token)
+                    .AllowAnyHttpStatus()
+                    .GetAsync()
+                    .ReceiveString();
+
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
             }
+            catch (FlurlHttpException ex)
+            {
+                this._log.Error($"Error returned from {ex.Call.Request.Url}: {ex}");
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+            }
+
             return result;
         }
 
+        /// <summary>
+        /// ETF - 技術分析 k 線資訊
+        /// </summary>
+        /// <param name="etfId">ETF 代碼</param>
+        /// <param name="type">週期</param>
+        /// <returns></returns>
         public async Task<JObject> GetKLineChart(string etfId, string type)
         {
             var period = string.Empty;
-            if (Enum.TryParse(type, false, out EtfKLineChart result))
+
+            if (Enum.TryParse(type, false, out EtfKLineChart kLineType))
             {
-                period = Xcms.Sitecore.Foundation.Basic.Extensions.EnumUtil.GetEnumDescription(result);
+                period = Xcms.Sitecore.Foundation.Basic.Extensions.EnumUtil.GetEnumDescription(kLineType);
             }
 
-            var request = await _route.AppendPathSegments("api", "etf", "kline")
-                .SetQueryParams(new { etfId = etfId, period = period })
-                .WithOAuthBearerToken(_token)
-                .AllowAnyHttpStatus()
-                .GetAsync()
-                .ReceiveString();
+            JObject result = null;
+            try
+            {
+                var request = await _route.AppendPathSegments("api", "etf", "kline")
+                    .SetQueryParams(new { etfId = etfId, period = period })
+                    .WithOAuthBearerToken(_token)
+                    .AllowAnyHttpStatus()
+                    .GetAsync()
+                    .ReceiveString();
 
-            return string.IsNullOrEmpty(request) ? null : JObject.Parse(request);
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
+            }
+            catch (FlurlHttpException ex)
+            {
+                this._log.Error($"Error returned from {ex.Call.Request.Url}: {ex}");
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+            }
+
+            return result;
         }
 
+        /// <summary>
+        /// ETF - PDF文件下載點
+        /// </summary>
+        /// <param name="etfId">ETF 代碼</param>
+        /// <param name="idx">文件類型</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// 文件類型：
+        /// 1 基金概覽
+        /// 2 公開說明書
+        /// 3 簡式公開說明書
+        /// 4 年報
+        /// </remarks>
         public async Task<JObject> GetEtfDocLink(string etfId, string idx)
         {
             JObject result = null;
-            var request = await _route.AppendPathSegments("api", "etf", etfId, "etfdoc")
-                .SetQueryParams(new { idx = idx })
-                .WithOAuthBearerToken(_token)
-                .AllowAnyHttpStatus()
-                .GetAsync()
-                .ReceiveString();
-
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var request = await _route.AppendPathSegments("api", "etf", etfId, "etfdoc")
+                    .SetQueryParams(new { idx = idx })
+                    .WithOAuthBearerToken(_token)
+                    .AllowAnyHttpStatus()
+                    .GetAsync()
+                    .ReceiveString();
+
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
             }
+            catch (FlurlHttpException ex)
+            {
+                this._log.Error($"Error returned from {ex.Call.Request.Url}: {ex}");
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+            }
+
             return result;
         }
 

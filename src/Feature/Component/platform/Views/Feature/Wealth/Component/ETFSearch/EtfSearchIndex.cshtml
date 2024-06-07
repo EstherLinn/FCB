@@ -662,7 +662,7 @@
                 }, 300);
             });
 
-            // 手機版分頁筆數功能
+            // 手機版分頁排序功能
             $('[data-sortingbox]:not(#uid-sortbox)').on('change', function (e) {
                 let self = this;
                 let $self = $(this);
@@ -682,7 +682,7 @@
                 let self = this;
                 let $self = $(this);
 
-                var sorting = $(this).val();
+                var sorting = $self.val();
                 var $linkTable = $('#table');
                 var sortingColumn = $('option:selected', self).data('sorting-column');
                 var orderby = $('option:selected', self).data('sorting-class');

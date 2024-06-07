@@ -134,7 +134,7 @@ namespace Feature.Wealth.Component.Repositories
             model.ETFDividendRecords = GetDividendRecords();
             GetLastDividendRecord(model.BasicEtf, model.ETFDividendRecords);
             model.ETFScaleRecords = GetScalechange();
-
+            model.RegionType = CheckRegionType(model.BasicEtf.FirstBankCode);
             return model;
         }
 
@@ -154,6 +154,33 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             return [];
+        }
+
+        /// <summary>
+        /// 依一銀代碼區分國內或境外 ETF
+        /// </summary>
+        /// <param name="firstBankCode">一銀代碼</param>
+        /// <returns></returns>
+        private RegionType CheckRegionType(string firstBankCode)
+        {
+            // 依一銀代碼分為: 國內ETF (35 系列)、舊境外ETF (EA、EB 系列)、境外ETF (EF、EK、EH 系列)
+            Dictionary<string, RegionType> prefixToRegionTypeMap = new Dictionary<string, RegionType>()
+            {
+                { "35", RegionType.Domestic },
+                { "EA", RegionType.OverseasOld },
+                { "EB", RegionType.OverseasOld },
+                { "EF", RegionType.Overseas },
+                { "EK", RegionType.Overseas },
+                { "EH", RegionType.Overseas }
+            };
+
+            if (string.IsNullOrEmpty(firstBankCode))
+            {
+                return RegionType.None;
+            }
+
+            var type = prefixToRegionTypeMap.FirstOrDefault(p => firstBankCode.StartsWith(p.Key, StringComparison.OrdinalIgnoreCase)).Value;
+            return type;
         }
 
         private EtfDetail MapperResult()
