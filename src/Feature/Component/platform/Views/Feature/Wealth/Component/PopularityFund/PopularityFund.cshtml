@@ -45,8 +45,8 @@
                         <option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-asc">6個月績效低至高</option>
                         <option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
                         <option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
-                        <option value="點擊率" data-sorting-column="ViewCount" data-sorting-class="is-desc">點擊率高至低</option>
-                        <option value="點擊率" data-sorting-column="ViewCount" data-sorting-class="is-asc">點擊率低至高</option>
+                        <option value="點擊率" data-sorting-column="ViewCountOrderBy" data-sorting-class="is-desc">點擊率高至低</option>
+                        <option value="點擊率" data-sorting-column="ViewCountOrderBy" data-sorting-class="is-asc">點擊率低至高</option>
                     </select>
                 </div>
             </div>
@@ -108,7 +108,7 @@
                                 <th>
                                     <div class="c-table__title">
                                         <span class="u-wrap">點擊率</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="ViewCount"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="ViewCountOrderBy"></a>
                                     </div>
                                 </th>
                                 <th>
@@ -134,19 +134,19 @@
                                                 <div class="l-target__name">
                                                     <a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.ProductName</a>
                                                 </div>
-												@if (item.Tags != null)
-												{
-													<div class="l-target__additional">
-														<ul class="l-tag">
-															@for (var i = 0; i < item.Tags.Count; i++)
-															{
-																<li class="l-tag__item">
-																	<a href="#" class="o-tag">@item.Tags[i] </a>
-																</li>
-															}
-														</ul>
-													</div>
-												}
+                                                @if (item.Tags != null)
+                                                {
+                                                    <div class="l-target__additional">
+                                                        <ul class="l-tag">
+                                                            @for (var i = 0; i < item.Tags.Count; i++)
+                                                            {
+                                                                <li class="l-tag__item">
+                                                                    <a href="#" class="o-tag">@item.Tags[i] </a>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                     </td>
