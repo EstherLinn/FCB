@@ -27,25 +27,15 @@ namespace Feature.Wealth.Account.Services
                 "_self", HttpUtility.UrlDecode(callBackUrl), _id, timestamp, _key);
             try
             {
-                object postData = new 
-                {
-                    callbackTarget ="_self",
-                    callbackUri = HttpUtility.UrlEncode(callBackUrl),
-                    fnct = "2",
-                    merchantId = _id,
-                    timestamp = timestamp,
-                    version = 1,
-                    sign = SHA1Helper.Encrypt(computeStr),
-                };
-                var resp = await _route.PostJsonAsync(postData);
-                //var resp = await _route.pos(mp =>
-                //mp.AddString("callbackTarget", "_self")
-                //.AddString("callbackUri", HttpUtility.UrlEncode(callBackUrl))
-                //.AddString("fnct", "2")
-                //.AddString("merchantId", _id)
-                //.AddString("timestamp", timestamp)
-                //.AddString("version", "1")
-                //.AddString("sign", SHA1Helper.Encrypt(computeStr)));
+                //form post
+                var resp = await _route.PostMultipartAsync(mp =>
+                mp.AddString("callbacktarget", "_self")
+                .AddString("callbackuri", HttpUtility.UrlEncode(callBackUrl))
+                .AddString("fnct", "2")
+                .AddString("merchantid", _id)
+                .AddString("timestamp", timestamp)
+                .AddString("version", "1")
+                .AddString("sign", SHA1Helper.Encrypt(computeStr)));
                 if (resp.StatusCode < 300)
                 {
                     var msg = await resp.GetStringAsync();
