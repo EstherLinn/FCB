@@ -50,9 +50,7 @@
         }
         $('[data-common-length]').text(len);
     });
-</script>
 
-<script>
     let commonArray = [];
 
     $.ajax({
@@ -73,12 +71,13 @@
     $('[data-common-input]').on('change', function (e) {
         let self = e.target;
         let val = $(self).data('itemid');
-
         if ($(self).prop("checked")) {
             commonArray.push(val);
         } else {
             let idx = commonArray.indexOf(val);
-            commonArray.splice(idx, 1);
+            if (idx >= 0 ) {
+                commonArray.splice(idx, 1);
+            }
         }
     });
     $('#commonBtn').on('click', function () {

@@ -20,6 +20,7 @@ using System;
 using Newtonsoft.Json.Linq;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using System.Web;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 
 namespace Feature.Wealth.Account.Controllers
 {
@@ -44,13 +45,13 @@ namespace Feature.Wealth.Account.Controllers
         {
             if (!string.IsNullOrEmpty(error) || string.IsNullOrEmpty(code))
             {
-                TempData["OAuthErrorMsg"] = error_description;
+                Session["OAuthErrorMsg"] = error_description;
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
             var responseToken = await _lineService.GetTokensByCode(code);
             if (responseToken == null)
             {
-                TempData["OAuthErrorMsg"] = "Line Token身分驗證有誤，請聯絡資訊處。";
+                Session["OAuthErrorMsg"] = "Line Token身分驗證有誤，請聯絡資訊處。";
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
             var responseProfile = await _lineService.GetProfileByToken(responseToken.AccessToken);
@@ -89,14 +90,14 @@ namespace Feature.Wealth.Account.Controllers
         {
             if (!string.IsNullOrEmpty(error) || string.IsNullOrEmpty(code))
             {
-                TempData["OAuthErrorMsg"] = error_description;
+                Session["OAuthErrorMsg"] = error_description;
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
 
             var responseToken = await _facebookService.GetTokensByCode(code);
             if (responseToken == null)
             {
-                TempData["OAuthErrorMsg"] = "FB Token身分驗證有誤，請聯絡資訊處。";
+                Session["OAuthErrorMsg"] = "FB Token身分驗證有誤，請聯絡資訊處。";
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
             var responseProfile = await _facebookService.GetProfileByToken(responseToken.AccessToken);
@@ -139,87 +140,82 @@ namespace Feature.Wealth.Account.Controllers
         [HttpPost]
         public ActionResult WebBankResult(string txReqId, string LoginResult, string LoginDttm, string errMsg, string fnct, WebBankResultModel.custDataModel custData, string sign)
         {
-            if (!string.IsNullOrEmpty(txReqId))
-            {
                 string obj = string.Format("txReqId:{0} LoginResult:{1} LoginDttm:{2} errMsg:{3} fnct:{4} custData:{5} sign:{6}",
                     txReqId, LoginResult, LoginDttm, errMsg, fnct, JsonConvert.SerializeObject(custData), sign);
-                Session["AppPayResult"] = obj;
+                Logger.Account.Info("個網登入0203回應:" + obj);
+            if (LoginResult == "0000")
+            {
+                if (FcbMemberHelper.CheckMemberLogin())
+                {
+                    //第三方綁定網銀
+                    var cifMember = _memberRepository.GetWebBankUserInfo(custData.custId);
+                    if (cifMember == null)
+                    {
+                        Session["OAuthErrorMsg"] = "您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!";
+                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                    }
+                    var isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), custData.custId);
+                    if (isBind)
+                    {
+                        //成功綁定
+                        var member = _memberRepository.GetMemberInfo(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId());
+                        User user = Sitecore.Context.User;
+                        string objToJson = JsonConvert.SerializeObject(member);
+                        user.Profile.SetCustomProperty("MemberInfo", objToJson);
+                        user.Profile.Save();
+                    }
+                    else
+                    {
+                        Session["OAuthErrorMsg"] = "綁定網銀有誤，請聯絡資訊部";
+                    }
+                }
+                else
+                {
+                    //網銀登入
+                    var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, custData.custId);
+                    if (!isExist)
+                    {
+                        //創建會員
+                        var cifMember = _memberRepository.GetWebBankUserInfo(custData.custId);
+                        if (cifMember == null)
+                        {
+                            Session["OAuthErrorMsg"] = "您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!";
+                            return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                        }
+                        //創建會員
+                        FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME, cifMember.CIF_E_MAIL_ADDRESS,
+                            cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE);
+                        _memberRepository.CreateNewMember(member);
+                        User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
+                        user.Profile.Name = cifMember.CIF_CUST_NAME;
+                        user.Profile.Email = cifMember.CIF_E_MAIL_ADDRESS;
+                        string objToJson = JsonConvert.SerializeObject(member);
+                        user.Profile.SetCustomProperty("MemberInfo", objToJson);
+                        user.Profile.Save();
+                        Authentication.LoginVirtualUser(user);
+                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                    }
+                    else
+                    {
+                        //登入
+                        FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, custData.custId);
+                        User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
+                        user.Profile.Name = member.MemberName;
+                        user.Profile.Email = member.MemberEmail;
+                        string objToJson = JsonConvert.SerializeObject(member);
+                        user.Profile.SetCustomProperty("MemberInfo", objToJson);
+                        user.Profile.Save();
+                        Authentication.LoginVirtualUser(user);
+                    }
+                }
             }
             else
             {
-                Session["AppPayResult"] = "傳入參數錯誤";
+                Session["OAuthErrorMsg"] = errMsg;
             }
-
-            //if (FcbMemberHelper.CheckMemberLogin())
-            //{
-            //    //第三方綁定網銀
-            //    var isBind = false;
-            //    isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), custData.custId);
-            //    if (isBind)
-            //    {
-            //        //成功綁定
-            //        var member = _memberRepository.GetMemberInfo(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId());
-            //        User user = Sitecore.Context.User;
-            //        //Todo: 打電文
-            //        string objToJson = JsonConvert.SerializeObject(member);
-            //        user.Profile.SetCustomProperty("MemberInfo", objToJson);
-            //        user.Profile.Save();
-            //    }
-            //    else
-            //    {
-            //        TempData["OAuthErrorMsg"] = "綁定網銀有誤，請聯絡資訊部";
-            //    }
-            //}
-            //else
-            //{
-            //    //網銀登入
-            //    var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, custData.custId);
-            //    if (!isExist)
-            //    {
-            //        //創建會員
-            //        var cifMember = _memberRepository.GetWebBankUserInfo(custData.custId);
-            //        //創建會員
-            //        FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME, cifMember.CIF_E_MAIL_ADDRESS,
-            //            cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE);
-            //        _memberRepository.CreateNewMember(member);
-            //        User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
-            //        user.Profile.Name = cifMember.CIF_CUST_NAME;
-            //        user.Profile.Email = cifMember.CIF_E_MAIL_ADDRESS;
-            //        string objToJson = JsonConvert.SerializeObject(member);
-            //        user.Profile.SetCustomProperty("MemberInfo", objToJson);
-            //        user.Profile.Save();
-            //        Authentication.LoginVirtualUser(user);
-            //        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
-            //    }
-            //    else
-            //    {
-            //        //登入
-            //        FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank,custData.custId);
-            //        User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
-            //        user.Profile.Name = member.MemberName;
-            //        user.Profile.Email = member.MemberEmail;
-            //        string objToJson = JsonConvert.SerializeObject(member);
-            //        user.Profile.SetCustomProperty("MemberInfo", objToJson);
-            //        user.Profile.Save();
-            //        Authentication.LoginVirtualUser(user);
-            //    }
-            //}
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
 
-        /// <summary>
-        /// 測試2-3WebBankResult
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult GetWebBankResult()
-        {
-            object objReturn = new
-            {
-                WebBankResult = Session["AppPayResult"].ToString()
-            };
-            return new JsonNetResult(objReturn);
-        }
         public ActionResult Logout()
         {
             var nowUrl = new Uri(callBackUrl);
@@ -260,7 +256,6 @@ namespace Feature.Wealth.Account.Controllers
         public ActionResult GetTrackListFromDb()
         {
             var listdb = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
-            //var fundData = 
             return new JsonNetResult(listdb);
         }
 

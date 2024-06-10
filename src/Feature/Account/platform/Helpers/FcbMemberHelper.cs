@@ -15,9 +15,13 @@ namespace Feature.Wealth.Account.Helpers
         {
             return fcbMemberModel;
         }
+        public static QuoteChangeEunm GetMemberStyleGlobal()
+        {
+            return fcbMemberModel.StockShowColor;
+        }
         public static bool IsMemberStyleGlobal()
         {
-            return CheckMemberLogin() && fcbMemberModel.StockShowColor == QuoteChangeEunm.International;
+            return fcbMemberModel.StockShowColor == QuoteChangeEunm.International;
         }
         public static string GetMemberPlatFormId()
         {

@@ -28,9 +28,11 @@ namespace Feature.Wealth.Account.Pipelines
                 {
                     return;
                 }
+                //第一行動&&iLeo登入
                 var uri = args.RequestUrl;
                 var qs = HttpUtility.ParseQueryString(uri.Query);
                 var queryString = args.RequestUrl.Query;
+                //檢查網址參數
                 if (!string.IsNullOrEmpty(queryString) && !string.IsNullOrEmpty(qs["promotionCode"]) && !string.IsNullOrEmpty(qs["rtCode"]) && qs["rtCode"] == "0000")
                 {
                     _memberLoginService.IsAppLogin = true ;
