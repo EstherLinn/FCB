@@ -397,13 +397,26 @@
             <h2 class="c-modal__title">登入失敗</h2>
         </header>
         <div class="c-modal__content">
-            <p>「您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!」</p>
+            <p data-errormsg>「您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!」</p>
         </div>
     </div>
 </div>
+@if (Session["OAuthErrorMsg"] != null)
+{
+    <script>
+        $('[data-errormsg]', '#loginFail').text("「@Session["OAuthErrorMsg"].ToString()」");
+        $.magnificPopup.open({
+            items: {
+                src: '#loginFail'
+            },
+            type: 'inline'
+        });
+    </script>
+    Session["OAuthErrorMsg"] = null;
+}
 
 <script>
-    if (SC_DATA.LoginStatus) {
+    if (SC_DATA.IsAppLogin && !SC_DATA.LoginStatus) {
         $.magnificPopup.open({
             items: {
                 src: '#loginFail'

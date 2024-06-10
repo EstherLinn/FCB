@@ -30,7 +30,7 @@ namespace Feature.Wealth.Account.Services
                 //form post
                 var resp = await _route.PostMultipartAsync(mp =>
                 mp.AddString("callbacktarget", "_self")
-                .AddString("callbackuri", HttpUtility.UrlEncode(callBackUrl))
+                .AddString("callbackuri", CheckUrlParmas(callBackUrl))
                 .AddString("fnct", "2")
                 .AddString("merchantid", _id)
                 .AddString("timestamp", timestamp)
@@ -53,6 +53,7 @@ namespace Feature.Wealth.Account.Services
             }
             catch (FlurlHttpException ex)
             {
+                Logger.Account.Info($"Error returned post data: callbacktarget  = _self,callbackuri={HttpUtility.UrlEncode(callBackUrl)},fnct=2,merchantid={_id},timestamp={timestamp},version=1,sign={SHA1Helper.Encrypt(computeStr)}" );
                 Logger.Account.Info($"Error returned from {ex.Call.Request.Url}, StatusCode :{ex.StatusCode} , Error Message : {ex.Message}");
             }
             catch (Exception ex)
@@ -72,6 +73,24 @@ namespace Feature.Wealth.Account.Services
             .AddString("sign", SHA1Helper.Encrypt(computeStr)));
             return result;
         }
-
+        /// <summary>
+        /// 按照AppPay規格　參數兩個以上才需encode
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private string CheckUrlParmas(string url)
+        {
+            Uri checkUrl = new Uri(url);
+            if (string.IsNullOrEmpty(checkUrl.Query))
+            {
+                return HttpUtility.UrlDecode(url);
+            }
+            var urlQuery = HttpUtility.ParseQueryString(checkUrl.Query);
+            if (urlQuery.Count > 2)
+            {
+                return HttpUtility.UrlEncode(url);
+            }
+            return HttpUtility.UrlDecode(url);
+        }
     }
 }

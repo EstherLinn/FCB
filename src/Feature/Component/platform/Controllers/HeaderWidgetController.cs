@@ -13,10 +13,8 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var service = ServiceLocator.ServiceProvider.GetService<IMemberLoginService>();
-            if (service.IsAppLogin && !service.AppLoginSuccess)
-            {
-                ViewData["LoginStatus"] = false;
-            }
+            ViewData["IsAppLogin"] = service.IsAppLogin;
+            ViewData["LoginStatus"] = service.AppLoginSuccess;
             return View("/Views/Feature/Wealth/Component/HeaderWidget/HeaderWidget.cshtml", CreateModel());
         }
 

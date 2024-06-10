@@ -15,21 +15,9 @@
         if (SC_DATA.IsLoggedIn) {
             isLogin = true ;
         }
-        let isGlobalization =@(FcbMemberHelper.IsMemberStyleGlobal() ? "true" : "false");
-        if (isGlobalization) {
+        if (SC_DATA.IsGlobalStyle) {
             $('html').addClass('is-globalization');
-        }
-        let TestSession = @(Session["AppPayResult"] == null ? "true": "false");
-        if (!TestSession) {
-             $.ajax({
-            type: "post",
-            url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetWebBankResult")",
-                 success: function (msg) {
-                     console.log('網銀登入結果');
-                     console.log(msg);
-            },
-        })
-        }
+        }    
         $.ajax({
             type: "post",
             url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
