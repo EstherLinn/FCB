@@ -370,6 +370,7 @@
                     success: function (resp) {
                         console.log(resp)
                         let postDataUrl = '@AppPayLoginUrl';
+                        postDataUrl = postDataUrl + `?merchantId=${resp.merchantId}&txReqId=${resp.txReqId}&sign=${resp.sign}`;
                         let postdata =
                         {
                             merchantId: resp.merchantId,
