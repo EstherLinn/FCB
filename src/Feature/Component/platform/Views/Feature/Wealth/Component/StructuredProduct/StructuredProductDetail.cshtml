@@ -53,13 +53,13 @@
 
                 var renderedHTML = pageHeaderTemplate.replace(/%Title%/g, data.ProductCode + " " + data.ProductName).replace(/%BankSellPrice%/g, data.BankSellPrice_DisplayText).replace(/%CurrencyName%/g, data.CurrencyName_DisplayText).replace(/%PriceBaseDate%/g, data.PriceBaseDate_DisplayText).replace(/%ProductMaturityDate%/g, data.ProductMaturityDate_DisplayText).replace(/%IssuingInstitution%/g, data.IssuingInstitution_DisplayText);
 
-                $('#pageHeader').html(renderedHTML);
+                $('#pageHeader').html(DOMPurify.sanitize(renderedHTML));
 
                 handleVisitUpdate();
                 handleVisitExec();
             };
 
-             function handleVisitUpdate() {
+            function handleVisitUpdate() {
                 let params = {
                     pageId: $('.o-views.o-views--bk').attr('eh-visit-pageid'),
                     url: new URL(location.href).href,
@@ -198,7 +198,7 @@
                         count++;
                     }
 
-                    $('#dividendtable').html(DividendHtml);
+                    $('#dividendtable').html(DOMPurify.sanitize(DividendHtml));
 
                     $('#dividendContent').removeClass('u-hidden');
                     $('#dividendEmpty').addClass('u-hidden');
@@ -323,7 +323,7 @@
                         count++;
                     }
 
-                    $('#thirtydaytable').html(ThirtyDayHtml);
+                    $('#thirtydaytable').html(DOMPurify.sanitize(ThirtyDayHtml));
 
                     $('#thirtyDayContent').removeClass('u-hidden');
                     $('#thirtyDayEmpty').addClass('u-hidden');
@@ -618,26 +618,26 @@
             };
 
 
-        // 手機版分頁筆數功能
-        $('[data-sortingbox="true"]').on('change.sorting',
-            function (e) {
-                // 呼叫 loading
-                window.loading('show');
-                var sorting = $(this).val();
-                var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
-                var sortingColumn = $('option:selected', this).data('sorting-column');
-                var orderby = $('option:selected', this).data('sorting-class');
+            // 手機版分頁筆數功能
+            $('[data-sortingbox="true"]').on('change.sorting',
+                function (e) {
+                    // 呼叫 loading
+                    window.loading('show');
+                    var sorting = $(this).val();
+                    var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+                    var sortingColumn = $('option:selected', this).data('sorting-column');
+                    var orderby = $('option:selected', this).data('sorting-class');
 
-                // 連動 table
-                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
-                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                    // 連動 table
+                    $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                    $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
 
 
-                DividendData = SortingDividend(DividendData, orderby);
-                RenderDividendList();
+                    DividendData = SortingDividend(DividendData, orderby);
+                    RenderDividendList();
 
-                window.loading('hide');
-            });
+                    window.loading('hide');
+                });
 
         });
 
@@ -649,19 +649,19 @@
         <div class="c-pageHeader">
             <div class="c-pageHeader__main">
                 <h1 class="c-pageHeader__title">%Title%</h1>
-                @if (Model.StructuredProduct.DiscountTags != null && Model.StructuredProduct.DiscountTags.Any())
+    @if (Model.StructuredProduct.DiscountTags != null && Model.StructuredProduct.DiscountTags.Any())
+    {
+                            <div class="c-pageHeader__tags">
+                                <ul class="l-tag">
+                @foreach (var tag in Model.StructuredProduct.DiscountTags)
                 {
-                    <div class="c-pageHeader__tags">
-                        <ul class="l-tag">
-                            @foreach (var tag in Model.StructuredProduct.DiscountTags)
-                            {
-                                <li class="l-tag__item">
-                                    <a href="#" class="o-tag">@tag</a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
+                                                <li class="l-tag__item">
+                                                    <a href="#" class="o-tag">@tag</a>
+                                                </li>
                 }
+                                </ul>
+                            </div>
+    }
             </div>
             <div class="c-pageHeader__views">
                 <div class="o-views o-views--bk" data-eh="visit-update,visit-exec" eh-visit-pageid="@pageId" eh-visit-qs="id=@productCode"></div>

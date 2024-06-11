@@ -24,7 +24,6 @@ namespace Feature.Wealth.Component.Controllers
 
             foreach (var globalIndex in globalIndexList)
             {
-                // 排序改成舊到新
                 globalIndex.GlobalIndexHistory = this._globalIndexRepository.GetGlobalIndexHistoryList(globalIndex.IndexCode);
             }
 

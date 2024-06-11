@@ -58,122 +58,122 @@
     </div>
 </div>
 <script>
-                (function ($, window, document) {
+    (function ($, window, document) {
 
-    document.addEventListener('DOMContentLoaded', function () {
-        if (!jQuery) {
-            return;
-        }
-        let itemId = SC_DATA.ItemId;
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+            let itemId = SC_DATA.ItemId;
 
-        if (SC_DATA.Tools === undefined) {
-            let toolsArray = [];
-            let commonArray = [];
-            $.ajax({
-                type: 'post',
-                url: '@ClientRoute.GenerateUrl(this, "Accounts", "GetCommonTools")',
-                success: function (resp) {
-                    if (resp && resp.statusCode == 200) {
-                        if (resp.body.length > 0) {
-                            for (let i = 0; i < resp.body.length; i++) {
-                                let itemId = resp.body[i].pageGuid;
-                                commonArray.push(itemId);
+            if (SC_DATA.Tools === undefined) {
+                let toolsArray = [];
+                let commonArray = [];
+                $.ajax({
+                    type: 'post',
+                    url: '@ClientRoute.GenerateUrl(this, "Accounts", "GetCommonTools")',
+                    success: function (resp) {
+                        if (resp && resp.statusCode == 200) {
+                            if (resp.body.length > 0) {
+                                for (let i = 0; i < resp.body.length; i++) {
+                                    let itemId = resp.body[i].pageGuid;
+                                    commonArray.push(itemId);
+                                }
+                            }
+                            if (resp.tools) {
+                                toolsArray = resp.tools.split('|');
                             }
                         }
-                        if (resp.tools) {
-                            toolsArray = resp.tools.split('|');
-                        }
                     }
-                }
-            }).always(function () {
-                activeTools(toolsArray, commonArray);
-                commonActive(commonArray);
-                SC_DATA.Tools = commonArray;
-            });
-        }        
+                }).always(function () {
+                    activeTools(toolsArray, commonArray);
+                    commonActive(commonArray);
+                    SC_DATA.Tools = commonArray;
+                });
+            }
 
-        function activeTools(toolsArray, commonArray) {
-            let isShow = false;
-            let isActive = false;
-            toolsArray.forEach(id => {
-                if (id == itemId) {
-                    $('.o-statusBtn--tool').removeClass('u-hidden');
-                    isShow = true;
+            function activeTools(toolsArray, commonArray) {
+                let isShow = false;
+                let isActive = false;
+                toolsArray.forEach(id => {
+                    if (id == itemId) {
+                        $('.o-statusBtn--tool').removeClass('u-hidden');
+                        isShow = true;
+                    }
+                });
+                commonArray.forEach(common => {
+                    let id = typeof (common) === 'string' ? common : common.PageGuid;
+                    if (id == itemId) {
+                        $('.o-statusBtn--tool').addClass('is-active');
+                        isActive = true;
+                    }
+                });
+
+                if (!isShow) {
+                    $('.o-statusBtn--tool').addClass('u-hidden');
                 }
-            });
-            commonArray.forEach(common => {
-                let id = typeof (common) === 'string' ? common : common.PageGuid;
-                if (id == itemId) {
+                if (!isActive) {
+                    $('.o-statusBtn--tool').removeClass('is-active');
+                }
+
+                SC_DATA.CommonTools_isShow = isShow;
+                SC_DATA.CommonTools_isActive = isActive;
+                commonActive();
+            }
+
+            function commonActive() {
+                if (SC_DATA.CommonTools_isActive) {
                     $('.o-statusBtn--tool').addClass('is-active');
-                    isActive = true;
+                } else {
+                    $('.o-statusBtn--tool').removeClass('is-active');
                 }
-            });
-
-            if (!isShow) {
-                $('.o-statusBtn--tool').addClass('u-hidden');
             }
-            if (!isActive) {
-                $('.o-statusBtn--tool').removeClass('is-active');
-            }
-            
-            SC_DATA.CommonTools_isShow = isShow;
-            SC_DATA.CommonTools_isActive = isActive;
-            commonActive();
-        }
 
-        function commonActive() {
-            if (SC_DATA.CommonTools_isActive) {
-                $('.o-statusBtn--tool').addClass('is-active');
-            } else {
-                $('.o-statusBtn--tool').removeClass('is-active');
-            }
-        }
-
-        $('[data-tools-input]').on('click', function (e) {
-            SC_DATA.CommonTools_isActive = $(e.target).hasClass("is-active");
-            $.ajax({
-                type: 'post',
-                url: '@ClientRoute.GenerateUrl(this, "Accounts", "SetCommonTools")',
-                data: { itemId: itemId, isActive: SC_DATA.CommonTools_isActive },
-                success: function (resp) {
-                    if (resp && resp.Item1 && resp.Item2) {
-                        commonActive();
-                        //if (window.SetCommonFunctionList) {
-                        //    window.SetCommonFunctionList();
-                        //}
-                        let result = resp.Item2;
-                        SC_DATA.CommonTools = result.body;
-                        if (result.statusCode == 200 && result.body.length > 0) {
-                            let commonHtml = '';
-                            for (var i = 0; i < result.body.length; i++) {
-                                commonHtml += `<li class="c-listGroup__item">
-                                      <a href="${result.body[i].PageUrl}" class="o-itemLink o-itemLink--sm">
-                                          <span class="o-itemLink__title t-bold">${result.body[i].PageName}</span>
-                                          <img src="/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                      </a>
-                                  </li>`;
-                            }
-                            if (result.body.length == 7) {
-                                $('.c-sideDialog__msg', '#commonFunctionLimit').removeClass('u-hidden');
+            $('[data-tools-input]').on('click', function (e) {
+                SC_DATA.CommonTools_isActive = $(e.target).hasClass("is-active");
+                $.ajax({
+                    type: 'post',
+                    url: '@ClientRoute.GenerateUrl(this, "Accounts", "SetCommonTools")',
+                    data: { itemId: itemId, isActive: SC_DATA.CommonTools_isActive },
+                    success: function (resp) {
+                        if (resp && resp.Item1 && resp.Item2) {
+                            commonActive();
+                            //if (window.SetCommonFunctionList) {
+                            //    window.SetCommonFunctionList();
+                            //}
+                            let result = resp.Item2;
+                            SC_DATA.CommonTools = result.body;
+                            if (result.statusCode == 200 && result.body.length > 0) {
+                                let commonHtml = '';
+                                for (var i = 0; i < result.body.length; i++) {
+                                    commonHtml += `<li class="c-listGroup__item">
+                                              <a href="${result.body[i].PageUrl}" class="o-itemLink o-itemLink--sm">
+                                                  <span class="o-itemLink__title t-bold">${result.body[i].PageName}</span>
+                                                  <img src="/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                              </a>
+                                          </li>`;
+                                }
+                                if (result.body.length == 7) {
+                                    $('.c-sideDialog__msg', '#commonFunctionLimit').removeClass('u-hidden');
+                                } else {
+                                    $('.c-sideDialog__msg', '#commonFunctionLimit').addClass('u-hidden');
+                                }
+                                $('#commonList', '[data-sidebar-id="common"]').html(DOMPurify.sanitize(commonHtml));
+                                $('[data-hasValue="false"]', '[data-sidebar-id="common"]').addClass('u-hidden');
+                                $('[data-hasValue="true"]', '[data-sidebar-id="common"]').removeClass('u-hidden');
                             } else {
-                                $('.c-sideDialog__msg', '#commonFunctionLimit').addClass('u-hidden');
+                                $('[data-hasValue="false"]', '[data-sidebar-id="common"]').removeClass('u-hidden');
+                                $('[data-hasValue="true"]', '[data-sidebar-id="common"]').addClass('u-hidden');
                             }
-                            $('#commonList', '[data-sidebar-id="common"]').html(commonHtml);
-                            $('[data-hasValue="false"]', '[data-sidebar-id="common"]').addClass('u-hidden');
-                            $('[data-hasValue="true"]', '[data-sidebar-id="common"]').removeClass('u-hidden');
-                        } else {
-                            $('[data-hasValue="false"]', '[data-sidebar-id="common"]').removeClass('u-hidden');
-                            $('[data-hasValue="true"]', '[data-sidebar-id="common"]').addClass('u-hidden');
                         }
-                    }
 
-                }
+                    }
+                });
             });
+
         });
 
-     });
-
-             }) (jQuery, window, document);
+    })(jQuery, window, document);
 
 </script>
 @if (Model.CanColneTools)

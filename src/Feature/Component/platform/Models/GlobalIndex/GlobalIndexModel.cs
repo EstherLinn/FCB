@@ -41,6 +41,8 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
 
     public class GlobalIndexDetailModel
     {
+        public Item Item { get; set; }
+        public string PageID { get; set; }
         public string DetailLink { get; set; }
         public string FundLink { get; set; }
         public string ETFLink { get; set; }

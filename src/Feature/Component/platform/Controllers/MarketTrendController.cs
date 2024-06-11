@@ -18,6 +18,7 @@ namespace Feature.Wealth.Component.Controllers
         private readonly GlobalIndexRepository _globalIndexRepository = new GlobalIndexRepository();
         private readonly MarketTrendRepository _marketTrendRepository = new MarketTrendRepository();
         private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
+        // TODO 等新聞詳細頁出來改用 VisitCountRepository
         private readonly ViewCountRepository _viewCountrepository = new ViewCountRepository();
         private IList<Models.GlobalIndex.GlobalIndex> _globalIndexList;
         private List<Models.GlobalIndex.GlobalIndexHighchartsData> _datas = new List<Models.GlobalIndex.GlobalIndexHighchartsData>();
@@ -50,15 +51,15 @@ namespace Feature.Wealth.Component.Controllers
             {
                 Item = item,
                 IndexLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.IndexLink)?.Url,
-                FundLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.FundLink)?.Url,
-                ETFLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.ETFLink)?.Url,
+                FundLink = Models.FundDetail.FundRelatedSettingModel.GetFundDetailsUrl(),
+                ETFLink = Models.ETF.EtfRelatedLinkSetting.GetETFDetailUrl(),
                 NewsLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.NewsLink)?.Url,
                 MoreNewsButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreNewsButtonText),
                 MoreNewsButtonLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.MoreNewsButtonLink)?.Url,
                 MoreETFButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreETFButtonText),
-                MoreETFButtonLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.MoreETFButtonLink)?.Url,
+                MoreETFButtonLink = Models.FundDetail.FundRelatedSettingModel.GetFundSearchUrl(),
                 MoreFundButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreFundButtonText),
-                MoreFundButtonLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.MoreFundButtonLink)?.Url,
+                MoreFundButtonLink = Models.ETF.EtfRelatedLinkSetting.GetETFSearchUrl(),
                 ReportTitle = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.ReportTitle),
                 ReportText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.ReportText),
                 ReportButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.ReportButtonText),
@@ -99,7 +100,7 @@ namespace Feature.Wealth.Component.Controllers
 
             string indexLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.IndexLink)?.Url;
             string fundLink = Models.FundDetail.FundRelatedSettingModel.GetFundDetailsUrl();
-            string etfLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.ETFLink)?.Url;
+            string etfLink = Models.ETF.EtfRelatedLinkSetting.GetETFDetailUrl();
             var newsLinkItem = ItemUtils.GetReferenceFieldItem(item, Template.MarketTrend.Fields.NewsLink);
             string newsLink = newsLinkItem.Url();
 
@@ -289,6 +290,7 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     string newsType = ItemUtils.GetFieldValue(newsItems.FirstOrDefault(), Template.DropdownOption.Fields.OptionValue);
 
+                    // TODO 之後改抓DB
                     var resp = _djMoneyApiRespository.GetNewsForMarketTrend(newsType);
 
                     if (resp != null
@@ -311,6 +313,7 @@ namespace Feature.Wealth.Component.Controllers
                             };
 
                             // 取得觀看數
+                            // TODO 等新聞詳細頁出來改用 VisitCountRepository
                             news.ViewCount = this._viewCountrepository.GetViewCountInfo(newsLinkItem.ID.ToString(), this._rootPath + news.DetailLink);
 
                             // TODO 取得收藏

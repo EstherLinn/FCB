@@ -76,7 +76,13 @@
     dropdownAutoWidth: true,
     templateResult: function (state, li) {
       if (state.element && state.element.hasAttribute('data-sizebox-option')) {
-        var $input = $(`<input type="number" value="${htmlEncode(state.id)}" class="select2-results__pager">`).off('click.pagesize').on('click.pagesize', function (e) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'number');
+        input.setAttribute('value', htmlEncode(state.id));
+        input.classList.add('select2-results__pager');
+
+        // var $input = $(`<input type="number" value="${htmlEncode(state.id)}" class="select2-results__pager">`)
+        var $input = $(input).off('click.pagesize').on('click.pagesize', function (e) {
           e.stopPropagation();
           e.preventDefault();
         }).off('entraKey.pagesize').on('entraKey.pagesize', function () {
@@ -95,17 +101,47 @@
             $(this).trigger('entraKey.pagesize');
           }
         });
-        var $btn = $('<a href="#" class="o-btn o-btn--primary o-btn--auto o-btn--thin">確認</a>').off('click.pagesize').on('click.pagesize', function (e) {
+        var btn = document.createElement('a');
+        btn.setAttribute('href', '#');
+        btn.classList.add('o-btn', 'o-btn--primary', 'o-btn--auto', 'o-btn--thin');
+        btn.textContent = '確認';
+        // var $btn = $('<a href="#" class="o-btn o-btn--primary o-btn--auto o-btn--thin">確認</a>')
+        var $btn = $(btn).off('click.pagesize').on('click.pagesize', function (e) {
           e.preventDefault();
           $input.trigger('entraKey.pagesize');
         });
-        var $html = $('<label class="select2-results__custom"></label>').append('<span class="u-nowrap">自訂</span>').append($input).append('<span>筆</span>').append($btn);
+
+        // var $html = $('<label class="select2-results__custom"></label>')
+        //     .append('<span class="u-nowrap">自訂</span>')
+        //     .append($input)
+        //     .append('<span>筆</span>')
+        //     .append($btn);
+
+        // li.classList.add('select2-results__option--custom');
+        // return $html;
+
+        var textElLabel = document.createElement('label');
+        textElLabel.classList.add('select2-results__custom');
+        var textElSpan = document.createElement('span');
+        textElSpan.classList.add('u-nowrap');
+        textElSpan.textContent = '自訂';
+        var textElSpanNum = document.createElement('span');
+        textElSpanNum.textContent = '筆';
+        textElLabel.appendChild(textElSpan);
+        textElLabel.appendChild(input);
+        textElLabel.appendChild(textElSpanNum);
+        textElLabel.appendChild(btn);
         li.classList.add('select2-results__option--custom');
-        return $html;
+        return $(li).html(textElLabel);
       }
-      return $(`<label class="select2-results__custom">顯示${htmlEncode(state.text)}</label>`);
+      var textEl = document.createElement('label');
+      textEl.classList.add('select2-results__custom');
+      textEl.textContent = '顯示' + htmlEncode(state.text);
+      return $(li).html(textEl);
+      // return $(`<label class="select2-results__custom">顯示${htmlEncode(state.text)}</label>`);
     }
   };
+
   function Plugin(element, options) {
     this.element = element;
     this.$element = $(element);

@@ -36,19 +36,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="c-filter__keyword">
-                            <!-- 條件群組[data-filter-group] -->
-                            <div class="c-filterForm" data-filter-group>
-                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
-                                <div class="c-filterForm__title" data-filter-title>
-                                    <span>熱門關鍵字</span>
-                                </div>
-                                <div class="c-filterForm__value">
-                                    <div class="l-pickGroup" id="hotkeywordtags">
+                        @if (Model.HotKeywordTags != null)
+                        {
+                            <div class="c-filter__keyword">
+                                <!-- 條件群組[data-filter-group] -->
+                                <div class="c-filterForm" data-filter-group>
+                                    <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                    <div class="c-filterForm__title" data-filter-title>
+                                        <span>熱門關鍵字</span>
+                                    </div>
+                                    <div class="c-filterForm__value">
+                                        <div class="l-pickGroup" id="hotkeywordtags">
 
-                                        @if (Model.HotKeywordTags != null)
-                                        {
-                                            foreach (var tag in Model.HotKeywordTags)
+                                            @foreach (var tag in Model.HotKeywordTags)
                                             {
                                                 <div class="l-pickGroup__item">
                                                     <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox="" value="@tag">
@@ -57,33 +57,33 @@
                                                     </label>
                                                 </div>
                                             }
-                                        }
 
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- 小網收合區域[data-filter-hide="mobile"] -->
-                        <div class="c-filter__mbHide" data-filter-hide="mobile">
-                            <div class="c-filter__head">
-                                進階篩選
-                            </div>
-                            <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
-                            <a href="#" class="c-filter__close" data-filter-collapse></a>
-                            <div class="c-filter__wrap">
-                                <div class="c-filter__group">
-                                    <!-- 條件群組[data-filter-group] -->
-                                    <div class="c-filterForm" data-filter-group>
-                                        <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
-                                        <div class="c-filterForm__title" data-filter-title>
-                                            <span>熱門主題</span>
-                                        </div>
-                                        <div class="c-filterForm__value">
-                                            <div class="l-pickGroup" id="hotproducttags">
+                        }
+                        @if (Model.HotProductTags != null)
+                        {
+                            <!-- 小網收合區域[data-filter-hide="mobile"] -->
+                            <div class="c-filter__mbHide" data-filter-hide="mobile">
+                                <div class="c-filter__head">
+                                    進階篩選
+                                </div>
+                                <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                <a href="#" class="c-filter__close" data-filter-collapse></a>
+                                <div class="c-filter__wrap">
+                                    <div class="c-filter__group">
+                                        <!-- 條件群組[data-filter-group] -->
+                                        <div class="c-filterForm" data-filter-group>
+                                            <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                            <div class="c-filterForm__title" data-filter-title>
+                                                <span>熱門主題</span>
+                                            </div>
+                                            <div class="c-filterForm__value">
+                                                <div class="l-pickGroup" id="hotproducttags">
 
-                                                @if (Model.HotProductTags != null)
-                                                {
-                                                    foreach (var tag in Model.HotProductTags)
+                                                    @foreach (var tag in Model.HotProductTags)
                                                     {
                                                         <div class="l-pickGroup__item">
                                                             <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox="" value="@tag">
@@ -92,41 +92,41 @@
                                                             </label>
                                                         </div>
                                                     }
-                                                }
 
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
-                            <div class="c-filter__total" data-filter-collapse>
-                                <div class="o-total o-total--wt">
-                                    共<span id="uid-total">0</span>檔股票
+                                <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                <div class="c-filter__total" data-filter-collapse>
+                                    <div class="o-total o-total--wt">
+                                        共<span id="uid-total">0</span>檔股票
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- 只有小網出現收合按鈕 -->
-                        <div class="c-filter__action u-hidden@dt-only u-hidden@lt-only">
-                            <div class="c-filter__expand">
-                                <div>
-                                    <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
-                                    <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
-                                        展開進階篩選
-                                        <img src="~/themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
-                                    </a>
+                            <!-- 只有小網出現收合按鈕 -->
+                            <div class="c-filter__action u-hidden@dt-only u-hidden@lt-only">
+                                <div class="c-filter__expand">
+                                    <div>
+                                        <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                        <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
+                                            展開進階篩選
+                                            <img src="~/themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="c-filter__collapse">
+                                    <div>
+                                        <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                        <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
+                                            收合進階篩選
+                                            <img src="~/themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="c-filter__collapse">
-                                <div>
-                                    <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
-                                    <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
-                                        收合進階篩選
-                                        <img src="~/themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
                 <div class="l-filter__picked">
@@ -316,7 +316,7 @@
                             <ul class="l-tag">
                                 <% for (var i = 0; i < Discount.length; i++) { %>
                                     <li class="l-tag__item">
-                                        <a href="#" class="o-tag"><%= Discount[i] %></a>
+                                        <span class="o-tag"><%= Discount[i] %></span>
                                     </li>
                                 <% } %>
                             </ul>
@@ -483,7 +483,7 @@
                 },
                 search: {
                     ele: '#keyword',
-                    fields: ['FirstBankCode', 'FundCode', 'EnglishName', 'ChineseName'],
+                    fields: ['FirstBankCode', 'EnglishName', 'ChineseName'],
                     start_length: 2,
                     bindEvent: false,
                     multi: function () {
@@ -649,12 +649,12 @@
                             '' : `<div class="c-itemKeyword__actions"><a ${suggestion.AutoSubscribeButtonHtml}>申購</a></div>`;
 
                         return `<div class="c-itemKeyword">
-                                    <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                    </a>
-                                    <div class="c-itemKeyword__collections">${$like}</div>
-                                    ${$purchase}
-                                </div>`;
+                                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                            </a>
+                                            <div class="c-itemKeyword__collections">${$like}</div>
+                                            ${$purchase}
+                                        </div>`;
                     }
                 });
             });

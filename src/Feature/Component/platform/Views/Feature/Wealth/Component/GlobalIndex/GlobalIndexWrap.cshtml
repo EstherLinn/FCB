@@ -223,7 +223,7 @@
                                                 @if (Model.GlobalIndexDictionary.ContainsKey("AI000800"))
                                                 {
                                                     @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["AI000800"])
-                                                }                                                
+                                                }
                                                 @if (Model.GlobalIndexDictionary.ContainsKey("INDA.US"))
                                                 {
                                                     @Html.Partial("/Views/Feature/Wealth/Component/GlobalIndex/_GobalIndexWrapPartial.cshtml", Model.GlobalIndexDictionary["INDA.US"])
@@ -2282,9 +2282,9 @@
     $(function () {
         $('.o-pelletbox__input').each(function (i, el) {
             $(el).on("click", function () {
-                var name = $(this).attr("name");
+                var name = DOMPurify.sanitize($(this).attr("name"));
                 $(`[data-name="${name}"]`).hide();
-                $('#' + $(this).val()).show();
+                $('#' + DOMPurify.sanitize($(this).val())).show();
             });
         });
     });

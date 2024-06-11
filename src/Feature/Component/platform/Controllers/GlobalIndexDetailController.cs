@@ -16,22 +16,13 @@ namespace Feature.Wealth.Component.Controllers
     {
         private readonly GlobalIndexRepository _globalIndexRepository = new GlobalIndexRepository();
         private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
-        private readonly ViewCountRepository _viewCountrepository = new ViewCountRepository();
 
-        private string _currentUrl = string.Empty;
 
         public ActionResult Mainstage()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             string indexCode = Sitecore.Web.WebUtil.GetSafeQueryString("id");
-
-            this._currentUrl = this.ControllerContext.HttpContext.Request.Url.ToString();
-
-            if (item != null)
-            {
-                this._viewCountrepository.UpdateViewCountInfo(item.ID.ToString(), this._currentUrl);
-            }
 
             return View("/Views/Feature/Wealth/Component/GlobalIndex/GlobalIndexDetailMainstage.cshtml", CreateModel(item, indexCode));
         }
@@ -58,7 +49,7 @@ namespace Feature.Wealth.Component.Controllers
 
                 try
                 {
-                    model.RelevantFund = GetGlobalInedxRelevantInformation(indexCode, RelevantInformationType.Fund, Models.FundDetail.FundRelatedSettingModel.GetFundDetailsUrl());
+                    model.RelevantFund = GetGlobalInedxRelevantInformation(indexCode, RelevantInformationType.Fund, model.FundLink);
                 }
                 catch (Exception ex)
                 {
@@ -108,19 +99,17 @@ namespace Feature.Wealth.Component.Controllers
 
         protected GlobalIndexDetailModel CreateModel(Item item, string indexCode)
         {
-            string detailLink = ItemUtils.GeneralLink(item, Template.GlobalIndexDetail.Fields.DetailLink)?.Url;
-            string fundLink = ItemUtils.GeneralLink(item, Template.GlobalIndexDetail.Fields.FundLink)?.Url;
-            string etfLink = ItemUtils.GeneralLink(item, Template.GlobalIndexDetail.Fields.ETFLink)?.Url;
+            var detail = ItemUtils.GeneralLink(item, Template.GlobalIndexDetail.Fields.DetailLink);
+            string detailLink = detail?.Url;
+            string fundLink = Models.FundDetail.FundRelatedSettingModel.GetFundDetailsUrl();
+            string etfLink = Models.ETF.EtfRelatedLinkSetting.GetETFDetailUrl();
 
             var globalIndexDetail = this._globalIndexRepository.GetGlobalIndexDetail(indexCode);
 
-            if (item != null)
-            {
-                globalIndexDetail.ViewCount = this._viewCountrepository.GetViewCountInfo(item.ID.ToString(), this._currentUrl);
-            }
-
             var model = new GlobalIndexDetailModel
             {
+                Item = item,
+                PageID = detail?.TargetItem.ID.ToString(),
                 DetailLink = detailLink,
                 FundLink = fundLink,
                 ETFLink = etfLink,
@@ -183,7 +172,6 @@ namespace Feature.Wealth.Component.Controllers
                 }
                 else if (type == RelevantInformationType.ETF)
                 {
-                    //TODO 未確認 ETF 詳細頁參數
                     //TODO 待確認 ETF 自家沒有時的寫法
                     item.DetailLink = detailLink + "?id=" + item.id;
                 }

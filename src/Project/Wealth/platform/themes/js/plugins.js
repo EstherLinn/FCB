@@ -316,7 +316,7 @@
       if (url.indexOf('?') !== -1 && url.indexOf('tab') !== -1) {
         var tabParam = url.split('?')[1].split('&').find(item => item.indexOf('tab') === 0);
         if (!!tabParam && tabParam.split('=')[0] === 'tab') {
-          $(`[data-tab-target="${tabParam.split('=')[1]}"]`).trigger('switch');
+          $(`[data-tab-target="${htmlEncode(tabParam).split('=')[1]}"]`).trigger('switch');
         }
       }
       this.$element.attr('data-tab', true);
@@ -342,6 +342,9 @@
       }
     });
   };
+  function htmlEncode(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
   $('[data-tab="true"]').tab();
 })(jQuery, window);
 

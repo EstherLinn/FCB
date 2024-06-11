@@ -27,21 +27,19 @@ namespace Feature.Wealth.Component.Controllers
 
         protected USStockModel CreateModel(Item item, IList<USStock> uSStockList)
         {
-            string detailLink = ItemUtils.GeneralLink(item, Template.USStock.Fields.DetailLink)?.Url;
+            string detailLink = USStockRelatedLinkSetting.GetUSStockDetailUrl();
 
             var hotKeywordTags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.HotKeyword);
             var keywords = hotKeywordTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
             var hotProductTags = ItemUtils.GetMultiListValueItems(item, Template.USStock.Fields.HotProduct);
             var products = hotProductTags.Select(f => ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName)).ToList();
-            var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
-            var discounts = ItemUtils.GetChildren(discountFolder, Template.USStockTag.Id);
 
             for (int i = 0; i < uSStockList.Count; i++)
             {
                 var uSStock = uSStockList[i];
                 uSStock.DetailLink = detailLink + "?id=" + uSStock.FirstBankCode;
-                uSStock = this._uSStockRepository.GetButtonHtml(uSStock);
-                uSStock = this._uSStockRepository.SetTags(uSStock, hotKeywordTags, hotProductTags, discounts);
+                uSStock = this._uSStockRepository.GetButtonHtml(uSStock, true);
+                uSStock = this._uSStockRepository.SetTags(uSStock);
             }
 
             var model = new USStockModel
