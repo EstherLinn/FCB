@@ -314,15 +314,15 @@ namespace Feature.Wealth.Component.Repositories
         {
             JObject result = null;
             var request = _route.
-                   AppendPathSegments("api", "News", "kmdjnews", "type", id, count).
-                   SetQueryParams(new
-                   {
-                       StartDatetime = startDatetime,
-                       EndDatetime = endDatetime
-                   }).
-                   WithOAuthBearerToken(_token).
-                   GetAsync().
-                   ReceiveString().Result;
+                AppendPathSegments("api", "News", "kmdjnews", "type", id, count).
+                SetQueryParams(new
+                {
+                    StartDatetime = startDatetime,
+                    EndDatetime = endDatetime
+                }).
+                WithOAuthBearerToken(_token).
+                GetAsync().
+                ReceiveString().Result;
 
             if (!string.IsNullOrEmpty(request))
             {
@@ -335,10 +335,10 @@ namespace Feature.Wealth.Component.Repositories
         {
             JObject result = null;
             var request = _route.
-                   AppendPathSegments("api", "News", "kmdjnews", "content", guid).
-                   WithOAuthBearerToken(_token).
-                   GetAsync().
-                   ReceiveString().Result;
+               AppendPathSegments("api", "News", "kmdjnews", "content", guid).
+               WithOAuthBearerToken(_token).
+               GetAsync().
+               ReceiveString().Result;
 
             if (!string.IsNullOrEmpty(request))
             {
