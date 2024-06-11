@@ -365,31 +365,31 @@
 
                         switch (year) {
                             case '1':
-                                rateField = 'oneYearReturnOriginalCurrency';
-                                standardField = 'oneYearStandardDeviation';
+                                rateField = 'OneYearReturnOriginalCurrency';
+                                standardField = 'OneYearStandardDeviation';
                                 break;
                             case '2':
-                                rateField = 'twoYearReturnOriginalCurrency';
-                                standardField = 'twoYearStandardDeviation';
+                                rateField = 'TwoYearReturnOriginalCurrency';
+                                standardField = 'TwoYearStandardDeviation';
                                 break;
                             case '3':
-                                rateField = 'threeYearReturnOriginalCurrency';
-                                standardField = 'threeYearStandardDeviation';
+                                rateField = 'ThreeYearReturnOriginalCurrency';
+                                standardField = 'ThreeYearStandardDeviation';
                                 break;
                         }
 
                         if (Object.keys(data.Body).length != 0) {
                             let mapData = data.Body.map((item, index) => {
                                 return {
-                                    id: item.firstBankCode,
-                                    name: item.firstBankCode + ' ' + item.etfName,
+                                    id: item.FirstBankCode,
+                                    name: item.FirstBankCode + ' ' + item.ETFName,
                                     x: roundToTwo(item[standardField]),
                                     y: roundToTwo(item[rateField])
                                 };
                             });
 
                             mapData.splice(mapData.findIndex(x => x.id == etfId), 1);
-                            const selfData = data.Body.filter((item) => item.firstBankCode == etfId);
+                            const selfData = data.Body.filter((item) => item.FirstBankCode == etfId);
 
                             const otherData = {
                                 id: 'group',
@@ -411,8 +411,8 @@
 
 
                             // 本ETF + 同類型ETF平均值
-                            total.sd = (total.x + selfData[0][standardField]) / data.body.length + 1;
-                            total.rate = (total.y + selfData[0][rateField]) / data.body.length + 1;
+                            total.sd = (total.x + selfData[0][standardField]) / data.Body.length + 1;
+                            total.rate = (total.y + selfData[0][rateField]) / data.Body.length + 1;
                             const zh = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
 
                             chart = Highcharts.chart('riskChart', {
@@ -511,11 +511,13 @@
                                     scatter: {
                                         marker: {
                                             symbol: 'circle',
+                                            radius: 6,
                                             states: {
                                                 hover: {
                                                     enabled: true,
                                                     fillColor: '#F58220',
-                                                    radius: 5
+                                                    lineWidth: 4,
+                                                    radius: 10
                                                 }
                                             }
                                         },
@@ -527,7 +529,7 @@
                                                         fill: '#F58220'
                                                     },
                                                     opacity: 0.2,
-                                                    size: 8
+                                                    size: 14
                                                 }
                                             },
                                             inactive: {
@@ -557,19 +559,32 @@
                                         zIndex: 5
                                     }
                                 },
-                                series: [{
+                                series: [otherData, {
                                     zIndex: 1,
-                                    id: selfData[0].firstBankCode,
-                                    name: selfData[0].firstBankCode + ' ' + selfData[0].etfName,
+                                    id: selfData[0].FirstBankCode,
+                                    name: selfData[0].FirstBankCode + ' ' + selfData[0].ETFName,
                                     color: '#238C6C',
                                     showInLegend: true,
+                                    marker: {
+                                        symbol: 'circle',
+                                        radius: 8,
+                                        lineWidth: 4,
+                                        lineColor: '#FFFFFF',
+                                        states: {
+                                            hover: {
+                                                enabled: true,
+                                                fillColor: '#F58220',
+                                                radius: 10
+                                            }
+                                        }
+                                    },
                                     data: [{
-                                        id: selfData[0].firstBankCode,
-                                        name: selfData[0].firstBankCode + ' ' + selfData[0].etfName,
+                                        id: selfData[0].FirstBankCode,
+                                        name: selfData[0].FirstBankCode + ' ' + selfData[0].ETFName,
                                         x: selfData[0][standardField],
                                         y: selfData[0][rateField]
                                     }]
-                                }, otherData]
+                                }]
                             });
                             $('[data-chart="risk"]').find('.c-empty').addClass('u-hidden');
                             $('[data-chart="risk"]').find('#riskChart').removeClass('u-hidden');
