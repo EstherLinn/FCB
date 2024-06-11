@@ -81,7 +81,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         string localFilePath = Path.Combine(this.LocalDirectory, fileName);
                         string backupFilePath = Path.Combine(this.BackUpDirectory, fileName);
 
-                        // 下载文件
+                        // 下載文件
                         using (var fileStream = new FileStream(localFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
                         {
                             sftpClient.DownloadFile(fileName, fileStream);
@@ -161,14 +161,13 @@ namespace Feature.Wealth.ScheduleAgent.Services
 
                         if (File.Exists(localFilePath))
                         {
-                            // 如果本地文件已存在，检查是否与服务器文件相同
                             string localFileHash = CalculateHash(localFilePath);
                             if (File.Exists(localFiledonePath))
                             {
                                 string localFiledoneHash = CalculateHash(localFiledonePath);
                                 if (localFileHash.Equals(localFiledoneHash))
                                 {
-                                    // 文件内容相同，跳过下载
+                                    // 文件内容相同，跳過下載
                                     this._logger.Error("Same file content, skip download.");
                                     return false;
                                 }
@@ -272,7 +271,6 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 return dataLines;
             }
         }
-
 
         /// <summary>
         /// copyDirectory 備份檔案"yyyyMMdd HH"

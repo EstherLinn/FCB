@@ -74,7 +74,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             INSERT INTO {tableName} ({columns})
             VALUES ({parameters});
             ";
-
+         
             int line = ExecuteNonQuery(insertQuery, data, CommandType.Text,true);
             LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, line);
         }

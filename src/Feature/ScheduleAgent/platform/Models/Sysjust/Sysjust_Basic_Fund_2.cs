@@ -67,7 +67,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 國人投資比重
         /// </summary>
-        public string DomesticInvestmentRatio { get; set; }
+        public decimal? DomesticInvestmentRatio { get; set; }
 
         /// <summary>
         /// 投資區域
