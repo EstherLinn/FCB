@@ -1,0 +1,108 @@
+﻿@using Foundation.Wealth.Helper
+
+<div class="c-section">
+    <div class="l-wrap">
+        <div class="l-table" data-empty="true" style="display:none;">
+            <div class="c-section">
+                <div class="c-section__content">
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="@Url.Content("~/themes/images/lions/lion-compare.svg")" alt="">
+                        </div>
+                        <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="c-section__title" data-empty="false">頭條新聞</div>
+        <div class="c-section__content" data-empty="false">
+            <div class="l-headlines">
+                <div class="l-headlines__focus">
+                    <div class="c-box c-box--gapless u-shadow-animation">
+                        <div class="c-gridview">
+                            <div class="c-gridview__media">
+                                <img src="@Url.Content("~/themes/images/articles/market_news.jpg")" class="c-gridview__img" srcset="@Url.Content("~/themes/images/articles/market_news__3x.jpg") 3x" alt="">
+                            </div>
+                            <div class="c-gridview__content">
+                                <a href="" class="c-gridview__title s3 u-ellipsis-2" id="latestHeadlinesTitle"></a>
+                                <div class="c-gridview__minor">
+                                    <div class="c-minorInfo s4">
+                                        <div class="c-minorInfo__main">
+                                            <span class="t-date" id="latestHeadlinesDate"></span>
+                                            <span class="o-views o-views--xs" id="latestHeadlinesViewCount"></span>
+                                        </div>
+                                        @*<div class="c-minorInfo__like">
+                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                            </div>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-headlines__list">
+                    <ul class="c-listGroup c-listGroup--article" id="HeadlinesData"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@ClientRoute.GenerateUrl(this, "News", "GetHeadlineNewsData")',
+                success: function (data) {
+                    console.log(data);
+
+                    if (data.Headlines != null && data.Headlines != null) {
+                        // 添加最新第一筆頭條新聞
+                        $('#latestHeadlinesTitle').text(data.LatestHeadlines.NewsTitle);
+                        $("#latestHeadlinesTitle").attr("href", data.LatestHeadlines.NewsDetailLink);
+                        $('#latestHeadlinesDate').text(data.LatestHeadlines.NewsDate + " " + data.LatestHeadlines.NewsTime);
+                        $('#latestHeadlinesViewCount').text(data.LatestHeadlines.NewsViewCount);
+
+                        // 添加其他四筆頭條新聞
+                        $.each(data.Headlines, function (index, item) {
+                            var listItem = '<li class="c-listGroup__item">' +
+                                '<div class="c-gridview">' +
+                                '<div class="c-gridview__content">' +
+                                '<a href="' + item.NewsDetailLink + '" class="c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" target="_blank">' + item.NewsTitle + '</a>' +
+                                '<div class="c-gridview__minor">' +
+                                '<div class="c-minorInfo s4">' +
+                                '<div class="c-minorInfo__main">' +
+                                '<span class="t-date">' + item.NewsDate + ' ' + item.NewsTime + '</span>' +
+                                '<span class="o-views o-views--xs">' + item.NewsViewCount + '</span>' +
+                                '</div>' +
+                                //'<div class="c-minorInfo__like">' +
+                                //'<a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>' +
+                                //'</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</li>';
+                            $('#HeadlinesData').append(listItem);
+                        });
+                    }
+                    else {
+                        $('[data-empty="true"]').show();
+                        $('[data-empty="false"]').hide();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                    $('[data-empty="true"]').show();
+                    $('[data-empty="false"]').hide();
+                }
+            });
+        });
+    })(jQuery, window, document);
+    </script>
+</div>

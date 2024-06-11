@@ -1,0 +1,140 @@
+﻿@using Foundation.Wealth.Helper
+
+<div class="l-wrap">
+    <div class="l-table" data-empty="true" style="display:none;">
+        <div class="c-section">
+            <div class="c-section__content">
+                <div class="c-empty">
+                    <div class="c-empty__img">
+                        <img src="@Url.Content("~/themes/images/lions/lion-compare.svg")" alt="">
+                    </div>
+                    <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="c-article" data-empty="false">
+        <div class="c-article__head" id="newsHead">
+            
+        </div>
+        <div class="c-article__extra">
+            <div class="c-minorInfo s4">
+                <div class="c-minorInfo__main">
+                    <span class="t-date" id="newsDate"></span>
+                </div>
+                <div class="c-minorInfo__like">
+                    <span class="o-views o-views--xs" data-eh="visit-update,visit-exec" eh-visit-pageid="@Sitecore.Context.Item.ID.ToString()" eh-visit-qs="id=@HttpUtility.UrlEncode(Request.QueryString["id"])"></span>
+                </div>
+            </div>
+        </div>
+        <div class="c-article__content">
+            <div class="c-section c-section--scroller">
+                <div class="l-paragraph" id="newsContent">
+
+                </div>
+            </div>
+            <div class="c-hashTags" id="newsBottomTags">
+                <div class="c-hashTags__title">Tags</div>
+                <div class="c-hashTags__content">
+                    <ul class="l-divideList l-divideList--sm" id="newsBottomTagsUl">
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="o-record">
+            <a class="o-record__nav o-record__nav--prev" id="prevBrnLink">
+                <span class="o-record__prev"></span>
+                <span class="o-record__title" id="prevBrnTitle"></span>
+            </a>
+            <a class="o-record__nav o-record__nav--next"  id="nextBrnLink">
+                <span class="o-record__title" id="nextBrnTitle"></span>
+                <span class="o-record__next"></span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            var newsId = new URL(location.href).searchParams.get('id');
+
+            $.ajax({
+                type: "POST",
+                url: '@ClientRoute.GenerateUrl(this, "News", "GetMarketNewsDetailData")',
+                data: {
+                    newsId: newsId,
+                },
+                success: function (data) {
+                    console.log(data);
+
+                    if (data.MarketNewsDetailData != null) {
+
+                        if (data.MarketNewsDetailData.NewsType != null && data.MarketNewsDetailData.NewsType != "") {
+                            var newsType = data.MarketNewsDetailData.NewsType.split(',');
+
+                            $.each(newsType, function (index, value) {
+                                var $li = $('<li>', { class: 'l-divideList__item l-divideList__item--auto' });
+                                var $a = $('<a>', { href: data.MarketNewsDetailData.NewsListUrl + "#newsType=" + value, class: 'o-hashTag u-nowrap', text: '#' + value });
+                                $li.append($a);
+                                $('#newsBottomTagsUl').append($li);
+                            });
+                        }
+                        else {
+                            $("#newsBottomTags").remove();
+                        }
+
+                        if (data.MarketNewsDetailData.NewsTitle != null && data.MarketNewsDetailData.NewsTitle != "") {
+                            var $newsTitle = $('<div>', { class: 'c-article__title', text: data.MarketNewsDetailData.NewsTitle });
+                            $('#newsHead').append($newsTitle);
+                        }
+
+                        $('#newsDate').text(data.MarketNewsDetailData.NewsDetailDate);
+                        $('#newsContent').html(data.MarketNewsDetailData.NewsContent);
+
+                        if (data.MarketNewsDetailData.PreviousPageLink != null &&
+                            data.MarketNewsDetailData.PreviousPageLink != "" &&
+                            data.MarketNewsDetailData.PreviousPageTitle != null &&
+                            data.MarketNewsDetailData.PreviousPageTitle != "") {
+
+                            $('#prevBrnLink').attr("href", data.MarketNewsDetailData.PreviousPageLink);
+                            $('#prevBrnTitle').text(data.MarketNewsDetailData.PreviousPageTitle);
+                        }
+                        else {
+                            $("#prevBrnLink").remove();
+                        }
+
+                        if (data.MarketNewsDetailData.NextPageLink != null &&
+                            data.MarketNewsDetailData.NextPageLink != "" &&
+                            data.MarketNewsDetailData.NextPageTitle != null &&
+                            data.MarketNewsDetailData.NextPageTitle != "") {
+
+                            $('#nextBrnLink').attr("href", data.MarketNewsDetailData.NextPageLink);
+                            $('#nextBrnTitle').text(data.MarketNewsDetailData.NextPageTitle);
+                        }
+                        else {
+                            $('#nextBrnLink').remove();
+                        }
+                    }
+                    else {
+                        $('[data-empty="true"]').show();
+                        $('[data-empty="false"]').hide();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                    $('[data-empty="true"]').show();
+                    $('[data-empty="false"]').hide();
+                }
+            });
+
+        });
+    })(jQuery, window, document);
+</script>
