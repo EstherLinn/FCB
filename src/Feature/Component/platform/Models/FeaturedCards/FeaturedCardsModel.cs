@@ -7,14 +7,27 @@ namespace Feature.Wealth.Component.Models.FeaturedCards
     {
         public Item DataSource { get; set; }
         public IList<FeaturedCards> Items { get; set; }
-        public class FeaturedCards
+        public bool IsValid { get; set; }
+        public FeaturedCardsModel(Item datasource, IList<FeaturedCards> items)
         {
-            public FeaturedCards(Item item)
+            if (datasource == null)
             {
-                Item = item;
+                return;
             }
-            public Item Item { get; set; }
+            this.DataSource = datasource;
+            this.Items = items;
+            this.IsValid = datasource.TemplateID == Templates.FeaturedCardsTitle.Id;
         }
+    }
+
+    public class FeaturedCards
+    {
+        public FeaturedCards(Item item)
+        {
+            Item = item;
+        }
+        public Item Item { get; set; }
+        public string Content { get; set; }
     }
 
     public struct Templates

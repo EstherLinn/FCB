@@ -14,17 +14,19 @@ namespace Feature.Wealth.Component.Controllers
             var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
             var childItems = ItemUtils.GetChildren(dataSourceItem).ToList();
 
-            var items = new List<FeaturedCardsModel.FeaturedCards>();
+            var items = new List<FeaturedCards>();
             foreach (var childItem in childItems)
             {
-                items.Add(new FeaturedCardsModel.FeaturedCards(childItem));
+                var content = ItemUtils.GetFieldValue(childItem, Templates.FeaturedCards.Fields.Content);
+
+                items.Add(new FeaturedCards(childItem)
+                {
+                    Content = content
+                });
             }
 
-            var model = new FeaturedCardsModel
-            {
-                DataSource = dataSourceItem,
-                Items = items
-            };
+            var model = new FeaturedCardsModel(dataSourceItem, items);
+
 
             return View("/Views/Feature/Wealth/Component/FeaturedCards/FeaturedCards.cshtml", model);
         }

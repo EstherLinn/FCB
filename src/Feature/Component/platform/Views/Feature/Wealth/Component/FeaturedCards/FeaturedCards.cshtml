@@ -1,7 +1,7 @@
 ﻿@using Feature.Wealth.Component.Models.FeaturedCards
 @model FeaturedCardsModel
 
-@if (Model == null)
+@if (Model == null || !Model.IsValid)
 {
     return;
 }
@@ -19,7 +19,10 @@
                             <div class="c-featureCard__num">@Html.Sitecore().Field(Templates.FeaturedCards.Fields.Label.ToString(), item.Item)</div>
                             <div class="c-featureCard__content">
                                 <div class="c-featureCard__title">@Html.Sitecore().Field(Templates.FeaturedCards.Fields.Title.ToString(), item.Item)</div>
-                                <div class="c-featureCard__desc">@Html.Sitecore().Field(Templates.FeaturedCards.Fields.Content.ToString(), item.Item)</div>
+                                @if (!string.IsNullOrEmpty(item.Content))
+                                {
+                                    <div class="c-featureCard__desc">@Html.Sitecore().Field(Templates.FeaturedCards.Fields.Content.ToString(), item.Item)</div>
+                                }
                             </div>
                         </div>
                     </div>
