@@ -55,7 +55,7 @@ namespace Feature.Wealth.Account.Controllers
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
             var responseProfile = await _lineService.GetProfileByToken(responseToken.AccessToken);
-    
+
             var responseVerify = await _lineService.GetVerifyAccessToken(responseToken.IdToken, responseProfile.UserId);
 
             User user = Authentication.BuildVirtualUser("extranet", responseProfile.UserId, true);
@@ -138,23 +138,28 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        public ActionResult WebBankResult(string txReqId, string LoginResult, string LoginDttm, string errMsg, string fnct, WebBankResultModel.custDataModel custData, string sign)
+        public ActionResult WebBankResult(string txReqId, string LoginResult, string LoginDttm, string errMsg, string fnct, string custData, string sign)
         {
-                string obj = string.Format("txReqId:{0} LoginResult:{1} LoginDttm:{2} errMsg:{3} fnct:{4} custData:{5} sign:{6}",
-                    txReqId, LoginResult, LoginDttm, errMsg, fnct, JsonConvert.SerializeObject(custData), sign);
-                Logger.Account.Info("個網登入0203回應:" + obj);
+            string obj = string.Format("txReqId:{0} LoginResult:{1} LoginDttm:{2} errMsg:{3} fnct:{4} custData:{5} sign:{6}",
+                txReqId, LoginResult, LoginDttm, errMsg, fnct, custData, sign);
+            Logger.Account.Info("個網登入0203回應:" + obj);
+            var getCustDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(HttpUtility.UrlDecode(custData));
             if (LoginResult == "0000")
             {
+                if (!getCustDic.TryGetValue("custId", out string id))
+                {
+                    Logger.Account.Info("個網登入0203回應:" + obj + ",custData UrlDecode:" + HttpUtility.UrlDecode(custData));
+                }
                 if (FcbMemberHelper.CheckMemberLogin())
                 {
                     //第三方綁定網銀
-                    var cifMember = _memberRepository.GetWebBankUserInfo(custData.custId);
+                    var cifMember = _memberRepository.GetWebBankUserInfo(id);
                     if (cifMember == null)
                     {
                         Session["OAuthErrorMsg"] = "您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!";
                         return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                     }
-                    var isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), custData.custId);
+                    var isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), id);
                     if (isBind)
                     {
                         //成功綁定
@@ -172,11 +177,11 @@ namespace Feature.Wealth.Account.Controllers
                 else
                 {
                     //網銀登入
-                    var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, custData.custId);
+                    var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, id);
                     if (!isExist)
                     {
                         //創建會員
-                        var cifMember = _memberRepository.GetWebBankUserInfo(custData.custId);
+                        var cifMember = _memberRepository.GetWebBankUserInfo(id);
                         if (cifMember == null)
                         {
                             Session["OAuthErrorMsg"] = "您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!";
@@ -198,7 +203,7 @@ namespace Feature.Wealth.Account.Controllers
                     else
                     {
                         //登入
-                        FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, custData.custId);
+                        FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, id);
                         User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
                         user.Profile.Name = member.MemberName;
                         user.Profile.Email = member.MemberEmail;
@@ -223,7 +228,7 @@ namespace Feature.Wealth.Account.Controllers
             qs.Remove("promotionCode");
             qs.Remove("rtCode");
             string pagePathWithoutQueryString = nowUrl.GetLeftPart(UriPartial.Path);
-            string newUrl = qs.Count > 0 ? string.Format("{0}?{1}", pagePathWithoutQueryString, qs) : pagePathWithoutQueryString ;
+            string newUrl = qs.Count > 0 ? string.Format("{0}?{1}", pagePathWithoutQueryString, qs) : pagePathWithoutQueryString;
             callBackUrl = newUrl;
             Authentication.LogOutUser();
             return Redirect(callBackUrl);
