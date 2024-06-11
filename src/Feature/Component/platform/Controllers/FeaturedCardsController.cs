@@ -17,7 +17,12 @@ namespace Feature.Wealth.Component.Controllers
             var items = new List<FeaturedCardsModel.FeaturedCards>();
             foreach (var childItem in childItems)
             {
-                items.Add(new FeaturedCardsModel.FeaturedCards(childItem));
+                var content = ItemUtils.GetFieldValue(childItem, Templates.FeaturedCards.Fields.Content);
+
+                items.Add(new FeaturedCardsModel.FeaturedCards(childItem)
+                {
+                    Content = content
+                });
             }
 
             var model = new FeaturedCardsModel

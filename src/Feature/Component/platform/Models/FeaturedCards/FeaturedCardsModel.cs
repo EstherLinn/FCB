@@ -14,6 +14,7 @@ namespace Feature.Wealth.Component.Models.FeaturedCards
                 Item = item;
             }
             public Item Item { get; set; }
+            public string Content { get; set; }
         }
     }
 
