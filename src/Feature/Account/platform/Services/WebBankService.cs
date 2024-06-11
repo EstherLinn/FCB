@@ -27,15 +27,19 @@ namespace Feature.Wealth.Account.Services
                 "_self", HttpUtility.UrlDecode(callBackUrl), _id, timestamp, _key);
             try
             {
+                var formData = new {
+                    callbackTarget = "_self",
+                    callbackUri = CheckUrlParmas(callBackUrl),
+                    fnct=2,
+                    merchantId= _id,
+                    timestamp= timestamp,
+                    version=1,
+                    sign= SHA1Helper.Encrypt(computeStr)
+                };
+
                 //form post
-                var resp = await _route.PostMultipartAsync(mp =>
-                mp.AddString("callbacktarget", "_self")
-                .AddString("callbackuri", CheckUrlParmas(callBackUrl))
-                .AddString("fnct", "2")
-                .AddString("merchantid", _id)
-                .AddString("timestamp", timestamp)
-                .AddString("version", "1")
-                .AddString("sign", SHA1Helper.Encrypt(computeStr)));
+                var resp = await _route.PostMultipartAsync(m =>
+                m.AddStringParts(formData));
                 if (resp.StatusCode < 300)
                 {
                     var msg = await resp.GetStringAsync();
@@ -53,7 +57,7 @@ namespace Feature.Wealth.Account.Services
             }
             catch (FlurlHttpException ex)
             {
-                Logger.Account.Info($"Error returned post data: callbacktarget  = _self,callbackuri={HttpUtility.UrlEncode(callBackUrl)},fnct=2,merchantid={_id},timestamp={timestamp},version=1,sign={SHA1Helper.Encrypt(computeStr)}" );
+                Logger.Account.Info($"Error returned post data: callbacktarget  = _self,callbackuri={CheckUrlParmas(callBackUrl)},fnct=2,merchantid={_id},timestamp={timestamp},version=1,sign={SHA1Helper.Encrypt(computeStr)}" );
                 Logger.Account.Info($"Error returned from {ex.Call.Request.Url}, StatusCode :{ex.StatusCode} , Error Message : {ex.Message}");
             }
             catch (Exception ex)
