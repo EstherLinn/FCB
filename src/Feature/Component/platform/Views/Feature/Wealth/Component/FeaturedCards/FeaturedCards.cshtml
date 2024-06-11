@@ -1,7 +1,7 @@
 ﻿@using Feature.Wealth.Component.Models.FeaturedCards
 @model FeaturedCardsModel
 
-@if (Model == null)
+@if (Model == null || !Model.IsValid)
 {
     return;
 }
