@@ -352,7 +352,8 @@
             let mobileLoginUrl = new URL(mobileLoginLink.replaceAll('&amp;', '&'));
                 let mobileLoginParms = mobileLoginUrl.searchParams;
                 mobileLoginParms.delete("returnUrl");
-                 mobileLoginParms.append("returnUrl", location.href);
+            mobileLoginParms.append("returnUrl", location.href);
+            console.log(mobileLoginUrl)
                  self.setAttribute('href', mobileLoginUrl);
         });
 
