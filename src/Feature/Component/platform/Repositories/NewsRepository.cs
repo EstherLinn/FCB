@@ -5,10 +5,8 @@ using Newtonsoft.Json.Linq;
 using Sitecore.Mvc.Extensions;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace Feature.Wealth.Component.Repositories
@@ -152,29 +150,19 @@ namespace Feature.Wealth.Component.Repositories
 
             if (id != "1")
             {
-                var idList = id.Split(',')
-                    .Select(x =>
-                    {
-                        foreach (MarketNewsEnum enumValue in Enum.GetValues(typeof(MarketNewsEnum)))
-                        {
-                            var attributes = (DescriptionAttribute[])enumValue
-                                .GetType()
-                                .GetField(enumValue.ToString())
-                                .GetCustomAttributes(typeof(DescriptionAttribute), false);
+                var idList = id.Split(',').Select(x => x.Trim()).ToList();
 
-                            if (attributes.Length > 0 && attributes[0].Description == x.Trim())
-                            {
-                                return enumValue.ToString();
-                            }
-                        }
-                        throw new ArgumentException($"Enum value with description '{x.Trim()}' not found.");
-                    })
-                    .ToList();
+                string query = @"
+            SELECT [NewsType] 
+            FROM [FCB_sitecore_Custom].[dbo].[NewsType]
+            WHERE [TypeNumber] IN @IdList";
+
+                var newsTypeList = DbManager.Custom.ExecuteIList<string>(query, new { IdList = idList }, CommandType.Text);
 
                 filteredDatas = filteredDatas
                     .Where(news =>
                         !string.IsNullOrEmpty(news.NewsType) &&
-                        news.NewsType.Split(',').Any(type => idList.Contains(type.Trim())))
+                        news.NewsType.Split(',').Any(type => newsTypeList.Contains(type.Trim())))
                     .ToList();
             }
 
@@ -348,42 +336,57 @@ namespace Feature.Wealth.Component.Repositories
 
             if (dbDataExists)
             {
-                string query = @"
-                    WITH CTE AS (
-                    SELECT 
-                        nl.[NewsDate],
-                        nl.[NewsTime],
-                        nl.[NewsTitle],
-                        nl.[NewsSerialNumber],
-                        nd.[NewsDetailDate],
-                        nd.[NewsContent],
-                        nd.[NewsRelatedProducts],
-                        nd.[NewsType],
-                        ROW_NUMBER() OVER (ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC) AS RowNumber
-                    FROM 
-                        [dbo].[NewsList] nl
-                    LEFT JOIN 
-                        [dbo].[NewsDetail] nd
-                    ON 
-                        nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-                )
-                SELECT 
-		            curr.[NewsSerialNumber],
-		            curr.[NewsDetailDate],
-                    curr.[NewsTitle], 
-                    curr.[NewsContent],
-                    curr.[NewsRelatedProducts],
-                    curr.[NewsType],
-                    prev.[NewsSerialNumber] AS PreviousPageId,
-                    prev.[NewsTitle] AS PreviousPageTitle,
-                    next.[NewsSerialNumber] AS NextPageId,
-                    next.[NewsTitle] AS NextPageTitle
-                FROM CTE curr
-                LEFT JOIN CTE prev ON curr.RowNumber = prev.RowNumber + 1
-                LEFT JOIN CTE next ON curr.RowNumber = next.RowNumber - 1
-                WHERE curr.[NewsSerialNumber] = @NewsId";
+                // 获取指定 newsId 的日期
+                string getDateQuery = "SELECT [NewsDate] FROM [dbo].[NewsList] WHERE [NewsSerialNumber] = @NewsSerialNumber";
+                DateTime newsDate = DbManager.Custom.ExecuteScalar<DateTime>(getDateQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
 
-                var result = DbManager.Custom.Execute<MarketNewsDetailData>(query, new { NewsId = newsId }, CommandType.Text);
+                // 计算日期范围
+                var startDate = newsDate.AddDays(-1).ToString("yyyy/MM/dd");
+                var endDate = newsDate.AddDays(1).ToString("yyyy/MM/dd");
+
+                string query = @"
+            WITH CTE AS (
+            SELECT 
+                nl.[NewsDate],
+                nl.[NewsTime],
+                nl.[NewsTitle],
+                nl.[NewsSerialNumber],
+                nd.[NewsDetailDate],
+                nd.[NewsContent],
+                nd.[NewsRelatedProducts],
+                nd.[NewsType],
+                ROW_NUMBER() OVER (ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC) AS RowNumber
+            FROM 
+                [dbo].[NewsList] nl
+            LEFT JOIN 
+                [dbo].[NewsDetail] nd
+            ON 
+                nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
+            WHERE 
+                nl.[NewsDate] BETWEEN @StartDate AND @EndDate
+            )
+            SELECT 
+                curr.[NewsSerialNumber],
+                curr.[NewsDetailDate],
+                curr.[NewsTitle], 
+                curr.[NewsContent],
+                curr.[NewsRelatedProducts],
+                curr.[NewsType],
+                prev.[NewsSerialNumber] AS PreviousPageId,
+                prev.[NewsTitle] AS PreviousPageTitle,
+                next.[NewsSerialNumber] AS NextPageId,
+                next.[NewsTitle] AS NextPageTitle
+            FROM CTE curr
+            LEFT JOIN CTE prev ON curr.RowNumber = prev.RowNumber + 1
+            LEFT JOIN CTE next ON curr.RowNumber = next.RowNumber - 1
+            WHERE curr.[NewsSerialNumber] = @NewsId";
+
+                var result = DbManager.Custom.Execute<MarketNewsDetailData>(query, new
+                {
+                    NewsId = newsId,
+                    StartDate = startDate,
+                    EndDate = endDate
+                }, CommandType.Text);
 
                 return result;
             }
@@ -433,29 +436,36 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         public IList<HeadlineNewsData> GetHeadlineNewsDbData()
         {
-            string query = @"
-                    SELECT TOP 5
-                    nl.[NewsDate],
-                    nl.[NewsTime],
-                    nl.[NewsTitle],
-                    nl.[NewsSerialNumber],
-                    nd.[NewsDetailDate],
-                    nd.[NewsContent],
-	                nd.[NewsRelatedProducts],
-	                nd.[NewsType]
-                FROM 
-                    [dbo].[NewsList] nl
-                LEFT JOIN 
-                    [dbo].[NewsDetail] nd
-                ON 
-                    nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-                WHERE 
-                    nd.[NewsType]  LIKE '%頭條新聞%'
-                ORDER BY 
-                    nl.[NewsDate] DESC, 
-                    nl.[NewsTime] DESC;";
+            string newsTypeQuery = @"
+        SELECT [NewsType]
+        FROM [FCB_sitecore_Custom].[dbo].[NewsType]
+        WHERE [TypeNumber] = '2'";
 
-            var result = DbManager.Custom.ExecuteIList<HeadlineNewsData>(query, null, CommandType.Text);
+            var headlineNewsType = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
+
+            string query = @"
+        SELECT TOP 5
+            nl.[NewsDate],
+            nl.[NewsTime],
+            nl.[NewsTitle],
+            nl.[NewsSerialNumber],
+            nd.[NewsDetailDate],
+            nd.[NewsContent],
+            nd.[NewsRelatedProducts],
+            nd.[NewsType]
+        FROM 
+            [dbo].[NewsList] nl
+        LEFT JOIN 
+            [dbo].[NewsDetail] nd
+        ON 
+            nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
+        WHERE 
+            nd.[NewsType] LIKE @HeadlineNewsType
+        ORDER BY 
+            nl.[NewsDate] DESC, 
+            nl.[NewsTime] DESC;";
+
+            var result = DbManager.Custom.ExecuteIList<HeadlineNewsData>(query, new { HeadlineNewsType = '%' + headlineNewsType[0] + '%' }, CommandType.Text);
 
             return result;
         }

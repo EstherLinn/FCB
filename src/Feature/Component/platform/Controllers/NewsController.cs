@@ -19,6 +19,8 @@ namespace Feature.Wealth.Component.Controllers
         private readonly string MarketNewsDetailCacheKey = $"Fcb_MarketNewsDetailCache_NewsId=";
         private readonly string HeadlineNewsCacheKey = $"Fcb_HeadlineNewsCache";
 
+        private readonly DateTimeOffset CacheTime = DateTimeOffset.Now.AddMinutes(60);
+
         public ActionResult NewsDetails()
         {
             var model = new NewsModel(RenderingContext.CurrentOrNull?.ContextItem);
@@ -45,7 +47,7 @@ namespace Feature.Wealth.Component.Controllers
                 _datas = (List<MarketNewsModel>)_newsRespository.GetMarketNewsDbData();
 
                 // 儲存 MarketNewsCache 一小時
-                _cache.Set(MarketNewsCacheKey, _datas, DateTimeOffset.Now.AddMinutes(60));
+                _cache.Set(MarketNewsCacheKey, _datas, CacheTime);
             }
 
             // 整理 MarketNews 資料庫資料
@@ -79,7 +81,7 @@ namespace Feature.Wealth.Component.Controllers
                 datas = _newsRespository.OrganizeMarketNewsDetailDbData(dbData);
 
                 // 儲存 MarketNewsDetailCache 一小時
-                _cache.Set(MarketNewsDetailCacheKey + newsId, datas, DateTimeOffset.Now.AddMinutes(60));
+                _cache.Set(MarketNewsDetailCacheKey + newsId, datas, CacheTime);
             }
 
             return new JsonNetResult(datas);
@@ -107,7 +109,7 @@ namespace Feature.Wealth.Component.Controllers
                 datas = _newsRespository.OrganizeHeadlineNewsDbData(_datas);
 
                 // 儲存 HeadlineNewsCache 一小時
-                _cache.Set(HeadlineNewsCacheKey, datas, DateTimeOffset.Now.AddMinutes(60));
+                _cache.Set(HeadlineNewsCacheKey, datas, CacheTime);
             }
 
             // 取得 HeadlineNews 瀏覽人次
