@@ -511,11 +511,13 @@
                                     scatter: {
                                         marker: {
                                             symbol: 'circle',
+                                            radius: 6,
                                             states: {
                                                 hover: {
                                                     enabled: true,
                                                     fillColor: '#F58220',
-                                                    radius: 5
+                                                    lineWidth: 4,
+                                                    radius: 10
                                                 }
                                             }
                                         },
@@ -527,7 +529,7 @@
                                                         fill: '#F58220'
                                                     },
                                                     opacity: 0.2,
-                                                    size: 8
+                                                    size: 14
                                                 }
                                             },
                                             inactive: {
@@ -557,19 +559,32 @@
                                         zIndex: 5
                                     }
                                 },
-                                series: [{
+                                series: [otherData, {
                                     zIndex: 1,
                                     id: selfData[0].FirstBankCode,
                                     name: selfData[0].FirstBankCode + ' ' + selfData[0].ETFName,
                                     color: '#238C6C',
                                     showInLegend: true,
+                                    marker: {
+                                        symbol: 'circle',
+                                        radius: 8,
+                                        lineWidth: 4,
+                                        lineColor: '#FFFFFF',
+                                        states: {
+                                            hover: {
+                                                enabled: true,
+                                                fillColor: '#F58220',
+                                                radius: 10
+                                            }
+                                        }
+                                    },
                                     data: [{
                                         id: selfData[0].FirstBankCode,
                                         name: selfData[0].FirstBankCode + ' ' + selfData[0].ETFName,
                                         x: selfData[0][standardField],
                                         y: selfData[0][rateField]
                                     }]
-                                }, otherData]
+                                }]
                             });
                             $('[data-chart="risk"]').find('.c-empty').addClass('u-hidden');
                             $('[data-chart="risk"]').find('#riskChart').removeClass('u-hidden');
