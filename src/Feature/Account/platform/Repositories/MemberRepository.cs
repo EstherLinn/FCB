@@ -139,7 +139,7 @@ namespace Feature.Wealth.Account.Repositories
             var strSql = @$"  Select a.CIF_CUST_NAME,a.CIF_E_MAIL_ADDRESS,a.CIF_EMP_RISK,a.CIF_AO_EMPNO,b.EmployeeName as CIF_AO_EMPName,C.PROMOTION_CODE as CIF_PROMO_CODE FROM [CIF]  as a
                         left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, 3, len(EmployeeCode - 3))
                         left join [CFMBSEL] as C on CIF_ID_NO = CUST_ID
-                        WHERE CIF_ID_NO = id ";
+                        WHERE CIF_ID_NO = @id ";
             var para = new { id = id };
             try
             {
