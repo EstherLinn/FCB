@@ -1,9 +1,11 @@
 ﻿using Feature.Wealth.Component.Models.FundDetail;
+using Newtonsoft.Json;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.TabCards
@@ -11,7 +13,7 @@ namespace Feature.Wealth.Component.Models.TabCards
     public class TabCardsModel
     {
         public Item Datasource { get; private set; }
-        public string Title1 => ItemUtils.GetFieldValue(Datasource,_TabCard.Fields.Title1);
+        public string Title1 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Title1);
         public string ImageUrl1 { get; set; }
         public string BannerLink1 { get; set; }
         public bool IsBlackFont1 => ItemUtils.IsChecked(Datasource, _TabCard.Fields.IsBlackFont1);
@@ -34,6 +36,10 @@ namespace Feature.Wealth.Component.Models.TabCards
         public IList<FundCardBasicDTO> FundCardsInfos { get; set; }
         public IList<NavDTO> FundCardsNavs { get; set; }
 
+        public HtmlString FundIDListHtmlString { get; set; }
+        public HtmlString FundCardsInfosHtmlString { get; set; }
+        public HtmlString FundCardsNavsHtmlString { get; set; }
+
         public string FundDetailLink => FundRelatedSettingModel.GetFundDetailsUrl();
 
         public TabCardsModel(Item item)
@@ -54,6 +60,7 @@ namespace Feature.Wealth.Component.Models.TabCards
             this.BannerLink3 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink3)?.Url;
 
             this.FundIDList = ItemUtils.GetMultiLineText(item, _TabCard.Fields.FundIDList)?.Take(3).ToList() ?? new List<string>();
+            this.FundIDListHtmlString = new HtmlString(JsonConvert.SerializeObject(this.FundIDList));
         }
     }
 

@@ -104,9 +104,9 @@
             };
 
 
-            var _fundCardsInfos = @Html.Raw(new JavaScriptSerializer().Serialize(Model.FundCardsInfos));
-            var _fundCardsNavs = @Html.Raw(new JavaScriptSerializer().Serialize(Model.FundCardsNavs));
-            var _fundIDList = @Html.Raw(new JavaScriptSerializer().Serialize(Model.FundIDList));
+            var _fundCardsInfos = @Model.FundCardsInfosHtmlString;
+            var _fundCardsNavs = @Model.FundCardsNavsHtmlString;
+            var _fundIDList = @Model.FundIDListHtmlString;
 
 
             const fundCardsNavs = {};

@@ -125,186 +125,188 @@
 </div>
 
 <script>
-    (function($, window, document, undefined) {
-    document.addEventListener('DOMContentLoaded', function() {
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
 
-        // 分頁筆數功能
-        $('[selectGuid="@Model.Guid"]').on('change.pagesize', function(e) {
+            // 分頁筆數功能
+            $('[selectGuid="@Model.Guid"]').on('change.pagesize', function (e) {
 
-            var pageSize = $(this).val();
-            var dataSourceId = '@Model.Guid';
+                var pageSize = $(this).val();
+                var dataSourceId = '@Model.Guid';
 
-            $.ajax({
-                url: '@ClientRoute.GenerateUrl(this, "DiscountList", "UpdatePageSize")',
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    "pageSize": pageSize,
-                    "dataSourceId": dataSourceId
-                },
-                success: function(res) {
-                    // 呼叫 loading
-                    window.loading('show');
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "DiscountList", "UpdatePageSize")',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        "pageSize": pageSize,
+                        "dataSourceId": dataSourceId
+                    },
+                    success: function (res) {
+                        // 呼叫 loading
+                        window.loading('show');
 
-                    if (res != null && res.data != null) {
-                        // 清空現有的卡片列表内容
-                        $('[discountlistguid="' + res.data.Guid + '"] .l-flex--list').remove();
+                        if (res != null && res.data != null) {
+                            res = DOMPurify.sanitize(res);
 
-                        // 組合卡片列表
-                        $.each(res.data.CardList, function(index, cardList) {
-                            var cardListDiv = $('<div class="l-flex l-flex--list"></div>').attr('style', cardList.CardListClass);
+                            // 清空現有的卡片列表内容
+                            $('[discountlistguid="' + res.data.Guid + '"] .l-flex--list').remove();
 
-                            $.each(cardList.CardItems, function(index, cardItem) {
-                                var cardItemDiv = $('<div class="l-flex__item"></div>');
-                                var cardBoxDiv = $('<div class="c-box c-box--gapless u-shadow-animation"></div>');
+                            // 組合卡片列表
+                            $.each(res.data.CardList, function (index, cardList) {
+                                var cardListDiv = $('<div class="l-flex l-flex--list"></div>').attr('style', cardList.CardListClass);
 
-                                var cardLink = $('<a class="c-gridview" href="' + cardItem.CardButtonLink + '"></a>');
-                                var cardMedia = $('<div class="c-gridview__media"></div>').addClass(cardItem.ExpiryMask);
+                                $.each(cardList.CardItems, function (index, cardItem) {
+                                    var cardItemDiv = $('<div class="l-flex__item"></div>');
+                                    var cardBoxDiv = $('<div class="c-box c-box--gapless u-shadow-animation"></div>');
 
-                                var cardImage = $('<img src="' + cardItem.CardImage + '" class="c-gridview__img" alt="">');
-                                cardMedia.append(cardImage);
+                                    var cardLink = $('<a class="c-gridview" href="' + cardItem.CardButtonLink + '"></a>');
+                                    var cardMedia = $('<div class="c-gridview__media"></div>').addClass(cardItem.ExpiryMask);
 
-                                if (cardItem.DisplayTag) {
-                                    var tagText = '';
-                                    var tagIcon = '';
+                                    var cardImage = $('<img src="' + cardItem.CardImage + '" class="c-gridview__img" alt="">');
+                                    cardMedia.append(cardImage);
 
-                                    switch (cardItem.DisplayTag) {
-                                        case 'New':
-                                            tagText = '最新';
-                                            tagIcon = '/themes/images/icons/white/star-solid.svg';
-                                            break;
-                                        case 'Hot':
-                                            tagText = '熱門';
-                                            tagIcon = '/themes/images/icons/white/hot-solid.svg';
-                                            break;
-                                        case 'Expiring':
-                                            tagText = '即將到期';
-                                            tagIcon = '/themes/images/icons/white/ring-solid.svg';
-                                            break;
-                                        case 'Limited':
-                                            tagText = '限時快閃';
-                                            tagIcon = '/themes/images/icons/white/ring-solid.svg';
-                                            break;
-                                        default:
-                                            break;
+                                    if (cardItem.DisplayTag) {
+                                        var tagText = '';
+                                        var tagIcon = '';
+
+                                        switch (cardItem.DisplayTag) {
+                                            case 'New':
+                                                tagText = '最新';
+                                                tagIcon = '/themes/images/icons/white/star-solid.svg';
+                                                break;
+                                            case 'Hot':
+                                                tagText = '熱門';
+                                                tagIcon = '/themes/images/icons/white/hot-solid.svg';
+                                                break;
+                                            case 'Expiring':
+                                                tagText = '即將到期';
+                                                tagIcon = '/themes/images/icons/white/ring-solid.svg';
+                                                break;
+                                            case 'Limited':
+                                                tagText = '限時快閃';
+                                                tagIcon = '/themes/images/icons/white/ring-solid.svg';
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                        var tagDiv = $('<div class="c-gridview__tag"><div class="o-eventTag"><img src="' + tagIcon + '" alt=""><span>' + tagText + '</span></div></div>');
+                                        cardMedia.append(tagDiv);
                                     }
-                                    var tagDiv = $('<div class="c-gridview__tag"><div class="o-eventTag"><img src="' + tagIcon + '" alt=""><span>' + tagText + '</span></div></div>');
-                                    cardMedia.append(tagDiv);
-                                }
 
-                                cardLink.append(cardMedia);
+                                    cardLink.append(cardMedia);
 
-                                var cardContent = $('<div class="c-gridview__content"></div>');
-                                var cardMain = $('<div class="c-gridview__main"></div>');
+                                    var cardContent = $('<div class="c-gridview__content"></div>');
+                                    var cardMain = $('<div class="c-gridview__main"></div>');
 
-                                if (cardItem.Title) {
-                                    var cardTitle = $('<div class="c-gridview__title u-ellipsis-2">' + cardItem.Title + '</div>');
-                                    cardMain.append(cardTitle);
-                                }
+                                    if (cardItem.Title) {
+                                        var cardTitle = $('<div class="c-gridview__title u-ellipsis-2">' + cardItem.Title + '</div>');
+                                        cardMain.append(cardTitle);
+                                    }
 
-                                if (cardItem.DisplayDate) {
-                                    var cardDesc = $('<div class="c-gridview__desc t-date">' + cardItem.DisplayDate + '</div>');
-                                    cardMain.append(cardDesc);
-                                }
+                                    if (cardItem.DisplayDate) {
+                                        var cardDesc = $('<div class="c-gridview__desc t-date">' + cardItem.DisplayDate + '</div>');
+                                        cardMain.append(cardDesc);
+                                    }
 
-                                cardContent.append(cardMain);
+                                    cardContent.append(cardMain);
 
-                                if (cardItem.CardButtonText) {
-                                    var cardFooter = $('<div class="c-gridview__footer"></div>');
-                                    var cardButton = $('<div class="o-suffixLink o-suffixLink--right o-suffixLink--xs">' + cardItem.CardButtonText + '</div>');
-                                    cardFooter.append(cardButton);
-                                    cardContent.append(cardFooter);
-                                }
+                                    if (cardItem.CardButtonText) {
+                                        var cardFooter = $('<div class="c-gridview__footer"></div>');
+                                        var cardButton = $('<div class="o-suffixLink o-suffixLink--right o-suffixLink--xs">' + cardItem.CardButtonText + '</div>');
+                                        cardFooter.append(cardButton);
+                                        cardContent.append(cardFooter);
+                                    }
 
-                                cardLink.append(cardContent);
-                                cardBoxDiv.append(cardLink);
-                                cardItemDiv.append(cardBoxDiv);
-                                cardListDiv.append(cardItemDiv);
+                                    cardLink.append(cardContent);
+                                    cardBoxDiv.append(cardLink);
+                                    cardItemDiv.append(cardBoxDiv);
+                                    cardListDiv.append(cardItemDiv);
+                                });
+
+                                var paginationDiv = $('[discountlistguid="' + res.data.Guid + '"] .l-pagination');
+
+                                cardListDiv.insertBefore(paginationDiv);
                             });
+                        }
 
-                            var paginationDiv = $('[discountlistguid="' + res.data.Guid + '"] .l-pagination');
+                        // 調整分頁
+                        var $parentWrap = $('[selectGuid="' + res.data.Guid + '"]').closest('.l-pagination');
+                        var total = res.data.TotalPages;
 
-                            cardListDiv.insertBefore(paginationDiv);
-                        });
+                        $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', pageSize === 'all');
+                        $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', total === '1');
+
+                        if (pageSize !== 'all' || total !== "1") {
+                            $parentWrap.find('[data-total]').attr('data-total', total);
+                            $parentWrap.find('.o-pagination__total').text(total);
+                            $parentWrap.find('.o-pagination__no').val(1);
+                            $parentWrap.find('.o-pagination__prev').addClass('is-disabled');
+                            $parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
+                        }
+
+                        // 因展示，使用 setTimeout 延遲關閉 loading
+                        setTimeout(() => {
+                            // 關閉loading
+                            window.loading('hide');
+                        }, 300);
+                    },
+                    error: function () {
+
                     }
-
-                    // 調整分頁
-                    var $parentWrap = $('[selectGuid="' + res.data.Guid + '"]').closest('.l-pagination');
-                    var total = res.data.TotalPages;
-
-                    $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', pageSize === 'all');
-                    $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', total === '1');
-
-                    if (pageSize !== 'all' || total !== "1") {
-                        $parentWrap.find('[data-total]').attr('data-total', total);
-                        $parentWrap.find('.o-pagination__total').text(total);
-                        $parentWrap.find('.o-pagination__no').val(1);
-                        $parentWrap.find('.o-pagination__prev').addClass('is-disabled');
-                        $parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
-                    }
-
-                    // 因展示，使用 setTimeout 延遲關閉 loading
-                    setTimeout(() => {
-                        // 關閉loading
-                        window.loading('hide');
-                    }, 300);
-                },
-                error: function() {
-
-                }
+                });
             });
-        });
 
-        // 分頁功能
-        $('[inputGuid="@Model.Guid"]').on('update.pagination', function(e) {
-            // 呼叫 loading
-            window.loading('show');
+            // 分頁功能
+            $('[inputGuid="@Model.Guid"]').on('update.pagination', function (e) {
+                // 呼叫 loading
+                window.loading('show');
 
-            var inputField = $(this);
+                var inputField = $(this);
 
-            var previousValue = inputField.val();
+                var previousValue = inputField.val();
 
-            var pageNumber = parseInt(previousValue);
+                var pageNumber = parseInt(previousValue);
 
-            var totalPageCount = parseInt($('[discountlistguid="@Model.Guid"] .o-pagination').attr("data-total"));
+                var totalPageCount = parseInt($('[discountlistguid="@Model.Guid"] .o-pagination').attr("data-total"));
 
-            if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPageCount) {
+                if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPageCount) {
 
-                $('[discountlistGuid="@Model.Guid"]').find('.l-flex--list').hide();
+                    $('[discountlistGuid="@Model.Guid"]').find('.l-flex--list').hide();
 
-                $('[discountlistGuid="@Model.Guid"]').find('.l-flex--list').eq(pageNumber - 1).show();
+                    $('[discountlistGuid="@Model.Guid"]').find('.l-flex--list').eq(pageNumber - 1).show();
 
-                var prevButton = $('[prevGuid="@Model.Guid"]');
-                var nextButton = $('[nextGuid="@Model.Guid"]');
+                    var prevButton = $('[prevGuid="@Model.Guid"]');
+                    var nextButton = $('[nextGuid="@Model.Guid"]');
 
-                if (pageNumber > 1 && pageNumber < totalPageCount) {
-                    prevButton.removeClass("is-disabled");
-                    nextButton.removeClass("is-disabled");
-                } else if (pageNumber === 1 && pageNumber < totalPageCount) {
-                    prevButton.addClass("is-disabled");
-                    nextButton.removeClass("is-disabled");
-                } else if (pageNumber > 1 && pageNumber === totalPageCount) {
-                    prevButton.removeClass("is-disabled");
-                    nextButton.addClass("is-disabled");
+                    if (pageNumber > 1 && pageNumber < totalPageCount) {
+                        prevButton.removeClass("is-disabled");
+                        nextButton.removeClass("is-disabled");
+                    } else if (pageNumber === 1 && pageNumber < totalPageCount) {
+                        prevButton.addClass("is-disabled");
+                        nextButton.removeClass("is-disabled");
+                    } else if (pageNumber > 1 && pageNumber === totalPageCount) {
+                        prevButton.removeClass("is-disabled");
+                        nextButton.addClass("is-disabled");
+                    } else {
+                        prevButton.addClass("is-disabled");
+                        nextButton.addClass("is-disabled");
+                    }
                 } else {
-                    prevButton.addClass("is-disabled");
-                    nextButton.addClass("is-disabled");
+                    inputField.val(previousValue);
                 }
-            } else {
-                inputField.val(previousValue);
-            }
 
-            // scroll 到表頭
-            $(this).closest('.l-scrolltop').scrollPosition('scroll');
+                // scroll 到表頭
+                $(this).closest('.l-scrolltop').scrollPosition('scroll');
 
-            // 因展示，故使用 setTimeout 延遲關閉 loading
-            setTimeout(() => {
-                // 關閉loading
-                window.loading('hide');
-            }, 300);
+                // 因展示，故使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
+            });
+
         });
-
-    });
-})(jQuery, window, document);
+    })(jQuery, window, document);
 
 </script>

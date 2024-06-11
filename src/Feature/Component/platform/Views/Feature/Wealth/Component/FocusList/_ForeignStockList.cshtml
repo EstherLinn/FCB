@@ -3,7 +3,7 @@
 @using Feature.Wealth.Component.Models.Invest
 @{
     var searchUrl = USStockRelatedLinkSetting.GetUSStockSearchUrl();
-    var detailUrl = USStockRelatedLinkSetting.GetUSStockDetailsUrl();
+    var detailUrl = USStockRelatedLinkSetting.GetUSStockDetailUrl();
 }
 
 <div class="l-flex u-flex-col u-flex-gap-xs u-hidden" data-nofocusforeignStock>
@@ -106,130 +106,130 @@
                 </thead>
                 <tbody id="uid-foreignStock-fjs"></tbody>
                 <script id="uid-foreignStock-template" type="text/html">
-                <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                    <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                    <td class="c-cardTable__top"></td>
-                    <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                    <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
-                    <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                        <div class="c-cardTable__content">
-                            <div class="l-target">
-                                <div class="l-target__name">
-                                    <a href="@(detailUrl)?id=<%= ProductCode %>" data-id="<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= ProductName %></a>
-                                </div>
-                                <% if (Tags!=null) { %>
-                                <div class="l-target__additional">
-                                    <ul class="l-tag">
-                                        <% for(var i = 0; i < Tags.length; i++ ) { %>
-                                        <li class="l-tag__item">
-                                            <a href="#" class="o-tag"><%= Tags[i] %></a>
-                                        </li>
-                                        <% } %>
-                                    </ul>
-                                </div>
-                                <% } %>
-                                <div class="l-target__additional">
-                                    <div class="t-date" eh-focus-id="<%= ProductCode %>" data-eh="focusdate-init" eh-focus-date></div>
+                    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+                        <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+                        <td class="c-cardTable__top"></td>
+                        <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+                        <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
+                        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+                            <div class="c-cardTable__content">
+                                <div class="l-target">
+                                    <div class="l-target__name">
+                                        <a href="@(detailUrl)?id=<%= ProductCode %>" data-id="<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= ProductName %></a>
+                                    </div>
+                                    <% if (Tags!=null) { %>
+                                    <div class="l-target__additional">
+                                        <ul class="l-tag">
+                                            <% for(var i = 0; i < Tags.length; i++ ) { %>
+                                            <li class="l-tag__item">
+                                                <a href="#" class="o-tag"><%= Tags[i] %></a>
+                                            </li>
+                                            <% } %>
+                                        </ul>
+                                    </div>
+                                    <% } %>
+                                    <div class="l-target__additional">
+                                        <div class="t-date" eh-focus-id="<%= ProductCode %>" data-eh="focusdate-init" eh-focus-date></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
-                    <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                    <td class="c-cardTable__space"></td>
-                    <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                    <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                        <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                        <div class="c-cardTable__title" data-length="5">交易所代碼</div>
-                        <% if (FundCode != null) { %>
-                        <div class="c-cardTable__content"><%= FundCode %></div>
-                        <% } else {%>
-                        <span>-</span>
-                        <% } %>
-                    </td>
-                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                        <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                        <div class="c-cardTable__title" data-length="5">收盤價<br>(收盤日)</div>
-                        <% if (ClosingPrice != null) { %>
-                        <div class="c-cardTable__content" data-netvalue="<%= ClosingPrice %>"><%= ClosingPrice %><br><span class="t-date" data-netvaluedate="<%= ClosingPriceDate %>"><%= ClosingPriceDate %></span></div>
-                        <% } else {%>
-                        <span>-</span>
-                        <% } %>
-                    </td>
+                        </td>
+                        <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+                        <td class="c-cardTable__space"></td>
+                        <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+                        <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                            <div class="c-cardTable__title" data-length="5">交易所代碼</div>
+                            <% if (FundCode != null) { %>
+                            <div class="c-cardTable__content"><%= FundCode %></div>
+                            <% } else {%>
+                            <span>-</span>
+                            <% } %>
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                            <div class="c-cardTable__title" data-length="5">收盤價<br>(收盤日)</div>
+                            <% if (ClosingPrice != null) { %>
+                            <div class="c-cardTable__content" data-netvalue="<%= ClosingPrice %>"><%= ClosingPrice %><br><span class="t-date" data-netvaluedate="<%= ClosingPriceDate %>"><%= ClosingPriceDate %></span></div>
+                            <% } else {%>
+                            <span>-</span>
+                            <% } %>
+                        </td>
 
-                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                        <div class="c-cardTable__title" data-length="5">漲跌幅</div>
-                        <div class="c-cardTable__content">
-                            <% if (ChangePercentage != null ) { %>
-                            <span class="<%= ChangePercentageStyle %>">
-                                <%= ChangePercentageText %>%
-                            </span>
-                            <% } else {%>
-                            <span>-</span>
-                            <% } %>
-                        </div>
-                    </td>
-                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                        <div class="c-cardTable__title" data-length="5">6個月績效</div>
-                        <div class="c-cardTable__content">
-                            <% if (SixMonthReturn != null ) { %>
-                            <span class="<%= SixMonthReturnStyle %>">
-                                <%= SixMonthReturnText %>%
-                            </span>
-                            <% } else {%>
-                            <span>-</span>
-                            <% } %>
-                        </div>
-                    </td>
-                    <td class="c-cardTable__body c-cardTable__body--line" data-card-table-width="1/1">
-                        <div class="c-cardTable__title" data-length="5">淨值/<br>漲跌幅通知</div>
-                        <div class="c-cardTable__content" data-infostatus="<% if (Info != null){%><%= 'true' %><% } else {%><%= 'false' %> <%}%>">
-                            <% if (Info  == null ) { %>
-                            <div class="t-tip--lt">點鈴鐺設定到價通知</div>
-                            <% } else {%>
-                            <% if (Info.ReachValue  != null ) { %>
-                            <div class="<% if (ClosingPrice>= Info.ReachValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
-                            <% } %>
-                            <% if (Info.RisePercent  != null  || Info.FallPercent) { %>
-                            <div class="l-straight@lt">
-                                <% if (Info.RisePercent  != null ) { %>
-                                <div class="l-straight__item">
-                                    <span class="<% if (ClosingPrice>= Info.RiseValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="漲幅 <%= Info.RisePercent %>%"></span>
-                                </div>
-                                <% } %>
-                                <% if (Info.FallPercent  != null ) { %>
-                                <div class="l-straight__item">
-                                    <span class="<% if (ClosingPrice<= Info.FallValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="跌幅 <%= Info.FallPercent %>%"></span>
-                                </div>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">漲跌幅</div>
+                            <div class="c-cardTable__content">
+                                <% if (ChangePercentage != null ) { %>
+                                <span class="<%= ChangePercentageStyle %>">
+                                    <%= ChangePercentageText %>%
+                                </span>
+                                <% } else {%>
+                                <span>-</span>
                                 <% } %>
                             </div>
-                            <% } %>
-                            <% } %>
-                        </div>
-                    </td>
-                    <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                    <td class="c-cardTable__space"></td>
-                    <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                    <td class="c-cardTable__footer" data-card-table-width="<% if (AvailabilityStatus == 'Y' && OnlineSubscriptionAvailability != 'N'){%><%= '2/3' %><% } else {%><%= '1/1' %> <%}%>">
-                        <div class="c-cardTable__content">
-                            <ul class="l-collect l-collect--divider@lt">
-                                <li class="l-collect__item">
-                                    <%= Button.InfoButtonHtml %>
-                                </li>
-                                <li class="l-collect__item">
-                                    <%= Button.FocusButtonHtml %>
-                                </li>
-                            </ul>
-                        </div>
-                    </td>
-                    <td class="c-cardTable__footer" data-card-table-width="1/3">
-                        <div class="c-cardTable__content">
-                            <% if (AvailabilityStatus == "Y" && OnlineSubscriptionAvailability != "N") { %>
-                            <%= Button.SubscriptionButtonHtml %>
-                            <% } %>
-                        </div>
-                    </td>
-                </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
+                        </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">6個月績效</div>
+                            <div class="c-cardTable__content">
+                                <% if (SixMonthReturn != null ) { %>
+                                <span class="<%= SixMonthReturnStyle %>">
+                                    <%= SixMonthReturnText %>%
+                                </span>
+                                <% } else {%>
+                                <span>-</span>
+                                <% } %>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__body c-cardTable__body--line" data-card-table-width="1/1">
+                            <div class="c-cardTable__title" data-length="5">淨值/<br>漲跌幅通知</div>
+                            <div class="c-cardTable__content" data-infostatus="<% if (Info != null){%><%= 'true' %><% } else {%><%= 'false' %> <%}%>">
+                                <% if (Info  == null ) { %>
+                                <div class="t-tip--lt">點鈴鐺設定到價通知</div>
+                                <% } else {%>
+                                <% if (Info.ReachValue  != null ) { %>
+                                <div class="<% if (ClosingPrice>= Info.ReachValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
+                                <% } %>
+                                <% if (Info.RisePercent  != null  || Info.FallPercent) { %>
+                                <div class="l-straight@lt">
+                                    <% if (Info.RisePercent  != null ) { %>
+                                    <div class="l-straight__item">
+                                        <span class="<% if (ClosingPrice>= Info.RiseValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="漲幅 <%= Info.RisePercent %>%"></span>
+                                    </div>
+                                    <% } %>
+                                    <% if (Info.FallPercent  != null ) { %>
+                                    <div class="l-straight__item">
+                                        <span class="<% if (ClosingPrice<= Info.FallValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="跌幅 <%= Info.FallPercent %>%"></span>
+                                    </div>
+                                    <% } %>
+                                </div>
+                                <% } %>
+                                <% } %>
+                            </div>
+                        </td>
+                        <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+                        <td class="c-cardTable__space"></td>
+                        <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+                        <td class="c-cardTable__footer" data-card-table-width="<% if (AvailabilityStatus == 'Y' && OnlineSubscriptionAvailability != 'N'){%><%= '2/3' %><% } else {%><%= '1/1' %> <%}%>">
+                            <div class="c-cardTable__content">
+                                <ul class="l-collect l-collect--divider@lt">
+                                    <li class="l-collect__item">
+                                        <%= Button.InfoButtonHtml %>
+                                    </li>
+                                    <li class="l-collect__item">
+                                        <%= Button.FocusButtonHtml %>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__footer" data-card-table-width="1/3">
+                            <div class="c-cardTable__content">
+                                <% if (AvailabilityStatus == "Y" && OnlineSubscriptionAvailability != "N") { %>
+                                <%= Button.SubscriptionButtonHtml %>
+                                <% } %>
+                            </div>
+                        </td>
+                    </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
                 </script>
             </table>
             <div class="l-pagination">

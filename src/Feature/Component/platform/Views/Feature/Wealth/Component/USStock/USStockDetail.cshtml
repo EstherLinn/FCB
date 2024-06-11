@@ -22,7 +22,7 @@
                                         @foreach (var tag in Model.USStock.Discount)
                                         {
                                             <li class="l-tag__item">
-                                                <a href="#" class="o-tag">@tag</a>
+                                                <span class="o-tag">@tag</span>
                                             </li>
                                         }
                                     </ul>
@@ -33,7 +33,7 @@
                             <h2 class="c-pageHeader__subTitle">@Model.USStock.EnglishName</h2>
                         </div>
                         <div class="c-pageHeader__views">
-                            <div class="o-views o-views--bk">@Model.USStock.ViewCount</div>
+                            <div class="o-views o-views--bk" data-eh="visit-update,visit-exec" eh-visit-pageid="@Model.PageID" eh-visit-qs="id=@Model.USStock.FirstBankCode"></div>
                         </div>
                     </div>
                 </div>
@@ -167,7 +167,7 @@
                         @foreach (var tag in Model.USStock.HotProductTags)
                         {
                             <li class="l-divideList__item l-divideList__item--auto">
-                                <a href="" class="o-hashTag u-nowrap">#@tag</a>
+                                <span class="o-hashTag u-nowrap">#@tag</span>
                             </li>
                         }
                     </ul>

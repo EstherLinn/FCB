@@ -1730,56 +1730,58 @@
         }
 
         $('.o-weatherbox__input').each(function (i, el) {
-            var val = $(el).val();
             var name = $(el).attr("name");
 
             if (name == 'weather1') {
                 $(el).on("click", function () {
+                    var val = DOMPurify.sanitize($(this).val());
 
                     $('[data-div="stock"]').removeClass('is-active');
-                    $('#div-stock-' + $(this).val()).addClass('is-active');
+                    $('#div-stock-' + val).addClass('is-active');
 
                     $('[data-section="stock"]').hide();
-                    $('#section-stock-' + $(this).val()).show();
+                    $('#section-stock-' + val).show();
 
-                    $('#relevant-title-stock').text($(this).val() + "-相關標的");
+                    $('#relevant-title-stock').text(val + "-相關標的");
 
-                    var fundlength = StockRelevantFund.filter((element) => element.Title == $(this).val()).length;
-                    var etflength = StockRelevantETF.filter((element) => element.Title == $(this).val()).length;
+                    var fundlength = StockRelevantFund.filter((element) => element.Title == val).length;
+                    var etflength = StockRelevantETF.filter((element) => element.Title == val).length;
 
                     showRelevant('stock', fundlength, etflength);
                 });
             }
             else if (name == 'weather2') {
                 $(el).on("click", function () {
+                    var val = DOMPurify.sanitize($(this).val());
 
                     $('[data-div="bond"]').removeClass('is-active');
-                    $('#div-bond-' + $(this).val()).addClass('is-active');
+                    $('#div-bond-' + val).addClass('is-active');
 
                     $('[data-section="bond"]').hide();
-                    $('#section-bond-' + $(this).val()).show();
+                    $('#section-bond-' + val).show();
 
-                    $('#relevant-title-bond').text($(this).val() + "-相關標的");
+                    $('#relevant-title-bond').text(val + "-相關標的");
 
-                    var fundlength = BondRelevantFund.filter((element) => element.Title == $(this).val()).length;
-                    var etflength = BondRelevantETF.filter((element) => element.Title == $(this).val()).length;
+                    var fundlength = BondRelevantFund.filter((element) => element.Title == val).length;
+                    var etflength = BondRelevantETF.filter((element) => element.Title == val).length;
 
                     showRelevant('bond', fundlength, etflength);
                 });
             }
             else if (name == 'weather3') {
                 $(el).on("click", function () {
+                    var val = DOMPurify.sanitize($(this).val());
 
                     $('[data-div="industry"]').removeClass('is-active');
-                    $('#div-industry-' + $(this).val()).addClass('is-active');
+                    $('#div-industry-' + val).addClass('is-active');
 
                     $('[data-section="industry"]').hide();
-                    $('#section-industry-' + $(this).val()).show();
+                    $('#section-industry-' + val).show();
 
-                    $('#relevant-title-industry').text($(this).val() + "-相關標的");
+                    $('#relevant-title-industry').text(val + "-相關標的");
 
-                    var fundlength = IndustryRelevantFund.filter((element) => element.Title == $(this).val()).length;
-                    var etflength = IndustryRelevantETF.filter((element) => element.Title == $(this).val()).length;
+                    var fundlength = IndustryRelevantFund.filter((element) => element.Title == val).length;
+                    var etflength = IndustryRelevantETF.filter((element) => element.Title == val).length;
 
                     showRelevant('industry', fundlength, etflength);
                 });
@@ -1908,7 +1910,7 @@
         // 相關標的table 排序顯示切換
         $('[data-table-tab]').on('click.table', function () {
             $('[data-sortingbox-wrap]').addClass('u-hidden');
-            $(`[data-sortingbox-wrap="${$(this).attr('data-tab-target')}"]`).removeClass('u-hidden');
+            $(`[data-sortingbox-wrap="${DOMPurify.sanitize($(this).attr('data-tab-target'))}"]`).removeClass('u-hidden');
         });
 
         //根據各tab第一筆資料顯示對應相關標的各區塊
@@ -1937,7 +1939,7 @@
         $('[data-chart="mini"]').each(function (i, el) {
             var data = [];
 
-            var temp = datas.find((element) => element.IndexCode == $(el).attr('id'));
+            var temp = datas.find((element) => element.IndexCode == DOMPurify.sanitize($(el).attr('id')));
 
             if (temp && temp.Data) {
 

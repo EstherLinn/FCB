@@ -1,10 +1,12 @@
 ﻿using Feature.Wealth.Component.Models.TabCards;
 using Feature.Wealth.Component.Repositories;
+using Newtonsoft.Json;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Feature.Wealth.Component.Controllers
@@ -25,10 +27,12 @@ namespace Feature.Wealth.Component.Controllers
                 datasource = Sitecore.Context.Database.GetItem(id);
             }
 
-            var model= new TabCardModel(datasource);
+            var model = new TabCardModel(datasource);
 
             model.FundCardsInfos = _tabCardsRepository.GetFundCardsInfos((List<string>)model.FundIDList);
+            model.FundCardsInfosHtmlString = new HtmlString(JsonConvert.SerializeObject(model.FundCardsInfos));
             model.FundCardsNavs = _tabCardsRepository.GetFundCardsNavs((List<string>)model.FundIDList);
+            model.FundCardsNavsHtmlString = new HtmlString(JsonConvert.SerializeObject(model.FundCardsNavs));
 
             return View("/Views/Feature/Wealth/Component/TabCards/TabCard.cshtml", model);
         }
@@ -48,7 +52,9 @@ namespace Feature.Wealth.Component.Controllers
             var model = new Tab3CardModel(datasource);
 
             model.FundCardsInfos = _tabCardsRepository.GetFundCardsInfos((List<string>)model.FundIDList);
+            model.FundCardsInfosHtmlString = new HtmlString(JsonConvert.SerializeObject(model.FundCardsInfos));
             model.FundCardsNavs = _tabCardsRepository.GetFundCardsNavs((List<string>)model.FundIDList);
+            model.FundCardsNavsHtmlString = new HtmlString(JsonConvert.SerializeObject(model.FundCardsNavs));
 
             return View("/Views/Feature/Wealth/Component/TabCards/Tab3Card.cshtml", model);
         }

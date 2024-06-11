@@ -9,8 +9,40 @@ using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.USStock
 {
-  public static class USStockRelatedLinkSetting
+    public static class USStockRelatedLinkSetting
     {
+        private static Xcms.Sitecore.Foundation.Basic.FieldTypes.Link USStockSearcPage()
+        {
+            Item item = ItemUtils.GetItem(Template.USStockRelatedLink.Root);
+            return item.GeneralLink(Template.USStockRelatedLink.Fields.USStockSearch);
+        }
+
+        private static Xcms.Sitecore.Foundation.Basic.FieldTypes.Link USStockDetailPage()
+        {
+            Item item = ItemUtils.GetItem(Template.USStockRelatedLink.Root);
+            return item.GeneralLink(Template.USStockRelatedLink.Fields.USStockDetail);
+        }
+
+        public static string GetUSStockSearchUrl()
+        {
+            return USStockSearcPage()?.Url;
+        }
+
+        public static string GetUSStockDetailUrl()
+        {
+            return USStockDetailPage()?.Url;
+        }
+
+        public static Item GetUSStockSearchPageItem()
+        {
+            return USStockSearcPage()?.TargetItem;
+        }
+
+        public static Item GetUSStockDetailsPageItem()
+        {
+            return USStockDetailPage()?.TargetItem;
+        }
+
         public struct Template
         {
             public struct USStockRelatedLink
@@ -20,20 +52,10 @@ namespace Feature.Wealth.Component.Models.USStock
                 public struct Fields
                 {
                     public static readonly ID USStockSearch = new ID("{0478EE30-BAEA-44C2-89F8-91C746BB0C1D}");
-                    public static readonly ID USStockDetails = new ID("{93D8E15F-8DD2-49D5-9858-990673212E5A}");
+                    public static readonly ID USStockDetail = new ID("{93D8E15F-8DD2-49D5-9858-990673212E5A}");
                 }
             }
 
-        }
-        public static string GetUSStockSearchUrl()
-        {
-            Item FundRealtedItem = ItemUtils.GetItem(Template.USStockRelatedLink.Root);
-            return FundRealtedItem.GeneralLink(Template.USStockRelatedLink.Fields.USStockSearch)?.Url;
-        }
-        public static string GetUSStockDetailsUrl()
-        {
-            Item FundRealtedItem = ItemUtils.GetItem(Template.USStockRelatedLink.Root);
-            return FundRealtedItem.GeneralLink(Template.USStockRelatedLink.Fields.USStockDetails)?.Url;
         }
     }
 }

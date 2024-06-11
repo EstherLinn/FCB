@@ -38,7 +38,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,B.[OnlineSubscriptionAvailability]
                            ,B.[AvailabilityStatus]
                            FROM [Sysjust_USStockList] A WITH (NOLOCK)
-                           LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]";
+                           LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
+                           ORDER BY A.[MonthlyReturn] DESC, A.[FirstBankCode] ASC";
 
             var uSStocks = this._dbConnection.Query<USStock>(sql)?.ToList() ?? new List<USStock>();
 
@@ -88,7 +89,7 @@ namespace Feature.Wealth.Component.Repositories
             return updateCount == 1;
         }
 
-        internal USStock GetButtonHtml(USStock item, bool isListButton = true)
+        internal USStock GetButtonHtml(USStock item, bool isListButton)
         {
             item.FocusButton = PublicHelpers.FocusButton(null, null, item.FirstBankCode, item.FullName, InvestTypeEnum.ForeignStocks, isListButton);
             item.FocusButtonHtml = item.FocusButton.ToString();
@@ -100,9 +101,23 @@ namespace Feature.Wealth.Component.Repositories
             return item;
         }
 
-        internal USStock SetTags(USStock uSStock, IEnumerable<Item> hotKeywordTags, IEnumerable<Item> hotProductTags, IEnumerable<Item> discounts)
+        private IEnumerable<Item> _hotKeywordTags = null;
+        private IEnumerable<Item> _hotProductTags = null;
+        private IEnumerable<Item> _discounts = null;
+
+        internal USStock SetTags(USStock uSStock)
         {
-            foreach (var f in hotKeywordTags)
+            if (this._hotKeywordTags == null || this._hotProductTags == null || this._discounts == null)
+            {
+                var hotKeywordTagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.HotKeywordTag);
+                this._hotKeywordTags = ItemUtils.GetChildren(hotKeywordTagFolder, Template.USStockTag.Id);
+                var hotProductTagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.HotProductTag);
+                this._hotProductTags = ItemUtils.GetChildren(hotProductTagFolder, Template.USStockTag.Id);
+                var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
+                this._discounts = ItemUtils.GetChildren(discountFolder, Template.USStockTag.Id);
+            }
+
+            foreach (var f in this._hotKeywordTags)
             {
                 string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
                 string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
@@ -113,7 +128,7 @@ namespace Feature.Wealth.Component.Repositories
                 }
             }
 
-            foreach (var f in hotProductTags)
+            foreach (var f in this._hotProductTags)
             {
                 string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
                 string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
@@ -124,7 +139,7 @@ namespace Feature.Wealth.Component.Repositories
                 }
             }
 
-            foreach (var f in discounts)
+            foreach (var f in this._discounts)
             {
                 string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
                 string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);

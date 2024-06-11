@@ -216,10 +216,10 @@
                     },
                     formatResult: function (suggestion, currentValue) {
                         return `<div class="c-itemKeyword">
-                                                                                        <a href="#" class="c-itemKeyword__content" data-fund data-fundcode="${suggestion.fundcode}">
-                                                                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                                                            </a>
-                                                                        </div>`;
+                                                                                                <a href="#" class="c-itemKeyword__content" data-fund data-fundcode="${suggestion.fundcode}">
+                                                                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                                                                    </a>
+                                                                                </div>`;
                     }
                 });
             }
@@ -300,10 +300,10 @@
                         CompanyOptions = selectedIndicator.FundCompanies;
 
                         CompanyOptions.forEach(function (company) {
-                            $CompanySelector.append($('<option>', {
+                            $CompanySelector.append($('<option>', DOMPurify.sanitize({
                                 value: company.FundCompanyID,
                                 text: company.FundCompanyName
-                            }));
+                            })));
                         });
                     }
                 });
@@ -397,7 +397,7 @@
                     dataType: 'json',
                     data: { "productCode": SelectedFund },
                     success: function (data) {
-                        $('#returnDetail').html(data);
+                        $('#returnDetail').html(DOMPurify.sanitize(data));
                     },
                     error: function () {
 

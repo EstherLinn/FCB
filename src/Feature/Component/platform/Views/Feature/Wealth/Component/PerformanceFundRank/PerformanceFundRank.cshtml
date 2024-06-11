@@ -198,17 +198,17 @@
                             </div>
                         </div>
                         <div class="l-flex__item" data-filter-empty="true">
-                        <div class="c-section">
-                            <div class="c-section__content">
-                                <div class="c-empty">
-                                    <div class="c-empty__img">
-                                        <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                            <div class="c-section">
+                                <div class="c-section__content">
+                                    <div class="c-empty">
+                                        <div class="c-empty__img">
+                                            <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                                        </div>
+                                        <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
                                     </div>
-                                    <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
@@ -423,7 +423,7 @@
                             var totalPages = tabPanel.find('#totalPages').val();
                             var currentPage = tabPanel.find('#currentPage').val();
                             var pageSize = tabPanel.find('#pageSize').val();
-                           
+
                             var disableSorting = false;
                             var paginationElement = tabPanel.find('.l-pagination__switch .o-pagination');
                             var total = parseInt(totalPages);
@@ -439,20 +439,20 @@
                             var current = parseInt(currentPage);
                             $('.o-pagination__no').val(current);
                             //paginationElement.find('[data-pagination="true"]').pagination('goto', current);
-                            if(current===1){
+                            if (current === 1) {
                                 $('.o-pagination__prev').addClass('is-disabled');
                             }
-                            if(total <= 1){
-                                 $('.o-pagination__prev').addClass('is-disabled');
-                                 $('.o-pagination__next').addClass('is-disabled');
-                            }
-                            else if(current===total){
+                            if (total <= 1) {
+                                $('.o-pagination__prev').addClass('is-disabled');
                                 $('.o-pagination__next').addClass('is-disabled');
                             }
-                            else{
+                            else if (current === total) {
+                                $('.o-pagination__next').addClass('is-disabled');
+                            }
+                            else {
                                 $('.o-pagination__next').removeClass('is-disabled');
                             }
-                            
+
 
                             var tabPanel = $('.c-tab__panel[data-tab-panel-id="' + tabTarget + '"]');
                             var capsuleboxInputs = tabPanel.find('.o-capsulebox__input.selected');
@@ -461,7 +461,7 @@
                                 var selectedValue = $(element).val();
                                 OCTWD(selectedValue);
                             });
-                        
+
                             $('span.o-fall').each(function () {
                                 var content = $(this).text();
                                 if (content.startsWith('-')) {
@@ -470,14 +470,14 @@
                                 }
                             });
 
-                            if(total===0){
+                            if (total === 0) {
                                 $('[data-filter-empty="false"]').hide();
                                 $('[data-filter-empty="true"]').show();
-                             }
-                             else{
+                            }
+                            else {
                                 $('[data-filter-empty="false"]').show();
                                 $('[data-filter-empty="true"]').hide();
-                             }
+                            }
                         } else {
                             console.error("Empty response received from the server.");
                         }
@@ -528,14 +528,14 @@
                 var sortingColumns = findSortingColumns();
                 sortingColumns.forEach(function (sortingInfo) {
                     loadData(tabTarget, selectedValue, 1, pageSize, sortingInfo.column, sortingInfo.direction);
-                }); 
+                });
 
 
                 ChangeCurrency(tabTarget);
                 setTimeout(() => {
-                                window.loading('hide');
-                            }, 300);
-                
+                    window.loading('hide');
+                }, 300);
+
             });
 
             var tableBody = $('table');
@@ -603,9 +603,9 @@
                 console.log('連棟排序');
                 loadData(tabTarget, selectedValue, 1, pageSize, sortingColumn, orderby);
                 setTimeout(() => {
-                                // 關閉loading
-                                window.loading('hide');
-                            }, 300);
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
             });
 
 
@@ -624,9 +624,9 @@
                 });
                 //tabPanel.find('[data-pagination="true"]').pagination('goto', 1);
                 setTimeout(() => {
-                                // 關閉loading
-                                window.loading('hide');
-                            }, 300);
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
             });
 
 
@@ -671,14 +671,14 @@
                             } else if (selectedValue === "原幣" & sortingInfo.column === "SixMonthReturnOriginalCurrency") {
                                 loadData(tabTarget, selectedcolumn, 1, pageSize, sortingInfo.column, sortingInfo.direction);
                             }
-                            else{
+                            else {
                                 OCTWD(selectedValue);
-                                
+
                             }
                             setTimeout(() => {
-                                    // 關閉loading
-                                    window.loading('hide');
-                                }, 300);
+                                // 關閉loading
+                                window.loading('hide');
+                            }, 300);
                             console.log('台幣原幣切換:', tabTarget, selectedcolumn, 1, pageSize, sortingInfo.column, sortingInfo.direction);
                         });
                     });
@@ -726,11 +726,11 @@
                 console.log(tabTarget, selectedValue, page, pageSize);
                 var totalPages = parseInt(tabPanel.find('.o-pagination').attr('data-total'));
 
-                    var sortingColumns = findSortingColumns();
-                    sortingColumns.forEach(function (sortingInfo) {
-                        console.log('Sorting column:', sortingInfo.column, 'Sorting direction:', sortingInfo.direction);
-                        loadData(tabTarget, selectedValue, page, pageSize, sortingInfo.column, sortingInfo.direction);
-                    });
+                var sortingColumns = findSortingColumns();
+                sortingColumns.forEach(function (sortingInfo) {
+                    console.log('Sorting column:', sortingInfo.column, 'Sorting direction:', sortingInfo.direction);
+                    loadData(tabTarget, selectedValue, page, pageSize, sortingInfo.column, sortingInfo.direction);
+                });
 
                 var page = tabPanel.find('.o-pagination__no').val(page);
 
@@ -759,10 +759,10 @@
                 var totalPages = tabPanel.find('#totalPages').val();
 
                 var $parentWrap = $(this).closest('.l-pagination');
-                var dataLength = parseInt(totalPages)*10;
+                var dataLength = parseInt(totalPages) * 10;
                 $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', size === 'all');
-                
-                 // scroll 到表頭
+
+                // scroll 到表頭
                 tabPanel.find('.l-table').scrollPosition('scroll');
 
                 if (size === 'all') {
@@ -772,7 +772,7 @@
                         loadData(tabTarget, selectedValue, 1, 'all', sortingInfo.column, sortingInfo.direction);
                     });
                 } else {
-                    
+
                     var sortingColumns = findSortingColumns();
                     sortingColumns.forEach(function (sortingInfo) {
                         console.log('Sorting column:', sortingInfo.column, 'Sorting direction:', sortingInfo.direction);

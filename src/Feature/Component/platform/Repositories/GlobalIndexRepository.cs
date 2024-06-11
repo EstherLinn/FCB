@@ -193,6 +193,12 @@ namespace Feature.Wealth.Component.Repositories
             }
         }
 
+        /// <summary>
+        /// 取得指數K線資料
+        /// </summary>
+        /// <param name="indexCode">指數代碼</param>
+        /// <param name="cycle">D、W、M</param>
+        /// <returns></returns>
         public List<PriceData> GetGlobalInedxPriceData(string indexCode, string cycle)
         {
             var priceDatas = new List<PriceData>();

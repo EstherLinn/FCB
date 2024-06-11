@@ -18,6 +18,8 @@ namespace Feature.Wealth.Component.Models.USStock
 
     public class USStockDetailModel
     {
+        public Item Item { get; set; }
+        public string PageID { get; set; }
         public USStock USStock { get; set; }
         public string b2brwdDomain { get; set; }
     }
