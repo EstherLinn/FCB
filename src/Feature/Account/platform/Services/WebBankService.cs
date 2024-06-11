@@ -28,7 +28,7 @@ namespace Feature.Wealth.Account.Services
             try
             {
                 string routeWithParms = _route + string.Format("?callbackTarget={0}&callbackUri={1}&fnct=2&" +
-                "merchantId={2}&timestamp={3}&version=1&key={4}&sign={5}",
+                "key={4}&merchantId={2}&timestamp={3}&version=1&key={4}&sign={5}",
                 "_self", CheckUrlParmas(callBackUrl), _id, timestamp, _key, SHA1Helper.Encrypt(computeStr));
 
                 var formData = new
@@ -49,7 +49,7 @@ namespace Feature.Wealth.Account.Services
                 if (resp.StatusCode < 300)
                 {
                     var msg = await resp.GetStringAsync();
-                    Logger.Account.Info($"StatusCode:${resp.StatusCode},Success Get Data:${msg}");
+                    Logger.Account.Info($"StatusCode:{resp.StatusCode},Success Get Data:{msg}");
                     dynamic data = JsonConvert.DeserializeObject(msg);
                     var computeStr2 = string.Format("merchantId={0}&txReqId={1}&key={2}",
                     _id, data.txReqId, _key);
