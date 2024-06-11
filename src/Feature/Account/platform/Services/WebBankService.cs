@@ -23,12 +23,12 @@ namespace Feature.Wealth.Account.Services
             object objReturn = null;
             var timestamp = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
             var computeStr = string.Format("callbackTarget={0}&callbackUri={1}&fnct=2&" +
-                "merchantId={2}&timestamp={3}&version=1&key={4}",
+                "key={4}&merchantId={2}&timestamp={3}&version=1&key={4}",
                 "_self", HttpUtility.UrlDecode(callBackUrl), _id, timestamp, _key);
             try
             {
                 string routeWithParms = _route + string.Format("?callbackTarget={0}&callbackUri={1}&fnct=2&" +
-                "key={4}&merchantId={2}&timestamp={3}&version=1&key={4}&sign={5}",
+                "merchantId={2}&timestamp={3}&version=1&key={4}&sign={5}",
                 "_self", CheckUrlParmas(callBackUrl), _id, timestamp, _key, SHA1Helper.Encrypt(computeStr));
 
                 var formData = new
