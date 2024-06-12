@@ -59,13 +59,14 @@ namespace Feature.Wealth.Account.Services
                     var msg = await resp.GetStringAsync();
                     Logger.Account.Info($"StatusCode:{resp.StatusCode},Success Get Data:{msg}");
                     dynamic data = JsonConvert.DeserializeObject(msg);
+                    string txReqIdString = Convert.ToString(data.txReqId);
                     var computeStr2 = string.Format("merchantId={0}&txReqId={1}&key={2}",
                     _id, data.txReqId, _key);
-                    _cache.Set(getQueueId, data.txReqId, DateTimeOffset.Now.AddMinutes(5));
+                    _cache.Set(getQueueId, txReqIdString, DateTimeOffset.Now.AddMinutes(5));
                     objReturn = new
                     {
                         merchantId = _id,
-                        txReqId = data.txReqId,
+                        txReqId = txReqIdString,
                         sign = SHA1Helper.Encrypt(computeStr2),
                     };
                 }
