@@ -1,10 +1,10 @@
-﻿using Feature.Wealth.Component.Models.MarketNews;
-using Feature.Wealth.Component.Models.News;
+﻿using Feature.Wealth.Component.Models.News;
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Caching;
+using System.Web;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 
@@ -61,12 +61,8 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult MarketNewsDetail()
         {
-            return View("/Views/Feature/Wealth/Component/News/MarketNewsDetail.cshtml");
-        }
+            string newsId = HttpUtility.UrlDecode(Request.QueryString["id"]);
 
-        [HttpPost]
-        public ActionResult GetMarketNewsDetailData(string newsId)
-        {
             MarketNewsDetailModel datas;
 
             // 取得 MarketNewsDetailCache 資料
@@ -84,16 +80,10 @@ namespace Feature.Wealth.Component.Controllers
                 _cache.Set(MarketNewsDetailCacheKey + newsId, datas, CacheTime);
             }
 
-            return new JsonNetResult(datas);
+            return View("/Views/Feature/Wealth/Component/News/MarketNewsDetail.cshtml", datas);
         }
 
         public ActionResult HeadlineNews()
-        {
-            return View("/Views/Feature/Wealth/Component/News/HeadlineNews.cshtml");
-        }
-
-        [HttpPost]
-        public ActionResult GetHeadlineNewsData()
         {
             HeadlineNewsModel datas;
 
@@ -115,7 +105,7 @@ namespace Feature.Wealth.Component.Controllers
             // 取得 HeadlineNews 瀏覽人次
             datas = _newsRespository.GetHeadlineNewsViewCount(datas);
 
-            return new JsonNetResult(datas);
+            return View("/Views/Feature/Wealth/Component/News/HeadlineNews.cshtml", datas);
         }
     }
 }

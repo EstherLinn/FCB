@@ -1,5 +1,4 @@
-﻿using Feature.Wealth.Component.Models.MarketNews;
-using Feature.Wealth.Component.Models.News;
+﻿using Feature.Wealth.Component.Models.News;
 using Foundation.Wealth.Manager;
 using Newtonsoft.Json.Linq;
 using Sitecore.Mvc.Extensions;
