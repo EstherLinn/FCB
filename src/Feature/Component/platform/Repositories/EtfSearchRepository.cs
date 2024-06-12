@@ -1,7 +1,9 @@
 ﻿using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Search;
 using Feature.Wealth.Component.Models.ETF.Tag;
+using Feature.Wealth.Component.Models.Invest;
 using Foundation.Wealth.Extensions;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Mapster;
 using Sitecore.Data;
@@ -208,6 +210,13 @@ namespace Feature.Wealth.Component.Repositories
                     {
                         dest.KeywordsTags = [];
                     }
+
+                    dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
+                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF, true).ToString();
+                    dest.CompareButtonHtml = PublicHelpers.CompareButton(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF, true).ToString();
+                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.FirstBankCode, InvestTypeEnum.ETF, true).ToString();
+                    dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
+                    dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
                 });
 
             var result = collection.Adapt<IEnumerable<EtfSearchResult>>(config);
