@@ -30,7 +30,7 @@ namespace Feature.Wealth.Account.Pipelines
                 var queueId = query.Get("queueId");
                 if (string.IsNullOrEmpty(queueId))
                 {
-                    Logger.Account.Info("user queueId:" + queueId);
+                    Logger.Account.Info("user queueId is IsNullOrEmpty");
                     return;
                 }
                 if (FcbMemberHelper.CheckMemberLogin() && FcbMemberHelper.GetMemberPlatForm() == PlatFormEunm.WebBank)
@@ -129,6 +129,10 @@ namespace Feature.Wealth.Account.Pipelines
                                 step = "Step 1-2 取得user id, id = nullorEmpty";
                             }
                         }
+                        else
+                        {
+                            step = $"Step1-3 cache ${txReqId} no contain,txReqId=${txReqId}";
+                        }
                     }
                     else
                     {
@@ -139,7 +143,7 @@ namespace Feature.Wealth.Account.Pipelines
                 }
                 else
                 {
-                    step = "Step 1-1 取得queueId, queueId = " + queueId;
+                    step = "Step 1-1 取得 cache queueId, queueId no contain,queueId =" + queueId;
                 }
             }
             catch (Exception ex)

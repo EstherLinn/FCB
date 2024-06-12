@@ -157,7 +157,6 @@ namespace Feature.Wealth.Account.Controllers
             {
                 if (LoginResult == "0000")
                 {
-
                     step = "Step1 ok";
                     if (!getCustDic.TryGetValue("custId", out string id))
                     {
@@ -227,6 +226,10 @@ namespace Feature.Wealth.Account.Controllers
         [HttpPost]
         public ActionResult GetTrackListFromDb()
         {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
             var listdb = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
             return new JsonNetResult(listdb);
         }
@@ -251,6 +254,10 @@ namespace Feature.Wealth.Account.Controllers
         [HttpPost]
         public ActionResult GetCommonFunctions()
         {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
             CommonFuncrionsResp resp = _memberRepository.GetCommonFunctions(FcbMemberHelper.GetMemberPlatFormId());
             var serialSetting = new JsonSerializerSettings()
             {

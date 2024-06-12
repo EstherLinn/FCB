@@ -365,7 +365,7 @@
                     continue;
                 }
                 if (key == "returnUrl") {
-                    loginUrl += `${key}=${encodeURIComponent(location.href)}&`;
+                    loginUrl += `${key}${encodeURIComponent('=')}${location.href}&`;
                     continue;
                 }
                 if (key== "ibi") {
