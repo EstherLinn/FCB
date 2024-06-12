@@ -132,7 +132,6 @@ namespace Feature.Wealth.Account.Controllers
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
 
-        [HttpGet]
         public ActionResult SignInWebBank()
         {
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
