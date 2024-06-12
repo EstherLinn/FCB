@@ -45,8 +45,8 @@
                         <option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-asc">6個月績效低至高</option>
                         <option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
                         <option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
-                        <option value="點擊率" data-sorting-column="ViewCountOrderBy" data-sorting-class="is-desc">點擊率高至低</option>
-                        <option value="點擊率" data-sorting-column="ViewCountOrderBy" data-sorting-class="is-asc">點擊率低至高</option>
+                        <option value="點擊數" data-sorting-column="ViewCountOrderBy" data-sorting-class="is-desc">點擊數高至低</option>
+                        <option value="點擊數" data-sorting-column="ViewCountOrderBy" data-sorting-class="is-asc">點擊數低至高</option>
                     </select>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                             <col style="width: 1%;">
                             <col style="width: 1%;">
                             <col style="width: 1%;">
-                            <col style="width: 13%;">
+                            <col style="width: 1%;">
                             <col style="width: 1%;">
                             <col style="width: 1%;">
                         </colgroup>
@@ -107,7 +107,7 @@
                                 </th>
                                 <th>
                                     <div class="c-table__title">
-                                        <span class="u-wrap">點擊率</span>
+                                        <span>點擊數</span>
                                         <a href="#" class="o-sorting" data-sorting-column="ViewCountOrderBy"></a>
                                     </div>
                                 </th>
@@ -195,7 +195,7 @@
                                         <div class="c-cardTable__content">@item.RiskRewardLevel</div>
                                     </td>
                                     <td class="c-cardTable__body" data-card-table-width="1/2">
-                                        <div class="c-cardTable__title" data-length="5">點擊率</div>
+                                        <div class="c-cardTable__title" data-length="5">點擊數</div>
                                         @if (item.ViewCount != null)
                                         {
                                             <div class="c-cardTable__content">@item.ViewCount</div>
