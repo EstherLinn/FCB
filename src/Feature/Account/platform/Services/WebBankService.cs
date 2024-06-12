@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Sitecore.Configuration;
 using System;
+using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Web;
 using Xcms.Sitecore.Foundation.Basic.Logging;
@@ -16,18 +17,25 @@ namespace Feature.Wealth.Account.Services
         private readonly string _route = Settings.GetSetting("AppPay.VerifyUrl");
         private readonly string _id = Settings.GetSetting("AppPay.Id");
         private readonly string _key = Settings.GetSetting("AppPay.Key");
-
-        public async Task<object> UserVerifyRequest(string callBackUrl)
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        public async Task<object> UserVerifyRequest(string callBackUrl,string getQueueId)
         {
-            JObject result = null;
             object objReturn = null;
+            Uri url = new Uri(callBackUrl);
+            url.Query.AppendQueryParam("queueId", getQueueId);
+            var uriBuilder = new UriBuilder(url);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["queueId"] = getQueueId;
+            uriBuilder.Query = query.ToString();
+            callBackUrl = uriBuilder.Uri.ToString();
             var timestamp = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
             var computeStr = string.Format("callbackTarget={0}&callbackUri={1}&fnct=2&" +
                 "key={4}&merchantId={2}&timestamp={3}&version=1&key={4}",
                 "_self", HttpUtility.UrlDecode(callBackUrl), _id, timestamp, _key);
+            string routeWithParms = string.Empty;
             try
             {
-                string routeWithParms = _route + string.Format("?callbackTarget={0}&callbackUri={1}&fnct=2&" +
+                 routeWithParms = _route + string.Format("?callbackTarget={0}&callbackUri={1}&fnct=2&" +
                 "merchantId={2}&timestamp={3}&version=1&key={4}&sign={5}",
                 "_self", CheckUrlParmas(callBackUrl), _id, timestamp, _key, SHA1Helper.Encrypt(computeStr));
 
@@ -53,6 +61,7 @@ namespace Feature.Wealth.Account.Services
                     dynamic data = JsonConvert.DeserializeObject(msg);
                     var computeStr2 = string.Format("merchantId={0}&txReqId={1}&key={2}",
                     _id, data.txReqId, _key);
+                    _cache.Set(getQueueId, data.txReqId, DateTimeOffset.Now.AddMinutes(5));
                     objReturn = new
                     {
                         merchantId = _id,
@@ -72,19 +81,13 @@ namespace Feature.Wealth.Account.Services
             {
                 Logger.Account.Info(ex);
             }
+            finally
+            {
+                Logger.Account.Info($"網銀0201 post data = {routeWithParms}");
+            }
             return objReturn;
         }
 
-        public async Task<JObject> LoginResultInfo()
-        {
-            JObject result = null;
-            var computeStr = string.Format("ack=ok&autoRedirectWaitSec=0&key={0}", string.Empty);
-            var resp = await _route.PostMultipartAsync(mp =>
-            mp.AddString("ack", "ok")
-            .AddString("autoRedirectWaitSec", "0")
-            .AddString("sign", SHA1Helper.Encrypt(computeStr)));
-            return result;
-        }
         /// <summary>
         /// 按照AppPay規格　參數兩個以上才需encode
         /// </summary>
@@ -98,7 +101,7 @@ namespace Feature.Wealth.Account.Services
                 return HttpUtility.UrlDecode(url);
             }
             var urlQuery = HttpUtility.ParseQueryString(checkUrl.Query);
-            if (urlQuery.Count > 2)
+            if (urlQuery.Count > 1)
             {
                 return HttpUtility.UrlEncode(url);
             }
