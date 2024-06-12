@@ -131,13 +131,22 @@ namespace Feature.Wealth.Account.Controllers
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
 
+        [HttpGet]
+        public async Task<ActionResult> SignInWebBank()
+        {
+            return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+        }
+
         [HttpPost]
         public async Task<ActionResult> WebBankLogin()
         {
             var ticks = DateTime.Now.Ticks;
             var guid = Guid.NewGuid().ToString();
             var queueId = ticks.ToString() + '-' + guid;
-            var resp = await _webBankService.UserVerifyRequest(callBackUrl, queueId);
+            var uri = new Uri(callBackUrl);
+            string pagePathWithoutQueryString = uri.GetLeftPart(UriPartial.Path);
+            pagePathWithoutQueryString += "/api/client/Accounts/SignInWebBank";
+            var resp = await _webBankService.UserVerifyRequest(pagePathWithoutQueryString, queueId);
             return new JsonNetResult(resp);
         }
 

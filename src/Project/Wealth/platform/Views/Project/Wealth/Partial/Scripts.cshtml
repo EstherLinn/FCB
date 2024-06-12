@@ -8,6 +8,9 @@
     var domain = HttpContext.Current.Request.Url.Host;
     var sitecoredomain = Sitecore.Context.Site.TargetHostName;
     var url = HttpContext.Current.Request.Url.AbsoluteUri.Replace(domain, string.IsNullOrEmpty(sitecoredomain) ? domain : sitecoredomain);
+    var newUri = new Uri(url);
+    string pagePathWithoutQueryString = newUri.GetLeftPart(UriPartial.Path);
+    var webBankLoginPath = ClientRoute.GenerateUrl(this, "Accounts", "SignInWebBank");
 }
 <script>
     (function ($, window, document, undefined) {
@@ -365,7 +368,7 @@
                     continue;
                 }
                 if (key == "returnUrl") {
-                    loginUrl += `${key}${encodeURIComponent('=')}${location.href}&`;
+                    loginUrl += `${key}${encodeURIComponent('=')}@(pagePathWithoutQueryString + webBankLoginPath)&`;
                     continue;
                 }
                 if (key== "ibi") {
