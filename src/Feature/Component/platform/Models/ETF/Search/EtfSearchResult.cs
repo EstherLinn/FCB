@@ -379,5 +379,39 @@
         public string[] CategoryTags { get; set; }
 
         #endregion 貼標
+
+        #region 按鈕
+
+        /// <summary>
+        /// 幣別 HTML
+        /// </summary>
+        public string CurrencyHtml { get; set; }
+
+        /// <summary>
+        /// 關注按鈕 HTML
+        /// </summary>
+        public string FocusButtonHtml { get; set; }
+
+        /// <summary>
+        /// 比較按鈕 HTML
+        /// </summary>
+        public string CompareButtonHtml { get; set; }
+
+        /// <summary>
+        /// 申購按鈕 HTML
+        /// </summary>
+        public string SubscribeButtonHtml { get; set; }
+
+        /// <summary>
+        /// Autocomplete 申購按鈕 HTML
+        /// </summary>
+        public string SubscribeButtonAutoHtml { get; set; }
+
+        /// <summary>
+        /// Autocomplete 關注按鈕 HTML
+        /// </summary>
+        public string FocusButtonAutoHtml { get; set; }
+
+        #endregion 按鈕
     }
 }
