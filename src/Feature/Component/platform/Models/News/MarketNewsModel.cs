@@ -1,4 +1,4 @@
-﻿namespace Feature.Wealth.Component.Models.MarketNews
+﻿namespace Feature.Wealth.Component.Models.News
 {
     public class MarketNewsModel
     {

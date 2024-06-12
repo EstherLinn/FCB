@@ -294,8 +294,8 @@
                                 <option value="焦點新聞低至高" data-sorting-column="HotNews" data-sorting-class="is-asc">焦點新聞低至高</option>
                                 <option value="日期高至低" data-sorting-column="NewsDate" data-sorting-class="is-desc">日期高至低</option>
                                 <option value="日期低至高" data-sorting-column="NewsDate" data-sorting-class="is-asc">日期低至高</option>
-                                <option value="新聞類別高至低" data-sorting-column="NewsType" data-sorting-class="is-desc">新聞類別高至低</option>
-                                <option value="新聞類別低至高" data-sorting-column="NewsType" data-sorting-class="is-asc">新聞類別低至高</option>
+                                @*<option value="新聞類別高至低" data-sorting-column="NewsType" data-sorting-class="is-desc">新聞類別高至低</option>
+                                <option value="新聞類別低至高" data-sorting-column="NewsType" data-sorting-class="is-asc">新聞類別低至高</option>*@
                                 <option value="標題高至低" data-sorting-column="NewsTitle" data-sorting-class="is-desc">標題高至低</option>
                                 <option value="標題低至高" data-sorting-column="NewsTitle" data-sorting-class="is-asc">標題低至高</option>
                                 <option value="瀏覽人次高至低" data-sorting-column="NewsViewCount" data-sorting-class="is-desc">瀏覽人次高至低</option>
@@ -330,140 +330,149 @@
                             <col style="width: 1%;">
                             @*<col style="width: 1%;">*@
                         </colgroup>
-                            <thead>
-                                <tr class="u-nowrap">
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>焦點新聞</span>
-                                            <!-- .is-asc: 升冪 -->
-                                            <!-- .is-desc: 降冪 -->
-                                            <a href="#" class="o-sorting" data-sorting-column="HotNews"></a>
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>日期</span>
-                                            <a href="#" class="o-sorting" data-sorting-column="NewsDate"></a>
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>新聞類別</span>
-                                            <a href="#" class="o-sorting" data-sorting-column="NewsType"></a>
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>標題</span>
-                                            <a href="#" class="o-sorting" data-sorting-column="NewsTitle"></a>
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>瀏覽人次</span>
-                                            <a href="#" class="o-sorting" data-sorting-column="NewsViewCount"></a>
-                                        </div>
-                                    </th>
-                                    @*<th>
-                            <div class="c-table__title">
-                                <span>收藏</span>
-                            </div>
-                        </th>*@
-                                </tr>
-                            </thead>
-                            <tbody id="uid-fjs"></tbody>
-
-                            <script id="uid-template" type="text/html">
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <td class="c-cardTable__body " data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <span class="o-iconText o-iconText--focus t-focus <%= HotNews %>" data-after-lt="焦點新聞"></span>
+                        <thead>
+                            <tr class="u-nowrap">
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>焦點新聞</span>
+                                        <!-- .is-asc: 升冪 -->
+                                        <!-- .is-desc: 降冪 -->
+                                        <a href="#" class="o-sorting" data-sorting-column="HotNews"></a>
                                     </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content u-nowrap@dt-only"><%= NewsDate %></div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content u-left">
-                                        <% if (NewsType != null && NewsType != "") { %>
-                                        <% var newsTypes = NewsType.split(','); %>
-                                        <% for(var i = 0; i < newsTypes.length; i++ ) { %>
-                                        <span class="o-hangTag o-hangTag--gn"><%= newsTypes[i].trim() %></span>
-                                        <% } %>
-                                        <% } %>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>日期</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="NewsDate"></a>
                                     </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="<%= NewsDetailLink %>" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt" target="_blank"><%= NewsTitle %></a>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>新聞類別</span>
+                                        <a href="#"></a>
                                     </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt"><%= NewsViewCount %></div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>標題</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="NewsTitle"></a>
                                     </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <!--<td class="c-cardTable__footer" data-card-table-width="1/1">
-                    <div class="c-cardTable__content">
-                        <ul class="l-collect l-collect--divider@lt">
-                            <li class="l-collect__item">-->
-                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                <!--<a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                            </li>
-                        </ul>
-                    </div>
-                </td>-->
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>瀏覽人次</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="NewsViewCount"></a>
+                                    </div>
+                                </th>
+                                @*<th>
+                                        <div class="c-table__title">
+                                            <span>收藏</span>
+                                        </div>
+                                    </th>*@
                             </tr>
-                            </script>
+                        </thead>
+                        <tbody id="uid-fjs"></tbody>
 
-                        </table>
-
-                        <div class="l-pagination">
-                            <div class="l-pagination__size" id="uid-perPage">
-                            </div>
-                            <script id="uid-template-perPage" type="text/html">
-                                <span>每頁顯示</span>
-                                <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
-                                <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
-                                    <% for(var i = 0; i < values.length - 1; i++ ) { %>
-                                    <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+                        <script id="uid-template" type="text/html">
+                        <tr class="c-cardTable__item u-center@dt-only">
+                            <td class="c-cardTable__space"></td>
+                            <td class="c-cardTable__body " data-card-table-width="1/1">
+                                <div class="c-cardTable__content">
+                                    <span class="o-iconText o-iconText--focus t-focus <%= HotNews %>" data-after-lt="焦點新聞"></span>
+                                </div>
+                            </td>
+                            <td class="c-cardTable__body" data-card-table-width="1/1">
+                                <div class="c-cardTable__content u-nowrap@dt-only"><%= NewsDate %></div>
+                            </td>
+                            <td class="c-cardTable__body" data-card-table-width="1/1">
+                                <div class="c-cardTable__content u-left">
+                                    <% if (NewsType != null && NewsType != "") { %>
+                                    <% var newsTypes = NewsType.split(','); %>
+                                    <% for(var i = 0; i < newsTypes.length; i++ ) { %>
+                                    <span class="o-hangTag o-hangTag--gn"><%= newsTypes[i].trim() %></span>
                                     <% } %>
-                                    <option value="<%= values[values.length - 1] %>">全部</option>
-                                </select>
-                            </script>
-                            <div class="l-pagination__switch" id="uid-pagination">
-                            </div>
-                            <script id="uid-template-pagination" type="text/html">
-                                <div class="o-pagination">
-                                    <% if (currentPage > 1) { %>
-                                    <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
-                                    <% } else { %>
-                                    <!-- .is-disabled: 停用狀態，無法點擊 -->
-                                    <a href="#" class="o-pagination__prev is-disabled"></a>
-                                    <% } %>
-                                    <span class="o-pagination__pager">
-                                        <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
-                                        <span class="o-pagination__total"><%= totalPages %></span>
-                                    </span>
-                                    <% if (currentPage < totalPages ) { %>
-                                    <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
-                                    <% } else { %>
-                                    <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
                                     <% } %>
                                 </div>
-                            </script>
+                            </td>
+                            <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
+                            <td class="c-cardTable__body u-left@dt-only">
+                                <div class="c-cardTable__content u-line-2@lt-only">
+                                    <a href="<%= NewsDetailLink %>" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt" target="_blank"><%= NewsTitle %></a>
+                                </div>
+                            </td>
+                            <td class="c-cardTable__body" data-card-table-width="1/2">
+                                <div class="c-cardTable__content">
+                                    <div class="o-views o-views@lt"><%= NewsViewCount %></div>
+                                </div>
+                            </td>
+                            <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+                            <td class="c-cardTable__space"></td>
+                            <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+                            <!--<td class="c-cardTable__footer" data-card-table-width="1/1">
+                            <div class="c-cardTable__content">
+                                <ul class="l-collect l-collect--divider@lt">
+                                    <li class="l-collect__item">-->
+                            <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                            <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+                            <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+                            <!--<a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>-->
+                        </tr>
+                        </script>
+
+                    </table>
+
+                    <div class="l-pagination">
+                        <div class="l-pagination__size" id="uid-perPage">
                         </div>
+                        <script id="uid-template-perPage" type="text/html">
+                            <span>每頁顯示</span>
+                            <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+                            <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+                                <% for(var i = 0; i < values.length - 1; i++ ) { %>
+                                <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+                                <% } %>
+                                <option value="<%= values[values.length - 1] %>">全部</option>
+                            </select>
+                        </script>
+                        <div class="l-pagination__switch" id="uid-pagination">
+                        </div>
+                        <script id="uid-template-pagination" type="text/html">
+                            <div class="o-pagination">
+                                <% if (currentPage > 1) { %>
+                                <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+                                <% } else { %>
+                                <!-- .is-disabled: 停用狀態，無法點擊 -->
+                                <a href="#" class="o-pagination__prev is-disabled"></a>
+                                <% } %>
+                                <span class="o-pagination__pager">
+                                    <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+                                    <span class="o-pagination__total"><%= totalPages %></span>
+                                </span>
+                                <% if (currentPage < totalPages ) { %>
+                                <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+                                <% } else { %>
+                                <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+                                <% } %>
+                            </div>
+                        </script>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <template id="tmplKeywordNotFound">
+        <div class="c-empty">
+            <div class="c-empty__img">
+                <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
+            </div>
+            <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
+        </div>
+    </template>
 
     <script>
     (function ($, window, document, undefined) {
@@ -558,7 +567,7 @@
             let hashStringProcessed = false;
 
             let fjs;
-            
+
             function initFilter(data) {
                 let opts = {
                     template: '#uid-template',
@@ -862,12 +871,3 @@
     })(jQuery, window, document);
     </script>
 </div>
-
-<template id="tmplKeywordNotFound">
-    <div class="c-empty">
-        <div class="c-empty__img">
-            <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
-        </div>
-        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
-    </div>
-</template>
