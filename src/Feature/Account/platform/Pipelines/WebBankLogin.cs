@@ -148,8 +148,8 @@ namespace Feature.Wealth.Account.Pipelines
             }
             catch (Exception ex)
             {
-                args.HttpContext.Session["WebBankErrorMsg"] = "理財網身分驗證伺服器有誤，請聯絡資訊處";
                 Logger.Account.Info($"Api WebBankResult {step} ,exception Messags: {ex.Message}");
+                args.HttpContext.Session["WebBankErrorMsg"] = "理財網身分驗證伺服器有誤，請聯絡資訊處";
             }
             finally {
                 Logger.Account.Info($"個網登入0203回應 {step}");
