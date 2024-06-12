@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.MarketTrend;
-using Feature.Wealth.Component.Models.News;
 using Feature.Wealth.Component.Repositories;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
@@ -47,9 +46,9 @@ namespace Feature.Wealth.Component.Controllers
                 IndexLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.IndexLink)?.Url,
                 FundLink = Models.FundDetail.FundRelatedSettingModel.GetFundDetailsUrl(),
                 ETFLink = Models.ETF.EtfRelatedLinkSetting.GetETFDetailUrl(),
-                NewsLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.NewsLink)?.Url,
+                NewsLink = Models.News.MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl(),
                 MoreNewsButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreNewsButtonText),
-                MoreNewsButtonLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.MoreNewsButtonLink)?.Url,
+                MoreNewsButtonLink = Models.News.MarketNewsRelatedLinkSetting.GetMarketNewsListUrl(),
                 MoreETFButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreETFButtonText),
                 MoreETFButtonLink = Models.FundDetail.FundRelatedSettingModel.GetFundSearchUrl(),
                 MoreFundButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreFundButtonText),
@@ -283,13 +282,13 @@ namespace Feature.Wealth.Component.Controllers
                 if (newsItems != null && newsItems.Any())
                 {
                     string newsType = ItemUtils.GetFieldValue(newsItems.FirstOrDefault(), Template.DropdownOption.Fields.OptionText);
-                    var pageId = MarketNewsRelatedLinkSetting.GetMarketNewsDetailPageItem().ID.ToGuid();
+                    var pageId = Models.News.MarketNewsRelatedLinkSetting.GetMarketNewsDetailPageItem().ID.ToGuid();
 
                     marketTrend.News = this._marketTrendRepository.GetNews(pageId, newsType).ToList();
 
                     for (int i = 0; i < marketTrend.News.Count; i++)
                     {
-                        marketTrend.News[i].DetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + marketTrend.News[i].ID;
+                        marketTrend.News[i].DetailLink = Models.News.MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + marketTrend.News[i].ID;
                     }
                 }
 
