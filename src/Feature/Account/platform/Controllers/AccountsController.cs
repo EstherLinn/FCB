@@ -22,6 +22,7 @@ using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using System.Web;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using System.Runtime.Caching;
+using Sitecore.Configuration;
 
 namespace Feature.Wealth.Account.Controllers
 {
@@ -145,7 +146,8 @@ namespace Feature.Wealth.Account.Controllers
             var queueId = ticks.ToString() + '-' + guid;
             var uri = new Uri(callBackUrl);
             string pagePathWithoutQueryString = uri.GetLeftPart(UriPartial.Path);
-            pagePathWithoutQueryString += "/api/client/Accounts/SignInWebBank";
+            string WebBankCallBack = Settings.GetSetting("WebBank.CallBackUrl");
+            pagePathWithoutQueryString += WebBankCallBack;
             var resp = await _webBankService.UserVerifyRequest(pagePathWithoutQueryString, queueId);
             return new JsonNetResult(resp);
         }
