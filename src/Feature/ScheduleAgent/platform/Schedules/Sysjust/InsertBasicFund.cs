@@ -26,7 +26,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             {
                 try
                 {
-                    var basic = await ParseCsv<SysjustHoldingFund4>(filePath);
+                    var basic = await ParseCsv<SysjustBasicFund>(filePath);
 
                     if (basic.Any())
                     {
