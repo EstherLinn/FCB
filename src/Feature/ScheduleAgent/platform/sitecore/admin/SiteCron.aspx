@@ -103,12 +103,6 @@
 
             return result;
         }
-
-        var str = getQueryString()["refresh"];
-        if (str != undefined) {
-            c = parseInt(str) * 1000;
-            setTimeout("document.location.href = document.location.href;", c);
-        }
     </script>
 </body>
 </html>
