@@ -342,70 +342,60 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">1日績效</div>
             <div class="c-cardTable__content">
-                <% if (!DailyReturn) { %>
+                <% if (typeof DailyReturn == "number" && !isNaN(DailyReturn) && DailyReturn >= 0) { %>
+                    <span class="o-rise"><%= DailyReturn.toFixed(2) %>%</span>
+                <% } else if (typeof DailyReturn == "number" && !isNaN(DailyReturn) && DailyReturn < 0) { %>
+                    <span class="o-fall"><%= Math.abs(DailyReturn).toFixed(2) %>%</span>
+                <% } else { %>
                     <span>-</span>
-                <% } %>
-                <% if (typeof DailyReturn == "number" && !isNaN(DailyReturn) && DailyReturn > 0) { %>
-                    <span class="o-rise"><%= DailyReturn %>%</span>
-                <% } %>
-                <% if (typeof DailyReturn == "number" && !isNaN(DailyReturn) && DailyReturn < 0) { %>
-                    <span class="o-fall"><%= DailyReturn %>%</span>
                 <% } %>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">1週績效</div>
             <div class="c-cardTable__content">
-                <% if (!WeeklyReturn) { %>
+                <% if (typeof WeeklyReturn == "number" && !isNaN(WeeklyReturn) && WeeklyReturn >= 0) { %>
+                    <span class="o-rise"><%= WeeklyReturn.toFixed(2) %>%</span>
+                <% } else if (typeof WeeklyReturn == "number" && !isNaN(WeeklyReturn) && WeeklyReturn < 0) { %>
+                    <span class="o-fall"><%= Math.abs(WeeklyReturn).toFixed(2) %>%</span>
+                <% } else { %>
                     <span>-</span>
-                <% } %>
-                <% if (typeof WeeklyReturn == "number" && !isNaN(WeeklyReturn) && WeeklyReturn > 0) { %>
-                    <span class="o-rise"><%= WeeklyReturn %>%</span>
-                <% } %>
-                <% if (typeof WeeklyReturn == "number" && !isNaN(WeeklyReturn) && WeeklyReturn < 0) { %>
-                    <span class="o-fall"><%= WeeklyReturn %>%</span>
                 <% } %>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">1月績效</div>
             <div class="c-cardTable__content">
-                <% if (!MonthlyReturn) { %>
+                <% if (typeof MonthlyReturn == "number" && !isNaN(MonthlyReturn) && MonthlyReturn >= 0) { %>
+                    <span class="o-rise"><%= MonthlyReturn.toFixed(2) %>%</span>
+                <% } else if (typeof MonthlyReturn == "number" && !isNaN(MonthlyReturn) && MonthlyReturn < 0) { %>
+                    <span class="o-fall"><%= Math.abs(MonthlyReturn).toFixed(2) %>%</span>
+                <% } else { %>
                     <span>-</span>
-                <% } %>
-                <% if (typeof MonthlyReturn == "number" && !isNaN(MonthlyReturn) && MonthlyReturn > 0) { %>
-                    <span class="o-rise"><%= MonthlyReturn %>%</span>
-                <% } %>
-                <% if (typeof MonthlyReturn == "number" && !isNaN(MonthlyReturn) && MonthlyReturn < 0) { %>
-                    <span class="o-fall"><%= MonthlyReturn %>%</span>
                 <% } %>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">1季績效</div>
             <div class="c-cardTable__content">
-                <% if (!ThreeMonthReturn) { %>
+                <% if (typeof ThreeMonthReturn == "number" && !isNaN(ThreeMonthReturn) && ThreeMonthReturn >= 0) { %>
+                    <span class="o-rise"><%= ThreeMonthReturn.toFixed(2) %>%</span>
+                <% } else if (typeof ThreeMonthReturn == "number" && !isNaN(ThreeMonthReturn) && ThreeMonthReturn < 0) { %>
+                    <span class="o-fall"><%= Math.abs(ThreeMonthReturn).toFixed(2) %>%</span>
+                <% } else { %>
                     <span>-</span>
-                <% } %>
-                <% if (typeof ThreeMonthReturn == "number" && !isNaN(ThreeMonthReturn) && ThreeMonthReturn > 0) { %>
-                    <span class="o-rise"><%= ThreeMonthReturn %>%</span>
-                <% } %>
-                <% if (typeof ThreeMonthReturn == "number" && !isNaN(ThreeMonthReturn) && ThreeMonthReturn < 0) { %>
-                    <span class="o-fall"><%= ThreeMonthReturn %>%</span>
                 <% } %>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">1年績效</div>
             <div class="c-cardTable__content">
-                <% if (!OneYearReturn) { %>
+                <% if (typeof OneYearReturn == "number" && !isNaN(OneYearReturn) && OneYearReturn >= 0) { %>
+                    <span class="o-rise"><%= OneYearReturn.toFixed(2) %>%</span>
+                <% } else if (typeof OneYearReturn == "number" && !isNaN(OneYearReturn) && OneYearReturn < 0) { %>
+                    <span class="o-fall"><%= Math.abs(OneYearReturn).toFixed(2) %>%</span>
+                <% } else { %>
                     <span>-</span>
-                <% } %>
-                <% if (typeof OneYearReturn == "number" && !isNaN(OneYearReturn) && OneYearReturn > 0) { %>
-                    <span class="o-rise"><%= OneYearReturn %>%</span>
-                <% } %>
-                <% if (typeof OneYearReturn == "number" && !isNaN(OneYearReturn) && OneYearReturn < 0) { %>
-                    <span class="o-fall"><%= OneYearReturn %>%</span>
                 <% } %>
             </div>
         </td>
@@ -413,7 +403,7 @@
         <td class="c-cardTable__space"></td>
         @* 申購按鈕不顯示時，前面的關注按鈕的 data-card-table-width 也要改成 1/1
         手機板的時候版型才會對 *@
-        <% if (AvailabilityStatus != 'N' && OnlineSubscriptionAvailability != 'N') { %>
+        <% if (AvailabilityStatus == 'Y' && OnlineSubscriptionAvailability != 'N') { %>
         <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
         <td class="c-cardTable__footer" data-card-table-width="1/2">
             <div class="c-cardTable__content">
@@ -429,8 +419,7 @@
                 <%= SubscribeButtonHtml %>
             </div>
         </td>
-        <% } %>
-        <% if (AvailabilityStatus == 'N' || OnlineSubscriptionAvailability == 'N') { %>
+        <% } else { %>
         <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
         <td class="c-cardTable__footer" data-card-table-width="1/1">
             <div class="c-cardTable__content">
@@ -483,7 +472,7 @@
                 },
                 search: {
                     ele: '#keyword',
-                    fields: ['FirstBankCode', 'EnglishName', 'ChineseName'],
+                    fields: ['FirstBankCode', 'EnglishName', 'ChineseName', 'FundCode'],
                     start_length: 2,
                     bindEvent: false,
                     multi: function () {
@@ -645,16 +634,16 @@
                         let $like = `<a ${suggestion.AutoFocusButtonHtml}></a>`;
 
                         // 申購按鈕
-                        let $purchase = (suggestion.AvailabilityStatus == 'N' || suggestion.OnlineSubscriptionAvailability == 'N') ?
-                            '' : `<div class="c-itemKeyword__actions"><a ${suggestion.AutoSubscribeButtonHtml}>申購</a></div>`;
+                        let $purchase = (suggestion.AvailabilityStatus == 'Y' && suggestion.OnlineSubscriptionAvailability != 'N') ?
+                        `<div class="c-itemKeyword__actions"><a ${suggestion.AutoSubscribeButtonHtml}>申購</a></div>` : '';
 
                         return `<div class="c-itemKeyword">
-                                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                            </a>
-                                            <div class="c-itemKeyword__collections">${$like}</div>
-                                            ${$purchase}
-                                        </div>`;
+                                    <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                    </a>
+                                    <div class="c-itemKeyword__collections">${$like}</div>
+                                    ${$purchase}
+                                </div>`;
                     }
                 });
             });

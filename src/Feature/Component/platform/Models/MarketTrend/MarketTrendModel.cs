@@ -89,10 +89,12 @@ namespace Feature.Wealth.Component.Models.MarketTrend
             public readonly struct Fields
             {
                 public static readonly ID IndexLink = new ID("{7D72D69C-A56C-4C73-8B15-4AE7DC2E9C50}");
-                // 這個因為基金有給連結方法所以沒用了，但先留著
+
+                // 這個些有給連結方法所以沒用了，但先留著
                 public static readonly ID FundLink = new ID("{7185BBB2-D663-4827-924B-8777A8252EC2}");
                 public static readonly ID ETFLink = new ID("{AD39F7C8-9A6D-457A-A308-9B14755805E1}");
                 public static readonly ID NewsLink = new ID("{F61C2BDF-6644-4A7D-93AD-D4C388F2CCAD}");
+
                 public static readonly ID MoreNewsButtonText = new ID("{D8B67B5C-D297-4C84-9EB3-E12A10F704C1}");
                 public static readonly ID MoreNewsButtonLink = new ID("{4D235F0A-6908-4AF1-9443-DA0BB3728F50}");
                 public static readonly ID MoreETFButtonText = new ID("{76AE3A7E-DD25-4505-97C2-EDAB73645A4F}");

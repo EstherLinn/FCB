@@ -3,6 +3,7 @@ using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.MarketTrend;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -87,6 +88,24 @@ namespace Feature.Wealth.Component.Repositories
                            FROM [vw_BasicETF]";
 
             var result = this._dbConnection.Query<RelevantInformation>(sql) ?? new List<RelevantInformation>();
+
+            return result;
+        }
+
+        public IEnumerable<News> GetNews(Guid pageId, string newsType)
+        {
+            string sql = @"SELECT TOP 5 
+                           [NewsSerialNumber] [ID]
+                           ,SUBSTRING([NewsDetailDate], 0, 11) [Date]
+                           ,SUBSTRING([NewsDetailDate], 11, 6) [Time]
+                           ,[NewsTitle] [Title]
+                           ,IIF(B.VisitCount IS NULL, 0, B.VisitCount) [ViewCount]
+                           FROM [NewsDetail] A WITH (NOLOCK)
+                           LEFT JOIN [VisitCount] B WITH (NOLOCK) ON A.NewsSerialNumber = REPLACE(REPLACE(REPLACE(B.QueryStrings, 'id=', ''), '%7b', '{'), '%7d', '}') AND B.PageId = @PageId
+                           WHERE A.[NewsType] LIKE @NewsType
+                           ORDER BY [NewsDetailDate] DESC";
+
+            var result = this._dbConnection.Query<News>(sql, new { PageId = pageId, NewsType = "%" + newsType + "%" }) ?? new List<News>();
 
             return result;
         }

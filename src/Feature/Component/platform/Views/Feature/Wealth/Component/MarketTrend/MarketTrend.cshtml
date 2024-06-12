@@ -1457,34 +1457,30 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
             <div class="c-cardTable__content">
-                <% if (!Change) { %>
+                <% if (typeof Change == "number" && !isNaN(Change) && Change >= 0) { %>
+                    <span class="o-rise"><%= Change.toFixed(2) %>%</span>
+                <% } else if (typeof Change == "number" && !isNaN(Change) && Change < 0) { %>
+                    <span class="o-fall"><%= Math.abs(Change).toFixed(2) %>%</span>
+                <% } else { %>
                     <span>-</span>
-                <% } %>
-                <% if (typeof Change == "number" && !isNaN(Change) && Change > 0) { %>
-                    <span class="o-rise"><%= Change %>%</span>
-                <% } %>
-                <% if (typeof Change == "number" && !isNaN(Change) && Change < 0) { %>
-                    <span class="o-fall"><%= Change %>%</span>
                 <% } %>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">6個月績效</div>
             <div class="c-cardTable__content">
-                <% if (!M6Change) { %>
+                <% if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change >= 0) { %>
+                    <span class="o-rise"><%= M6Change.toFixed(2) %>%</span>
+                <% } else if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change < 0) { %>
+                    <span class="o-fall"><%= Math.abs(M6Change).toFixed(2) %>%</span>
+                <% } else { %>
                     <span>-</span>
-                <% } %>
-                <% if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change > 0) { %>
-                    <span class="o-rise"><%= M6Change %>%</span>
-                <% } %>
-                <% if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change < 0) { %>
-                    <span class="o-fall"><%= M6Change %>%</span>
                 <% } %>
             </div>
         </td>
         <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
         <td class="c-cardTable__space"></td>
-        <% if (AvailabilityStatus != 'N' && OnlineSubscriptionAvailability != 'N') { %>
+        <% if (AvailabilityStatus == 'Y' && OnlineSubscriptionAvailability != 'N') { %>
             <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
             <td class="c-cardTable__footer" data-card-table-width="2/3">
                 <div class="c-cardTable__content">
@@ -1503,8 +1499,7 @@
                     <%= SubscribeButtonHtml %>
                 </div>
             </td>
-        <% } %>
-        <% if (AvailabilityStatus == 'N' || OnlineSubscriptionAvailability == 'N') { %>
+        <% } else { %>
             <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
             <td class="c-cardTable__footer" data-card-table-width="2/2">
                 <div class="c-cardTable__content">
@@ -1558,34 +1553,30 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">漲跌幅</div>
             <div class="c-cardTable__content">
-                <% if (!Change) { %>
+                <% if (typeof Change == "number" && !isNaN(Change) && Change >= 0) { %>
+                    <span class="o-rise"><%= Change.toFixed(2) %>%</span>
+                <% } else if (typeof Change == "number" && !isNaN(Change) && Change < 0) { %>
+                    <span class="o-fall"><%= Math.abs(Change).toFixed(2) %>%</span>
+                <% } else { %>
                     <span>-</span>
-                <% } %>
-                <% if (typeof Change == "number" && !isNaN(Change) && Change > 0) { %>
-                    <span class="o-rise"><%= Change %>%</span>
-                <% } %>
-                <% if (typeof Change == "number" && !isNaN(Change) && Change < 0) { %>
-                    <span class="o-fall"><%= Change %>%</span>
                 <% } %>
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">6個月績效</div>
             <div class="c-cardTable__content">
-                <% if (!M6Change) { %>
+                <% if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change >= 0) { %>
+                    <span class="o-rise"><%= M6Change.toFixed(2) %>%</span>
+                <% } else if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change < 0) { %>
+                    <span class="o-fall"><%= Math.abs(M6Change).toFixed(2) %>%</span>
+                <% } else { %>
                     <span>-</span>
-                <% } %>
-                <% if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change > 0) { %>
-                    <span class="o-rise"><%= M6Change %>%</span>
-                <% } %>
-                <% if (typeof M6Change == "number" && !isNaN(M6Change) && M6Change < 0) { %>
-                    <span class="o-fall"><%= M6Change %>%</span>
                 <% } %>
             </div>
         </td>
         <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
         <td class="c-cardTable__space"></td>
-        <% if (AvailabilityStatus != 'N' && OnlineSubscriptionAvailability != 'N') { %>
+        <% if (AvailabilityStatus == 'Y' && OnlineSubscriptionAvailability != 'N') { %>
             <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
             <td class="c-cardTable__footer" data-card-table-width="2/3">
                 <div class="c-cardTable__content">
@@ -1604,8 +1595,7 @@
                     <%= SubscribeButtonHtml %>
                 </div>
             </td>
-        <% } %>
-        <% if (AvailabilityStatus == 'N' || OnlineSubscriptionAvailability == 'N') { %>
+        <% } else { %>
             <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
             <td class="c-cardTable__footer" data-card-table-width="2/2">
                 <div class="c-cardTable__content">

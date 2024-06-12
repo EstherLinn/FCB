@@ -556,34 +556,34 @@
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
                                             <div class="c-cardTable__title" data-length="5">漲跌幅</div>
                                             <div class="c-cardTable__content">
-                                                @if (item.DailyReturn == null || item.DailyReturn == 0)
+                                                @if (item.DailyReturn == null)
                                                 {
                                                     <span>-</span>
                                                 }
-                                                else if (item.DailyReturn > 0)
+                                                else if (item.DailyReturn >= 0)
                                                 {
                                                     <span class="o-rise">@(item.DailyReturn)%</span>
                                                 }
                                                 else if (item.DailyReturn < 0)
                                                 {
-                                                    <span class="o-fall">@(item.DailyReturn)%</span>
+                                                    <span class="o-fall">@(Math.Abs(item.DailyReturn.Value))%</span>
                                                 }
                                             </div>
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
                                             <div class="c-cardTable__title" data-length="5">6個月績效</div>
                                             <div class="c-cardTable__content">
-                                                @if (item.SixMonthReturn == null || item.SixMonthReturn == 0)
+                                                @if (item.SixMonthReturn == null)
                                                 {
                                                     <span>-</span>
                                                 }
-                                                else if (item.SixMonthReturn > 0)
+                                                else if (item.SixMonthReturn >= 0)
                                                 {
                                                     <span class="o-rise">@(item.SixMonthReturn)%</span>
                                                 }
                                                 else if (item.SixMonthReturn < 0)
                                                 {
-                                                    <span class="o-fall">@(item.SixMonthReturn)%</span>
+                                                    <span class="o-fall">@(Math.Abs(item.SixMonthReturn.Value)) %</span>
                                                 }
                                             </div>
                                         </td>
