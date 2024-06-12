@@ -17,7 +17,7 @@
         }
         if (SC_DATA.IsGlobalStyle) {
             $('html').addClass('is-globalization');
-        }    
+        }
         $.ajax({
             type: "post",
             url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
@@ -350,11 +350,31 @@
                     mobileLoginLink ="@MobileIleoLogin";
                 }
             let mobileLoginUrl = new URL(mobileLoginLink.replaceAll('&amp;', '&'));
-                let mobileLoginParms = mobileLoginUrl.searchParams;
-                mobileLoginParms.delete("returnUrl");
-            mobileLoginParms.append("returnUrl", location.href);
-            console.log(mobileLoginUrl)
-                 self.setAttribute('href', mobileLoginUrl);
+            let loginUrl = "";
+            let urlOriginAndPath = mobileLoginUrl.origin + mobileLoginUrl.pathname;
+            let mobileLoginParms = mobileLoginUrl.searchParams;
+            let allParams = mobileLoginParms.entries();
+            loginUrl = urlOriginAndPath + "?";
+            for (const [key, value] of allParams) {
+                if (key == "link" && loginType !== "ileo") {
+                    loginUrl += `${key}=${encodeURIComponent(value + '&')}`;
+                    continue;
+                }
+                if (key == "channel" ) {
+                    loginUrl += `${key}=${encodeURIComponent(value + '&')}`;
+                    continue;
+                }
+                if (key == "returnUrl") {
+                    loginUrl += `${key}=${encodeURIComponent(location.href)}&`;
+                    continue;
+                }
+                if (key== "ibi") {
+                    loginUrl += `${key}=${value}`;
+                } else {
+                    loginUrl += `${key}=${value}&`;
+                }
+            }
+            self.setAttribute('href', loginUrl);
         });
 
          EventHandler.AddClick('fcbapplogin-click', function (e) {

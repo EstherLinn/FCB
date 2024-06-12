@@ -415,6 +415,20 @@
     Session["OAuthErrorMsg"] = null;
 }
 
+@if (Session["WebBankErrorMsg"] != null)
+{
+    <script>
+        $('[data-errormsg]', '#loginFail').text("「@Session["WebBankErrorMsg"].ToString()」");
+        $.magnificPopup.open({
+            items: {
+                src: '#loginFail'
+            },
+            type: 'inline'
+        });
+    </script>
+    Session["WebBankErrorMsg"] = null;
+}
+
 <script>
     if (SC_DATA.IsAppLogin && !SC_DATA.LoginStatus) {
         $.magnificPopup.open({
