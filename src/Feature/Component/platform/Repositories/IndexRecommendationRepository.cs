@@ -212,7 +212,7 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<USStock> GetUSStockDatas()
         {
-            var queryitem = USStockRelatedLinkSetting.GetUSStockDetailsPageItem();
+            var queryitem = USStockRelatedLinkSetting.GetUSStockDetailPageItem();
             var query = queryitem.ID.ToGuid();
             var uSStocData = GetUSStockData();
 

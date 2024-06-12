@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.MarketTrend;
+using Feature.Wealth.Component.Models.News;
 using Feature.Wealth.Component.Repositories;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
@@ -17,9 +18,6 @@ namespace Feature.Wealth.Component.Controllers
     {
         private readonly GlobalIndexRepository _globalIndexRepository = new GlobalIndexRepository();
         private readonly MarketTrendRepository _marketTrendRepository = new MarketTrendRepository();
-        private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
-        // TODO 等新聞詳細頁出來改用 VisitCountRepository
-        private readonly ViewCountRepository _viewCountrepository = new ViewCountRepository();
         private IList<Models.GlobalIndex.GlobalIndex> _globalIndexList;
         private List<Models.GlobalIndex.GlobalIndexHighchartsData> _datas = new List<Models.GlobalIndex.GlobalIndexHighchartsData>();
         private List<RelevantInformation> _stockRelevantFund = new List<RelevantInformation>();
@@ -32,13 +30,9 @@ namespace Feature.Wealth.Component.Controllers
         private IEnumerable<RelevantInformation> _fundList = new List<RelevantInformation>();
         private IEnumerable<RelevantInformation> _etfList = new List<RelevantInformation>();
 
-        private string _rootPath;
-
         public ActionResult Index()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
-
-            this._rootPath = this.ControllerContext.HttpContext.Request.Url.GetLeftPart(UriPartial.Authority);
 
             var model = CreateModel(item);
 
@@ -288,38 +282,14 @@ namespace Feature.Wealth.Component.Controllers
 
                 if (newsItems != null && newsItems.Any())
                 {
-                    string newsType = ItemUtils.GetFieldValue(newsItems.FirstOrDefault(), Template.DropdownOption.Fields.OptionValue);
+                    string newsType = ItemUtils.GetFieldValue(newsItems.FirstOrDefault(), Template.DropdownOption.Fields.OptionText);
+                    var pageId = MarketNewsRelatedLinkSetting.GetMarketNewsDetailPageItem().ID.ToGuid();
 
-                    // TODO 之後改抓DB
-                    var resp = _djMoneyApiRespository.GetNewsForMarketTrend(newsType);
+                    marketTrend.News = this._marketTrendRepository.GetNews(pageId, newsType).ToList();
 
-                    if (resp != null
-                        && resp.ContainsKey("resultSet")
-                        && resp["resultSet"] != null
-                        && resp["resultSet"]["result"] != null
-                        && resp["resultSet"]["result"].Any())
+                    for (int i = 0; i < marketTrend.News.Count; i++)
                     {
-                        var datas = resp["resultSet"]["result"];
-
-                        foreach (var data in datas)
-                        {
-                            var news = new News()
-                            {
-                                Date = data["v1"].ToString(),
-                                Time = data["v2"].ToString(),
-                                Title = data["v3"].ToString(),
-                                ID = data["v4"].ToString(),
-                                DetailLink = newsLink + "?id=" + data["v4"].ToString(),
-                            };
-
-                            // 取得觀看數
-                            // TODO 等新聞詳細頁出來改用 VisitCountRepository
-                            news.ViewCount = this._viewCountrepository.GetViewCountInfo(newsLinkItem.ID.ToString(), this._rootPath + news.DetailLink);
-
-                            // TODO 取得收藏
-
-                            marketTrend.News.Add(news);
-                        }
+                        marketTrend.News[i].DetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + marketTrend.News[i].ID;
                     }
                 }
 

@@ -38,7 +38,7 @@ namespace Feature.Wealth.Component.Models.USStock
             return USStockSearcPage()?.TargetItem;
         }
 
-        public static Item GetUSStockDetailsPageItem()
+        public static Item GetUSStockDetailPageItem()
         {
             return USStockDetailPage()?.TargetItem;
         }

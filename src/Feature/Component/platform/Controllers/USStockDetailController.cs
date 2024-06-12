@@ -32,7 +32,7 @@ namespace Feature.Wealth.Component.Controllers
             var model = new USStockDetailModel
             {
                 Item = item,
-                PageID = USStockRelatedLinkSetting.GetUSStockDetailsPageItem()?.ID.ToString(),
+                PageID = USStockRelatedLinkSetting.GetUSStockDetailPageItem()?.ID.ToString(),
                 USStock = uSStock,
                 b2brwdDomain = ItemUtils.GetFieldValue(item, Template.USStockDetail.Fields.b2brwdDomain)
             };
