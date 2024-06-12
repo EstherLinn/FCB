@@ -39,14 +39,14 @@ namespace Feature.Wealth.Component.Repositories
                 ETFItems.Add(item);
 
             }
-           
+
             return ETFItems;
 
         }
         private void ProcessFundFilterDatas(ETFs item)
         {
             item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
-            item.TotalManagementFee = item.TotalManagementFee * 100;
+            item.TotalManagementFee = decimal.Round(item.TotalManagementFee, 2);
             item.MarketPrice = decimal.Round(item.MarketPrice, 4);
         }
     }
