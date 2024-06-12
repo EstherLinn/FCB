@@ -153,7 +153,7 @@ namespace Feature.Wealth.Component.Repositories
 
                 string query = @"
             SELECT [NewsType] 
-            FROM [FCB_sitecore_Custom].[dbo].[NewsType]
+            FROM [dbo].[NewsType]
             WHERE [TypeNumber] IN @IdList";
 
                 var newsTypeList = DbManager.Custom.ExecuteIList<string>(query, new { IdList = idList }, CommandType.Text);
@@ -437,7 +437,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             string newsTypeQuery = @"
         SELECT [NewsType]
-        FROM [FCB_sitecore_Custom].[dbo].[NewsType]
+        FROM [dbo].[NewsType]
         WHERE [TypeNumber] = '2'";
 
             var headlineNewsType = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
