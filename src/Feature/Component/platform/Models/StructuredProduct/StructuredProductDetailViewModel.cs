@@ -25,8 +25,13 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
         public IList<Dividend> HistoryDividend { get; set; }
 
         /// <summary>
-        /// 頁面 Id
+        /// 結構型商品詳細頁頁面 Id
         /// </summary>
-        public string PageId { get; set; }
+        public string StructuredProductDetailPageId { get; set; }
+
+        /// <summary>
+        /// 結構型商品搜尋頁連結
+        /// </summary>
+        public string StructuredProductSearchUrl { get; set; }
     }
 }
