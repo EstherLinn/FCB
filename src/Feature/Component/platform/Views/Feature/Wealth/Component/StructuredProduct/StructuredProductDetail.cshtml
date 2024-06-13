@@ -1,11 +1,10 @@
-﻿@using System.Web.Script.Serialization
-@model Feature.Wealth.Component.Models.StructuredProduct.StructuredProductDetailViewModel
-@using Foundation.Wealth.Helper;
+﻿@model Feature.Wealth.Component.Models.StructuredProduct.StructuredProductDetailViewModel
+@using System.Web.Script.Serialization
 
 @{
     string productCode = Model.StructuredProduct.ProductCode;
 
-    string pageId = Model.PageId;
+    string structuredProductDetailPageId = Model.StructuredProductDetailPageId;
 }
 
 <script>
@@ -27,87 +26,8 @@
             let HistoryBankSellPrice = JSON.parse(JSON.stringify(data.HistoryBankSellPrice));
             let ThirtyDayBankSellPriceWithChange = JSON.parse(JSON.stringify(data.ThirtyDayBankSellPriceWithChange));
 
-            const resetProps = ['IssuingInstitution', 'CurrencyName', 'ProductMaturityDate', 'BankSellPrice', 'PriceBaseDate'];
-            const dateProps = ['ProductMaturityDate', 'PriceBaseDate'];
-
-            RenderPageHeader();
-            RenderThirtyDaySellPrice();
             RenderDividendFilter();
             RenderDividendList();
-
-            // 商品資訊Header
-            function RenderPageHeader() {
-                var data = ProductData;
-                resetProp(data);
-
-                for (var d in data) {
-                    let value = data[d];
-
-                    if ((value == null || value == undefined || value == '')
-                        && d.includes('_DisplayText')) {
-                        data[d] = '-';
-                    }
-                }
-
-                var pageHeaderTemplate = $('#page-header-template').html();
-
-                var renderedHTML = pageHeaderTemplate.replace(/%Title%/g, data.ProductCode + " " + data.ProductName).replace(/%BankSellPrice%/g, data.BankSellPrice_DisplayText).replace(/%CurrencyName%/g, data.CurrencyName_DisplayText).replace(/%PriceBaseDate%/g, data.PriceBaseDate_DisplayText).replace(/%ProductMaturityDate%/g, data.ProductMaturityDate_DisplayText).replace(/%IssuingInstitution%/g, data.IssuingInstitution_DisplayText);
-
-                $('#pageHeader').html(DOMPurify.sanitize(renderedHTML));
-
-                handleVisitUpdate();
-                handleVisitExec();
-            };
-
-            function handleVisitUpdate() {
-                let params = {
-                    pageId: $('.o-views.o-views--bk').attr('eh-visit-pageid'),
-                    url: new URL(location.href).href,
-                    querystring: $('.o-views.o-views--bk').attr('eh-visit-qs').split('&')
-                };
-
-                $.ajax({
-                    url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Update")',
-                    type: 'POST',
-                    data: params
-                }).done(function (data, textStatus, jqXHR) {
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                });
-            }
-
-            function handleVisitExec() {
-                let params = {
-                    pageId: $('.o-views.o-views--bk').attr('eh-visit-pageid'),
-                    url: new URL(location.href).href
-                };
-
-                $.ajax({
-                    url: '@ClientRoute.GenerateUrl(this, "VisitCount", "Get")',
-                    type: 'GET',
-                    data: params
-                }).done(function (data, textStatus, jqXHR) {
-                    if (data) {
-                        $('.o-views.o-views--bk').html(DOMPurify.sanitize(data.Count));
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                });
-            }
-
-            function resetProp(obj) {
-                for (var o in obj) {
-                    let value = obj[o];
-
-                    if (resetProps.includes(o)) {
-                        let newProp = o + '_DisplayText';
-                        obj[newProp] = value;
-                    }
-
-                    if (dateProps.includes(o) && value != null) {
-                        obj[o] = new Date(value).getTime().toString();
-                    }
-                }
-                return obj;
-            }
 
             // 配息 年份篩選
             function RenderDividendFilter() {
@@ -250,90 +170,6 @@
                 window.loading('hide');
             });
 
-
-            // 參考贖回價 近30日
-            function RenderThirtyDaySellPrice() {
-
-                if (ThirtyDayBankSellPriceWithChange.length != 0) {
-
-                    let ThirtyDayHtml = '';
-
-                    var thirtyDayBankSellPriceWithChange = ThirtyDayBankSellPriceWithChange;
-                    var data = thirtyDayBankSellPriceWithChange.map(function (item) {
-                        return {
-                            "date": item.PriceBaseDate,
-                            "value": item.BankSellPriceValue,
-                            "diff": item.BankSellPriceChange
-                        };
-                    });
-
-                    var length = Math.min(data.length, 30);
-                    var count = 1;
-                    var percolumn = 5;
-
-                    for (var i = 0; i < length; i++) {
-
-                        // slide框
-                        if (count % (percolumn * 2) == 1) {
-                            ThirtyDayHtml += '<div class="swiper-slide c-swiper__slide">';
-                            ThirtyDayHtml += '<div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>';
-                        }
-
-                        var tbodyHtml = '';
-
-                        // thead、tbody開頭
-                        if (count % percolumn == 1) {
-                            ThirtyDayHtml += '<div class="l-flex__item">';
-                            ThirtyDayHtml += '<div class="l-table">';
-                            ThirtyDayHtml += '<table class="c-table u-center">';
-                            ThirtyDayHtml += '<colgroup>';
-                            ThirtyDayHtml += '<col style="width: 33.3%;">';
-                            ThirtyDayHtml += '<col style="width: 33.3%;">';
-                            ThirtyDayHtml += '<col style="width: 33.3%;">';
-                            ThirtyDayHtml += '</colgroup>';
-
-                            var theadClass = ((count + percolumn - 1) % (percolumn * 2) == 0) ? ' class="u-hidden@lt"' : '';
-                            var theadHtml = '<thead' + theadClass + '>' + $('#thirty-theadtr').html() + '</thead>';
-                            ThirtyDayHtml += theadHtml;
-
-                            tbodyHtml += '<tbody>';
-                        }
-
-                        // tbody內容
-                        var tr = $('#thirty-tbodytr').html();
-
-                        tr = tr.replace(/%Date%/gi, data[i].date);
-                        tr = tr.replace(/%Price%/gi, data[i].value);
-
-                        var diffClass = data[i].diff > 0 ? 'o-rise' : 'o-fall';
-                        tr = tr.replace(/%Diff%/gi, "<span class='" + diffClass + "'>" + data[i].diff + "</span>");
-
-                        tbodyHtml += tr;
-
-                        // tbody end
-                        if (count % percolumn == 0) {
-                            tbodyHtml += '</tbody></table></div></div>';
-                        }
-                        ThirtyDayHtml += tbodyHtml;
-
-                        if (count % (percolumn * 2) == 0) {
-                            ThirtyDayHtml += '</div></div>';
-                        }
-
-                        count++;
-                    }
-
-                    $('#thirtydaytable').html(DOMPurify.sanitize(ThirtyDayHtml));
-
-                    $('#thirtyDayContent').removeClass('u-hidden');
-                    $('#thirtyDayEmpty').addClass('u-hidden');
-                }
-                else {
-                    $('#thirtyDayContent').addClass('u-hidden');
-                    $('#thirtyDayEmpty').removeClass('u-hidden');
-                }
-            };
-
             // 參考贖回價 走勢圖
             getParams();
             $('[data-trend-filter="dateRange"]').on('change', function () {
@@ -438,7 +274,6 @@
                     $('[data-trend-filter="inputStart"]').datepicker('setDate', obj.startDate.toLocaleDateString());
                     $('[data-trend-filter="inputEnd"]').datepicker('setDate', obj.endDate.toLocaleDateString());
                 }
-
 
                 initTrendChart(obj, text);
             };
@@ -617,7 +452,6 @@
                 }
             };
 
-
             // 手機版分頁筆數功能
             $('[data-sortingbox="true"]').on('change.sorting',
                 function (e) {
@@ -642,100 +476,6 @@
         });
 
     })(jQuery, window, document);
-</script>
-
-<script type="text/template" id="page-header-template">
-    <div class="l-pageHeader__title">
-        <div class="c-pageHeader">
-            <div class="c-pageHeader__main">
-                <h1 class="c-pageHeader__title">%Title%</h1>
-    @if (Model.StructuredProduct.DiscountTags != null && Model.StructuredProduct.DiscountTags.Any())
-    {
-                            <div class="c-pageHeader__tags">
-                                <ul class="l-tag">
-                @foreach (var tag in Model.StructuredProduct.DiscountTags)
-                {
-                                                <li class="l-tag__item">
-                                                    <a href="#" class="o-tag">@tag</a>
-                                                </li>
-                }
-                                </ul>
-                            </div>
-    }
-            </div>
-            <div class="c-pageHeader__views">
-                <div class="o-views o-views--bk" data-eh="visit-update,visit-exec" eh-visit-pageid="@pageId" eh-visit-qs="id=@productCode"></div>
-            </div>
-        </div>
-    </div>
-    <div class="l-pageHeader__content">
-        <div class="l-pageHeader__info">
-            <div class="l-detailInfo">
-                <div class="l-detailInfo__major">
-                    <div class="l-detailInfo__item">
-                        <div class="c-numerical">
-                            <div class="c-numerical__title u-left@dt-only"><span>參考贖回價</span></div>
-                            <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>%BankSellPrice%</span><span class="t-unit">%CurrencyName%</span></div>
-                        </div>
-                    </div>
-                    <div class="l-detailInfo__item">
-                        <div class="c-numerical">
-                            <div class="c-numerical__title u-left@dt-only"><span>價格日期</span></div>
-                            <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>%PriceBaseDate%</span></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="l-detailInfo__lower">
-                    <div class="l-detailInfo__item">
-                        <div class="c-numerical c-numerical--horiz@lt">
-                            <div class="c-numerical__title u-left@dt-only"><span>到期日</span></div>
-                            <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only"><span>%ProductMaturityDate%</span></div>
-                        </div>
-                    </div>
-                    <div class="l-detailInfo__item">
-                        <div class="c-numerical c-numerical--horiz@lt">
-                            <div class="c-numerical__title u-left@dt-only"><span>發行機構</span></div>
-                            <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only"><span>%IssuingInstitution%</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
-
-<script type="text/template" id="thirty-tbodytr">
-    <tr>
-        <td>
-            %Date%
-        </td>
-        <td>
-            %Price%
-        </td>
-        <td>
-            %Diff%
-        </td>
-    </tr>
-</script>
-
-<script type="text/template" id="thirty-theadtr">
-    <tr>
-        <th>
-            <div class="c-table__title">
-                <span>日期</span>
-            </div>
-        </th>
-        <th>
-            <div class="c-table__title">
-                <span>參考贖回價</span>
-            </div>
-        </th>
-        <th>
-            <div class="c-table__title">
-                <span>漲跌</span>
-            </div>
-        </th>
-    </tr>
 </script>
 
 <script type="text/template" id="dividend-theadtr">
@@ -776,7 +516,107 @@
 <div class="l-mainstage">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__content">
-            <div class="l-pageHeader" id="pageHeader"></div>
+            <div class="l-pageHeader" id="pageHeader">
+
+                <div class="l-pageHeader__title">
+                    <div class="c-pageHeader">
+                        <div class="c-pageHeader__main">
+                            <h1 class="c-pageHeader__title">@Model.StructuredProduct.ProductCode @Model.StructuredProduct.ProductName</h1>
+                            @if (Model.StructuredProduct.DiscountTags != null && Model.StructuredProduct.DiscountTags.Any())
+                            {
+                                <div class="c-pageHeader__tags">
+                                    <ul class="l-tag">
+                                        @foreach (var tag in Model.StructuredProduct.DiscountTags)
+                                        {
+                                            <li class="l-tag__item">
+                                                <a href="#" class="o-tag">@tag</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                        <div class="c-pageHeader__views">
+                            <div class="o-views o-views--bk" data-eh="visit-update,visit-exec" eh-visit-pageid="@structuredProductDetailPageId" eh-visit-qs="id=@productCode"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-pageHeader__content">
+                    <div class="l-pageHeader__info">
+                        <div class="l-detailInfo">
+                            <div class="l-detailInfo__major">
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical">
+                                        <div class="c-numerical__title u-left@dt-only"><span>參考贖回價</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only">
+
+                                            @if (!string.IsNullOrEmpty(Model.StructuredProduct.BankSellPrice))
+                                            {
+                                                <span>@Model.StructuredProduct.BankSellPrice</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+
+                                            <span class="t-unit">@Model.StructuredProduct.CurrencyName</span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical">
+                                        <div class="c-numerical__title u-left@dt-only"><span>價格日期</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only">
+                                            @if (!string.IsNullOrEmpty(Model.StructuredProduct.PriceBaseDate))
+                                            {
+                                                <span>@Model.StructuredProduct.PriceBaseDate</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="l-detailInfo__lower">
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical c-numerical--horiz@lt">
+                                        <div class="c-numerical__title u-left@dt-only"><span>到期日</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only">
+                                            @if (!string.IsNullOrEmpty(Model.StructuredProduct.ProductMaturityDate))
+                                            {
+                                                <span>@Model.StructuredProduct.ProductMaturityDate</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical c-numerical--horiz@lt">
+                                        <div class="c-numerical__title u-left@dt-only"><span>發行機構</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only">
+                                            @if (!string.IsNullOrEmpty(Model.StructuredProduct.IssuingInstitution))
+                                            {
+                                                <span>@Model.StructuredProduct.IssuingInstitution</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
@@ -926,21 +766,97 @@
             </section>
             <section class="c-section">
                 <div class="c-section__title">近30日參考贖回價</div>
-                <div class="c-section__content" id="thirtyDayEmpty">
-                    <div class="c-empty">
-                        <div class="c-empty__img">
-                            <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
-                        </div>
-                        <div class="c-empty__desc">沒有資料</div>
-                    </div>
-                </div>
                 <div class="c-section__content" id="thirtyDayContent">
-                    <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{"spaceBetween":20, "autoplay": false, "navigation":{ "enabled":true }, "breakpoints": {"1200": { "navigation":{ "enabled":false }}}}'>
-                        <div class="swiper-wrapper c-swiper__wrapper" id="thirtydaytable"></div>
-                        <div class="swiper-button-next c-swiper__next"></div>
-                        <div class="swiper-button-prev c-swiper__prev"></div>
-                        <div class="swiper-pagination c-swiper__pagination"></div>
-                    </div>
+
+                    @if (Model.ThirtyDayBankSellPriceWithChange.Any())
+                    {
+                        <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{"spaceBetween":20, "autoplay": false, "navigation":{ "enabled":true }, "breakpoints": {"1200": { "navigation":{ "enabled":false }}}}'>
+                            <div class="swiper-wrapper c-swiper__wrapper" id="thirtydaytable">
+                                @{
+                                    int dayCount = 1;
+                                    int ten = 10;
+                                    int five = 5;
+                                    foreach (var item in Model.ThirtyDayBankSellPriceWithChange)
+                                    {
+                                        string diffClass;
+                                        decimal bankSellPriceChange;
+
+                                        if (decimal.TryParse(item.BankSellPriceChange, out bankSellPriceChange))
+                                        {
+                                            diffClass = bankSellPriceChange > 0 ? "o-rise" : "o-fall";
+                                        }
+                                        else
+                                        {
+                                            diffClass = "";
+                                        }
+
+                                        if (dayCount % ten == 1)
+                                        {
+                                            @Html.Raw("<div class='swiper-slide c-swiper__slide>'")
+                                            <!-- 左右表格 -->
+                                            @Html.Raw("<div class='l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only' data-merge-table>")
+                                        }
+                                        if (dayCount == 1 || dayCount % five == 1)
+                                        {
+                                            var hiddenHeaderClass = string.Empty;
+                                            if (dayCount % ten == 6)
+                                            {
+                                                hiddenHeaderClass = "u-hidden@lt";
+                                            }
+
+                                            @Html.Raw("<div class='l-flex__item'>")
+                                            @Html.Raw("<div class='l-table'>")
+                                            @Html.Raw("<table class='c-table u-center'>")
+                                            @Html.Raw("<colgroup><col style = 'width: 33%;' ><col style ='width: 33%;'><col style = 'width: 33%;' ></colgroup>")
+                                            @Html.Raw(string.Format("<thead class='{0}'><tr><th><div class='c-table__title'><span>日期</span></div></th>", hiddenHeaderClass))
+                                            @Html.Raw("<th><div class='c-table__title'><span>參考贖回價</span></div></th>")
+                                            @Html.Raw("<th><div class='c-table__title'><span>漲跌</span></div></th>")
+                                            @Html.Raw("</tr></thead><tbody>")
+                                        }
+                                        <tr>
+                                            <td>
+                                                @item.PriceBaseDate
+                                            </td>
+                                            <td>
+                                                @item.BankSellPriceValue
+                                            </td>
+                                            <td>
+                                                <span class="@diffClass">
+                                                    @item.BankSellPriceChange
+                                                </span>
+                                            </td>
+                                        </tr>
+
+                                        if (dayCount % five == 0)
+                                        {
+                                            @Html.Raw("</tbody></table></div></div>")
+                                        }
+
+                                        if (dayCount == Model.ThirtyDayBankSellPriceWithChange.Count() || dayCount % 10 == 0)
+                                        {
+                                            @Html.Raw(" </div> </div>");
+                                        }
+
+                                        dayCount++;
+                                    }
+                                }
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="c-empty">
+                            <div class="c-empty__img">
+                                <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
+                            </div>
+                            <div class="c-empty__desc">沒有資料</div>
+                        </div>
+                    }
+
                 </div>
             </section>
         </div>
@@ -987,7 +903,7 @@
                     @foreach (string topic in Model.StructuredProduct.TopicTags)
                     {
                         <li class="l-divideList__item l-divideList__item--auto">
-                            <a href="#" class="o-hashTag u-nowrap">#@topic</a>
+                            <a href="@Model.StructuredProductSearchUrl#hotTopic=@topic" class="o-hashTag u-nowrap">#@topic</a>
                         </li>
                     }
                 </ul>

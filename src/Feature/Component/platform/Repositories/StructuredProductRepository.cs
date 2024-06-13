@@ -29,7 +29,7 @@ namespace Feature.Wealth.Component.Repositories
                 DatasourceId = item.ID?.ToString(),
                 KeywordOptions = GetTagOptionsWithProducts(item, _StructProductTagDatasource.Fields.KeywordDatasource),
                 TopicOptions = GetTagOptionsWithProducts(item, _StructProductTagDatasource.Fields.TopicDatasource),
-                DetailPageItemUrl = item.TargetItem(StructProductListDatasource.Fields.DetailPageItem)?.Url() ?? string.Empty
+                DetailPageItemUrl = StructuredProductRelatedLinkSetting.GetStructuredProductDetailUrl()
             };
         }
 
@@ -81,7 +81,8 @@ namespace Feature.Wealth.Component.Repositories
                 HistoryBankSellPrice = GetHistoryBankSellPrice(productCode),
                 ThirtyDayBankSellPriceWithChange = GetThirtyDayBankSellPriceWithChange(productCode),
                 HistoryDividend = GetHistoryDividend(productCode),
-                PageId = Sitecore.Context.Item.ID.ToString() ?? string.Empty
+                StructuredProductDetailPageId = StructuredProductRelatedLinkSetting.GetStructuredProductDetailPageItemId(),
+                StructuredProductSearchUrl = StructuredProductRelatedLinkSetting.GetStructuredProductSearchUrl()
             };
             return model;
         }

@@ -24,8 +24,6 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
 
         internal struct Fields
         {
-            internal static readonly ID DetailPageItem = new ID("{14AD72A5-A926-47A7-89DB-7CCB8C45848B}");
-
             // 繼承 _StructProductTagDatasource
         }
     }

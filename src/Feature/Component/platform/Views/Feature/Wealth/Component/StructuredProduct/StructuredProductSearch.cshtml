@@ -460,7 +460,6 @@
 
         }
 
-
         function currencyLink(obj) {
             let btnHtml = '@Html.CurrencyLink(null, "null")';
             let $Btn = $(btnHtml);
@@ -491,6 +490,8 @@
             if (!jQuery) {
                 return;
             }
+
+            let hashStringProcessed = false;
 
             let modelData = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
 
@@ -542,6 +543,19 @@
 
                     initFilter(data);
                     initAutocomplete(data);
+
+                    if (!hashStringProcessed) {
+                        hashStringProcessed = true;
+
+                        var hash = window.location.hash;
+                        var hashStringHotTopic = hash ? decodeURIComponent(hash.split('=')[1]) : null;
+
+                        if (hashStringHotTopic != null && hashStringHotTopic != "") {
+                            $("input[value='" + hashStringHotTopic + "']").trigger('click');
+                        }
+
+                        window.location.hash = '';
+                    }
                 }
             });
 
