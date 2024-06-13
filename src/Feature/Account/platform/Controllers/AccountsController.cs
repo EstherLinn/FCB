@@ -339,10 +339,10 @@ namespace Feature.Wealth.Account.Controllers
             var guid = Guid.NewGuid().ToString();
             var queueId = ticks.ToString() + '-' + guid;
             var uri = new Uri(callBackUrl);
-            string pagePathWithoutQueryString = uri.GetLeftPart(UriPartial.Path);
+            string uriSchemaAndHost = string.Format("{0}//{1}", uri.Scheme, uri.Host);
             string WebBankCallBack = Settings.GetSetting("WebBank.CallBackUrl");
-            pagePathWithoutQueryString += WebBankCallBack;
-            var resp = await _webBankService.UserVerifyRequest(pagePathWithoutQueryString, queueId);
+            uriSchemaAndHost += WebBankCallBack;
+            var resp = await _webBankService.UserVerifyRequest(uriSchemaAndHost, queueId);
             return new JsonNetResult(resp);
         }
 

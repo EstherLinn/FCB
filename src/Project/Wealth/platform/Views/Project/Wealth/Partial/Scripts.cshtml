@@ -9,9 +9,9 @@
     var sitecoredomain = Sitecore.Context.Site.TargetHostName;
     var url = HttpContext.Current.Request.Url.AbsoluteUri.Replace(domain, string.IsNullOrEmpty(sitecoredomain) ? domain : sitecoredomain);
     var newUri = new Uri(url);
-    string pagePathWithoutQueryString = newUri.GetLeftPart(UriPartial.Path);
+    string uriSchemaAndHost = string.Format("{0}//{1}", newUri.Scheme, newUri.Host);
     var webBankLoginPath = ClientRoute.GenerateUrl(this, "Accounts", "SignInWebBankByApp");
-    var encodeUrl = pagePathWithoutQueryString + webBankLoginPath;
+    var encodeUrl = uriSchemaAndHost + webBankLoginPath;
     encodeUrl = WebUtility.UrlEncode(System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(encodeUrl)));
 }
 <script>
