@@ -1,0 +1,49 @@
+﻿using System;
+using System.Threading.Tasks;
+using Feature.Wealth.ScheduleAgent.Services;
+using Xcms.Sitecore.Foundation.QuartzSchedule;
+using Feature.Wealth.ScheduleAgent.Repositories;
+using Feature.Wealth.ScheduleAgent.Models.Wealth;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
+{
+    public class InsertFundHighRated : SitecronAgentBase
+    {
+        private readonly ProcessRepository _repository = new();
+
+        protected override async Task Execute()
+        {
+            if (this.JobItems != null)
+            {
+                var jobitem = this.JobItems.FirstOrDefault();
+                var etlService = new EtlService(this.Logger, jobitem);
+
+                //TODO好評基金名稱未確定
+                string filename = "FundHighRated";
+                bool IsfilePath = etlService.ExtractFile(filename);
+
+                if (IsfilePath)
+                {
+                    try
+                    {
+                        var basic = await etlService.ParseCsv<FundHighRated>(filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[Fund_HighRated]", filename);
+                        etlService.FinishJob(filename);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Logger.Error(ex.Message, ex);
+                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
+                    }
+                }
+                else
+                {
+                    this.Logger.Error("ERROR: File not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
+                }
+            }
+        }
+    }
+}

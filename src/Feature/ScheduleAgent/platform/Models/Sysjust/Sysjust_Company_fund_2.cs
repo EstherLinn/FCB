@@ -12,16 +12,19 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 基金公司代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string FundCompanyCode { get; set; }
 
         /// <summary>
         /// 基金公司名稱
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string FundCompanyName { get; set; }
 
         /// <summary>
         /// 英文名稱
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string EnglishName { get; set; }
     }
 }

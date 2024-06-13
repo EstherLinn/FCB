@@ -7,6 +7,8 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
     internal class SysjustExchangeRate
     {
         public string CurrencyDescription { get; set; }
+
+        [NullValues("", "NULL", null)]
         public string ExchangeRate { get; set; }
     }
 }

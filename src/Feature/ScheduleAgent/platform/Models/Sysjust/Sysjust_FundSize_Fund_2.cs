@@ -20,12 +20,14 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// 嘉實代碼
         /// </summary>
         [Index(1)]
+        [NullValues("", "NULL", null)]
         public string SysjustCode { get; set; }
 
         /// <summary>
         /// 規模日期
         /// </summary>
         [Index(2)]
+        [NullValues("", "NULL", null)]
         public string ScaleDate { get; set; }
 
         /// <summary>
@@ -38,6 +40,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// 幣別
         /// </summary>
         [Index(4)]
+        [NullValues("", "NULL", null)]
         public string Currency { get; set; }
     }
     public sealed class Fundsize2Map : ClassMap<SysjustFundSizeFund2>

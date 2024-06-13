@@ -68,8 +68,19 @@ namespace Feature.Wealth.ScheduleAgent.Services
                             return false;
                         }
                         sftpClient.ChangeDirectory(this._settings["WorkingDirectory"]);
-                        string localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.txt");
-                        fileName = Path.ChangeExtension(fileName, "txt");
+
+                        string localFiledonePath = "";
+                        if (fileName.Equals("Fundlist"))
+                        {
+                            localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.csv");
+                            fileName = Path.ChangeExtension(fileName, "csv");
+                        }
+                        else
+                        {
+                            localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.txt");
+                            fileName = Path.ChangeExtension(fileName, "txt");
+                        }
+
 
                         if (!sftpClient.Exists(fileName))
                         {
@@ -91,7 +102,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         {
                             string localFileHash = CalculateHash(localFilePath);
 
-                            if(File.Exists(localFiledonePath))
+                            if (File.Exists(localFiledonePath))
                             {
                                 string localFiledoneHash = CalculateHash(localFiledonePath);
                                 if (localFileHash.Equals(localFiledoneHash))
@@ -107,7 +118,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                     catch (Exception ex)
                     {
                         this._logger.Error($"Error while connecting to SFTP server: {ex.Message}", ex);
-                        throw; 
+                        throw;
                     }
                 }
             }
@@ -272,6 +283,21 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
         }
 
+        public async Task<IEnumerable<T>> ParseCsvNotTXT<T>(string fileName)
+        {
+            var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
+            config.BadDataFound = null;
+            fileName = Path.ChangeExtension(fileName, "csv");
+            string localFilePath = Path.Combine(this.LocalDirectory, fileName);
+
+            using (var reader = new StreamReader(localFilePath, Encoding.Default))
+            using (var csv = new CsvReader(reader, config))
+            {
+                var records = csv.GetRecordsAsync<T>().ToListAsync();
+                return await records;
+            }
+        }
+
         /// <summary>
         /// copyDirectory 備份檔案"yyyyMMdd HH"
         /// </summary>
@@ -287,15 +313,31 @@ namespace Feature.Wealth.ScheduleAgent.Services
         /// <param name="filename"></param>
         public void FinishJob(string filename)
         {
-            filename = Path.ChangeExtension(filename, "txt");
-            string localFilePath = Path.Combine(LocalDirectory, filename);
-            string doneFileName = $"{Path.GetFileNameWithoutExtension(filename)}_done.txt";
-            string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
-            if (File.Exists(localDoneFilePath))
+            if (filename.Equals("Fundlist"))
             {
-                File.Delete(localDoneFilePath);
+                filename = Path.ChangeExtension(filename, "csv");
+                string localFilePath = Path.Combine(LocalDirectory, filename);
+                string doneFileName = $"{Path.GetFileNameWithoutExtension(filename)}_done.csv";
+                string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
+                if (File.Exists(localDoneFilePath))
+                {
+                    File.Delete(localDoneFilePath);
+                }
+                File.Move(localFilePath, localDoneFilePath);
             }
-            File.Move(localFilePath, localDoneFilePath);
+            else
+            {
+                filename = Path.ChangeExtension(filename, "txt");
+                string localFilePath = Path.Combine(LocalDirectory, filename);
+                string doneFileName = $"{Path.GetFileNameWithoutExtension(filename)}_done.txt";
+                string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
+                if (File.Exists(localDoneFilePath))
+                {
+                    File.Delete(localDoneFilePath);
+                }
+                File.Move(localFilePath, localDoneFilePath);
+            }
+           
         }
 
         public void FinishJobContainsDate(string filename)
@@ -313,5 +355,6 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
             File.Move(localFiledonePath, localDoneFilePath);
         }
+
     }
 }

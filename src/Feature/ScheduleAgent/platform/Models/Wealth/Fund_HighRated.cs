@@ -2,7 +2,7 @@
 
 namespace Feature.Wealth.ScheduleAgent.Models.Wealth
 {
-    [Delimiter(";@")]
+    [Delimiter(";")]
     [HasHeaderRecord(false)]
     public class FundHighRated
     {

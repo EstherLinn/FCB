@@ -17,6 +17,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 淨值日期
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string NetAssetValueDate { get; set; }
 
         /// <summary>
@@ -27,6 +28,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         ///嘉實代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string SysjustCode { get; set; }
     }
 }

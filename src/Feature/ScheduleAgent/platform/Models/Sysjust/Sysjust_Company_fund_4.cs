@@ -12,21 +12,25 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 基金公司代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string FundCompanyCode { get; set; }
 
         /// <summary>
         /// 姓名
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string Name { get; set; }
 
         /// <summary>
         /// 職稱
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string Title { get; set; }
 
         /// <summary>
         /// 就任日
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string StartDate { get; set; }
 
         /// <summary>
@@ -42,6 +46,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 主要學經歷
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string MainExperience { get; set; }
     }
 }

@@ -17,16 +17,19 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 嘉實代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string SysjustCode { get; set; }
 
         /// <summary>
         /// Date
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string Date { get; set; }
 
         /// <summary>
         /// 基金名稱
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string FundName { get; set; }
 
         /// <summary>
@@ -67,6 +70,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 境內/外基金 O:境內 D:境外
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string FundODomesticDForeign { get; set; }
     }
 }

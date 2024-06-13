@@ -22,6 +22,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 基金基金代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string SysjustFundCode { get; set; }
 
 
@@ -34,33 +35,43 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 費用備註
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string FeeRemarks { get; set; }
 
         /// <summary>
         /// 一年配息次數
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string DividendFrequencyOneYear { get; set; }
 
         /// <summary>
         /// 指標指數名稱
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string IndicatorIndexName { get; set; }
 
         /// <summary>
         /// 指標指數代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string IndicatorIndexCode { get; set; }
 
         /// <summary>
         /// 投資區域
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string InvestmentRegionName { get; set; }
 
         /// <summary>
         /// 主要投資區域
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string PrimaryInvestmentRegion { get; set; }
+
+        [NullValues("", "NULL", null)]
         public string UnKnown { get; set; }
+
+        [NullValues("", "NULL", null)]
         public string FundType { get; set; }
     }
 }

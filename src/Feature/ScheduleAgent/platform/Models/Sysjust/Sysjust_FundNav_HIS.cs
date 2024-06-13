@@ -17,26 +17,31 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 日期
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string Date { get; set; }
 
         /// <summary>
         /// 淨值
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string NetAssetValue { get; set; }
 
         /// <summary>
         /// 贖回
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string Redemption { get; set; }
 
         /// <summary>
         /// 申購
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string Subscription { get; set; }
 
         /// <summary>
         /// 幣別
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string Currency { get; set; }
     }
 }

@@ -17,11 +17,13 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 資料日期
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string DataDate { get; set; }
 
         /// <summary>
         /// ETF代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string ETFCode { get; set; }
 
         /// <summary>

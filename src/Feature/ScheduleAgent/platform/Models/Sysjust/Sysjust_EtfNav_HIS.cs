@@ -1,13 +1,18 @@
 ﻿using CsvHelper.Configuration.Attributes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
 {
     /// <summary>
-    /// 持股 – 依產業，檔案名稱：Sysjust-Holding-ETF.txt
+    /// ETF歷史淨值，檔案名稱：SYSJUST-ETFNAV-HIS.txt
     /// </summary>
     [Delimiter(";@")]
     [HasHeaderRecord(false)]
-    internal class SysjustHoldingEtf
+    internal class SysjustEtfNavHis
     {
         /// <summary>
         /// 一銀代碼
@@ -21,31 +26,15 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         public string Date { get; set; }
 
         /// <summary>
-        /// ETF 代碼
+        /// 市價
         /// </summary>
         [NullValues("", "NULL", null)]
-        public string ETFCode { get; set; }
+        public string MarketPrice { get; set; }
 
         /// <summary>
-        /// 產業名稱
+        /// 淨值日期
         /// </summary>
         [NullValues("", "NULL", null)]
-        public string IndustryName { get; set; }
-
-        /// <summary>
-        /// 百分比例
-        /// </summary>
-        public decimal? Percentage { get; set; }
-
-        /// <summary>
-        /// 幣別
-        /// </summary>
-        [NullValues("", "NULL", null)]
-        public string Currency { get; set; }
-
-        /// <summary>
-        /// 金額
-        /// </summary>
-        public decimal? Amount { get; set; }
+        public string NetAssetValue { get; set; }
     }
 }
