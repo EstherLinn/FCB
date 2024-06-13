@@ -5,11 +5,11 @@
 @if (isLogin)
 {
     var isGlobalStyle = FcbMemberHelper.IsMemberStyleGlobal();
-<script>
+    <script>
     addObjectValue(SC_DATA, 'IsLoggedIn', @(isLogin ? "true" : "false"));
     addObjectValue(SC_DATA, 'IsGlobalStyle', @(isGlobalStyle ? "true" : "false"));
     addObjectValue(SC_DATA, 'ItemId', '@Sitecore.Context.Item.ID');
-</script>
+    </script>
 
     Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LoginState.cshtml");
 }
@@ -18,8 +18,17 @@ else
     Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LogoutState.cshtml");
 }
 <script>
+
 @{
-@:addObjectValue(SC_DATA, 'IsAppLogin', @(ViewData["IsAppLogin"].ToString() =="True" ? "true": "false"));
-@:addObjectValue(SC_DATA, 'LoginStatus', @(ViewData["LoginStatus"].ToString() =="True" ? "true": "false"));
-}
+    if (Session["IsAppLogin"] != null)
+    {
+@:addObjectValue(SC_DATA, 'IsAppLogin', @(Session["IsAppLogin"].ToString() =="True" ? "true": "false"));
+    Session["IsAppLogin"] = null;
+    }
+    if (Session["AppLoginSuccess"] != null)
+    {
+@:addObjectValue(SC_DATA, 'LoginStatus', @(Session["AppLoginSuccess"].ToString() =="True" ? "true": "false"));
+    Session["AppLoginSuccess"] = null;
+    }
+ }
 </script>

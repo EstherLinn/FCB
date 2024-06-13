@@ -10,7 +10,9 @@
     var url = HttpContext.Current.Request.Url.AbsoluteUri.Replace(domain, string.IsNullOrEmpty(sitecoredomain) ? domain : sitecoredomain);
     var newUri = new Uri(url);
     string pagePathWithoutQueryString = newUri.GetLeftPart(UriPartial.Path);
-    var webBankLoginPath = ClientRoute.GenerateUrl(this, "Accounts", "SignInWebBank");
+    var webBankLoginPath = ClientRoute.GenerateUrl(this, "Accounts", "SignInWebBankByApp");
+    var encodeUrl = pagePathWithoutQueryString + webBankLoginPath;
+    encodeUrl = WebUtility.UrlEncode(System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(encodeUrl)));
 }
 <script>
     (function ($, window, document, undefined) {
@@ -368,7 +370,7 @@
                     continue;
                 }
                 if (key == "returnUrl") {
-                    loginUrl += `${key}${encodeURIComponent('=')}@(pagePathWithoutQueryString + webBankLoginPath)&`;
+                    loginUrl += `${key}${encodeURIComponent('=')}@(encodeUrl)&`;
                     continue;
                 }
                 if (key== "ibi") {
@@ -393,26 +395,28 @@
                     beforeSend: function () { $('.c-loading').loading('show'); },
                     success: function (resp) {
                         console.log(resp)
-                        let postDataUrl = '@AppPayLoginUrl';
-                        postDataUrl = postDataUrl + `?merchantId=${resp.merchantId}&txReqId=${resp.txReqId}&sign=${resp.sign}`;
-                        let postdata =
-                        {
-                            merchantId: resp.merchantId,
-                            txReqId: resp.txReqId,
-                            sign: resp.sign,
-                        };
-                        let form = document.createElement("form");
-                        form.setAttribute("method", "post");
-                        form.setAttribute("action", postDataUrl);
-                        for (let key in postdata) {
-                            let hiddenField = document.createElement("input");
-                            hiddenField.setAttribute("type", "hidden");
-                            hiddenField.setAttribute("name", key);
-                            hiddenField.setAttribute("value", postdata[key]);
-                            form.appendChild(hiddenField);
+                        if (resp && resp.success) {
+                            let postDataUrl = '@AppPayLoginUrl';
+                            postDataUrl = postDataUrl + `?merchantId=${resp.merchantId}&txReqId=${resp.txReqId}&sign=${resp.sign}`;
+                            let postdata =
+                            {
+                                merchantId: resp.merchantId,
+                                txReqId: resp.txReqId,
+                                sign: resp.sign,
+                            };
+                            let form = document.createElement("form");
+                            form.setAttribute("method", "post");
+                            form.setAttribute("action", postDataUrl);
+                            for (let key in postdata) {
+                                let hiddenField = document.createElement("input");
+                                hiddenField.setAttribute("type", "hidden");
+                                hiddenField.setAttribute("name", key);
+                                hiddenField.setAttribute("value", postdata[key]);
+                                form.appendChild(hiddenField);
+                            }
+                            document.body.appendChild(form);
+                            form.submit();
                         }
-                        document.body.appendChild(form);
-                        form.submit();
                     },
                     error: function (err) {
                         console.log(err);

@@ -1,7 +1,4 @@
-﻿using Feature.Wealth.Account.Pipelines.DI;
-using Feature.Wealth.Component.Models.HeaderWidget;
-using Microsoft.Extensions.DependencyInjection;
-using Sitecore.DependencyInjection;
+﻿using Feature.Wealth.Component.Models.HeaderWidget;
 using System.Web;
 using System.Web.Mvc;
 
@@ -11,10 +8,7 @@ namespace Feature.Wealth.Component.Controllers
     {
 
         public ActionResult Index()
-        {
-            var service = ServiceLocator.ServiceProvider.GetService<IMemberLoginService>();
-            ViewData["IsAppLogin"] = service.IsAppLogin;
-            ViewData["LoginStatus"] = service.AppLoginSuccess;
+        {        
             return View("/Views/Feature/Wealth/Component/HeaderWidget/HeaderWidget.cshtml", CreateModel());
         }
 
