@@ -339,7 +339,7 @@ namespace Feature.Wealth.Account.Controllers
             var guid = Guid.NewGuid().ToString();
             var queueId = ticks.ToString() + '-' + guid;
             var uri = new Uri(callBackUrl);
-            string uriSchemaAndHost = string.Format("{0}//{1}", uri.Scheme, uri.Host);
+            string uriSchemaAndHost = string.Format("{0}://{1}", uri.Scheme, uri.Host);
             string WebBankCallBack = Settings.GetSetting("WebBank.CallBackUrl");
             uriSchemaAndHost += WebBankCallBack;
             var resp = await _webBankService.UserVerifyRequest(uriSchemaAndHost, queueId);

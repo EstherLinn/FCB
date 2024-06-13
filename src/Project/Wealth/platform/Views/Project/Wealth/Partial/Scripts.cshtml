@@ -9,12 +9,13 @@
     var sitecoredomain = Sitecore.Context.Site.TargetHostName;
     var url = HttpContext.Current.Request.Url.AbsoluteUri.Replace(domain, string.IsNullOrEmpty(sitecoredomain) ? domain : sitecoredomain);
     var newUri = new Uri(url);
-    string uriSchemaAndHost = string.Format("{0}//{1}", newUri.Scheme, newUri.Host);
+    string uriSchemaAndHost = string.Format("{0}://{1}", newUri.Scheme, newUri.Host);
     var webBankLoginPath = ClientRoute.GenerateUrl(this, "Accounts", "SignInWebBankByApp");
     var encodeUrl = uriSchemaAndHost + webBankLoginPath;
     encodeUrl = WebUtility.UrlEncode(System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(encodeUrl)));
 }
 <script>
+    console.log('https://fcbileodev.page.link/?link=https%3A%2F%2Ffcbileodev.page.link%2FFundTrackList%3Fchannel%3Dweawea%26returnUrl%3DaHR0cHM6Ly93ZWFsdGguZmlyc3RiYW5rLXR0LmNvbS50dw%3D%3D&apn=com.firstbank.mbanklite.debug&isi=1446229166&ibi=com.firstbank.mbankForLite.apnDEV');
     (function ($, window, document, undefined) {
         let isLogin = false;
         if (SC_DATA.IsLoggedIn) {
