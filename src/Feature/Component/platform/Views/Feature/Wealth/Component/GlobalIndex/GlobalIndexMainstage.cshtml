@@ -111,7 +111,7 @@
         $('[data-chart="mini"]').each(function (i, el) {
             var data = [];
 
-            var temp = datas.find((element) => element.IndexCode == $(el).attr('id'));
+            var temp = datas.find((element) => element.IndexCode == DOMPurify.sanitize($(el).attr('id')));
 
             if (temp && temp.Data) {
 

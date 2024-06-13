@@ -228,11 +228,11 @@
 
                                 cardListDiv.insertBefore(paginationDiv);
                             });
-                        }
 
-                        // 調整分頁
-                        var $parentWrap = $('[selectGuid="' + res.data.Guid + '"]').closest('.l-pagination');
-                        var total = res.data.TotalPages;
+                            // 調整分頁
+                            var $parentWrap = $('[selectGuid="' + res.data.Guid + '"]').closest('.l-pagination');
+                            var total = res.data.TotalPages;
+                        }
 
                         $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', pageSize === 'all');
                         $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', total === '1');

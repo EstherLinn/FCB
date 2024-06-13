@@ -214,8 +214,8 @@
                                             $('<div class="l-slash" data-id="' + highChartId + '-tooltips-yAxis2" style="position: absolute; top: 612px; left: 5px;"></div>').appendTo($container);
                                         },
                                         addSeries: function (event) {
-                                            var $tooltipContainer = $('[data-id="' + highChartId + "-tooltips-yAxis" + event.options.yAxis + '"]'),
-                                                id = 'tooltip-' + event.options.name;
+                                            var $tooltipContainer = $('[data-id="' + highChartId + "-tooltips-yAxis" + DOMPurify.sanitize(event.options.yAxis) + '"]'),
+                                                id = 'tooltip-' + DOMPurify.sanitize(event.options.name);
                                             if ($tooltipContainer.find('[data-id="' + id + '"]').length === 0) {
                                                 $('<div class="l-slash__item" data-id="' + id + '"></div>').appendTo($tooltipContainer);
                                             }
