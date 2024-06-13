@@ -172,7 +172,7 @@ namespace Feature.Wealth.Account.Controllers
                                 {
                                     step = "Step3 第三方登入綁定網銀 cifMember:null";
                                     Session["WebBankErrorMsg"] = "您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!";
-
+                                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                                 }
                                 var isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), id);
                                 if (isBind)
