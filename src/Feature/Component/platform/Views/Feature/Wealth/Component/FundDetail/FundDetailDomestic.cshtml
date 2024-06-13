@@ -2671,12 +2671,12 @@
                     });
                     for (let i = 0; i < yearData.length; i++) {
                         dividendTableHtml += `<tr>
-                                   <td>${emptyValueToDash(yearData[i].BaseDate)}</td>
-                                   <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
-                                   <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
-                                   <td>配息</td>
-                                   <td>${yearData[i].Dividend}</td>
-                                         </tr>`
+                                       <td>${emptyValueToDash(yearData[i].BaseDate)}</td>
+                                       <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
+                                       <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
+                                       <td>配息</td>
+                                       <td>${yearData[i].Dividend}</td>
+                                             </tr>`
                     }
                     $('#dividendTable').html(dividendTableHtml);
 
@@ -2737,7 +2737,7 @@
                     if (result && result.resultSet.result[0].v1) {
                         //公開說明書
                         $('#openDoc').removeClass("u-hidden")
-                        $('#openDoc').find('a')[0].setAttribute("href", DOMPurify.sanitize(result.resultSet.result[0].v1));
+                        $('#openDoc').find('a')[0].setAttribute("href", new URL(result.resultSet.result[0].v1));
                     } else {
                         $('#openDoc').addClass("u-hidden")
                         $('#openDoc').find('a')[0].setAttribute("href", "");
@@ -2759,7 +2759,7 @@
                     if (result && result.resultSet.result[0].v1) {
                         //簡式公開說明書
                         $('#easyopenDoc').removeClass("u-hidden")
-                        $('#easyopenDoc').find('a')[0].setAttribute("href", DOMPurify.sanitize(result.resultSet.result[0].v1));
+                        $('#easyopenDoc').find('a')[0].setAttribute("href", new URL(result.resultSet.result[0].v1));
                     } else {
                         $('#easyopenDoc').addClass("u-hidden");
                         $('#easyopenDoc').find('a')[0].setAttribute("href", "");
@@ -2782,7 +2782,7 @@
                     if (result && result.resultSet.result[0].v1) {
                         //財務報告書
                         $('#financialReportDoc').removeClass("u-hidden")
-                        $('#financialReportDoc').find('a')[0].setAttribute("href", DOMPurify.sanitize(result.resultSet.result[0].v1));
+                        $('#financialReportDoc').find('a')[0].setAttribute("href", new URL(result.resultSet.result[0].v1));
                     } else {
                         $('#financialReportDoc').addClass("u-hidden")
                         $('#financialReportDoc').find('a')[0].setAttribute("href", "");
@@ -2804,7 +2804,7 @@
                     if (result && result.resultSet.result[0].v1) {
                         //基金月報
                         $('#monthReportDoc').removeClass("u-hidden")
-                        $('#monthReportDoc').find('a')[0].setAttribute("href", DOMPurify.sanitize(result.resultSet.result[0].v1));
+                        $('#monthReportDoc').find('a')[0].setAttribute("href", new URL(result.resultSet.result[0].v1));
                     } else {
                         $('#monthReportDoc').addClass("u-hidden")
                         $('#monthReportDoc').find('a')[0].setAttribute("href", "");
@@ -4048,49 +4048,49 @@
                                 if (i === 0 || i === 6) {
                                     let hiddenHeadClass = i === 6 ? "u-hidden@lt" : "";
                                     tbHtml += `<div class="l-flex__item">
-                                                <div class="l-table">
-                                                    <table class="c-table u-center">
-                                                        <colgroup>
-                                                            <col style="width: 33.33%;">
-                                                            <col style="width: 33.33%;">
-                                                            <col style="width: 33.33%;">
-                                                        </colgroup>
-                                                        <thead class="${hiddenHeadClass}">
-                                                            <tr>
-                                                                <th>
-                                                                    <div class="c-table__title">
-                                                                        <span>規模日期</span>
-                                                                    </div>
-                                                                </th>
-                                                                <th>
-                                                                    <div class="c-table__title">
-                                                                        <span>規模(百萬)</span>
-                                                                    </div>
-                                                                </th>
-                                                                <th>
-                                                                    <div class="c-table__title">
-                                                                        <span>幣別</span>
-                                                                    </div>
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>`;
+                                                    <div class="l-table">
+                                                        <table class="c-table u-center">
+                                                            <colgroup>
+                                                                <col style="width: 33.33%;">
+                                                                <col style="width: 33.33%;">
+                                                                <col style="width: 33.33%;">
+                                                            </colgroup>
+                                                            <thead class="${hiddenHeadClass}">
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="c-table__title">
+                                                                            <span>規模日期</span>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <div class="c-table__title">
+                                                                            <span>規模(百萬)</span>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <div class="c-table__title">
+                                                                            <span>幣別</span>
+                                                                        </div>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>`;
                                 }
                                 tbHtml += ` <tr>
-                                                  <td>
-                                                       ${rangeData[i].ScaleDate}
-                                                                </td>
-                                                                <td>
-                                                                     ${numberComma(Math.round(rangeData[i].Scale, 3))}
-                                                                </td>
-                                                                <td>
-                                                                     ${rangeData[i].Currency}
-                                                                </td>
-                                                            </tr>`;
+                                                      <td>
+                                                           ${rangeData[i].ScaleDate}
+                                                                    </td>
+                                                                    <td>
+                                                                         ${numberComma(Math.round(rangeData[i].Scale, 3))}
+                                                                    </td>
+                                                                    <td>
+                                                                         ${rangeData[i].Currency}
+                                                                    </td>
+                                                                </tr>`;
                                 if (i === 5 || i === rangeData - 1) {
                                     tbHtml += `   </tbody>
-                                                    </table>
-                                                </div> </div>`;
+                                                        </table>
+                                                    </div> </div>`;
                                 }
 
 

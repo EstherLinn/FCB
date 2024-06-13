@@ -307,7 +307,7 @@
         });
 
         $('[data-tab-target]').on('click', function () {
-            var name = $(this).attr("data-tab-target");
+            var name = DOMPurify.sanitize($(this).attr("data-tab-target"));
             var val = $(`[data-select-name=${name}`)[0].value;
 
             setIframeSrc(val);

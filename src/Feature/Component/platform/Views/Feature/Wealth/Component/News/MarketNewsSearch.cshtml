@@ -365,62 +365,62 @@
                                     </div>
                                 </th>
                                 @*<th>
-                                        <div class="c-table__title">
-                                            <span>收藏</span>
-                                        </div>
-                                    </th>*@
+                                <div class="c-table__title">
+                                <span>收藏</span>
+                                </div>
+                                </th>*@
                             </tr>
                         </thead>
                         <tbody id="uid-fjs"></tbody>
 
                         <script id="uid-template" type="text/html">
-                        <tr class="c-cardTable__item u-center@dt-only">
-                            <td class="c-cardTable__space"></td>
-                            <td class="c-cardTable__body " data-card-table-width="1/1">
+                            <tr class="c-cardTable__item u-center@dt-only">
+                                <td class="c-cardTable__space"></td>
+                                <td class="c-cardTable__body " data-card-table-width="1/1">
+                                    <div class="c-cardTable__content">
+                                        <span class="o-iconText o-iconText--focus t-focus <%= HotNews %>" data-after-lt="焦點新聞"></span>
+                                    </div>
+                                </td>
+                                <td class="c-cardTable__body" data-card-table-width="1/1">
+                                    <div class="c-cardTable__content u-nowrap@dt-only"><%= NewsDate %></div>
+                                </td>
+                                <td class="c-cardTable__body" data-card-table-width="1/1">
+                                    <div class="c-cardTable__content u-left">
+                                        <% if (NewsType != null && NewsType != "") { %>
+                                        <% var newsTypes = NewsType.split(','); %>
+                                        <% for(var i = 0; i < newsTypes.length; i++ ) { %>
+                                        <span class="o-hangTag o-hangTag--gn"><%= newsTypes[i].trim() %></span>
+                                        <% } %>
+                                        <% } %>
+                                    </div>
+                                </td>
+                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
+                                <td class="c-cardTable__body u-left@dt-only">
+                                    <div class="c-cardTable__content u-line-2@lt-only">
+                                        <a href="<%= NewsDetailLink %>" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt" target="_blank"><%= NewsTitle %></a>
+                                    </div>
+                                </td>
+                                <td class="c-cardTable__body" data-card-table-width="1/2">
+                                    <div class="c-cardTable__content">
+                                        <div class="o-views o-views@lt"><%= NewsViewCount %></div>
+                                    </div>
+                                </td>
+                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+                                <td class="c-cardTable__space"></td>
+                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+                                <!--<td class="c-cardTable__footer" data-card-table-width="1/1">
                                 <div class="c-cardTable__content">
-                                    <span class="o-iconText o-iconText--focus t-focus <%= HotNews %>" data-after-lt="焦點新聞"></span>
-                                </div>
-                            </td>
-                            <td class="c-cardTable__body" data-card-table-width="1/1">
-                                <div class="c-cardTable__content u-nowrap@dt-only"><%= NewsDate %></div>
-                            </td>
-                            <td class="c-cardTable__body" data-card-table-width="1/1">
-                                <div class="c-cardTable__content u-left">
-                                    <% if (NewsType != null && NewsType != "") { %>
-                                    <% var newsTypes = NewsType.split(','); %>
-                                    <% for(var i = 0; i < newsTypes.length; i++ ) { %>
-                                    <span class="o-hangTag o-hangTag--gn"><%= newsTypes[i].trim() %></span>
-                                    <% } %>
-                                    <% } %>
-                                </div>
-                            </td>
-                            <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                            <td class="c-cardTable__body u-left@dt-only">
-                                <div class="c-cardTable__content u-line-2@lt-only">
-                                    <a href="<%= NewsDetailLink %>" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt" target="_blank"><%= NewsTitle %></a>
-                                </div>
-                            </td>
-                            <td class="c-cardTable__body" data-card-table-width="1/2">
-                                <div class="c-cardTable__content">
-                                    <div class="o-views o-views@lt"><%= NewsViewCount %></div>
-                                </div>
-                            </td>
-                            <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                            <td class="c-cardTable__space"></td>
-                            <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                            <!--<td class="c-cardTable__footer" data-card-table-width="1/1">
-                            <div class="c-cardTable__content">
-                                <ul class="l-collect l-collect--divider@lt">
-                                    <li class="l-collect__item">-->
-                            <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                            <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                            <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                            <!--<a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>-->
-                        </tr>
+                                    <ul class="l-collect l-collect--divider@lt">
+                                        <li class="l-collect__item">-->
+                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
+                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
+                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
+                                <!--<a href="#" class="o-statusBtn o-statusBtn--like" data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>-->
+                            </tr>
                         </script>
 
                     </table>
@@ -475,399 +475,399 @@
     </template>
 
     <script>
-    (function ($, window, document, undefined) {
+        (function ($, window, document, undefined) {
 
-        function initAutocomplete(data) {
-            // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
-            $('#keyword').autocomplete({
-                noCache: true,
-                minChars: 0,
-                containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
-                maxHeight: 'auto',
-                zIndex: 5,
-                preserveInput: true,
-                showNoSuggestionNotice: true,
-                noSuggestionNotice: $('#tmplKeywordNotFound').html(),
-                lookup: function (query, done) {
-                    query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-                    if (query.length == 0) {
-                        result = data.slice(0, 5);
-                    } else {
-                        result = data.filter(function (item) {
-                            return new RegExp(query, 'gi').test(item.value);
-                        });
-                    }
-                    done({ suggestions: result.slice(0, 5) });
-                },
-                onSearchComplete: function (query, suggestions) {
-                    var autocomplete = $(this).autocomplete();
-                    var container = autocomplete.suggestionsContainer;
-                    var $this = $(this);
-
-                    // 取消套件預設 blur 事件會關閉 suggestions container
-                    $this.off('blur.autocomplete');
-
-                    // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
-                    if (autocomplete.isRegisteGlobalEvent != true) {
-                        $(window).on('click.autocomplete',
-                            {
-                                source: this
-                            },
-                            e => {
-                                if (e.target != e.data.source) {
-                                    autocomplete.hide();
-                                }
+            function initAutocomplete(data) {
+                // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
+                $('#keyword').autocomplete({
+                    noCache: true,
+                    minChars: 0,
+                    containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
+                    maxHeight: 'auto',
+                    zIndex: 5,
+                    preserveInput: true,
+                    showNoSuggestionNotice: true,
+                    noSuggestionNotice: $('#tmplKeywordNotFound').html(),
+                    lookup: function (query, done) {
+                        query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+                        if (query.length == 0) {
+                            result = data.slice(0, 5);
+                        } else {
+                            result = data.filter(function (item) {
+                                return new RegExp(query, 'gi').test(item.value);
                             });
-                        autocomplete.isRegisteGlobalEvent = true;
+                        }
+                        done({ suggestions: result.slice(0, 5) });
+                    },
+                    onSearchComplete: function (query, suggestions) {
+                        var autocomplete = $(this).autocomplete();
+                        var container = autocomplete.suggestionsContainer;
+                        var $this = $(this);
+
+                        // 取消套件預設 blur 事件會關閉 suggestions container
+                        $this.off('blur.autocomplete');
+
+                        // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
+                        if (autocomplete.isRegisteGlobalEvent != true) {
+                            $(window).on('click.autocomplete',
+                                {
+                                    source: this
+                                },
+                                e => {
+                                    if (e.target != e.data.source) {
+                                        autocomplete.hide();
+                                    }
+                                });
+                            autocomplete.isRegisteGlobalEvent = true;
+                        }
+
+                        // 停止 like icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
+                        $(container).find('.o-statusBtn').off('click.autocomplete').on('click.autocomplete',
+                            function (e) {
+                                e.stopPropagation();
+                            });
+                        // 綁定 like icon 的互動功能
+                        $(container).find('[data-ia]').interactive();
+                        // 綁定 like icon 的彈跳登入畫面
+                        $(container).find('[data-popup]').magnificPopup();
+                    },
+                    formatResult: function (suggestion, currentValue) {
+                        let detailUrl = suggestion.Data.DetailUrl ? suggestion.Data.DetailUrl : '#';
+                        //let className = suggestion.Data.IsLike ? 'is-active' : '';
+
+                        //// like 按鈕
+                        //let likeWord = suggestion.Data.IsNews ? '加入收藏|取消收藏' : '加入關注|取消關注';
+                        //let $like = suggestion.Data.IsLike != null ? suggestion.Data.IsLogin == true ?
+                        //    // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
+                        //    `<a href="#" class="o-statusBtn o-statusBtn--like ${className}" data-msg="${likeWord}" data-ia="true"></a>` :
+                        //    // <!-- [data-popup]: 未登入開啟登入彈跳視窗 -->
+                        //    `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
+
+                        //return `<div class="c-itemKeyword">
+                        //            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                        //                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                        //            </a>
+                        //            <div class="c-itemKeyword__collections">${$like}</div>
+                        //        </div>`;
+
+                        return `<div class="c-itemKeyword">
+                                    <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                    </a>
+                                </div>`;
                     }
-
-                    // 停止 like icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
-                    $(container).find('.o-statusBtn').off('click.autocomplete').on('click.autocomplete',
-                        function (e) {
-                            e.stopPropagation();
-                        });
-                    // 綁定 like icon 的互動功能
-                    $(container).find('[data-ia]').interactive();
-                    // 綁定 like icon 的彈跳登入畫面
-                    $(container).find('[data-popup]').magnificPopup();
-                },
-                formatResult: function (suggestion, currentValue) {
-                    let detailUrl = suggestion.Data.DetailUrl ? suggestion.Data.DetailUrl : '#';
-                    //let className = suggestion.Data.IsLike ? 'is-active' : '';
-
-                    //// like 按鈕
-                    //let likeWord = suggestion.Data.IsNews ? '加入收藏|取消收藏' : '加入關注|取消關注';
-                    //let $like = suggestion.Data.IsLike != null ? suggestion.Data.IsLogin == true ?
-                    //    // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
-                    //    `<a href="#" class="o-statusBtn o-statusBtn--like ${className}" data-msg="${likeWord}" data-ia="true"></a>` :
-                    //    // <!-- [data-popup]: 未登入開啟登入彈跳視窗 -->
-                    //    `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
-
-                    //return `<div class="c-itemKeyword">
-                    //            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                    //                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                    //            </a>
-                    //            <div class="c-itemKeyword__collections">${$like}</div>
-                    //        </div>`;
-
-                    return `<div class="c-itemKeyword">
-                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                            </a>
-                        </div>`;
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            if (!jQuery) {
-                return;
+                });
             }
 
-            let hashStringProcessed = false;
+            document.addEventListener('DOMContentLoaded', function () {
+                if (!jQuery) {
+                    return;
+                }
 
-            let fjs;
+                let hashStringProcessed = false;
 
-            function initFilter(data) {
-                let opts = {
-                    template: '#uid-template',
-                    callbacks: {
-                        afterFilter: function (result) {
-                            this.paginator.setCurrentPage(1);
-                            $('[id="uid-total"]').text(result.length);
+                let fjs;
 
-                            let isEmpty = result.length == 0
-                            $(`[data-filter-empty=${isEmpty}]`).show();
-                            $(`[data-filter-empty=${!isEmpty}]`).hide();
+                function initFilter(data) {
+                    let opts = {
+                        template: '#uid-template',
+                        callbacks: {
+                            afterFilter: function (result) {
+                                this.paginator.setCurrentPage(1);
+                                $('[id="uid-total"]').text(result.length);
 
-                            window.loading('hide');
-                        }
-                    },
-                    search: {
-                        ele: '#keyword', fields: ['NewsTitle'], start_length: 2, bindEvent: false, multi: function () {
-                            let texts = [];
-                            $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
-                                let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
-                                let text = matches && matches[1];
-                                texts.push(text);
-                            });
-                            return texts;
-                        }
-                    },
-                    order: {
-                        default_sort: 'asc',
-                        sorts: [
-                            { field: 'group1', ele: 'select#uid-sortbox' }
-                        ],
-                        onSortEvent: function (f, e) {
-                            let $self = $(this);
-                            if (e.type === 'click') { } else if (e.type === 'change') {
-                                let $selected = $self.find(':selected');
-                                let field = $selected.data('sorting-column');
-                                let order = $selected.data('sorting-class');
-                                f.field = field;
-                                if (!!order) {
-                                    if (order === 'is-desc') {
-                                        f.order = 'desc';
-                                    } else if (order === 'is-asc') {
-                                        f.order = 'asc';
-                                    }
-                                } else {
-                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
-                                }
+                                let isEmpty = result.length == 0
+                                $(`[data-filter-empty=${isEmpty}]`).show();
+                                $(`[data-filter-empty=${!isEmpty}]`).hide();
+
+                                window.loading('hide');
                             }
                         },
-                    },
-                    pagination: {
-                        container: '#uid-pagination',
-                        paginationView: '#uid-template-pagination',
-                        visiblePages: 0,
-                        perPage: {
-                            values: [10, 50, 100, data.length],
-                            container: '#uid-perPage',
-                            perPageView: '#uid-template-perPage'
+                        search: {
+                            ele: '#keyword', fields: ['NewsTitle'], start_length: 2, bindEvent: false, multi: function () {
+                                let texts = [];
+                                $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                                    let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                                    let text = matches && matches[1];
+                                    texts.push(text);
+                                });
+                                return texts;
+                            }
+                        },
+                        order: {
+                            default_sort: 'asc',
+                            sorts: [
+                                { field: 'group1', ele: 'select#uid-sortbox' }
+                            ],
+                            onSortEvent: function (f, e) {
+                                let $self = $(this);
+                                if (e.type === 'click') { } else if (e.type === 'change') {
+                                    let $selected = $self.find(':selected');
+                                    let field = $selected.data('sorting-column');
+                                    let order = $selected.data('sorting-class');
+                                    f.field = field;
+                                    if (!!order) {
+                                        if (order === 'is-desc') {
+                                            f.order = 'desc';
+                                        } else if (order === 'is-asc') {
+                                            f.order = 'asc';
+                                        }
+                                    } else {
+                                        f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                    }
+                                }
+                            },
+                        },
+                        pagination: {
+                            container: '#uid-pagination',
+                            paginationView: '#uid-template-pagination',
+                            visiblePages: 0,
+                            perPage: {
+                                values: [10, 50, 100, data.length],
+                                container: '#uid-perPage',
+                                perPageView: '#uid-template-perPage'
+                            }
                         }
-                    }
-                };
+                    };
 
-                fjs = FilterJS(data, '#uid-fjs', opts);
-                //fjs.bindEvent('[data-filter-reset]', 'click.reset');
-                fjs.bindEvent('[data-filter-tag="關鍵字"] [data-tag-close]', 'click.tag');
-                fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+                    fjs = FilterJS(data, '#uid-fjs', opts);
+                    //fjs.bindEvent('[data-filter-reset]', 'click.reset');
+                    fjs.bindEvent('[data-filter-tag="關鍵字"] [data-tag-close]', 'click.tag');
+                    fjs.bindEvent('[data-keyword-submit]', 'click.loading');
 
-                $('[data-keyword-input]').on('keypress.loading', function (e) {
-                    if (e.which === 13 && !!$(this).val().trim()) {
-                        $('[data-keyword-submit]').trigger('click.loading');
-                    }
-                });
+                    $('[data-keyword-input]').on('keypress.loading', function (e) {
+                        if (e.which === 13 && !!$(this).val().trim()) {
+                            $('[data-keyword-submit]').trigger('click.loading');
+                        }
+                    });
 
-                function fnScrollUp() {
-                    window.loading('show');
-                    setTimeout(() => {
-                        window.loading('hide');
-                    }, 300);
-
-                    $('#table').scrollPosition('scroll');
-                }
-                $containgerPagination = $('#uid-pagination');
-                $containgerPagination.on('click', '[data-page]', fnScrollUp);
-                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
-                    if (e.which === 13) {
-                        fnScrollUp();
-                    }
-                });
-
-                $('#uid-view-perPage').on('change.pagesize', fnScrollUp).sizebox();
-                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
-                $('[data-keyword-submit]').on('click.loading', function () {
-                    if (!!$('[data-keyword-input]').val().trim()) {
+                    function fnScrollUp() {
                         window.loading('show');
                         setTimeout(() => {
                             window.loading('hide');
                         }, 300);
+
+                        $('#table').scrollPosition('scroll');
                     }
+                    $containgerPagination = $('#uid-pagination');
+                    $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                    $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                        if (e.which === 13) {
+                            fnScrollUp();
+                        }
+                    });
+
+                    $('#uid-view-perPage').on('change.pagesize', fnScrollUp).sizebox();
+                    $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+                    $('[data-keyword-submit]').on('click.loading', function () {
+                        if (!!$('[data-keyword-input]').val().trim()) {
+                            window.loading('show');
+                            setTimeout(() => {
+                                window.loading('hide');
+                            }, 300);
+                        }
+                    });
+                }
+
+                // 日期區間
+                let range = [];
+                $('[data-filter-part="range"] input').on('change.range', function () {
+                    window.loading('show');
+
+                    $('[data-filter-part="range"]').find('input').each((index, item) => {
+                        range[index] = $(item).val().replaceAll('/', '-');
+                    });
+                    const hasValue = range.every(item => !!item);
+                    let isSameOrBefore = moment(range[0]).isSameOrBefore(range[1]);
+                    if (!hasValue) {
+                        isSameOrBefore = true;
+
+                        var newstype = getMarketNewsType();
+                        var startdate = moment().add(-6, 'M').format('YYYY/MM/DD').replaceAll("/", "-");
+                        var enddate = moment().format('YYYY/MM/DD').replaceAll("/", "-");
+
+                        getMarketNewsData(newstype, startdate, enddate);
+                    }
+                    else if (hasValue && isSameOrBefore) {
+                        var newstype = getMarketNewsType();
+                        var startdate = $('[data-filter-part="range"] input').eq(0).val().replaceAll("/", "-");
+                        var enddate = $('[data-filter-part="range"] input').eq(1).val().replaceAll("/", "-");
+
+                        getMarketNewsData(newstype, startdate, enddate);
+                    }
+
+                    // 帶tag下去條件:
+                    //  1. 日期區間有起訖都有值
+                    //  2. 開始日在結束日之前
+                    // 若父層[data-filter-group]的值為'special'，則不會印出已選擇的tag
+                    $('[data-filter-part="range"]').toggleClass('is-error', !isSameOrBefore).find('[data-error-text]').toggleClass('u-hidden', isSameOrBefore);
+                    $(this).closest('[data-filter-group]').data('filter-group', hasValue && isSameOrBefore ? '' : 'special');
+                    $('[data-filter-part="range"] [data-filter-input]').trigger('change.filter');
                 });
-            }
 
-            // 日期區間
-            let range = [];
-            $('[data-filter-part="range"] input').on('change.range', function () {
-                window.loading('show');
+                // 日期區間預設半年(示意)
+                $('[data-filter-part="range"] input').eq(0).on('change.default', function () {
+                    if (!$(this).val()) {
+                        $(this).val(moment().add(-6, 'M').format('YYYY/MM/DD')).datepicker('update');
+                    }
+                }).trigger('change.default');
+                $('[data-filter-part="range"] input').eq(1).on('change.default', function () {
+                    if (!$(this).val()) {
+                        $(this).val(moment().format('YYYY/MM/DD')).datepicker('update');
+                    }
+                }).trigger('change.default');
 
-                $('[data-filter-part="range"]').find('input').each((index, item) => {
-                    range[index] = $(item).val().replaceAll('/', '-');
-                });
-                const hasValue = range.every(item => !!item);
-                let isSameOrBefore = moment(range[0]).isSameOrBefore(range[1]);
-                if (!hasValue) {
-                    isSameOrBefore = true;
+                function getMarketNewsData(newstype, startdate, enddate) {
 
-                    var newstype = getMarketNewsType();
-                    var startdate = moment().add(-6, 'M').format('YYYY/MM/DD').replaceAll("/", "-");
-                    var enddate = moment().format('YYYY/MM/DD').replaceAll("/", "-");
+                    const params = {
+                        id: newstype,
+                        startDatetime: startdate,
+                        endDatetime: enddate,
+                    };
 
-                    getMarketNewsData(newstype, startdate, enddate);
-                }
-                else if (hasValue && isSameOrBefore) {
-                    var newstype = getMarketNewsType();
-                    var startdate = $('[data-filter-part="range"] input').eq(0).val().replaceAll("/", "-");
-                    var enddate = $('[data-filter-part="range"] input').eq(1).val().replaceAll("/", "-");
+                    $.ajax({
+                        url: '@ClientRoute.GenerateUrl(this, "News", "GetMarketNewsData")',
+                        type: 'POST',
+                        data: params,
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log(data);
 
-                    getMarketNewsData(newstype, startdate, enddate);
-                }
+                        initFilter(data);
+                        initAutocomplete(data);
+                        $('[data-filter-switch="#uid-template"]').trigger('change');
 
-                // 帶tag下去條件:
-                //  1. 日期區間有起訖都有值
-                //  2. 開始日在結束日之前
-                // 若父層[data-filter-group]的值為'special'，則不會印出已選擇的tag
-                $('[data-filter-part="range"]').toggleClass('is-error', !isSameOrBefore).find('[data-error-text]').toggleClass('u-hidden', isSameOrBefore);
-                $(this).closest('[data-filter-group]').data('filter-group', hasValue && isSameOrBefore ? '' : 'special');
-                $('[data-filter-part="range"] [data-filter-input]').trigger('change.filter');
-            });
+                        if (!hashStringProcessed) {
+                            hashStringProcessed = true;
 
-            // 日期區間預設半年(示意)
-            $('[data-filter-part="range"] input').eq(0).on('change.default', function () {
-                if (!$(this).val()) {
-                    $(this).val(moment().add(-6, 'M').format('YYYY/MM/DD')).datepicker('update');
-                }
-            }).trigger('change.default');
-            $('[data-filter-part="range"] input').eq(1).on('change.default', function () {
-                if (!$(this).val()) {
-                    $(this).val(moment().format('YYYY/MM/DD')).datepicker('update');
-                }
-            }).trigger('change.default');
+                            var hash = DOMPurify.sanitize(window.location.hash);
+                            var hashStringNewsType = hash ? decodeURIComponent(hash.split('=')[1]) : null;
 
-            function getMarketNewsData(newstype, startdate, enddate) {
+                            if (hashStringNewsType != null && hashStringNewsType != "") {
+                                $("input[value='" + hashStringNewsType + "']").prop('checked', true).change();
+                            }
 
-                const params = {
-                    id: newstype,
-                    startDatetime: startdate,
-                    endDatetime: enddate,
-                };
-
-                $.ajax({
-                    url: '@ClientRoute.GenerateUrl(this, "News", "GetMarketNewsData")',
-                    type: 'POST',
-                    data: params,
-                }).done(function (data, textStatus, jqXHR) {
-                    console.log(data);
-
-                    initFilter(data);
-                    initAutocomplete(data);
-                    $('[data-filter-switch="#uid-template"]').trigger('change');
-
-                    if (!hashStringProcessed) {
-                        hashStringProcessed = true;
-
-                        var hash = window.location.hash;
-                        var hashStringNewsType = hash ? decodeURIComponent(hash.split('=')[1]) : null;
-
-                        if (hashStringNewsType != null && hashStringNewsType != "") {
-                            $("input[value='" + hashStringNewsType + "']").prop('checked', true).change();
+                            window.location.hash = '';
                         }
 
-                        window.location.hash = '';
-                    }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log(errorThrown);
+                        $('[data-filter-empty="true"]').show();
+                        $('[data-filter-empty="false"]').hide();
+                    }).always(function () {
+                        window.loading('hide');
+                    });
+                }
 
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log(errorThrown);
-                    $('[data-filter-empty="true"]').show();
-                    $('[data-filter-empty="false"]').hide();
-                }).always(function () {
-                    window.loading('hide');
-                });
-            }
-
-            var newstype = getMarketNewsType();
-            var startdate = $('[data-filter-part="range"] input').eq(0).val().replaceAll("/", "-");
-            var enddate = $('[data-filter-part="range"] input').eq(1).val().replaceAll("/", "-");
-            getMarketNewsData(newstype, startdate, enddate);
-
-            function getMarketNewsType() {
-                var selectedCheckboxes = $('#newstype_criteria').find('input[type="checkbox"]:checked');
-                var newsTypes = [];
-
-                selectedCheckboxes.each(function () {
-                    var newsType = $(this).attr('newsType');
-                    newsTypes.push(newsType);
-                });
-
-                var concatenatedNewsTypes = newsTypes.join(',');
-                return concatenatedNewsTypes;
-            }
-
-            $(document).on('change', '.o-btnCheckBox__input', function () {
-                window.loading('show');
                 var newstype = getMarketNewsType();
                 var startdate = $('[data-filter-part="range"] input').eq(0).val().replaceAll("/", "-");
                 var enddate = $('[data-filter-part="range"] input').eq(1).val().replaceAll("/", "-");
                 getMarketNewsData(newstype, startdate, enddate);
-            });
 
-            $('#reset').on('click', function (e) {
-                e.preventDefault();
-                window.loading('show');
+                function getMarketNewsType() {
+                    var selectedCheckboxes = $('#newstype_criteria').find('input[type="checkbox"]:checked');
+                    var newsTypes = [];
 
-                $("[data-keyword-input]").val("");
-                $('[data-filter-tag="關鍵字"]').each(function () {
-                    $('[data-filter-tag="關鍵字"] .o-pickedTag__button').trigger('click');
+                    selectedCheckboxes.each(function () {
+                        var newsType = $(this).attr('newsType');
+                        newsTypes.push(newsType);
+                    });
+
+                    var concatenatedNewsTypes = newsTypes.join(',');
+                    return concatenatedNewsTypes;
+                }
+
+                $(document).on('change', '.o-btnCheckBox__input', function () {
+                    window.loading('show');
+                    var newstype = getMarketNewsType();
+                    var startdate = $('[data-filter-part="range"] input').eq(0).val().replaceAll("/", "-");
+                    var enddate = $('[data-filter-part="range"] input').eq(1).val().replaceAll("/", "-");
+                    getMarketNewsData(newstype, startdate, enddate);
                 });
 
-                $("[data-filter-checkbox] input").prop("checked", !1);
-                $('[data-filter-checkall]').prop('checked', true);
-                $("[data-filter-input]").val("").trigger("change");
-                $("[data-filter-tags]").empty();
-                $('[data-filter-block]').addClass('no-picked');
-            });
+                $('#reset').on('click', function (e) {
+                    e.preventDefault();
+                    window.loading('show');
 
-            // table 排序功能
-            $('#table').on('click.sorting', '.o-sorting', function (e) {
-                e.preventDefault();
+                    $("[data-keyword-input]").val("");
+                    $('[data-filter-tag="關鍵字"]').each(function () {
+                        $('[data-filter-tag="關鍵字"] .o-pickedTag__button').trigger('click');
+                    });
 
-                var $this = $(this);
-                var orderby = '';
-                if ($this.hasClass('is-asc')) {
-                    $this.removeClass('is-asc').addClass('is-desc');
-                    orderby = 'is-desc';
-                } else {
-                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
-                    $this.addClass('is-asc');
-                    orderby = 'is-asc';
-                }
+                    $("[data-filter-checkbox] input").prop("checked", !1);
+                    $('[data-filter-checkall]').prop('checked', true);
+                    $("[data-filter-input]").val("").trigger("change");
+                    $("[data-filter-tags]").empty();
+                    $('[data-filter-block]').addClass('no-picked');
+                });
 
-                // 連動 sortingbox
-                let $sortingbox = $('#uid-sortbox');
-                var sortingColumn = $this.data('sorting-column');
-                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
-                if ($option.length != 0) {
-                    $option.prop('selected', true);
-                    $sortingbox.trigger('change');
-                } else {
-                    $sortingbox.val(null).trigger('change');
-                }
-            });
+                // table 排序功能
+                $('#table').on('click.sorting', '.o-sorting', function (e) {
+                    e.preventDefault();
 
-            // 手機版分頁排序功能
-            $('[data-sortingbox]:not(#uid-sortbox)').on('change', function (e) {
-                let self = this;
-                let $self = $(this);
-                let sortingColumn = $('option:selected', self).data('sorting-column');
-                let orderby = $('option:selected', self).data('sorting-class');
-                let $box = $('#uid-sortbox');
-                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
-                if ($option.length != 0) {
-                    $option.prop('selected', true);
-                    $box.trigger('change');
-                } else {
-                    $box.val(null).trigger('change');
-                }
-            })
-            $('#uid-sortbox').on('change.select2', function (e) {
-                let self = this;
-                let $self = $(this);
-                let sorting = $self.val();
-                let $linkTable = $('#table');
-                let sortingColumn = $('option:selected', self).data('sorting-column');
-                let orderby = $('option:selected', self).data('sorting-class');
+                    var $this = $(this);
+                    var orderby = '';
+                    if ($this.hasClass('is-asc')) {
+                        $this.removeClass('is-asc').addClass('is-desc');
+                        orderby = 'is-desc';
+                    } else {
+                        $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                        $this.addClass('is-asc');
+                        orderby = 'is-asc';
+                    }
 
-                // 連動 table
-                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
-                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                    // 連動 sortingbox
+                    let $sortingbox = $('#uid-sortbox');
+                    var sortingColumn = $this.data('sorting-column');
+                    let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+                    if ($option.length != 0) {
+                        $option.prop('selected', true);
+                        $sortingbox.trigger('change');
+                    } else {
+                        $sortingbox.val(null).trigger('change');
+                    }
+                });
 
-                let $linkedBox = $('[data-sortingbox]').not(self);
-                for (box of $linkedBox) {
-                    let $box = $(box);
+                // 手機版分頁排序功能
+                $('[data-sortingbox]:not(#uid-sortbox)').on('change', function (e) {
+                    let self = this;
+                    let $self = $(this);
+                    let sortingColumn = $('option:selected', self).data('sorting-column');
+                    let orderby = $('option:selected', self).data('sorting-class');
+                    let $box = $('#uid-sortbox');
                     let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
                     if ($option.length != 0) {
                         $option.prop('selected', true);
-                        $box.trigger('change.select2');
+                        $box.trigger('change');
                     } else {
-                        $box.val(null).trigger('change.select2');
+                        $box.val(null).trigger('change');
                     }
-                }
-            });
+                })
+                $('#uid-sortbox').on('change.select2', function (e) {
+                    let self = this;
+                    let $self = $(this);
+                    let sorting = $self.val();
+                    let $linkTable = $('#table');
+                    let sortingColumn = $('option:selected', self).data('sorting-column');
+                    let orderby = $('option:selected', self).data('sorting-class');
 
-        });
-    })(jQuery, window, document);
+                    // 連動 table
+                    $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                    $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+
+                    let $linkedBox = $('[data-sortingbox]').not(self);
+                    for (box of $linkedBox) {
+                        let $box = $(box);
+                        let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                        if ($option.length != 0) {
+                            $option.prop('selected', true);
+                            $box.trigger('change.select2');
+                        } else {
+                            $box.val(null).trigger('change.select2');
+                        }
+                    }
+                });
+
+            });
+        })(jQuery, window, document);
     </script>
 </div>
