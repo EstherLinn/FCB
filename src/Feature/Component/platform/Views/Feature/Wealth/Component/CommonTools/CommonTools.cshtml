@@ -9,11 +9,6 @@
 <div class="l-navbar__tools @(Model.CanRenderTools? string.Empty: "u-hidden")">
     <div class="l-flex l-flex--inline u-flex-gap-sm">
         <div class="l-flex__item">
-            <!-- [data-after="名稱"]: 按鈕要顯示的文字 -->
-            <!-- [data-text-on="名稱"]: 按鈕在 active 狀態下要顯示的文字 -->
-            <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-            <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-            <!-- [data-ia-tooltip="true"]: 是否要啟用 tooltip 提示 mouse hover 的訊息，預設為 true -->
             <a href="#" class="o-statusBtn o-statusBtn--btn o-statusBtn--tool u-hidden" data-tools-input data-after="加入常用" data-text-on="已加入" data-msg="加入常用工具|移出常用工具" data-ia="true" data-ia-tooltip="false"></a>
         </div>
         <div class="l-flex__item">
@@ -138,9 +133,7 @@
                     success: function (resp) {
                         if (resp && resp.Item1 && resp.Item2) {
                             commonActive();
-                            //if (window.SetCommonFunctionList) {
-                            //    window.SetCommonFunctionList();
-                            //}
+
                             let result = resp.Item2;
                             SC_DATA.CommonTools = result.body;
                             if (result.statusCode == 200 && result.body.length > 0) {
@@ -153,10 +146,11 @@
                                               </a>
                                           </li>`;
                                 }
+                                $('[data-compare-count]', '#compareLimit').text(compareStore.length + '/7');
                                 if (result.body.length == 7) {
-                                    $('.c-sideDialog__msg', '#commonFunctionLimit').removeClass('u-hidden');
+                                    $('[data-compare-msg]', '#compareLimit').text('標的到上限嚕！');
                                 } else {
-                                    $('.c-sideDialog__msg', '#commonFunctionLimit').addClass('u-hidden');
+                                    $('[data-compare-msg]', '#compareLimit').text('標的最多加入7檔！');
                                 }
                                 $('#commonList', '[data-sidebar-id="common"]').html(DOMPurify.sanitize(commonHtml));
                                 $('[data-hasValue="false"]', '[data-sidebar-id="common"]').addClass('u-hidden');
