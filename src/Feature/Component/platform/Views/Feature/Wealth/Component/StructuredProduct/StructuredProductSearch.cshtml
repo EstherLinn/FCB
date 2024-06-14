@@ -509,8 +509,6 @@
                 success: function (data) {
                     console.log(data);
 
-                    data = DOMPurify.sanitize(data);
-
                     $.each(data, function (index, item) {
                         // 新增 ProductDisplayName 欄位
                         item.ProductDisplayName = item.ProductCode + " " + item.ProductName;
@@ -540,7 +538,7 @@
                     for (var i = 0; i < data.length; i++) {
                         var filledTemplate = template.replace(/<%= ProductDisplayName %>/g, data[i].ProductDisplayName).replace(/<%= ProductDetailUrl %>/g, data[i].ProductDetailUrl).replace(/<%= IssuingInstitution %>/g, data[i].IssuingInstitution).replace(/<%= CurrencyName %>/g, data[i].CurrencyName).replace(/<%= ProductMaturityDate %>/g, data[i].ProductMaturityDate).replace(/<%= BankSellPrice %>/g, data[i].BankSellPrice).replace(/<%= PriceBaseDate %>/g, data[i].PriceBaseDate);
 
-                        container.innerHTML += filledTemplate;
+                        container.innerHTML += DOMPurify.sanitize(filledTemplate);
                     }
 
                     initFilter(data);
