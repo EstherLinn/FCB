@@ -16,6 +16,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = """
                    SELECT Top 10 *
                    FROM [vw_BasicETF] 
+                   WHERE LEFT(ProductCode, 2) NOT IN ('EA', 'EB')
                    ORDER BY DiscountPremium
                    DESC,ProductCode
                    """;

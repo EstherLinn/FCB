@@ -104,6 +104,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = """
                    SELECT *
                    FROM [vw_BasicETF]
+                   WHERE LEFT(ProductCode, 2) NOT IN ('EA', 'EB')
                    ORDER BY SixMonthReturnMarketPriceOriginalCurrency
                    DESC,ProductCode
                    """;

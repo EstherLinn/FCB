@@ -15,7 +15,8 @@ namespace Feature.Wealth.Component.Repositories
             List<ETFs> ETFItems = new List<ETFs>();
             string sql = """
                    SELECT Top 10 *
-                   FROM [vw_BasicETF] 
+                   FROM [vw_BasicETF]
+                   WHERE LEFT(ProductCode, 2) NOT IN ('EA', 'EB')
                    ORDER BY SixMonthReturnMarketPriceOriginalCurrency
                    DESC, ProductCode
                    """;
