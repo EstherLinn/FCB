@@ -112,5 +112,12 @@ namespace Feature.Wealth.Component.Models.USStock
                 public static readonly ID Discount = new ID("{AFEACB28-F841-47B6-8BA8-867988633D41}");
             }
         }
+
+        public readonly struct TagsType
+        {
+            public static readonly ID HotKeywordTag = new ID("{AEB37529-AD2E-4A15-B1B8-326EACB58954}");
+            public static readonly ID HotProductTag = new ID("{EB96F527-C17A-4462-9D13-4136D6EB9084}");
+            public static readonly ID Discount = new ID("{339563FD-22BC-441D-B171-472E6FB085CE}");
+        }
     }
 }
