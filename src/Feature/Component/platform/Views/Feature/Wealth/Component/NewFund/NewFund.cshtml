@@ -174,7 +174,7 @@
 						if (data) {
 							$('#result').empty();
 
-							document.getElementById('result').innerHTML = DOMPurify.sanitize(data);
+							document.getElementById('result').innerHTML = data;
 							var totalPages = parseInt($('#totalPages').val());
 
 							if (totalPages === 0) {
