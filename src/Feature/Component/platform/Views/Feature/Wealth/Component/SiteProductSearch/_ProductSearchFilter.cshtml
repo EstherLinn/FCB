@@ -1,0 +1,77 @@
+﻿<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">全站搜尋</h1>
+        </div>
+        <div class="l-mainstage__content">
+            <!-- 篩選最外層[data-filter-block] -->
+            <div class="l-filter no-picked" data-filter-block>
+                <div class="l-filter__block">
+                    <!-- 收合區域[data-filter] -->
+                    <div class="c-filter is-collapse" data-filter>
+                        <div class="c-filter__search">
+                            <!-- 條件群組[data-filter-group] -->
+                            <div class="c-filterForm" data-filter-group>
+                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                <div class="c-filterForm__title u-hidden" data-filter-title>
+                                    <span>關鍵字</span>
+                                </div>
+                                <div class="c-filterForm__value">
+                                    <div class="o-actionbox o-actionbox--lg" data-clear="true">
+                                        <!-- #keyword: 請見頁面下方的script邏輯，套用jquery.autocomplete套件 -->
+                                        <!-- [data-clear="textbox"]: 套用清除按鈕功能，標示此為文字輸入框 -->
+                                        <input id="uid-searchbox" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入代碼或名稱" data-keyword-input>
+                                        <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit id="uid-btn-search"></button>
+                                        <!-- [data-clear="button"]: 套用清除按鈕功能，標示此為清除按鈕 -->
+                                        <button type="button" class="o-actionbox__clear" data-clear="button">清除</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-filter__keyword" style="display: none;">
+                            <!-- 條件群組[data-filter-group] -->
+                            <div class="c-filterForm" data-filter-group>
+                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                <div class="c-filterForm__value">
+                                    <div class="l-pickGroup">
+                                        <div class="l-pickGroup__item">
+                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                            <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox="">
+                                                <input class="o-btnCheckBox__input" type="checkbox">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-filter__picked">
+                    <div class="c-pickedTag">
+                        <div class="c-pickedTag__text">已選取</div>
+                        <div class="c-pickedTag__items">
+                            <!-- 已選取tag區[data-filter-tags] -->
+                            <div class="l-pickGroup" data-filter-tags></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-filter__tool">
+                    <div class="l-filter__total">
+                        <div class="o-total" style="display: none;">
+                            共<span data-uid-total>0</span>檔商品
+                            <span style="display: none;" data-uid-producttype="etf">0</span>
+                            <span style="display: none;" data-uid-producttype="fund">0</span>
+                            <span style="display: none;" data-uid-producttype="sip">0</span>
+                            <span style="display: none;" data-uid-producttype="fstock">0</span>
+                        </div>
+                    </div>
+                    <div class="l-filter__reset">
+                        <!-- 重設所有條件功能[data-filter-reset] -->
+                        <a href="#" class="o-prefixLink o-prefixLink--refresh" data-filter-reset>重設所有條件</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,61 @@
+﻿@model Feature.Wealth.Component.Models.SiteProductSearch.SiteProductSearchDatasource
+
+<script id="uid-template-sip" type="text/html">
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+        <td class="c-cardTable__top"></td>
+        @*【商品名稱】*@
+        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+            <div class="c-cardTable__content">
+                <div class="l-target">
+                    <div class="l-target__name">
+                        <a href="@(Model.StructuredProductDetailPageLink)?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
+                    </div>
+                    @*標籤*@
+                    <% if (DiscountTags != null && DiscountTags.length > 0) { %>
+                    <div class="l-target__additional">
+                        <ul class="l-tag">
+                            <% for (var i = 0; i < DiscountTags.length; i++) { %>
+                            <li class="l-tag__item">
+                                <a href="#" class="o-tag"><%= DiscountTags[i] %></a>
+                            </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        @*【發行機構】*@
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">發行機構</div>
+            <div class="c-cardTable__content"><%= IssuingInstitutionPair.Value %></div>
+        </td>
+        @*【幣別】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">
+                幣別
+                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+            </div>
+            <div class="c-cardTable__content">
+                <%= CurrencyHtml %>
+            </div>
+        </td>
+        @*【到期日】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">到期日</div>
+            <div class="c-cardTable__content"><%= ProductMaturityDatePair.Value %></div>
+        </td>
+        @*【參考贖回價】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">參考贖回價</div>
+            <div class="c-cardTable__content"><%= BankSellPricePair.Value %></div>
+        </td>
+        @*【價格日期】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">價格日期</div>
+            <div class="c-cardTable__content"><%= PriceBaseDatePair.Value %></div>
+        </td>
+        <td class="c-cardTable__space"></td>
+    </tr>
+</script>

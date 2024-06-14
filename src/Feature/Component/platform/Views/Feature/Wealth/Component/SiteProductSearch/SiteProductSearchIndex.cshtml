@@ -1,0 +1,1139 @@
+﻿@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+@using Foundation.Wealth.Helper;
+@model Feature.Wealth.Component.Models.SiteProductSearch.SiteProductSearchViewModel
+@{
+    if (Model == null)
+    {
+        return;
+    }
+    var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId().ToSearchId();
+}
+
+@Html.Partial("/Views/Feature/Wealth/Component/SiteProductSearch/_ProductSearchFilter.cshtml")
+@Html.Partial("/Views/Feature/Wealth/Component/SiteProductSearch/_ProductSearchResult.cshtml", Model.SearchResultModel)
+
+<template id="tmplKeywordNotFound">
+    <div class="c-empty">
+        <div class="c-empty__img">
+            <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
+        </div>
+        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
+    </div>
+</template>
+
+<script>
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            window.loading = () => 0; // 覆蓋 loading
+
+            function loading() {
+                $('.c-loading').loading('show');
+                setTimeout(() => {
+                    $('.c-loading').loading('hide');
+                }, 300);
+            }
+
+            function showLoading() {
+                $('.c-loading').loading('show');
+            }
+
+            function hideLoading() {
+                $('.c-loading').loading('hide');
+            }
+
+            $.fn.extend({
+                setEleAttribute: function (name, value) {
+                    return this.each(function () {
+                        this.setAttribute(name, value);
+                    });
+                }
+            });
+
+            function checkKeywordQueryString() {
+                let params = new URLSearchParams(window.location.search);
+                let urlParams = new URLSearchParams();
+
+                for (const [key, value] of params) {
+                    urlParams.append(key.toLowerCase(), decodeURIComponent(value));
+                }
+
+                let key = 'keyword';
+
+                if (urlParams.has(key)) {
+                    let keywordValue = DOMPurify.sanitize(urlParams.get(key));
+                    $('[data-keyword-input]').val(keywordValue);
+                    $('[data-keyword-submit]').trigger('click');
+                }
+            }
+
+            function SearchResultRespList() {
+                this.List;
+
+                var $this = this;
+
+                this.Init = function () {
+                    $this.List = {
+                        Fund: [],
+                        ETF: [],
+                        SIP: [],
+                        FStock: []
+                    }
+                }
+            }
+
+            function SearchKeywordDataRespList() {
+                this.List;
+                this.Url = '';
+                var $this = this;
+                this.Init = function () {
+                    $this.List = [];
+                }
+            }
+
+            function apiRequest(url, params) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url,
+                        type: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(params),
+                        success: function (data) {
+                            resolve(data);
+                        },
+                        error: function (xhr, status, error) {
+                            reject(xhr, status, error);
+                        }
+                    });
+                });
+            }
+
+            function totalCount() {
+                let total = 0;
+
+                $('[data-uid-producttype]').each(function () {
+                    let $this = $(this);
+                    let type = $(this).data('uid-producttype');
+                    let count = Number($this.text());
+                    if (isNaN(count)) {
+                        console.error('Invalid number:' + type);
+                        return 0;
+                    }
+
+                    total += count;
+                });
+
+                $('[data-uid-total]').text(total);
+                return total;
+            }
+
+            function initFundFilterJS() {
+                var resultList = window.ProductSearch.Result.List.Fund;
+                var fjs = FilterJS(resultList, '#uid-fjs-fund', {
+                    template: '#uid-template-fund-original',
+                    search: {
+                        ele: '#uid-searchbox', fields: ['ProductCode', 'ProductName'], start_length: 2, bindEvent: false, multi: function () {
+                            let texts = [];
+                            $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                                let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                                let text = matches && matches[1];
+                                texts.push(text);
+                            });
+                            return texts;
+                        }
+                    },
+                    pagination: {
+                        container: '#uid-pagination-fund',
+                        paginationView: '#uid-template-pagination-fund',
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, resultList.length],
+                            container: '#uid-perPage-fund',
+                            perPageView: '#uid-template-perPage-fund'
+                        }
+                    },
+                    callbacks: {
+                        beforeRecordRender: function (record) {
+                            const dot2 = 2;
+                            record.OneMonthReturnOriginalCurrency.Text = Math.abs(record.OneMonthReturnOriginalCurrency.Value).toFixed(dot2);
+                            record.ThreeMonthReturnOriginalCurrency.Text = Math.abs(record.ThreeMonthReturnOriginalCurrency.Value).toFixed(dot2);
+                            record.SixMonthReturnOriginalCurrency.Text = Math.abs(record.SixMonthReturnOriginalCurrency.Value).toFixed(dot2);
+                            record.OneYearReturnOriginalCurrency.Text = Math.abs(record.OneYearReturnOriginalCurrency.Value).toFixed(dot2);
+                            record.OneMonthReturnTWD.Text = Math.abs(record.OneMonthReturnTWD.Value).toFixed(dot2);
+                            record.ThreeMonthReturnTWD.Text = Math.abs(record.ThreeMonthReturnTWD.Value).toFixed(dot2);
+                            record.SixMonthReturnTWD.Text = Math.abs(record.SixMonthReturnTWD.Value).toFixed(dot2);
+                            record.OneYearReturnTWD.Text = Math.abs(record.OneYearReturnTWD.Value).toFixed(dot2);
+                        },
+                        afterFilter: function (result) {
+                            $('[data-uid-producttype="fund"]').text(result.length);
+                            //totalCount();
+                            this.paginator.setCurrentPage(1);
+
+                            let isEmpty = result.length == 0;
+                            $(`[data-tab-panel-id="tab-1"] [data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-tab-panel-id="tab-1"] [data-filter-empty=${!isEmpty}]`).hide();
+
+                            hideLoading();
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
+                            $('[eh-compare]').trigger('exec');
+                            $('[eh-focus]').trigger('exec');
+                            $('[eh-subscription-type]').trigger('exec');
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select#uid-sortbox-fund' }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') {
+                            } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order == 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+
+                            console.log(f);
+                        }
+                    }
+                });
+
+                fjs.bindEvent('[data-filter-reset]', 'click.reset');
+                fjs.bindEvent('[data-tag-close]', 'click.tag');
+                fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+
+                $('[data-tab-target="tab-1"]').on('switch', function (e) {
+                    let target = $(this).data('tab-target');
+                    $(`[data-tab-panel-id="${target}"]`).find('[data-filter-switch]:checked').trigger('change');
+                });
+
+                $('[data-tab-panel-id="tab-1"]').on('switch click change', '[data-filter-switch]', function (e) {
+                    let $self = $(this);
+                    let switchTemplate = $self.data('filter-switch');
+
+                    if (switchTemplate) {
+                        $elTh = $('#fund_table th[data-filter-switch-columns]');
+                        $elTh.hide();
+                        let switchCol = $self.data('filter-switch-columns').toString();
+
+                        $elTh.each(function () {
+                            let $this = $(this);
+                            let columns = $this.data('filter-switch-columns').toString().split(',');
+                            if (columns.includes(switchCol)) {
+                                $this.show();
+                            } else {
+                                $this.hide();
+                            }
+                        });
+
+                        fjs.setTemplate(switchTemplate, true);
+                    }
+                });
+
+                function fnScrollUp() {
+                    loading();
+                    $('#fund_table').scrollPosition('scroll');
+                }
+
+                function fnToFirstPage() {
+                    loading();
+                    $('#fund_table').scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
+
+                $containgerPagination = $('#uid-pagination-fund');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+
+                $('#uid-view-perPage-fund').on('change.pagesize', fnToFirstPage).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+
+                return fjs;
+            }
+
+            function initEtfFilterJS() {
+                const propertyResetObj = [
+                    'InceptionDateMarketPriceOriginalCurrency'
+                    , 'YeartoDateReturnMarketPriceOriginalCurrency'
+                    , 'MonthlyReturnMarketPriceOriginalCurrency'
+                    , 'ThreeMonthReturnMarketPriceOriginalCurrency'
+                    , 'SixMonthReturnMarketPriceOriginalCurrency'
+                    , 'OneYearReturnMarketPriceOriginalCurrency'
+                    , 'TwoYearReturnMarketPriceOriginalCurrency'
+                    , 'ThreeYearReturnMarketPriceOriginalCurrency'
+                    , 'InceptionDateMarketPriceTWD'
+                    , 'YeartoDateReturnMarketPriceTWD'
+                    , 'MonthlyReturnMarketPriceTWD'
+                    , 'ThreeMonthReturnMarketPriceTWD'
+                    , 'SixMonthReturnMarketPriceTWD'
+                    , 'OneYearReturnMarketPriceTWD'
+                    , 'TwoYearReturnMarketPriceTWD'
+                    , 'ThreeYearReturnMarketPriceTWD'
+                    , 'CurrencyPair'
+                    , 'DiscountTags'
+                ];
+                var resultList = window.ProductSearch.Result.List.ETF;
+                var fjs = FilterJS(resultList, '#uid-fjs-etf', {
+                    template: '#uid-template-etf-original',
+                    search: {
+                        ele: '#uid-searchbox', fields: ['FirstBankCode', 'ETFName', 'ExchangeCode.Value'], start_length: 2, bindEvent: false, multi: function () {
+                            let texts = [];
+                            $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                                let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                                let text = matches && matches[1];
+                                texts.push(text);
+                            });
+                            return texts;
+                        }
+                    },
+                    pagination: {
+                        container: '#uid-pagination-etf',
+                        paginationView: '#uid-template-pagination-etf',
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, resultList.length],
+                            container: '#uid-perPage-etf',
+                            perPageView: '#uid-template-perPage-etf'
+                        }
+                    },
+                    callbacks: {
+                        beforeRecordRender: function (record) {
+                            for (let r in record) {
+                                if (propertyResetObj.includes(r)) {
+                                    if (record[r].Value == null || record[r].Value == undefined) {
+                                        record[r].Value = '';
+                                    }
+                                }
+                            }
+                        },
+                        afterFilter: function (result) {
+                            $('[data-uid-producttype="etf"]').text(result.length);
+                            //totalCount();
+                            this.paginator.setCurrentPage(1);
+
+                            let isEmpty = result.length == 0;
+                            $(`[data-tab-panel-id="tab-2"] [data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-tab-panel-id="tab-2"] [data-filter-empty=${!isEmpty}]`).hide();
+
+                            hideLoading();
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
+                            $('[eh-compare]').trigger('exec');
+                            $('[eh-focus]').trigger('exec');
+                            $('[eh-subscription-type]').trigger('exec');
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select#uid-sortbox-etf' }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') {
+                            } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order == 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+
+                            console.log(f);
+                        }
+                    }
+                });
+
+                fjs.bindEvent('[data-filter-reset]', 'click.reset');
+                fjs.bindEvent('[data-tag-close]', 'click.tag');
+                fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+
+                $('[data-tab-target="tab-2"]').on('switch', function (e) {
+                    let target = $(this).data('tab-target');
+                    $(`[data-tab-panel-id="${target}"]`).find('[data-filter-switch]:checked').trigger('change');
+                });
+
+                $('[data-tab-panel-id="tab-2"]').on('switch click change', '[data-filter-switch]', function (e) {
+                    let $self = $(this);
+                    let switchTemplate = $self.data('filter-switch');
+
+                    if (switchTemplate) {
+                        $elTh = $('#etf_table th[data-filter-switch-columns]');
+                        $elTh.hide();
+                        let switchCol = $self.data('filter-switch-columns').toString();
+
+                        $elTh.each(function () {
+                            let $this = $(this);
+                            let columns = $this.data('filter-switch-columns').toString().split(',');
+                            if (columns.includes(switchCol)) {
+                                $this.show();
+                            } else {
+                                $this.hide();
+                            }
+                        });
+
+                        fjs.setTemplate(switchTemplate, true);
+                    }
+                });
+
+                function fnScrollUp() {
+                    loading();
+                    $('#etf_table').scrollPosition('scroll');
+                }
+
+                function fnToFirstPage() {
+                    loading();
+                    $('#etf_table').scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
+
+                $containgerPagination = $('#uid-pagination-etf');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+
+                $('#uid-view-perPage-etf').on('change.pagesize', fnToFirstPage).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+
+                return fjs;
+            }
+
+            function initSipFilterJS() {
+                const resetProps = ['IssuingInstitution', 'CurrencyName', 'ProductMaturityDate', 'BankSellPrice', 'PriceBaseDate'];
+                const dateProps = ['ProductMaturityDatePair', 'PriceBaseDatePair'];
+
+                var resultList = window.ProductSearch.Result.List.SIP;
+
+                var fjs = FilterJS(resultList, '#uid-fjs-sip', {
+                    template: '#uid-template-sip',
+                    search: {
+                        ele: '#uid-searchbox', fields: ['ProductCode', 'ProductName'], start_length: 2, bindEvent: false, multi: function () {
+                            let texts = [];
+                            $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                                let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                                let text = matches && matches[1];
+                                texts.push(text);
+                            });
+                            return texts;
+                        }
+                    },
+                    pagination: {
+                        container: '#uid-pagination-sip',
+                        paginationView: '#uid-template-pagination-sip',
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, resultList.length],
+                            container: '#uid-perPage-sip',
+                            perPageView: '#uid-template-perPage-sip'
+                        }
+                    },
+                    callbacks: {
+                        beforeRecordRender: function (record) {
+                            for (let r in record) {
+                                if (dateProps.includes(r)) {
+                                    if (record[r].Key == null || record[r].Key == undefined) {
+                                        record[r].Key = new Date(record[r].Value).getTime().toString();
+                                    }
+                                }
+                            }
+                        },
+                        afterFilter: function (result) {
+                            $('[data-uid-producttype="sip"]').text(result.length);
+                            //totalCount();
+                            this.paginator.setCurrentPage(1);
+
+                            let isEmpty = result.length == 0;
+                            $(`[data-tab-panel-id="tab-3"] [data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-tab-panel-id="tab-3"] [data-filter-empty=${!isEmpty}]`).hide();
+
+                            hideLoading();
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select#uid-sortbox-sip' }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') {
+                            } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order == 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+
+                            console.log(f);
+                        }
+                    }
+                });
+
+                fjs.bindEvent('[data-filter-reset]', 'click.reset');
+                fjs.bindEvent('[data-tag-close]', 'click.tag');
+                fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+
+                function fnScrollUp() {
+                    loading();
+                    $('#sip_table').scrollPosition('scroll');
+                }
+
+                function fnToFirstPage() {
+                    loading();
+                    $('#sip_table').scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
+
+                $containgerPagination = $('#uid-pagination-sip');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+
+                $('#uid-view-perPage-sip').on('change.pagesize', fnToFirstPage).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+
+                return fjs;
+            }
+
+            function initForeignStockFilterJS() {
+                var resultList = window.ProductSearch.Result.List.FStock;
+                var fjs = FilterJS(resultList, '#uid-fjs-fstock', {
+                    template: '#uid-template-fstock',
+                    search: {
+                        ele: '#uid-searchbox', fields: ['FirstBankCode', 'EnglishName', 'ChineseName', 'FundCodePair.Key'],
+                        start_length: 2, bindEvent: false,
+                        multi: function () {
+                            let texts = [];
+                            $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                                let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                                let text = matches && matches[1];
+                                texts.push(text);
+                            });
+                            return texts;
+                        }
+                    },
+                    pagination: {
+                        container: '#uid-pagination-fstock',
+                        paginationView: '#uid-template-pagination-fstock',
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, resultList.length],
+                            container: '#uid-perPage-fstock',
+                            perPageView: '#uid-template-perPage-fstock'
+                        }
+                    },
+                    callbacks: {
+                        beforeRecordRender: function (record) {
+                            const dot2 = 2;
+                            record.DailyReturn.Text = Math.abs(record.DailyReturn.Value).toFixed(dot2);
+                            record.WeeklyReturn.Text = Math.abs(record.WeeklyReturn.Value).toFixed(dot2);
+                            record.MonthlyReturn.Text = Math.abs(record.MonthlyReturn.Value).toFixed(dot2);
+                            record.ThreeMonthReturn.Text = Math.abs(record.ThreeMonthReturn.Value).toFixed(dot2);
+                            record.OneYearReturn.Text = Math.abs(record.OneYearReturn.Value).toFixed(dot2);
+                            record.YeartoDateReturn.Text = Math.abs(record.YeartoDateReturn.Value).toFixed(dot2);
+                            record.SixMonthReturn.Text = Math.abs(record.SixMonthReturn.Value).toFixed(dot2);
+                        },
+                        afterFilter: function (result) {
+                            $('[data-uid-producttype="fstock"]').text(result.length);
+                            //totalCount();
+                            this.paginator.setCurrentPage(1);
+
+                            let isEmpty = result.length == 0;
+                            $(`[data-tab-panel-id="tab-4"] [data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-tab-panel-id="tab-4"] [data-filter-empty=${!isEmpty}]`).hide();
+
+                            hideLoading();
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
+                            $('[eh-compare]').trigger('exec');
+                            $('[eh-focus]').trigger('exec');
+                            $('[eh-subscription-type]').trigger('exec');
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select#uid-sortbox-fstock' }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') {
+                            } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order == 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+
+                            console.log(f);
+                        }
+                    }
+                });
+
+                fjs.bindEvent('[data-filter-reset]', 'click.reset');
+                fjs.bindEvent('[data-tag-close]', 'click.tag');
+                fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+
+                function fnScrollUp() {
+                    loading();
+                    $('#fstock_table').scrollPosition('scroll');
+                }
+
+                function fnToFirstPage() {
+                    loading();
+                    $('#fstock_table').scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
+
+                $containgerPagination = $('#uid-pagination-fstock');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+
+                $('#uid-view-perPage-fstock').on('change.pagesize', fnToFirstPage).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+
+                return fjs;
+            }
+
+            function initAutocomplete() {
+                $('#uid-searchbox').autocomplete({
+                    max: 10,
+                    noCache: true,
+                    minChars: 0,
+                    containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
+                    maxHeight: 'auto',
+                    zIndex: 5,
+                    preserveInput: true,
+                    showNoSuggestionNotice: true,
+                    noSuggestionNotice: $('#tmplKeywordNotFound').html(),
+                    lookup: function (query, done) {
+                        // Do Ajax call or lookup locally, when done,
+                        // call the callback and pass your results:
+                        query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+                        let result = window.ProductSearch.SearchKeyword.List.filter(function (item) {
+                            return query.length == 0 || new RegExp(query, 'gi').test(item.value);
+                        });
+                        done({
+                            suggestions: result.slice(0, 5)
+                        });
+                    },
+                    onSearchComplete: function (query, suggestions) {
+                        var autocomplete = $(this).autocomplete();
+                        var container = autocomplete.suggestionsContainer;
+                        var $this = $(this);
+
+                        // 取消套件預設 blur 事件會關閉 suggestions container
+                        $this.off('blur.autocomplete');
+
+                        // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
+                        if (autocomplete.isRegisteGlobalEvent != true) {
+                            $(window).on('click.autocomplete', {
+                                source: this
+                            }, e => {
+                                if (e.target != e.data.source) {
+                                    autocomplete.hide();
+                                }
+                            });
+                            autocomplete.isRegisteGlobalEvent = true;
+                        }
+
+                        // 停止 like icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
+                        $(container).find('.o-statusBtn').off('click.autocomplete').on('click.autocomplete', function (e) {
+                            e.stopPropagation();
+                        });
+                        // 綁定 like icon 的互動功能
+                        $(container).find('[data-ia]').interactive();
+                        // 綁定 like icon 的彈跳登入畫面
+                        $(container).find('[data-popup]').magnificPopup();
+                        $(container).find('[eh-compare]').trigger('exec');
+                        $(container).find('[eh-focus]').trigger('exec');
+                        $(container).find('[eh-subscription-type]').trigger('exec');
+                    },
+                    formatResult: function (suggestion, currentValue) {
+                        let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
+
+                        // like 按鈕
+                        let $like = suggestion.data.focusBtnHtml ? `<a ${suggestion.data.focusBtnHtml}></a>` : '';
+                        // 申購按鈕
+                        let $purchase = suggestion.data.purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.data.subscribeBtnHtml}>申購</a></div>` : '';
+
+                        return `<div class="c-itemKeyword">
+                                <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                </a>
+                                <div class="c-itemKeyword__collections">${$like}</div>
+                                ${$purchase}
+                            </div>`;
+                    }
+                });
+            }
+
+            window.ProductSearch = {
+                FJS: {
+                    ETF: null,
+                    Fund: null,
+                    SIP: null,
+                    FStock: null
+                },
+                Result: new SearchResultRespList(),
+                SearchKeyword: new SearchKeywordDataRespList(),
+                QueryList: function () {
+                    this.Result.Init();
+
+                    var query = apiRequest('@ClientRoute.GenerateUrl(this, "SiteProductSearch", "GetSearchResultData")');
+
+                    query.then((data) => {
+                        console.log(data);
+                        this.Result.List = {
+                            ETF: data.ETFProducts,
+                            Fund: data.FundProducts,
+                            SIP: data.StructuredProducts,
+                            FStock: data.ForeignStocks
+                        };
+                        return data;
+                    }).catch((err) => {
+                        console.log(err);
+                    }).then((data) => {
+                        this.FJS.ETF = initEtfFilterJS();
+                        this.FJS.Fund = initFundFilterJS();
+                        this.FJS.SIP = initSipFilterJS();
+                        this.FJS.FStock = initForeignStockFilterJS();
+                        this.GenerateSearchKeywordList();
+                        initAutocomplete();
+
+                        $('[data-tab] [data-tab-target]:first').trigger('switch');
+                        $('[data-filter-switch="#uid-template-etf-original"]').trigger('change');
+
+                        hideLoading();
+                        window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
+                    }).then(() => {
+                        checkKeywordQueryString();
+                    });
+                },
+                GenerateSearchKeywordList: function () {
+                    this.SearchKeyword.Init();
+                    let $SearchKeyword = this.SearchKeyword;
+                    let list = [];
+
+                    if (Object.keys(this.Result.List).length != 0) {
+                        $.each(this.Result.List.ETF, function (i, item) {
+                            let obj = {
+                                value: item.FirstBankCode + ' ' + item.ETFName,
+                                data: {
+                                    type: 'ETF',
+                                    detailUrl: '@Model.SearchResultModel.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                                    purchase: item.CanOnlineSubscription,
+                                    focusBtnHtml: item.FocusButtonAutoHtml,
+                                    subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                }
+                            };
+                            list.push(obj);
+                        });
+
+                        $.each(this.Result.List.Fund, function (i, item) {
+                            let obj = {
+                                value: item.ProductCode + ' ' + item.ProductName,
+                                data: {
+                                    type: 'Fund',
+                                    detailUrl: '@Model.SearchResultModel.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
+                                    purchase: item.CanOnlineSubscription,
+                                    focusBtnHtml: item.FocusButtonAutoHtml,
+                                    subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                }
+                            };
+                            list.push(obj);
+                        });
+
+                        $.each(this.Result.List.SIP, function (i, item) {
+                            let obj = {
+                                value: item.ProductCode + ' ' + item.ProductName,
+                                data: {
+                                    type: 'SIP',
+                                    detailUrl: '@Model.SearchResultModel.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
+                                }
+                            };
+                            list.push(obj);
+                        });
+
+                        $.each(this.Result.List.FStock, function (i, item) {
+                            let obj = {
+                                value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
+                                data: {
+                                    type: 'FStock',
+                                    detailUrl: '@Model.SearchResultModel.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                                    purchase: item.CanOnlineSubscription,
+                                    focusBtnHtml: item.FocusButtonAutoHtml,
+                                    subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                }
+                            };
+                            list.push(obj);
+                        });
+
+                        this.SearchKeyword.List = list;
+                    }
+                }
+            };
+
+            $('[data-tab-currency]').on('change', function () {
+                var currency = $(this).data('tab-currency');
+                $('[data-tab-currency="' + currency + '"]').prop('checked', true);
+            });
+
+            $('[data-filter-reset]').on('click.reset', function (e) {
+                $('[data-tab] [data-tab-target]:first').trigger('switch');
+            });
+
+            $('[data-keyword-input]').on('keypress.loading', function (e) {
+                if (e.which === 13 && !!$(this).val().trim()) {
+                    $('[data-keyword-submit]').trigger('click.loading');
+                }
+            });
+
+            $('[data-keyword-submit]').on('click.loading', function () {
+                if (!!$('[data-keyword-input]').val().trim()) {
+                    loading();
+                }
+            });
+
+            //#region Fund
+
+            // table 排序功能
+            $('#fund_table').on('click.sorting', '.o-sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                showLoading();
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                var $sortingbox = $('#uid-sortbox-fund');
+                var sortingColumn = $this.data('sorting-column');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+
+                if ($option.length > 0) {
+                    $option.prop('selected', true);
+                    $sortingbox.trigger('change');
+                } else {
+                    $sortingbox.val(null).trigger('change');
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    hideLoading();
+                }, 300);
+            });
+
+            // 手機版分頁排序功能
+            $('[data-tab-panel-id="tab-1"]').on('change', '[data-sortingbox]:not([data-sortingbox-all])', function (e) {
+                let self = this;
+                let $self = $(this);
+                let sortingColumn = $('option:selected', self).data('sorting-column');
+                let orderby = $('option:selected', self).data('sorting-class');
+                let $box = $('#uid-sortbox-fund');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                if ($option.length != 0) {
+                    $option.prop('selected', true);
+                    $box.trigger('change');
+                } else {
+                    $box.val(null).trigger('change');
+                }
+            });
+
+            $('#uid-sortbox-fund').on('change.select2', function (e) {
+                let self = this;
+                let $self = $(this);
+
+                var sorting = $self.val();
+                var $linkTable = $('#fund_table');
+                var sortingColumn = $('option:selected', self).data('sorting-column');
+                var orderby = $('option:selected', self).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                console.log(`排序：${sorting}`);
+
+                let $linkedBox = $('[data-tab-panel-id="tab-1"] [data-sortingbox]').not('[data-sortingbox-all]');
+                for (box of $linkedBox) {
+                    let $box = $(box);
+                    let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                    if ($option.length != 0) {
+                        $option.prop('selected', true);
+                        $box.trigger('change.select2');
+                    } else {
+                        $box.val(null).trigger('change.select2');
+                    }
+                }
+            });
+            //#endregion Fund
+
+            //#region ETF
+
+            // table 排序功能
+            $('#etf_table').on('click.sorting', '.o-sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                showLoading();
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                var $sortingbox = $('#uid-sortbox-etf');
+                var sortingColumn = $this.data('sorting-column');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+
+                if ($option.length > 0) {
+                    $option.prop('selected', true);
+                    $sortingbox.trigger('change');
+                } else {
+                    $sortingbox.val(null).trigger('change');
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    hideLoading();
+                }, 300);
+            });
+
+            // 手機版分頁排序功能
+            $('[data-tab-panel-id="tab-2"]').on('change', '[data-sortingbox]:not([data-sortingbox-all])', function (e) {
+                let self = this;
+                let $self = $(this);
+                let sortingColumn = $('option:selected', self).data('sorting-column');
+                let orderby = $('option:selected', self).data('sorting-class');
+                let $box = $('#uid-sortbox-etf');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                if ($option.length != 0) {
+                    $option.prop('selected', true);
+                    $box.trigger('change');
+                } else {
+                    $box.val(null).trigger('change');
+                }
+            });
+
+            $('#uid-sortbox-etf').on('change.select2', function (e) {
+                let self = this;
+                let $self = $(this);
+
+                var sorting = $self.val();
+                var $linkTable = $('#etf_table');
+                var sortingColumn = $('option:selected', self).data('sorting-column');
+                var orderby = $('option:selected', self).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                console.log(`排序：${sorting}`);
+
+                let $linkedBox = $('[data-tab-panel-id="tab-2"] [data-sortingbox]').not('[data-sortingbox-all]');
+                for (box of $linkedBox) {
+                    let $box = $(box);
+                    let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                    if ($option.length != 0) {
+                        $option.prop('selected', true);
+                        $box.trigger('change.select2');
+                    } else {
+                        $box.val(null).trigger('change.select2');
+                    }
+                }
+            });
+            //#endregion ETF
+
+            //#region SIP
+
+            // table 排序功能
+            $('#sip_table').on('click.sorting', '.o-sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                showLoading();
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                var $sortingbox = $('#uid-sortbox-sip');
+                var sortingColumn = $this.data('sorting-column');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+
+                if ($option.length > 0) {
+                    $option.prop('selected', true);
+                    $sortingbox.trigger('change');
+                } else {
+                    $sortingbox.val(null).trigger('change');
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    hideLoading();
+                }, 300);
+            });
+
+            // 手機版分頁排序功能
+            $('#uid-sortbox-sip').on('change.sorting', function (e) {
+                let self = this;
+                let $self = $(this);
+
+                var sorting = $self.val();
+                var $linkTable = $('#sip_table');
+                var sortingColumn = $('option:selected', self).data('sorting-column');
+                var orderby = $('option:selected', self).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                console.log(`排序：${sorting}`);
+            });
+
+            //#endregion SIP
+
+            //#region Foreign Stock
+
+            // table 排序功能
+            $('#fstock_table').on('click.sorting', '.o-sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                showLoading();
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                var $sortingbox = $('#uid-sortbox-fstock');
+                var sortingColumn = $this.data('sorting-column');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+
+                if ($option.length > 0) {
+                    $option.prop('selected', true);
+                    $sortingbox.trigger('change');
+                } else {
+                    $sortingbox.val(null).trigger('change');
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    hideLoading();
+                }, 300);
+            });
+
+            // 手機版分頁排序功能
+            $('#uid-sortbox-fstock').on('change.sorting', function (e) {
+                let self = this;
+                let $self = $(this);
+
+                var sorting = $self.val();
+                var $linkTable = $('#fstock_table');
+                var sortingColumn = $('option:selected', self).data('sorting-column');
+                var orderby = $('option:selected', self).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                console.log(`排序：${sorting}`);
+            });
+
+            //#endregion Foreign Stock
+
+            window.ProductSearch.QueryList();
+        });
+    })(jQuery, window, document);
+</script>
