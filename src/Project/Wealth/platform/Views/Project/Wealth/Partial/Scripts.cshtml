@@ -254,52 +254,121 @@
                     regular.setAttribute('eh-subscription-id', id);
                     go.setAttribute('eh-subscription-id', id);
                     let singleUrl = new URL(single.getAttribute("href"));
+                    let singleOriginAndPath = singleUrl.origin + singleUrl.pathname;
+                    let singleCombined = singleOriginAndPath + "?";
                     let regularUrl = new URL(regular.getAttribute("href"));
+                    let regularOriginAndPath = regularUrl.origin + regularUrl.pathname;
+                    let regularCombined = regularOriginAndPath + "?";
                     let goUrl = new URL(go.getAttribute("href"));
+                    let goOriginAndPath = goUrl.origin + goUrl.pathname;
+                    let goCombined = goOriginAndPath + "?";
                     let singleParms = singleUrl.searchParams;
                     let regularParms = regularUrl.searchParams;
                     let goParms = goUrl.searchParams;
+                     //行動版
                     if (singleParms.has("link")) {
-                        let mobilePlatform = store.get("MobilePlatform");
-                        //第e行動、ILEO
+                        let mobilePlatform = store.get("MobilePlatform") || "firste";
                         let singleInsindeUrl = new URL(singleParms.get("link"));
                         let regularInsindUrl = new URL(regularParms.get("link"));
-                        singleInsindeUrl.searchParams.delete("FundCode");
-                        singleInsindeUrl.searchParams.append("FundCode", id);
-                        regularInsindUrl.searchParams.delete("FundCode");
-                        regularInsindUrl.searchParams.append("FundCode", id);
-                        singleParms.delete("link",);
-                        singleParms.append("link", singleInsindeUrl);
-                        regularParms.delete("link");
-                        regularParms.append("link", regularInsindUrl);
-                        let goInsideUrl = new URL(goParms.get("link"));
+                        let goInsindUrl = new URL(goParms.get("link"));
+                        //第e行動
                         if (mobilePlatform == "firste") {
-                            if (goParms.has("prdCode")) {
-                            goParms.delete("prdCode");
-                            goParms.append("prdCode", id);
-                        }
-                            } else {
-                                goInsideUrl.searchParams.delete("FundCode");
-                                goInsideUrl.searchParams.append("FundCode", id);
-                                goParms.delete("link");
-                                goParms.append("link", goInsideUrl);
+                            for (const [key, value] of singleParms.entries()) {
+                                if (key == "link") {
+                                    singleInsindeUrl.searchParams.delete("FundCode");
+                                    singleInsindeUrl.searchParams.append("FundCode", id);
+                                    singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
+                                    continue;
+                                }
+                                singleCombined += `${key}=${value}&`;
                             }
-                    } else {
-                        //第e個網
-                        if (singleParms.has("FundCode")) {
-                            singleParms.delete("FundCode");
-                            singleParms.append("FundCode", id);
-                            regularParms.delete("FundCode");
-                            regularParms.append("FundCode", id);
-                        }
-                        if (goParms.has("prdCode")) {
-                            goParms.delete("prdCode");
-                            goParms.append("prdCode", id);
+                            for (const [key, value] of regularParms.entries()) {
+                                if (key == "link") {
+                                    regularInsindUrl.searchParams.delete("FundCode");
+                                    regularInsindUrl.searchParams.append("FundCode", id);
+                                    regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
+                                    continue;
+                                }
+                                regularCombined += `${key}=${value}&`;
+                            }
+                            for (const [key, value] of goParms.entries()) {
+                                if (key == "link") {
+                                    goCombined += `${key}=${encodeURIComponent(value + '&')}`;
+                                    continue;
+                                }
+                                if (key == "chn" || key == "emp_id") {
+                                    goCombined += `${key}${encodeURIComponent('='+ value + '&')}`;
+                                    continue;
+                                }
+                                if (key == "prdCode") {
+                                    goCombined += `${key}${encodeURIComponent('=' + id)}&`;
+                                    continue;
+                                }
+                                goCombined += `${key}=${value}&`;
+                            }
+                        } else
+                         //iLeo
+                        {
+                            for (const [key, value] of singleParms.entries()) {
+                                if (key == "link") {
+                                    singleInsindeUrl.searchParams.delete("FundCode");
+                                    singleInsindeUrl.searchParams.append("FundCode", id);
+                                    singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
+                                    continue;
+                                }
+                                singleCombined += `${key}=${value}&`;
+                            }
+                            for (const [key, value] of regularParms.entries()) {
+                                if (key == "link") {
+                                    regularInsindUrl.searchParams.delete("FundCode");
+                                    regularInsindUrl.searchParams.append("FundCode", id);
+                                    regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
+                                    continue;
+                                }
+                                regularCombined += `${key}=${value}&`;
+                            }
+                            for (const [key, value] of goParms.entries()) {
+                                if (key == "link") {
+                                    goInsindUrl.searchParams.delete("FundCode");
+                                    goInsindUrl.searchParams.append("FundCode", id);
+                                    goCombined += `${key}=${encodeURIComponent(goInsindUrl)}&`;
+                                    continue;
+                                }
+                                goCombined += `${key}=${value}&`;
+                            }
                         }
                     }
-                    single.setAttribute("href", singleUrl);
-                    regular.setAttribute("href", regularUrl);
-                    go.setAttribute("href", goUrl);
+                    //第e個網
+                    else {
+                        if (singleParms.has("FundCode")) {
+                            for (const [key, value] of singleParms.entries()) {
+                                if (key == "FundCode") {
+                                    singleCombined += `${key}=${id}&`;
+                                    continue;
+                                }
+                                singleCombined += `${key}=${value}&`;
+                            }
+                            for (const [key, value] of regularParms.entries()) {
+                                if (key == "FundCode") {
+                                    regularCombined += `${key}=${id}&`;
+                                    continue;
+                                }
+                                regularCombined += `${key}=${value}&`;
+                            }
+                        }
+                        if (goParms.has("prdCode")) {
+                            for (const [key, value] of goParms.entries()) {
+                                if (key == "prdCode") {
+                                    goCombined += `${key}=${id}&`;
+                                    continue;
+                                }
+                                goCombined += `${key}=${value}&`;
+                            }
+                        }
+                }
+                    single.setAttribute("href", singleCombined.slice(0, -1));
+                    regular.setAttribute("href", regularCombined.slice(0, -1));
+                    go.setAttribute("href", goCombined.slice(0, -1));
                 if (type.toLowerCase() == "fund") {
                     $(single).closest('div').removeClass('u-hidden');
                     $(regular).closest('div').removeClass('u-hidden');
@@ -361,8 +430,12 @@
             let allParams = mobileLoginParms.entries();
             loginUrl = urlOriginAndPath + "?";
             for (const [key, value] of allParams) {
-                if (key == "link" && loginType !== "ileo") {
-                    loginUrl += `${key}=${encodeURIComponent(value + '&')}`;
+                if (key == "link") {
+                    if (loginType !== "ileo") {
+                        loginUrl += `${key}=${encodeURIComponent(value + '&')}`;
+                    } else {
+                        loginUrl += `${key}=${value + encodeURIComponent('&')}`;
+                    }
                     continue;
                 }
                 if (key == "channel" ) {
