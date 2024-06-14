@@ -61,7 +61,7 @@ namespace Feature.Wealth.Component.Controllers
                 respRateOfReturn[id] = fundViewModel.FundRateOfReturn;
                 respAccumulationRateOfReturn[id] = fundViewModel.FundAccumulationRateOfReturn;
                 respRiskindicators[id] = fundViewModel.FundRiskindicators;
-                respThiryDaysNetValue[id] = fundViewModel.FundThiryDaysNetValue;
+                respThiryDaysNetValue[id] = (fundViewModel.FundThiryDaysNetValue, _compareRepository.GetCompareFundNetAssetValueThreeMonths(id));
 
                 respHoldingStatus[id] = new
                 {

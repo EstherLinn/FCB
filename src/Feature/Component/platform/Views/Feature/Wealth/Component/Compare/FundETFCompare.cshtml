@@ -381,10 +381,7 @@
             <div class="l-flex l-flex--wrap u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
                     @*風險指標：資產管理公司經常用來作為<a href="#" class="o-link">基金風險綜合評比</a>的指標。*@
-                    @if (Model.Item != null)
-                    {
-                        @Html.Sitecore().Field(Template.FundETFComparePage.Fields.RiskIndicatorsDescription.ToString(), Model.Item)
-                    }
+                    @Html.Sitecore().Field(Template.FundETFComparePage.Fields.RiskIndicatorsDescription.ToString(), Model.Item)
                 </div>
                 <div class="l-flex__item u-right u-hidden@dt-only">
                     <div class="o-sortingbox">
@@ -1747,15 +1744,14 @@
                             let array = new Array();
                             for (let key in data.respThiryDaysNetValue) {
                                 let d = data.respThiryDaysNetValue[key];
-                                if (d && Object.keys(d).length != 0) {
-
+                                if (d && Object.keys(d).length != 0 && d.Item1 && Object.keys(d.Item1).length != 0) {
                                     if (params.fund.includes(key)) {
-                                        for (var i = 0; i < d.length; i++) {
-                                            d.netWorth = roundTo(d[i].NetAssetValue, 4);
-                                            d.date = d[i].NetAssetValueDate;
+                                        for (var i = 0; i < d.Item1.length; i++) {
+                                            d.netWorth = roundTo(d.Item1[i].NetAssetValue, 4);
+                                            d.date = d.Item1[i].NetAssetValueDate;
                                             break;
                                         }
-
+                                        d = $.extend({}, d, d.Item2);
                                         d = data.BaseData[key] ? $.extend({}, data.BaseData[key], d) : d;
                                         d.DetailLink = getDetailUrl(data.lables, key);
                                         let result = compareParams.find((item) => item.id == key);
@@ -1973,7 +1969,7 @@
                                     labels: {
                                         y: 4,
                                         formatter: function (value) {
-                                            return value.value / 100 + '%';
+                                            return value.value + '%';
                                         },
                                         style: {
                                             color: '#6e6e6e'

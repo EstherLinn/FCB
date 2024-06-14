@@ -44,7 +44,7 @@ namespace Feature.Wealth.Component.Models.Compare
                 public static readonly ID FundDetailLink = new ID("{BF3EA423-F698-4355-A5A2-0AA9F4182500}");
                 public static readonly ID ETFListLink = new ID("{18B3420C-AB28-48C0-94F2-E839F3581191}");
                 public static readonly ID ETFDetailLink = new ID("{01351433-75D5-4AA6-A987-02D80F15A8ED}");
-                public static readonly ID RiskIndicatorsDescription = new ID("{26D48470-FF6A-4C96-9AF3-9F40FB79777C}");
+                public static readonly ID RiskIndicatorsDescription = new ID("{67854373-7F86-48CE-BAF8-63A743B73BD3}");
                 public static readonly ID EmptyLink = new ID("{567156D0-0E15-4A79-A736-2D4EA5397567}");
             }
         }
