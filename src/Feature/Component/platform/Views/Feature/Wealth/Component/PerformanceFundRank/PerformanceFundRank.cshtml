@@ -414,7 +414,7 @@
                     success: function (data) {
                         if (data) {
                             var tabContent = document.getElementById(tabTarget);
-                            tabContent.innerHTML = DOMPurify.sanitize(data);
+                            tabContent.innerHTML = data;
                             $('[data-popup]').magnificPopup();
                             $('[eh-compare]').trigger('exec');
                             $('[eh-focus]').trigger('exec');

@@ -269,7 +269,7 @@
 					data: { orderby: orderby, desc: desc },
 					success: function (data) {
 						$('#result').empty();
-                        document.getElementById('result').innerHTML = DOMPurify.sanitize(data);
+                        document.getElementById('result').innerHTML = data;
 						Removefall();
 						$('[data-popup]').magnificPopup();
 						$('[eh-compare]').trigger('exec');
