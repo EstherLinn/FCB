@@ -1,4 +1,4 @@
-﻿// Global site event binding
+// Global site event binding
 (function ($, document, window, undefined) {
   // 頁面loading
   $(window).on('load', function () {
@@ -96,32 +96,8 @@
 
   // 分享
   (function ($, undefined) {
-    // validDomain: 要驗證的Domain
-      var validDomains = [
-          'wealth.firstbank.com.tw',
-          'wealth.firstbank-tt.com.tw',
-          'wearmg.fcbsrv.fcb.local',
-          'weamg.firstbank-tt.com.tw',
-          'fcbdev811.esi-tech.net',
-          'fcbdev.esi-tech.net',
-          'fcbdev-cm.esi-tech.net'
-      ];
-
-    /**
-     * 分享的網址屬於自己的網站域名時，才允許進行分享
-     * @param {*} url 要分享的網址
-     * @returns 
-     */
-    function validateDomain(url) {
-      var host = encodeURIComponent(new URL(url).hostname); // 取出 hostname
-      var result = validDomains.some(function (value) {
-        var domain = encodeURIComponent(value);
-        return host === domain || host.endsWith('.' + domain);
-      });
-      return result;
-    }
-    var url = window.location.href;
-    var filterUrl = validateDomain(url) ? url : '';
+    var url = new URL(window.location.href),
+      filterUrl = String(url.href).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     $('[data-share]').each((i, el) => {
       var platformShareUrl = $(el).attr('href');
       $(el).attr('href', function () {
