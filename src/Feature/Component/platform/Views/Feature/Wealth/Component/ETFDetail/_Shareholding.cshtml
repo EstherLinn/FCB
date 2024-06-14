@@ -292,6 +292,9 @@
                     $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
                     $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
 
+                    chart.yAxis[0].update({
+                        max: data[0].Percentage > 50 ? 100 : 50
+                    });
                     chart.update({
                         chart: {
                             height: 30 * data.length + 55
