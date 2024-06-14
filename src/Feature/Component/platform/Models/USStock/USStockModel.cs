@@ -22,6 +22,7 @@ namespace Feature.Wealth.Component.Models.USStock
         public string PageID { get; set; }
         public USStock USStock { get; set; }
         public string b2brwdDomain { get; set; }
+        public string SearchUrl { get; set; } = USStockRelatedLinkSetting.GetUSStockSearchUrl();
     }
 
     public class USStock

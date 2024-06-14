@@ -167,7 +167,7 @@
                         @foreach (var tag in Model.USStock.HotProductTags)
                         {
                             <li class="l-divideList__item l-divideList__item--auto">
-                                <span class="o-hashTag u-nowrap">#@tag</span>
+                                <a href="@(Model.SearchUrl + "?HotProduct=" + tag)" class="o-hashTag u-nowrap" target="_blank">#@tag</a>
                             </li>
                         }
                     </ul>
