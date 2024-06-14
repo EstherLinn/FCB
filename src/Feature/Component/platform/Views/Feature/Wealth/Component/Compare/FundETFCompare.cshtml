@@ -1833,8 +1833,6 @@
                                 let d = data.ETFStockHoldings[key];
                                 if (d && Object.keys(d).length != 0) {
                                     d.DetailLink = getDetailUrl(data.lables, key);
-                                    let result = compareParams.find((item) => item.id == key);
-                                    d.name = result.name;
                                     d.lable = data.lables.find((item) => item.id == key);
                                     d.investmentCategory = ['-'];
                                     d.investmentCountry = ['-'];
