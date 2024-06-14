@@ -4,336 +4,353 @@
 
 @if (Model == null)
 {
-    return;
+	return;
 }
 
 <div class="l-mainstage">
-    <div class="l-mainstage__wrap">
-        <div class="l-mainstage__title">
-            <h1 class="t-title">@Html.Sitecore().Field(Template.NewFund.Fields.MainTitle.ToString(), Model.Item)</h1>
-        </div>
-        <div class="l-mainstage__content">
-            @Html.Sitecore().Field(Template.NewFund.Fields.SubTitle.ToString(), Model.Item)
-        </div>
-    </div>
+	<div class="l-mainstage__wrap">
+		<div class="l-mainstage__title">
+			<h1 class="t-title">@Html.Sitecore().Field(Template.NewFund.Fields.MainTitle.ToString(), Model.Item)</h1>
+		</div>
+		<div class="l-mainstage__content">
+			@Html.Sitecore().Field(Template.NewFund.Fields.SubTitle.ToString(), Model.Item)
+		</div>
+	</div>
 </div>
 <div class="l-wrap">
-    <div class="l-stage">
-        <div class="l-flex u-flex-col u-flex-gap-sm">
-            <div class="l-flex__item u-right u-hidden@dt-only">
-                <div class="o-sortingbox">
-                    <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
-                    <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="newTable">
-                        <option value="">排序</option>
-                        <option value="基金名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">基金名稱高至低</option>
-                        <option value="基金名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">基金名稱低至高</option>
-                        <option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
-                        <option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
-                        <option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
-                        <option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
-                        <option value="當日漲跌幅高至低" data-sorting-column="PercentageChangeInFundPrice" data-sorting-class="is-desc">當日漲跌幅高至低</option>
-                        <option value="當日漲跌幅低至高" data-sorting-column="PercentageChangeInFundPrice" data-sorting-class="is-asc">當日漲跌幅低至高</option>
-                        <option value="6個月績效高至低" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-desc">6個月績效高至低</option>
-                        <option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-asc">6個月績效低至高</option>
-                        <option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
-                        <option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
-                    </select>
-                </div>
-            </div>
-            <div class="l-flex__item">
-                <div class="l-table">
-                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="newTable">
-                        <colgroup>
-                            <col style="width: auto;">
-                            <col style="width: 1%;">
-                            <col style="width: 1%;">
-                            <col style="width: 1%;">
-                            <col style="width: 1%;">
-                            <col style="width: 13%;">
-                            <col style="width: 1%;">
-                            <col style="width: 1%;">
-                            <col style="width: 1%;">
-                        </colgroup>
-                        <thead>
-                            <tr class="u-nowrap">
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>基金名稱</span>
-                                        <!-- .is-asc: 升冪 -->
-                                        <!-- .is-desc: 降冪 -->
-                                        <a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>最新淨值<br>(淨值日)</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>幣別</span>
-                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>當日漲跌幅</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="PercentageChangeInFundPrice"></a>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>6個月績效</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnOriginalCurrency"></a>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>基金類型</span>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>風險屬性</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="RiskRewardLevel"></a>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>關注/比較</span>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>申購</span>
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="result">
-                        </tbody>
-                    </table>
-                    <div class="l-pagination" data-length="@Model.TotalPages">
-                        <div class="l-pagination__size">
-                            <span>每頁顯示</span>
-                            <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
-                            <select class="o-selectbox o-selectbox--pagesize" data-sizebox="true">
-                                <option value="10">10筆</option>
-                                <option value="50">50筆</option>
-                                <option value="100">100筆</option>
-                                <option value="all">全部</option>
-                            </select>
-                        </div>
-                        <div class="l-pagination__switch">
-                            <!-- [data-pagination="true"]: 載入後自動綁定分頁功能 -->
-                            <!-- [data-total="888"]: 總筆數，必要資訊，供分頁狀態判斷使用 -->
-                            <div class="o-pagination" data-pagination="true" data-total="@Math.Ceiling(Model.TotalPages / 10.0)">
-                                <!-- .is-disabled: 停用狀態，無法點擊 -->
-                                <a href="#" class="o-pagination__prev is-disabled"></a>
-                                <span class="o-pagination__pager">
-                                    <input type="number" value="1" class="o-pagination__no">
-                                    <span class="o-pagination__total">@Math.Ceiling(Model.TotalPages / 10.0)</span>
-                                </span>
-                                <!-- .is-disabled: 停用狀態，無法點擊 -->
-                                <a href="#" class="o-pagination__next"></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="l-stage">
+		<div class="l-flex u-flex-col u-flex-gap-sm">
+			<div class="l-flex__item u-right u-hidden@dt-only">
+				<div class="o-sortingbox">
+					<!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+					<select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="newTable">
+						<option value="">排序</option>
+						<option value="基金名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">基金名稱高至低</option>
+						<option value="基金名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">基金名稱低至高</option>
+						<option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
+						<option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
+						<option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
+						<option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
+						<option value="當日漲跌幅高至低" data-sorting-column="PercentageChangeInFundPrice" data-sorting-class="is-desc">當日漲跌幅高至低</option>
+						<option value="當日漲跌幅低至高" data-sorting-column="PercentageChangeInFundPrice" data-sorting-class="is-asc">當日漲跌幅低至高</option>
+						<option value="6個月績效高至低" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-desc">6個月績效高至低</option>
+						<option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-asc">6個月績效低至高</option>
+						<option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
+						<option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
+					</select>
+				</div>
+			</div>
+			<div class="l-flex__item">
+				<div class="l-table">
+					<table class="c-table@dt-only c-cardTable@lt" data-table-name="newTable">
+						<colgroup>
+							<col style="width: auto;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+							<col style="width: 13%;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+							<col style="width: 1%;">
+						</colgroup>
+						<thead>
+							<tr class="u-nowrap">
+								<th>
+									<div class="c-table__title">
+										<span>基金名稱</span>
+										<!-- .is-asc: 升冪 -->
+										<!-- .is-desc: 降冪 -->
+										<a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>最新淨值<br>(淨值日)</span>
+										<a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>幣別</span>
+										<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+										<a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>當日漲跌幅</span>
+										<a href="#" class="o-sorting" data-sorting-column="PercentageChangeInFundPrice"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>6個月績效</span>
+										<a href="#" class="o-sorting" data-sorting-column="SixMonthReturnOriginalCurrency"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>基金類型</span>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>風險屬性</span>
+										<a href="#" class="o-sorting" data-sorting-column="RiskRewardLevel"></a>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>關注/比較</span>
+									</div>
+								</th>
+								<th>
+									<div class="c-table__title">
+										<span>申購</span>
+									</div>
+								</th>
+							</tr>
+						</thead>
+						<tbody id="result">
+						</tbody>
+					</table>
+					<div class="c-section" id="emptyData" style="display:none;">
+						<div class="c-section__content">
+							<div class="c-empty">
+								<div class="c-empty__img">
+									<img src="~/themes/images/lions/lion-compare.svg" alt="">
+								</div>
+								<div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+							</div>
+						</div>
+					</div>
+					<div class="l-pagination" data-length="@Model.TotalPages">
+						<div class="l-pagination__size">
+							<span>每頁顯示</span>
+							<!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+							<select class="o-selectbox o-selectbox--pagesize" data-sizebox="true">
+								<option value="10">10筆</option>
+								<option value="50">50筆</option>
+								<option value="100">100筆</option>
+								<option value="all">全部</option>
+							</select>
+						</div>
+						<div class="l-pagination__switch">
+							<!-- [data-pagination="true"]: 載入後自動綁定分頁功能 -->
+							<!-- [data-total="888"]: 總筆數，必要資訊，供分頁狀態判斷使用 -->
+							<div class="o-pagination" data-pagination="true" data-total="@Math.Ceiling(Model.TotalPages / 10.0)">
+								<!-- .is-disabled: 停用狀態，無法點擊 -->
+								<a href="#" class="o-pagination__prev is-disabled"></a>
+								<span class="o-pagination__pager">
+									<input type="number" value="1" class="o-pagination__no">
+									<span class="o-pagination__total">@Math.Ceiling(Model.TotalPages / 10.0)</span>
+								</span>
+								<!-- .is-disabled: 停用狀態，無法點擊 -->
+								<a href="#" class="o-pagination__next"></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
-    (function ($, window, document, undefined) {
-        document.addEventListener('DOMContentLoaded', function () {
-            if (!jQuery) {
-                return;
-            }
+	(function ($, window, document, undefined) {
+		document.addEventListener('DOMContentLoaded', function () {
+			if (!jQuery) {
+				return;
+			}
 
-            //顯示基金資料 (頁面(第幾頁),頁面筆數(顯示幾筆))
-            function loadData(page, pageSize, orderby, desc) {
-                $.ajax({
-                    url: '@ClientRoute.GenerateUrl(this, "NewFund", "GetSortedNewFund")',
-                    type: 'POST',
-                    data: { page: page, pageSize: pageSize, orderby: orderby, desc: desc },
-                    success: function (data) {
-                        if (data) {
-                            $('#result').empty();
-                            document.getElementById('result').innerHTML = DOMPurify.sanitize(data);
-                            $('[data-popup]').magnificPopup();
-                            $('[eh-compare]').trigger('exec');
-                            $('[eh-focus]').trigger('exec');
-                            $('[eh-subscription-type]').trigger('exec');
-                            $('span.o-fall').each(function () {
-                                var content = $(this).text();
-                                if (content.startsWith('-')) {
-                                    var number = content.substring(1);
-                                    $(this).text(number);
-                                }
-                            });
-                        } else {
-                            console.error("Empty response received from the server.");
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            }
+			//顯示基金資料 (頁面(第幾頁),頁面筆數(顯示幾筆))
+			function loadData(page, pageSize, orderby, desc) {
+				$.ajax({
+					url: '@ClientRoute.GenerateUrl(this, "NewFund", "GetSortedNewFund")',
+					type: 'POST',
+					data: { page: page, pageSize: pageSize, orderby: orderby, desc: desc },
+					success: function (data) {
+						if (data) {
+							$('#result').empty();
 
+							document.getElementById('result').innerHTML = DOMPurify.sanitize(data);
+							var totalPages = parseInt($('#totalPages').val());
 
+							if (totalPages === 0) {
+								$('#emptyData').show();
+							}
 
-            loadData(1, "10");
-
-
-            // table 排序功能
-            $('table').off('click.sorting').on('click.sorting', '.o-sorting', function (e) {
-                e.preventDefault();
-                // 呼叫 loading
-                window.loading('show');
-                var $this = $(this);
-                var orderby = '';
-                if ($this.hasClass('is-asc')) {
-                    $this.removeClass('is-asc').addClass('is-desc');
-                    orderby = 'is-desc';
-                } else {
-                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
-                    $this.addClass('is-asc');
-                    orderby = 'is-asc';
-                }
-
-                var pageSize = $('.o-selectbox--pagesize').val();
-
-                // 連動 sortingbox
-                var tableName = $(this).closest('[data-table-name]').data('table-name');
-                var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
-                var sortingColumn = $(this).data('sorting-column');
-                $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
-                $sortingbox.trigger('change');
-
-                // 因展示，使用 setTimeout 延遲關閉 loading
-                setTimeout(() => {
-                    // 關閉loading
-                    window.loading('hide');
-                }, 300);
-            });
-
-            $('[data-sortingbox="true"]').on('change.sorting', function (e) {
-                // 呼叫 loading
-                window.loading('show');
-                var sorting = $(this).val();
-                var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
-                var sortingColumn = $('option:selected', this).data('sorting-column');
-                var orderby = $('option:selected', this).data('sorting-class');
-                var pageSize = $('.o-selectbox--pagesize').val();
-
-                // 連動 table
-                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
-                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
-                var page = $('.o-pagination__no').val(1);
-                var $parentWrap = $('.l-pagination');
-                var dataLength = parseInt($parentWrap.attr('data-length'));
-                var total = Math.ceil(dataLength / pageSize);
-                $parentWrap.find('[data-total]').attr('data-total', total);
-                $parentWrap.find('.o-pagination__total').text(total);
-                $parentWrap.find('[data-pagination="true"]').pagination('goto', 1);
-
-                loadData(1, pageSize, sortingColumn, orderby);
-
-                // 因展示，使用 setTimeout 延遲關閉 loading
-                setTimeout(() => {
-                    // 關閉loading
-                    window.loading('hide');
-                }, 300);
-            });
+							$('[data-popup]').magnificPopup();
+							$('[eh-compare]').trigger('exec');
+							$('[eh-focus]').trigger('exec');
+							$('[eh-subscription-type]').trigger('exec');
+							$('span.o-fall').each(function () {
+								var content = $(this).text();
+								if (content.startsWith('-')) {
+									var number = content.substring(1);
+									$(this).text(number);
+								}
+							});
+						} else {
+							console.error("Empty response received from the server.");
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error(error);
+					}
+				});
+			}
 
 
-            //找出排序欄位
-            function findSortingColumns() {
-                const sortingElements = document.querySelectorAll('.o-sorting');
-                const sortingColumns = [];
-                sortingElements.forEach(element => {
-                    if (element.classList.contains('is-desc') || element.classList.contains('is-asc')) {
-                        const sortingColumn = element.getAttribute('data-sorting-column');
-                        const orderby = element.classList.contains('is-desc') ? 'is-desc' : 'is-asc';
-                        sortingColumns.push({ column: sortingColumn, order: orderby });
-                    }
-                });
-                return sortingColumns;
-            }
+
+			loadData(1, "10");
 
 
-            // 分頁功能
-            $('.o-pagination__no').on('update.pagination', function (e) {
-                // 呼叫 loading
-                window.loading('show');
-                var page = parseInt($(this).val());
-                console.log(`頁碼：${page}`);
-                var pageSize = $('.o-selectbox--pagesize').val();
-                var totalPages = parseInt($('.o-pagination').attr('data-total'));
+			// table 排序功能
+			$('table').off('click.sorting').on('click.sorting', '.o-sorting', function (e) {
+				e.preventDefault();
+				// 呼叫 loading
+				window.loading('show');
+				var $this = $(this);
+				var orderby = '';
+				if ($this.hasClass('is-asc')) {
+					$this.removeClass('is-asc').addClass('is-desc');
+					orderby = 'is-desc';
+				} else {
+					$this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+					$this.addClass('is-asc');
+					orderby = 'is-asc';
+				}
+
+				var pageSize = $('.o-selectbox--pagesize').val();
+
+				// 連動 sortingbox
+				var tableName = $(this).closest('[data-table-name]').data('table-name');
+				var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+				var sortingColumn = $(this).data('sorting-column');
+				$(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+				$sortingbox.trigger('change');
+
+				// 因展示，使用 setTimeout 延遲關閉 loading
+				setTimeout(() => {
+					// 關閉loading
+					window.loading('hide');
+				}, 300);
+			});
+
+			$('[data-sortingbox="true"]').on('change.sorting', function (e) {
+				// 呼叫 loading
+				window.loading('show');
+				var sorting = $(this).val();
+				var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+				var sortingColumn = $('option:selected', this).data('sorting-column');
+				var orderby = $('option:selected', this).data('sorting-class');
+				var pageSize = $('.o-selectbox--pagesize').val();
+
+				// 連動 table
+				$('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+				$(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+				var page = $('.o-pagination__no').val(1);
+				var $parentWrap = $('.l-pagination');
+				var dataLength = parseInt($parentWrap.attr('data-length'));
+				var total = Math.ceil(dataLength / pageSize);
+				$parentWrap.find('[data-total]').attr('data-total', total);
+				$parentWrap.find('.o-pagination__total').text(total);
+				$parentWrap.find('[data-pagination="true"]').pagination('goto', 1);
+
+				loadData(1, pageSize, sortingColumn, orderby);
+
+				// 因展示，使用 setTimeout 延遲關閉 loading
+				setTimeout(() => {
+					// 關閉loading
+					window.loading('hide');
+				}, 300);
+			});
 
 
-                // 確保頁數不超出範圍
-                page = Math.min(page, totalPages);
-                page = Math.max(page, 1);
-                $(this).val(page);
-
-                var sortingColumns = findSortingColumns();
-                var sortingColumnArray = sortingColumns.map(column => column.column);
-                var sortingOrderArray = sortingColumns.map(column => column.order);
-
-                loadData(page, pageSize, sortingColumnArray, sortingOrderArray);
-
-                // scroll 到表頭
-                $(this).closest('.l-table').scrollPosition('scroll');
-
-                // 因展示，故使用 setTimeout 延遲關閉 loading
-                setTimeout(() => {
-                    // 關閉loading
-                    window.loading('hide');
-                }, 300);
-            });
+			//找出排序欄位
+			function findSortingColumns() {
+				const sortingElements = document.querySelectorAll('.o-sorting');
+				const sortingColumns = [];
+				sortingElements.forEach(element => {
+					if (element.classList.contains('is-desc') || element.classList.contains('is-asc')) {
+						const sortingColumn = element.getAttribute('data-sorting-column');
+						const orderby = element.classList.contains('is-desc') ? 'is-desc' : 'is-asc';
+						sortingColumns.push({ column: sortingColumn, order: orderby });
+					}
+				});
+				return sortingColumns;
+			}
 
 
-            // 分頁筆數功能
-            $('[data-sizebox="true"]').on('change.pagesize', function (e) {
-                // 呼叫 loading
-                window.loading('show');
-                var size = $(this).val();
-                console.log(`每頁顯示${size}筆`);
-                pageSize = parseInt(size); //更新每頁顯示記錄數
-                var page = $('.o-pagination__no').val(1);
-                var sortingColumns = findSortingColumns();
-                var sortingColumnArray = sortingColumns.map(column => column.column);
-                var sortingOrderArray = sortingColumns.map(column => column.order);
-
-                // 調整分頁
-                var $parentWrap = $('.l-pagination');
-                var dataLength = parseInt($parentWrap.attr('data-length'));
-                $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', size === 'all');
-
-                if (size === 'all') {
-                    loadData(1, 'all', sortingColumnArray, sortingOrderArray);
-                } else {
-                    var total = Math.ceil(dataLength / size);
-                    $parentWrap.find('[data-total]').attr('data-total', total);
-                    $parentWrap.find('.o-pagination__total').text(total);
-                    $parentWrap.find('[data-pagination="true"]').pagination('goto', 1);
-                    loadData(1, pageSize, sortingColumnArray, sortingOrderArray);
-                }
-
-                // 因展示，使用 setTimeout 延遲關閉 loading
-                setTimeout(() => {
-                    // 關閉loading
-                    window.loading('hide');
-                }, 300);
-            });
+			// 分頁功能
+			$('.o-pagination__no').on('update.pagination', function (e) {
+				// 呼叫 loading
+				window.loading('show');
+				var page = parseInt($(this).val());
+				console.log(`頁碼：${page}`);
+				var pageSize = $('.o-selectbox--pagesize').val();
+				var totalPages = parseInt($('.o-pagination').attr('data-total'));
 
 
-        });
-    })(jQuery, window, document);
+				// 確保頁數不超出範圍
+				page = Math.min(page, totalPages);
+				page = Math.max(page, 1);
+				$(this).val(page);
+
+				var sortingColumns = findSortingColumns();
+				var sortingColumnArray = sortingColumns.map(column => column.column);
+				var sortingOrderArray = sortingColumns.map(column => column.order);
+
+				loadData(page, pageSize, sortingColumnArray, sortingOrderArray);
+
+				// scroll 到表頭
+				$(this).closest('.l-table').scrollPosition('scroll');
+
+				// 因展示，故使用 setTimeout 延遲關閉 loading
+				setTimeout(() => {
+					// 關閉loading
+					window.loading('hide');
+				}, 300);
+			});
+
+
+			// 分頁筆數功能
+			$('[data-sizebox="true"]').on('change.pagesize', function (e) {
+				// 呼叫 loading
+				window.loading('show');
+				var size = $(this).val();
+				console.log(`每頁顯示${size}筆`);
+				pageSize = parseInt(size); //更新每頁顯示記錄數
+				var page = $('.o-pagination__no').val(1);
+				var sortingColumns = findSortingColumns();
+				var sortingColumnArray = sortingColumns.map(column => column.column);
+				var sortingOrderArray = sortingColumns.map(column => column.order);
+
+				// 調整分頁
+				var $parentWrap = $('.l-pagination');
+				var dataLength = parseInt($parentWrap.attr('data-length'));
+				$parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', size === 'all');
+
+				if (size === 'all') {
+					loadData(1, 'all', sortingColumnArray, sortingOrderArray);
+				} else {
+					var total = Math.ceil(dataLength / size);
+					$parentWrap.find('[data-total]').attr('data-total', total);
+					$parentWrap.find('.o-pagination__total').text(total);
+					$parentWrap.find('[data-pagination="true"]').pagination('goto', 1);
+					loadData(1, pageSize, sortingColumnArray, sortingOrderArray);
+				}
+
+				// 因展示，使用 setTimeout 延遲關閉 loading
+				setTimeout(() => {
+					// 關閉loading
+					window.loading('hide');
+				}, 300);
+			});
+
+
+		});
+	})(jQuery, window, document);
 </script>
