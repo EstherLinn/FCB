@@ -30,12 +30,13 @@
                         <div class="l-flex__item">
                             <div class="l-action l-action--inline">
                                 <div class="l-action__item">
-                                    <a href="#popupCompareMax" class="o-btn o-btn--secondary o-btn--sm" data-fund-add>加入基金</a>
+                                    <a href="javascript:;" class="o-btn o-btn--secondary o-btn--sm" data-fund-add>加入基金</a>
                                 </div>
                                 <div class="l-action__item">
                                     <!-- 此處示意已達上限狀態，未達上限時應導連至ETF搜尋頁: ../etf/search.html -->
-                                    <a href="#popupCompareMax" class="o-btn o-btn--secondary o-btn--sm" data-popup="true" data-etf-add>加入ETF</a>
+                                    <a href="javascript:;" class="o-btn o-btn--secondary o-btn--sm" data-etf-add>加入ETF</a>
                                 </div>
+                                <a href="#popupCompareMax" class="u-hidden" data-popup="true" popupCompareMax>popupCompareMax</a>
                             </div>
                         </div>
                     </div>
@@ -543,9 +544,9 @@
                 <div class="l-flex__item">
                     <div class="l-table">
                         <!---->
-                        <table class="c-table is-top" data-table-name="shareholdingTable">
+                        <table class="c-table@dt-only c-cardTable@lt" data-table-name="shareholdingTable">
                             <colgroup>
-                                <col style="width: 30%; min-width: 200px;">
+                                <col style="width: 30%;">
                                 <col style="width: 17.5%;">
                                 <col style="width: 17.5%;">
                                 <col style="width: 17.5%;">
@@ -553,7 +554,7 @@
                             </colgroup>
                             <thead>
                                 <tr class="u-nowrap">
-                                    <th style="min-width: 200px;">
+                                    <th>
                                         <div class="c-table__title">
                                             <span>基金/ETF名稱</span>
                                             <a href="#" class="o-sorting" data-sorting-column="name"></a>
@@ -767,9 +768,9 @@
     <tr>
         <td class="u-left">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= lable.id %> <%= name %></span></a>
             <% } else { %>
-            <span class="c-legend__name"><%= name %></span>
+            <span class="c-legend__name"><%= lable.id %> <%= name %></span>
             <% } %>
         </td>
         <td>
@@ -820,9 +821,9 @@
     <tr>
         <td class="u-left">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= lable.id %> <%= name %></span></a>
             <% } else { %>
-            <span class="c-legend__name"><%= name %></span>
+            <span class="c-legend__name"><%= lable.id %> <%= name %></span>
             <% } %>
         </td>
         <td>
@@ -873,9 +874,9 @@
     <tr>
         <td class="u-left u-wrap">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= lable.id %> <%= name %></span></a>
             <% } else { %>
-            <span class="c-legend__name"><%= name %></span>
+            <span class="c-legend__name"><%= lable.id %> <%= name %></span>
             <% } %>
         </td>
         <td>
@@ -917,9 +918,9 @@
     <tr>
         <td class="u-left">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= lable.id %> <%= name %></span></a>
             <% } else { %>
-            <span class="c-legend__name"><%= name %></span>
+            <span class="c-legend__name"><%= lable.id %> <%= name %></span>
             <% } %>
         </td>
         <td>
@@ -934,43 +935,67 @@
     </tr>
 </script>
 <script id="template-shareholdingTable" type="text/html">
-    <tr>
-        <td class="u-left">
-            <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
-            <% } else { %>
-            <span class="c-legend__name"><%= name %></span>
-            <% } %>
+    <tr class="c-cardTable__item">
+        <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+        <td class="c-cardTable__top"></td>
+        <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+        <td class="c-cardTable__header">
+            <div class="c-cardTable__content">
+                <% if (DetailLink) { %>
+                <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= lable.id %> <%= name %></span></a>
+                <% } else { %>
+                <span class="c-legend__name"><%= lable.id %> <%= name %></span>
+                <% } %>
+            </div>
         </td>
-        <td>
-            <% for (var i = 0; i < investmentCategory.length; i++) { %>
-            <%= investmentCategory[i] %><br>
-            <% } %>
+
+        <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+        <td class="c-cardTable__space"></td>
+        <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+        <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+        <td class="c-cardTable__body">
+            <div class="c-cardTable__title" data-length="6">投資類別</div>
+            <div class="c-cardTable__content">
+                <% for (var i = 0; i < investmentCategory.length; i++) { %>
+                <%= investmentCategory[i] %><br>
+                <% } %>
+            </div>
         </td>
-        <td>
-            <% for (var i = 0; i < investmentCountry.length; i++) { %>
-            <%= investmentCountry[i] %><br>
-            <% } %>
+        <td class="c-cardTable__body">
+            <div class="c-cardTable__title" data-length="6">投資國家</div>
+            <div class="c-cardTable__content">
+                <% for (var i = 0; i < investmentCountry.length; i++) { %>
+                <%= investmentCountry[i] %><br>
+                <% } %>
+            </div>
         </td>
-        <td>
-            <% for (var i = 0; i < investmentIndustry.length; i++) { %>
-            <%= investmentIndustry[i] %><br>
-            <% } %>
+        <td class="c-cardTable__body">
+            <div class="c-cardTable__title" data-length="6">投資產業</div>
+            <div class="c-cardTable__content">
+                <% for (var i = 0; i < investmentIndustry.length; i++) { %>
+                <%= investmentIndustry[i] %><br>
+                <% } %>
+            </div>
         </td>
-        <td>
-            <% for (var i = 0; i < topTenHoldings.length; i++) { %>
-            <%= topTenHoldings[i] %><br>
-            <% } %>
+        <td class="c-cardTable__body">
+            <div class="c-cardTable__title" data-length="6">前十大持股</div>
+            <div class="c-cardTable__content">
+                <% for (var i = 0; i < topTenHoldings.length; i++) { %>
+                <%= topTenHoldings[i] %><br>
+                <% } %>
+            </div>
         </td>
+        <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+        <td class="c-cardTable__space"></td>
     </tr>
 </script>
 <script id="template-baseTable" type="text/html">
     <tr>
         <td class="u-left u-wrap">
             <% if (DetailLink) { %>
-            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= name %></span></a>
+            <a href="<%= DetailLink %>" class="c-legend c-legend--link" style="--legend-color:<%= lable.color %>"><span class="c-legend__name"><%= lable.id %> <%= name %></span></a>
             <% } else { %>
-            <span class="c-legend__name"><%= name %></span>
+            <span class="c-legend__name"><%= lable.id %> <%= name %></span>
             <% } %>
         </td>
         <td>
@@ -1102,6 +1127,8 @@
         $('[data-fund-add]').on('click', function (e) {
             if (fundParams.length < 7) {
                 location.href = new URL(location.origin + '@Model.FundListLinkUrl');
+            } else {
+                $("[popupCompareMax]").click();
             }
         });
 
@@ -1109,6 +1136,8 @@
         $('[data-etf-add]').on('click', function (e) {
             if (fundParams.length < 7) {
                 location.href = new URL(location.origin + '@Model.ETFListLinkUrl');
+            } else {
+                $("[popupCompareMax]").click();
             }
         });
 
@@ -1315,6 +1344,7 @@
                 if (item.type != 'stock') {
                     var trash = cloneTmpl.querySelector('.c-productItem__btn');
                     trash.remove();
+                    name.textContent = item.id + ' ' + item.name; //排除指數
                 }
                 $('.l-compare').prepend(cloneTmpl);
             });
@@ -1743,11 +1773,6 @@
                                 if (d && Object.keys(d).length != 0) {
 
                                     if (params.etf.includes(key)) {
-                                        //for (var i = 0; i < d.length; i++) {
-                                        //    d.netWorth = roundTo(d[i].NetAssetValue, 4);
-                                        //    d.date = d[i].NetAssetValueDate;
-                                        //    break;
-                                        //}
                                         d = data.Compare[key];
                                         if (d) {
                                             d.netWorth = roundTo(d.NetAssetValue, 4);
@@ -1868,7 +1893,7 @@
                                     d.name = result.name;
                                     d.lable = data.lables.find((item) => item.id == key);
                                     if (params.etf.includes(key)) {
-                                        d.currency = d.QuoteCurrency || '-';
+                                        d.currency = d.CurrencyName || '-';
                                         d.dividendFrequency = d.DividendFrequency || '-';
                                         d.dateOfEstablishment = d.EstablishmentDate || '-';
                                         d.type = d.ProductType || '-';
@@ -2065,7 +2090,13 @@
                     },
                     afterAddRecords: function () {
                         if (isInit) {
-                            $('[data-table-name="' + template + '"]').attr('data-fixed-columns', true).fixedColumns();
+                            switch (template) {
+                                case 'shareholdingTable':
+                                    break;
+                                default:
+                                    $('[data-table-name="' + template + '"]').attr('data-fixed-columns', true).fixedColumns();
+                                    break;
+                            }                            
                         }
                     },
                 },
