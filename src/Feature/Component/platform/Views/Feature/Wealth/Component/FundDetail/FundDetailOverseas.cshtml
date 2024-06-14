@@ -1756,11 +1756,11 @@
                     <div class="l-flex u-flex-col u-flex-gap-sm">
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
-                                <label class="o-capsulebox__item">
+                                <label class="o-capsulebox__item" data-industry>
                                     <input type="radio" name="so1" value="industry" checked class="o-capsulebox__input">
                                     <span class="o-capsulebox__text">產業</span>
                                 </label>
-                                <label class="o-capsulebox__item">
+                                <label class="o-capsulebox__item" data-area>
                                     <input type="radio" name="so1" value="area" class="o-capsulebox__input">
                                     <span class="o-capsulebox__text">區域</span>
                                 </label>
@@ -3726,6 +3726,8 @@
                         });
 
                         industryUpdateDate = industryData[0].Date;
+                    } else {
+                        $('label[data-industry]').remove();
                     }
 
                     const areaData = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundStockAreaHoldings)));
@@ -3738,6 +3740,8 @@
                             };
                         });
                         areaUpdateDate = areaData[0].Date;
+                    } else {
+                        $('label[data-area]').remove();
                     }
                     $('[name="so1"]:checked').trigger('change');
                 } catch (error) {
@@ -3759,6 +3763,9 @@
                 if (data.length != 0) {
                     $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
                     $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                    chart.yAxis[0].update({
+                        max: data[0].Holding > 50 ? 100 : 50
+                    });
                     chart.update({
                         chart: {
                             height: 30 * data.length + 55
@@ -3978,32 +3985,36 @@
                                     },
                                     plotOptions: {
                                         scatter: {
-                                            marker: {
-                                                symbol: 'circle',
-                                                states: {
-                                                    hover: {
-                                                        enabled: true,
-                                                        fillColor: '#F58220',
-                                                        radius: 5
-                                                    }
+                                           marker: {
+                                        symbol: 'circle',
+                                        radius: 6,
+                                        //lineWidth: 4,
+                                        //lineColor: '#A4844E',
+                                        states: {
+                                            hover: {
+                                                enabled: true,
+                                                fillColor: '#F58220',
+                                                lineWidth: 4,
+                                                radius: 10
+                                            }
                                                 }
                                             },
-                                            states: {
-                                                hover: {
-                                                    enabled: true,
-                                                    halo: {
-                                                        attributes: {
-                                                            fill: '#F58220'
-                                                        },
-                                                        opacity: 0.2,
-                                                        size: 8
-                                                    }
+                                         states: {
+                                        hover: {
+                                            enabled: true,
+                                            halo: {
+                                                attributes: {
+                                                    fill: '#F58220'
                                                 },
-                                                inactive: {
-                                                    enabled: false
-                                                }
+                                                opacity: 0.2,
+                                                size: 14
                                             }
                                         },
+                                        inactive: {
+                                            enabled: false
+                                        }
+                                    }
+                                },
                                         series: {
                                             events: {
                                                 legendItemClick: function () {
@@ -4032,6 +4043,19 @@
                                             name: selfData[0].firstBankCode + selfData[0].fundName,
                                             color: '#238C6C',
                                             showInLegend: true,
+                                            marker: {
+                                                symbol: 'circle',
+                                                radius: 8,
+                                                lineWidth: 4,
+                                                lineColor: '#FFFFFF',
+                                                states: {
+                                                    hover: {
+                                                        enabled: true,
+                                                        fillColor: '#F58220',
+                                                        radius: 10
+                                                    }
+                                                }
+                                            },
                                             data: [{
                                                 id: selfData[0].firstBankCode,
                                                 name: selfData[0].firstBankCode + selfData[0].fundName,

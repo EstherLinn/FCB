@@ -323,12 +323,12 @@ namespace Feature.Wealth.Account.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Account.Info($"個網銀登入byApp {step} ,exception Messags: {ex.Message}");
+                Logger.Account.Info($"網銀登入byApp {step} ,exception Messags: {ex.Message}");
                 Session["AppLoginSuccess"] = false;
             }
             finally
             {
-                Logger.Account.Info($"網銀登入byApp promotionCode=${qs["promotionCode"]} &&rtCode=${qs["rtCode"]} ");
+                Logger.Account.Info($"網銀登入byApp {step} , promotionCode=${qs["promotionCode"]} &&rtCode=${qs["rtCode"]} ");
             }
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
