@@ -119,5 +119,15 @@ namespace Feature.Wealth.Component.Models.USStock
             public static readonly ID HotProductTag = new ID("{EB96F527-C17A-4462-9D13-4136D6EB9084}");
             public static readonly ID Discount = new ID("{339563FD-22BC-441D-B171-472E6FB085CE}");
         }
+
+        public readonly struct TagFolder
+        {
+            public static readonly ID Id = new ID("{E097EA37-5FD5-4CC3-BC85-D50FFA3FAD8B}");
+
+            public readonly struct Fields
+            {
+                public static readonly ID TagType = new ID("{B721EF77-056E-4D8F-836D-BCA0B59ABC11}");
+            }
+        }
     }
 }

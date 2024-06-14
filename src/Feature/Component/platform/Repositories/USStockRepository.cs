@@ -101,20 +101,37 @@ namespace Feature.Wealth.Component.Repositories
             return item;
         }
 
-        private IEnumerable<Item> _hotKeywordTags = null;
-        private IEnumerable<Item> _hotProductTags = null;
-        private IEnumerable<Item> _discounts = null;
+        private List<Item> _hotKeywordTags = new List<Item>();
+        private List<Item> _hotProductTags = new List<Item>();
+        private List<Item> _discounts = new List<Item>();
 
         internal USStock SetTags(USStock uSStock)
         {
-            if (this._hotKeywordTags == null || this._hotProductTags == null || this._discounts == null)
+            if (!this._hotKeywordTags.Any() || !this._hotProductTags.Any() || !this._discounts.Any())
             {
-                var hotKeywordTagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.HotKeywordTag);
-                this._hotKeywordTags = ItemUtils.GetChildren(hotKeywordTagFolder, Template.USStockTag.Id);
-                var hotProductTagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.HotProductTag);
-                this._hotProductTags = ItemUtils.GetChildren(hotProductTagFolder, Template.USStockTag.Id);
-                var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
-                this._discounts = ItemUtils.GetChildren(discountFolder, Template.USStockTag.Id);
+                var tagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Id);
+                var children = ItemUtils.GetChildren(tagFolder, Template.TagFolder.Id);
+
+                if (children != null && children.Any())
+                {
+                    foreach (var child in children)
+                    {
+                        var tagsType = ItemUtils.GetFieldValue(child, Template.TagFolder.Fields.TagType);
+
+                        switch (tagsType)
+                        {
+                            case "HotKeywordTag":
+                                this._hotKeywordTags.AddRange(ItemUtils.GetChildren(child, Template.USStockTag.Id));
+                                break;
+                            case "HotProductTag":
+                                this._hotProductTags.AddRange(ItemUtils.GetChildren(child, Template.USStockTag.Id));
+                                break;
+                            case "Discount":
+                                this._discounts.AddRange(ItemUtils.GetChildren(child, Template.USStockTag.Id));
+                                break;
+                        }
+                    }
+                }
             }
 
             foreach (var f in this._hotKeywordTags)
