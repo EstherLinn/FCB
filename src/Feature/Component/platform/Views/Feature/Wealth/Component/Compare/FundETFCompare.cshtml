@@ -1981,21 +1981,19 @@
                                 },
                                 plotOptions: {
                                     series: {
-                                        dataGrouping: false,
-                                        compare: 'percent',
-                                        cursor: 'pointer',
+                                        dataGrouping: {
+                                            enabled: false
+                                        },
                                         showInLegend: true,
                                         enableMouseTracking: true,
                                         states: {
                                             hover: {
                                                 enabled: true,
+                                                lineWidth: 2,
                                                 halo: {
                                                     size: 8
                                                 }
                                             }
-                                        },
-                                        marker: {
-                                            symbol: 'circle'
                                         },
                                         turboThreshold: 1000000
                                     }
