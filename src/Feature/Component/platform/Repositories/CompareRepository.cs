@@ -16,11 +16,19 @@ namespace Feature.Wealth.Component.Repositories
         {
             string sql = """
                 SELECT
+                    [IndexCode],
+                    [IndexName]
+                FROM 
+                    [Sysjust_GlobalIndex] WITH (NOLOCK)
+                WHERE 
+                    [IndexCategoryID] IN (1, 2, 3, 4)
+                ORDER BY
+                    CASE 
+                        WHEN [IndexCode] IN ('EB09999', 'EB18888') THEN 0
+                        ELSE 1
+                    END,
+                    LEN([IndexCode]) DESC, 
                     [IndexCode]
-                    ,[IndexName]
-                    FROM [Sysjust_GlobalIndex] WITH (NOLOCK)
-                    WHERE [IndexCategoryID] IN (1, 2, 3, 4)
-                    ORDER BY LEN([IndexCode]) DESC, [IndexCode]
                 """;
             return DbManager.Custom.ExecuteIList<GlobalIndex>(sql, null, CommandType.Text);
         }
