@@ -1375,25 +1375,6 @@
             $('[data-stock-add-control]').toggleClass('u-hidden', stock.length == 3);
         }
 
-        function tmplEmtpy() {
-            
-            const template = document.querySelector('#tmplEmtpy');
-            const cloneTmpl = template.content.cloneNode(true);
-            let popular = cloneTmpl.querySelector('.c-block__content');
-            let navs = popular.querySelector('.c-tab__navs');
-            [...navs.children].forEach(function (el) {
-                if (!el.children[0].innerText) {
-                    el.classList.add('u-hidden');
-                }
-            });
-
-            let container = $('.l-wrap').first();
-            container.children().toggleClass('u-hidden', true).last().toggleClass('u-hidden', false);
-            container.prepend(popular);
-            $('.c-tab__panel .l-action', container).toggleClass('u-hidden', true);
-            $('[data-tab="true"]', container).addClass('c-tab--wide').tab();
-        }
-
         function setLengendRate(points) {
             points.forEach(point => {
                 let upDownClass = '';
@@ -2102,11 +2083,35 @@
 
                 $('.l-mainstage__content').children().first().toggleClass('u-hidden', true);
                 $('.l-mainstage__content').children().last().toggleClass('u-hidden', false);
-                tmplEmtpy();
+                showPopular();
             } else {
                 $('.l-mainstage__content').children().first().toggleClass('u-hidden', false);
                 $('.l-mainstage__content').children().last().toggleClass('u-hidden', true);
             }
+        }
+
+        function showPopular() {
+
+            const template = document.querySelector('#tmplEmtpy');
+            const cloneTmpl = template.content.cloneNode(true);
+            let popular = cloneTmpl.querySelector('.c-block__content');
+            let navs = popular.querySelector('.c-tab__navs');
+            [...navs.children].forEach(function (el) {
+                if (!el.children[0].innerText) {
+                    el.classList.add('u-hidden');
+                }
+            });
+
+            let container = $('.l-wrap').first();
+            container.children().toggleClass('u-hidden', true).last().toggleClass('u-hidden', false);
+            container.prepend(popular);
+            $('.c-tab__panel .l-action', container).toggleClass('u-hidden', true);
+            $('[data-tab="true"]', container).addClass('c-tab--wide').tab();
+
+            $('[eh-compare]', container).trigger('exec');
+            $('[eh-focus]', container).trigger('exec');
+            $('[eh-subscription-type]', container).trigger('exec');
+            $('[data-popup]', container).magnificPopup();
         }
 
         function clearTable(ele) {
