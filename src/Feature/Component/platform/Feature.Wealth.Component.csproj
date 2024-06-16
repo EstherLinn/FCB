@@ -24,4 +24,8 @@
     <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
     <ProjectReference Include="..\..\Account\platform\Feature.Wealth.Account.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\SearchBar\" />
+    <Folder Include="Views\Feature\Wealth\Component\SearchBar\" />
+  </ItemGroup>
 </Project>
