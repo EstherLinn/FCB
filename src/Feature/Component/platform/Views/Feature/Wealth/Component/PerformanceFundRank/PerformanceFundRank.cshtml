@@ -405,6 +405,14 @@
                 return;
             }
 
+            // 為了 DOMPurify.sanitize 正常運作加上 <table><tbody></tbody></table>
+            function DOMPurifyData(data) {
+                data = '<table><tbody>' + data + '</tbody></table>';
+                data = DOMPurify.sanitize(data);
+                data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');
+                return data;
+            }
+
             //顯示基金資料 (國內/國外tab,選擇的類型pelletboxInputs,頁面(第幾頁),頁面筆數(顯示幾筆))
             function loadData(tabTarget, selectedValue, page, pageSize, orderby, desc) {
                 $.ajax({
@@ -414,7 +422,7 @@
                     success: function (data) {
                         if (data) {
                             var tabContent = document.getElementById(tabTarget);
-                            tabContent.innerHTML = data;
+                            tabContent.innerHTML = DOMPurifyData(data);
                             $('[data-popup]').magnificPopup();
                             $('[eh-compare]').trigger('exec');
                             $('[eh-focus]').trigger('exec');

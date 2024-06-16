@@ -64,7 +64,7 @@ namespace Feature.Wealth.Component.Controllers
                 DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
-            return View("/Views/Feature/Wealth/Component/PopularityFund/PopularFundReturnView.cshtml", viewModel);
+            return View("/Views/Feature/Wealth/Component/PopularityFund/PopularityFundReturnView.cshtml", viewModel);
         }
 
 

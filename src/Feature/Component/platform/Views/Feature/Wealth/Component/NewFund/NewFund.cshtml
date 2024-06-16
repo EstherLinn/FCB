@@ -164,6 +164,14 @@
 				return;
 			}
 
+            // 為了 DOMPurify.sanitize 正常運作加上 <table><tbody></tbody></table>
+            function DOMPurifyData(data) {
+                data = '<table><tbody>' + data + '</tbody></table>';
+                data = DOMPurify.sanitize(data);
+                data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');
+                return data;
+            }
+
 			//顯示基金資料 (頁面(第幾頁),頁面筆數(顯示幾筆))
 			function loadData(page, pageSize, orderby, desc) {
 				$.ajax({
@@ -174,7 +182,7 @@
 						if (data) {
 							$('#result').empty();
 
-							document.getElementById('result').innerHTML = data;
+							document.getElementById('result').innerHTML = DOMPurifyData(data);
 							var totalPages = parseInt($('#totalPages').val());
 
 							if (totalPages === 0) {
