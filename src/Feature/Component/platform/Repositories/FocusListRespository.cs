@@ -74,7 +74,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 foreach (var item in baseList)
                 {
-                    foreach (var item2 in data)
+                    foreach (var item2 in sortTags)
                     {
                         if (item2.ProductCodes.Contains(item.ProductCode))
                         {
@@ -164,7 +164,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             var reachInfoRepository = new ReachInfoRepository();
 
-            var reachInfos = reachInfoRepository.GetAllProductReachInfos(FcbMemberHelper.GetMemberPlatFormId(), typeEnum.ToString());
+            var reachInfos = reachInfoRepository.GetProductReachInfosByType(FcbMemberHelper.GetMemberPlatFormId(), typeEnum.ToString());
             if (reachInfos == null)
             {
                 return baseList;
@@ -185,6 +185,7 @@ namespace Feature.Wealth.Component.Repositories
                             case (int)InfoTypeEnum.ReachValue:
                                 item2.Info = new Info
                                 {
+                                    PriceValue = item.PriceValue,
                                     InvestId = item.InvestId,
                                     ReachValue = item.ReachValue,
                                 };
@@ -192,6 +193,7 @@ namespace Feature.Wealth.Component.Repositories
                             case (int)InfoTypeEnum.QuoteChange:
                                 item2.Info = new Info
                                 {
+                                    RiseFallPriceValue = item.PriceValue,
                                     InvestId = item.InvestId,
                                     RiseValue = item.RiseValue,
                                     RisePercent = item.RisePercent,
@@ -207,9 +209,11 @@ namespace Feature.Wealth.Component.Repositories
                         switch (Int32.Parse(item.InfoType))
                         {
                             case (int)InfoTypeEnum.ReachValue:
+                                item2.Info.PriceValue = item.PriceValue;
                                 item2.Info.ReachValue = item.ReachValue;
                                 break;
                             case (int)InfoTypeEnum.QuoteChange:
+                                item2.Info.RiseFallPriceValue = item.PriceValue;
                                 item2.Info.RiseValue = item.RiseValue;
                                 item2.Info.RisePercent = item.RisePercent;
                                 item2.Info.FallValue = item.FallValue;

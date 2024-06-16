@@ -23,6 +23,7 @@
                     initFilter(data);
                   $('.c-loading').loading('hide');
                 } else {
+                    $('[id="fundTrackTotal"]').text(0);
                     $('[data-focusfund]').addClass('u-hidden');
                     $('[data-nofocusfund]').removeClass('u-hidden');
                     $('.c-loading').loading('hide');
@@ -211,7 +212,6 @@
                           function resetTable2()
             {
               let fjs;
-            //window.loading = () => 0;//蓋掉window.loading function
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "FocusList", "GetTrackEtfs")',
                 type: 'POST'
@@ -222,6 +222,7 @@
                     initFilter2(data);
                   $('.c-loading').loading('hide');
                 } else {
+                    $('[id="etfTrackTotal"]').text(0);
                     $('[data-focusetf]').addClass('u-hidden');
                     $('[data-nofocusetf]').removeClass('u-hidden');
                     $('.c-loading').loading('hide');
@@ -405,10 +406,9 @@
 
            //  #endregion ETF
                 // #region 國外股票
-                          function resetTable3()
+               function resetTable3()
             {
               let fjs;
-            //window.loading = () => 0;//蓋掉window.loading function
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "FocusList", "GetTrackForeignStocks")',
                 type: 'POST'
@@ -418,7 +418,8 @@
                 $('[data-nofocusforeignStock]').addClass('u-hidden');
                 initFilter3(data);
                 $('.c-loading').loading('hide');
-                } else {
+                    } else {
+                $('[id="foreignStockTrackTotal"]').text(0);
                 $('[data-focusforeignStock]').addClass('u-hidden');
                 $('[data-nofocusforeignStock]').removeClass('u-hidden');
                 $('.c-loading').loading('hide');
@@ -603,25 +604,41 @@
                 //  #endregion 國外股票
               // #region 共用
 
-              function dateRange() {
-                  const dateRangeMsg = '起訖日期區間錯誤';
-                  let $inputStart = $('[data-trend-filter="inputStart"]');
-                  let $inputEnd = $('[data-trend-filter="inputEnd"]');
+              function dateRange($element, $element2) {
+                  let dateRangeMsg = '起訖日期區間錯誤';
+                  let $inputStart = $element;
+                  let $inputEnd = $element2;
                   let startDate = new Date($inputStart.val());
                   let endDate = new Date($inputEnd.val());
                   let $startParents = $inputStart.closest('.l-form');
+                  let $startMsg = $startParents.find('.o-errorText');
                   let $endParents = $inputEnd.closest('.l-form');
+                  let $endMsg = $endParents.find('.o-errorText');
                   if (endDate < startDate) {
-                      $startParents.addClass('is-error');
                       $endParents.addClass('is-error');
-                      $startParents.find('.o-errorText').text(dateRangeMsg);
+                      $endMsg.text(dateRangeMsg);
                       return false;
                   } else {
                       $startParents.removeClass('is-error');
                       $endParents.removeClass('is-error');
-                      $startParents.find('.o-errorText').text('');
-                      return true;
+                      $startMsg.text('');
                   }
+                  let monthDiff = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() + 1 - startDate.getMonth() + 1);
+                  if (endDate.getDate() < startDate.getDate()) {
+                      monthDiff--;
+                  }
+                  dateRangeMsg = "通知起訖日期不可超過3個月";
+                  if (monthDiff > 4) {
+                      $endParents.addClass('is-error');
+                      $startMsg.closest('.o-errorText');
+                      $endMsg.text(dateRangeMsg);
+                      return false;
+                  } else {
+                      $endParents.removeClass('is-error');
+                      $endParents.removeClass('is-error');
+                      $endMsg.text('');
+                  }
+                  return true;
               }
               function required($element) {
                   const requiredMsg = '欄位必填';
@@ -666,6 +683,43 @@
                     complete: function () { $('.c-loading').loading('hide'); }
                 })
               });
+
+              $('[data-infoStart]', '[data-price-calendar]').on('change',function(){
+                 dateRange($('[data-infoStart]', '[data-price-calendar]'), $('[data-infoEnd]', '[data-price-calendar]'));
+              });
+               $('[data-infoEnd]', '[data-price-calendar]').on('change',function(){
+                 dateRange($('[data-infoStart]', '[data-price-calendar]'), $('[data-infoEnd]', '[data-price-calendar]'));
+               });
+              $('[data-quotestart]', '[data-quoteChange-calendar]').on('change', function () {
+                  dateRange($('[data-quotestart]', '[data-quoteChange-calendar]'), $('[data-quoteend]', '[data-quoteChange-calendar]'));
+              });
+              $('[data-quoteend]', '[data-quoteChange-calendar]').on('change', function () {
+                  dateRange($('[data-quotestart]', '[data-quoteChange-calendar]'), $('[data-quoteend]', '[data-quoteChange-calendar]'));
+              });
+                 $('[data-alert-price]').on('change',function(){
+                 required($(this));
+                 });
+              $('[data-alert-rise]').on('change', function () {
+                  let $this = $(this);
+                  if ($this.val() == '') {
+                      $this.val(0);
+                  }
+                  if ($this.val() < 0) {
+                      $this.val($this.val() * -1);
+                  }
+              });
+              $('[data-alert-fall]').on('change', function () {
+                  let $this = $(this);
+                  if ($this.val() == '') {
+                      $this.val(0);
+                  }
+                  if ($this.val() < 0) {
+                      $this.val($this.val() * -1);
+                  }
+                  if ($this.val() > 100) {
+                      $this.val(100);
+                  }
+              });
                 //設定到價通知
               $('[data-set-alert]', '#popupAlert').on('click', function ()
               {
@@ -675,37 +729,45 @@
                   let productType = $(self).data('type');
                   let _obj = {};
                   let id = reachInfoPopUp.find('[data-id]').data("id");
-                  let newNetValue = Number(reachInfoPopUp.find('[data-netvalue]').data("netvalue"));
-
+                  let priceValue = Number(reachInfoPopUp.find('[data-pricevalue]').data("pricevalue"));
                   if (title == "目標價格") {
-                      if (!$('[data-alert-price]').val()) {
+
+                      if (!required($('[data-infoStart]', '[data-price-calendar]')) || !required($('[data-infoEnd]', '[data-price-calendar]')) ||
+                         !dateRange($('[data-infoStart]', '[data-price-calendar]'), $('[data-infoEnd]', '[data-price-calendar]')) ||!required($('[data-alert-price]'))) {
                           return;
                       }
-                      _obj =
-                      {
-                          InvestType: productType,
-                          InvestId: id,
-                          NewNetValue: newNetValue,
-                          InfoType: 1,
-                          ReachValue: Number($('[data-alert-price]').val()),
-                          InfoStartDate: $('[data-infoStart]', '[data-price-calendar]').val(),
-                          InfoEndDate: $('[data-infoEnd]', '[data-price-calendar]').val(),
-                          OpenInfo: $('input[name="price"]').prop("checked")
-                      }
+                          _obj =
+                          {
+                              InvestType: productType,
+                              InvestId: id,
+                              PriceValue: priceValue,
+                              InfoType: 1,
+                              ReachValue: Number($('[data-alert-price]').val()),
+                              InfoStartDate: $('[data-infoStart]', '[data-price-calendar]').val(),
+                              InfoEndDate: $('[data-infoEnd]', '[data-price-calendar]').val(),
+                              OpenInfo: $('input[name="price"]').prop("checked")
+                          }
+
                   } else
                   {
 
-                      let rise = $('[data-alert-rise]');
-                      let fall = $('[data-alert-fall]');
-
-                      if (rise.val() === '' && fall.val() === '' ) {
+                      if (!required($('[data-quotestart]', '[data-quoteChange-calendar]')) || !required($('[data-quoteend]', '[data-quoteChange-calendar]')) ||
+                          !dateRange($('[data-quotestart]', '[data-quoteChange-calendar]'), $('[data-quoteend]', '[data-quoteChange-calendar]'))) {
                           return;
                       }
+                      let rise = $('[data-alert-rise]');
+                      let fall = $('[data-alert-fall]');
                       if (rise.val() === '') {
                           rise.val(0);
+                          if (!required(fall)) {
+                              return;
+                          }
                       }
                       if (fall.val() === '') {
                           fall.val(0);
+                          if (!required(rise)) {
+                              return;
+                          }
                       }
                       let riseValue = 0;
                       let fallValue = 0;
@@ -716,7 +778,7 @@
                       {
                           InvestType: productType,
                           InvestId: id,
-                          NewNetValue: newNetValue,
+                          PriceValue: priceValue,
                           InfoType: "2",
                           InfoStartDate: $('[data-quotestart]', '[data-quoteChange-calendar]').val(),
                           InfoEndDate: $('[data-quoteend]', '[data-quoteChange-calendar]').val(),
@@ -725,22 +787,22 @@
 
                       if (Number(rise.val()) > 0 && !Number(fall.val())) {
                           risePercent = Number(rise.val());
-                          riseValue = newNetValue + (newNetValue / Number(rise.val()));
+                          riseValue = priceValue + (priceValue * risePercent * 0.01);
                           riseValue = riseValue.toFixed(4);
                           _obj.RiseValue = riseValue;
                           _obj.RisePercent = risePercent;
                       } else if (!Number(rise.val()) && Number(fall.val()) > 0) {
                           fallPercent = Number(fall.val());
-                          fallValue = newNetValue - (newNetValue / fallPercent);
+                          fallValue = priceValue - (priceValue * fallPercent * 0.01);
                           fallValue = fallValue.toFixed(4);
                           _obj.FallValue = fallValue;
                           _obj.FallPercent = fallPercent;
                       } else if (Number(rise.val()) > 0 && Number(fall.val()) > 0) {
                           risePercent = Number(rise.val());
-                          riseValue = newNetValue + (newNetValue / Number(rise.val()));
+                          riseValue = priceValue + (priceValue * risePercent * 0.01);
                           riseValue = riseValue.toFixed(4);
                           fallPercent = Number(fall.val());
-                          fallValue = newNetValue - (newNetValue / fallPercent);
+                          fallValue = priceValue - (priceValue * fallPercent * 0.01);
                           fallValue = fallValue.toFixed(4);
                           _obj.RiseValue = riseValue;
                           _obj.RisePercent = risePercent;
@@ -755,6 +817,12 @@
                           data: _obj,
                           beforeSend: function () { $('.c-loading').loading('show');},
                             success: function (resp) {
+                                $.magnificPopup.close({
+                                    items: {
+                                        src: '#popupAlert'
+                                    },
+                                    type: 'inline'
+                                });
                                 switch (productType.toLowerCase()) {
                                     case "fund":
                                         resetTable();

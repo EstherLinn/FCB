@@ -70,7 +70,7 @@
             <h2 class="c-modal__title">立即申購</h2>
         </header>
         <div class="c-modal__content">
-            <div class="u-hidden@lt-up">
+            <div class="u-hidden@dt-only">
                 <div class="l-flex u-flex-col u-flex-gap-xs">
                     <div class="l-flex__item">
                         <span class="t-bold">選擇申購平台：</span>
@@ -211,8 +211,8 @@
                                 最新淨值
                             </div>
                             <div class="l-flex__item l-flex__item--auto">
-                                <span class="t3" data-netvalue></span>
-                                <span class="t-date" data-netvaluedate></span>
+                                <span class="t3" data-pricevalue></span>
+                                <span class="t-date" data-pricevaluedate></span>
                             </div>
                         </div>
                     </div>
@@ -247,31 +247,43 @@
                                     </div>
                                 </div>
                                 <div class="l-flex__item" data-price-calendar>
-                                    <div class="l-flex u-flex-gap-sm u-flex-gap-min@mb-only u-flex-bottom">
+                                    <div class="l-flex u-flex-gap-sm u-flex-gap-min@mb-only u-flex-top">
                                         <div class="l-flex__item l-flex__item--auto">
                                             <div class="l-flex u-flex-col u-flex-gap-min">
                                                 <div class="l-flex__item u-center"><span class="s4">通知開始日</span></div>
                                                 <div class="l-flex__item">
-                                                    <div class="o-calendarBox o-calendarBox--popRange">
-                                                        <input type="text" class="o-calendarBox__input" data-trend-filter="inputStart" data-infostart data-calendar="true" readonly="">
+                                                    <!-- .is-error: 錯誤樣式，請加此 class name -->
+                                                    <div class="l-form l-form--popup">
+                                                        <div class="l-form__input">
+                                                            <div class="o-calendarBox o-calendarBox--popRange">
+                                                                <input type="text" class="o-calendarBox__input" data-trend-filter="inputStart" data-infostart data-calendar="true" readonly="">
+                                                            </div>
+                                                        </div>
+                                                        <!-- 錯誤訊息 -->
+                                                        <div class="l-form__text l-form__text--error">
+                                                            <div class="o-errorText"><span class="s4"></span></div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="l-form__error">
-                                                    <span class="o-errorText"></span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="l-flex__item l-flex__item--auto u-mb-min">-</div>
+                                        <div class="l-flex__item l-flex__item--auto u-flex-top u-mt-max">-</div>
                                         <div class="l-flex__item l-flex__item--auto">
                                             <div class="l-flex u-flex-col u-flex-gap-min">
                                                 <div class="l-flex__item u-center"><span class="s4">通知結束日</span></div>
                                                 <div class="l-flex__item">
-                                                    <div class="o-calendarBox o-calendarBox--popRange">
-                                                        <input type="text" class="o-calendarBox__input" data-trend-filter="inputEnd" data-infoend data-calendar="true" readonly="">
+                                                    <!-- .is-error: 錯誤樣式，請加此 class name -->
+                                                    <div class="l-form l-form--popup">
+                                                        <div class="l-form__input">
+                                                            <div class="o-calendarBox o-calendarBox--popRange">
+                                                                <input type="text" class="o-calendarBox__input" data-trend-filter="inputEnd" data-infoend data-calendar="true" readonly="">
+                                                            </div>
+                                                        </div>
+                                                        <!-- 錯誤訊息 -->
+                                                        <div class="l-form__text l-form__text--error">
+                                                            <div class="o-errorText"><span class="s4"></span></div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="l-form__error">
-                                                    <span class="o-errorText"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -292,7 +304,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="l-flex__item">
-                                                    <input type="number" class="o-textbox o-textbox--full o-textbox--form" value="0" data-alert-price>
+                                                    <!-- .is-error: 錯誤樣式，請加此 class name -->
+                                                    <div class="l-form l-form--popup">
+                                                        <div class="l-form__input">
+                                                            <input type="number" class="o-textbox o-textbox--full o-textbox--form" value="0" data-alert-price>
+                                                        </div>
+                                                        <!-- 錯誤訊息 -->
+                                                        <div class="l-form__text l-form__text--error">
+                                                            <div class="o-errorText"><span class="s4"></span></div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -317,24 +338,40 @@
                                     </div>
                                 </div>
                                 <div class="l-flex__item" data-quoteChange-calendar>
-                                    <div class="l-flex u-flex-gap-sm u-flex-gap-min@mb-only u-flex-bottom">
+                                    <div class="l-flex u-flex-gap-sm u-flex-gap-min@mb-only u-flex-top">
                                         <div class="l-flex__item l-flex__item--auto">
                                             <div class="l-flex u-flex-col u-flex-gap-min">
                                                 <div class="l-flex__item u-center"><span class="s4">通知開始日</span></div>
                                                 <div class="l-flex__item">
-                                                    <div class="o-calendarBox o-calendarBox--popRange">
-                                                        <input type="text" class="o-calendarBox__input" data-quotestart data-calendar="true" readonly="">
+                                                    <div class="l-form l-form--popup">
+                                                        <div class="l-form__input">
+                                                            <div class="o-calendarBox o-calendarBox--popRange">
+                                                                <input type="text" class="o-calendarBox__input" data-quotestart data-calendar="true" readonly="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="l-form__text l-form__text--error">
+                                                            <span class="o-errorText"><span class="s4"></span></span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="l-flex__item l-flex__item--auto u-mb-min">-</div>
+                                        <div class="l-flex__item l-flex__item--auto u-mt-max">-</div>
                                         <div class="l-flex__item l-flex__item--auto">
                                             <div class="l-flex u-flex-col u-flex-gap-min">
                                                 <div class="l-flex__item u-center"><span class="s4">通知結束日</span></div>
                                                 <div class="l-flex__item">
-                                                    <div class="o-calendarBox o-calendarBox--popRange">
-                                                        <input type="text" class="o-calendarBox__input" data-quoteend data-calendar="true" readonly="">
+                                                    <!-- .is-error: 錯誤樣式，請加此 class name -->
+                                                    <div class="l-form l-form--popup">
+                                                        <div class="l-form__input">
+                                                            <div class="o-calendarBox o-calendarBox--popRange">
+                                                                <input type="text" class="o-calendarBox__input" data-quoteend data-calendar="true" readonly="">
+                                                            </div>
+                                                        </div>
+                                                        <!-- 錯誤訊息 -->
+                                                        <div class="l-form__text l-form__text--error">
+                                                            <div class="o-errorText"><span class="s4"></span></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -344,27 +381,45 @@
                                 <div class="l-flex__item">
                                     <div class="c-box c-box--gy c-box--gapless u-noShadow">
                                         <div class="c-box__main">
-                                            <div class="l-flex u-flex-gap-max">
+                                            <div class="l-flex u-flex-gap-max u-flex-top">
                                                 <div class="l-flex__item">
-                                                    <div class="l-flex u-flex-gap-sm">
-                                                        <div class="l-flex__item l-flex__item--auto">
+                                                    <div class="l-flex u-flex-gap-sm u-flex-top">
+                                                        <div class="l-flex__item l-flex__item--auto u-mt-xs">
                                                             漲幅
                                                         </div>
                                                         <div class="l-flex__item">
-                                                            <div data-suffix-box="%">
-                                                                <input type="number" class="o-textbox o-textbox--full o-textbox--form" data-alert-rise>
+                                                            <!-- .is-error: 錯誤樣式，請加此 class name -->
+                                                            <div class="l-form l-form--popup">
+                                                                <div class="l-form__input">
+                                                                    <div data-suffix-box="%">
+                                                                        <input type="number" class="o-textbox o-textbox--full o-textbox--form" data-alert-rise>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- 錯誤訊息 -->
+                                                                <div class="l-form__text l-form__text--error">
+                                                                    <div class="o-errorText"><span class="s4"></span></div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class=" l-flex__item">
-                                                    <div class="l-flex u-flex-gap-sm">
-                                                        <div class="l-flex__item l-flex__item--auto">
+                                                    <div class="l-flex u-flex-gap-sm u-flex-top">
+                                                        <div class="l-flex__item l-flex__item--auto u-mt-xs">
                                                             跌幅
                                                         </div>
                                                         <div class="l-flex__item">
-                                                            <div data-suffix-box="%">
-                                                                <input type="number" class="o-textbox o-textbox--full o-textbox--form" data-alert-fall>
+                                                            <!-- .is-error: 錯誤樣式，請加此 class name -->
+                                                            <div class="l-form l-form--popup">
+                                                                <div class="l-form__input">
+                                                                    <div data-suffix-box="%">
+                                                                        <input type="number" class="o-textbox o-textbox--full o-textbox--form" data-alert-fall>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- 錯誤訊息 -->
+                                                                <div class="l-form__text l-form__text--error">
+                                                                    <div class="o-errorText"><span class="s4"></span></div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -385,7 +440,7 @@
                     <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-popup-close="true">取消</a>
                 </div>
                 <div class="l-action__item">
-                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true" data-set-alert data-purpose="目標價格">確定</a>
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm"  data-set-alert data-purpose="目標價格">確定</a>
                 </div>
             </div>
         </div>
@@ -403,7 +458,7 @@
 </div>
 @if (Session["OAuthErrorMsg"] != null)
 {
-    <script>
+<script>
         $('[data-errormsg]', '#loginFail').text("「@Session["OAuthErrorMsg"].ToString()」");
         $.magnificPopup.open({
             items: {
@@ -411,13 +466,13 @@
             },
             type: 'inline'
         });
-    </script>
+</script>
     Session["OAuthErrorMsg"] = null;
 }
 
 @if (Session["WebBankErrorMsg"] != null)
 {
-    <script>
+<script>
         $('[data-errormsg]', '#loginFail').text("「@Session["WebBankErrorMsg"].ToString()」");
         $.magnificPopup.open({
             items: {
@@ -425,7 +480,7 @@
             },
             type: 'inline'
         });
-    </script>
+</script>
     Session["WebBankErrorMsg"] = null;
 }
 
@@ -502,25 +557,28 @@
     });
     // 更新%數顯示
     $('[data-count-input]').on('change.count', function (e) {
-        let latestNetWorth = Number($("#popupAlert").find('[data-netvalue]').data('netvalue'));
+        let latestNetWorth = Number($("#popupAlert").find('[data-pricevalue]').data('pricevalue'));
         $(this).closest('[data-count]').find('.c-count__text').text(Number(percent).toFixed(2));
         if (triggerType === 'click') {
             var val = latestNetWorth + latestNetWorth * e.target.value * 0.01;
-            $('[data-alert-price]').val(val.toFixed(4));
+            $('[data-alert-price]').val(val.toFixed(4)).trigger('change');
         }
     }).trigger('change.count');
 
     // 目標價格輸入
     $('[data-alert-price]').on('blur', function (e) {
         let priceValue = e.target.value;
-        let latestNetWorth = Number($("#popupAlert").find('[data-netvalue]').data('netvalue'));
-        if (priceValue === '' || Number(priceValue) <= 0) {
+        if (priceValue == '') {
+            return;
+        }
+        let latestNetWorth = Number($("#popupAlert").find('[data-pricevalue]').data('pricevalue'));
+        if (Number(priceValue) <= 0) {
             latestNetWorth == 0;
             $('[data-alert-price]').val(0);
         }
         triggerType = 'input';
         var newPercent = (Number(priceValue) - latestNetWorth) / latestNetWorth * 100;
-        percent = newPercent.toFixed(2);
+        percent = newPercent.toFixed(2) < -100 ? -100 : newPercent.toFixed(2);
         $('[data-count-input]').val(percent).trigger('change.count');
     });
     //申購deeplink init
@@ -625,7 +683,7 @@
                                     goCombined += `${key}=${value}&`;
                                 }
                             }
-                        
+
                         single.setAttribute("href", singleCombined.slice(0, -1));
                         regular.setAttribute("href", regularCombined.slice(0, -1));
                         go.setAttribute("href", goCombined.slice(0, -1));

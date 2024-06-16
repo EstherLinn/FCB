@@ -1,6 +1,7 @@
 ﻿@using Feature.Wealth.Account.Helpers;
 @using Feature.Wealth.Account.Models.OAuth;
 @using Feature.Wealth.Account.Models.MemberCard;
+@using Sitecore.Configuration;
 @model MemberCardModel
 @{
     var member = FcbMemberHelper.fcbMemberModel;
@@ -11,6 +12,9 @@
     }
     var memberSettingUrl = MemberRelatedLinkHelper.GetMemberSettingUrl();
     var memberReserveUrl = MemberRelatedLinkHelper.GetReserveConsultingUrl();
+    var WebKycLink = Settings.GetSetting("WebKYC");
+    var FirsteKycLink = Settings.GetSetting("FirsteKYC");
+    var IleoKycLink = Settings.GetSetting("IleoKYC");
 }
 <div class="l-mainstage l-mainstage--member">
     <div class="l-mainstage__wrap">
@@ -51,11 +55,12 @@
                                         @if (!string.IsNullOrEmpty(member.Risk))
                                         {
                                             <b>@member.Risk</b>
+                                            <a href="@WebKycLink" class="o-link t4 u-hidden" id="GoKYC">進行風險屬性評估</a>
 
                                         }
                                         else
                                         {
-                                            <a href="#" class="o-link t4">進行風險屬性評估</a>
+                                            <a href="@WebKycLink" class="o-link t4" id="GoKYC">進行風險屬性評估</a>
                                         }
                                     </div>
                                 </div>
@@ -76,7 +81,7 @@
                                     <div class="c-member__value">
                                         <a href="@memberReserveUrl" class="o-btn o-btn--primary o-btn--thin o-btn--auto">預約線上諮詢</a>
                                         @*<b>還有 <span class="t-warning">8</span> 天 </b>
-                                        <div class="t-date u-inline@lt">(2023/11/03)</div>*@
+                                            <div class="t-date u-inline@lt">(2023/11/03)</div>*@
                                     </div>
                                 </div>
                             }
@@ -99,3 +104,21 @@
         </div>
     </div>
 </div>
+<script>
+    (function ($, window, document, undefined) {
+        //行動裝置判斷
+        if ($(window).width() < 1199) {
+            let MobilePlatform = store.get("MobilePlatform") || "firste";
+            let url = "";
+            if (MobilePlatform == "firste") {
+                url = "@FirsteKycLink";
+                url.replaceAll('&amp;', '&');
+                document.getElementById('GoKYC').setAttribute('href', '@FirsteKycLink');
+            } else {
+                url = "@IleoKycLink";
+                url.replaceAll('&amp;', '&');
+                document.getElementById('GoKYC').setAttribute('href', '@IleoKycLink');
+            }
+        }
+    })(jQuery, window, document);
+</script>

@@ -6,7 +6,7 @@
     var detailUrl = FundRelatedSettingModel.GetFundDetailsUrl();
 }
 
-<div class="l-flex u-flex-col u-flex-gap-xs u-hidden" data-nofocusfund>
+<div class="l-flex u-flex-col u-flex-gap-xs" data-nofocusfund>
     <div class="l-flex__item">
         <div class="c-empty">
             <div class="c-empty__img">
@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<div class="l-flex u-flex-col u-flex-gap-sm" data-focusfund>
+<div class="l-flex u-flex-col u-flex-gap-sm u-hidden" data-focusfund>
     <div class="l-flex__item u-right u-hidden@dt-only">
         <div class="o-sortingbox">
             <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
@@ -152,7 +152,7 @@
                         <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
                         <div class="c-cardTable__title" data-length="4">最新淨值<br>(淨值日)</div>
                         <% if (NetAssetValue != null) { %>
-                        <div class="c-cardTable__content" data-netvalue="<%= NetAssetValue.toFixed(4) %>"><%= NetAssetValue.toFixed(4) %><br><span class="t-date" data-netvaluedate="<%= NetAssetValueDate %>"><%= NetAssetValueDate %></span></div>
+                        <div class="c-cardTable__content" data-pricevalue="<%= NetAssetValue.toFixed(4) %>"><%= NetAssetValue.toFixed(4) %><br><span class="t-date" data-pricevaluedate="<%= NetAssetValueDate %>"><%= NetAssetValueDate %></span></div>
                         <% } else {%>
                         <span>-</span>
                         <% } %>
@@ -213,7 +213,7 @@
                             <div class="t-tip--lt">點鈴鐺設定到價通知</div>
                             <% } else {%>
                             <% if (Info.ReachValue  != null ) { %>
-                            <div class="<% if (NetAssetValue >= Info.ReachValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
+                            <div class="<% if ( (Info.ReachValue >= Info.PriceValue &&  Info.ReachValue <= NetAssetValue) || (Info.ReachValue <= Info.PriceValue &&  Info.ReachValue >= NetAssetValue)){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
                             <% } %>
                             <% if (Info.RisePercent  != null  || Info.FallPercent) { %>
                             <div class="l-straight@lt">

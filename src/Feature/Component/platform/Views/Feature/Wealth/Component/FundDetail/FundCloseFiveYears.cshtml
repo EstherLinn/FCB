@@ -9,9 +9,13 @@
 <div class="l-mainstage">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
-            <h1 class="t-title">近五年不同級別報酬率與費用率比較</h1>
+            <h1 class="t-title u-center">基⾦各級別近五年度之費⽤率與報酬率資訊評估結果</h1>
         </div>
-
+        <div class="l-mainstage__content u-indent">
+            台端所申購之基⾦可能有不同級別，台端應於申購前充分瞭解該檔基⾦各級別之不同，如為不同計價幣別、配息或不配息、⼿續費為前收或後收等，以投資合適之級別。不同級別之費⽤率與報酬率或有差異，
+            <u><a href="#" id="detailTitle" target="_blank"></a> </u>
+            之各級別近五年度之費⽤率與報酬率資訊。
+        </div>
     </div>
 </div>
 <div class="l-wrap">
@@ -105,6 +109,7 @@
     var getUrlString = location.href;
     var url = new URL(getUrlString);
     var fundId = url.searchParams.get('id');
+        let detailsUrlWithParma = new URL(location.origin + detailsUrl + '?id=' + fundId);
     let colorCode = [
         '#238C6C',
         '#D0A66C',
@@ -160,7 +165,10 @@
                                 // data: item.rate
                             };
                         });
-
+                        let fundIdx = mapData.findIndex(x => x.id == fundId);
+                        let topText = `請詳閱 【${mapData[fundIdx].id} ${mapData[fundIdx].name}】`
+                        $('#detailTitle').html(DOMPurify.sanitize(topText));
+                        document.getElementById('detailTitle').setAttribute('href', detailsUrlWithParma);
                         let rateGroup = [];
                         let feeGroup = [];
                         for (let i = 1; i <= result.resultSet.result.length; i++) {

@@ -5,11 +5,13 @@
 @if (isLogin)
 {
     var isGlobalStyle = FcbMemberHelper.IsMemberStyleGlobal();
-    <script>
+    var WebBankId = FcbMemberHelper.GetMemberWebBankId();
+<script>
     addObjectValue(SC_DATA, 'IsLoggedIn', @(isLogin ? "true" : "false"));
     addObjectValue(SC_DATA, 'IsGlobalStyle', @(isGlobalStyle ? "true" : "false"));
+    addObjectValue(SC_DATA, 'WebBankId', @(WebBankId));
     addObjectValue(SC_DATA, 'ItemId', '@Sitecore.Context.Item.ID');
-    </script>
+</script>
 
     Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LoginState.cshtml");
 }

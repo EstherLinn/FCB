@@ -42,21 +42,22 @@
                     $('[eh-focus]').trigger('exec');
                 },
             })
+            if (SC_DATA.WebBankId) {
+                    $.ajax({
+                        type: "post",
+                        url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackListFromFcb")",
+                        data: { "promotionCode": SC_DATA.WebBankId },
+                        success: function (msg) {
+                            console.log("TrackListFromFcb :");
+                            console.log(msg);
+                        },
+                        error: function (msg) {
+                            console.log("TrackListFromFcb :");
+                            console.log(msg);
+                        }
+                    })
+                 }
         }
-        $.ajax({
-            type: "post",
-            url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackListFromFcb")",
-            data: { "promotionCode": '123456' },
-            success: function (msg) {
-                console.log("TrackListFromFcb :");
-                console.log(msg);
-            },
-            error: function (msg)
-            {
-                console.log("TrackListFromFcb :");
-                console.log(msg);
-            }
-        })
         window.CompareObj = function (id, type, name) {
             this.id = id;
             this.type = type;
@@ -96,12 +97,7 @@
         window.getNowDate = function ()
         {
             let now = new Date();
-            let year = now.getFullYear();
-            let month = now.getMonth() + 1;
-            let day = now.getDate();
-            if (month < 10) month = '0' + month
-            if (day < 10) day = '0' + day
-            return year + "/" + month + "/" + day ;
+            return now.toISOString().split('T')[0].replaceAll('-','/') ;
         }
         EventHandler.AddOnExec('compare-init', function (e) {
             let self = e.target;
@@ -535,19 +531,37 @@
             } else {
                 $("#popupAlert").find('[data-set-title]').text('最新淨值');
             }
+            $("#popupAlert").find('[data-title]').data('id', $(self).closest("tr").find('[data-id]').data('id'));
+            $("#popupAlert").find('[data-title]')[0].setAttribute("href", url);
+            $("#popupAlert").find('[data-pricevalue]').data('pricevalue', $(self).closest("tr").find('[data-pricevalue]').data('pricevalue'));
+            $("#popupAlert").find('[data-netvaluedate]').data('netvaluedate', $(this).closest("tr").find('[data-netvaluedate]').data('netvaluedate'));
+            $("#popupAlert").find('[data-title]').text($(self).closest("tr").find('[data-id]').text());
+            $("#popupAlert").find('[data-pricevalue]').text($(self).closest("tr").find('[data-pricevalue]').data('pricevalue'));
+            $("#popupAlert").find('[data-pricevaluedate]').text($(self).closest("tr").find('[data-pricevaluedate]').data('pricevaluedate'));
+            let nowDate = getNowDate();
+            let date = new Date();
+            let setDate = new Date(date.getFullYear(), date.getMonth() + 3, date.getDate());
+            let threeMonthLaterDate = setDate.toISOString().split('T')[0].replaceAll('-', '/');
+            $('[data-infostart]').datepicker('setDate', nowDate);
+            $('[data-infoend]').datepicker('setDate', threeMonthLaterDate);
+            $('[data-infostart]').val(nowDate);
+            $('[data-infoend]').val(threeMonthLaterDate);
+            $('[data-quotestart]').datepicker('setDate', nowDate);
+            $('[data-quoteend]').datepicker('setDate', threeMonthLaterDate);
+            $('[data-quotestart]').val(nowDate);
+            $('[data-quoteend]').val(threeMonthLaterDate);
+            $("#popupAlert").find('[data-alert-price]').val($(self).closest("tr").find('[data-pricevalue]').data('pricevalue'));
+            $("#popupAlert").find('[data-alert-rise]').val('');
+            $("#popupAlert").find('[data-alert-fall]').val('');
+            $("#popupAlert").find('[data-count-input]').val(0);
+            $("#popupAlert").find('.c-count__text').text(0);
+
             $.ajax({
                 type: "post",
                 url: "@ClientRoute.GenerateUrl(this, "FocusList", "GetProductReachInfo")",
-                data: { "type": type, "id": id},
+                data: { "type": type, "id": id },
                 beforeSend: function () { $('.c-loading').loading('show'); },
                 success: function (data) {
-                    $("#popupAlert").find('[data-title]').data('id', $(self).closest("tr").find('[data-id]').data('id'));
-                    $("#popupAlert").find('[data-title]')[0].setAttribute("href", url);
-                        $("#popupAlert").find('[data-netvalue]').data('netvalue', $(self).closest("tr").find('[data-netvalue]').data('netvalue'));
-                        $("#popupAlert").find('[data-netvaluedate]').data('netvaluedate', $(this).closest("tr").find('[data-netvaluedate]').data('netvaluedate'));
-                        $("#popupAlert").find('[data-title]').text($(self).closest("tr").find('[data-id]').text());
-                        $("#popupAlert").find('[data-netvalue]').text($(self).closest("tr").find('[data-netvalue]').data('netvalue'));
-                        $("#popupAlert").find('[data-netvaluedate]').text($(self).closest("tr").find('[data-netvaluedate]').data('netvaluedate'));
                     if (data && data.body.length > 0)
                     {
                         $.each(data.body, function (idx, item) {
@@ -558,7 +572,6 @@
                                     if (item.openInfo) {
                                         $('input[name="price"]').prop("checked")
                                     }
-
                                     $("#popupAlert").find('[data-alert-price]').val(item.reachValue).trigger('change.count');
                                     startDate = item.infoStartDate.split('T')[0].replaceAll('-','/');
                                     endDate= item.infoEndDate.split('T')[0].replaceAll('-','/');
@@ -582,23 +595,6 @@
                                     break;
                             }
                         });
-                    } else
-                    {
-                        let nowDate = getNowDate();
-
-                        $('[data-infostart]').datepicker('setDate', nowDate);
-                        $('[data-infoend]').datepicker('setDate', nowDate);
-                        $('[data-infostart]').val('');
-                        $('[data-infoend]').val('');
-                        $('[data-quotestart]').datepicker('setDate', nowDate);
-                        $('[data-quoteend]').datepicker('setDate', nowDate);
-                        $('[data-quotestart]').val('');
-                        $('[data-quoteend]').val('');
-                        $("#popupAlert").find('[data-alert-price]').val($(self).closest("tr").find('[data-netvalue]').data('netvalue'));
-                        $("#popupAlert").find('[data-alert-rise]').val('');
-                        $("#popupAlert").find('[data-alert-fall]').val('');
-                        $("#popupAlert").find('[data-count-input]').val(0);
-                        $("#popupAlert").find('.c-count__text').text(0);
                     }
                     $('.c-loading').loading('hide');
                 },

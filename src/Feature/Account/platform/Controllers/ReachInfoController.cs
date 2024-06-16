@@ -26,6 +26,5 @@ namespace Feature.Wealth.Account.Controllers
 
             return new JsonNetResult(returnObj);
         }
-
     }
 }

@@ -13,7 +13,6 @@ using Xcms.Sitecore.Foundation.Basic.Extensions;
 
 namespace Feature.Wealth.Component.Controllers
 {
-    [MemberAuthenticationFilter]
     public class FocusListController :  JsonNetController
     {
         private readonly MemberRepository _memberRepository;
@@ -28,6 +27,7 @@ namespace Feature.Wealth.Component.Controllers
             this._reachInfoRepository = new ReachInfoRepository();
             this._focusListRespository = new FocusListRespository();
         }
+        [MemberAuthenticationFilter]
         public ActionResult Index()
         {
             return View("/Views/Feature/Wealth/Component/FocusList/FocusList.cshtml");
@@ -36,6 +36,10 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetTrackFunds()
         {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
             List<TrackListModel> trackLists = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
             if (trackLists == null)
             {
@@ -53,6 +57,10 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetTrackEtfs()
         {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
             List<TrackListModel> trackLists = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
             if (trackLists == null)
             {
@@ -70,6 +78,10 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetTrackForeignStocks()
         {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
             List<TrackListModel> trackLists = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
             if (trackLists == null)
             {
@@ -87,6 +99,10 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetProductReachInfo(string type, string id)
         {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
             ReachInfoResp reachInfoResp = new ReachInfoResp();
             reachInfoResp.Body = _reachInfoRepository.GetProductReachInfo(FcbMemberHelper.GetMemberPlatFormId(), type, id);
 
@@ -99,6 +115,7 @@ namespace Feature.Wealth.Component.Controllers
 
         private List<FundListModel> GetFocusList(List<string> fundFocusList)
         {
+
             var items = _focusListRespository.GetFundFocusData(fundFocusList);
             var itemsWithButton = _focusListRespository.SetButtonToFocusList(items, InvestTypeEnum.Fund);
             var itemsWithButtonAndInfo = _focusListRespository.SetReachInfoToFocusList(itemsWithButton, InvestTypeEnum.Fund);
