@@ -8,32 +8,30 @@ namespace Feature.Wealth.Component.Models.Compare
     public class FundETFCompareModel
     {
         public bool IsValid { get; set; }
-        public Item Item { get; set; }
+        public Item DataSource { get; set; }
         public string FundListLinkUrl { get; set; }
         public string FundDetailLinkUrl { get; set; }
         public string ETFListLinkUrl { get; set; }
-        public string ETFDetailLinkUrl { get; set; }
-        public string EmptyLinkUrl { get; set; }
+        public string ETFDetailLinkUrl { get; set; }        
         public IList<GlobalIndex.GlobalIndex> GlobalIndexList { get; set; }
         public FundETFCompareModel(Item item)
         {
-            this.Item = item;
+            this.DataSource = item;
             if (item == null)
             {
                 return;
             }
 
-            this.FundListLinkUrl = item.GeneralLink(Template.FundETFComparePage.Fields.FundListLink)?.Url;
-            this.FundDetailLinkUrl = item.GeneralLink(Template.FundETFComparePage.Fields.FundDetailLink)?.Url;
-            this.ETFListLinkUrl = item.GeneralLink(Template.FundETFComparePage.Fields.ETFListLink)?.Url;
-            this.ETFDetailLinkUrl = item.GeneralLink(Template.FundETFComparePage.Fields.ETFDetailLink)?.Url;
-            this.EmptyLinkUrl = item.GeneralLink(Template.FundETFComparePage.Fields.EmptyLink)?.Url;
+            this.FundListLinkUrl = item.GeneralLink(Templates.FundETFComparePage.Fields.FundListLink)?.Url;
+            this.FundDetailLinkUrl = item.GeneralLink(Templates.FundETFComparePage.Fields.FundDetailLink)?.Url;
+            this.ETFListLinkUrl = item.GeneralLink(Templates.FundETFComparePage.Fields.ETFListLink)?.Url;
+            this.ETFDetailLinkUrl = item.GeneralLink(Templates.FundETFComparePage.Fields.ETFDetailLink)?.Url;
 
-            this.IsValid = item.TemplateID == Template.FundETFComparePage.Id;
+            this.IsValid = item.TemplateID == Templates.FundETFComparePage.Id;
         }
     }
 
-    public struct Template
+    public struct Templates
     {
         public struct FundETFComparePage
         {
@@ -45,7 +43,7 @@ namespace Feature.Wealth.Component.Models.Compare
                 public static readonly ID ETFListLink = new ID("{18B3420C-AB28-48C0-94F2-E839F3581191}");
                 public static readonly ID ETFDetailLink = new ID("{01351433-75D5-4AA6-A987-02D80F15A8ED}");
                 public static readonly ID RiskIndicatorsDescription = new ID("{67854373-7F86-48CE-BAF8-63A743B73BD3}");
-                public static readonly ID EmptyLink = new ID("{567156D0-0E15-4A79-A736-2D4EA5397567}");
+                public static readonly ID EmptyDescription = new ID("{567156D0-0E15-4A79-A736-2D4EA5397567}");
             }
         }
     }
