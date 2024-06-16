@@ -31,6 +31,8 @@ namespace Feature.Wealth.Component.Models.FocusList
     public class Info
     {
         public string InvestId { get; set; }
+        public decimal? PriceValue { get; set; }
+        public decimal? RiseFallPriceValue { get; set; }
         public decimal? ReachValue { get; set; }
         public decimal? RiseValue { get; set; }
         public decimal? FallValue { get; set; }

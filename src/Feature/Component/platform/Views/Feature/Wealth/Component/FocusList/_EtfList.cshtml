@@ -6,21 +6,21 @@
     var detailUrl = EtfRelatedLinkSetting.GetETFDetailUrl();
 }
 
-<div class="l-flex u-flex-col u-flex-gap-xs u-hidden" data-nofocusetf>
+<div class="l-flex u-flex-col u-flex-gap-xs" data-nofocusetf>
     <div class="l-flex__item">
         <div class="c-empty">
             <div class="c-empty__img">
                 <img src="~/themes/images/lions/lion-compare.svg" alt="">
             </div>
-            <div class="c-empty__desc">目前還沒關注任何國外股票</div>
+            <div class="c-empty__desc">目前還沒關注任何ETF</div>
         </div>
     </div>
     <div class="l-flex__item u-center">
-        <a href="@searchUrl" class="o-btn o-btn--secondary o-btn--sm o-btn--flat">國外股票搜尋</a>
+        <a href="@searchUrl" class="o-btn o-btn--secondary o-btn--sm o-btn--flat">ETF搜尋</a>
     </div>
 </div>
 
-<div class="l-flex u-flex-col u-flex-gap-sm" data-focusetf>
+<div class="l-flex u-flex-col u-flex-gap-sm u-hidden"  data-focusetf>
     <div class="l-flex__item u-right u-hidden@dt-only">
         <div class="o-sortingbox">
             <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
@@ -143,7 +143,7 @@
                         <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
                         <div class="c-cardTable__title" data-length="4">收盤價<br>(收盤日)</div>
                         <% if (MarketPrice != null) { %>
-                        <div class="c-cardTable__content" data-netvalue="<%= MarketPrice.toFixed(2) %>"><%= MarketPrice.toFixed(4) %><br><span class="t-date" data-netvaluedate="<%= MarketPriceDate %>"><%= MarketPriceDate %></span></div>
+                        <div class="c-cardTable__content" data-pricevalue="<%= MarketPrice.toFixed(2) %>"><%= MarketPrice.toFixed(4) %><br><span class="t-date" data-pricevaluedate="<%= MarketPriceDate %>"><%= MarketPriceDate %></span></div>
                         <% } else {%>
                         <span>-</span>
                         <% } %>
@@ -192,7 +192,7 @@
                             <div class="t-tip--lt">點鈴鐺設定到價通知</div>
                             <% } else {%>
                             <% if (Info.ReachValue  != null ) { %>
-                            <div class="<% if (MarketPrice >= Info.ReachValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
+                            <div class="<% if ( (Info.ReachValue >= Info.PriceValue &&  Info.ReachValue <= MarketPrice) || (Info.ReachValue <= Info.PriceValue &&  Info.ReachValue >= MarketPrice)){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
                             <% } %>
                             <% if (Info.RisePercent  != null  || Info.FallPercent) { %>
                             <div class="l-straight@lt">

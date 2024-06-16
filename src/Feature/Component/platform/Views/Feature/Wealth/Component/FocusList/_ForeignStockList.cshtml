@@ -6,7 +6,7 @@
     var detailUrl = USStockRelatedLinkSetting.GetUSStockDetailUrl();
 }
 
-<div class="l-flex u-flex-col u-flex-gap-xs u-hidden" data-nofocusforeignStock>
+<div class="l-flex u-flex-col u-flex-gap-xs" data-nofocusforeignStock>
     <div class="l-flex__item">
         <div class="c-empty">
             <div class="c-empty__img">
@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<div class="l-flex u-flex-col u-flex-gap-sm" data-focusforeignStock>
+<div class="l-flex u-flex-col u-flex-gap-sm u-hidden" data-focusforeignStock>
     <div class="l-flex__item u-right u-hidden@dt-only">
         <div class="o-sortingbox">
             <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
@@ -133,41 +133,41 @@
                                     </div>
                                 </div>
                             </div>
-                        </td>
-                        <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                        <td class="c-cardTable__space"></td>
-                        <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                        <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                        <td class="c-cardTable__body" data-card-table-width="1/2">
-                            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                            <div class="c-cardTable__title" data-length="5">交易所代碼</div>
-                            <% if (FundCode != null) { %>
-                            <div class="c-cardTable__content"><%= FundCode %></div>
-                            <% } else {%>
-                            <span>-</span>
-                            <% } %>
-                        </td>
-                        <td class="c-cardTable__body" data-card-table-width="1/2">
-                            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                            <div class="c-cardTable__title" data-length="5">收盤價<br>(收盤日)</div>
-                            <% if (ClosingPrice != null) { %>
-                            <div class="c-cardTable__content" data-netvalue="<%= ClosingPrice %>"><%= ClosingPrice %><br><span class="t-date" data-netvaluedate="<%= ClosingPriceDate %>"><%= ClosingPriceDate %></span></div>
-                            <% } else {%>
-                            <span>-</span>
-                            <% } %>
-                        </td>
+                        </div>
+                    </td>
+                    <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+                    <td class="c-cardTable__space"></td>
+                    <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+                    <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                        <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                        <div class="c-cardTable__title" data-length="5">交易所代碼</div>
+                        <% if (FundCode != null) { %>
+                        <div class="c-cardTable__content"><%= FundCode %></div>
+                        <% } else {%>
+                        <span>-</span>
+                        <% } %>
+                    </td>
+                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                        <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                        <div class="c-cardTable__title" data-length="5">收盤價<br>(收盤日)</div>
+                        <% if (ClosingPrice != null) { %>
+                        <div class="c-cardTable__content" data-pricevalue="<%= ClosingPrice %>"><%= ClosingPrice %><br><span class="t-date" data-pricevaluedate="<%= ClosingPriceDate %>"><%= ClosingPriceDate %></span></div>
+                        <% } else {%>
+                        <span>-</span>
+                        <% } %>
+                    </td>
 
-                        <td class="c-cardTable__body" data-card-table-width="1/2">
-                            <div class="c-cardTable__title" data-length="5">漲跌幅</div>
-                            <div class="c-cardTable__content">
-                                <% if (ChangePercentage != null ) { %>
-                                <span class="<%= ChangePercentageStyle %>">
-                                    <%= ChangePercentageText %>%
-                                </span>
-                                <% } else {%>
-                                <span>-</span>
-                                <% } %>
-                            </div>
+                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                        <div class="c-cardTable__title" data-length="5">漲跌幅</div>
+                        <div class="c-cardTable__content">
+                            <% if (ChangePercentage != null ) { %>
+                            <span class="<%= ChangePercentageStyle %>">
+                                <%= ChangePercentageText %>%
+                            </span>
+                            <% } else {%>
+                            <span>-</span>
+                            <% } %>
                         </td>
                         <td class="c-cardTable__body" data-card-table-width="1/2">
                             <div class="c-cardTable__title" data-length="5">6個月績效</div>
@@ -188,7 +188,7 @@
                                 <div class="t-tip--lt">點鈴鐺設定到價通知</div>
                                 <% } else {%>
                                 <% if (Info.ReachValue  != null ) { %>
-                                <div class="<% if (ClosingPrice>= Info.ReachValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
+                                <div class="<% if ( (Info.ReachValue >= Info.PriceValue &&  Info.ReachValue <= ClosingPrice) || (Info.ReachValue <= Info.PriceValue &&  Info.ReachValue >= ClosingPrice)){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
                                 <% } %>
                                 <% if (Info.RisePercent  != null  || Info.FallPercent) { %>
                                 <div class="l-straight@lt">

@@ -11,7 +11,7 @@ namespace Feature.Wealth.Account.Models.ReachInfo
         public string PlatFormId { get; set; }
         public string InvestType { get; set; }
         public string InvestId { get; set; }
-        public decimal? NewNetValue { get; set; }
+        public decimal? PriceValue { get; set; }
         public string InfoType { get; set; }
         public decimal? ReachValue { get; set; }
         public decimal? RiseValue { get; set; }

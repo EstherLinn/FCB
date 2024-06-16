@@ -56,7 +56,7 @@
                                     @foreach (var item in Model.TagsDic[FundTagEnum.DiscountTag])
                                     {
                                     <li class="l-tag__item">
-                                        <a href="#" class="o-tag">@item</a>
+                                        <span class="o-tag">@item</span>
                                     </li>
                                     }
                                 </ul>
@@ -3695,6 +3695,7 @@
                     $('[data-chart="so1"]').find('.c-empty').addClass('u-hidden');
                     $('[data-chart="so1"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
                     chart.yAxis[0].update({
+                        tickInterval: 10,
                         max: data[0].Holding > 50 ? 100 : 50
                     });
                     chart.update({
