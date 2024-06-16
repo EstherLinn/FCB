@@ -22,6 +22,7 @@ namespace Feature.Wealth.Component.Models.USStock
         public string PageID { get; set; }
         public USStock USStock { get; set; }
         public string b2brwdDomain { get; set; }
+        public string SearchUrl { get; set; } = USStockRelatedLinkSetting.GetUSStockSearchUrl();
     }
 
     public class USStock
@@ -110,6 +111,23 @@ namespace Feature.Wealth.Component.Models.USStock
                 public static readonly ID HotKeywordTag = new ID("{47E526C1-E041-4C90-82F5-713AD5ECA6B1}");
                 public static readonly ID HotProductTag = new ID("{134A1E87-CAEF-4470-B619-662DA3CA1416}");
                 public static readonly ID Discount = new ID("{AFEACB28-F841-47B6-8BA8-867988633D41}");
+            }
+        }
+
+        public readonly struct TagsType
+        {
+            public static readonly ID HotKeywordTag = new ID("{AEB37529-AD2E-4A15-B1B8-326EACB58954}");
+            public static readonly ID HotProductTag = new ID("{EB96F527-C17A-4462-9D13-4136D6EB9084}");
+            public static readonly ID Discount = new ID("{339563FD-22BC-441D-B171-472E6FB085CE}");
+        }
+
+        public readonly struct TagFolder
+        {
+            public static readonly ID Id = new ID("{E097EA37-5FD5-4CC3-BC85-D50FFA3FAD8B}");
+
+            public readonly struct Fields
+            {
+                public static readonly ID TagType = new ID("{B721EF77-056E-4D8F-836D-BCA0B59ABC11}");
             }
         }
     }

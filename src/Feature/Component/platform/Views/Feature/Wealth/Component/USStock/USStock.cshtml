@@ -52,7 +52,7 @@
                                             {
                                                 <div class="l-pickGroup__item">
                                                     <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox="" value="@tag">
-                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                        <input id="hotkeyword-@tag" class="o-btnCheckBox__input" type="checkbox" value="@tag">
                                                         <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
                                                     </label>
                                                 </div>
@@ -87,7 +87,7 @@
                                                     {
                                                         <div class="l-pickGroup__item">
                                                             <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox="" value="@tag">
-                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                                <input id="hotproduct-@tag" class="o-btnCheckBox__input" type="checkbox" value="@tag">
                                                                 <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
                                                             </label>
                                                         </div>
@@ -725,6 +725,17 @@
                     window.loading('hide');
                 }, 300);
             });
+
+            var urlParams = new URLSearchParams(window.location.search);
+            var hotkeyword = DOMPurify.sanitize(urlParams.get('HotKeyWord'));
+            var hotproduct = DOMPurify.sanitize(urlParams.get('HotProduct'));
+
+            if (hotkeyword) {
+                $("#hotkeyword-" + hotkeyword).trigger('click');
+            }
+            else if (hotproduct) {
+                $("#hotproduct-" + hotproduct).trigger('click');
+            }
         });
     })(jQuery, window, document);
 </script>

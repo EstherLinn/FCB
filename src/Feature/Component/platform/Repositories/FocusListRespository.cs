@@ -13,6 +13,7 @@ using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Feature.Wealth.Component.Models.ETF.Tag;
 using Feature.Wealth.Component.Models.FundDetail;
 using Template = Feature.Wealth.Component.Models.USStock.Template;
+using Sitecore.Data.Items;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -109,8 +110,23 @@ namespace Feature.Wealth.Component.Repositories
         }
         public List<ForeignStockListModel> SetTagsToForeignStock(List<ForeignStockListModel> baseList)
         {
-            var discountFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Children.Discount);
-            var discounts = ItemUtils.GetChildren(discountFolder, Template.USStockTag.Id);
+            var tagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Id);
+            var children = ItemUtils.GetChildren(tagFolder, Template.TagFolder.Id);
+            var discounts = new List<Item>();
+
+            if (children != null && children.Any())
+            {
+                foreach (var child in children)
+                {
+                    var tagsType = ItemUtils.GetFieldValue(child, Template.TagFolder.Fields.TagType);
+
+                    if (tagsType == "Discount")
+                    {
+                        discounts.AddRange(ItemUtils.GetChildren(child, Template.USStockTag.Id));
+                    }
+                }
+            }
+
             foreach (var item in baseList)
             {
                 foreach (var d in discounts)
@@ -123,6 +139,7 @@ namespace Feature.Wealth.Component.Repositories
                     }
                 }
             }
+
             return baseList;
         }
 
