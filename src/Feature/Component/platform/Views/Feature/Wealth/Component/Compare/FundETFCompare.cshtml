@@ -16,7 +16,7 @@
         </div>
         <div class="l-mainstage__content">
             <!-- 有基金或ETF待比較資料的畫面 Start -->
-            <div class="l-flex u-flex-col u-flex-gap-lg">
+            <div class="l-flex u-flex-col u-flex-gap-lg u-hidden">
                 <div class="l-flex__item">
                     <div class="l-flex u-flex-col u-flex-gap-min u-flex-gap-sm@mb-only" id="compare-item-container">
                         <!---->
@@ -43,6 +43,27 @@
                 </div>
             </div>
             <!-- 有基金或ETF待比較資料的畫面 End -->
+            <div class="c-compareIntro u-hidden">
+                <div class="c-compareIntro__content">
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                        </div>
+                        @* 點擊加入立即新增基金或ETF進行比較，也可從下方選擇熱門標的進行比較 *@
+                        <div class="c-empty__desc">@Html.Sitecore().Field(Templates.FundETFComparePage.Fields.EmptyDescription.ToString(), Model.DataSource)</div>
+                    </div>
+                </div>
+                <div class="c-compareIntro__action">
+                    <div class="l-action l-action--inline">
+                        <div class="l-action__item">
+                            <a href="@Model.FundListLinkUrl" class="o-btn o-btn--primary o-btn--sm">加入基金</a>
+                        </div>
+                        <div class="l-action__item">
+                            <a href="@Model.ETFListLinkUrl" class="o-btn o-btn--primary o-btn--sm">加入ETF</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -381,7 +402,7 @@
             <div class="l-flex l-flex--wrap u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
                     @*風險指標：資產管理公司經常用來作為<a href="#" class="o-link">基金風險綜合評比</a>的指標。*@
-                    @Html.Sitecore().Field(Template.FundETFComparePage.Fields.RiskIndicatorsDescription.ToString(), Model.Item)
+                    @Html.Sitecore().Field(Templates.FundETFComparePage.Fields.RiskIndicatorsDescription.ToString(), Model.DataSource)
                 </div>
                 <div class="l-flex__item u-right u-hidden@dt-only">
                     <div class="o-sortingbox">
@@ -722,6 +743,9 @@
     <a href="./detail.html" class="c-legend c-legend--link" style="--legend-color:#238C6C">
         <span class="c-legend__name"></span>
     </a>
+</template>
+<template id="tmplEmtpy">
+    @Html.Sitecore().Placeholder("tmpl")
 </template>
 
 <div id="popupAddIndex" class="c-modal c-modal--sm mfp-hide">
@@ -1321,7 +1345,7 @@
 
         // 依據API所回傳的資料，進行圖表下方 lengend 區塊的渲染
         function lengendTmpl(lables) {
-            const template = document.querySelector("#tmpl");
+            const template = document.querySelector('#tmpl');
             $('.l-compare__item:not([data-stock-add-control])').remove();
             lables.reverse().forEach(function (item, i) {
                 const cloneTmpl = template.content.cloneNode(true);
@@ -1349,6 +1373,25 @@
             // 最多10筆
             let stock = lables.filter(item => item.type == 'stock');
             $('[data-stock-add-control]').toggleClass('u-hidden', stock.length == 3);
+        }
+
+        function tmplEmtpy() {
+            
+            const template = document.querySelector('#tmplEmtpy');
+            const cloneTmpl = template.content.cloneNode(true);
+            let popular = cloneTmpl.querySelector('.c-block__content');
+            let navs = popular.querySelector('.c-tab__navs');
+            [...navs.children].forEach(function (el) {
+                if (!el.children[0].innerText) {
+                    el.classList.add('u-hidden');
+                }
+            });
+
+            let container = $('.l-wrap').first();
+            container.children().toggleClass('u-hidden', true).last().toggleClass('u-hidden', false);
+            container.prepend(popular);
+            $('.c-tab__panel .l-action', container).toggleClass('u-hidden', true);
+            $('[data-tab="true"]', container).addClass('c-tab--wide').tab();
         }
 
         function setLengendRate(points) {
@@ -2046,7 +2089,6 @@
 
         // 判斷上方比較 基金/ETF 列表區塊，若無資料則跳轉至 未加入標的比較頁
         function judgeCompareList() {
-            let emptyLinkUrl = '@Model.EmptyLinkUrl';
             if (fundParams.length === 0) {
                 $('#compare-empty').removeClass('u-hidden');
                 $('[data-chart="compare"]').addClass('u-hidden');
@@ -2057,6 +2099,13 @@
                 clearTable('thiryDaysNetValueTable');
                 clearTable('holdingStatusTable');
                 clearTable('baseDataTable');
+
+                $('.l-mainstage__content').children().first().toggleClass('u-hidden', true);
+                $('.l-mainstage__content').children().last().toggleClass('u-hidden', false);
+                tmplEmtpy();
+            } else {
+                $('.l-mainstage__content').children().first().toggleClass('u-hidden', false);
+                $('.l-mainstage__content').children().last().toggleClass('u-hidden', true);
             }
         }
 
@@ -2145,6 +2194,12 @@
             var sortingColumn = $(this).data('sorting-column');
             $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
             $sortingbox.trigger('change');
+        });
+
+        // 績效表現table 排序顯示切換
+        $('[data-table-tab]').on('click.table', function () {
+            $('[data-sortingbox-wrap]').addClass('u-hidden');
+            $(`[data-sortingbox-wrap="${$(this).attr('data-tab-target')}"]`).removeClass('u-hidden');
         });
 
         //#popupCompareMax
