@@ -47,16 +47,14 @@ namespace Feature.Wealth.Component.Controllers
 
             fundViewModel.Item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
+            fundViewModel = _fundRepository.GetDocLinks(fundid, fundViewModel, fundIndicator, _djMoneyApiRespository);
+
             if (fundIndicator == nameof(FundEnum.D))
             {
-                fundViewModel = _fundRepository.GetDocLinks(fundid, fundViewModel, fundIndicator, _djMoneyApiRespository);
-
                 return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailDomestic.cshtml", fundViewModel);
             }
             else
             {
-                fundViewModel = _fundRepository.GetDocLinks(fundid, fundViewModel, fundIndicator, _djMoneyApiRespository);
-
                 return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
             }
 
