@@ -204,16 +204,6 @@ namespace Feature.Wealth.Component.Repositories
                     bool onlinePurchaseAvailability = IsAvailability(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
 
-                    //if (tagList.ContainsKey(TagType.Discount))
-                    //{
-                    //    dest.DiscountTags = tagList[TagType.Discount].Where(i => i.ProductCodes.Any() && i.ProductCodes.Contains(src.ProductCode))
-                    //                                                .Select(i => i.TagKey).ToArray();
-                    //}
-                    //else
-                    //{
-                    //    dest.DiscountTags = [];
-                    //}
-
                     dest.Tags = new List<string>();
                     var tempTag = tagList.FindAll(i => i.FundTagType == FundTagEnum.DiscountTag)
                                          .Where(i => i.ProductCodes.Contains(src.ProductCode))
