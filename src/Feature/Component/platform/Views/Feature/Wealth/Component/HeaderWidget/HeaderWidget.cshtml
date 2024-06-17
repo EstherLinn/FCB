@@ -9,7 +9,7 @@
 <script>
     addObjectValue(SC_DATA, 'IsLoggedIn', @(isLogin ? "true" : "false"));
     addObjectValue(SC_DATA, 'IsGlobalStyle', @(isGlobalStyle ? "true" : "false"));
-    addObjectValue(SC_DATA, 'WebBankId', @(WebBankId));
+    addObjectValue(SC_DATA, 'WebBankId', "@WebBankId");
     addObjectValue(SC_DATA, 'ItemId', '@Sitecore.Context.Item.ID');
 </script>
 
