@@ -1208,7 +1208,7 @@
 
         function getParamsAndRedraw() {
             const obj = {
-                range: $('[data-compare-filter="dateRange"]:checked').val(),
+                range: $('[data-compare-filter="dateRange"]:checked').val() || 'custom',
                 startDate: $('[data-compare-filter="inputStart"]').val(),
                 endDate: $('[data-compare-filter="inputEnd"]').val(),
                 stock: new Array()
