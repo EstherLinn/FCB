@@ -137,6 +137,45 @@ namespace Feature.Wealth.Component.Repositories
             return result;
         }
 
+        public JObject GetDocLink2(string fundId, string idx)
+        {
+            JObject result = null;
+            try
+            {
+                var request = _route.
+                    AppendPathSegments("api", "fund", fundId, "funddoc").
+                    SetQueryParams(new
+                    {
+                        idx = idx,
+                    }).WithOAuthBearerToken(_token).
+                    AllowAnyHttpStatus().
+                    GetAsync().Result;
+
+                if (request.StatusCode < 300)
+                {
+                    var resp = request.GetStringAsync().Result;
+                    if (!string.IsNullOrEmpty(resp))
+                    {
+                        result = JObject.Parse(resp);
+                    }
+                }
+                else
+                {
+                    var error = request.GetStringAsync().Result;
+                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                }
+            }
+            catch (FlurlHttpException ex)
+            {
+                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Api.Info(ex.Message);
+            }
+            return result;
+        }
+
         public async Task<JObject> GetRuleText(string fundId, string type, string indicator)
         {
             JObject result = null;

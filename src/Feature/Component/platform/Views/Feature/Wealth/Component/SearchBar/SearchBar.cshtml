@@ -83,7 +83,7 @@
             if (!jQuery) {
                 return;
             }
-           
+
             // 搜尋全部，隱藏進階搜尋
             $('#SearchCategory').on('change', function (e) {
                 let option = $(this).find(":selected");
@@ -98,7 +98,7 @@
                 $('[data-hot-val]').each(function (i, item) {
                     $(item).toggleClass('u-hidden', $(item).data('hot-val') != option.text());
                 });
-                   
+
             }).trigger('change');
 
             // Get the input field
@@ -119,7 +119,7 @@
 
             function keywordSearch() {
                 let option = SC_DATA.KeywordSearch_Option;
-                redirect(option.data('advance-url') + '?keyword=' + input.value);
+                redirect(option.data('advance-url') + '?keyword=' + DOMPurify.sanitize(input.value));
             }
 
             function redirect(url) {
@@ -135,42 +135,42 @@
                     detailUrl: './fund/detail.html',
                     purchase: true
                 }
-                }, {
-                    value: 'GLOBAL X機器人與人工智慧ETF',
-                    data: {
-                        type: 'ETF',
-                        isLogin: JSON.parse('true'),
-                        isLike: false,
-                        detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=$etfweb$html$et011001.djhtm?xyz=1704969638740?|&openexternalbrowser=1&ETFID=BOT^~EF40',
-                        purchase: true
-                    }
-                }, {
-                    value: 'Alcoa美國鋁業公司',
-                    data: {
-                        type: '國外股票',
-                        isLogin: JSON.parse('true'),
-                        isLike: false,
-                        detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=https:$$wms.firstbank.com.tw$b2brwd$page$16005$basic$0001?sym=aa&symidxq=aa.us&symidbsr=aa.us&stsst=16005&bid=eg49&openExternalBrowser=1',
-                        purchase: true
-                    }
-                }, {
-                    value: '澳盛銀行集團可買回人民幣配息債券',
-                    data: {
-                        type: '國外債券',
-                        isLogin: JSON.parse('true'),
-                        isLike: false,
-                        purchase: true
-                    }
-                }, {
-                    value: '摩根士丹利12個月DRA不保本結構型商品',
-                    data: {
-                        type: '結構型商品',
-                        isLogin: JSON.parse('true'),
-                        isLike: null,
-                        detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=$w$custom$structproductlist.djhtm?openExternalBrowser=1',
-                        purchase: false
-                    }
-                }];
+            }, {
+                value: 'GLOBAL X機器人與人工智慧ETF',
+                data: {
+                    type: 'ETF',
+                    isLogin: JSON.parse('true'),
+                    isLike: false,
+                    detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=$etfweb$html$et011001.djhtm?xyz=1704969638740?|&openexternalbrowser=1&ETFID=BOT^~EF40',
+                    purchase: true
+                }
+            }, {
+                value: 'Alcoa美國鋁業公司',
+                data: {
+                    type: '國外股票',
+                    isLogin: JSON.parse('true'),
+                    isLike: false,
+                    detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=https:$$wms.firstbank.com.tw$b2brwd$page$16005$basic$0001?sym=aa&symidxq=aa.us&symidbsr=aa.us&stsst=16005&bid=eg49&openExternalBrowser=1',
+                    purchase: true
+                }
+            }, {
+                value: '澳盛銀行集團可買回人民幣配息債券',
+                data: {
+                    type: '國外債券',
+                    isLogin: JSON.parse('true'),
+                    isLike: false,
+                    purchase: true
+                }
+            }, {
+                value: '摩根士丹利12個月DRA不保本結構型商品',
+                data: {
+                    type: '結構型商品',
+                    isLogin: JSON.parse('true'),
+                    isLike: null,
+                    detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=$w$custom$structproductlist.djhtm?openExternalBrowser=1',
+                    purchase: false
+                }
+            }];
 
             // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
             $('#keyword').autocomplete({
@@ -237,13 +237,13 @@
                     // 申購按鈕
                     let $purchase = suggestion.data.purchase ? suggestion.data.isLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
                     return `<div class="c-itemKeyword">
-                    <a href="${detailUrl}" class="c-itemKeyword__content">
-                        <div class="c-itemKeyword__type">${suggestion.data.type}</div>
-                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                    </a>
-                    <div class="c-itemKeyword__collections">${$like}</div>
-                    ${$purchase}
-                </div>`;
+                        <a href="${detailUrl}" class="c-itemKeyword__content">
+                            <div class="c-itemKeyword__type">${suggestion.data.type}</div>
+                            <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                        </a>
+                        <div class="c-itemKeyword__collections">${$like}</div>
+                        ${$purchase}
+                    </div>`;
                 }
             });
         });
