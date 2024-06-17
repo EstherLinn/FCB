@@ -264,6 +264,7 @@ namespace Feature.Wealth.Component.Repositories
                 detailData.NewsDetailDate = result["v1"].ToString();
                 detailData.NewsTitle = result["v2"].ToString();
                 detailData.NewsContent = result["v3"].ToString();
+                detailData.NewsContentHtmlString = new HtmlString(detailData.NewsContent);
                 detailData.NewsRelatedProducts = result["v4"].ToString();
                 detailData.NewsType = result["v5"].ToString();
 
@@ -408,6 +409,7 @@ namespace Feature.Wealth.Component.Repositories
                 detailData.NewsDetailDate = _datas.NewsDetailDate;
                 detailData.NewsTitle = _datas.NewsTitle;
                 detailData.NewsContent = _datas.NewsContent;
+                detailData.NewsContentHtmlString = new HtmlString(detailData.NewsContent);
                 detailData.NewsType = _datas.NewsType;
                 detailData.PreviousPageId = _datas.PreviousPageId;
                 detailData.PreviousPageTitle = _datas.PreviousPageTitle;

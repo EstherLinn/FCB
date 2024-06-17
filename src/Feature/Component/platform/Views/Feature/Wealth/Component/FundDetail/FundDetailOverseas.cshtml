@@ -1657,17 +1657,24 @@
                 <div class="c-section__content">
                     <div class="l-linkBox">
 
-                        <div class="l-linkBox__item u-hidden" id="openDoc">
-                            <div class="c-box c-box--link u-shadow-animation">
-                                <a href="#" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>公開說明書</span></a>
+                        @if (!string.IsNullOrEmpty(Model.OpenDoc))
+                        {
+                            <div class="l-linkBox__item" id="openDoc">
+                                <div class="c-box c-box--link u-shadow-animation">
+                                    <a href="@Model.OpenDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>公開說明書</span></a>
+                                </div>
                             </div>
-                        </div>
+                        }
 
-                        <div class="l-linkBox__item u-hidden" id="monthReportDoc">
-                            <div class="c-box c-box--link u-shadow-animation">
-                                <a href="#" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>基金月報</span></a>
+                        @if (!string.IsNullOrEmpty(Model.MonthReportDoc))
+                        {
+                            <div class="l-linkBox__item" id="monthReportDoc">
+                                <div class="c-box c-box--link u-shadow-animation">
+                                    <a href="@Model.MonthReportDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>基金月報</span></a>
+                                </div>
                             </div>
-                        </div>
+                        }
+
                         @if (!string.IsNullOrEmpty(exposeUrl))
                         {
                             <div class="l-linkBox__item" id="fundRouteDoc">
@@ -1679,23 +1686,33 @@
                             </div>
                         }
 
-                        <div class="l-linkBox__item u-hidden" id="investExclusiveDoc">
-                            <div class="c-box c-box--link u-shadow-animation">
-                                <a href="#" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>投資人須知(專屬資訊)</span></a>
+                        @if (!string.IsNullOrEmpty(Model.InvestExclusiveDoc))
+                        {
+                            <div class="l-linkBox__item" id="investExclusiveDoc">
+                                <div class="c-box c-box--link u-shadow-animation">
+                                    <a href="@Model.InvestExclusiveDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>投資人須知(專屬資訊)</span></a>
+                                </div>
                             </div>
-                        </div>
+                        }
 
-                        <div class="l-linkBox__item u-hidden" id="investNomnalDoc">
-                            <div class="c-box c-box--link u-shadow-animation">
-                                <a href="#" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>投資人須知(一般資訊)</span></a>
+                        @if (!string.IsNullOrEmpty(Model.InvestNomnalDoc))
+                        {
+                            <div class="l-linkBox__item" id="investNomnalDoc">
+                                <div class="c-box c-box--link u-shadow-animation">
+                                    <a href="@Model.InvestNomnalDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>投資人須知(一般資訊)</span></a>
+                                </div>
                             </div>
-                        </div>
+                        }
 
-                        <div class="l-linkBox__item u-hidden" id="financialReportDoc">
-                            <div class="c-box c-box--link u-shadow-animation">
-                                <a href="#" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>財務報告書</span></a>
+                        @if (!string.IsNullOrEmpty(Model.FinancialReportDoc))
+                        {
+                            <div class="l-linkBox__item" id="financialReportDoc">
+                                <div class="c-box c-box--link u-shadow-animation">
+                                    <a href="@Model.FinancialReportDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>財務報告書</span></a>
+                                </div>
                             </div>
-                        </div>
+                        }
+
                         @if (!string.IsNullOrEmpty(closeFiveYearsUrl))
                         {
                             <div class="l-linkBox__item ">
@@ -2715,12 +2732,12 @@
                     });
                     for (let i = 0; i < yearData.length; i++) {
                         dividendTableHtml += `<tr>
-                                           <td>${emptyValueToDash(yearData[i].BaseDate)}</td>
-                                           <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
-                                           <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
-                                           <td>配息</td>
-                                           <td>${yearData[i].Dividend}</td>
-                                                 </tr>`
+                                                   <td>${emptyValueToDash(yearData[i].BaseDate)}</td>
+                                                   <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
+                                                   <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
+                                                   <td>配息</td>
+                                                   <td>${yearData[i].Dividend}</td>
+                                                         </tr>`
                     }
                     $('#dividendTable').html(dividendTableHtml);
 
@@ -2768,118 +2785,7 @@
                     $('.c-loading').loading('hide')
                 },
             });
-
-            //國內外基金-PDF
-            $.ajax({
-                url: `@FundDocLinkApiUrl`,
-                method: 'post',
-                data:
-                {
-                    fundId: fundId,
-                    idx: '1'
-                },
-                success: function (result) {
-                    if (result && result.resultSet.result[0].v1) {
-                        //公開說明書
-                        $('#openDoc').removeClass("u-hidden")
-                        $('#openDoc').find('a')[0].setAttribute("href", new URL(result.resultSet.result[0].v1));
-                    } else {
-                        $('#openDoc').addClass("u-hidden")
-                        $('#openDoc').find('a')[0].setAttribute("href", "");
-                    }
-                },
-                error: function (err) {
-                    console.log(err);
-                },
-            });
-            $.ajax({
-                url: `@FundDocLinkApiUrl`,
-                method: 'post',
-                data:
-                {
-                    fundId: fundId,
-                    idx: '2'
-                },
-                success: function (result) {
-                    if (result && result.resultSet.result[0].v1) {
-                        //財務報告書
-                        $('#financialReportDoc').removeClass("u-hidden")
-                        $('#financialReportDoc').find('a')[0].setAttribute("href", new URL(result.resultSet.result[0].v1));
-                    } else {
-                        $('#financialReportDoc').addClass("u-hidden")
-                        $('#financialReportDoc').find('a')[0].setAttribute("href", "");
-                    }
-                },
-                error: function (err) {
-                    console.log(err);
-                },
-            });
-            $.ajax({
-                url: `@FundDocLinkApiUrl`,
-                method: 'post',
-                data:
-                {
-                    fundId: fundId,
-                    idx: '5'
-                },
-                success: function (result) {
-                    if (result && result.resultSet.result[0].v1) {
-                        //基金月報
-                        $('#monthReportDoc').removeClass("u-hidden")
-                        $('#monthReportDoc').find('a')[0].setAttribute("href", new URL(result.resultSet.result[0].v1));
-                    } else {
-                        $('#monthReportDoc').addClass("u-hidden")
-                        $('#monthReportDoc').find('a')[0].setAttribute("href", "");
-                    }
-                },
-                error: function (err) {
-                    console.log(err);
-                },
-            });
-            $.ajax({
-                url: `@FundDocLinkApiUrl`,
-                method: 'post',
-                data:
-                {
-                    fundId: fundId,
-                    idx: '6'
-                },
-                success: function (result) {
-                    //投資人專屬
-                    if (result && result.resultSet.result[0].v1) {
-                        $('#investExclusiveDoc').removeClass("u-hidden")
-                        $('#investExclusiveDoc').find('a')[0].setAttribute("href", new URL(result.resultSet.result[0].v1));
-                    } else {
-                        $('#investExclusiveDoc').addClass("u-hidden")
-                        $('#investExclusiveDoc').find('a')[0].setAttribute("href", "");
-                    }
-                },
-                error: function (err) {
-                    console.log(err);
-                },
-            });
-            $.ajax({
-                url: `@FundDocLinkApiUrl`,
-                method: 'post',
-                data:
-                {
-                    fundId: fundId,
-                    idx: '7'
-                },
-                success: function (result) {
-                    //投資人一般
-                    if (result && result.resultSet.result[0].v1) {
-                        $('#investNomnalDoc').removeClass("u-hidden")
-                        $('#investNomnalDoc').find('a')[0].setAttribute("href", new URL(result.resultSet.result[0].v1));
-                    } else {
-                        $('#investNomnalDoc').addClass("u-hidden")
-                        $('#investNomnalDoc').find('a')[0].setAttribute("href", "");
-                    }
-                },
-                error: function (err) {
-                    console.log(err);
-                },
-            });
+            
 
             $.ajax({
                 url: `@FundRuleTextApiUrl`,
@@ -3726,7 +3632,8 @@
                         });
 
                         industryUpdateDate = industryData[0].Date;
-                    } else {
+                    }
+                    else {
                         $('label[data-industry]').remove();
                     }
 
@@ -3740,13 +3647,16 @@
                             };
                         });
                         areaUpdateDate = areaData[0].Date;
-                    } else {
+                    }
+                    else {
                         $('label[data-area]').remove();
                     }
+
                     if ($('[name="so1"]').length) {
                         $('[name="so1"]').first().prop('checked', true);
                         $('[name="so1"]').first().trigger('change');
-                    } else {
+                    }
+                    else {
                         $('[data-chart="so1"]').addClass('u-hidden')
                     }
                 } catch (error) {
@@ -3991,36 +3901,36 @@
                                     },
                                     plotOptions: {
                                         scatter: {
-                                           marker: {
-                                        symbol: 'circle',
-                                        radius: 6,
-                                        //lineWidth: 4,
-                                        //lineColor: '#A4844E',
-                                        states: {
-                                            hover: {
-                                                enabled: true,
-                                                fillColor: '#F58220',
-                                                lineWidth: 4,
-                                                radius: 10
-                                            }
+                                            marker: {
+                                                symbol: 'circle',
+                                                radius: 6,
+                                                //lineWidth: 4,
+                                                //lineColor: '#A4844E',
+                                                states: {
+                                                    hover: {
+                                                        enabled: true,
+                                                        fillColor: '#F58220',
+                                                        lineWidth: 4,
+                                                        radius: 10
+                                                    }
                                                 }
                                             },
-                                         states: {
-                                        hover: {
-                                            enabled: true,
-                                            halo: {
-                                                attributes: {
-                                                    fill: '#F58220'
+                                            states: {
+                                                hover: {
+                                                    enabled: true,
+                                                    halo: {
+                                                        attributes: {
+                                                            fill: '#F58220'
+                                                        },
+                                                        opacity: 0.2,
+                                                        size: 14
+                                                    }
                                                 },
-                                                opacity: 0.2,
-                                                size: 14
+                                                inactive: {
+                                                    enabled: false
+                                                }
                                             }
                                         },
-                                        inactive: {
-                                            enabled: false
-                                        }
-                                    }
-                                },
                                         series: {
                                             events: {
                                                 legendItemClick: function () {
@@ -4155,49 +4065,49 @@
                                 if (i === 0 || i === 6) {
                                     let hiddenHeadClass = i === 6 ? "u-hidden@lt" : "";
                                     tbHtml += `<div class="l-flex__item">
-                                                        <div class="l-table">
-                                                            <table class="c-table u-center">
-                                                                <colgroup>
-                                                                    <col style="width: 33.33%;">
-                                                                    <col style="width: 33.33%;">
-                                                                    <col style="width: 33.33%;">
-                                                                </colgroup>
-                                                                <thead class="${hiddenHeadClass}">
-                                                                    <tr>
-                                                                        <th>
-                                                                            <div class="c-table__title">
-                                                                                <span>規模日期</span>
-                                                                            </div>
-                                                                        </th>
-                                                                        <th>
-                                                                            <div class="c-table__title">
-                                                                                <span>規模(百萬)</span>
-                                                                            </div>
-                                                                        </th>
-                                                                        <th>
-                                                                            <div class="c-table__title">
-                                                                                <span>幣別</span>
-                                                                            </div>
-                                                                        </th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>`;
+                                                                <div class="l-table">
+                                                                    <table class="c-table u-center">
+                                                                        <colgroup>
+                                                                            <col style="width: 33.33%;">
+                                                                            <col style="width: 33.33%;">
+                                                                            <col style="width: 33.33%;">
+                                                                        </colgroup>
+                                                                        <thead class="${hiddenHeadClass}">
+                                                                            <tr>
+                                                                                <th>
+                                                                                    <div class="c-table__title">
+                                                                                        <span>規模日期</span>
+                                                                                    </div>
+                                                                                </th>
+                                                                                <th>
+                                                                                    <div class="c-table__title">
+                                                                                        <span>規模(百萬)</span>
+                                                                                    </div>
+                                                                                </th>
+                                                                                <th>
+                                                                                    <div class="c-table__title">
+                                                                                        <span>幣別</span>
+                                                                                    </div>
+                                                                                </th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>`;
                                 }
                                 tbHtml += ` <tr>
-                                                          <td>
-                                                               ${rangeData[i].ScaleDate}
-                                                                        </td>
-                                                                        <td>
-                                                                         ${numberComma(Math.round(rangeData[i].Scale, 3))}
-                                                                        </td>
-                                                                        <td>
-                                                                             ${rangeData[i].Currency}
-                                                                        </td>
-                                                                    </tr>`;
+                                                                  <td>
+                                                                       ${rangeData[i].ScaleDate}
+                                                                                </td>
+                                                                                <td>
+                                                                                 ${numberComma(Math.round(rangeData[i].Scale, 3))}
+                                                                                </td>
+                                                                                <td>
+                                                                                     ${rangeData[i].Currency}
+                                                                                </td>
+                                                                            </tr>`;
                                 if (i === 5 || i === rangeData - 1) {
                                     tbHtml += `   </tbody>
-                                                            </table>
-                                                        </div> </div>`;
+                                                                    </table>
+                                                                </div> </div>`;
                                 }
 
 

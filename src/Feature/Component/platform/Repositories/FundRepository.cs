@@ -1,5 +1,7 @@
 ﻿using Feature.Wealth.Component.Models.FundDetail;
+using Feature.Wealth.Component.Models.GlobalIndex;
 using Foundation.Wealth.Manager;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +16,16 @@ namespace Feature.Wealth.Component.Repositories
 
         public FundViewModel GetOrSetFundDetailsCache(string fundId, string indicator)
         {
-          var FundDic = (Dictionary<string, FundViewModel>)_cache.Get(FundDetailsCacheKey) ?? new Dictionary<string, FundViewModel>();
+            var FundDic = (Dictionary<string, FundViewModel>)_cache.Get(FundDetailsCacheKey) ?? new Dictionary<string, FundViewModel>();
             FundViewModel FundFullData = null;
             if (!FundDic.Any())
             {
-                FundDic.Add(fundId,CreateFundDetailsData(fundId, indicator));
+                FundDic.Add(fundId, CreateFundDetailsData(fundId, indicator));
                 _cache.Set(FundDetailsCacheKey, FundDic, DateTimeOffset.Now.AddMinutes(60));
             }
             else
             {
-                if (FundDic.TryGetValue(fundId,out FundFullData))
+                if (FundDic.TryGetValue(fundId, out FundFullData))
                 {
                     return FundFullData;
                 }
@@ -87,7 +89,7 @@ namespace Feature.Wealth.Component.Repositories
             var dic = new Dictionary<FundTagEnum, List<string>>() {
                 {FundTagEnum.DiscountTag, new List<string>() },
                 {FundTagEnum.SortTag, new List<string>() }
-            };         
+            };
             var data = tagsRepository.GetFundTagData();
             if (data != null)
             {
@@ -102,7 +104,7 @@ namespace Feature.Wealth.Component.Repositories
                         dic[item.FundTagType].Add(item.TagName);
                     }
                 }
-               
+
             }
             return dic;
         }
@@ -127,7 +129,7 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public OverseasFundBase GetOverseasFundBasic(string fundId)
         {
-            OverseasFundBase overseasFundBase = null; 
+            OverseasFundBase overseasFundBase = null;
             var para = new { fundId = fundId };
             overseasFundBase = DbManager.Custom.Execute<OverseasFundBase>("sp_OverseasFundBasicData", para, commandType: System.Data.CommandType.StoredProcedure);
             return overseasFundBase;
@@ -169,7 +171,7 @@ namespace Feature.Wealth.Component.Repositories
         public List<FundThiryDays> GetThrityDaysNetValue(string fundId)
         {
             List<FundThiryDays> fundThiryDays = new List<FundThiryDays>();
-           
+
             var para = new { fundid = fundId };
             fundThiryDays = DbManager.Custom.ExecuteIList<FundThiryDays>("sp_CountFundNavForThirtyDays", para, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
             return fundThiryDays;
@@ -231,7 +233,7 @@ namespace Feature.Wealth.Component.Repositories
                                   ,[DataDate]
                               FROM [Sysjust_Return_Fund] where [FirstBankCode] = @fundid";
             var para = new { fundid = fundId };
-            fundAccumulationRateOfReturn = DbManager.Custom.Execute<FundAccumulationRateOfReturn>(sql, para,System.Data.CommandType.Text);
+            fundAccumulationRateOfReturn = DbManager.Custom.Execute<FundAccumulationRateOfReturn>(sql, para, System.Data.CommandType.Text);
             return fundAccumulationRateOfReturn;
         }
 
@@ -325,11 +327,11 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="fundId"></param>
         /// <returns></returns>
-        public  List<FundStockHolding> GetTopTenHoldingFund(string fundId , string domesticOroverseas)
+        public List<FundStockHolding> GetTopTenHoldingFund(string fundId, string domesticOroverseas)
         {
             string tableName = domesticOroverseas == nameof(FundEnum.D) ? "[Sysjust_Holding_Fund_5]" : "[Sysjust_Holding_Fund_4]";
 
-            List <FundStockHolding> fundStockHolding = new List<FundStockHolding>();
+            List<FundStockHolding> fundStockHolding = new List<FundStockHolding>();
             string sql = $@"SELECT TOP (10)
                                     Format([Date],'yyyy/MM/dd') Date
                                     ,[StockName] FundName
@@ -406,7 +408,7 @@ namespace Feature.Wealth.Component.Repositories
         /// <param name="fundId"></param>
         /// <param name="select"></param>
         /// <returns></returns>
-        public List<FundRiskGraph> GetRiskindicatorsGraph(string fundId,string selectType)
+        public List<FundRiskGraph> GetRiskindicatorsGraph(string fundId, string selectType)
         {
 
             List<FundRiskGraph> fundRiskGraphs = new List<FundRiskGraph>();
@@ -420,12 +422,12 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="fundId"></param>
         /// <returns></returns>
-        public FundReturnCompare GetRateOfReturnCompare(string fundId,string domesticOroverseas)
+        public FundReturnCompare GetRateOfReturnCompare(string fundId, string domesticOroverseas)
         {
             string domestic = domesticOroverseas == nameof(FundEnum.D) ? "_Domestic" : string.Empty;
             FundReturnCompare fundReturnCompare = null;
-            var para = new { fundid = fundId};
-            fundReturnCompare = DbManager.Custom.Execute<FundReturnCompare>("sp_FundReturnCompare"+ domestic, para, System.Data.CommandType.StoredProcedure);
+            var para = new { fundid = fundId };
+            fundReturnCompare = DbManager.Custom.Execute<FundReturnCompare>("sp_FundReturnCompare" + domestic, para, System.Data.CommandType.StoredProcedure);
             return fundReturnCompare;
         }
 
@@ -506,7 +508,101 @@ namespace Feature.Wealth.Component.Repositories
             return fundScaleMove;
         }
 
+        public FundViewModel GetDocLinks(string fundid, FundViewModel fundViewModel, string fundIndicator, DjMoneyApiRespository djMoneyApiRespository)
+        {
+            //嘗試撈取暫存
+            string sqlSelect = @"SELECT * FROM FundDetailTemp WITH (NOLOCK) WHERE FundID = @FundID";
 
+            var fundDetailTemp = DbManager.Custom.Execute<FundDetailTemp>(sqlSelect, new { FundID = fundid }, System.Data.CommandType.Text);
+
+            var temp = new FundViewModel();
+            var updateDateTime = DateTime.Now;
+
+            if (fundDetailTemp != null && DateTime.Now.Subtract(fundDetailTemp.DataDate).TotalMinutes < 30)
+            {
+                temp = JsonConvert.DeserializeObject<FundViewModel>(fundDetailTemp.Data);
+
+                fundViewModel.OpenDoc = temp.OpenDoc;
+                fundViewModel.FinancialReportDoc = temp.FinancialReportDoc;
+                fundViewModel.EasyOpenDoc = temp.EasyOpenDoc;
+                fundViewModel.MonthReportDoc = temp.MonthReportDoc;
+                fundViewModel.InvestExclusiveDoc = temp.InvestExclusiveDoc;
+                fundViewModel.InvestNomnalDoc = temp.InvestNomnalDoc;
+
+                updateDateTime = fundDetailTemp.DataDate;
+            }
+            else
+            {
+                if (fundIndicator == nameof(FundEnum.D))
+                {
+                    fundViewModel.OpenDoc = GetDocLink(djMoneyApiRespository, fundid, "1");
+                    fundViewModel.FinancialReportDoc = GetDocLink(djMoneyApiRespository, fundid, "2");
+                    fundViewModel.EasyOpenDoc = GetDocLink(djMoneyApiRespository, fundid, "4");
+                    fundViewModel.MonthReportDoc = GetDocLink(djMoneyApiRespository, fundid, "5");
+                }
+                else
+                {
+                    fundViewModel.OpenDoc = GetDocLink(djMoneyApiRespository, fundid, "1");
+                    fundViewModel.FinancialReportDoc = GetDocLink(djMoneyApiRespository, fundid, "2");
+                    fundViewModel.MonthReportDoc = GetDocLink(djMoneyApiRespository, fundid, "5");
+                    fundViewModel.InvestExclusiveDoc = GetDocLink(djMoneyApiRespository, fundid, "6");
+                    fundViewModel.InvestNomnalDoc = GetDocLink(djMoneyApiRespository, fundid, "7");
+                }
+
+                temp.OpenDoc = fundViewModel.OpenDoc;
+                temp.FinancialReportDoc = fundViewModel.FinancialReportDoc;
+                temp.EasyOpenDoc = fundViewModel.EasyOpenDoc;
+                temp.MonthReportDoc = fundViewModel.MonthReportDoc;
+                temp.InvestExclusiveDoc = fundViewModel.InvestExclusiveDoc;
+                temp.InvestNomnalDoc = fundViewModel.InvestNomnalDoc;
+            }
+
+            //寫入DB暫存
+            if (fundDetailTemp == null)
+            {
+                // 新增紀錄
+                string sqlInsert = @"INSERT INTO [FundDetailTemp]
+                                     ([FundID]
+                                     ,[Data]
+                                     ,[DataDate])
+                                     VALUES
+                                     (@FundID
+                                     ,@Data
+                                     ,@DataDate)"
+                ;
+
+                DbManager.Custom.ExecuteNonQuery(sqlInsert, new { FundID = fundid, Data = JsonConvert.SerializeObject(temp), DataDate = updateDateTime }, commandType: System.Data.CommandType.Text);
+            }
+            else
+            {
+                // 更新紀錄
+                string sqlUpdate = @"UPDATE [FundDetailTemp]
+                                     SET [Data] = @Data,
+                                     [DataDate] = @DataDate
+                                     WHERE [FundID] = @FundID";
+
+                DbManager.Custom.ExecuteNonQuery(sqlUpdate, new { FundID = fundid, Data = JsonConvert.SerializeObject(temp), DataDate = updateDateTime }, commandType: System.Data.CommandType.Text);
+            }
+
+            return fundViewModel;
+        }
+
+        public string GetDocLink(DjMoneyApiRespository djMoneyApiRespository, string fundId, string idx)
+        {
+            var resp = djMoneyApiRespository.GetDocLink2(fundId.ToUpper(), idx);
+
+            if (resp != null
+                && resp.ContainsKey("resultSet")
+                && resp["resultSet"] != null
+                && resp["resultSet"]["result"] != null
+                && resp["resultSet"]["result"].Any()
+                && resp["resultSet"]["result"][0]["v1"] != null)
+            {
+                return resp["resultSet"]["result"][0]["v1"].ToString();
+            }
+
+            return string.Empty;
+        }
     }
 
 }

@@ -24,29 +24,39 @@ namespace Feature.Wealth.Component.Controllers
             _fundRepository = new FundRepository();
             _djMoneyApiRespository = new DjMoneyApiRespository();
         }
+
         public ActionResult FundDetail()
         {
             var fundViewModel = new FundViewModel();
 
-            var getfundid = Sitecore.Web.WebUtil.GetSafeQueryString("id");
-            if (string.IsNullOrEmpty(getfundid))
+            var fundid = Sitecore.Web.WebUtil.GetSafeQueryString("id");
+
+            if (string.IsNullOrEmpty(fundid))
             {
                 return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
             }
-            getfundid = getfundid.ToUpper();
-            var fundIndicator = _fundRepository.GetDometicOrOverseas(getfundid);
-            fundViewModel = _fundRepository.GetOrSetFundDetailsCache(getfundid, fundIndicator);
+
+            fundid = fundid.ToUpper();
+            var fundIndicator = _fundRepository.GetDometicOrOverseas(fundid);
+            fundViewModel = _fundRepository.GetOrSetFundDetailsCache(fundid, fundIndicator);
+
             if (fundViewModel.FundBaseData == null)
             {
                 return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
             }
+
             fundViewModel.Item = RenderingContext.CurrentOrNull?.Rendering.Item;
+
             if (fundIndicator == nameof(FundEnum.D))
             {
+                fundViewModel = _fundRepository.GetDocLinks(fundid, fundViewModel, fundIndicator, _djMoneyApiRespository);
+
                 return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailDomestic.cshtml", fundViewModel);
             }
             else
             {
+                fundViewModel = _fundRepository.GetDocLinks(fundid, fundViewModel, fundIndicator, _djMoneyApiRespository);
+
                 return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
             }
 
@@ -69,7 +79,7 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult GetFundRiskGraph(string fundId, string selectType)
         {
             selectType = string.IsNullOrEmpty(selectType) ? "Type" : selectType;
-            var resp = new FundRiskGraphRespModel() {Body = Enumerable.Empty<FundRiskGraph>() };
+            var resp = new FundRiskGraphRespModel() { Body = Enumerable.Empty<FundRiskGraph>() };
             resp.Body = _fundRepository.GetRiskindicatorsGraph(fundId.ToUpper(), selectType);
 
             resp.StatusCode = HttpStatusCode.OK;
@@ -84,7 +94,7 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> GetSameLevelFund(string fundId)
         {
-            
+
             var resp = await _djMoneyApiRespository.GetSameLevelFund(fundId.ToUpper());
             return new JsonNetResult(resp);
 
