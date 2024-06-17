@@ -1897,7 +1897,7 @@
                                         d.dateOfEstablishment = d.EstablishmentDate || '-';
                                         d.type = d.FundTypeName || '-';
                                         d.scale = d.ScaleRecord ? (formatNumberWithCommas(d.ScaleRecord.Scale/100) + ' ' + d.ScaleRecord.Currency) : '-';
-                                        d.publisher = d.OverseasFundIssuerName || '-';
+                                        d.publisher = d.OverseasFundIssuerName || d.FundCompanyName || '-'; 
                                         d.registration = d.RegistrationLocation || '-';
                                         d.depository = d.CustodianInstitution || '-';
                                         d.subscriptionHandlingFee = d.SubscriptionFee || '-';
