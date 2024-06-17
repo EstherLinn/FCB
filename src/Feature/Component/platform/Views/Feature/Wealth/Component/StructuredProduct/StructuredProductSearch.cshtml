@@ -2,6 +2,11 @@
 @using Foundation.Wealth.Helper
 @model Feature.Wealth.Component.Models.StructuredProduct.StructuredProductSearchViewModel
 
+@if (Model == null)
+{
+    return;
+}
+
 <div class="l-mainstage">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
@@ -101,97 +106,109 @@
                             </div>
                         </div>
                         <!-- 小網收合區域[data-filter-hide="mobile"] -->
-                        <div class="c-filter__mbHide" data-filter-hide="mobile">
-                            <div class="c-filter__head">
-                                進階篩選
-                            </div>
-                            <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
-                            <a href="#" class="c-filter__close" data-filter-collapse></a>
-                            <div class="c-filter__wrap c-filter__wrap--divider">
-                                <div class="c-filter__group">
-                                    <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-max@mb-only">
-                                        <div class="l-flex__item">
-                                            <!-- 條件群組[data-filter-group] -->
-                                            <div class="c-filterForm" data-filter-group>
-                                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
-                                                <div class="c-filterForm__title" data-filter-title>
-                                                    <span>熱門關鍵字</span>
-                                                </div>
-                                                <div class="c-filterForm__value">
-                                                    <div class="l-pickGroup" id="KeywordTags">
+                        @if (Model.KeywordOptions.Any() || Model.TopicOptions.Any())
+                        {
+                            <div class="c-filter__mbHide" data-filter-hide="mobile">
+                                <div class="c-filter__head">
+                                    進階篩選
+                                </div>
+                                <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                <a href="#" class="c-filter__close" data-filter-collapse></a>
+                                <div class="c-filter__wrap c-filter__wrap--divider">
+                                    <div class="c-filter__group">
+                                        <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-max@mb-only">
 
-                                                        @foreach (var item in Model.KeywordOptions)
-                                                        {
-                                                            <div class="l-pickGroup__item">
-                                                                <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                                <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                                <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagName">
-                                                                    <div class="o-btnCheckBox__text" data-filter-value="@item.TagName"></div>
-                                                                </label>
+                                            @if (Model.KeywordOptions.Any())
+                                            {
+                                                <div class="l-flex__item">
+                                                    <!-- 條件群組[data-filter-group] -->
+                                                    <div class="c-filterForm" data-filter-group>
+                                                        <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                                        <div class="c-filterForm__title" data-filter-title>
+                                                            <span>熱門關鍵字</span>
+                                                        </div>
+                                                        <div class="c-filterForm__value">
+                                                            <div class="l-pickGroup" id="KeywordTags">
+
+                                                                @foreach (var item in Model.KeywordOptions)
+                                                                {
+                                                                    <div class="l-pickGroup__item">
+                                                                        <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                                        <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                                        <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagName">
+                                                                            <div class="o-btnCheckBox__text" data-filter-value="@item.TagName"></div>
+                                                                        </label>
+                                                                    </div>
+                                                                }
+
                                                             </div>
-                                                        }
-
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="l-flex__item">
-                                            <!-- 條件群組[data-filter-group] -->
-                                            <div class="c-filterForm" data-filter-group>
-                                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
-                                                <div class="c-filterForm__title" data-filter-title>
-                                                    <span>熱門主題</span>
-                                                </div>
-                                                <div class="c-filterForm__value">
-                                                    <div class="l-pickGroup" id="TopicTags">
+                                            }
 
-                                                        @foreach (var item in Model.TopicOptions)
-                                                        {
-                                                            <div class="l-pickGroup__item">
-                                                                <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                                <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                                <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagName">
-                                                                    <div class="o-btnCheckBox__text" data-filter-value="@item.TagName"></div>
-                                                                </label>
+                                            @if (Model.TopicOptions.Any())
+                                            {
+                                                <div class="l-flex__item">
+                                                    <!-- 條件群組[data-filter-group] -->
+                                                    <div class="c-filterForm" data-filter-group>
+                                                        <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                                        <div class="c-filterForm__title" data-filter-title>
+                                                            <span>熱門主題</span>
+                                                        </div>
+                                                        <div class="c-filterForm__value">
+                                                            <div class="l-pickGroup" id="TopicTags">
+
+                                                                @foreach (var item in Model.TopicOptions)
+                                                                {
+                                                                    <div class="l-pickGroup__item">
+                                                                        <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                                        <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                                        <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
+                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@item.TagName">
+                                                                            <div class="o-btnCheckBox__text" data-filter-value="@item.TagName"></div>
+                                                                        </label>
+                                                                    </div>
+                                                                }
+
                                                             </div>
-                                                        }
-
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            }
+
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
-                            <div class="c-filter__total" data-filter-collapse>
-                                <div class="o-total o-total--wt">
-                                    搜尋<span id="uid-total">0</span>筆
+                                <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                <div class="c-filter__total" data-filter-collapse>
+                                    <div class="o-total o-total--wt">
+                                        搜尋<span id="uid-total">0</span>筆
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="c-filter__action u-hidden@dt-only u-hidden@lt-only">
-                            <div class="c-filter__expand">
-                                <div>
-                                    <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
-                                    <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
-                                        展開進階篩選
-                                        <img src="~/themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
-                                    </a>
+                            <div class="c-filter__action u-hidden@dt-only u-hidden@lt-only">
+                                <div class="c-filter__expand">
+                                    <div>
+                                        <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                        <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
+                                            展開進階篩選
+                                            <img src="~/themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="c-filter__collapse">
+                                    <div>
+                                        <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
+                                        <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
+                                            收合進階篩選
+                                            <img src="~/themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="c-filter__collapse">
-                                <div>
-                                    <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
-                                    <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
-                                        收合進階篩選
-                                        <img src="~/themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
                 <div class="l-filter__picked">
@@ -346,7 +363,7 @@
                     <ul class="l-tag">
                         <% for (var i = 0; i < DiscountTags.length; i++) { %>
                         <li class="l-tag__item">
-                            <a href="#" class="o-tag"><%= DiscountTags[i] %></a>
+                            <span class="o-tag"><%= DiscountTags[i] %></span>
                         </li>
                         <% } %>
                     </ul>
@@ -491,70 +508,67 @@
                 return;
             }
 
-            let hashStringProcessed = false;
-
             let modelData = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
 
             // 詳細頁頁面節點Url
             let DetailPageItemUrl = JSON.parse(JSON.stringify(modelData.DetailPageItemUrl));
 
-            // 資料源Id
-            let datasourceId = JSON.parse(JSON.stringify(modelData.DatasourceId));
-          
-                // 商品列表
+            // 商品列表
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "StructuredProduct", "GetStructuredProducts")',
                 type: 'POST',
-                data: { datasourceIdStr: datasourceId },
                 success: function (data) {
                     console.log(data);
 
-                    $.each(data, function (index, item) {
-                        // 新增 ProductDisplayName 欄位
-                        item.ProductDisplayName = item.ProductCode + " " + item.ProductName;
+                    if (data != null && data.length != 0) {
+                        $.each(data, function (index, item) {
+                            // 新增 ProductDisplayName 欄位
+                            item.ProductDisplayName = item.ProductCode + " " + item.ProductName;
 
-                        // 新增 ProductDetailUrl 欄位
-                        item.ProductDetailUrl = DetailPageItemUrl + "?id=" + item.ProductCode;
+                            // 新增 ProductDetailUrl 欄位
+                            item.ProductDetailUrl = DetailPageItemUrl + "?id=" + item.ProductCode;
 
-                        // 新增 value 欄位
-                        item.value = item.ProductCode + " " + item.ProductName;
+                            // 新增 value 欄位
+                            item.value = item.ProductCode + " " + item.ProductName;
 
-                        resetProp(item);
-                        item.CurrencyHtml = currencyLink(item);
+                            resetProp(item);
+                            item.CurrencyHtml = currencyLink(item);
 
-                        for (var d in item) {
-                            let value = item[d];
+                            for (var d in item) {
+                                let value = item[d];
 
-                            if ((value == null || value == undefined || value == '')
-                                && d.includes('_DisplayText')) {
-                                item[d] = '-';
+                                if ((value == null || value == undefined || value == '')
+                                    && d.includes('_DisplayText')) {
+                                    item[d] = '-';
+                                }
                             }
+                        });
+
+                        var template = document.getElementById('uid-template').innerHTML;
+                        var container = document.getElementById('uid-fjs');
+
+                        for (var i = 0; i < data.length; i++) {
+                            var filledTemplate = template.replace(/<%= ProductDisplayName %>/g, data[i].ProductDisplayName).replace(/<%= ProductDetailUrl %>/g, data[i].ProductDetailUrl).replace(/<%= IssuingInstitution %>/g, data[i].IssuingInstitution).replace(/<%= CurrencyName %>/g, data[i].CurrencyName).replace(/<%= ProductMaturityDate %>/g, data[i].ProductMaturityDate).replace(/<%= BankSellPrice %>/g, data[i].BankSellPrice).replace(/<%= PriceBaseDate %>/g, data[i].PriceBaseDate);
+
+                            container.innerHTML += DOMPurify.sanitize(filledTemplate);
                         }
-                    });
 
-                    var template = document.getElementById('uid-template').innerHTML;
-                    var container = document.getElementById('uid-fjs');
+                        initFilter(data);
+                        initAutocomplete(data);
 
-                    for (var i = 0; i < data.length; i++) {
-                        var filledTemplate = template.replace(/<%= ProductDisplayName %>/g, data[i].ProductDisplayName).replace(/<%= ProductDetailUrl %>/g, data[i].ProductDetailUrl).replace(/<%= IssuingInstitution %>/g, data[i].IssuingInstitution).replace(/<%= CurrencyName %>/g, data[i].CurrencyName).replace(/<%= ProductMaturityDate %>/g, data[i].ProductMaturityDate).replace(/<%= BankSellPrice %>/g, data[i].BankSellPrice).replace(/<%= PriceBaseDate %>/g, data[i].PriceBaseDate);
+                        var urlParams = new URLSearchParams(window.location.search);
+                        var hotkeyword = DOMPurify.sanitize(urlParams.get('HotKeyword'));
+                        var hotproduct = DOMPurify.sanitize(urlParams.get('HotProduct'));
 
-                        container.innerHTML += DOMPurify.sanitize(filledTemplate);
+                        if (hotproduct) {
+                            $("input[value='" + hotproduct + "']").trigger('click');
+                        } else if (hotkeyword) {
+                            $("input[value='" + hotkeyword + "']").trigger('click');
+                        }
                     }
-
-                    initFilter(data);
-                    initAutocomplete(data);
-
-                    if (!hashStringProcessed) {
-                        hashStringProcessed = true;
-
-                        var hash = window.location.hash;
-                        var hashStringHotTopic = hash ? decodeURIComponent(hash.split('=')[1]) : null;
-
-                        if (hashStringHotTopic != null && hashStringHotTopic != "") {
-                            $("input[value='" + hashStringHotTopic + "']").trigger('click');
-                        }
-
-                        window.location.hash = '';
+                    else {
+                        $("[data-filter-empty=true]").show();
+                        $("[data-filter-empty=false]").hide();
                     }
                 }
             });

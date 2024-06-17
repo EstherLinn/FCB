@@ -529,7 +529,7 @@
                                         @foreach (var tag in Model.StructuredProduct.DiscountTags)
                                         {
                                             <li class="l-tag__item">
-                                                <a href="#" class="o-tag">@tag</a>
+                                                <span class="o-tag">@tag</span>
                                             </li>
                                         }
                                     </ul>
@@ -766,81 +766,100 @@
             </section>
             <section class="c-section">
                 <div class="c-section__title">近30日參考贖回價</div>
-                <div class="c-section__content" id="thirtyDayContent">
-
-                    @if (Model.ThirtyDayBankSellPriceWithChange.Any())
+                <div class="c-section__content">
+                    @if (Model.ThirtyDayBankSellPriceWithChange != null && Model.ThirtyDayBankSellPriceWithChange.Any())
                     {
+                        // 定義資料總數量、索引、分组大小、每行限制
+                        int count = Model.ThirtyDayBankSellPriceWithChange.Count;
+                        int index = 0, groupSize = 10, rowLimit = 5;
+
                         <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{"spaceBetween":20, "autoplay": false, "navigation":{ "enabled":true }, "breakpoints": {"1200": { "navigation":{ "enabled":false }}}}'>
-                            <div class="swiper-wrapper c-swiper__wrapper" id="thirtydaytable">
-                                @{
-                                    int dayCount = 1;
-                                    int ten = 10;
-                                    int five = 5;
-                                    foreach (var item in Model.ThirtyDayBankSellPriceWithChange)
-                                    {
-                                        string diffClass;
-                                        decimal bankSellPriceChange;
-
-                                        if (decimal.TryParse(item.BankSellPriceChange, out bankSellPriceChange))
-                                        {
-                                            diffClass = bankSellPriceChange > 0 ? "o-rise" : "o-fall";
-                                        }
-                                        else
-                                        {
-                                            diffClass = "";
-                                        }
-
-                                        if (dayCount % ten == 1)
-                                        {
-                                            @Html.Raw("<div class='swiper-slide c-swiper__slide>'")
-                                            <!-- 左右表格 -->
-                                            @Html.Raw("<div class='l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only' data-merge-table>")
-                                        }
-                                        if (dayCount == 1 || dayCount % five == 1)
-                                        {
-                                            var hiddenHeaderClass = string.Empty;
-                                            if (dayCount % ten == 6)
+                            <div class="swiper-wrapper c-swiper__wrapper">
+                                @for (int i = 0; i < count; i += groupSize)
+                                {
+                                    <div class="swiper-slide c-swiper__slide">
+                                        <!-- 左右表格 -->
+                                        <div class="l-flex u-flex-gap-col-max@dt-only u-flex-col@lt u-flex-top@dt-only" data-merge-table>
+                                            @for (int y = 0; y < groupSize && index < count; y += rowLimit)
                                             {
-                                                hiddenHeaderClass = "u-hidden@lt";
+                                                string hidden = string.Empty;
+
+                                                if (index != 0 && (index + 1) % groupSize != 0)
+                                                {
+                                                    hidden = "u-hidden@lt";
+                                                }
+                                                <div class="l-flex__item">
+                                                    <div class="l-table">
+                                                        <table class="c-table u-center">
+                                                            <colgroup>
+                                                                <col style="width: 33.3%;">
+                                                                <col style="width: 33.3%;">
+                                                                <col style="width: 33.3%;">
+                                                            </colgroup>
+                                                            <thead class="@hidden">
+                                                                <tr>
+                                                                    <th>
+                                                                        <div class="c-table__title">
+                                                                            <span>日期</span>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <div class="c-table__title">
+                                                                            <span>參考贖回價</span>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>
+                                                                        <div class="c-table__title">
+                                                                            <span>漲跌</span>
+                                                                        </div>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @for (int z = 0; z < rowLimit; ++z)
+                                                                {
+                                                                    index = i + y + z;
+                                                                    if (index >= count)
+                                                                    {
+                                                                        break;
+                                                                    }
+
+                                                                    var item = Model.ThirtyDayBankSellPriceWithChange[index];
+
+                                                                    string diffClass;
+                                                                    decimal bankSellPriceChange;
+
+                                                                    if (decimal.TryParse(item.BankSellPriceChange, out bankSellPriceChange))
+                                                                    {
+                                                                        diffClass = bankSellPriceChange > 0 ? "o-rise" : "o-fall";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        diffClass = "";
+                                                                    }
+
+                                                                    <tr>
+                                                                        <td>
+                                                                            @item.PriceBaseDate
+                                                                        </td>
+                                                                        <td>
+                                                                            @item.BankSellPriceValue
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="@diffClass">
+                                                                                @item.BankSellPriceChange
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             }
-
-                                            @Html.Raw("<div class='l-flex__item'>")
-                                            @Html.Raw("<div class='l-table'>")
-                                            @Html.Raw("<table class='c-table u-center'>")
-                                            @Html.Raw("<colgroup><col style = 'width: 33%;' ><col style ='width: 33%;'><col style = 'width: 33%;' ></colgroup>")
-                                            @Html.Raw(string.Format("<thead class='{0}'><tr><th><div class='c-table__title'><span>日期</span></div></th>", hiddenHeaderClass))
-                                            @Html.Raw("<th><div class='c-table__title'><span>參考贖回價</span></div></th>")
-                                            @Html.Raw("<th><div class='c-table__title'><span>漲跌</span></div></th>")
-                                            @Html.Raw("</tr></thead><tbody>")
-                                        }
-                                        <tr>
-                                            <td>
-                                                @item.PriceBaseDate
-                                            </td>
-                                            <td>
-                                                @item.BankSellPriceValue
-                                            </td>
-                                            <td>
-                                                <span class="@diffClass">
-                                                    @item.BankSellPriceChange
-                                                </span>
-                                            </td>
-                                        </tr>
-
-                                        if (dayCount % five == 0)
-                                        {
-                                            @Html.Raw("</tbody></table></div></div>")
-                                        }
-
-                                        if (dayCount == Model.ThirtyDayBankSellPriceWithChange.Count() || dayCount % 10 == 0)
-                                        {
-                                            @Html.Raw(" </div> </div>");
-                                        }
-
-                                        dayCount++;
-                                    }
+                                        </div>
+                                    </div>
                                 }
-
                             </div>
                             <div class="swiper-button-next c-swiper__next"></div>
                             <div class="swiper-button-prev c-swiper__prev"></div>
@@ -903,7 +922,7 @@
                     @foreach (string topic in Model.StructuredProduct.TopicTags)
                     {
                         <li class="l-divideList__item l-divideList__item--auto">
-                            <a href="@Model.StructuredProductSearchUrl#hotTopic=@topic" class="o-hashTag u-nowrap">#@topic</a>
+                            <a href="@Model.StructuredProductSearchUrl?HotProduct=@topic" class="o-hashTag u-nowrap">#@topic</a>
                         </li>
                     }
                 </ul>
