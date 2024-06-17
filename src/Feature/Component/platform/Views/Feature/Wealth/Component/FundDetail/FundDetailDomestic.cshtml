@@ -1705,7 +1705,7 @@
                         <div class="l-flex__item">
                             <div class="o-capsulebox">
                                 <label class="o-capsulebox__item" data-holdingStock>
-                                    <input type="radio" name="so1" value="holdingStock" checked class="o-capsulebox__input">
+                                    <input type="radio" name="so1" value="holdingStock" class="o-capsulebox__input">
                                     <span class="o-capsulebox__text">持有類股</span>
                                 </label>
                                 <label class="o-capsulebox__item" data-industry>
@@ -1730,7 +1730,7 @@
                                     <div id="soChart"></div>
                                 </div>
                             </div>
-                            <div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="so1">2023/09/13</span></div>
+                            <div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="so1">-</span></div>
                         </div>
                     </div>
                 </div>
@@ -3670,8 +3670,12 @@
                     }else{
                             $('label[data-area]').remove();
                     }
-
-                    $('[name="so1"]:checked').trigger('change');
+                    if ($('[name="so1"]').length) {
+                        $('[name="so1"]').first().prop('checked', true);
+                        $('[name="so1"]').first().trigger('change');
+                    } else {
+                        $('[data-chart="so1"]').addClass('u-hidden')
+                    }
                 } catch (error) {
                     console.error('Error:', error);
                 }
