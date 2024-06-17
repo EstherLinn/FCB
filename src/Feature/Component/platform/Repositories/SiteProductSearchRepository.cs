@@ -269,7 +269,7 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private IEnumerable<TagWithProducts> GetStructuredDiscountTags()
         {
-            Item categoryItem = ItemUtils.GetContentItem(StructProductDiscountTagFolder.Id);
+            Item categoryItem = ItemUtils.GetContentItem(StructuredProductTagsFolder.Children.Discount);
             var tags = ItemUtils.GetDescendants(categoryItem, StructProductTag.Id);
 
             foreach (Item tagItem in tags)

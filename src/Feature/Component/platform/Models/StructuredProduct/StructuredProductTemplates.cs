@@ -57,10 +57,30 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
     }
 
     /// <summary>
-    /// 優惠標籤設定資料夾
+    /// Tag設定資料夾
     /// </summary>
-    internal struct StructProductDiscountTagFolder
+    internal struct StructuredProductTagsFolder
     {
-        internal static readonly ID Id = new ID("{91CDBF90-3166-45A4-9563-5259F2AFD68A}");
+        internal static readonly ID Id = new ID("{16656AA5-E7C3-4318-8B31-BD9DC101DA79}");
+
+        internal readonly struct Children
+        {
+            internal static readonly ID StructKeywordTags = new ID("{97311E27-FBAD-4F7D-90A6-6569061F2C1F}");
+            internal static readonly ID StructTopicTags = new ID("{0877DCD6-D2CB-4D97-9B21-AF3B125D9321}");
+            internal static readonly ID Discount = new ID("{91CDBF90-3166-45A4-9563-5259F2AFD68A}");
+        }
+    }
+
+    /// <summary>
+    /// TagsFolderTemplate有標籤種類選擇
+    /// </summary>
+    internal struct TagFolder
+    {
+        internal static readonly ID Id = new ID("{3CC8594B-0F22-403F-ACEE-4C49CCAD2E12}");
+
+        internal struct Fields
+        {
+            internal static readonly ID TagType = new ID("{87942369-8853-4005-AAE7-8E58C80AE7B2}");
+        }
     }
 }

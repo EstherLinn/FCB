@@ -60,5 +60,6 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
     {
         public string TagName { get; set; }
         public IList<string> ProductCodeList { get; set; }
+        public StructuredProductTagEnum TagType { get; set; }
     }
 }
