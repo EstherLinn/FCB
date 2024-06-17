@@ -111,14 +111,13 @@ namespace Feature.Wealth.Account.Repositories
             return success;
         }
 
-        public bool BindWebBank(PlatFormEunm platForm, string platFormId, string webBankId)
+        public bool BindWebBank(PlatFormEunm platForm, string platFormId, string id)
         {
             bool success = false;
             try
             {
-                string strSql = $"UPDATE [FCB_Member] Set WebBankId=@WebBankId,UpdateTime=@Time WHERE [PlatForm]=@PlatForm and PlatFormId = @id";
-
-                var para = new { WebBankId = webBankId, Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), PlatForm = platForm.ToString(), id = platFormId };
+                string strSql = $"UPDATE [FCB_Member] Set WebBankId=(Select PROMOTION_CODE From CFMBSEL WHERE CUST_ID = @WebBankId),UpdateTime=@Time WHERE [PlatForm]=@PlatForm and PlatFormId = @platFormId";
+                var para = new { WebBankId = id, Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), PlatForm = platForm.ToString(), platFormId = platFormId };
                 var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
             }

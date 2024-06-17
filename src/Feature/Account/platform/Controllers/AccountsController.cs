@@ -188,7 +188,7 @@ namespace Feature.Wealth.Account.Controllers
                                 else
                                 {
                                     step = "Step4 第三方登入綁定網銀 error";
-                                    Session["WebBankErrorMsg"] = "綁定網銀有誤，請聯絡資訊部";
+                                    Session["WebBankErrorMsg"] = "您好，您的會員資料目前正更新中，請於明日重新登入，再使用綁定網銀，造成不便，敬請見諒!";
                                 }
                             }
                             else
