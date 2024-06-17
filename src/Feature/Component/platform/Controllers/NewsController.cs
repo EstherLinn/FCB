@@ -19,7 +19,7 @@ namespace Feature.Wealth.Component.Controllers
         private readonly string MarketNewsDetailCacheKey = $"Fcb_MarketNewsDetailCache_NewsId=";
         private readonly string HeadlineNewsCacheKey = $"Fcb_HeadlineNewsCache";
 
-        private readonly DateTimeOffset CacheTime = DateTimeOffset.Now.AddMinutes(1);
+        private readonly DateTimeOffset CacheTime = DateTimeOffset.Now.AddMinutes(60);
 
         public ActionResult NewsDetails()
         {
