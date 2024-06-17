@@ -10,7 +10,6 @@
     {
         isOauthLogin = false;
     }
-    var showOauthClass = isOauthLogin && string.IsNullOrEmpty(member.WebBankId);
     var memberSettingUrl = MemberRelatedLinkHelper.GetMemberSettingUrl();
     var memberReserveUrl = MemberRelatedLinkHelper.GetReserveConsultingUrl();
     var WebKycLink = Settings.GetSetting("WebKYC");
@@ -20,9 +19,9 @@
 <div class="l-mainstage l-mainstage--member">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__content">
-            <div class="l-member @(showOauthClass ? "l-member--nodata" : string.Empty)">
+            <div class="l-member @(isOauthLogin && string.IsNullOrEmpty(member.WebBankId) ? "l-member--nodata" : string.Empty)">
                 <div class="l-member__content">
-                    <div class="c-member @(showOauthClass ? "c-member--nodata" : string.Empty)">
+                    <div class="c-member @(isOauthLogin && string.IsNullOrEmpty(member.WebBankId)  ? "c-member--nodata" : string.Empty)">
                         <div class="c-member__head">
                             <div class="c-member__name">Hi @member.MemberName</div>
                             <div class="c-member__set">
@@ -33,7 +32,7 @@
                             </div>
                         </div>
                         <div class="c-member__content">
-                            @if (showOauthClass)
+                            @if (isOauthLogin && string.IsNullOrEmpty(member.WebBankId))
                             {
                                 <div class="l-flex u-flex-gap-min u-flex-left">
                                     <div class="l-flex__item l-flex__item--auto">
