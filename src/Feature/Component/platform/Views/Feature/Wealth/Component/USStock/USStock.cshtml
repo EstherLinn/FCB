@@ -36,7 +36,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if (Model.HotKeywordTags != null)
+                        @if (Model.HotKeywordTags != null && Model.HotKeywordTags.Count > 0)
                         {
                             <div class="c-filter__keyword">
                                 <!-- 條件群組[data-filter-group] -->
@@ -63,7 +63,7 @@
                                 </div>
                             </div>
                         }
-                        @if (Model.HotProductTags != null)
+                        @if (Model.HotProductTags != null && Model.HotProductTags.Count > 0)
                         {
                             <!-- 小網收合區域[data-filter-hide="mobile"] -->
                             <div class="c-filter__mbHide" data-filter-hide="mobile">
