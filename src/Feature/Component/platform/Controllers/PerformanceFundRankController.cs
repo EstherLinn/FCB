@@ -101,7 +101,7 @@ namespace Feature.Wealth.Component.Controllers
                 DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
             };
 
-            return View("/Views/Feature/Wealth/Component/PerformanceFundRank/PerformanceFundReturn.cshtml", model);
+            return View("/Views/Feature/Wealth/Component/PerformanceFundRank/PerformanceFundRankReturn.cshtml", model);
         }
 
 

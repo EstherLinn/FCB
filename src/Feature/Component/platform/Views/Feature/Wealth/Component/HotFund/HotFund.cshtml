@@ -245,6 +245,14 @@
             var selectedId = @(new HtmlString(Json.Encode(Model.SelectedId)));
             var currentData = [];
 
+            // 為了 DOMPurify.sanitize 正常運作加上 <table><tbody></tbody></table>
+            function DOMPurifyData(data) {
+                data = '<table><tbody>' + data + '</tbody></table>';
+                data = DOMPurify.sanitize(data);
+                data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');
+                return data;
+            }
+
             function ReturnView(selectedId, orderby, desc) {
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "HotFund", "GetSortedHotFund")',
@@ -252,7 +260,7 @@
                     data: { selectedId: selectedId, orderby: orderby, desc: desc },
                     success: function (data) {
                         $('#result').empty();
-                        document.getElementById('result').innerHTML = data;
+                        document.getElementById('result').innerHTML = DOMPurifyData(data);
                         Removefall();
                         $('[data-popup]').magnificPopup();
                         $('[eh-compare]').trigger('exec');
