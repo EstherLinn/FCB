@@ -46,7 +46,25 @@ namespace Feature.Wealth.Component.Models.News
             }
             InternalLinkField internalLinkField = item.Fields[Templates.NewsList.Fields.NewsDetailsRootPage];
             var path = internalLinkField?.Path ?? string.Empty;
-            var items = Sitecore.Context.Database.SelectItems($"{path}//*[@@templateid='{Templates.NewsDetails.Id}']") ?? [];
+            string sitecorePath = "";
+            if (path.Contains("-"))
+            {
+                string[] pathParts = path.Split('/');
+
+                for (int i = 0; i < pathParts.Length; i++)
+                {
+                    if (pathParts[i].Contains("-"))
+                    {
+                        sitecorePath += "#" + pathParts[i] + "#";
+                    }
+                    else
+                        sitecorePath += pathParts[i];
+
+                    if (i < pathParts.Length - 1)
+                        sitecorePath += "/";
+                }
+            }
+            var items = Sitecore.Context.Database.SelectItems($"{sitecorePath}//*[@@templateid='{Templates.NewsDetails.Id}']") ?? [];
             this.Datasource = item;
             this.Count = items.Length;
             this.NewsItems = GetNewsDetails(items);
