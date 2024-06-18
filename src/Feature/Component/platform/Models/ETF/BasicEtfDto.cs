@@ -136,6 +136,11 @@ namespace Feature.Wealth.Component.Models.ETF
         public string ExchangeID { get; set; }
 
         /// <summary>
+        /// 參考指數 ID
+        /// </summary>
+        public string ReferenceIndexID { get; set; }
+
+        /// <summary>
         /// 註冊地
         /// </summary>
         public string RegisteredLocation { get; set; }
