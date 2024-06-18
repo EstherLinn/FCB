@@ -32,6 +32,36 @@ namespace Feature.Wealth.Component.Models.TabCards
         public bool IsBlackFont3 => ItemUtils.IsChecked(Datasource, _TabCard.Fields.IsBlackFont3);
         public string Description3 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Description3);
 
+        public string Title4 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Title4);
+        public string ImageUrl4 { get; set; }
+        public string BannerLink4 { get; set; }
+        public bool IsBlackFont4 => ItemUtils.IsChecked(Datasource, _TabCard.Fields.IsBlackFont4);
+        public string Description4 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Description4);
+
+        public string Title5 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Title5);
+        public string ImageUrl5 { get; set; }
+        public string BannerLink5 { get; set; }
+        public bool IsBlackFont5 => ItemUtils.IsChecked(Datasource, _TabCard.Fields.IsBlackFont5);
+        public string Description5 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Description5);
+
+        public string Title6 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Title6);
+        public string ImageUrl6 { get; set; }
+        public string BannerLink6 { get; set; }
+        public bool IsBlackFont6 => ItemUtils.IsChecked(Datasource, _TabCard.Fields.IsBlackFont6);
+        public string Description6 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Description6);
+
+        public string Title7 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Title7);
+        public string ImageUrl7 { get; set; }
+        public string BannerLink7 { get; set; }
+        public bool IsBlackFont7 => ItemUtils.IsChecked(Datasource, _TabCard.Fields.IsBlackFont7);
+        public string Description7 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Description7);
+
+        public string Title8 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Title8);
+        public string ImageUrl8 { get; set; }
+        public string BannerLink8 { get; set; }
+        public bool IsBlackFont8 => ItemUtils.IsChecked(Datasource, _TabCard.Fields.IsBlackFont8);
+        public string Description8 => ItemUtils.GetFieldValue(Datasource, _TabCard.Fields.Description8);
+
         public IList<string> FundIDList { get; set; }
         public IList<FundCardBasicDTO> FundCardsInfos { get; set; }
         public IList<NavDTO> FundCardsNavs { get; set; }
@@ -54,10 +84,21 @@ namespace Feature.Wealth.Component.Models.TabCards
             this.ImageUrl1 = ItemUtils.ImageUrl(item, _TabCard.Fields.Banner1);
             this.ImageUrl2 = ItemUtils.ImageUrl(item, _TabCard.Fields.Banner2);
             this.ImageUrl3 = ItemUtils.ImageUrl(item, _TabCard.Fields.Banner3);
+            this.ImageUrl4 = ItemUtils.ImageUrl(item, _TabCard.Fields.Banner4);
+            this.ImageUrl5 = ItemUtils.ImageUrl(item, _TabCard.Fields.Banner5);
+            this.ImageUrl6 = ItemUtils.ImageUrl(item, _TabCard.Fields.Banner6);
+            this.ImageUrl7 = ItemUtils.ImageUrl(item, _TabCard.Fields.Banner7);
+            this.ImageUrl8 = ItemUtils.ImageUrl(item, _TabCard.Fields.Banner8);
 
             this.BannerLink1 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink1)?.Url;
             this.BannerLink2 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink2)?.Url;
             this.BannerLink3 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink3)?.Url;
+            this.BannerLink4 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink4)?.Url;
+            this.BannerLink5 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink5)?.Url;
+            this.BannerLink6 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink6)?.Url;
+            this.BannerLink7 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink7)?.Url;
+            this.BannerLink8 = ItemUtils.GeneralLink(item, _TabCard.Fields.BannerLink8)?.Url;
+
 
             this.FundIDList = ItemUtils.GetMultiLineText(item, _TabCard.Fields.FundIDList)?.Take(3).ToList() ?? new List<string>();
             this.FundIDListHtmlString = new HtmlString(JsonConvert.SerializeObject(this.FundIDList));
