@@ -1,6 +1,7 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using Sitecore.Xml.Xsl;
 using System.Collections.Generic;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -74,10 +75,12 @@ namespace Feature.Wealth.Component.Models.News
         {
             foreach (Item item in items)
             {
+                var link = ItemUtils.GeneralLink(item, Templates.NewsDetails.Fields.Link);
                 yield return new Data
                 {
                     PageTitle = item.GetFieldValue(Templates.NewsDetails.Fields.PageTitle),
-                    Url = ItemUtils.GeneralLink(item, Templates.NewsDetails.Fields.Link)?.Url ?? item.Url(),
+                    Target = link?.Target,
+                    Url = string.IsNullOrEmpty(link?.Url) ? item.Url() : link.Url,
                     Date = ((DateField)item?.Fields[Templates.NewsDetails.Fields.Date])?.GetLocalDateFieldValue()?.ToString(DateFormat)
                 };
             }
@@ -87,6 +90,7 @@ namespace Feature.Wealth.Component.Models.News
     public class Data
     {
         public string PageTitle { get; set; }
+        public string Target { get; set; }
         public string Url { get; set; }
         public string Date { get; set; }
     }
