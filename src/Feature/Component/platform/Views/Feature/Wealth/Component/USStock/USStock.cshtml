@@ -739,10 +739,14 @@
                 
             }
             else if (hotkeyword) {
-                $("#hotkeyword-" + hotkeyword).trigger('click');
+                setTimeout(() => {
+                    $("#hotkeyword-" + hotkeyword).trigger('click');
+                }, 300);          
             }
             else if (hotproduct) {
-                $("#hotproduct-" + hotproduct).trigger('click');
+                setTimeout(() => {
+                    $("#hotproduct-" + hotproduct).trigger('click');
+                }, 300);              
             }
         });
     })(jQuery, window, document);
