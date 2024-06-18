@@ -64,7 +64,91 @@
 					</a>
 				</div>
 			}
+            @if (!string.IsNullOrEmpty(Model.BannerLink4) || !string.IsNullOrEmpty(Model.ImageUrl4) || !string.IsNullOrEmpty(Model.Title4) || !string.IsNullOrEmpty(Model.Description4))
+            {
+                <div class="swiper-slide c-swiper__slide">
+                    <a href="@Model.BannerLink4" class="c-banner c-banner--trend c-banner--zoom">
 
+                        <img src="@Model.ImageUrl4" class="c-banner__img" loading="lazy" alt="">
+
+                        @{
+                            var fontcolor4 = Model.IsBlackFont4 == true ? null : "c-banner__content--wt";
+                        }
+                        <div class="c-banner__content @fontcolor4">
+                            <h3 class="c-banner__title">@Model.Title4 </h3>
+                            <p class="c-banner__slogan">@Model.Description4</p>
+                        </div>
+                    </a>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.BannerLink5) || !string.IsNullOrEmpty(Model.ImageUrl5) || !string.IsNullOrEmpty(Model.Title5) || !string.IsNullOrEmpty(Model.Description5))
+            {
+                <div class="swiper-slide c-swiper__slide">
+                    <a href="@Model.BannerLink5" class="c-banner c-banner--trend c-banner--zoom">
+
+                        <img src="@Model.ImageUrl5" class="c-banner__img" loading="lazy" alt="">
+
+                        @{
+                            var fontcolor5 = Model.IsBlackFont5 == true ? null : "c-banner__content--wt";
+                        }
+                        <div class="c-banner__content @fontcolor5">
+                            <h3 class="c-banner__title">@Model.Title5 </h3>
+                            <p class="c-banner__slogan">@Model.Description5</p>
+                        </div>
+                    </a>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.BannerLink6) || !string.IsNullOrEmpty(Model.ImageUrl6) || !string.IsNullOrEmpty(Model.Title6) || !string.IsNullOrEmpty(Model.Description6))
+            {
+                <div class="swiper-slide c-swiper__slide">
+                    <a href="@Model.BannerLink6" class="c-banner c-banner--trend c-banner--zoom">
+
+                        <img src="@Model.ImageUrl6" class="c-banner__img" loading="lazy" alt="">
+
+                        @{
+                            var fontcolor6 = Model.IsBlackFont6 == true ? null : "c-banner__content--wt";
+                        }
+                        <div class="c-banner__content @fontcolor6">
+                            <h3 class="c-banner__title">@Model.Title6 </h3>
+                            <p class="c-banner__slogan">@Model.Description6</p>
+                        </div>
+                    </a>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.BannerLink7) || !string.IsNullOrEmpty(Model.ImageUrl7) || !string.IsNullOrEmpty(Model.Title7) || !string.IsNullOrEmpty(Model.Description7))
+            {
+                <div class="swiper-slide c-swiper__slide">
+                    <a href="@Model.BannerLink7" class="c-banner c-banner--trend c-banner--zoom">
+
+                        <img src="@Model.ImageUrl7" class="c-banner__img" loading="lazy" alt="">
+
+                        @{
+                            var fontcolor7 = Model.IsBlackFont7 == true ? null : "c-banner__content--wt";
+                        }
+                        <div class="c-banner__content @fontcolor7">
+                            <h3 class="c-banner__title">@Model.Title7 </h3>
+                            <p class="c-banner__slogan">@Model.Description7</p>
+                        </div>
+                    </a>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.BannerLink8) || !string.IsNullOrEmpty(Model.ImageUrl8) || !string.IsNullOrEmpty(Model.Title8) || !string.IsNullOrEmpty(Model.Description8))
+            {
+                <div class="swiper-slide c-swiper__slide">
+                    <a href="@Model.BannerLink8" class="c-banner c-banner--trend c-banner--zoom">
+
+                        <img src="@Model.ImageUrl8" class="c-banner__img" loading="lazy" alt="">
+
+                        @{
+                            var fontcolor8 = Model.IsBlackFont8 == true ? null : "c-banner__content--wt";
+                        }
+                        <div class="c-banner__content @fontcolor8">
+                            <h3 class="c-banner__title">@Model.Title8 </h3>
+                            <p class="c-banner__slogan">@Model.Description8</p>
+                        </div>
+                    </a>
+                </div>
+            }
 		</div>
 		<div class="swiper-button-next c-swiper__next"></div>
 		<div class="swiper-button-prev c-swiper__prev"></div>
