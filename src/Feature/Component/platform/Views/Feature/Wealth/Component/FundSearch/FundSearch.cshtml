@@ -1747,6 +1747,24 @@
             }, 300);
         }
 
+        function QueryStringSearch() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var hotkeyword = DOMPurify.sanitize(urlParams.get('HotKeyWord'));
+            var hotproduct = DOMPurify.sanitize(urlParams.get('HotProduct'));
+            var keyword = DOMPurify.sanitize(urlParams.get('keyword'));
+
+            if (hotkeyword) {
+                $("#hotkeyword-" + hotkeyword).trigger('click');
+            }
+            else if (hotproduct) {
+                $("#hotproduct-" + hotproduct).trigger('click');
+            }
+            else if (keyword) {
+                $('[data-keyword-input]').val(keyword);
+                $("[data-keyword-submit]").trigger('click');
+            }
+        }
+
         function initBind() {
             // 拉霸
             $('[data-slider-bar="size"]').sliderBar({
@@ -1944,6 +1962,7 @@
                 url: '@ClientRoute.GenerateUrl(this, "FundSearch", "GetAllFunds")',
                 type: 'POST'
             }).done(function (data, textStatus, jqXHR) {
+                QueryStringSearch();
                 initFilter(data);
                 initAutocomplete(data);
 
@@ -2226,18 +2245,6 @@
                     }
                 }
             });
-
-            var urlParams = new URLSearchParams(window.location.search);
-            var hotkeyword = DOMPurify.sanitize(urlParams.get('HotKeyWord'));
-            var hotproduct = DOMPurify.sanitize(urlParams.get('HotProduct'));
-
-            if (hotkeyword) {
-                $("#hotkeyword-" + hotkeyword).trigger('click');
-            }
-            else if (hotproduct) {
-                $("#hotproduct-" + hotproduct).trigger('click');
-            }
-
         });
     })(jQuery, window, document);
 </script>
