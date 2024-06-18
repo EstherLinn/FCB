@@ -539,7 +539,7 @@ namespace Feature.Wealth.Component.Repositories
         #endregion
 
         /// <summary>
-        /// 轉換CacheTime格式
+        /// 取得Cache過期時間
         /// </summary>
         /// <param name="CacheTime">Cache 時間字串</param>
         /// <returns>Cache過期時間</returns>
