@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.News;
 using Feature.Wealth.Component.Repositories;
+using Sitecore.Configuration;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
@@ -18,8 +19,7 @@ namespace Feature.Wealth.Component.Controllers
         private readonly string MarketNewsCacheKey = $"Fcb_MarketNewsCache";
         private readonly string MarketNewsDetailCacheKey = $"Fcb_MarketNewsDetailCache_NewsId=";
         private readonly string HeadlineNewsCacheKey = $"Fcb_HeadlineNewsCache";
-
-        private readonly DateTimeOffset CacheTime = DateTimeOffset.Now.AddMinutes(60);
+        private readonly string cacheTime = Settings.GetSetting("NewsCacheTime");
 
         public ActionResult NewsDetails()
         {
@@ -46,8 +46,8 @@ namespace Feature.Wealth.Component.Controllers
                 // 取得 MarketNews 資料庫資料
                 _datas = (List<MarketNewsModel>)_newsRespository.GetMarketNewsDbData();
 
-                // 儲存 MarketNewsCache 一小時
-                _cache.Set(MarketNewsCacheKey, _datas, CacheTime);
+                // 儲存 MarketNewsCache
+                _cache.Set(MarketNewsCacheKey, _datas, _newsRespository.GetCacheExpireTime(cacheTime));
             }
 
             // 整理 MarketNews 資料庫資料
@@ -76,8 +76,8 @@ namespace Feature.Wealth.Component.Controllers
                 // 整理 MarketNewsDetail 資料
                 datas = _newsRespository.OrganizeMarketNewsDetailDbData(dbData);
 
-                // 儲存 MarketNewsDetailCache 一小時
-                _cache.Set(MarketNewsDetailCacheKey + newsId, datas, CacheTime);
+                // 儲存 MarketNewsDetailCache
+                _cache.Set(MarketNewsDetailCacheKey + newsId, datas, _newsRespository.GetCacheExpireTime(cacheTime));
             }
 
             return View("/Views/Feature/Wealth/Component/News/MarketNewsDetail.cshtml", datas);
@@ -98,8 +98,8 @@ namespace Feature.Wealth.Component.Controllers
                 // 整理 HeadlineNews 資料庫資料
                 datas = _newsRespository.OrganizeHeadlineNewsDbData(_datas);
 
-                // 儲存 HeadlineNewsCache 一小時
-                _cache.Set(HeadlineNewsCacheKey, datas, CacheTime);
+                // 儲存 HeadlineNewsCache
+                _cache.Set(HeadlineNewsCacheKey, datas, _newsRespository.GetCacheExpireTime(cacheTime));
             }
 
             // 取得 HeadlineNews 瀏覽人次
