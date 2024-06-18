@@ -1,7 +1,9 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using FixedWidthParserWriter;
 using FluentFTP.Helpers;
+using Foundation.Wealth.Manager;
 using Renci.SshNet;
 using Renci.SshNet.Sftp;
 using Sitecore.Configuration;
@@ -9,6 +11,7 @@ using Sitecore.Data.Items;
 using Sitecore.IO;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -18,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using static Sitecore.ContentSearch.Linq.Extensions.ReflectionExtensions;
 using static System.Net.WebRequestMethods;
 using File = System.IO.File;
 
@@ -51,6 +55,11 @@ namespace Feature.Wealth.ScheduleAgent.Services
         private string BackUpDirectory { get; } = Settings.GetSetting("BackUpDirectory");
         private string WorkingDirectory { get; }
 
+        /// <summary>
+        /// 檢查檔案在不在，還是檔案名稱有沒有一樣
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public bool ExtractFile(string fileName)
         {
 
@@ -125,7 +134,11 @@ namespace Feature.Wealth.ScheduleAgent.Services
             return false;
         }
 
-
+        /// <summary>
+        /// 檢查檔案在不在，還是檔案名稱有沒有一樣，檔案名稱有含日期的
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public bool ExtractFileContainsDate(string fileName)
         {
 
@@ -235,7 +248,12 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
         }
 
-
+        /// <summary>
+        /// TXT 檔案解析，分隔符號解析
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<T>> ParseCsv<T>(string fileName)
         {
             var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
@@ -251,6 +269,12 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
         }
 
+        /// <summary>
+        /// TXT 檔案解析含日期的
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<T>> ParseCsvContainsDate<T>(string fileName)
         {
             var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
@@ -269,6 +293,12 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
         }
 
+        /// <summary>
+        /// TXT 檔案解析，固定長度
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<T>> ParseFixedLength<T>(string filePath) where T : class, new()
         {
             filePath = Path.ChangeExtension(filePath, "txt");
@@ -283,6 +313,12 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
         }
 
+        /// <summary>
+        /// CSV 檔案解析
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<T>> ParseCsvNotTXT<T>(string fileName)
         {
             var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
@@ -340,6 +376,10 @@ namespace Feature.Wealth.ScheduleAgent.Services
            
         }
 
+        /// <summary>
+        /// 完成資料插入後，檔案改名加_done，包含日期的
+        /// </summary>
+        /// <param name="filename"></param>
         public void FinishJobContainsDate(string filename)
         {
             string[] files = Directory.GetFiles(this.LocalDirectory)
