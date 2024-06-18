@@ -55,7 +55,7 @@
                                     foreach (var item in newsType)
                                     {
                                         <li class="l-divideList__item l-divideList__item--auto">
-                                            <a href="@Model.MarketNewsDetailData.NewsListUrl#newsType=@item" class="o-hashTag u-nowrap">#@item</a>
+                                            <a href="@Model.MarketNewsDetailData.NewsListUrl?newsType=@item" class="o-hashTag u-nowrap">#@item</a>
                                         </li>
                                     }
                                 }
@@ -67,7 +67,7 @@
             <div class="o-record">
 
                 @if (!string.IsNullOrEmpty(Model.MarketNewsDetailData.PreviousPageLink)
-                && !string.IsNullOrEmpty(Model.MarketNewsDetailData.PreviousPageTitle))
+                    && !string.IsNullOrEmpty(Model.MarketNewsDetailData.PreviousPageTitle))
                 {
                     <a href="@Model.MarketNewsDetailData.PreviousPageLink" class="o-record__nav o-record__nav--prev" id="prevBrnLink">
                         <span class="o-record__prev"></span>
@@ -76,7 +76,7 @@
                 }
 
                 @if (!string.IsNullOrEmpty(Model.MarketNewsDetailData.NextPageLink)
-                && !string.IsNullOrEmpty(Model.MarketNewsDetailData.NextPageTitle))
+                    && !string.IsNullOrEmpty(Model.MarketNewsDetailData.NextPageTitle))
                 {
                     <a href="@Model.MarketNewsDetailData.NextPageLink" class="o-record__nav o-record__nav--next" id="nextBrnLink">
                         <span class="o-record__title" id="nextBrnTitle">@Model.MarketNewsDetailData.NextPageTitle</span>
