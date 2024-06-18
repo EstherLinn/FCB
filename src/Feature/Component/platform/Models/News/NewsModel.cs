@@ -1,14 +1,19 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using System.Collections.Generic;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.News
 {
-    public class NewsModel
+    public class BaseData
     {
-        public string DateFormat = "yyyy/MM/dd";
+        public const string DateFormat = "yyyy/MM/dd";
+    }
 
+    public class NewsModel : BaseData
+    {
         public Item Datasource { get; set; }
         public string Category { get; set; }
         public string Date => ((DateField)this.Datasource?.Fields[Templates.NewsDetails.Fields.Date])?.GetLocalDateFieldValue()?.ToString(DateFormat);
@@ -24,6 +29,48 @@ namespace Feature.Wealth.Component.Models.News
             this.Image = this.Datasource.ImageUrl(Templates.NewsDetails.Fields.Image);
             this.Category = this.Datasource.TargetItem(Templates.NewsDetails.Fields.Category)?.GetFieldValue(ComponentTemplates.DropdownOption.Fields.OptionText);
         }
+    }
+
+    public class NewsListModel : BaseData
+    {
+        public Item Datasource { get; set; }
+        public IEnumerable<Data> NewsItems { get; set; }
+        public int Count { get; set; }
+        public string Json { get; set; }
+
+        public NewsListModel(Item item)
+        {
+            if (item == null || item.TemplateID != Templates.NewsList.Id)
+            {
+                return;
+            }
+            InternalLinkField internalLinkField = item.Fields[Templates.NewsList.Fields.NewsDetailsRootPage];
+            var path = internalLinkField?.Path ?? string.Empty;
+            var items = Sitecore.Context.Database.SelectItems($"{path}//*[@@templateid='{Templates.NewsDetails.Id}']") ?? [];
+            this.Datasource = item;
+            this.Count = items.Length;
+            this.NewsItems = GetNewsDetails(items);
+        }
+
+        protected IEnumerable<Data> GetNewsDetails(Item[] items)
+        {
+            foreach (Item item in items)
+            {
+                yield return new Data
+                {
+                    PageTitle = item.GetFieldValue(Templates.NewsDetails.Fields.PageTitle),
+                    Url = ItemUtils.GeneralLink(item, Templates.NewsDetails.Fields.Link)?.Url,
+                    Date = ((DateField)item?.Fields[Templates.NewsDetails.Fields.Date])?.GetLocalDateFieldValue()?.ToString(DateFormat)
+                };
+            }
+        }
+    }
+
+    public class Data
+    {
+        public string PageTitle { get; set; }
+        public string Url { get; set; }
+        public string Date { get; set; }
     }
 
     public struct Templates
@@ -86,6 +133,19 @@ namespace Feature.Wealth.Component.Models.News
                 /// </summary>
                 public static readonly ID Link = new ID("{8793D80F-055B-422F-B4A2-4D247512FF68}");
                 #endregion
+            }
+        }
+
+        public struct NewsList
+        {
+            public static readonly ID Id = new ID("{BEAA7C0F-31BC-4E7D-B891-4A63A62DC73D}");
+
+            public struct Fields
+            {
+                /// <summary>
+                /// 新聞詳細頁根節點
+                /// </summary>
+                public static readonly ID NewsDetailsRootPage = new ID("{3A44AD88-E8AE-498B-8DC6-147B48E82AD3}");
             }
         }
     }
