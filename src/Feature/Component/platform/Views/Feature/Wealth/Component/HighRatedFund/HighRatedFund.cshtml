@@ -126,7 +126,7 @@
 											<div class="c-cardTable__content">
 												<div class="l-target">
 													<div class="l-target__name">
-														<a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.ProductName</a>
+														<a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.FundName</a>
 													</div>
 													@if (item.Tags != null)
 													{
@@ -229,10 +229,10 @@
 											<div class="c-cardTable__content">
 												<ul class="l-collect l-collect--divider@lt">
 													<li class="l-collect__item">
-														@Html.FocusButton(null, item.ProductCode, item.ProductName, InvestTypeEnum.Fund, true)
+														@Html.FocusButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
 													</li>
 													<li class="l-collect__item">
-														@Html.CompareButton(null, item.ProductCode, item.ProductName, InvestTypeEnum.Fund, true)
+														@Html.CompareButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
 													</li>
 												</ul>
 											</div>

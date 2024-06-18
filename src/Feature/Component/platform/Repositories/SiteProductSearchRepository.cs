@@ -173,7 +173,7 @@ namespace Feature.Wealth.Component.Repositories
             config.ForType<FundSearchModel, FundProductResult>()
                 .AfterMapping((src, dest) =>
                 {
-                    dest.ProductName = src.ProductName.Normalize(NormalizationForm.FormKC);
+                    dest.ProductName = src.FundName.Normalize(NormalizationForm.FormKC);
                     dest.NetAssetValue = src.NetAssetValue.RoundingValue();
                     dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
                     dest.CurrencyPair = new KeyValuePair<string, string>(src.CurrencyCode, src.CurrencyName);

@@ -61,7 +61,7 @@ namespace Feature.Wealth.Component.Repositories
 
                 vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator;
                 vm.ProductCode = f.ProductCode;
-                vm.ProductName = FullWidthToHalfWidth(f.ProductName);
+                vm.FundName = FullWidthToHalfWidth(f.FundName);
                 vm.NetAssetValue = Round4(f.NetAssetValue);
                 vm.NetAssetValueDate = f.NetAssetValueDateFormat;
 
@@ -122,7 +122,7 @@ namespace Feature.Wealth.Component.Repositories
                     vm.InvestmentRegionName = [null];
                 }
 
-                vm.value = f.ProductCode + " " + FullWidthToHalfWidth(f.ProductName);
+                vm.value = f.ProductCode + " " + FullWidthToHalfWidth(f.FundName);
 
                 vm.Data = new FundData
                 {
@@ -146,8 +146,8 @@ namespace Feature.Wealth.Component.Repositories
                 vm.TwoYearReturnTWD = RoundingPrice(f.TwoYearReturnTWD);
                 vm.ThreeYearReturnTWD = RoundingPrice(f.ThreeYearReturnTWD);
 
-                vm.FocusTag = PublicHelpers.FocusButtonString(null, f.ProductCode, f.ProductName, InvestTypeEnum.Fund, true);
-                vm.CompareTag = PublicHelpers.CompareButtonString(null, f.ProductCode, f.ProductName, InvestTypeEnum.Fund, true);
+                vm.FocusTag = PublicHelpers.FocusButtonString(null, f.ProductCode, f.FundName, InvestTypeEnum.Fund, true);
+                vm.CompareTag = PublicHelpers.CompareButtonString(null, f.ProductCode, f.FundName, InvestTypeEnum.Fund, true);
                 vm.SubscriptionTag = PublicHelpers.SubscriptionButtonString(null, f.ProductCode, InvestTypeEnum.Fund, true);
 
                 result.Add(vm);
@@ -215,7 +215,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 FundItem fundItem = new FundItem
                 {
-                    value = FullWidthToHalfWidth(item.ProductName),
+                    value = FullWidthToHalfWidth(item.FundName),
                     data = new FundData
                     {
                         Type = item.FundType,

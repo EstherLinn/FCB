@@ -25,7 +25,7 @@ namespace Feature.Wealth.Component.Models.HotFund
             /// <summary>
             /// 一銀產品名稱
             /// </summary>
-            public string ProductName { get; set; }
+            public string FundName { get; set; }
 
             /// <summary>
             /// 淨值日期

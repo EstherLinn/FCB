@@ -1262,7 +1262,7 @@
                             <div class="c-cardTable__content">
                                 <div class="l-target">
                                     <div class="l-target__name">
-                                        <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
+                                        <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= FundName %></a>
                                     </div>
                                     <% if (Tags!=null) { %>
                                     <div class="l-target__additional">
@@ -1389,7 +1389,7 @@
                             <div class="c-cardTable__content">
                                 <div class="l-target">
                                     <div class="l-target__name">
-                                        <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
+                                        <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= FundName %></a>
                                     </div>
                                     <% if (Tags!=null) { %>
                                     <div class="l-target__additional">
@@ -1516,7 +1516,7 @@
                             <div class="c-cardTable__content">
                                 <div class="l-target">
                                     <div class="l-target__name">
-                                        <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
+                                        <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= FundName %></a>
                                     </div>
                                     <% if (Tags!=null) { %>
                                     <div class="l-target__additional">
@@ -1624,7 +1624,7 @@
                             <div class="c-cardTable__content">
                                 <div class="l-target">
                                     <div class="l-target__name">
-                                        <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= ProductName %></a>
+                                        <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= FundName %></a>
                                     </div>
                                     <% if (Tags!=null) { %>
                                     <div class="l-target__additional">
@@ -2016,7 +2016,7 @@
                         }
                     },
                     search: {
-                        ele: '#keyword', fields: ['ProductCode', 'ProductName'], start_length: 2, bindEvent: false, multi: function () {
+                        ele: '#keyword', fields: ['ProductCode', 'FundName'], start_length: 2, bindEvent: false, multi: function () {
                             let texts = [];
                             $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
                                 let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);

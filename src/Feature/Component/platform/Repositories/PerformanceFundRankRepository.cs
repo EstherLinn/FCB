@@ -47,7 +47,7 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
+            item.FundName = item.FundName.Normalize(NormalizationForm.FormKC);
             item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
             item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPercentage(item.SixMonthReturnOriginalCurrency);
             item.SixMonthReturnTWD = NumberExtensions.RoundingPercentage(item.SixMonthReturnTWD);
@@ -65,7 +65,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var vm = new Funds();
                 vm.ProductCode = f.ProductCode;
-                vm.ProductName = f.ProductName;
+                vm.FundName = f.FundName;
                 vm.NetAssetValue = f.NetAssetValue;
                 vm.NetAssetValueDate = f.NetAssetValueDate;
                 vm.SixMonthReturnOriginalCurrency = f.SixMonthReturnOriginalCurrency;
