@@ -557,10 +557,14 @@
                         initAutocomplete(data);
 
                         var urlParams = new URLSearchParams(window.location.search);
+                        var keyword = DOMPurify.sanitize(urlParams.get('keyword'));
                         var hotkeyword = DOMPurify.sanitize(urlParams.get('HotKeyWord'));
                         var hotproduct = DOMPurify.sanitize(urlParams.get('HotProduct'));
 
-                        if (hotproduct) {
+                        if (keyword) {
+                            $('[data-keyword-input]').val(keyword);
+                            $('[data-keyword-submit]').trigger('click');
+                        }else if (hotproduct) {
                             $("input[value='" + hotproduct + "']").trigger('click');
                         } else if (hotkeyword) {
                             $("input[value='" + hotkeyword + "']").trigger('click');
