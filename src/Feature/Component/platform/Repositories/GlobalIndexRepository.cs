@@ -159,19 +159,6 @@ namespace Feature.Wealth.Component.Repositories
             return globalIndexDetail;
         }
 
-        /// <summary>
-        /// 暫定 觸發紀錄指數瀏覽sp 已棄用
-        /// </summary>
-        /// <param name="indexCode"></param>
-        /// <returns></returns>
-        public bool TriggerViewCountRecord(string indexCode)
-        {
-            int updateCount = 0;
-            var para = new { IndexCode = indexCode };
-            updateCount = DbManager.Custom.Execute<int>("sp_GlobalIndexViewCountRecord", para, commandType: System.Data.CommandType.StoredProcedure);
-            return updateCount == 1;
-        }
-
         public decimal? Round2(decimal? value)
         {
             if (value != null)

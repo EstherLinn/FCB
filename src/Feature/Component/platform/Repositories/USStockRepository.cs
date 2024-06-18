@@ -76,19 +76,6 @@ namespace Feature.Wealth.Component.Repositories
             return uSStock;
         }
 
-        /// <summary>
-        /// 暫定 觸發紀錄指數瀏覽sp 已棄用
-        /// </summary>
-        /// <param name="indexCode"></param>
-        /// <returns></returns>
-        public bool TriggerViewCountRecord(string firstBankCode)
-        {
-            int updateCount = 0;
-            var para = new { FirstBankCode = firstBankCode };
-            updateCount = DbManager.Custom.Execute<int>("sp_USStockViewCountRecord", para, commandType: System.Data.CommandType.StoredProcedure);
-            return updateCount == 1;
-        }
-
         internal USStock GetButtonHtml(USStock item, bool isListButton)
         {
             item.FocusButton = PublicHelpers.FocusButton(null, null, item.FirstBankCode, item.FullName, InvestTypeEnum.ForeignStocks, isListButton);
