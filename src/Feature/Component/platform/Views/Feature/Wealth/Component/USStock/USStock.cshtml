@@ -727,10 +727,18 @@
             });
 
             var urlParams = new URLSearchParams(window.location.search);
+            var keyword = DOMPurify.sanitize(urlParams.get('keyword'));
             var hotkeyword = DOMPurify.sanitize(urlParams.get('HotKeyWord'));
             var hotproduct = DOMPurify.sanitize(urlParams.get('HotProduct'));
 
-            if (hotkeyword) {
+            if (keyword) {
+                $('#keyword').val(keyword);
+                setTimeout(() => {
+                    $('[data-keyword-submit]').trigger('click');
+                }, 300);
+                
+            }
+            else if (hotkeyword) {
                 $("#hotkeyword-" + hotkeyword).trigger('click');
             }
             else if (hotproduct) {
