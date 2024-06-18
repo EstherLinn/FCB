@@ -59,7 +59,7 @@ namespace Feature.Wealth.Component.Models.News
                 yield return new Data
                 {
                     PageTitle = item.GetFieldValue(Templates.NewsDetails.Fields.PageTitle),
-                    Url = ItemUtils.GeneralLink(item, Templates.NewsDetails.Fields.Link)?.Url,
+                    Url = ItemUtils.GeneralLink(item, Templates.NewsDetails.Fields.Link)?.Url ?? item.Url(),
                     Date = ((DateField)item?.Fields[Templates.NewsDetails.Fields.Date])?.GetLocalDateFieldValue()?.ToString(DateFormat)
                 };
             }

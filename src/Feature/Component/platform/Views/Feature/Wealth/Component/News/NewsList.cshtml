@@ -366,7 +366,7 @@
                             .u-left/.u-right: 置左/置右，比照置中模式 -->
                             @foreach (var item in Model.NewsItems)
                             {
-                                var url = string.IsNullOrEmpty(item.Url) ? "javascript" : item.Url;
+                                var url = string.IsNullOrEmpty(item.Url) ? "javascript:;" : item.Url;
                                 <tr class="c-cardTable__item u-center@dt-only">
                                     <td class="c-cardTable__space"></td>
                                     <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
