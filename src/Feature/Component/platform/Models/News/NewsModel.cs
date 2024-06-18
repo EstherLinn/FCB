@@ -64,7 +64,7 @@ namespace Feature.Wealth.Component.Models.News
                         sitecorePath += "/";
                 }
             }
-            var items = Sitecore.Context.Database.SelectItems($"{path}//*[@@templateid='{Templates.NewsDetails.Id}']") ?? [];
+            var items = Sitecore.Context.Database.SelectItems($"{sitecorePath}//*[@@templateid='{Templates.NewsDetails.Id}']") ?? [];
             this.Datasource = item;
             this.Count = items.Length;
             this.NewsItems = GetNewsDetails(items);
