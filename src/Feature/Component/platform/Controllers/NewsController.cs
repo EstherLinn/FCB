@@ -27,6 +27,12 @@ namespace Feature.Wealth.Component.Controllers
             return View("/Views/Feature/Wealth/Component/News/NewsDetails.cshtml", model);
         }
 
+        public ActionResult NewsList()
+        {
+            var model = new NewsListModel(RenderingContext.CurrentOrNull?.Rendering.Item);
+            return View("/Views/Feature/Wealth/Component/News/NewsList.cshtml", model);
+        }
+        
         public ActionResult MarketNewsSearch()
         {
             return View("/Views/Feature/Wealth/Component/News/MarketNewsSearch.cshtml");

@@ -5,9 +5,6 @@
 {
     return;
 }
-@Model.Count
-@Model.Path
-@Model.Json
 <div class="c-section">
     <div class="l-mainstage">
         <div class="l-mainstage__wrap">
@@ -230,7 +227,7 @@
                                 <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                                 <div class="c-filter__total" data-filter-collapse>
                                     <div class="o-total o-total--wt">
-                                        搜尋<span>9999</span>筆
+                                        搜尋<span>@Model.Count</span>筆
                                     </div>
                                 </div>
                             </div>
@@ -240,7 +237,7 @@
                                         <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                                         <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
                                             展開進階篩選
-                                            <img src="../../themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                            <img src="~/themes/images/icons/white/corner-down-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
                                         </a>
                                     </div>
                                 </div>
@@ -249,7 +246,7 @@
                                         <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                                         <a href="#" class="o-btn o-btn--primary o-btn--flat o-btn--auto" data-filter-collapse>
                                             收合進階篩選
-                                            <img src="../../themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
+                                            <img src="~/themes/images/icons/white/corner-up-sm.svg" class="o-btn__icon o-btn__icon--xs" alt="">
                                         </a>
                                     </div>
                                 </div>
@@ -360,463 +357,48 @@
                         </thead>
                         <tbody>
                             <!-- 表格內文字對齊樣式，可於tr/td標籤上使用(若內容物為flexbox將不會發生作用)：
-            .u-center: 置中
-            .u-center@lt: pad(含)以下版本(<= 1199px)置中
-            .u-center@lt-up: pad(含)以上版本(>= 768px)置中
-            .u-center@dt-only: 僅桌機版本(>= 1200px)置中
-            .u-center@lt-only: 僅pad版本(>= 768px and <= 1199px)置中
-            .u-center@mb-only: 僅手機版本(<= 767px)置中
-            .u-left/.u-right: 置左/置右，比照置中模式 -->
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                <td class="c-cardTable__body " data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                        <span class="o-iconText o-iconText--focus t-focus " data-after-lt="焦點新聞"></span>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-nowrap@dt-only">2023/11/03 10:15</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-right@lt">
-                                        <span class="o-hangTag o-hangTag--gn">台股</span>
-                                    </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="./news_detail.html" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">群電Q4毛利率有望穩高檔，明年估續提升，群電Q4毛利率有望穩高檔，明年估續提升群電Q4毛利率有望穩高檔，明年估續提升</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt">888,888,888</div>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <td class="c-cardTable__footer" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <ul class="l-collect l-collect--divider@lt">
-                                            <li class="l-collect__item">
-                                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                                <a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                        <span class="o-iconText o-iconText--focus t-focus u-invisible" data-after-lt="焦點新聞"></span>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-nowrap@dt-only">2023/11/03 10:15</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-right@lt">
-                                        <span class="o-hangTag o-hangTag--gn">產業情報</span>
-                                    </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="./news_detail.html" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">昶瑞機電線增案代收及存儲股款行庫</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt">8,888,888,888</div>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <td class="c-cardTable__footer" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <ul class="l-collect l-collect--divider@lt">
-                                            <li class="l-collect__item">
-                                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                                <a href="#" class="o-statusBtn o-statusBtn--like " data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                <td class="c-cardTable__body " data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                        <span class="o-iconText o-iconText--focus t-focus " data-after-lt="焦點新聞"></span>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-nowrap@dt-only">2023/11/03 10:15</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-right@lt">
-                                        <span class="o-hangTag o-hangTag--gn">科技脈動</span>
-                                    </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="./news_detail.html" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">翔耀資金貸與生活工場國際4000萬元</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt">710</div>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <td class="c-cardTable__footer" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <ul class="l-collect l-collect--divider@lt">
-                                            <li class="l-collect__item">
-                                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                                <a href="#" class="o-statusBtn o-statusBtn--like " data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                        <span class="o-iconText o-iconText--focus t-focus u-invisible" data-after-lt="焦點新聞"></span>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-nowrap@dt-only">2023/11/03 10:15</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-right@lt">
-                                        <span class="o-hangTag o-hangTag--gn">台股</span>
-                                    </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="./news_detail.html" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">廣宇：宏華勝精密電子(煙台)董事會決議分派現金股利</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt">480</div>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <td class="c-cardTable__footer" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <ul class="l-collect l-collect--divider@lt">
-                                            <li class="l-collect__item">
-                                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                                <a href="#" class="o-statusBtn o-statusBtn--like " data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                        <span class="o-iconText o-iconText--focus t-focus u-invisible" data-after-lt="焦點新聞"></span>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-nowrap@dt-only">2023/11/03 10:15</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-right@lt">
-                                        <span class="o-hangTag o-hangTag--gn">產業情報</span>
-                                    </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="./news_detail.html" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">廣宇：EAST HONEST HOLDINGS董事會決議分派現金股利</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt">90</div>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <td class="c-cardTable__footer" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <ul class="l-collect l-collect--divider@lt">
-                                            <li class="l-collect__item">
-                                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                                <a href="#" class="o-statusBtn o-statusBtn--like " data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                        <span class="o-iconText o-iconText--focus t-focus u-invisible" data-after-lt="焦點新聞"></span>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-nowrap@dt-only">2023/11/03 10:15</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-right@lt">
-                                        <span class="o-hangTag o-hangTag--gn">科技脈動</span>
-                                    </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="./news_detail.html" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">富威電力112年第一次股東臨時會通過解除新任董事競業禁止之限制案</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt">700</div>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <td class="c-cardTable__footer" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <ul class="l-collect l-collect--divider@lt">
-                                            <li class="l-collect__item">
-                                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                                <a href="#" class="o-statusBtn o-statusBtn--like " data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                        <span class="o-iconText o-iconText--focus t-focus u-invisible" data-after-lt="焦點新聞"></span>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-nowrap@dt-only">2023/11/03 10:15</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-right@lt">
-                                        <span class="o-hangTag o-hangTag--gn">科技脈動</span>
-                                    </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="./news_detail.html" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">台新金：台新大安租賃新任董監事名單</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt">458</div>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <td class="c-cardTable__footer" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <ul class="l-collect l-collect--divider@lt">
-                                            <li class="l-collect__item">
-                                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                                <a href="#" class="o-statusBtn o-statusBtn--like " data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                        <span class="o-iconText o-iconText--focus t-focus u-invisible" data-after-lt="焦點新聞"></span>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-nowrap@dt-only">2023/11/03 10:15</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-right@lt">
-                                        <span class="o-hangTag o-hangTag--gn">台股</span>
-                                    </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="./news_detail.html" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">富采：晶元光電股東臨時會通過之重要決議事項</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt">725</div>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <td class="c-cardTable__footer" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <ul class="l-collect l-collect--divider@lt">
-                                            <li class="l-collect__item">
-                                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                                <a href="#" class="o-statusBtn o-statusBtn--like " data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                        <span class="o-iconText o-iconText--focus t-focus u-invisible" data-after-lt="焦點新聞"></span>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-nowrap@dt-only">2023/11/03 10:15</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-right@lt">
-                                        <span class="o-hangTag o-hangTag--gn">科技脈動</span>
-                                    </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="./news_detail.html" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">富采：隆達電子股東臨時會通過之重要決議事項</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt">1,850</div>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <td class="c-cardTable__footer" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <ul class="l-collect l-collect--divider@lt">
-                                            <li class="l-collect__item">
-                                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                                <a href="#" class="o-statusBtn o-statusBtn--like " data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="c-cardTable__item u-center@dt-only">
-                                <td class="c-cardTable__space"></td>
-                                <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                        <span class="o-iconText o-iconText--focus t-focus u-invisible" data-after-lt="焦點新聞"></span>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-nowrap@dt-only">2023/11/03 10:15</div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content u-right@lt">
-                                        <span class="o-hangTag o-hangTag--gn">台股</span>
-                                    </div>
-                                </td>
-                                <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                <td class="c-cardTable__body u-left@dt-only">
-                                    <div class="c-cardTable__content u-line-2@lt-only">
-                                        <a href="./news_detail.html" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">合庫金：臺灣聯合銀行法人董事合庫銀代表人異動</a>
-                                    </div>
-                                </td>
-                                <td class="c-cardTable__body" data-card-table-width="1/2">
-                                    <div class="c-cardTable__content">
-                                        <div class="o-views o-views@lt">1,150</div>
-                                    </div>
-                                </td>
-                                <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                <td class="c-cardTable__space"></td>
-                                <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                <td class="c-cardTable__footer" data-card-table-width="1/1">
-                                    <div class="c-cardTable__content">
-                                        <ul class="l-collect l-collect--divider@lt">
-                                            <li class="l-collect__item">
-                                                <!-- [data-after-lt]: pad / mobile 自動顯示文字在後方，值為要顯示的文字 -->
-                                                <!-- [data-ia="true"]: 啟用互動式按鈕，預設會有 tooltip 及 toast 提示訊息，需搭配 [data-msg] 設定訊息才會有作用 -->
-                                                <!-- [data-msg]: active|inactive 的訊息，用 "|" 符號分隔，若訊息未設定完整則不顯示提示訊息 -->
-                                                <a href="#" class="o-statusBtn o-statusBtn--like " data-after-lt="收藏" data-msg="加入收藏|取消收藏" data-ia="true"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
+                            .u-center: 置中
+                            .u-center@lt: pad(含)以下版本(<= 1199px)置中
+                            .u-center@lt-up: pad(含)以上版本(>= 768px)置中
+                            .u-center@dt-only: 僅桌機版本(>= 1200px)置中
+                            .u-center@lt-only: 僅pad版本(>= 768px and <= 1199px)置中
+                            .u-center@mb-only: 僅手機版本(<= 767px)置中
+                            .u-left/.u-right: 置左/置右，比照置中模式 -->
+                            @foreach (var item in Model.NewsItems)
+                            {
+                                var url = string.IsNullOrEmpty(item.Url) ? "javascript" : item.Url;
+                                <tr class="c-cardTable__item u-center@dt-only">
+                                    <td class="c-cardTable__space"></td>
+                                    <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
+                                    <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
+                                    <td class="c-cardTable__body " data-card-table-width="1/1">
+                                        <div class="c-cardTable__content">
+                                            <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
+                                            <span class="o-iconText o-iconText--focus t-focus " data-after-lt="焦點新聞"></span>
+                                        </div>
+                                    </td>
+                                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                                        <div class="c-cardTable__content u-nowrap@dt-only">@item.Date</div>
+                                    </td>
+                                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                                        <div class="c-cardTable__content u-right@lt">
+                                            <span class="o-hangTag o-hangTag--gn">台股</span>
+                                        </div>
+                                    </td>
+                                    <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
+                                    <td class="c-cardTable__body u-left@dt-only">
+                                        <div class="c-cardTable__content u-line-2@lt-only">
+                                            <a href="@url" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">@item.PageTitle</a>
+                                        </div>
+                                    </td>
+                                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                                        <div class="c-cardTable__content">
+                                            <div class="o-views o-views@lt">888,888,888</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+
                         </tbody>
                     </table>
                     @{
@@ -1014,7 +596,7 @@
                     let $purchase = suggestion.data.purchase ? suggestion.data.isLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
                     return `<div class="c-itemKeyword">
                  <a href="${detailUrl}" class="c-itemKeyword__content">
-                     
+
                      <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
                  </a>
                  <div class="c-itemKeyword__collections">${$like}</div>
@@ -1127,7 +709,7 @@
                 var sortingColumn = $('option:selected', this).data('sorting-column');
                 var orderby = $('option:selected', this).data('sorting-class');
 
-                // 連動 table 
+                // 連動 table
                 $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
                 $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
                 console.log(`排序：${sorting}`);
