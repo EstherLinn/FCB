@@ -1179,14 +1179,27 @@
                                 load: function () {
                                     var $container = $(this.container);
                                     highChartId = this.container.id;
-                                    $('<div class="l-slash" data-id="' + highChartId + '-tooltips-yAxis1" style="position: absolute; top: 316px; left: 5px;"></div>').appendTo($container);
-                                    $('<div class="l-slash" data-id="' + highChartId + '-tooltips-yAxis2" style="position: absolute; top: 612px; left: 5px;"></div>').appendTo($container);
+                                    var maEl = document.createElement('div');
+                                    maEl.classList.add('l-slash');
+                                    maEl.setAttribute('data-id', highChartId + '-tooltips-yAxis1');
+                                    maEl.setAttribute('style', 'position: absolute; top: 316px; left: 5px;');
+                                    $container.append(maEl);
+                                    var kdEl = document.createElement('div');
+                                    kdEl.classList.add('l-slash');
+                                    kdEl.setAttribute('data-id', highChartId + '-tooltips-yAxis2');
+                                    kdEl.setAttribute('style', 'position: absolute; top: 612px; left: 5px;');
+                                    $container.append(kdEl);
                                 },
                                 addSeries: function (event) {
-                                    var $tooltipContainer = $('[data-id="' + highChartId + "-tooltips-yAxis" + DOMPurify.sanitize(event.options.yAxis) + '"]'),
-                                        id = 'tooltip-' + DOMPurify.sanitize(event.options.name);
+                                    var _yAxis = parseInt(event.options.yAxis);
+                                    var _eventOptionsName = String(event.options.name).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                                    var $tooltipContainer = $(`[data-id="${highChartId}-tooltips-yAxis${_yAxis}"]`);
+                                    var id = 'tooltip-' + _eventOptionsName;
                                     if ($tooltipContainer.find('[data-id="' + id + '"]').length === 0) {
-                                        $('<div class="l-slash__item" data-id="' + id + '"></div>').appendTo($tooltipContainer);
+                                        var slashEl = document.createElement('div');
+                                        slashEl.classList.add('l-slash__item');
+                                        slashEl.setAttribute('data-id', id);
+                                        $tooltipContainer.append(slashEl);
                                     }
                                 },
                                 render: function () {
