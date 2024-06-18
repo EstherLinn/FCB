@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
-    public class InsertFundHighRated : SitecronAgentBase
+    public class InsertWmsAge : SitecronAgentBase
     {
         private readonly ProcessRepository _repository = new();
 
@@ -20,15 +20,15 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var jobitem = this.JobItems.FirstOrDefault();
                 var etlService = new EtlService(this.Logger, jobitem);
 
-                string filename = "wms_fund_top15_m_mf";
+                string filename = "wms_age_profile_d_mf";
                 bool IsfilePath = etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsv<FundHighRated>(filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[Fund_HighRated]", filename);
+                        var basic = await etlService.ParseCsv<Wmsageprofiledmf>(filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[Wms_age_profile_d_mf]", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
