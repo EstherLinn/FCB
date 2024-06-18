@@ -25,6 +25,7 @@
     var detailsUrl = FundRelatedSettingModel.GetFundDetailsUrl();
     var closeFiveYearsUrl = FundRelatedSettingModel.GetFundCloseFiveYearsUrl();
     var exposeUrl = FundRelatedSettingModel.GetFundExposeUrl();
+    var searchUrl = FundRelatedSettingModel.GetFundSearchUrl();
     string pageId = @Sitecore.Context.Item.ID.ToString();
 }
 
@@ -431,7 +432,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="@(searchUrl + "?HotProduct=" + item)" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -1383,9 +1384,9 @@
                         <ul class="l-divideList l-divideList--sm">
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
-                                <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
-                                </li>
+                            <li class="l-divideList__item l-divideList__item--auto">
+                                <a href="@(searchUrl + "?HotProduct=" + item)" class="o-hashTag u-nowrap">#@item</a>
+                            </li>
                             }
                         </ul>
                     </div>
@@ -1706,7 +1707,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="@(searchUrl + "?HotProduct=" + item)" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -1807,7 +1808,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="@(searchUrl + "?HotProduct=" + item)" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -2372,7 +2373,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="@(searchUrl + "?HotProduct=" + item)" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -2484,7 +2485,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="@(searchUrl + "?HotProduct=" + item)" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
@@ -2547,7 +2548,7 @@
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
                                 <li class="l-divideList__item l-divideList__item--auto">
-                                    <a href="#" class="o-hashTag u-nowrap">#@item</a>
+                                    <a href="@(searchUrl + "?HotProduct=" + item)" class="o-hashTag u-nowrap">#@item</a>
                                 </li>
                             }
                         </ul>
