@@ -50,7 +50,7 @@ namespace Feature.Wealth.Component.Repositories
 
         private void ProcessFundFilterDatas(Funds item)
         {
-            item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
+            item.FundName = item.FundName.Normalize(NormalizationForm.FormKC);
             item.SixMonthReturnOriginalCurrency = NumberExtensions.RoundingPercentage(item.SixMonthReturnOriginalCurrency);
             item.NetAssetValue = NumberExtensions.RoundingValue(item.NetAssetValue);
             item.PercentageChangeInFundPrice = NumberExtensions.RoundingPercentage((item.PercentageChangeInFundPrice * 100));
@@ -104,7 +104,6 @@ namespace Feature.Wealth.Component.Repositories
             string sql = """
                    SELECT *
                    FROM [vw_BasicETF]
-                   WHERE LEFT(ProductCode, 2) NOT IN ('EA', 'EB')
                    ORDER BY SixMonthReturnMarketPriceOriginalCurrency
                    DESC,ProductCode
                    """;

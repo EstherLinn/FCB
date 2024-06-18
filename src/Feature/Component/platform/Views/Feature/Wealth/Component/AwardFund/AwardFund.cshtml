@@ -4,212 +4,212 @@
 @model AwardFundModel
 
 @{
-	var modelitem = Model.Item;
+    var modelitem = Model.Item;
 }
 
 <div class="l-mainstage">
-	<div class="l-mainstage__wrap">
-		<div class="l-mainstage__title">
-			<h1 class="t-title">@Html.Sitecore().Field(Template.AwardFund.Fields.MainTitle.ToString(), modelitem)</h1>
-		</div>
-		<div class="l-mainstage__content">
-			<div class="l-flex u-flex-col u-flex-gap-sm">
-				<div class="l-flex__item">
-					@Html.Sitecore().Field(Template.AwardFund.Fields.SubTitle.ToString(), modelitem)
-				</div>
-				<div class="l-flex__item">
-					<span class="t-note">@Html.Sitecore().Field(Template.AwardFund.Fields.Content.ToString(), modelitem)</span>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">@Html.Sitecore().Field(Template.AwardFund.Fields.MainTitle.ToString(), modelitem)</h1>
+        </div>
+        <div class="l-mainstage__content">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    @Html.Sitecore().Field(Template.AwardFund.Fields.SubTitle.ToString(), modelitem)
+                </div>
+                <div class="l-flex__item">
+                    <span class="t-note">@Html.Sitecore().Field(Template.AwardFund.Fields.Content.ToString(), modelitem)</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="l-wrap">
-	<div class="l-stage">
-		<div class="l-flex u-flex-col u-flex-gap-sm">
-			<div class="l-flex__item u-right u-hidden@dt-only">
-				<div class="o-sortingbox">
-					<!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
-					<select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="awardTable">
-						<option value="">排序</option>
-						<option value="基金名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">基金名稱高至低</option>
-						<option value="基金名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">基金名稱低至高</option>
-						<option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
-						<option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
-						<option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
-						<option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
-						<option value="基金類型高至低" data-sorting-column="FundTypeNameByAPI" data-sorting-class="is-desc">基金類型高至低</option>
-						<option value="基金類型低至高" data-sorting-column="FundTypeNameByAPI" data-sorting-class="is-asc">基金類型低至高</option>
-						<option value="年度高至低" data-sorting-column="Year" data-sorting-class="is-desc">年度高至低</option>
-						<option value="年度低至高" data-sorting-column="Year" data-sorting-class="is-asc">年度低至高</option>
-						<option value="得獎名稱高至低" data-sorting-column="AwardName" data-sorting-class="is-desc">得獎名稱高至低</option>
-						<option value="得獎名稱低至高" data-sorting-column="AwardName" data-sorting-class="is-asc">得獎名稱低至高</option>
-					</select>
-				</div>
-			</div>
-			<div class="l-flex__item">
-				<div class="l-table">
-					<table class="c-table@dt-only c-cardTable@lt" data-table-name="awardTable">
-						<colgroup>
-							<col style="width: auto;">
-							<col style="width: 1%;">
-							<col style="width: 1%;">
-							<col style="width: 1%;">
-							<col style="width: 1%;">
-							<col style="width: 1%;">
-							<col style="width: 13%;">
-							<col style="width: 1%;">
-							<col style="width: 1%;">
-						</colgroup>
-						<thead>
-							<tr class="u-nowrap">
-								<th>
-									<div class="c-table__title">
-										<span>基金名稱</span>
-										<a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
-									</div>
-								</th>
-								<th>
-									<div class="c-table__title">
-										<span>最新淨值<br>(淨值日)</span>
-										<a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
-									</div>
-								</th>
-								<th>
-									<div class="c-table__title">
-										<span>幣別</span>
-										<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-										<a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
-									</div>
-								</th>
-								<th>
-									<div class="c-table__title">
-										<span>基金類型</span>
-										<a href="#" class="o-sorting" data-sorting-column="FundTypeNameByAPI"></a>
-									</div>
-								</th>
-								<th>
-									<div class="c-table__title">
-										<span>年度</span>
-										<a href="#" class="o-sorting" data-sorting-column="Year"></a>
-									</div>
-								</th>
-								<th>
-									<div class="c-table__title">
-										<span>得獎名稱</span>
-										<a href="#" class="o-sorting" data-sorting-column="AwardName"></a>
-									</div>
-								</th>
-								<th>
-									<div class="c-table__title">
-										<span>關注/比較</span>
-									</div>
-								</th>
-								<th>
-									<div class="c-table__title">
-										<span>申購</span>
-									</div>
-								</th>
-							</tr>
-						</thead>
-						<tbody id="result">
-							@foreach (var item in Model.AwardFunds)
-							{
-								<tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-									<td class="c-cardTable__top"></td>
-									<td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-										<div class="c-cardTable__content">
-											<div class="l-target">
-												<div class="l-target__name">
-													<a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.ProductName</a>
-												</div>
-												@if (item.Tags != null)
-												{
-													<div class="l-target__additional">
-														<ul class="l-tag">
-															@for (var i = 0; i < item.Tags.Count; i++)
-															{
-																<li class="l-tag__item">
-																	<a href="#" class="o-tag">@item.Tags[i] </a>
-																</li>
-															}
-														</ul>
-													</div>
-												}
+    <div class="l-stage">
+        <div class="l-flex u-flex-col u-flex-gap-sm">
+            <div class="l-flex__item u-right u-hidden@dt-only">
+                <div class="o-sortingbox">
+                    <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                    <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="awardTable">
+                        <option value="">排序</option>
+                        <option value="基金名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">基金名稱高至低</option>
+                        <option value="基金名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">基金名稱低至高</option>
+                        <option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
+                        <option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
+                        <option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
+                        <option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
+                        <option value="基金類型高至低" data-sorting-column="FundTypeNameByAPI" data-sorting-class="is-desc">基金類型高至低</option>
+                        <option value="基金類型低至高" data-sorting-column="FundTypeNameByAPI" data-sorting-class="is-asc">基金類型低至高</option>
+                        <option value="年度高至低" data-sorting-column="Year" data-sorting-class="is-desc">年度高至低</option>
+                        <option value="年度低至高" data-sorting-column="Year" data-sorting-class="is-asc">年度低至高</option>
+                        <option value="得獎名稱高至低" data-sorting-column="AwardName" data-sorting-class="is-desc">得獎名稱高至低</option>
+                        <option value="得獎名稱低至高" data-sorting-column="AwardName" data-sorting-class="is-asc">得獎名稱低至高</option>
+                    </select>
+                </div>
+            </div>
+            <div class="l-flex__item">
+                <div class="l-table">
+                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="awardTable">
+                        <colgroup>
+                            <col style="width: auto;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 13%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                        </colgroup>
+                        <thead>
+                            <tr class="u-nowrap">
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>基金名稱</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>最新淨值<br>(淨值日)</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>幣別</span>
+                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>基金類型</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="FundTypeNameByAPI"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>年度</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="Year"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>得獎名稱</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="AwardName"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>關注/比較</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>申購</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="result">
+                            @foreach (var item in Model.AwardFunds)
+                            {
+                                <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+                                    <td class="c-cardTable__top"></td>
+                                    <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+                                        <div class="c-cardTable__content">
+                                            <div class="l-target">
+                                                <div class="l-target__name">
+                                                    <a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.FundName</a>
+                                                </div>
+                                                @if (item.Tags != null)
+                                                {
+                                                    <div class="l-target__additional">
+                                                        <ul class="l-tag">
+                                                            @for (var i = 0; i < item.Tags.Count; i++)
+                                                            {
+                                                                <li class="l-tag__item">
+                                                                    <span class="o-tag">@item.Tags[i] </span>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                }
 
-											</div>
-										</div>
-									</td>
-									<td class="c-cardTable__space"></td>
-									<td class="c-cardTable__body" data-card-table-width="1/2">
-										<div class="c-cardTable__title" data-length="5">最新淨值<br>(淨值日)</div>
-										<div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy-MM-dd")</span></div>
-									</td>
-									<td class="c-cardTable__body" data-card-table-width="1/2">
-										<div class="c-cardTable__title" data-length="5">
-											幣別
-											<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-										</div>
-										<div class="c-cardTable__content">
-											@Html.CurrencyLink(null, item.CurrencyName)
-										</div>
-									</td>
-									<td class="c-cardTable__body" data-card-table-width="1/2">
-										<div class="c-cardTable__title" data-length="5">基金類型</div>
-										<div class="c-cardTable__content">
-											@item.FundTypeNameByAPI
-										</div>
-									</td>
-									<td class="c-cardTable__body" data-card-table-width="1/2">
-										<div class="c-cardTable__title" data-length="5">年度</div>
-										<div class="c-cardTable__content">
-											@item.Year
-										</div>
-									</td>
-									<td class="c-cardTable__body" data-card-table-width="1/2">
-										<div class="c-cardTable__title" data-length="5">得獎名稱</div>
-										<div class="c-cardTable__content">
-											@item.AwardName
-										</div>
-									</td>
-									<td class="c-cardTable__space"></td>
-									<td class="c-cardTable__footer" data-card-table-width="@((item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability))) ? "2/3" : "1/1")">
-										<div class="c-cardTable__content">
-											<ul class="l-collect l-collect--divider@lt">
-												<li class="l-collect__item">
-													@Html.FocusButton(null, item.ProductCode, item.ProductName, InvestTypeEnum.Fund, true)
-												</li>
-												<li class="l-collect__item">
-													@Html.CompareButton(null, item.ProductCode, item.ProductName, InvestTypeEnum.Fund, true)
-												</li>
-											</ul>
-										</div>
-									</td>
-									<td class="c-cardTable__footer" data-card-table-width="1/3">
-										<div class="c-cardTable__content">
-											@if (item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
-											{
-												@Html.SubscriptionButton(null, item.ProductCode, InvestTypeEnum.Fund, true)
-											}
-										</div>
-									</td>
-								</tr>
-							}
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="c-cardTable__space"></td>
+                                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                                        <div class="c-cardTable__title" data-length="5">最新淨值<br>(淨值日)</div>
+                                        <div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDate.ToString("yyyy-MM-dd")</span></div>
+                                    </td>
+                                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                                        <div class="c-cardTable__title" data-length="5">
+                                            幣別
+                                            <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                        </div>
+                                        <div class="c-cardTable__content">
+                                            @Html.CurrencyLink(null, item.CurrencyName)
+                                        </div>
+                                    </td>
+                                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                                        <div class="c-cardTable__title" data-length="5">基金類型</div>
+                                        <div class="c-cardTable__content">
+                                            @item.FundTypeNameByAPI
+                                        </div>
+                                    </td>
+                                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                                        <div class="c-cardTable__title" data-length="5">年度</div>
+                                        <div class="c-cardTable__content">
+                                            @item.Year
+                                        </div>
+                                    </td>
+                                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                                        <div class="c-cardTable__title" data-length="5">得獎名稱</div>
+                                        <div class="c-cardTable__content">
+                                            @item.AwardName
+                                        </div>
+                                    </td>
+                                    <td class="c-cardTable__space"></td>
+                                    <td class="c-cardTable__footer" data-card-table-width="@((item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability))) ? "2/3" : "1/1")">
+                                        <div class="c-cardTable__content">
+                                            <ul class="l-collect l-collect--divider@lt">
+                                                <li class="l-collect__item">
+                                                    @Html.FocusButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
+                                                </li>
+                                                <li class="l-collect__item">
+                                                    @Html.CompareButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td class="c-cardTable__footer" data-card-table-width="1/3">
+                                        <div class="c-cardTable__content">
+                                            @if (item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
+                                            {
+                                                @Html.SubscriptionButton(null, item.ProductCode, InvestTypeEnum.Fund, true)
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 <script>
-	(function ($, window, document, undefined) {
-		document.addEventListener('DOMContentLoaded', function () {
-			if (!jQuery) {
-				return;
-			}
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
 
             // 為了 DOMPurify.sanitize 正常運作加上 <table><tbody></tbody></table>
             function DOMPurifyData(data) {
@@ -219,77 +219,77 @@
                 return data;
             }
 
-			function ReturnView(orderby, desc) {
-				$.ajax({
-					url: '@ClientRoute.GenerateUrl(this, "AwardFund", "GetSortedAwardFund")',
-					type: 'POST',
-					data: { orderby: orderby, desc: desc },
-					success: function (data) {
-						$('#result').empty();
+            function ReturnView(orderby, desc) {
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "AwardFund", "GetSortedAwardFund")',
+                    type: 'POST',
+                    data: { orderby: orderby, desc: desc },
+                    success: function (data) {
+                        $('#result').empty();
                         document.getElementById('result').innerHTML = DOMPurifyData(data);
-						$('[data-popup]').magnificPopup();
-						$('[eh-compare]').trigger('exec');
-						$('[eh-focus]').trigger('exec');
-						$('[eh-subscription-type]').trigger('exec');
-						window.loading('hide');
-					},
-					error: function (xhr, status, error) {
-						console.error(error);
-						window.loading('hide');
-					}
-				});
-			}
+                        $('[data-popup]').magnificPopup();
+                        $('[eh-compare]').trigger('exec');
+                        $('[eh-focus]').trigger('exec');
+                        $('[eh-subscription-type]').trigger('exec');
+                        window.loading('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        window.loading('hide');
+                    }
+                });
+            }
 
 
-			$('table').off('click.sorting').on('click.sorting', '.o-sorting', function (e) {
-				e.preventDefault();
-				// 呼叫 loading
-				window.loading('show');
-				var $this = $(this);
-				var orderby = '';
-				if ($this.hasClass('is-asc')) {
-					$this.removeClass('is-asc').addClass('is-desc');
-					orderby = 'is-desc';
-				}
-				else {
-					$this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
-					$this.addClass('is-asc');
-					orderby = 'is-asc';
-				}
+            $('table').off('click.sorting').on('click.sorting', '.o-sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                window.loading('show');
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                }
+                else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
 
-				var sortingColumn = $this.data('sorting-column');
+                var sortingColumn = $this.data('sorting-column');
 
-				// 連動 sortingbox
-				var tableName = $(this).closest('[data-table-name]').data('table-name');
-				var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
-				var sortingColumn = $(this).data('sorting-column');
-				$(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
-				$sortingbox.trigger('change');
-			});
-
-
-			// 手機版分頁筆數功能
-			$('[data-sortingbox="true"]').on('change.sorting', function (e) {
-				// 呼叫 loading
-				window.loading('show');
-				var sorting = $(this).val();
-				var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
-				var sortingColumn = $('option:selected', this).data('sorting-column');
-				var orderby = $('option:selected', this).data('sorting-class');
-
-				// 連動 table
-				$('.o-sorting', $linkTable).removeClass('is-asc is-desc');
-				$(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
-				console.log(`排序：${sorting}`);
+                // 連動 sortingbox
+                var tableName = $(this).closest('[data-table-name]').data('table-name');
+                var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+                var sortingColumn = $(this).data('sorting-column');
+                $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+                $sortingbox.trigger('change');
+            });
 
 
-				ReturnView(sortingColumn, orderby)
-			});
+            // 手機版分頁筆數功能
+            $('[data-sortingbox="true"]').on('change.sorting', function (e) {
+                // 呼叫 loading
+                window.loading('show');
+                var sorting = $(this).val();
+                var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+                var sortingColumn = $('option:selected', this).data('sorting-column');
+                var orderby = $('option:selected', this).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                console.log(`排序：${sorting}`);
 
 
-		});
+                ReturnView(sortingColumn, orderby)
+            });
 
-	})(jQuery, window, document);
+
+        });
+
+    })(jQuery, window, document);
 </script>
 
 
