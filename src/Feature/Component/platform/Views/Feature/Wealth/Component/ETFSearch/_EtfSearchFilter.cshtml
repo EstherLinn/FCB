@@ -37,39 +37,43 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="c-filter__keyword">
-                            <!-- 條件群組[data-filter-group] -->
-                            <div class="c-filterForm" id="uid-criteria-keywordsTags" data-filter-group>
-                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
-                                <div class="c-filterForm__title" data-filter-title>
-                                    <span>熱門關鍵字</span>@*對應JSON欄位【KeywordsTags】*@
-                                </div>
-                                <div class="c-filterForm__value">
-                                    <div class="l-pickGroup">
-                                        @foreach (var tag in Model.HotKeywordList)
-                                        {
-                                            string value = tag;
-                                            string display = string.Empty;
-
-                                            if (tag == null)
+                        @if (Model.HotKeywordList != null && Model.HotKeywordList.Any())
+                        {
+                            <div class="c-filter__keyword">
+                                <!-- 條件群組[data-filter-group] -->
+                                <div class="c-filterForm" id="uid-criteria-keywordsTags" data-filter-group>
+                                    <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                    <div class="c-filterForm__title" data-filter-title>
+                                        <span>熱門關鍵字</span>@*對應JSON欄位【KeywordsTags】*@
+                                    </div>
+                                    <div class="c-filterForm__value">
+                                        <div class="l-pickGroup">
+                                            @foreach (var tag in Model.HotKeywordList)
                                             {
-                                                display = "display: none;";
-                                                value = string.Empty;
-                                            }
+                                                string value = tag;
+                                                string display = string.Empty;
 
-                                            <div class="l-pickGroup__item" style="@display">
-                                                <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@value">
-                                                    <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
-                                                </label>
-                                            </div>
-                                        }
+                                                if (tag == null)
+                                                {
+                                                    display = "display: none;";
+                                                    value = string.Empty;
+                                                }
+
+                                                <div class="l-pickGroup__item" style="@display">
+                                                    <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                    <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                    <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
+                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                        <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        }
+
                         <!-- 小網收合區域[data-filter-hide="mobile"] -->
                         <div class="c-filter__mbHide" data-filter-hide="mobile">
                             <div class="c-filter__head">
@@ -78,39 +82,42 @@
                             <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                             <a href="#" class="c-filter__close" data-filter-collapse></a>
                             <div class="c-filter__wrap">
-                                <div class="c-filter__group">
-                                    <!-- 條件群組[data-filter-group] -->
-                                    <div class="c-filterForm" id="uid-criteria-categoryTags"  data-filter-group>
-                                        <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
-                                        <div class="c-filterForm__title" data-filter-title>
-                                            <span>熱門主題</span>@*對應JSON欄位【CategoryTags】*@
-                                        </div>
-                                        <div class="c-filterForm__value">
-                                            <div class="l-pickGroup">
-                                                @foreach (var tag in Model.HotProductList)
-                                                {
-                                                    string value = tag;
-                                                    string display = string.Empty;
-
-                                                    if (tag == null)
+                                @if (Model.HotProductList != null && Model.HotProductList.Any())
+                                {
+                                    <div class="c-filter__group">
+                                        <!-- 條件群組[data-filter-group] -->
+                                        <div class="c-filterForm" id="uid-criteria-categoryTags" data-filter-group>
+                                            <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                            <div class="c-filterForm__title" data-filter-title>
+                                                <span>熱門主題</span>@*對應JSON欄位【CategoryTags】*@
+                                            </div>
+                                            <div class="c-filterForm__value">
+                                                <div class="l-pickGroup">
+                                                    @foreach (var tag in Model.HotProductList)
                                                     {
-                                                        display = "display: none;";
-                                                        value = string.Empty;
-                                                    }
+                                                        string value = tag;
+                                                        string display = string.Empty;
 
-                                                    <div class="l-pickGroup__item" style="@display">
-                                                        <!-- 篩選checkbox外層[data-filter-checkbox] -->
-                                                        <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
-                                                        <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@value">
-                                                            <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
-                                                        </label>
-                                                    </div>
-                                                }
+                                                        if (tag == null)
+                                                        {
+                                                            display = "display: none;";
+                                                            value = string.Empty;
+                                                        }
+
+                                                        <div class="l-pickGroup__item" style="@display">
+                                                            <!-- 篩選checkbox外層[data-filter-checkbox] -->
+                                                            <!-- 若checkbox搭配篩選功能，請將選項文字寫在[data-filter-value]上 -->
+                                                            <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                            </label>
+                                                        </div>
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                                 <div class="c-filter__group c-filter__group--divider">
                                     <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-max@mb-only">
                                         <div class="l-flex__item">
