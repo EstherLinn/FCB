@@ -12,7 +12,7 @@ namespace Feature.Wealth.Component.Models.PerformanceFundRank
         public int DTotalPages { get; set; }
         public int FTotalPages { get; set; }
         public int TotalPages { get; set; }
-        public int CurrentPage { get; set; }
+        public string CurrentPage { get; set; }
         public string PageSize { get; set; }
         public string DetailLink { get; set; }
 

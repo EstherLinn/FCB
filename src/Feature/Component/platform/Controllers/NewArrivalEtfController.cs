@@ -38,12 +38,12 @@ namespace Feature.Wealth.Component.Controllers
 
 
         [HttpPost]
-        public ActionResult GetSortedNewArrivalEtf(int page, string pageSize, string orderby, string desc)
+        public ActionResult GetSortedNewArrivalEtf(string page, string pageSize, string orderby, string desc)
         {
             var etf = _repository.GetFundData();
             var etfs = etf.Where(f => f.ListingDateFormat >= DateTime.Today.AddYears(-1));
 
-            if (page == null) { page = 1; }
+            if (page == null) { page = "1"; }
             if (pageSize == null) { pageSize = "10"; }
             if (orderby == null) { orderby = "SixMonthReturnMarketPriceOriginalCurrency"; }
             if (desc == null) { desc = "is-desc"; }
@@ -57,20 +57,21 @@ namespace Feature.Wealth.Component.Controllers
 
 
             var totalRecords = etfs.Count();
-            int totalPages;
-            List<ETFs> renderDatas;
+            int totalPages = 1;
+            List<ETFs> renderDatas = new List<ETFs>();
+            int pageSizeInt = 0;
+            int pageInt = 1;
 
             if (pageSize.Equals("all", StringComparison.OrdinalIgnoreCase))
             {
                 totalPages = 1;
                 renderDatas = etfs?.ToList();
             }
-            else
+            else if (int.TryParse(pageSize, out pageSizeInt) && int.TryParse(page, out pageInt))
             {
-                int pageSizeInt = Convert.ToInt32(pageSize);
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSizeInt);
                 renderDatas = etfs?
-                    .Skip((page - 1) * pageSizeInt)
+                    .Skip((pageInt - 1) * pageSizeInt)
                     .Take(pageSizeInt)
                     .ToList();
             }
@@ -78,7 +79,7 @@ namespace Feature.Wealth.Component.Controllers
             var model = new NewArrivalEtfModel()
             {
                 TotalPages = totalPages,
-                CurrentPage = page,
+                CurrentPage = pageInt.ToString(),
                 PageSize = pageSize,
                 NewETFs = renderDatas,
                 DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()

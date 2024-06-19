@@ -35,9 +35,14 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public JsonResult GetReportsData(string id)
         {
-            Item dataSource = Sitecore.Context.Database.GetItem(new ID(id));
-
             var datas = new List<ReportsItem>();
+
+            if (!ID.TryParse(id, out var guid))
+            {
+                return new JsonNetResult(datas);
+            }
+
+            Item dataSource = Sitecore.Context.Database.GetItem(guid);
 
             var children = ItemUtils.GetChildren(dataSource, Templates.WeeklyAndMonthlyReportsItem.Id);
 

@@ -29,19 +29,19 @@ namespace Feature.Wealth.Component.Controllers
                 PerformanceFunds = performanceFund,
                 DTotalPages = dtotal,
                 FTotalPages = ftotal
-        };
+            };
 
             return View("/Views/Feature/Wealth/Component/PerformanceFundRank/PerformanceFundRank.cshtml", model);
         }
 
 
         [HttpPost]
-        public ActionResult GetSortedPerformanceFundRank(string tab, string selectedValue, int page, string pageSize, string orderby, string desc)
+        public ActionResult GetSortedPerformanceFundRank(string tab, string selectedValue, string page, string pageSize, string orderby, string desc)
         {
             var funds = _performanceFundRankRepository.GetFundData();
 
             if (tab.IsNullOrEmpty()) { tab = "tab-1"; }
-            if (page == null) { page = 1; }
+            if (page == null) { page = "1"; }
             if (pageSize.IsNullOrEmpty()) { pageSize = "10"; }
             if (orderby.IsNullOrEmpty()) { orderby = "SixMonthReturnOriginalCurrency"; }
             if (desc.IsNullOrEmpty()) { desc = "is-desc"; }
@@ -74,20 +74,21 @@ namespace Feature.Wealth.Component.Controllers
 
 
             var totalRecords = funds.Count();
-            int totalPages;
-            List<Funds> renderDatas;
+            int totalPages = 1;
+            List<Funds> renderDatas = new List<Funds>();
+            int pageSizeInt = 0;
+            int pageInt = 1;
 
             if (pageSize.ToLower().Equals("all", StringComparison.OrdinalIgnoreCase))
             {
                 totalPages = 1;
                 renderDatas = _performanceFundRankRepository.GetFundRenderData(funds).ToList();
             }
-            else
+            else if (int.TryParse(pageSize, out pageSizeInt) && int.TryParse(page, out pageInt))
             {
-                int pageSizeInt = Convert.ToInt32(pageSize);
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSizeInt);
                 renderDatas = _performanceFundRankRepository.GetFundRenderData(funds)
-                    .Skip((page - 1) * pageSizeInt)
+                    .Skip((pageInt - 1) * pageSizeInt)
                     .Take(pageSizeInt)
                     .ToList();
             }
@@ -95,7 +96,7 @@ namespace Feature.Wealth.Component.Controllers
             var model = new PerformanceFundRankModel()
             {
                 TotalPages = totalPages,
-                CurrentPage = page,
+                CurrentPage = pageInt.ToString(),
                 PageSize = pageSize,
                 PerformanceFunds = renderDatas,
                 DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
