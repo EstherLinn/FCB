@@ -29,19 +29,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="c-filter__keyword">
-                            <!-- 條件群組[data-filter-group] -->
-                            <div class="c-filterForm" data-filter-group>
-                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
-                                <div class="c-filterForm__title" data-filter-title>
-                                    <span>熱門關鍵字</span>
-                                </div>
-                                <div class="c-filterForm__value">
-                                    <div class="l-pickGroup" id="hotkey_criteria">
-
-                                        @if (Model.HotKeywordTags != null)
-                                        {
-                                            foreach (string tag in Model.HotKeywordTags)
+                        @if (Model.HotKeywordTags != null && Model.HotKeywordTags.Count > 0)
+                        {
+                            <div class="c-filter__keyword">
+                                <!-- 條件群組[data-filter-group] -->
+                                <div class="c-filterForm" data-filter-group>
+                                    <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                    <div class="c-filterForm__title" data-filter-title>
+                                        <span>熱門關鍵字</span>
+                                    </div>
+                                    <div class="c-filterForm__value">
+                                        <div class="l-pickGroup" id="hotkey_criteria">
+                                            @foreach (string tag in Model.HotKeywordTags)
                                             {
                                                 <div class="l-pickGroup__item">
                                                     <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
@@ -50,12 +49,11 @@
                                                     </label>
                                                 </div>
                                             }
-                                        }
-
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        }
                         <!-- 小網收合區域[data-filter-hide="mobile"] -->
                         <div class="c-filter__mbHide" data-filter-hide="mobile">
                             <div class="c-filter__head">
