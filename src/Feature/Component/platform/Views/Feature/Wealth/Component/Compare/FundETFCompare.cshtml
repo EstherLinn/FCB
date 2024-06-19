@@ -1718,16 +1718,27 @@
                                         d.lable = data.lables.find((item) => item.id == key);
                                         if (params.fund.includes(key)) {
                                             d.oneDay = roundTo(d.OneDayReturnOriginalCurrency, 2);
+                                            d.oneDayStyle = undefined;
                                             d.oneWeek = roundTo(d.OneWeekReturnOriginalCurrency, 2);
+                                            d.oneWeekStyle = undefined;
                                             d.oneMonth = roundTo(d.OneMonthReturnOriginalCurrency, 2);
+                                            d.oneMonthStyle = undefined;
                                             d.threeMonth = roundTo(d.ThreeMonthReturnOriginalCurrency, 2);
+                                            d.threeMonthStyle = undefined;
                                             d.sixMonth = roundTo(d.SixMonthReturnOriginalCurrency, 2);
+                                            d.sixMonthStyle = undefined;
                                             d.year = roundTo(d.YeartoDateReturnOriginalCurrency, 2);
+                                            d.yearStyle = undefined;
                                             d.oneYear = roundTo(d.OneYearReturnOriginalCurrency, 2);
+                                            d.oneYearStyle = undefined;
                                             d.twoYear = roundTo(d.TwoYearReturnOriginalCurrency, 2);
+                                            d.twoYearStyle = undefined;
                                             d.threeYear = roundTo(d.ThreeYearReturnOriginalCurrency, 2);
+                                            d.threeYearStyle = undefined;
                                             d.fiveYear = roundTo(d.FiveYearReturnOriginalCurrency, 2);
+                                            d.fiveYearStyle = undefined;
                                             d.established = roundTo(d.InceptionDateReturnOriginalCurrency, 2);
+                                            d.establishedStyle = undefined;
                                             array.push(d);
                                         }
                                     }
