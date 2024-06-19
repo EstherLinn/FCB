@@ -137,8 +137,8 @@ namespace Feature.Wealth.Account.Repositories
             CIFMember member = null;
             var strSql = @$"  Select a.CIF_CUST_NAME,a.CIF_E_MAIL_ADDRESS,a.CIF_EMP_RISK,a.CIF_AO_EMPNO,b.EmployeeName as CIF_AO_EMPName,C.PROMOTION_CODE as CIF_PROMO_CODE FROM [CIF]  as a
                         left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, 3, len(EmployeeCode - 3))
-                        left join [CFMBSEL] as C on CIF_ID_NO = CUST_ID
-                        WHERE CIF_ID_NO = @id ";
+                        left join [CFMBSEL] as C on CIF_ID = CUST_ID
+                        WHERE CIF_ID = @id ";
             var para = new { id = id };
             try
             {
@@ -162,7 +162,7 @@ namespace Feature.Wealth.Account.Repositories
             CIFMember member = null;
             var strSql = @$"  Select a.CIF_CUST_NAME,a.CIF_E_MAIL_ADDRESS,a.CIF_EMP_RISK,a.CIF_AO_EMPNO,b.EmployeeName as CIF_AO_EMPName,C.PROMOTION_CODE as CIF_PROMO_CODE FROM [CIF]  as a
                         left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, 3, len(EmployeeCode - 3))
-                        left join [CFMBSEL] as C on CIF_ID_NO = CUST_ID
+                        left join [CFMBSEL] as C on CIF_ID = CUST_ID
                         WHERE C.PROMOTION_CODE = @promotioncode ";
             var para = new { promotioncode = promotioncode };
             try
@@ -186,7 +186,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             FcbMemberModel fcbMemberModel = null;
             var strSql = $"  Select A.*,B.CIF_EMP_RISK as Risk,B.CIF_ESTABL_BIRTH_DATE as Birthday,C.EmployeeName as Advisror FROM[FCB_Member] as A" +
-                              " left join [CIF] as B on B.CIF_ID_NO = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)" +
+                              " left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)" +
                               " left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, 3, len(EmployeeCode - 3))  " +
                               " WHERE PlatForm = @Platform and ";
             if (platFormEunm == PlatFormEunm.WebBank)
@@ -207,7 +207,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             FcbMemberModel fcbMemberModel = null;
             var strSql = $"  Select A.*,B.CIF_EMP_RISK as Risk,B.CIF_ESTABL_BIRTH_DATE as Birthday,C.EmployeeName as Advisror FROM[FCB_Member] as A" +
-                              " left join [CIF] as B on B.CIF_ID_NO = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)" +
+                              " left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)" +
                               " left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, 3, len(EmployeeCode - 3))  " +
                               " WHERE PlatForm = @Platform and PlatFormId = @promotionCode ";
 
