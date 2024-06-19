@@ -8,7 +8,8 @@
         public string NewsType { get; set; }
         public string NewsTitle { get; set; }
         public string NewsSerialNumber { get; set; }
-        public string NewsViewCount { get; set; }
+        public int? NewsViewCount { get; set; }
+        public string DisplayNewsViewCount { get; set; }
         public string NewsDetailLink { get; set; }
         public string value { get; set; }
         public MarketNewsData Data { get; set; }

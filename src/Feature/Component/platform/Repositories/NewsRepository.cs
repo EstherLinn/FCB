@@ -210,7 +210,8 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     var currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(item.NewsSerialNumber.ToString());
                     var visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
-                    item.NewsViewCount = visitCount?.ToString("N0") ?? "0";
+                    item.NewsViewCount = visitCount ?? 0;
+                    item.DisplayNewsViewCount = visitCount?.ToString("N0") ?? "0";
                 }
             }
 
