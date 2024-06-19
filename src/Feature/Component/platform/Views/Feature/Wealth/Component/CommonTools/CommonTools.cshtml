@@ -131,10 +131,21 @@
                     url: '@ClientRoute.GenerateUrl(this, "Accounts", "SetCommonTools")',
                     data: { itemId: itemId, isActive: SC_DATA.CommonTools_isActive },
                     success: function (resp) {
-                        if (resp && resp.Item1 && resp.Item2) {
+                        if (resp && resp.Item2) {
+                            SC_DATA.CommonTools_isActive = false;
+                            commonActive();
+                            $.magnificPopup.open({
+                                items: {
+                                    src: '#popupToolsMax'
+                                },
+                                type: 'inline'
+                            });
+                            return;
+                        }
+                        if (resp && resp.Item1 && resp.Item3) {
                             commonActive();
 
-                            let result = resp.Item2;
+                            let result = resp.Item3;
                             SC_DATA.CommonTools = result.body;
                             if (result.statusCode == 200 && result.body.length > 0) {
                                 let commonHtml = '';
@@ -146,7 +157,7 @@
                                               </a>
                                           </li>`;
                                 }
-                                $('[data-compare-count]', '#compareLimit').text(compareStore.length + '/7');
+                                $('[data-compare-count]', '#compareLimit').text(result.body.length + '/7');
                                 if (result.body.length == 7) {
                                     $('[data-compare-msg]', '#compareLimit').text('標的到上限嚕！');
                                 } else {
