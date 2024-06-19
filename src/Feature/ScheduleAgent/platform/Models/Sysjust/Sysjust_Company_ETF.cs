@@ -18,18 +18,21 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// 發行公司 ID
         /// </summary>
         [Index(0)]
+        [NullValues("", "NULL", null)]
         public string IssueCompanyID { get; set; }
 
         /// <summary>
         /// 發行公司英文名稱
         /// </summary>
         [Index(1)]
+        [NullValues("", "NULL", null)]
         public string EnglishName { get; set; }
 
         /// <summary>
         /// 設立地點
         /// </summary>
         [Index(2)]
+        [NullValues("", "NULL", null)]
         public string Location { get; set; }
 
         /// <summary>
@@ -43,6 +46,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// 公司網址
         /// </summary>
         [Index(4)]
+        [NullValues("", "NULL", null)]
         public string Website { get; set; }
     }
 

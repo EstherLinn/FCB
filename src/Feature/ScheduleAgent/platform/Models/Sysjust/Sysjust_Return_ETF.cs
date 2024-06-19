@@ -17,11 +17,13 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         ///嘉實代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string SysjustCode { get; set; }
 
         /// <summary>
         /// 淨值日期
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string NetAssetValueDate { get; set; }
 
         /// <summary>
@@ -37,6 +39,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 計價(市價)幣別
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string QuoteCurrency { get; set; }
 
         /// <summary>
@@ -352,6 +355,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 市價日期
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string MarketPriceDate { get; set; }
     }
 }

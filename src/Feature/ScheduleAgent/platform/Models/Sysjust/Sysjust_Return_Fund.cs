@@ -17,6 +17,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 嘉實代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string SysjustCode { get; set; }
 
         /// <summary>
@@ -363,6 +364,8 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// Beta
         /// </summary>
         public decimal? Beta { get; set; }
+
+        [NullValues("", "NULL", null)]
         public string DataDate { get; set; }
     }
 }

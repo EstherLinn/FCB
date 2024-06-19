@@ -1,4 +1,5 @@
 ﻿using CsvHelper.Configuration.Attributes;
+using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 
 namespace Feature.Wealth.ScheduleAgent.Models.Wealth
 {
@@ -19,24 +20,28 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         /// ISIN Code
         /// </summary>
         [Index(1)]
+        [NullValues("", "NULL", null)]
         public string ISINCode { get; set; }
 
         /// <summary>
         /// 銀行商品代碼
         /// </summary>
         [Index(2)]
+        [NullValues("", "NULL", null)]
         public string BankProductCode { get; set; }
 
         /// <summary>
         /// 淨值日期
         /// </summary>
         [Index(3)]
+        [NullValues("", "NULL", null)]
         public string NetAssetValueDate { get; set; }
 
         /// <summary>
         /// 基金幣別
         /// </summary>
         [Index(4)]
+        [NullValues("", "NULL", null)]
         public string FundCurrency { get; set; }
 
         /// <summary>

@@ -17,21 +17,25 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// ETF 代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string ETFCode { get; set; }
 
         /// <summary>
         /// 除息日
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string ExDividendDate { get; set; }
 
         /// <summary>
         /// 基準日
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string RecordDate { get; set; }
 
         /// <summary>
         /// 發放日
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string PaymentDate { get; set; }
 
         /// <summary>
@@ -42,6 +46,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 配息頻率
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string DividendFrequency { get; set; }
 
         /// <summary>
@@ -57,6 +62,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 幣別
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string Currency { get; set; }
     }
 }

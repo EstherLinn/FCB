@@ -17,11 +17,13 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 基金代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string FundCode { get; set; }
 
         /// <summary>
         /// 規模日期
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string ScaleDate { get; set; }
 
         /// <summary>
@@ -32,6 +34,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 幣別
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string Currency { get; set; }
     }
 }

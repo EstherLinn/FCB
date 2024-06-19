@@ -13,12 +13,14 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         /// 資料日期
         /// </summary>
         [Index(0)]
+        [NullValues("", "NULL", null)]
         public string DataDate { get; set; }
 
         /// <summary>
         /// ISIN Code
         /// </summary>
         [Index(1)]
+        [NullValues("", "NULL", null)]
         public string ISINCode { get; set; }
 
         /// <summary>
@@ -31,12 +33,14 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         /// 淨值日期
         /// </summary>
         [Index(3)]
+        [NullValues("", "NULL", null)]
         public string NetAssetValueDate { get; set; }
 
         /// <summary>
         /// 基金幣別
         /// </summary>
         [Index(4)]
+        [NullValues("", "NULL", null)]
         public string FundCurrency { get; set; }
 
         /// <summary>

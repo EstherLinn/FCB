@@ -2,6 +2,7 @@
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Foundation.Wealth.Manager;
 using Sitecore.Data.Items;
+using Sitecore.Xdb.Reporting;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,7 +12,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Logging;
+using static Sitecore.ContentSearch.Linq.Extensions.ReflectionExtensions;
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
 {
@@ -74,8 +77,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             INSERT INTO {tableName} ({columns})
             VALUES ({parameters});
             ";
-         
-            int line = ExecuteNonQuery(insertQuery, data, CommandType.Text,true);
+
+            int line = ExecuteNonQuery(insertQuery, data, CommandType.Text, true);
             LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, line);
         }
 
@@ -109,14 +112,62 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             return updateColumns;
         }
 
-        public string CalculateHash(string archiveFilePath)
+        public async Task BulkInsertFromOracle<T>(IList<T> data, string tableName)
         {
-            using (var sha256 = SHA256.Create())
+            var properties = typeof(T).GetProperties();
+
+            string truncateQuery = $"TRUNCATE TABLE {tableName};";
+            ExecuteNonQuery(truncateQuery, null, CommandType.Text, true);
+
+            using (var connection = DbManager.Cif.DbConnection())
             {
-                byte[] hashBytes = sha256.ComputeHash(File.ReadAllBytes(archiveFilePath));
-                return BitConverter.ToString(hashBytes);
+                await connection.OpenAsync();
+
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy((SqlConnection)connection))
+                {
+                    bulkCopy.DestinationTableName = tableName;
+
+                    for (int i = 0; i < properties.Length; i++)
+                    {
+                        var property = properties[i];
+                        bulkCopy.ColumnMappings.Add(property.Name, property.Name);
+                    }
+
+                    try
+                    {
+                        DataTable dataTable = ConvertToDataTable(data, properties);
+                        await bulkCopy.WriteToServerAsync(dataTable);
+                    }
+                    catch (Exception ex)
+                    {
+                        this._logger.Error(ex.Message, ex);
+                    }
+                }
             }
         }
+
+        private DataTable ConvertToDataTable<T>(IList<T> data, PropertyInfo[] properties)
+        {
+            DataTable dataTable = new DataTable();
+
+            foreach (var property in properties)
+            {
+                dataTable.Columns.Add(property.Name, Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType);
+            }
+
+            foreach (T item in data)
+            {
+                DataRow row = dataTable.NewRow();
+                foreach (var property in properties)
+                {
+                    row[property.Name] = property.GetValue(item) ?? DBNull.Value;
+                }
+                dataTable.Rows.Add(row);
+            }
+
+            return dataTable;
+        }
+
 
         public void LogChangeHistory(DateTime timestamp, string filePath, string operationType, string tableName, int line)
         {

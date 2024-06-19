@@ -17,6 +17,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 股東名稱
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string ShareholderName { get; set; }
 
         /// <summary>

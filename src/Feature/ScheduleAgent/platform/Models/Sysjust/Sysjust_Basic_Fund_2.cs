@@ -17,11 +17,13 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 一銀代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string FirstBankCode { get; set; }
 
         /// <summary>
         /// 嘉實基金代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string SysjustFundCode { get; set; }
 
         /// <summary>
@@ -32,6 +34,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 費用備註
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string FeeRemarks { get; set; }
 
         /// <summary>
@@ -42,26 +45,31 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 指標指數名稱
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string IndicatorIndexName { get; set; }
 
         /// <summary>
         /// 指標指數代碼
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string IndicatorIndexCode { get; set; }
 
         /// <summary>
         /// 基金核準生效日
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string FundApprovalEffectiveDate { get; set; }
 
         /// <summary>
         /// 總代理基金生效日
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string MasterAgentFundEffectiveDate { get; set; }
 
         /// <summary>
         /// 國人投資比重日期
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string DomesticInvestmentRatioDate { get; set; }
 
         /// <summary>
@@ -72,6 +80,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 投資區域
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string InvestmentRegionName { get; set; }
 
         /// <summary>
@@ -87,6 +96,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 單一報價
         /// </summary>
+        [NullValues("", "NULL", null)]
         public string SingleQuote { get; set; }
     }
 }
