@@ -803,6 +803,7 @@
                 };
 
                 let today = new Date();
+                let establishment = $('[data-trend-filter="marketInputStart"]').data('start-date');
 
                 function calDateRange(month) {
                     let set = new Date().setMonth(new Date().getMonth() - month);
@@ -841,11 +842,10 @@
                             obj.endDate = today.toISOString().split('T')[0];
                             break;
                         case 'establishment':
-                            obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                            obj.startDate = establishment ? establishment.replaceAll('/', '-') : '';
                             obj.endDate = today.toISOString().split('T')[0];
                             break;
                     }
-
                     $('[data-trend-filter="marketInputStart"]').val(obj.startDate.replaceAll('-', '/'));
                     $('[data-trend-filter="marketInputEnd"]').val(obj.endDate.replaceAll('-', '/'));
                     $('[data-trend-filter="marketInputStart"]').datepicker('setDate', obj.startDate.replaceAll('-', '/'));
@@ -1179,6 +1179,7 @@
                 };
 
                 let today = new Date();
+                let establishment = $('[data-trend-filter="etfInputStart"]').data('start-date');
 
                 function calDateRange(month) {
                     let set = new Date().setMonth(new Date().getMonth() - month);
@@ -1232,7 +1233,7 @@
                             obj.cycle = 'W';
                             break;
                         case 'establishment':
-                            obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                            obj.startDate = establishment ? establishment.replaceAll('/', '-') : '';
                             obj.endDate = today.toISOString().split('T')[0];
                             obj.cycle = 'M';
                             break;

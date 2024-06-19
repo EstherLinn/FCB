@@ -171,7 +171,7 @@
                                     <div class="l-form">
                                         <div class="l-form__item">
                                             <div class="o-calendarBox o-calendarBox--filter">
-                                                <input type="text" class="o-calendarBox__input" data-trend-filter="priceInputStart" data-calendar="true" data-date-end-date="0d" readonly>
+                                                <input type="text" class="o-calendarBox__input" data-trend-filter="priceInputStart" data-establishment="@etfData.EstablishmentDate" data-calendar="true" data-date-end-date="0d" readonly>
                                             </div>
                                         </div>
                                         <div class="l-form__error">
@@ -369,6 +369,7 @@
                 };
 
                 let today = new Date();
+                let establishment = $('[data-trend-filter="priceInputStart"]').data('establishment');
 
                 function calDateRange(month) {
                     let set = new Date().setMonth(new Date().getMonth() - month);
@@ -407,7 +408,7 @@
                             obj.endDate = today.toISOString().split('T')[0];
                             break;
                         case 'establishment':
-                            obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                            obj.startDate = establishment ? establishment.replaceAll('/', '-') : '';
                             obj.endDate = today.toISOString().split('T')[0];
                             break;
                     }
