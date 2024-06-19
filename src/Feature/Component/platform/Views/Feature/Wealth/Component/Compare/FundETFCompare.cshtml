@@ -796,42 +796,66 @@
         </td>
         <td>
             <% if (oneDay) { %>
+            <% if (oneDayStyle) { %>
+            <span class="<%= oneDayStyle %>"><%= oneDay %></span>
+            <% } else { %>
             <span class="<%= oneDay < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneDay) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (oneWeek) { %>
+            <% if (oneWeekStyle) { %>
+            <span class="<%= oneWeekStyle %>"><%= oneWeek %></span>
+            <% } else { %>
             <span class="<%= oneWeek < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneWeek) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (oneMonth) { %>
+            <% if (oneMonthStyle) { %>
+            <span class="<%= oneMonthStyle %>"><%= oneMonth %></span>
+            <% } else { %>
             <span class="<%= oneMonth < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneMonth) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (threeMonth) { %>
+            <% if (threeMonthStyle) { %>
+            <span class="<%= oneMonthStyle %>"><%= threeMonth %></span>
+            <% } else { %>
             <span class="<%= threeMonth < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(threeMonth) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (sixMonth) { %>
+            <% if (sixMonthStyle) { %>
+            <span class="<%= sixMonthStyle %>"><%= sixMonth %></span>
+            <% } else { %>
             <span class="<%= sixMonth < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(sixMonth) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (year) { %>
+            <% if (yearStyle) { %>
+            <span class="<%= yearStyle %>"><%= year %></span>
+            <% } else { %>
             <span class="<%= year < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(year) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
@@ -849,42 +873,66 @@
         </td>
         <td>
             <% if (oneYear) { %>
+            <% if (oneYearStyle) { %>
+            <span class="<%= oneYearStyle %>"><%= oneYear %></span>
+            <% } else { %>
             <span class="<%= oneYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneYear) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (twoYear) { %>
+            <% if (twoYearStyle) { %>
+            <span class="<%= twoYearStyle %>"><%= twoYear %></span>
+            <% } else { %>
             <span class="<%= twoYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(twoYear) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (threeYear) { %>
+            <% if (threeYearStyle) { %>
+            <span class="<%= threeYearStyle %>"><%= threeYear %></span>
+            <% } else { %>
             <span class="<%= threeYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(threeYear) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (fiveYear) { %>
+            <% if (fiveYearStyle) { %>
+            <span class="<%= fiveYearStyle %>"><%= fiveYear %></span>
+            <% } else { %>
             <span class="<%= fiveYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(fiveYear) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (year) { %>
-            <span class="<%= year < 0 ? 'o-fall': 'o-rise' %>"><%= (year) %>%</span>
+            <% if (yearStyle) { %>
+            <span class="<%= yearStyle %>"><%= year %></span>
+            <% } else { %>
+            <span class="<%= year < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(year) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (established) { %>
+            <% if (establishedStyle) { %>
+            <span class="<%= establishedStyle %>"><%= established %></span>
+            <% } else { %>
             <span class="<%= established < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(established) %>%</span>
+            <% } %>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
@@ -1433,17 +1481,28 @@
                                         result.name = d.BasicEtf.ETFName || result.name;
 
                                         data.ETFRateOfReturn[key] = {
-                                            oneDay: d.BasicEtf.DailyReturnNetValueOriginalCurrency,
-                                            oneWeek: d.BasicEtf.WeeklyReturnNetValueOriginalCurrency,
-                                            oneMonth: d.BasicEtf.MonthlyReturnNetValueOriginalCurrency,
-                                            threeMonth: d.BasicEtf.ThreeMonthReturnNetValueOriginalCurrency,
-                                            sixMonth: d.BasicEtf.SixMonthReturnNetValueOriginalCurrency,
-                                            year: d.BasicEtf.YeartoDateReturnNetValueOriginalCurrency,
-                                            oneYear: d.BasicEtf.OneYearReturnNetValueOriginalCurrency,
-                                            twoYear: d.BasicEtf.TwoYearReturnNetValueOriginalCurrency,
-                                            threeYear: d.BasicEtf.ThreeYearReturnNetValueOriginalCurrency,
-                                            fiveYear: d.BasicEtf.FiveYearReturnNetValueOriginalCurrency,
-                                            established: d.BasicEtf.InceptionDateNetValueOriginalCurrency
+                                            oneDay: d.BasicEtf.DailyReturnMarketPriceOriginalCurrency,
+                                            oneDayStyle: d.BasicEtf.DailyReturnMarketPriceOriginalCurrencyStyle,
+                                            oneWeek: d.BasicEtf.WeeklyReturnMarketPriceOriginalCurrency,
+                                            oneWeekStyle: d.BasicEtf.WeeklyReturnMarketPriceOriginalCurrencyStyle,
+                                            oneMonth: d.BasicEtf.MonthlyReturnMarketPriceOriginalCurrency,
+                                            oneMonthStyle: d.BasicEtf.MonthlyReturnMarketPriceOriginalCurrencyStyle,
+                                            threeMonth: d.BasicEtf.ThreeMonthReturnMarketPriceOriginalCurrency,
+                                            threeMonthStyle: d.BasicEtf.ThreeMonthReturnMarketPriceOriginalCurrencyStyle,
+                                            sixMonth: d.BasicEtf.SixMonthReturnMarketPriceOriginalCurrency,
+                                            sixMonthStyle: d.BasicEtf.SixMonthReturnMarketPriceOriginalCurrencyStyle,
+                                            year: d.BasicEtf.YeartoDateReturnMarketPriceOriginalCurrency,
+                                            yearStyle: d.BasicEtf.YeartoDateReturnMarketPriceOriginalCurrencyStyle,
+                                            oneYear: d.BasicEtf.OneYearReturnMarketPriceOriginalCurrency,
+                                            oneYearStyle: d.BasicEtf.OneYearReturnMarketPriceOriginalCurrencyStyle,
+                                            twoYear: d.BasicEtf.TwoYearReturnMarketPriceOriginalCurrency,
+                                            twoYearStyle: d.BasicEtf.TwoYearReturnMarketPriceOriginalCurrencyStyle,
+                                            threeYear: d.BasicEtf.ThreeYearReturnMarketPriceOriginalCurrency,
+                                            threeYearStyle: d.BasicEtf.ThreeYearReturnMarketPriceOriginalCurrencyStyle,
+                                            fiveYear: d.BasicEtf.FiveYearReturnMarketPriceOriginalCurrency,
+                                            fiveYearStyle: d.BasicEtf.FiveYearReturnMarketPriceOriginalCurrencyStyle,
+                                            established: d.BasicEtf.InceptionDateMarketPriceOriginalCurrency,
+                                            establishedStyle: d.BasicEtf.InceptionDateMarketPriceOriginalCurrencyStyle
                                         };
                                         data.ETFRiskIndicator[key] = $.extend({}, d.ETFRiskIndicator, d.BasicEtf);
                                         data.ETFThiryDaysNav[key] = d.ETFThiryDaysNav;
@@ -1681,17 +1740,17 @@
                                         d.name = result.name;
                                         d.lable = data.lables.find((item) => item.id == key);
                                         if (params.etf.includes(key)) {
-                                            d.oneDay = roundTo(d.oneDay, 2);
-                                            d.oneWeek = roundTo(d.oneWeek, 2);
-                                            d.oneMonth = roundTo(d.oneMonth, 2);
-                                            d.threeMonth = roundTo(d.threeMonth, 2);
-                                            d.sixMonth = roundTo(d.sixMonth, 2);
-                                            d.year = roundTo(d.year, 2);
-                                            d.oneYear = roundTo(d.oneYear, 2);
-                                            d.twoYear = roundTo(d.twoYear, 2);
-                                            d.threeYear = roundTo(d.threeYear, 2);
-                                            d.fiveYear = roundTo(d.fiveYear, 2);
-                                            d.established = roundTo(d.established, 2);
+                                            d.oneDay = typeof (d.oneDay) === 'number' ? roundTo(d.oneDay, 2) : d.oneDay;
+                                            d.oneWeek = typeof (d.oneWeek) === 'number' ? roundTo(d.oneWeek, 2) : d.oneWeek;
+                                            d.oneMonth = typeof (d.oneMonth) === 'number' ? roundTo(d.oneMonth, 2) : d.oneMonth;
+                                            d.threeMonth = typeof (d.threeMonth) === 'number' ? roundTo(d.threeMonth, 2) : d.threeMonth;
+                                            d.sixMonth = typeof (d.sixMonth) === 'number' ? roundTo(d.sixMonth, 2) : d.sixMonth;
+                                            d.year = typeof (d.year) === 'number' ? roundTo(d.year, 2) : d.year;
+                                            d.oneYear = typeof (d.oneYear) === 'number' ? roundTo(d.oneYear, 2) : d.oneYear;
+                                            d.twoYear = typeof (d.twoYear) === 'number' ? roundTo(d.twoYear, 2) : d.twoYear;
+                                            d.threeYear = typeof (d.threeYear) === 'number' ? roundTo(d.threeYear, 2) : d.threeYear;
+                                            d.fiveYear = typeof (d.fiveYear) === 'number' ? roundTo(d.fiveYear, 2) : d.fiveYear;
+                                            d.established = typeof (d.established) === 'number' ? roundTo(d.established, 2) : d.established;
                                             array.push(d);
                                         }
                                     }
@@ -1920,7 +1979,7 @@
                                             d.scale = d.ScaleMillions ? (formatNumberWithCommas(d.ScaleMillions / 100) + ' ' + d.QuoteCurrency) : '-';
                                             d.publisher = d.PublicLimitedCompanyName || '-';
                                             d.registration = d.RegisteredLocation || '-';
-                                            d.depository = '-';
+                                            d.depository = d.Depository || '-';
                                             d.subscriptionHandlingFee = d.SubscriptionFee || '-';
                                             array.push(d);
                                         }
