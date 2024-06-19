@@ -466,7 +466,7 @@
                         console.log(resp)
                         if (resp && resp.success) {
                             let postDataUrl = '@AppPayLoginUrl';
-                            postDataUrl = postDataUrl + `?merchantId=${resp.merchantId}&txReqId=${resp.txReqId}&sign=${resp.sign}`;
+                            postDataUrl = postDataUrl;
                             let postdata =
                             {
                                 merchantId: resp.merchantId,
