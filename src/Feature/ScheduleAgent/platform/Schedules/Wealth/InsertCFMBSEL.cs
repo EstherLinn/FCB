@@ -12,6 +12,7 @@ using System.Text;
 using System.Diagnostics;
 using Foundation.Wealth.Manager;
 using System.Data;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -25,11 +26,21 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             string sql = "SELECT * FROM CFMBSEL_STG";
             try
             {
-                var results = await DbManager.Cif.ExecuteIListAsync<Cfmbsel>(sql, null, CommandType.Text);
-                if (results != null && results.Any())
+                var results = DbManager.Cif.ExecuteIList<Cfmbsel>(sql, null, CommandType.Text);
+
+                foreach (var item in results)
+                {
+                    this.Logger.Info($"EXT_DATE: {item.EXT_DATE}");
+                    this.Logger.Info($"CUST_ID: {item.CUST_ID}");
+                    this.Logger.Info($"TELLER_CODE: {item.TELLER_CODE}");
+                    this.Logger.Info($"PROMOTION_CODE: {item.PROMOTION_CODE}");
+                    this.Logger.Info($"LOAD_DATE: {item.LOAD_DATE}");
+                }
+
+                if (!results.IsNullOrEmpty())
                 {
                     //使用BulkInsert寫入sql資料庫
-                    _repository.BulkInsertFromOracle(results, "[CFMBSEL]");
+                    await _repository.BulkInsertFromOracle(results, "[CFMBSEL]");
                 }
                 else
                 {

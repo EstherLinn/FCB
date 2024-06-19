@@ -24,7 +24,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             //CIF 一次性排程 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM WEA_DW_CIF_VIEW";
 
-            var results = await DbManager.Cif.ExecuteIListAsync<Cif>(sql, null, CommandType.Text);
+            var results = DbManager.Cif.ExecuteIList<Cif>(sql, null, CommandType.Text);
 
 
             if (results != null && results.Any())
@@ -32,7 +32,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 try
                 {
                     //使用BulkInsert寫入資料庫
-                    _repository.BulkInsertFromOracle(results, "[CIF]");
+                    await _repository.BulkInsertFromOracle(results, "[CIF]");
                 }
                 catch (Exception ex)
                 {

@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using static Sitecore.ContentSearch.Linq.Extensions.ReflectionExtensions;
 
@@ -111,7 +112,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             return updateColumns;
         }
 
-        public void BulkInsertFromOracle<T>(IList<T> data, string tableName)
+        public async Task BulkInsertFromOracle<T>(IList<T> data, string tableName)
         {
             var properties = typeof(T).GetProperties();
 
@@ -120,7 +121,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             using (var connection = DbManager.Cif.DbConnection())
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 using (SqlBulkCopy bulkCopy = new SqlBulkCopy((SqlConnection)connection))
                 {
@@ -135,7 +136,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     try
                     {
                         DataTable dataTable = ConvertToDataTable(data, properties);
-                        bulkCopy.WriteToServer(dataTable);
+                        await bulkCopy.WriteToServerAsync(dataTable);
                     }
                     catch (Exception ex)
                     {
