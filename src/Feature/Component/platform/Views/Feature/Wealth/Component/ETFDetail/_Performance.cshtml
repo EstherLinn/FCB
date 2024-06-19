@@ -932,9 +932,6 @@
                             $('[data-update-date="market"]').text(updateDate);
 
                             chart = Highcharts.stockChart('marketTrendChart', {
-                                time: {
-                                    useUTC: false
-                                },
                                 chart: {
                                     zooming: {
                                         mouseWheel: {
@@ -1084,6 +1081,7 @@
                                     tickPosition: 'inside',
                                     tickWidth: 0.5,
                                     tickLength: 7,
+                                    tickInterval: 24 * 3600 * 1000 * 7,
                                     labels: {
                                         formatter: function () {
                                             const format = {
@@ -1398,9 +1396,6 @@
                         $('[data-update-date="etf"]').text(updateDate);
 
                         chart = Highcharts.stockChart('etfTrendChart', {
-                            time: {
-                                useUTC: false
-                            },
                             chart: {
                                 zooming: {
                                     mouseWheel: {
@@ -1555,10 +1550,11 @@
                                 tickPosition: 'inside',
                                 tickWidth: 0.5,
                                 tickLength: 7,
+                                tickInterval: 24 * 3600 * 1000 * 7,
                                 labels: {
                                     formatter: function () {
                                         const format = {
-                                            day: '%Y/%m',
+                                            day: '%Y/%m/%d',
                                             week: '%Y/%m',
                                             month: '%Y/%m',
                                             year: '%Y/%m'
