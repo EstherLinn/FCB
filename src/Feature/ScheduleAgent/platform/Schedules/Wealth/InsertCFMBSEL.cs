@@ -28,13 +28,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             {
                 var results = DbManager.Cif.ExecuteIList<Cfmbsel>(sql, null, CommandType.Text);
 
+
                 foreach (var item in results)
                 {
-                    this.Logger.Info($"EXT_DATE: {item.EXT_DATE}");
-                    this.Logger.Info($"CUST_ID: {item.CUST_ID}");
-                    this.Logger.Info($"TELLER_CODE: {item.TELLER_CODE}");
-                    this.Logger.Info($"PROMOTION_CODE: {item.PROMOTION_CODE}");
-                    this.Logger.Info($"LOAD_DATE: {item.LOAD_DATE}");
+                    this.Logger.Info($"EXT_DATE: {item.EXT_DATE}" + $"CUST_ID: {item.CUST_ID}" + $"TELLER_CODE: {item.TELLER_CODE}" + $"PROMOTION_CODE: {item.PROMOTION_CODE}" + $"LOAD_DATE: {item.LOAD_DATE}");
                 }
 
                 if (!results.IsNullOrEmpty())
@@ -44,13 +41,13 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 }
                 else
                 {
-                    this.Logger.Error("ERROR: File not found");
+                    this.Logger.Warn("File not found");
                     _repository.LogChangeHistory(DateTime.UtcNow, sql, "沒有資料", " ", 0);
                 }
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex.Message, ex);
+                this.Logger.Error(ex.ToString());
                 _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0);
 
             }

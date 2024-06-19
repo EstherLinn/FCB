@@ -26,6 +26,15 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
             var results = DbManager.Cif.ExecuteIList<Cif>(sql, null, CommandType.Text);
 
+            foreach (var item in results)
+            {
+                this.Logger.Info($"CIF_ID: {item.CIF_ID}" + $"CIF_CUST_NAME: {item.CIF_CUST_NAME}" + $"CIF_ESTABL_BIRTH_DATE: {item.CIF_ESTABL_BIRTH_DATE}" + $"CIF_CUST_ATTR: {item.CIF_CUST_ATTR}" + $"CIF_TEL_NO1: {item.CIF_TEL_NO1}"
+                    + $"CIF_TEL_NO3: {item.CIF_TEL_NO3}" + $"CIF_E_MAIL_ADDRESS: {item.CIF_E_MAIL_ADDRESS}" + $"CIF_CHN_BU: {item.CIF_CHN_BU}" + $"CIF_CHN_CR: {item.CIF_CHN_CR}"
+                    + $"CIF_AO_EMPNO: {item.CIF_AO_EMPNO}" + $"CIF_MAIN_BRANCH: {item.CIF_MAIN_BRANCH}" + $"CIF_EMP_RISK: {item.CIF_EMP_RISK}" + $"CIF_EMP_PI_RISK_ATTR: {item.CIF_EMP_PI_RISK_ATTR}"
+                    + $"KYC_EXPIR_DATE: {item.KYC_EXPIR_DATE}" + $"CIF_VIP_CODE: {item.CIF_VIP_CODE}" + $"CIF_RECCONSENT_TYPE: {item.CIF_RECCONSENT_TYPE}" + $"CIF_UNHEALTH_TYPE: {item.CIF_UNHEALTH_TYPE}"
+                    + $"CIF_SAL_FLAG: {item.CIF_SAL_FLAG}" + $"CIF_HIGH_ASSET_FLAG: {item.CIF_HIGH_ASSET_FLAG}"
+                    + $"CIF_HIGH_ASSET_DATE: {item.CIF_HIGH_ASSET_DATE}" + $"CIF_EXT_DATE: {item.CIF_EXT_DATE}");
+            }
 
             if (results != null && results.Any())
             {
