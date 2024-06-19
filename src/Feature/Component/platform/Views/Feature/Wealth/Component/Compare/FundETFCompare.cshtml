@@ -1914,7 +1914,7 @@
                                         d.lable = data.lables.find((item) => item.id == key);
                                         if (params.etf.includes(key)) {
                                             d.currency = d.CurrencyName || '-';
-                                            d.dividendFrequency = d.DividendFrequency || '-';
+                                            d.dividendFrequency = d.DividendDistributionFrequency || '-';
                                             d.dateOfEstablishment = d.EstablishmentDate || '-';
                                             d.type = d.ProductType || '-';
                                             d.scale = d.ScaleMillions ? (formatNumberWithCommas(d.ScaleMillions / 100) + ' ' + d.QuoteCurrency) : '-';
