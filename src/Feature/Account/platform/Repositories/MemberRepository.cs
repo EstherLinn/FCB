@@ -454,7 +454,7 @@ namespace Feature.Wealth.Account.Repositories
             return settings.Contains(itemId);
         }
 
-        public (bool, CommonFuncrionsResp) SetCommonTools(string itemId, bool isActive)
+        public (bool, bool, CommonFuncrionsResp) SetCommonTools(string itemId, bool isActive)
         {
             var id = FcbMemberHelper.GetMemberPlatFormId();
             var commons = GetCommonFunctions(id);
@@ -468,15 +468,17 @@ namespace Feature.Wealth.Account.Repositories
                 tools = tools.RemoveWhere(i => i == itemId);
             }
             bool success = false;
+            bool limit = tools.Count() > 7;
             try
             {
-                var jsonStr = JsonConvert.SerializeObject(tools);
-                var strSql = @$"UPDATE [FCB_Member] Set CommonFunction=@jsonStr,UpdateTime=@Time WHERE  PlatFormId = @PlatFormId;";
-                var para = new { jsonStr = jsonStr, Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), PlatFormId = id };
-                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
-                success = affectedRows != 0;
-
-                commons.Body = GetCommonToolsInfo(tools);
+                if (!limit)
+                {
+                    var strSql = @$"UPDATE [FCB_Member] Set CommonFunction=@jsonStr,UpdateTime=@Time WHERE  PlatFormId = @PlatFormId;";
+                    var para = new { jsonStr = JsonConvert.SerializeObject(tools), Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), PlatFormId = id };
+                    var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
+                    success = affectedRows != 0;
+                    commons.Body = GetCommonToolsInfo(tools);
+                }
             }
             catch (SqlException ex)
             {
@@ -486,7 +488,7 @@ namespace Feature.Wealth.Account.Repositories
             {
                 Log.Error(ex.Message);
             }
-            return (success, commons);
+            return (success, limit, commons);
         }
 
         public IEnumerable<CommonFunctionsModel> GetCommonToolsInfo(IEnumerable<string> itemTools)
