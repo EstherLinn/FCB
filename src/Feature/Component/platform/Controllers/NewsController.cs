@@ -2,7 +2,6 @@
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Configuration;
 using Sitecore.Mvc.Presentation;
-using System;
 using System.Collections.Generic;
 using System.Runtime.Caching;
 using System.Web;
@@ -14,6 +13,7 @@ namespace Feature.Wealth.Component.Controllers
     public class NewsController : Controller
     {
         private readonly NewsRepository _newsRespository = new NewsRepository();
+        private readonly CommonRepository _commonRespository = new CommonRepository(); 
 
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly string MarketNewsCacheKey = $"Fcb_MarketNewsCache";
@@ -53,7 +53,7 @@ namespace Feature.Wealth.Component.Controllers
                 _datas = (List<MarketNewsModel>)_newsRespository.GetMarketNewsDbData();
 
                 // 儲存 MarketNewsCache
-                _cache.Set(MarketNewsCacheKey, _datas, _newsRespository.GetCacheExpireTime(cacheTime));
+                _cache.Set(MarketNewsCacheKey, _datas, _commonRespository.GetCacheExpireTime(cacheTime));
             }
 
             // 整理 MarketNews 資料庫資料
@@ -83,7 +83,7 @@ namespace Feature.Wealth.Component.Controllers
                 datas = _newsRespository.OrganizeMarketNewsDetailDbData(dbData);
 
                 // 儲存 MarketNewsDetailCache
-                _cache.Set(MarketNewsDetailCacheKey + newsId, datas, _newsRespository.GetCacheExpireTime(cacheTime));
+                _cache.Set(MarketNewsDetailCacheKey + newsId, datas, _commonRespository.GetCacheExpireTime(cacheTime));
             }
 
             return View("/Views/Feature/Wealth/Component/News/MarketNewsDetail.cshtml", datas);
@@ -105,7 +105,7 @@ namespace Feature.Wealth.Component.Controllers
                 datas = _newsRespository.OrganizeHeadlineNewsDbData(_datas);
 
                 // 儲存 HeadlineNewsCache
-                _cache.Set(HeadlineNewsCacheKey, datas, _newsRespository.GetCacheExpireTime(cacheTime));
+                _cache.Set(HeadlineNewsCacheKey, datas, _commonRespository.GetCacheExpireTime(cacheTime));
             }
 
             // 取得 HeadlineNews 瀏覽人次

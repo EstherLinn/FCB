@@ -1,4 +1,4 @@
-﻿namespace Feature.Wealth.Component.Models.News
+﻿namespace Feature.Wealth.Component.Models
 {
     /// <summary>
     /// ExpireTime單位

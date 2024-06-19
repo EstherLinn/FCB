@@ -1,7 +1,10 @@
 ﻿using Feature.Wealth.Component.Models.StructuredProduct;
 using Feature.Wealth.Component.Repositories;
+using Sitecore.Configuration;
 using Sitecore.Mvc.Presentation;
 using Sitecore.Web;
+using System.Collections.Generic;
+using System.Runtime.Caching;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 
@@ -11,6 +14,11 @@ namespace Feature.Wealth.Component.Controllers
     {
         private readonly StructuredProductSearchRepository _searchRepository = new();
         private readonly StructuredProductRepository _structuredProductRepository = new();
+        private readonly CommonRepository _commonRespository = new CommonRepository();
+
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly string StructuredProductSearchCacheKey = $"Fcb_StructuredProductSearchCache";
+        private readonly string cacheTime = Settings.GetSetting("StructuredProductCacheTime");
 
         /// <summary>
         /// 結構型商品搜尋
@@ -36,7 +44,18 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public ActionResult GetStructuredProducts()
         {
-            return new JsonNetResult(this._structuredProductRepository.GetStructuredProducts());
+            List<StructuredProductModel> datas;
+
+            datas = (List<StructuredProductModel>)_cache.Get(StructuredProductSearchCacheKey);
+
+            if (datas == null)
+            {
+                datas = (List<StructuredProductModel>)this._structuredProductRepository.GetStructuredProducts();
+
+                _cache.Set(StructuredProductSearchCacheKey, datas, _commonRespository.GetCacheExpireTime(cacheTime));
+            }
+
+            return new JsonNetResult(datas);
         }
 
         /// <summary>
