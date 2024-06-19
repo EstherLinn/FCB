@@ -1,8 +1,5 @@
-﻿namespace Feature.Wealth.Component.Models.News
+﻿namespace Feature.Wealth.Component.Models
 {
-    /// <summary>
-    /// ExpireTime單位
-    /// </summary>
     internal enum TimeUnit
     {
         /// <summary>
