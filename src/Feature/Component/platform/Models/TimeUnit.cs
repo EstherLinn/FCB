@@ -1,5 +1,8 @@
 ﻿namespace Feature.Wealth.Component.Models
 {
+    /// <summary>
+    /// ExpireTime單位
+    /// </summary>
     internal enum TimeUnit
     {
         /// <summary>
