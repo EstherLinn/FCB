@@ -20,7 +20,7 @@ namespace Foundation.Wealth.Helper
         public static MvcHtmlString CompareButton(this HtmlHelper helper, object attributes, string id, string name, object investType, bool isListButton)
         {
             var builder = new TagBuilder("a");
-            builder.MergeAttribute("href", "javascript:;");
+            builder.MergeAttribute("href", "#");
             builder.MergeAttribute("eh-compare", string.Empty);
             builder.MergeAttribute("eh-compare-type", investType.ToString());
             builder.MergeAttribute("eh-compare-id", id);
@@ -49,7 +49,7 @@ namespace Foundation.Wealth.Helper
         public static MvcHtmlString FocusButton(this HtmlHelper helper, object attributes, string id, string name, object investType, bool isListButton)
         {
             var builder = new TagBuilder("a");
-            builder.MergeAttribute("href", "javascript:;");
+            builder.MergeAttribute("href", "#");
             builder.MergeAttribute("eh-focus", string.Empty);
             builder.MergeAttribute("eh-focus-type", investType.ToString());
             builder.MergeAttribute("eh-focus-id", id);
@@ -78,7 +78,7 @@ namespace Foundation.Wealth.Helper
         public static HtmlString FocusTag(this HtmlHelper helper, object attributes, string id, string name, object investType)
         {
             StringBuilder sbBuilder = new StringBuilder();
-            sbBuilder.Append(string.Format("href='{0}' ", "javascript:;"));
+            sbBuilder.Append(string.Format("href='{0}' ", "#"));
             sbBuilder.Append("eh-focus ");
             sbBuilder.Append(string.Format("eh-focus-type='{0}' ", investType.ToString()));
             sbBuilder.Append(string.Format("eh-focus-id='{0}' ", id));
@@ -270,7 +270,7 @@ namespace Foundation.Wealth.Helper
         public static string FocusButtonString(object attributes, string id, string name, object investType, bool isListButton)
         {
             var builder = new TagBuilder("a");
-            builder.MergeAttribute("href", "javascript:;");
+            builder.MergeAttribute("href", "#");
             builder.MergeAttribute("eh-focus", string.Empty);
             builder.MergeAttribute("eh-focus-type", investType.ToString());
             builder.MergeAttribute("eh-focus-id", id);
@@ -309,7 +309,7 @@ namespace Foundation.Wealth.Helper
         public static string CompareButtonString(object attributes, string id, string name, object investType, bool isListButton)
         {
             var builder = new TagBuilder("a");
-            builder.MergeAttribute("href", "javascript:;");
+            builder.MergeAttribute("href", "#");
             builder.MergeAttribute("eh-compare", string.Empty);
             builder.MergeAttribute("eh-compare-type", investType.ToString());
             builder.MergeAttribute("eh-compare-id", id);

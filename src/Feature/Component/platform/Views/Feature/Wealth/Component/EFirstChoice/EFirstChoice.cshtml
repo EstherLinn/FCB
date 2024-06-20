@@ -266,8 +266,12 @@
 
             // 為了 DOMPurify.sanitize 正常運作加上 <table><tbody></tbody></table>
             function DOMPurifyData(data) {
+                let focusAttr = ['eh-focus', 'eh-focus-type', 'eh-focus-id', 'eh-focus-name', 'eh-focus-add'];
+                let compareAttr = ['eh-compare', 'eh-compare-type', 'eh-compare-id', 'eh-compare-name', 'eh-compare-add'];
+                let subscriptionAttr = ['eh-subscription', 'eh-subscription-type', 'eh-subscription-id'];
+                let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr);
                 data = '<table><tbody>' + data + '</tbody></table>';
-                data = DOMPurify.sanitize(data);
+                data = DOMPurify.sanitize(data, { ADD_ATTR: allCustomAttr });
                 data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');
                 return data;
             }
