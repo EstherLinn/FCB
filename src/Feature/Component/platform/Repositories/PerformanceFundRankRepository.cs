@@ -73,6 +73,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.CurrencyName = f.CurrencyName;
                 vm.RiskRewardLevel = f.RiskRewardLevel;
                 vm.OnlineSubscriptionAvailability = f.OnlineSubscriptionAvailability;
+                vm.AvailabilityStatus = f.AvailabilityStatus;
                 vm.PercentageChangeInFundPrice = f.PercentageChangeInFundPrice;
                 vm.TargetName = f.TargetName;
                 vm.FundTypeName = f.FundTypeName;
