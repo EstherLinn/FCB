@@ -858,6 +858,7 @@
             $('[data-keyword-submit]').on('click.loading', function () {
                 if (!!$('[data-keyword-input]').val().trim()) {
                     loading();
+                    insertKeywords();
                 }
             });
 

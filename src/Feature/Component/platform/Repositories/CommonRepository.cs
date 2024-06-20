@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Component.Models;
 using System;
+using System.ComponentModel;
 using System.Text.RegularExpressions;
 
 namespace Feature.Wealth.Component.Repositories
@@ -57,6 +58,35 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             return expireTime;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static string GetEnumValueFromDescription<T>(string description)
+        {
+            var type = typeof(T);
+            if (!type.IsEnum) throw new InvalidOperationException();
+
+            foreach (var field in type.GetFields())
+            {
+                var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+                if (attribute != null)
+                {
+                    if (attribute.Description == description)
+                    {
+                        return field.Name;
+                    }
+                }
+                else
+                {
+                    if (field.Name == description)
+                    {
+                        return field.Name;
+                    }
+                }
+            }
+            return null;
         }
     }
 }
