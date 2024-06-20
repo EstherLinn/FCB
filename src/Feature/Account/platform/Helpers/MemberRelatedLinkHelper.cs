@@ -26,6 +26,7 @@ namespace Feature.Wealth.Account.Helpers
                     public static readonly ID FavoriteNews = new ID("{1F3C07C7-D767-48B9-893D-B3CC076BBF93}");
                     public static readonly ID RemoteFinancialConsulting = new ID("{F4D0C8CC-6F2B-4204-9A62-3821C97A4738}");
                     public static readonly ID ReserveConsulting = new ID("{0FE5783A-C6DC-48E1-83EF-8735C5FC5FE5}");
+                    public static readonly ID InfoList = new ID("{85F0E5A8-BC5D-4C95-9FAA-25E6636FC678}");
                 }
             }
 
@@ -36,8 +37,8 @@ namespace Feature.Wealth.Account.Helpers
         /// <returns></returns>
         public static string GetMemberSettingUrl()
         {
-            Item FundRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
-            return FundRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.MemberSetting)?.Url;
+            Item MemberRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
+            return MemberRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.MemberSetting)?.Url;
         }
         /// <summary>
         /// 取得關注清單連結
@@ -45,8 +46,8 @@ namespace Feature.Wealth.Account.Helpers
         /// <returns></returns>
         public static string GetFocusListUrl()
         {
-            Item FundRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
-            return FundRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.FocusList)?.Url;
+            Item MemberRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
+            return MemberRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.FocusList)?.Url;
         }
         /// <summary>
         /// 取得專屬推薦連結
@@ -54,8 +55,8 @@ namespace Feature.Wealth.Account.Helpers
         /// <returns></returns>
         public static string GetExclusiveRecommendationUrl()
         {
-            Item FundRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
-            return FundRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.ExclusiveRecommendation)?.Url;
+            Item MemberRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
+            return MemberRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.ExclusiveRecommendation)?.Url;
         }
         /// <summary>
         /// 取得理財試算連結
@@ -63,8 +64,8 @@ namespace Feature.Wealth.Account.Helpers
         /// <returns></returns>
         public static string GetFinancialManagementTrialUrl()
         {
-            Item FundRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
-            return FundRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.FinancialManagementTrial)?.Url;
+            Item MemberRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
+            return MemberRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.FinancialManagementTrial)?.Url;
         }
         /// <summary>
         /// 取得收藏新聞連結
@@ -72,8 +73,8 @@ namespace Feature.Wealth.Account.Helpers
         /// <returns></returns>
         public static string GetFavoriteNewsUrl()
         {
-            Item FundRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
-            return FundRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.FavoriteNews)?.Url;
+            Item MemberRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
+            return MemberRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.FavoriteNews)?.Url;
         }
         /// <summary>
         /// 取得遠距理財連結
@@ -81,8 +82,8 @@ namespace Feature.Wealth.Account.Helpers
         /// <returns></returns>
         public static string GetRemoteFinancialConsultingUrl()
         {
-            Item FundRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
-            return FundRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.RemoteFinancialConsulting)?.Url;
+            Item MemberRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
+            return MemberRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.RemoteFinancialConsulting)?.Url;
         }
         /// <summary>
         /// 取得預約諮詢連結
@@ -90,8 +91,17 @@ namespace Feature.Wealth.Account.Helpers
         /// <returns></returns>
         public static string GetReserveConsultingUrl()
         {
-            Item FundRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
-            return FundRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.ReserveConsulting)?.Url;
+            Item MemberRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
+            return MemberRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.ReserveConsulting)?.Url;
+        }
+        /// <summary>
+        /// 取得通知列表連結
+        /// </summary>
+        /// <returns></returns>
+        public static string GetInfoListUrl()
+        {
+            Item MemberRealtedItem = ItemUtils.GetItem(Template.MemberRelatedLink.Root);
+            return MemberRealtedItem.GeneralLink(Template.MemberRelatedLink.Fields.InfoList)?.Url;
         }
 
     }

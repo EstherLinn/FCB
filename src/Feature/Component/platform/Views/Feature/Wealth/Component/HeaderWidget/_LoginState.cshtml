@@ -15,78 +15,15 @@
                 <div id="popoverNotify" class="c-popover">
                     <div class="c-popover__wrap">
                         <nav class="c-popover__content">
-                            <ul class="c-listGroup">
-                                <li class="c-listGroup__item">
-                                    <div class="c-itemNotify is-hint">
-                                        <div class="c-itemNotify__topbar">
-                                            <span class="t-date">2023/12/12 12:00</span>
-                                            <span class="o-hangTag">預約理財</span>
-                                        </div>
-                                        <div class="c-itemNotify__link">
-                                            <a href="#" class="o-itemLink">
-                                                <span class="o-itemLink__title">提醒您，您預約2023/12/14 下午14:00的理財諮詢即將到來！</span>
-                                                <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="c-listGroup__item">
-                                    <div class="c-itemNotify is-hint">
-                                        <div class="c-itemNotify__topbar">
-                                            <span class="t-date">2023/12/12 12:00</span>
-                                            <span class="o-hangTag">預約理財</span>
-                                        </div>
-                                        <div class="c-itemNotify__link">
-                                            <a href="#" class="o-itemLink">
-                                                <span class="o-itemLink__title">您已成功預約2023/09/28 下午13:00的理專諮詢，請查看會議連結</span>
-                                                <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="c-listGroup__item">
-                                    <div class="c-itemNotify is-hint">
-                                        <div class="c-itemNotify__topbar">
-                                            <span class="t-date">2023/12/12 12:00</span>
-                                            <span class="o-hangTag">專屬優惠</span>
-                                        </div>
-                                        <div class="c-itemNotify__link">
-                                            <a href="#" class="o-itemLink">
-                                                <span class="o-itemLink__title">薪轉戶獨享基金申購免手續費優惠</span>
-                                                <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="c-listGroup__item">
-                                    <div class="c-itemNotify ">
-                                        <div class="c-itemNotify__topbar">
-                                            <span class="t-date">2023/12/12 12:00</span>
-                                            <span class="o-hangTag">週月報</span>
-                                        </div>
-                                        <div class="c-itemNotify__link">
-                                            <a href="#" class="o-itemLink">
-                                                <span class="o-itemLink__title">10月投資月報來囉！</span>
-                                                <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="c-listGroup__item">
-                                    <div class="c-itemNotify ">
-                                        <div class="c-itemNotify__topbar">
-                                            <span class="t-date">2023/12/12 12:00</span>
-                                            <span class="o-hangTag">到價通知</span>
-                                        </div>
-                                        <div class="c-itemNotify__link">
-                                            <a href="#" class="o-itemLink">
-                                                <span class="o-itemLink__title">日盛新台商基金已達到您設定的最低價囉！</span>
-                                                <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
+                            <div class="l-flex u-flex-col">
+                                <div class="l-flex__item">
+                                    <ul class="c-listGroup" id="topInfoList">
+                                    </ul>
+                                </div>
+                                <div class="l-flex__item u-center">
+                                    <a href="@MemberRelatedLinkHelper.GetInfoListUrl()" class="o-link">更多通知</a>
+                                </div>
+                            </div>
                         </nav>
                     </div>
                 </div>
@@ -142,11 +79,88 @@
                     </nav>
                     <div class="c-popover__footer">
                         <a href="@MemberRelatedLinkHelper.GetReserveConsultingUrl()" class="o-btn o-btn--primary o-btn--sm o-btn--flat">預約諮詢</a>
-                    </div>                  
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<script>
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+            function ConvertSqlDateTimeToJsDateTime(sqlDateTime) {
+                let dataTimearray = sqlDateTime.split('T'); //ex ['2024-06-17','19:27:10.297']
+                let dateStr = dataTimearray[0].replaceAll('-', '/');
+                let timeArry = dataTimearray[1].split(':');
+                let timeStr = timeArry[0] + ":" + timeArry[1];
+                return dateStr + " " + timeStr;
+            }
+            window.ResetTopInfoList = function(){
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "MemberInfoList", "GetTopFiveInfoByMember")',
+                    type: 'POST'
+                }).done(function (data, textStatus, jqXHR) {
+                    if (data && data.length > 0) {
+                        let html = "";
+                        let isRead = "";
+                        for (var i = 0; i < data.length; i++) {
+                            isRead = data[i].HaveRead ? "" : "is-hint";
+                            html += `<li class="c-listGroup__item" data-topInfoList>
+                                            <div class="c-itemNotify ${isRead}" data-haveread=${data[i].HaveRead}  data-recordnum="${data[i].RecordNumber}">
+                                                <div class="c-itemNotify__topbar">
+                                                    <span class="t-date">${ConvertSqlDateTimeToJsDateTime(data[i].InfoDateTime)}</span>
+                                                    <span class="o-hangTag" data-mailType>${data[i].MailInfoType}</span>
+                                                </div>
+                                                <div class="c-itemNotify__link">
+                                                    <a href="${data[i].InfoLink}" class="o-itemLink">
+                                                        <span class="o-itemLink__title">${data[i].InfoContent}</span>
+                                                        <img src="/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </li>`
+                        }
+                        $('#topInfoList').html(DOMPurify.sanitize(html));
+                    } else {
+                        $('[data-popover="#popoverNotify"]').addClass('u-hidden');
+                    }
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    $('[data-popover="#popoverNotify"]').addClass('u-hidden');
+                });
+            }
+            window.ResetTopInfoList();
+            $('#topInfoList').on('click','[data-topInfoList]', function () {
+                console.log($(this))
+            let $this = $(this);
+            let isRead = $this.find('[data-haveread]').data('haveread');
+            if (isRead) {
+                return;
+            }
+             $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "MemberInfoList", "SetInfoHaveReadByMember")',
+                 type: 'POST',
+                 data: { "mailInfoType": $this.find('[data-mailType]').text(), "recordNumber": $this.find('[data-recordnum]').data('recordnum') },
+                 beforeSend: function () { window.loading('show'); },
+                 success : function(data, textStatus, jqXHR) {
+                     if (data && data.success) {
+                         window.ResetTopInfoList();
+                         if ($('#uid-fjs-infoList').length > 0) {
+                             window.ResetMailInfoTable();
+                         }
+                            window.loading('hide');
+                       }
+                 },
+                 error: function (jqXHR, textStatus, errorThrown) { },
+                 complete: function () { $('.c-loading').loading('hide'); }
+             });
+        });
+
+        });
+    })(jQuery, window, document);
+</script>
 

@@ -23,5 +23,6 @@
     </Reference>
     <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
     <ProjectReference Include="..\..\Account\platform\Feature.Wealth.Account.csproj" />
+    <ProjectReference Include="..\..\ScheduleAgent\platform\Feature.Wealth.ScheduleAgent.csproj" />
   </ItemGroup>
 </Project>
