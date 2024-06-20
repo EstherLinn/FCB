@@ -87,7 +87,7 @@ namespace Feature.Wealth.Component.Repositories
                 .IgnoreMember((member, side) => ignoreTypes.Contains(member.Type))
                 .AfterMapping((src, dest) =>
                 {
-                    dest.ETFName = src.ETFName.Normalize(NormalizationForm.FormKC);
+                    dest.ETFName = src.ETFName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
                     dest.ExchangeCode = new StringPair()
                     {
                         Value = src.ExchangeCode,
@@ -173,7 +173,7 @@ namespace Feature.Wealth.Component.Repositories
             config.ForType<FundSearchModel, FundProductResult>()
                 .AfterMapping((src, dest) =>
                 {
-                    dest.ProductName = src.FundName.Normalize(NormalizationForm.FormKC);
+                    dest.ProductName = src.FundName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
                     dest.NetAssetValue = src.NetAssetValue.RoundingValue();
                     dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
                     dest.CurrencyPair = new KeyValuePair<string, string>(src.CurrencyCode, src.CurrencyName);
@@ -246,7 +246,7 @@ namespace Feature.Wealth.Component.Repositories
             config.ForType<BasicStructuredProductDto, StructuredProductResult>()
                 .AfterMapping((src, dest) =>
                 {
-                    //dest.ProductName = src.ProductName.Normalize(NormalizationForm.FormKC);
+                    //dest.ProductName = src.ProductName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
                     dest.IssuingInstitutionPair = new KeyValuePair<string, string>(src.IssuingInstitution, string.IsNullOrEmpty(src.IssuingInstitution) ? "-" : src.IssuingInstitution);
                     dest.ProductMaturityDatePair = new KeyValuePair<string, string>(src.ProductMaturityDate, string.IsNullOrEmpty(src.ProductMaturityDate) ? "-" : src.ProductMaturityDate);
                     dest.CurrencyPair = new KeyValuePair<string, string>(src.CurrencyCode, src.CurrencyName);
@@ -324,7 +324,7 @@ namespace Feature.Wealth.Component.Repositories
             config.ForType<USStockListDto, ForeignStockResult>()
                 .AfterMapping((src, dest) =>
                 {
-                    //dest.ChineseName = src.ChineseName.Normalize(NormalizationForm.FormKC);
+                    //dest.ChineseName = src.ChineseName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
                     dest.FundCodePair = new KeyValuePair<string, string>(src.FundCode, string.IsNullOrEmpty(src.FundCode) ? "-" : src.FundCode);
                     dest.ClosingPrice = new KeyValuePair<decimal?, string>(src.ClosingPrice, src.ClosingPrice.HasValue ? src.ClosingPrice.Value.ToString() : "-");
                     dest.DataDate = DateTimeExtensions.FormatDate(src.DataDate);
