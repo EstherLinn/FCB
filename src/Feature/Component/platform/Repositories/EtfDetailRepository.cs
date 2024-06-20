@@ -1,17 +1,23 @@
 ﻿using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Detail;
 using Feature.Wealth.Component.Models.ETF.Tag;
+using Feature.Wealth.Component.Models.GlobalIndex;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
+using log4net;
 using Mapster;
+using Newtonsoft.Json.Linq;
 using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Runtime.Caching;
 using System.Text;
+using System.Threading.Tasks;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
@@ -20,6 +26,8 @@ namespace Feature.Wealth.Component.Repositories
     {
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly string ETFDetailsCacheKey = $"Fcb_ETFDetailsCache";
+        private DjMoneyApiRespository _djMoneyApiRespository;
+        private readonly ILog _log = Logger.General;
 
         /// <summary>
         /// 代碼
@@ -413,35 +421,83 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 近一年指數績效走勢
+        /// 取得 ETF 績效圖資訊
         /// </summary>
-        /// <param name="etfId"></param>
-        /// <param name="startdate"></param>
-        /// <param name="enddate"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        public (List<EtfHistoryNetWorth>, string) GetGlobalIndexWithCloseYear(string etfId, string startdate, string enddate)
+        public async Task<RespEtf> GetReturnTrendData(ReqReturnTrend req)
         {
-            string sql = """
-                SELECT Format([DataDate],'yyyy/MM/dd') NetAssetValueDate, [ChangePercentage] AS NetAssetValue
-                FROM [Sysjust_GlobalIndex_History] WITH (NOLOCK)
-                WHERE [IndexCode] =
-                    (
-                        SELECT [ReferenceIndexID]
-                        FROM [vw_BasicETF]
-                        WHERE [FirstBankCode] = @ETFId
-                    )
-                    AND [DataDate] BETWEEN @StartDate AND @EndDate
-                """;
-            var param = new { ETFId = etfId, StartDate = startdate, EndDate = enddate };
-            List<EtfHistoryNetWorth> etfCloseYearNetValue = DbManager.Custom.ExecuteIList<EtfHistoryNetWorth>(sql, param, CommandType.Text)?.ToList();
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
+            JObject respMarketPrice = null, respNetAssetValue = null;
+            this._djMoneyApiRespository = new DjMoneyApiRespository();
 
-            sql = """
-                SELECT [StockIndexName]
-                FROM [vw_BasicETF]
-                WHERE [FirstBankCode] = @ETFid
-                """;
-            string indicator = DbManager.Custom.Execute<string>(sql, param, CommandType.Text);
-            return (etfCloseYearNetValue, indicator);
+            try
+            {
+                respMarketPrice = await _djMoneyApiRespository.GetReturnChartData(req.EtfId, EtfReturnTrend.MarketPrice, req.StartDate, req.EndDate);
+                respNetAssetValue = await _djMoneyApiRespository.GetReturnChartData(req.EtfId, EtfReturnTrend.NetAssetValue, req.StartDate, req.EndDate);
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("ETF績效圖－取得績效走勢資訊", ex);
+            }
+
+            if (respMarketPrice != null && respNetAssetValue != null)
+            {
+                resp.Body = new
+                {
+                    respMarketPrice,
+                    respNetAssetValue,
+                };
+
+                resp.Message = "Success";
+                resp.StatusCode = (int)HttpStatusCode.OK;
+            }
+
+            return resp;
+        }
+
+        /// <summary>
+        /// 取得全球指數
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        public RespEtf GetGlobalIndex(string indexCode, string cycle)
+        {
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
+
+            if (string.IsNullOrWhiteSpace(indexCode) || string.IsNullOrWhiteSpace(cycle))
+            {
+                resp.Message = "錯誤的查詢，請確認您的查詢參數";
+                resp.StatusCode = (int)HttpStatusCode.Forbidden;
+                return resp;
+            }
+
+            List<PriceData> respGlobalIndex = null;
+
+            try
+            {
+                respGlobalIndex = new GlobalIndexRepository().GetGlobalInedxPriceData(indexCode, cycle);
+
+                if (respGlobalIndex.Count > 0)
+                {
+                    resp.Message = "Success";
+                    resp.StatusCode = (int)HttpStatusCode.OK;
+                    resp.Body = new
+                    {
+                        respGlobalIndex
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("ETF績效圖－取得全球指數資訊", ex);
+            }
+
+            return resp;
         }
 
         /// <summary>

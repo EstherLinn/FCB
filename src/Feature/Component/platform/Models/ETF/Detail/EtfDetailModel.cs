@@ -97,6 +97,16 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         public List<EtfScaleRecord> ETFScaleRecords { get; set; }
     }
 
+    public class ReqReturnTrend
+    {
+        public string EtfId { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string IndexID { get; set; }
+        public string Cycle { get; set; }
+    }
+
+
     public enum RegionType
     {
         [Description("None")]

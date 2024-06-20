@@ -246,6 +246,11 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         public string IndicatorIndex { get; set; }
 
         /// <summary>
+        /// 參考指數 ID
+        /// </summary>
+        public string ReferenceIndexID { get; set; }
+
+        /// <summary>
         /// 參考指數
         /// </summary>
         public string StockIndexName { get; set; }
@@ -421,66 +426,77 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         /// 月初至今 報酬率 (市價原幣)
         /// </summary>
         public string MonthtoDateMarketPriceOriginalCurrency { get; set; }
+
         public string MonthtoDateMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 年初至今 報酬率 (市價原幣)
         /// </summary>
         public string YeartoDateReturnMarketPriceOriginalCurrency { get; set; }
+
         public string YeartoDateReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 一日 報酬率 (市價原幣)
         /// </summary>
         public string DailyReturnMarketPriceOriginalCurrency { get; set; }
+
         public string DailyReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 一週 報酬率 (市價原幣)
         /// </summary>
         public string WeeklyReturnMarketPriceOriginalCurrency { get; set; }
+
         public string WeeklyReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 一個月 報酬率 (市價原幣)
         /// </summary>
         public string MonthlyReturnMarketPriceOriginalCurrency { get; set; }
+
         public string MonthlyReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 三個月 報酬率 (市價原幣)
         /// </summary>
         public string ThreeMonthReturnMarketPriceOriginalCurrency { get; set; }
+
         public string ThreeMonthReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 六個月 報酬率 (市價原幣)
         /// </summary>
         public string SixMonthReturnMarketPriceOriginalCurrency { get; set; }
+
         public string SixMonthReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 一年 報酬率 (市價原幣)
         /// </summary>
         public string OneYearReturnMarketPriceOriginalCurrency { get; set; }
+
         public string OneYearReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 二年 報酬率 (市價原幣)
         /// </summary>
         public string TwoYearReturnMarketPriceOriginalCurrency { get; set; }
+
         public string TwoYearReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 三年 報酬率 (市價原幣)
         /// </summary>
         public string ThreeYearReturnMarketPriceOriginalCurrency { get; set; }
+
         public string ThreeYearReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 五年 報酬率 (市價原幣)
         /// </summary>
         public string FiveYearReturnMarketPriceOriginalCurrency { get; set; }
+
         public string FiveYearReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
@@ -709,7 +725,7 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         /// </summary>
         public string Currency { get; set; }
 
-        #endregion
+        #endregion Currency
 
         #region 配息資訊
 
@@ -748,7 +764,6 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         /// </summary>
         public string LongTermCapitalGains { get; set; }
 
-        #endregion
-
+        #endregion 配息資訊
     }
 }

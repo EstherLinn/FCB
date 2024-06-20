@@ -6,6 +6,7 @@
     var etfData = Model.BasicEtf as EtfDetail;
     var ETFReturnChartDataApiUrl = ClientRoute.GenerateUrl(this, "EtfDetail", "GetReturnChartData");
     var ETFReturnReferenceIndexChartDataApiUrl = ClientRoute.GenerateUrl(this, "EtfDetail", "GetReturnReferenceIndexChartData");
+    var ETFGetReturnGlobalIndexChartDataApiUrl = ClientRoute.GenerateUrl(this, "EtfDetail", "GetReturnGlobalIndexChartData");
 }
 
 @*績效/淨值*@
@@ -179,17 +180,17 @@
         <div class="c-section__content">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 @*<div class="l-flex__item">
-                    <div class="o-capsulebox">
-                        <label class="o-capsulebox__item">
-                            <input type="radio" name="marketCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="marketCurrency">
-                            <span class="o-capsulebox__text">原幣</span>
-                        </label>
-                        <label class="o-capsulebox__item">
-                            <input type="radio" name="marketCurrency" value="twn" class="o-capsulebox__input" data-trend-filter="marketCurrency">
-                            <span class="o-capsulebox__text">台幣</span>
-                        </label>
-                    </div>
-                </div>*@
+                        <div class="o-capsulebox">
+                            <label class="o-capsulebox__item">
+                                <input type="radio" name="marketCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="marketCurrency">
+                                <span class="o-capsulebox__text">原幣</span>
+                            </label>
+                            <label class="o-capsulebox__item">
+                                <input type="radio" name="marketCurrency" value="twn" class="o-capsulebox__input" data-trend-filter="marketCurrency">
+                                <span class="o-capsulebox__text">台幣</span>
+                            </label>
+                        </div>
+                    </div>*@
                 <div class="l-flex__item" data-chart="marketTrend">
                     <div class="c-empty">
                         <div class="c-empty__img">
@@ -404,17 +405,17 @@
         <div class="c-section__content">
             <div class="l-flex u-flex-col u-flex-gap-sm">
                 @*<div class="l-flex__item">
-                    <div class="o-capsulebox">
-                        <label class="o-capsulebox__item">
-                            <input type="radio" name="etfCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="etfCurrency">
-                            <span class="o-capsulebox__text">原幣</span>
-                        </label>
-                        <label class="o-capsulebox__item">
-                            <input type="radio" name="etfCurrency" value="twn" class="o-capsulebox__input" data-trend-filter="etfCurrency">
-                            <span class="o-capsulebox__text">台幣</span>
-                        </label>
-                    </div>
-                </div>*@
+                        <div class="o-capsulebox">
+                            <label class="o-capsulebox__item">
+                                <input type="radio" name="etfCurrency" value="ori" class="o-capsulebox__input" checked data-trend-filter="etfCurrency">
+                                <span class="o-capsulebox__text">原幣</span>
+                            </label>
+                            <label class="o-capsulebox__item">
+                                <input type="radio" name="etfCurrency" value="twn" class="o-capsulebox__input" data-trend-filter="etfCurrency">
+                                <span class="o-capsulebox__text">台幣</span>
+                            </label>
+                        </div>
+                    </div>*@
                 <div class="l-flex__item" data-chart="etfTrend">
                     <div class="c-empty">
                         <div class="c-empty__img">
@@ -756,6 +757,17 @@
             }
         }
 
+        function dateFormat(time) {
+            let date = new Date(time);
+            let formattedDate = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2);
+            return formattedDate;
+        }
+
+        function roundToTwo(num) {
+            let scale = 2;
+            return +(Math.round(num + 'e+' + scale) + 'e-' + scale);
+        }
+
         //#region 績效/淨值 – 市價/淨值走勢
         document.addEventListener('DOMContentLoaded', function () {
             if (!jQuery) {
@@ -783,7 +795,7 @@
             var chart;
 
             function getParams() {
-                const obj = {
+                let obj = {
                     currency: $('[data-trend-filter="marketCurrency"]:checked').val(),
                     range: $('[data-trend-filter="marketDateRange"]:checked').val(),
                     startDate: $('[data-trend-filter="marketInputStart"]').val(),
@@ -791,6 +803,7 @@
                 };
 
                 let today = new Date();
+                let establishment = $('[data-trend-filter="marketInputStart"]').data('start-date');
 
                 function calDateRange(month) {
                     let set = new Date().setMonth(new Date().getMonth() - month);
@@ -829,11 +842,10 @@
                             obj.endDate = today.toISOString().split('T')[0];
                             break;
                         case 'establishment':
-                            obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                            obj.startDate = establishment ? establishment.replaceAll('/', '-') : '';
                             obj.endDate = today.toISOString().split('T')[0];
                             break;
                     }
-
                     $('[data-trend-filter="marketInputStart"]').val(obj.startDate.replaceAll('-', '/'));
                     $('[data-trend-filter="marketInputEnd"]').val(obj.endDate.replaceAll('-', '/'));
                     $('[data-trend-filter="marketInputStart"]').datepicker('setDate', obj.startDate.replaceAll('-', '/'));
@@ -858,10 +870,6 @@
                 }
 
                 initTrendChart(obj, text);
-            }
-
-            function roundToTwo(num) {
-                return +(Math.round(num + 'e+2') + 'e-2');
             }
 
             async function initTrendChart(obj, text) {
@@ -924,9 +932,6 @@
                             $('[data-update-date="market"]').text(updateDate);
 
                             chart = Highcharts.stockChart('marketTrendChart', {
-                                time: {
-                                    useUTC: false
-                                },
                                 chart: {
                                     zooming: {
                                         mouseWheel: {
@@ -943,6 +948,7 @@
                                                 maxPoint,
                                                 minValue,
                                                 minPoint;
+
                                             allPoints.filter(function (point) {
                                                 if (!maxValue || maxValue < point.y) {
                                                     maxValue = point.y;
@@ -1056,8 +1062,7 @@
                                     outside: true,
                                     useHTML: true,
                                     formatter: function () {
-                                        let date = new Date(this.x);
-                                        let formattedDate = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2);
+                                        let formattedDate = dateFormat(this.x);
                                         let tooltipText = '';
                                         this.points.forEach(point => {
                                             tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">'
@@ -1076,6 +1081,7 @@
                                     tickPosition: 'inside',
                                     tickWidth: 0.5,
                                     tickLength: 7,
+                                    tickInterval: 24 * 3600 * 1000 * 7,
                                     labels: {
                                         formatter: function () {
                                             const format = {
@@ -1162,14 +1168,16 @@
             var chart;
 
             function getParams() {
-                const obj = {
+                let obj = {
                     currency: $('[data-trend-filter="etfCurrency"]:checked').val(),
                     range: $('[data-trend-filter="etfDateRange"]:checked').val(),
                     startDate: $('[data-trend-filter="etfInputStart"]').val(),
-                    endDate: $('[data-trend-filter="etfInputEnd"]').val()
+                    endDate: $('[data-trend-filter="etfInputEnd"]').val(),
+                    cycle: 'D'
                 };
 
                 let today = new Date();
+                let establishment = $('[data-trend-filter="etfInputStart"]').data('start-date');
 
                 function calDateRange(month) {
                     let set = new Date().setMonth(new Date().getMonth() - month);
@@ -1177,39 +1185,55 @@
                     return setDate.getFullYear() + '-' + ((setDate.getMonth() + 1) < 10 ? '0' + (setDate.getMonth() + 1) : (setDate.getMonth() + 1)) + '-' + setDate.getDate();
                 }
 
+                function calMonthDiff(start, end) {
+                    let startTime = new Date(start).getTime();
+                    let endTime = new Date(end).getTime();
+                    let timeDiff = Math.abs(endTime - startTime);
+                    let monthDiff = Math.floor(timeDiff / (30 * 24 * 60 * 60 * 1000));
+                    return monthDiff;
+                }
+
                 if (!obj.startDate && !obj.endDate) {
                     switch (obj.range) {
                         case 'sinceYear':
                             obj.startDate = today.getFullYear() + '-' + '01-01';
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'D';
                             break;
                         case '3m':
                             obj.startDate = calDateRange(3)
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'D';
                             break;
                         case '6m':
                             obj.startDate = calDateRange(6)
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'D';
                             break;
                         case '12m':
                             obj.startDate = calDateRange(12);
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'W';
                             break;
                         case '24m':
                             obj.startDate = calDateRange(24);
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'W';
                             break;
                         case '36m':
                             obj.startDate = calDateRange(36);
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'W';
                             break;
                         case '60m':
                             obj.startDate = calDateRange(60);
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'W';
                             break;
                         case 'establishment':
-                            obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-');
+                            obj.startDate = establishment ? establishment.replaceAll('/', '-') : '';
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'M';
                             break;
                     }
 
@@ -1220,6 +1244,16 @@
                 } else {
                     obj.startDate = obj.startDate.replaceAll('/', '-');
                     obj.endDate = obj.endDate.replaceAll('/', '-');
+
+                    let monthDiff = calMonthDiff(obj.startDate, obj.endDate);
+
+                    if (monthDiff <= 6) {
+                        obj.cycle = 'D';
+                    } else if (monthDiff <= 60) {
+                        obj.cycle = 'W';
+                    } else {
+                        obj.cycle = 'M';
+                    }
                 }
 
                 if (chart) {
@@ -1239,10 +1273,6 @@
                 initETFTrendChart(obj, text);
             }
 
-            function roundToTwo(num) {
-                return +(Math.round(num + 'e+2') + 'e-2');
-            }
-
             function compare(a, b) {
                 if (a.name < b.name) {
                     return -1;
@@ -1258,24 +1288,29 @@
                     /*
                      * API參數
                      * id: ETF代號：請替換成實際ETF的id
-                     * range: 區間
                      * startDate: 自訂開始日期
                      * endDate: 自訂結束日期
                      */
                     const params = {
                         etfId: etfId,
+                        indexID: '@etfData.ReferenceIndexID',
                         ...obj
                     };
 
+                    var mapMarketPriceData, mapNetWorthData, mapGlobalIndexData;
+
                     // 呼叫 API ETF詳細頁 – 績效/淨值 - ETF績效圖
-                    var query = apiRequest('@ETFReturnReferenceIndexChartDataApiUrl', params);
-                    query.then((data) => {
+                    var queryTrend = apiRequest('@ETFReturnReferenceIndexChartDataApiUrl', params);
+                    var queryGlobalIndex = apiRequest('@ETFGetReturnGlobalIndexChartDataApiUrl', params);
+
+                    queryTrend.then((data) => {
                         if (Object.keys(data).length != 0
                             && data.Body.respMarketPrice
                             && data.Body.respNetAssetValue) {
+
                             const mpDate = data.Body.respMarketPrice.resultSet.result[0].v1.split(',');
                             const mp = data.Body.respMarketPrice.resultSet.result[0].v2.split(',');
-                            let mapMarketPriceData = mpDate.map((item, index) => {
+                            mapMarketPriceData = mpDate.map((item, index) => {
                                 return {
                                     name: item,
                                     upDown: Number(mp[index]) < 0 ? 'down' : 'up',
@@ -1286,7 +1321,7 @@
 
                             const navDate = data.Body.respNetAssetValue.resultSet.result[0].v1.split(',');
                             const nav = data.Body.respNetAssetValue.resultSet.result[0].v2.split(',');
-                            let mapNetWorthData = navDate.map((item, index) => {
+                            mapNetWorthData = navDate.map((item, index) => {
                                 return {
                                     name: item,
                                     upDown: Number(nav[index]) < 0 ? 'down' : 'up',
@@ -1295,244 +1330,267 @@
                                 };
                             });
 
-                            let mapGlobalIndexData = data.Body.respGlobalIndex.Item1.map(item => {
-                                return {
-                                    name: item.NetAssetValueDate,
-                                    upDown: item.NetAssetValue < 0 ? 'down' : 'up',
-                                    x: new Date(item.NetAssetValueDate).getTime(),
-                                    y: roundToTwo(item.NetAssetValue)
-                                };
-                            });
-
                             mapMarketPriceData.sort((a, b) => { return a.x - b.x; });
                             mapNetWorthData.sort((a, b) => { return a.x - b.x; });
-                            mapGlobalIndexData.sort(compare);
 
-                            let series = [{
-                                name: '市價',
-                                data: mapMarketPriceData,
-                                legendSymbol: 'rectangle',
-                                turboThreshold: 0,
-                            }, {
-                                name: '淨值',
-                                data: mapNetWorthData,
-                                legendSymbol: 'rectangle',
-                                turboThreshold: 0,
-                            }, {
-                                name: data.Body.respGlobalIndex.Item2,
-                                data: mapGlobalIndexData,
-                                legendSymbol: 'rectangle',
-                                turboThreshold: 0,
-                            }];
-
-                            let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
-                            const updateDate = latestDate.replaceAll('-', '/');
-                            $('[data-update-date="etf"]').text(updateDate);
-
-                            chart = Highcharts.stockChart('etfTrendChart', {
-                                time: {
-                                    useUTC: false
-                                },
-                                chart: {
-                                    zooming: {
-                                        mouseWheel: {
-                                            enabled: false
-                                        }
-                                    },
-                                    height: 280,
-                                    events: {
-                                        // 抓出市價最高最低的資料
-                                        load: function () {
-                                            var chart = this,
-                                                allPoints = chart.series[0].points,
-                                                maxValue,
-                                                maxPoint,
-                                                minValue,
-                                                minPoint;
-                                            allPoints.filter(function (point) {
-                                                if (!maxValue || maxValue < point.y) {
-                                                    maxValue = point.y;
-                                                    maxPoint = point;
-                                                }
-                                                if (!minValue || minValue > point.y) {
-                                                    minValue = point.y;
-                                                    minPoint = point;
-                                                }
-                                            });
-
-                                            var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
-                                            var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
-
-                                            setTimeout(function () {
-                                                maxPoint.update({
-                                                    dataLabels: {
-                                                        enabled: true,
-                                                        verticalAlign: 'middle',
-                                                        x: maxPointMoreThanHalf ? -45 : 45,
-                                                        y: -5,
-                                                        formatter: function () {
-                                                            var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
-                                                            return label;
-                                                        },
-                                                        style: {
-                                                            fontSize: 14,
-                                                            fontWeight: 'normal',
-                                                            textOutline: 'none'
-                                                        }
-                                                    }
-                                                });
-                                            }, 300);
-                                            setTimeout(function () {
-                                                minPoint.update({
-                                                    dataLabels: {
-                                                        enabled: true,
-                                                        verticalAlign: 'middle',
-                                                        x: minPointMoreThanHalf ? -45 : 45,
-                                                        formatter: function () {
-                                                            var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
-                                                            return label;
-                                                        },
-                                                        style: {
-                                                            fontSize: 14,
-                                                            fontWeight: 'normal',
-                                                            textOutline: 'none'
-                                                        }
-                                                    }
-                                                });
-                                            }, 300);
-                                        }
-                                    },
-                                    rendererType: 'webgl'
-                                },
-                                credits: {
-                                    enabled: false
-                                },
-                                title: {
-                                    text: ''
-                                },
-                                scrollbar: {
-                                    enabled: false
-                                },
-                                navigator: {
-                                    enabled: false
-                                },
-                                rangeSelector: {
-                                    enabled: false
-                                },
-                                legend: {
-                                    enabled: true,
-                                    align: 'left',
-                                    floating: false,
-                                    y: 20,
-                                    itemStyle: {
-                                        fontSize: '1em',
-                                        color: '#222',
-                                        cursor: 'default'
-                                    },
-                                    itemHoverStyle: {
-                                        color: '#222'
-                                    },
-                                    symbolHeight: 12,
-                                    symbolWidth: 12
-                                },
-                                plotOptions: {
-                                    series: {
-                                        dataGrouping: {
-                                            enabled: false
-                                        },
-                                        states: {
-                                            hover: {
-                                                enabled: true,
-                                                lineWidth: 2,
-                                                halo: {
-                                                    size: 8
-                                                }
-                                            }
-                                        },
-                                        events: {
-                                            legendItemClick: function () {
-                                                return false;
-                                            }
-                                        }
-                                    }
-                                },
-                                tooltip: {
-                                    split: false,
-                                    shared: true,
-                                    outside: true,
-                                    useHTML: true,
-                                    formatter: function () {
-                                        let date = new Date(this.x);
-                                        let formattedDate = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2);
-                                        let tooltipText = '';
-                                        this.points.forEach(point => {
-                                            let upDownClass = '';
-                                            if (point.point.upDown === 'up') {
-                                                upDownClass = 'o-rise';
-                                            } else {
-                                                upDownClass = 'o-fall';
-                                            }
-                                            tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">'
-                                                + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + '<span>'
-                                                + point.series.name + ': ' + '</span>' + '</div>' + '<span class="' + upDownClass + '">' + Math.abs(point.y) + '%</span>' + '</div>';
-                                        });
-                                        return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">'
-                                            + formattedDate + '</div>' + tooltipText + '</div>';
-                                    },
-                                    shadow: {
-                                        color: 'rgba(0, 0, 0, 0.1)'
-                                    }
-                                },
-                                xAxis: {
-                                    type: 'datetime',
-                                    tickPosition: 'inside',
-                                    tickWidth: 0.5,
-                                    tickLength: 7,
-                                    labels: {
-                                        formatter: function () {
-                                            const format = {
-                                                day: '%Y/%m',
-                                                week: '%Y/%m',
-                                                month: '%Y/%m',
-                                                year: '%Y/%m'
-                                            }[this.tickPositionInfo.unitName];
-                                            return Highcharts.dateFormat(format, this.value);
-                                        },
-                                        style: {
-                                            color: '#6e6e6e'
-                                        }
-                                    },
-                                    crosshair: {
-                                        width: 1,
-                                        color: '#c3c3c3'
-                                    },
-                                    lineColor: '#ebebeb',
-                                    tickColor: '#ebebeb'
-                                },
-                                yAxis: {
-                                    showLastLabel: true,
-                                    opposite: false,
-                                    labels: {
-                                        y: 4,
-                                        formatter: function (value) {
-                                            return value.value;
-                                        },
-                                        style: {
-                                            color: '#6e6e6e'
-                                        }
-                                    },
-                                    plotLines: [{
-                                        color: '#c3c3c3'
-                                    }]
-                                },
-                                series: series
-                            });
                             $('[data-chart="etfTrend"]').find('.c-empty').addClass('u-hidden');
                             $('[data-chart="etfTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
                         } else {
                             $('[data-chart="etfTrend"]').find('.c-empty').removeClass('u-hidden');
                             $('[data-chart="etfTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
                         }
+
+                        return queryGlobalIndex;
+                    }).then((data) => {
+                        // 指數
+                        queryGlobalIndex.then((data) => {
+                            if (data.StatusCode == 200) {
+                                const stockIndex = data.Body.respGlobalIndex;
+
+                                if (stockIndex) {
+                                    mapGlobalIndexData = data.Body.respGlobalIndex.map((item, index) => {
+
+                                        let current = stockIndex[index];
+                                        let prev = stockIndex[index - 1] || current;
+                                        if (current === undefined || prev === undefined) {
+                                            return false;
+                                        }
+                                        let extent = current.close - prev.close;
+                                        let extentPercentage = extent / current.close * 100;
+
+                                        return {
+                                            name: dateFormat(item.date),
+                                            upDown: item.close < 0 ? 'down' : 'up',
+                                            x: new Date(dateFormat(item.date)).getTime(),
+                                            y: roundToTwo(extentPercentage)
+                                        };
+                                    });
+
+                                    mapGlobalIndexData.sort((a, b) => { return a.x - b.x; });
+                                    // 過濾舊資料
+                                    mapGlobalIndexData = mapGlobalIndexData.filter((item) => item.x >= mapMarketPriceData[0].x);
+                                }
+                            }
+                        });
+                    }).then(() => {
+
+                        let series = [{
+                            name: '市價',
+                            data: mapMarketPriceData,
+                            legendSymbol: 'rectangle',
+                            turboThreshold: 0,
+                        }, {
+                            name: '淨值',
+                            data: mapNetWorthData,
+                            legendSymbol: 'rectangle',
+                            turboThreshold: 0,
+                        }, {
+                            name: '@etfData.StockIndexName',
+                            data: mapGlobalIndexData,
+                            legendSymbol: 'rectangle',
+                            turboThreshold: 0,
+                        }];
+
+                        let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
+                        const updateDate = latestDate.replaceAll('-', '/');
+                        $('[data-update-date="etf"]').text(updateDate);
+
+                        chart = Highcharts.stockChart('etfTrendChart', {
+                            chart: {
+                                zooming: {
+                                    mouseWheel: {
+                                        enabled: false
+                                    }
+                                },
+                                height: 280,
+                                events: {
+                                    // 抓出市價最高最低的資料
+                                    load: function () {
+                                        var chart = this,
+                                            allPoints = chart.series[0].points,
+                                            maxValue,
+                                            maxPoint,
+                                            minValue,
+                                            minPoint;
+                                        allPoints.filter(function (point) {
+                                            if (!maxValue || maxValue < point.y) {
+                                                maxValue = point.y;
+                                                maxPoint = point;
+                                            }
+                                            if (!minValue || minValue > point.y) {
+                                                minValue = point.y;
+                                                minPoint = point;
+                                            }
+                                        });
+
+                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
+                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+
+                                        setTimeout(function () {
+                                            maxPoint.update({
+                                                dataLabels: {
+                                                    enabled: true,
+                                                    verticalAlign: 'middle',
+                                                    x: maxPointMoreThanHalf ? -45 : 45,
+                                                    y: -5,
+                                                    formatter: function () {
+                                                        var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
+                                                        return label;
+                                                    },
+                                                    style: {
+                                                        fontSize: 14,
+                                                        fontWeight: 'normal',
+                                                        textOutline: 'none'
+                                                    }
+                                                }
+                                            });
+                                        }, 300);
+                                        setTimeout(function () {
+                                            minPoint.update({
+                                                dataLabels: {
+                                                    enabled: true,
+                                                    verticalAlign: 'middle',
+                                                    x: minPointMoreThanHalf ? -45 : 45,
+                                                    formatter: function () {
+                                                        var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
+                                                        return label;
+                                                    },
+                                                    style: {
+                                                        fontSize: 14,
+                                                        fontWeight: 'normal',
+                                                        textOutline: 'none'
+                                                    }
+                                                }
+                                            });
+                                        }, 300);
+                                    }
+                                },
+                                rendererType: 'webgl'
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: ''
+                            },
+                            scrollbar: {
+                                enabled: false
+                            },
+                            navigator: {
+                                enabled: false
+                            },
+                            rangeSelector: {
+                                enabled: false
+                            },
+                            legend: {
+                                enabled: true,
+                                align: 'left',
+                                floating: false,
+                                y: 20,
+                                itemStyle: {
+                                    fontSize: '1em',
+                                    color: '#222',
+                                    cursor: 'default'
+                                },
+                                itemHoverStyle: {
+                                    color: '#222'
+                                },
+                                symbolHeight: 12,
+                                symbolWidth: 12
+                            },
+                            plotOptions: {
+                                series: {
+                                    dataGrouping: {
+                                        enabled: false
+                                    },
+                                    states: {
+                                        hover: {
+                                            enabled: true,
+                                            lineWidth: 2,
+                                            halo: {
+                                                size: 8
+                                            }
+                                        }
+                                    },
+                                    events: {
+                                        legendItemClick: function () {
+                                            return false;
+                                        }
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                split: false,
+                                shared: true,
+                                outside: true,
+                                useHTML: true,
+                                formatter: function () {
+                                    let formattedDate = dateFormat(this.x);
+                                    let tooltipText = '';
+                                    this.points.forEach(point => {
+                                        let upDownClass = '';
+                                        if (point.point.upDown === 'up') {
+                                            upDownClass = 'o-rise';
+                                        } else {
+                                            upDownClass = 'o-fall';
+                                        }
+                                        tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">'
+                                            + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + '<span>'
+                                            + point.series.name + ': ' + '</span>' + '</div>' + '<span class="' + upDownClass + '">' + Math.abs(point.y) + '%</span>' + '</div>';
+                                    });
+                                    return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">'
+                                        + formattedDate + '</div>' + tooltipText + '</div>';
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            xAxis: {
+                                type: 'datetime',
+                                tickPosition: 'inside',
+                                tickWidth: 0.5,
+                                tickLength: 7,
+                                tickInterval: 24 * 3600 * 1000 * 7,
+                                labels: {
+                                    formatter: function () {
+                                        const format = {
+                                            day: '%Y/%m/%d',
+                                            week: '%Y/%m',
+                                            month: '%Y/%m',
+                                            year: '%Y/%m'
+                                        }[this.tickPositionInfo.unitName];
+                                        return Highcharts.dateFormat(format, this.value);
+                                    },
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                },
+                                crosshair: {
+                                    width: 1,
+                                    color: '#c3c3c3'
+                                },
+                                lineColor: '#ebebeb',
+                                tickColor: '#ebebeb'
+                            },
+                            yAxis: {
+                                showLastLabel: true,
+                                opposite: false,
+                                labels: {
+                                    y: 4,
+                                    formatter: function (value) {
+                                        return value.value;
+                                    },
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                },
+                                plotLines: [{
+                                    color: '#c3c3c3'
+                                }]
+                            },
+                            series: series
+                        });
+                        
                     }).catch((err) => {
                         $('[data-chart="etfTrend"]').find('.c-empty').removeClass('u-hidden');
                         $('[data-chart="etfTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
