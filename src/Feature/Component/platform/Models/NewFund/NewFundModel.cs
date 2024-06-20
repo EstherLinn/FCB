@@ -12,7 +12,7 @@ namespace Feature.Wealth.Component.Models.NewFund
         public Item Item { get; set; }
         public IEnumerable<Funds> NewFunds { get; set; }
         public int TotalPages { get; set; }
-        public int CurrentPage { get; set; }
+        public string CurrentPage { get; set; }
         public string PageSize { get; set; }
         public string DetailLink { get; set; }
 

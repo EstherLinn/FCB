@@ -13,7 +13,7 @@ namespace Feature.Wealth.Component.Models.NewArrivalETF
         public Item Item { get; set; }
         public IEnumerable<ETFs> NewETFs { get; set; }
         public int TotalPages { get; set; }
-        public int CurrentPage { get; set; }
+        public string CurrentPage { get; set; }
         public string PageSize { get; set; }
         public string DetailLink { get; set; }
 

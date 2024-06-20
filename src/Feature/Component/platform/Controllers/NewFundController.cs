@@ -34,12 +34,12 @@ namespace Feature.Wealth.Component.Controllers
 
 
         [HttpPost]
-        public ActionResult GetSortedNewFund(int page, string pageSize, string orderby, string desc)
+        public ActionResult GetSortedNewFund(string page, string pageSize, string orderby, string desc)
         {
             var fund = _repository.GetFundData();
             var newfund = fund.Where(f => f.ListingDateFormat >= DateTime.Today.AddYears(-1));
 
-            if (page == null) { page = 1; }
+            if (page == null) { page = "1"; }
             if (pageSize == null) { pageSize = "10"; }
             if (orderby == null) { orderby = "SixMonthReturnOriginalCurrency"; }
             if (desc == null) { desc = "is-desc"; }
@@ -53,21 +53,22 @@ namespace Feature.Wealth.Component.Controllers
 
 
             var totalRecords = newfund.Count();
-            int totalPages;
-            List<Funds> renderDatas;
-            
+            int totalPages = 1;
+            List<Funds> renderDatas = new List<Funds>();
+            int pageSizeInt = 0;
+            int pageInt = 1;
+
 
             if (pageSize.Equals("all", StringComparison.OrdinalIgnoreCase))
             {
                 totalPages = 1;
                 renderDatas = newfund?.ToList();
             }
-            else
+            else if (int.TryParse(pageSize, out pageSizeInt) && int.TryParse(page, out pageInt))
             {
-                int pageSizeInt = Convert.ToInt32(pageSize);
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSizeInt);
                 renderDatas = newfund?
-                    .Skip((page - 1) * pageSizeInt)
+                    .Skip((pageInt - 1) * pageSizeInt)
                     .Take(pageSizeInt)
                     .ToList();
             }
@@ -75,7 +76,7 @@ namespace Feature.Wealth.Component.Controllers
             var model = new NewFundModel()
             {
                 TotalPages = totalPages,
-                CurrentPage = page,
+                CurrentPage = pageInt.ToString(),
                 PageSize = pageSize,
                 NewFunds = renderDatas,
                 DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
