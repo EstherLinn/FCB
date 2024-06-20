@@ -47,7 +47,7 @@
             // 配息 列表
             function RenderDividendList() {
 
-                if (DividendData.length != 0 && DividendData != null) {
+                if (DividendData != null && DividendData.length != 0) {
                     var data = DividendData;
                     var orderby = '';
                     var $this = $('[data-tab-panel-id="tab-2"] .o-sorting');
@@ -285,8 +285,8 @@
                     };
 
                     if (HistoryBankSellPrice != null &&
-                        HistoryBankSellPrice.BankSellPrice.length != 0 &&
-                        HistoryBankSellPrice.BankSellPrice.length != null) {
+                        HistoryBankSellPrice.BankSellPrice.length != null &&
+                        HistoryBankSellPrice.BankSellPrice.length != 0) {
                         var historyBankSellPrice = HistoryBankSellPrice;
                         var _data = {
                             "updateDate": historyBankSellPrice.UpdateDate,
