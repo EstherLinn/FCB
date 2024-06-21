@@ -1,9 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using FixedWidthParserWriter;
 using FluentFTP.Helpers;
-using Foundation.Wealth.Manager;
 using Renci.SshNet;
 using Renci.SshNet.Sftp;
 using Sitecore.Configuration;
@@ -15,15 +13,11 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-using static Sitecore.ContentSearch.Linq.Extensions.ReflectionExtensions;
-using static System.Net.WebRequestMethods;
-using File = System.IO.File;
 
 namespace Feature.Wealth.ScheduleAgent.Services
 {

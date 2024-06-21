@@ -10,10 +10,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     public class InsertHoldingEtf4 : SitecronAgentBase
     {
-        private readonly ProcessRepository _repository = new();
-
         protected override async Task Execute()
         {
+            var _repository = new ProcessRepository(this.Logger);
+
             if (this.JobItems != null)
             {
                 var jobitem = this.JobItems.FirstOrDefault();

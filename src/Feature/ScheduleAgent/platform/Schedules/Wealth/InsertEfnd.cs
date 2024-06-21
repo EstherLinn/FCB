@@ -10,15 +10,15 @@ using FixedWidthParserWriter;
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
     public class InsertEfnd : SitecronAgentBase
     {
-        private readonly ProcessRepository _repository = new();
-
         protected override async Task Execute()
         {
+            var _repository = new ProcessRepository(this.Logger);
             string filePath = Sitecore.Configuration.Settings.GetSetting("EFND");
 
             if(File.Exists(filePath))

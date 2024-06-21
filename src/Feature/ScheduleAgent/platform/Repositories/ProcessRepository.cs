@@ -24,10 +24,16 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
     {
 
         private readonly ILoggerService _logger;
-        /// <summary>
-        /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)
-        /// </summary>
-        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath)
+
+        public ProcessRepository(ILoggerService logger)
+        {
+            this._logger = logger;
+        }
+
+            /// <summary>
+            /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)
+            /// </summary>
+            public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath)
         {
             string mergeQuery = GenerateMergeQuery<T>(tableName, uniqueColumn, key);
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);

@@ -16,10 +16,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
     public class InsertWms : SitecronAgentBase
     {
-        private readonly ProcessRepository _repository = new();
-
         protected override async Task Execute()
         {
+            var _repository = new ProcessRepository(this.Logger);
+
             string filePath = Sitecore.Configuration.Settings.GetSetting("WMS");
 
             if (File.Exists(filePath))

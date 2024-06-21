@@ -10,10 +10,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     public class InsertFundSizeFund2 : SitecronAgentBase
     {
-        private readonly ProcessRepository _repository = new();
-
         protected override async Task Execute()
         {
+            var _repository = new ProcessRepository(this.Logger);
+
             if (this.JobItems != null)
             {
                 var jobitem = this.JobItems.FirstOrDefault();
@@ -27,8 +27,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     try
                     {
                         var basic = await etlService.ParseCsv<SysjustFundSizeFund2>(filename);
-                        this._repository.BulkInsertToNewDatabase(basic, "[Sysjust_Fundsize_Fund_2]", filename);
-                        this._repository.BulkInsertToDatabase(basic, "[Sysjust_Fundsize_Fund_2_History]", "ScaleDate", "FirstBankCode", filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Fundsize_Fund_2]", filename);
+                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Fundsize_Fund_2_History]", "ScaleDate", "FirstBankCode", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
