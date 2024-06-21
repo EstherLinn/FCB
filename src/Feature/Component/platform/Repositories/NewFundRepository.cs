@@ -10,11 +10,15 @@ using System.Security.Cryptography;
 using System;
 using System.Linq;
 using Feature.Wealth.Component.Models.FundDetail;
+using System.Runtime.Caching;
 
 namespace Feature.Wealth.Component.Repositories
 {
     public class NewFundRepository
     {
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly string NewFundCacheKey = $"Fcb_NewFundCache";
+
         public List<Funds> GetFundData()
         {
             List<Funds> fundItems = new List<Funds>();
@@ -62,6 +66,19 @@ namespace Feature.Wealth.Component.Repositories
                 item.ListingDate = listingDate.ToString(dateFormat);
                 item.ListingDateFormat = listingDate;
             }
+        }
+
+        public List<Funds> GetOrSetNewFundCache()
+        {
+            var newFundData = (List<Funds>)_cache.Get(NewFundCacheKey) ?? new List<Funds>();
+
+            if (!newFundData.Any())
+            {
+                newFundData = GetFundData();
+                _cache.Set(NewFundCacheKey, newFundData, DateTimeOffset.Now.AddMinutes(60));
+            }
+
+            return newFundData;
         }
 
     }
