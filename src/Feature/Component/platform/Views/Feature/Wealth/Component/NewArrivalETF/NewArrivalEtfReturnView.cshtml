@@ -29,10 +29,10 @@
 								{
 									<div class="l-target__additional">
 										<ul class="l-tag">
-											@for (var i = 0; i < item.ETFDiscountTags.Length; i++)
+											@foreach (var tag in item.ETFDiscountTags)
 											{
 												<li class="l-tag__item">
-													<span class="o-tag"> @item.ETFDiscountTags[i]</span>
+													<span class="o-tag">@tag</span>
 												</li>
 											}
 										</ul>

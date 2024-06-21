@@ -23,10 +23,10 @@
 						{
 							<div class="l-target__additional">
 								<ul class="l-tag">
-									@for (var i = 0; i < item.Tags.Count; i++)
+									@foreach (var tag in item.Tags)
 									{
 										<li class="l-tag__item">
-											<span class="o-tag">@item.Tags[i] </span>
+											<span class="o-tag">@tag</span>
 										</li>
 									}
 								</ul>
