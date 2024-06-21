@@ -20,7 +20,8 @@ namespace Feature.Wealth.Component.Controllers
         [HttpPost]
         public async Task<ActionResult> Insert(Guid? pageId, string keyword, string productType)
         {
-            if (!pageId.HasValue || string.IsNullOrEmpty(keyword) || string.IsNullOrEmpty(productType))
+            if (!pageId.HasValue || pageId.Value == Guid.Empty ||
+                string.IsNullOrEmpty(keyword) || string.IsNullOrEmpty(productType))
             {
                 return new JsonNetResult(new { Status = "Fail" });
             }

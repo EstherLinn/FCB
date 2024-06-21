@@ -25,32 +25,30 @@ namespace Feature.Wealth.Component.Repositories
         {
             try
             {
-                if (!Enum.GetNames(typeof(ProductTypeEnum)).Contains(productType))
+                if (Enum.GetNames(typeof(ProductTypeEnum)).Contains(productType))
                 {
-                    return false;
-                }
-
-                await DbManager.Custom.ExecuteNonQueryAsync(@"
+                    await DbManager.Custom.ExecuteNonQueryAsync(@"
                 INSERT INTO [dbo].[SearchKeywords] ([PageId], [ProductType], [SearchKeywords])
                 VALUES (@PageId, @ProductType, @SearchKeywords)", new
-                {
-                    PageId = pageId.Value,
-                    ProductType = productType,
-                    SearchKeywords = keyword
-                }, CommandType.Text);
+                    {
+                        PageId = pageId.Value,
+                        ProductType = productType,
+                        SearchKeywords = keyword
+                    }, CommandType.Text);
 
-                return true;
+                    return true;
+                }
             }
             catch (SqlException ex)
             {
                 Log.Error(ex.Message);
-                return false;
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                return false;
             }
+
+            return false;
         }
     }
 }
