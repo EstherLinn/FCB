@@ -8,6 +8,11 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         public Item Datasource { get; set; }
 
         /// <summary>
+        /// 搜尋頁連結
+        /// </summary>
+        public string SearchPageLink { get; set; }
+
+        /// <summary>
         /// 詳細頁附註說明
         /// </summary>
         public HtmlString AccordionContent { get; set; }

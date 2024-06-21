@@ -109,6 +109,7 @@ namespace Feature.Wealth.Component.Repositories
             detailModel.RiskIntro = dataSource.Field(Templates.EtfDetailDatasource.Fields.RiskIntro);
             detailModel.RiskQuadrantChartDescription = dataSource.Field(Templates.EtfDetailDatasource.Fields.RiskQuadrantChartDescription);
             detailModel.DividendRecordDescription = dataSource.Field(Templates.EtfDetailDatasource.Fields.DividendRecordDescription);
+            detailModel.SearchPageLink = EtfRelatedLinkSetting.GetETFSearchUrl();
         }
 
         private EtfDetailModel CreateETFDetailsData()
