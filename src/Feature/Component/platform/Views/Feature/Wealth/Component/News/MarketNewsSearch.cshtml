@@ -551,10 +551,10 @@
                         //        </div>`;
 
                         return `<div class="c-itemKeyword">
-                                    <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                    </a>
-                                </div>`;
+                                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                            </a>
+                                        </div>`;
                     }
                 });
             }
@@ -719,10 +719,13 @@
 
                 function getMarketNewsData(newstype, startdate, enddate) {
 
+                    var token = $('input[name="__RequestVerificationToken"]').val();
+
                     const params = {
                         id: newstype,
                         startDatetime: startdate,
                         endDatetime: enddate,
+                        __RequestVerificationToken: token,
                     };
 
                     $.ajax({

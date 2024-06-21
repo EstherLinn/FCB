@@ -133,19 +133,19 @@
                                                 <div class="l-target__name">
                                                     <a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.FundName</a>
                                                 </div>
-												@if (item.Tags != null)
-												{
-													<div class="l-target__additional">
-														<ul class="l-tag">
-															@for (var i = 0; i < item.Tags.Count; i++)
-															{
-																<li class="l-tag__item">
-																	<span class="o-tag">@item.Tags[i] </span>
-																</li>
-															}
-														</ul>
-													</div>
-												}
+                                                @if (item.Tags != null)
+                                                {
+                                                    <div class="l-target__additional">
+                                                        <ul class="l-tag">
+                                                            @for (var i = 0; i < item.Tags.Count; i++)
+                                                            {
+                                                                <li class="l-tag__item">
+                                                                    <span class="o-tag">@item.Tags[i] </span>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                     </td>
@@ -206,26 +206,26 @@
                                         }
                                     </td>
                                     <td class="c-cardTable__space"></td>
-									<td class="c-cardTable__footer" data-card-table-width="@((item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability))) ? "2/3" : "1/1")">
-										<div class="c-cardTable__content">
-											<ul class="l-collect l-collect--divider@lt">
-												<li class="l-collect__item">
-													@Html.FocusButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
-												</li>
-												<li class="l-collect__item">
-													@Html.CompareButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
-												</li>
-											</ul>
-										</div>
-									</td>
-									<td class="c-cardTable__footer" data-card-table-width="1/3">
-										<div class="c-cardTable__content">
-											@if (item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
-											{
-												@Html.SubscriptionButton(null, item.ProductCode, InvestTypeEnum.Fund, true)
-											}
-										</div>
-									</td>
+                                    <td class="c-cardTable__footer" data-card-table-width="@((item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability))) ? "2/3" : "1/1")">
+                                        <div class="c-cardTable__content">
+                                            <ul class="l-collect l-collect--divider@lt">
+                                                <li class="l-collect__item">
+                                                    @Html.FocusButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
+                                                </li>
+                                                <li class="l-collect__item">
+                                                    @Html.CompareButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td class="c-cardTable__footer" data-card-table-width="1/3">
+                                        <div class="c-cardTable__content">
+                                            @if (item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
+                                            {
+                                                @Html.SubscriptionButton(null, item.ProductCode, InvestTypeEnum.Fund, true)
+                                            }
+                                        </div>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -258,10 +258,12 @@
             }
 
             function ReturnView(selectedId, orderby, desc) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "HotFund", "GetSortedHotFund")',
                     type: 'POST',
-                    data: { selectedId: selectedId, orderby: orderby, desc: desc },
+                    data: { selectedId: selectedId, orderby: orderby, desc: desc, __RequestVerificationToken: token },
                     success: function (data) {
                         $('#result').empty();
                         document.getElementById('result').innerHTML = DOMPurifyData(data);

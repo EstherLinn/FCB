@@ -34,6 +34,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetSortedeFirstChoice(string[] selectedId, string orderby, string desc)
         {
             if (orderby.IsNullOrEmpty()) { orderby = "SixMonthReturnOriginalCurrency"; }
@@ -55,8 +56,8 @@ namespace Feature.Wealth.Component.Controllers
             {
                 EFirstFunds = renderDatas,
                 DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
-        };
-            
+            };
+
             return View("/Views/Feature/Wealth/Component/EFirstChoice/EFirstChoiceReturnView.cshtml", viewModel);
         }
     }
