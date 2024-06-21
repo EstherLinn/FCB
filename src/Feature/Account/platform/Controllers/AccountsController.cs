@@ -541,7 +541,7 @@ namespace Feature.Wealth.Account.Controllers
 
         private void RefreshMemberInfo()
         {
-            var member = _memberRepository.GetMemberInfo(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId());
+            var member = _memberRepository.GetRefreshMemberInfo(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId());
             User user = Sitecore.Context.User;
             string objToJson = JsonConvert.SerializeObject(member);
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
