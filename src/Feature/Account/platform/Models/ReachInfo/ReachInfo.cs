@@ -23,7 +23,6 @@ namespace Feature.Wealth.Account.Models.ReachInfo
         public DateTime? InfoEndDate { get; set; }
         public DateTime? SetDateTime { get; set; }
         public bool OpenInfo { get; set; }
-        public bool HaveRead { get; set; }
 
     }
 }
