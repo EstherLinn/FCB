@@ -209,7 +209,7 @@
                         @foreach (var tag in Model.CategoryTags)
                         {
                             <li class="l-divideList__item l-divideList__item--auto">
-                                <a href="" class="o-hashTag u-nowrap">#@tag</a>
+                                <a href="@(Model.SearchPageLink)?hotproduct=@(tag)" class="o-hashTag u-nowrap">#@tag</a>
                             </li>
                         }
                     </ul>
