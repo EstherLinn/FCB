@@ -1,5 +1,7 @@
 ﻿@using Feature.Wealth.Component.Models.SearchBar
 @using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions
+@using Feature.Wealth.Component.Models
+@using Feature.Wealth.Component.Repositories
 
 @model SearchBarModel
 @if (!Model.IsValid)
@@ -18,7 +20,8 @@
                             var val = item.GetFieldValue(Templates.SourceItem.Fields.LinkText);
                             var link = item.TargetItem(Templates.HotKeyWordSourceItem.Fields.SearchLink)?.Url() ?? item.TargetItem(Templates.SourceItem.Fields.LinkItem)?.Url();
                             var isSiteProductSearch = item.IsChecked(Templates.HotKeyWordSourceItem.Fields.IsSiteProductSearch);
-                            <option value="@val" data-advance-url="@link" data-advance-hidden="@(isSiteProductSearch ? "true" : "false")">@val</option>
+                            var productType = CommonRepository.GetEnumValueFromDescription<ProductTypeEnum>(val);
+                            <option value="@val"producttype="@productType" data-advance-url="@link" data-advance-hidden="@(isSiteProductSearch ? "true" : "false")">@val</option>
                         }
                     </select>
                 </div>
@@ -27,7 +30,7 @@
                     <div class="o-actionbox o-actionbox--full" data-clear="true">
                         <!-- #keyword: 請見頁面下方的script邏輯，套用jquery.autocomplete套件 -->
                         <!-- [data-clear="textbox"]: 套用清除按鈕功能，標示此為文字輸入框 -->
-                        <input id="keyword" type="search" class="o-actionbox__input o-actionbox__input--shadow" data-clear="textbox" placeholder="請輸入代碼或名稱">
+                        <input insertKeywords issearchbar="true" eh-search-pageid="@Sitecore.Context.Item.ID.Guid" id="keyword" type="search" class="o-actionbox__input o-actionbox__input--shadow" data-clear="textbox" placeholder="請輸入代碼或名稱">
                         <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier"></button>
                         <!-- [data-clear="button"]: 套用清除按鈕功能，標示此為清除按鈕 -->
                         <button type="button" class="o-actionbox__clear" data-clear="button">清除</button>
@@ -118,6 +121,8 @@
             $('.o-actionbox__btn', '.c-siteSearch__keyword').on('click', keywordSearch);
 
             function keywordSearch() {
+                insertKeywords();
+
                 let option = SC_DATA.KeywordSearch_Option;
                 redirect(option.data('advance-url') + '?keyword=' + DOMPurify.sanitize(input.value));
             }

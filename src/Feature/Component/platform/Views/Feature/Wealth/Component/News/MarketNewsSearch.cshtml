@@ -20,7 +20,7 @@
                                         <div class="o-actionbox o-actionbox--lg" data-clear="true">
                                             <!-- #keyword: 請見頁面下方的script邏輯，套用jquery.autocomplete套件 -->
                                             <!-- [data-clear="textbox"]: 套用清除按鈕功能，標示此為文字輸入框 -->
-                                            <input id="keyword" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入關鍵字" data-keyword-input>
+                                            <input insertKeywords eh-search-pageid="@Sitecore.Context.Item.ID.Guid" eh-search-type="MarketNews" id="keyword" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入關鍵字" data-keyword-input>
                                             <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit></button>
                                             <!-- [data-clear="button"]: 套用清除按鈕功能，標示此為清除按鈕 -->
                                             <button type="button" class="o-actionbox__clear" data-clear="button">清除</button>
@@ -665,6 +665,7 @@
                             setTimeout(() => {
                                 window.loading('hide');
                             }, 300);
+                            insertKeywords();
                         }
                     });
                 }
