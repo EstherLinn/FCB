@@ -33,6 +33,7 @@ namespace Feature.Wealth.Account.Services
                     {
                         result = JObject.Parse(resp);
                     }
+                    Logger.Api.Info($"ileo關注清單response: {resp}");
                 }
                 else
                 {
