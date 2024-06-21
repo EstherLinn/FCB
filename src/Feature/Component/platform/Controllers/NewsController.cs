@@ -13,7 +13,7 @@ namespace Feature.Wealth.Component.Controllers
     public class NewsController : Controller
     {
         private readonly NewsRepository _newsRespository = new NewsRepository();
-        private readonly CommonRepository _commonRespository = new CommonRepository(); 
+        private readonly CommonRepository _commonRespository = new CommonRepository();
 
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly string MarketNewsCacheKey = $"Fcb_MarketNewsCache";
@@ -32,13 +32,14 @@ namespace Feature.Wealth.Component.Controllers
             var model = new NewsListModel(RenderingContext.CurrentOrNull?.Rendering.Item);
             return View("/Views/Feature/Wealth/Component/News/NewsList.cshtml", model);
         }
-        
+
         public ActionResult MarketNewsSearch()
         {
             return View("/Views/Feature/Wealth/Component/News/MarketNewsSearch.cshtml");
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetMarketNewsData(string id, string startDatetime, string endDatetime)
         {
             List<MarketNewsModel> _datas;

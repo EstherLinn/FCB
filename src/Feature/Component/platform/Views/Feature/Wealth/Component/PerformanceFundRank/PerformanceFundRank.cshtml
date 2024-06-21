@@ -1,5 +1,4 @@
-﻿
-@using Foundation.Wealth.Helper
+﻿@using Foundation.Wealth.Helper
 @using Feature.Wealth.Component.Models.PerformanceFundRank
 @model PerformanceFundRankModel
 
@@ -420,10 +419,16 @@
 
             //顯示基金資料 (國內/國外tab,選擇的類型pelletboxInputs,頁面(第幾頁),頁面筆數(顯示幾筆))
             function loadData(tabTarget, selectedValue, page, pageSize, orderby, desc) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "PerformanceFundRank", "GetSortedPerformanceFundRank")',
                     type: 'POST',
-                    data: { tab: tabTarget, selectedValue: selectedValue, page: page, pageSize: pageSize, orderby: orderby, desc: desc },
+                    data: {
+                        tab: tabTarget, selectedValue: selectedValue,
+                        page: page, pageSize: pageSize, orderby: orderby,
+                        desc: desc, __RequestVerificationToken: token
+                    },
                     success: function (data) {
                         if (data) {
                             var tabContent = document.getElementById(tabTarget);

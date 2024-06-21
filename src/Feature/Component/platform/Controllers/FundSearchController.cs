@@ -44,7 +44,7 @@ namespace Feature.Wealth.Component.Controllers
             var items = _fundsearchrepository.GetFundSearchData();
 
             var regions = items
-                        .OrderBy(f=>f.InvestmentRegionID)
+                        .OrderBy(f => f.InvestmentRegionID)
                         .SelectMany(f =>
                         {
                             if (!string.IsNullOrEmpty(f.InvestmentRegionName))
@@ -53,7 +53,7 @@ namespace Feature.Wealth.Component.Controllers
                             }
                             else
                             {
-                                return new string[] { }; 
+                                return new string[] { };
                             }
                         })
                         .Where(r => !string.IsNullOrWhiteSpace(r))
@@ -64,11 +64,11 @@ namespace Feature.Wealth.Component.Controllers
 
             var searchbar = new SearchBarData
             {
-                Currencies = items.OrderBy(f=>f.CurrencyCode).Select(f=>f.CurrencyName).Distinct().ToList(),
-                FundCompanies = items.Where(f => f.FundCompanyName != null).OrderBy(f=>f.FundCompanyName).Select(f => f.FundCompanyName).Distinct().ToList(),
+                Currencies = items.OrderBy(f => f.CurrencyCode).Select(f => f.CurrencyName).Distinct().ToList(),
+                FundCompanies = items.Where(f => f.FundCompanyName != null).OrderBy(f => f.FundCompanyName).Select(f => f.FundCompanyName).Distinct().ToList(),
                 InvestmentRegions = regions,
                 InvestmentTargets = items.OrderBy(t => t.InvestmentTargetID).Select(f => f.InvestmentTargetName).Distinct().ToList(),
-                FundTypeNames = items.OrderBy(f=>f.FormatFundType).Select(f => f.FormatFundType).Distinct().ToList()
+                FundTypeNames = items.OrderBy(f => f.FormatFundType).Select(f => f.FormatFundType).Distinct().ToList()
             };
 
             var viewModel = new FundSearchViewModel
@@ -91,6 +91,7 @@ namespace Feature.Wealth.Component.Controllers
         /// 搜尋回傳值
         /// </summary>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetAllFunds()
         {
             var items = _fundsearchrepository.GetFundSearchData();

@@ -36,6 +36,7 @@ namespace Feature.Wealth.Component.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetSortedPerformanceFundRank(string tab, string selectedValue, string page, string pageSize, string orderby, string desc)
         {
             var funds = _performanceFundRankRepository.GetFundData();

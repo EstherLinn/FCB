@@ -38,6 +38,7 @@ namespace Feature.Wealth.Component.Controllers
         /// <param name="querystring">網址參數</param>
         /// <returns></returns>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Update(Guid? pageId, string url, params string[] querystring)
         {
             if (!pageId.HasValue)
