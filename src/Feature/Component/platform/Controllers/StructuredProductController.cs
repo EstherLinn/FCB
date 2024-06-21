@@ -37,11 +37,12 @@ namespace Feature.Wealth.Component.Controllers
             {
                 model = null;
             }
-            
+
             return View("/Views/Feature/Wealth/Component/StructuredProduct/StructuredProductSearch.cshtml", model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetStructuredProducts()
         {
             List<StructuredProductModel> datas;

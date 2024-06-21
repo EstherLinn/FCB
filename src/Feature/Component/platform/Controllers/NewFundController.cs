@@ -34,6 +34,7 @@ namespace Feature.Wealth.Component.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetSortedNewFund(string page, string pageSize, string orderby, string desc)
         {
             var fund = _repository.GetFundData();

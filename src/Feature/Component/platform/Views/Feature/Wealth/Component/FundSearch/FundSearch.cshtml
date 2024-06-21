@@ -1939,13 +1939,13 @@
                     // 申購按鈕
                     let $purchase = suggestion.Data.Purchase ? suggestion.Data.IsLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
                     return `<div class="c-itemKeyword">
-                                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                                <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
 
-                                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                            </a>
-                                            <div class="c-itemKeyword__collections">${$like}</div>
-                                            ${$purchase}
-                                        </div>`;
+                                                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                                </a>
+                                                <div class="c-itemKeyword__collections">${$like}</div>
+                                                ${$purchase}
+                                            </div>`;
                 }
             });
         }
@@ -1956,9 +1956,13 @@
             }
             initBind();
             let fjs;
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "FundSearch", "GetAllFunds")',
-                type: 'POST'
+                type: 'POST',
+                data: { __RequestVerificationToken: token },
             }).done(function (data, textStatus, jqXHR) {
                 QueryStringSearch();
                 initFilter(data);
