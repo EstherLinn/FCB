@@ -179,10 +179,12 @@
 
             //顯示基金資料 (頁面(第幾頁),頁面筆數(顯示幾筆))
             function loadData(page, pageSize, orderby, desc) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "NewArrivalEtf", "GetSortedNewArrivalEtf")',
                     type: 'POST',
-                    data: { page: page, pageSize: pageSize, orderby: orderby, desc: desc },
+                    data: { page: page, pageSize: pageSize, orderby: orderby, desc: desc, __RequestVerificationToken: token },
                     success: function (data) {
                         if (data) {
                             $('#result').empty();

@@ -468,10 +468,10 @@
                     let detailUrl = suggestion.ProductDetailUrl ? suggestion.ProductDetailUrl : '#';
                     // 申購按鈕
                     return `<div class="c-itemKeyword">
-                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue) }</div>
-                            </a>
-                        </div>`;
+                                <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                </a>
+                            </div>`;
                 }
             });
 
@@ -482,10 +482,13 @@
                 return;
             }
 
+            var token = $('input[name="__RequestVerificationToken"]').val();        
+    
             // 商品列表
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "StructuredProduct", "GetStructuredProducts")',
                 type: 'POST',
+                data: { __RequestVerificationToken: token },
                 success: function (data) {
                     console.log(data);
 
@@ -501,7 +504,7 @@
                         if (keyword) {
                             $('[data-keyword-input]').val(keyword);
                             $('[data-keyword-submit]').trigger('click');
-                        }else if (hotproduct) {
+                        } else if (hotproduct) {
                             $("input[value='" + hotproduct + "']").trigger('click');
                         } else if (hotkeyword) {
                             $("input[value='" + hotkeyword + "']").trigger('click');

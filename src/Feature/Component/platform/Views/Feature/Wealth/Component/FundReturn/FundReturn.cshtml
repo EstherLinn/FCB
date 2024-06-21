@@ -216,10 +216,10 @@
                     },
                     formatResult: function (suggestion, currentValue) {
                         return `<div class="c-itemKeyword">
-                                                                                                <a href="#" class="c-itemKeyword__content" data-fund data-fundcode="${suggestion.fundcode}">
-                                                                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                                                                    </a>
-                                                                                </div>`;
+                                                                                                    <a href="#" class="c-itemKeyword__content" data-fund data-fundcode="${suggestion.fundcode}">
+                                                                                            <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                                                                        </a>
+                                                                                    </div>`;
                     }
                 });
             }
@@ -300,10 +300,10 @@
                         CompanyOptions = selectedIndicator.FundCompanies;
 
                         CompanyOptions.forEach(function (company) {
-                            $CompanySelector.append($('<option>', DOMPurify.sanitize({
-                                value: company.FundCompanyID,
-                                text: company.FundCompanyName
-                            })));
+                            $CompanySelector.append($('<option>', {
+                                value: DOMPurify.sanitize(company.FundCompanyID),
+                                text: DOMPurify.sanitize(company.FundCompanyName)
+                            }));
                         });
                     }
                 });
@@ -326,8 +326,8 @@
 
                         FundOptions.forEach(function (fund) {
                             $FundSelector.append($('<option>', {
-                                value: fund.ProductCode,
-                                text: fund.ProductCode + " " + fund.ProductName
+                                value: DOMPurify.sanitize(fund.ProductCode),
+                                text: DOMPurify.sanitize(fund.ProductCode + " " + fund.ProductName)
                             }));
                         });
                     }
@@ -359,7 +359,7 @@
                     }
 
                     $IndicatorSelector.append($('<option>', {
-                        value: item.DomesticForeignFundIndicator,
+                        value: DOMPurify.sanitize(item.DomesticForeignFundIndicator),
                         text: opttext
                     }));
                 });

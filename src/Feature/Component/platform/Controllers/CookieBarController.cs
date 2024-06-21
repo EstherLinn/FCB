@@ -33,6 +33,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult UpdateCookie()
         {
             try

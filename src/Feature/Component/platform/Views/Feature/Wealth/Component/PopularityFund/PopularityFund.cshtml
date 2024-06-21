@@ -5,7 +5,7 @@
 
 @{
     var modelitem = Model.Item;
-    if(Model==null){ return; }
+    if (Model == null) { return; }
 }
 
 <div class="l-mainstage">
@@ -259,10 +259,12 @@
             }
 
             function ReturnView(selectedId, orderby, desc) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "PopularityFund", "GetSortedPopularityFund")',
                     type: 'POST',
-                    data: { selectedId: selectedId, orderby: orderby, desc: desc },
+                    data: { selectedId: selectedId, orderby: orderby, desc: desc, __RequestVerificationToken: token },
                     success: function (data) {
                         $('#result').empty();
                         document.getElementById('result').innerHTML = DOMPurifyData(data);

@@ -38,6 +38,7 @@ namespace Feature.Wealth.Component.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetSortedNewArrivalEtf(string page, string pageSize, string orderby, string desc)
         {
             var etf = _repository.GetFundData();

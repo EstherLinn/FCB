@@ -31,6 +31,7 @@ namespace Feature.Wealth.Component.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetSortedHighRatedFund(string orderby, string desc)
         {
             if (orderby.IsNullOrEmpty()) { orderby = "SixMonthReturnOriginalCurrency"; }
