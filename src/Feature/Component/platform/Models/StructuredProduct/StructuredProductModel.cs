@@ -15,9 +15,12 @@ namespace Feature.Wealth.Component.Models.StructuredProduct
         public string Currency { get; set; }
         public string CurrencyName { get; set; }
         public string CurrencyCode { get; set; }
+        public string CurrencyHtml { get; set; }
         public string BankSellPrice { get; set; }
         public string PriceBaseDate { get; set; }
-
+        public string ProductDisplayName { get; set; }
+        public string ProductDetailUrl { get; set; }
+        public string value { get; set; }
         #endregion
 
         #region from 後台
