@@ -71,6 +71,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.AvailabilityStatus = f.AvailabilityStatus;
                 vm.PercentageChangeInFundPrice = f.PercentageChangeInFundPrice;
                 vm.TargetName = f.TargetName;
+                vm.Tags = f.Tags;
                 result.Add(vm);
             }
             return result;
