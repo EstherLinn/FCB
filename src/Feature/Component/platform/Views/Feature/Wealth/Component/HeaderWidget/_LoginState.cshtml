@@ -11,7 +11,7 @@
         <!-- 登入狀態 -->
         <div class="l-topbar__list">
             <div class="l-topbar__item">
-                <a href="#" class="o-topBtn o-topBtn--notify is-notify" data-popover="#popoverNotify"></a>
+                <a href="#" class="o-topBtn o-topBtn--notify u-hidden" data-popover="#popoverNotify"></a>
                 <div id="popoverNotify" class="c-popover">
                     <div class="c-popover__wrap">
                         <nav class="c-popover__content">
@@ -125,6 +125,10 @@
                                         </li>`
                         }
                         $('#topInfoList').html(DOMPurify.sanitize(html));
+                        if ($('[data-haveread=true]', $('[data-popover="#popoverNotify"]')).length > 0) {
+                            $('[data-popover="#popoverNotify"]').addClass('is-notify');
+                        }
+                        $('[data-popover="#popoverNotify"]').removeClass('u-hidden');
                     } else {
                         $('[data-popover="#popoverNotify"]').addClass('u-hidden');
                     }
