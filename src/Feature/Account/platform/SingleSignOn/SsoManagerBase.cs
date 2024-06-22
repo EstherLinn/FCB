@@ -1,8 +1,10 @@
 ﻿using Feature.Wealth.Account.Models.SingleSignOn;
 using log4net;
+using Sitecore.Data.Items;
 using Sitecore.Security.Accounts;
 using Sitecore.Security.Domains;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
@@ -20,12 +22,17 @@ namespace Feature.Wealth.Account.SingleSignOn
         /// <summary>
         /// User 權限 (domain\role)
         /// </summary>
-        public Role[] Roles { get; set; }
+        public IEnumerable<Role> Roles { get; set; }
 
         /// <summary>
         /// 部門代碼
         /// </summary>
-        public string[] DepartmentId { get; set; }
+        public IEnumerable<string> DepartmentId { get; set; }
+
+        /// <summary>
+        /// 部門代碼
+        /// </summary>
+        public IEnumerable<string> Codes { get; set; }
     }
 
     public abstract class SsoManagerBase
@@ -74,16 +81,17 @@ namespace Feature.Wealth.Account.SingleSignOn
                     continue;
                 }
 
-                //// 排除未對應的授權
+                // 排除未對應的授權
                 var mappers = from roleItem in roleItems
-                    let roles = roleItem.GetMultiLineText("role name").Select(Role).Where(x => x != null).ToArray()
-                    let authCodes = roleItem.GetMultiLineText("authentication code")
-                    let depId = roleItem.GetMultiLineText("department id")
-                    select new AuthMapper
-                    {
-                        Roles = roles,
-                        DepartmentId = depId
-                    };
+                              let roles = roleItem.GetMultiLineText("role name").Select(Role).Where(x => x != null)
+                              let authCodes = roleItem.GetMultiLineText("authentication code")
+                              let depId = roleItem.GetMultiLineText("department id").SkipWhile(string.IsNullOrEmpty)
+                              select new AuthMapper
+                              {
+                                  Roles = roles,
+                                  Codes = authCodes,
+                                  DepartmentId = depId
+                              };
 
                 result.TryAdd(domainItem[domainNameField], mappers);
             }

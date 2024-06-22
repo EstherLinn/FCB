@@ -1,6 +1,8 @@
 ﻿using Sitecore.Web;
 using System;
+using System.Configuration;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.UI;
 
 namespace Feature.Wealth.Account.SingleSignOn.PageCodeBehind
@@ -31,6 +33,11 @@ namespace Feature.Wealth.Account.SingleSignOn.PageCodeBehind
         {
             string workforceId = WebUtil.GetRequestHeader("X-workforceID");
 
+            if (string.IsNullOrEmpty(workforceId) && bool.TryParse(ConfigurationManager.AppSettings["Feature.Wealth.Account.SSO.LoginQueryString"], out bool isLoginQueryString))
+            {
+                workforceId = isLoginQueryString ? HttpContext.Current.Request.QueryString["workforceID"] : string.Empty;
+            }
+
             // 未包含 AuthCode 參數
             if (string.IsNullOrEmpty(workforceId))
             {
@@ -42,7 +49,7 @@ namespace Feature.Wealth.Account.SingleSignOn.PageCodeBehind
             try
             {
                 bool success = sso.VerifyAccessToken(workforceId);
-                if (success == false)
+                if (!success)
                 {
                     ErrorMessage("workforceId 驗證失敗");
                     return;
@@ -51,10 +58,11 @@ namespace Feature.Wealth.Account.SingleSignOn.PageCodeBehind
                 var user = sso.BuildSsoUser();
                 var scUser = sso.BuildSitecoreUser(user);
 
-                //// 有效使用者驗證
+                // 有效使用者驗證
                 var rule = sso.ValidUserCondition(user, scUser);
-                if (rule.Success == false)
+                if (!rule.Success)
                 {
+                    // 尚未建立帳戶
                     ErrorMessage(rule.Message);
                     return;
                 }
@@ -63,7 +71,6 @@ namespace Feature.Wealth.Account.SingleSignOn.PageCodeBehind
                 if (login.Success)
                 {
                     this.Response.Redirect(sso.StartPage);
-                    //this.Page.ClientScript.RegisterClientScriptBlock(this.GetType(), "sso", $"window.location.href='{startUrl}?sc_lang=zh-tw'", true);
                 }
 
                 ErrorMessage(login.Message);
@@ -71,7 +78,7 @@ namespace Feature.Wealth.Account.SingleSignOn.PageCodeBehind
             catch (Exception ex)
             {
                 sso.Log.Error("SSO 登入失敗", ex);
-                ErrorMessage("請與管理人員聯繫");
+                ErrorMessage($"請與管理人員聯繫, {ex.Message}");
             }
         }
 
