@@ -20,12 +20,17 @@ namespace Feature.Wealth.Account.SingleSignOn
         /// <summary>
         /// User 權限 (domain\role)
         /// </summary>
-        public Role[] Roles { get; set; }
+        public IEnumerable<Role> Roles { get; set; }
 
         /// <summary>
         /// 部門代碼
         /// </summary>
-        public string[] DepartmentId { get; set; }
+        public IEnumerable<string> DepartmentId { get; set; }
+
+        /// <summary>
+        /// 部門代碼
+        /// </summary>
+        public IEnumerable<string> Codes { get; set; }
     }
 
     public abstract class SsoManagerBase
@@ -74,16 +79,17 @@ namespace Feature.Wealth.Account.SingleSignOn
                     continue;
                 }
 
-                //// 排除未對應的授權
+                // 排除未對應的授權
                 var mappers = from roleItem in roleItems
-                    let roles = roleItem.GetMultiLineText("role name").Select(Role).Where(x => x != null).ToArray()
-                    let authCodes = roleItem.GetMultiLineText("authentication code")
-                    let depId = roleItem.GetMultiLineText("department id")
-                    select new AuthMapper
-                    {
-                        Roles = roles,
-                        DepartmentId = depId
-                    };
+                              let roles = roleItem.GetMultiLineText("role name").Select(Role).Where(x => x != null)
+                              let authCodes = roleItem.GetMultiLineText("authentication code")
+                              let depId = roleItem.GetMultiLineText("department id").SkipWhile(string.IsNullOrEmpty)
+                              select new AuthMapper
+                              {
+                                  Roles = roles,
+                                  Codes = authCodes,
+                                  DepartmentId = depId
+                              };
 
                 result.TryAdd(domainItem[domainNameField], mappers);
             }
@@ -118,7 +124,7 @@ namespace Feature.Wealth.Account.SingleSignOn
             bool success = MemberUtils.Authentication.LoginUser(user, true);
 
             string message = $"{user.Name} 登入成功";
-            if (success == false)
+            if (!success)
             {
                 message = $"{user.Name} 無法登入，請與管理人員聯繫";
             }
@@ -185,7 +191,7 @@ namespace Feature.Wealth.Account.SingleSignOn
             var scUser = MemberUtils.AddOrGetUser(domainName, userName, RandomMethod.NextAlphaNumeric());
 
             string profileItemId = this.ProfileItemId;
-            if (profileItemId.IsNullOrEmpty() == false)
+            if (!profileItemId.IsNullOrEmpty())
             {
                 scUser.Profile.ProfileItemId = profileItemId;
             }

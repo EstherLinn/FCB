@@ -5,7 +5,7 @@
         /// <summary>
         /// 第一銀行
         /// </summary>
-        Fcb = 10
+        fcb = 10
     }
 
     public class TokenModel

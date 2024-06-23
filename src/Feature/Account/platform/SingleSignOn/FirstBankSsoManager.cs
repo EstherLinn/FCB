@@ -1,8 +1,11 @@
-﻿using Feature.Wealth.Account.Models.SingleSignOn;
+﻿using Feature.Wealth.Account.Models.OAuth;
+using Feature.Wealth.Account.Models.SingleSignOn;
 using Sitecore.Security.Accounts;
 using Sitecore.Security.Domains;
+using Sitecore.SecurityModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -10,7 +13,7 @@ namespace Feature.Wealth.Account.SingleSignOn
 {
     public class FirstBankSsoManager : SsoManagerBase
     {
-        public readonly SsoDomain DomainName = SsoDomain.Fcb;
+        public readonly SsoDomain DomainName = SsoDomain.fcb;
 
         private string _workforceId;
 
@@ -35,6 +38,108 @@ namespace Feature.Wealth.Account.SingleSignOn
         private void SetUserProfile(FirstBankUser user)
         {
             user.Profile.EmployeeId = this._workforceId;
+        }
+
+        /// <summary>
+        /// 產生 Sitecore User
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public User BuildSitecoreUser(FirstBankUser user)
+        {
+            SitecoreUserManager sitecoreUserManager = new SitecoreUserManager();
+            Employee member = sitecoreUserManager.GetEmployeeInfo(this._workforceId);
+
+            if (string.IsNullOrEmpty(member?.EmployeeCode))
+            {
+                this.Log.Error($"{nameof(FirstBankSsoManager)} 未存在 HRIS");
+                return null;
+            }
+
+            string domainName = this.Domain?.Name;
+            if (string.IsNullOrEmpty(domainName))
+            {
+                this.Log.Error($"{nameof(FirstBankSsoManager)} 未設定 domain");
+                return null;
+            }
+
+            string userName = user?.LocalName;
+            if (string.IsNullOrEmpty(userName))
+            {
+                this.Log.Error($"{nameof(FirstBankSsoManager)} 未設定 LocalName");
+                return null;
+            }
+
+            User scUser = MemberUtils.AddOrGetUser(domainName, userName, member.EmployeeCode);
+
+            UpdateToSitecoreProfile(scUser, user);
+            var result = GrantRole(scUser, member);
+
+            if (!result.Item1)
+            {
+                this.Log.Error($"{nameof(FirstBankSsoManager)} 無法取得授權對應表 {result.Item2}");
+                return null;
+            }
+            return scUser;
+        }
+
+        private (bool Success, string Message) GrantRole(User scUser, Employee member)
+        {
+            var msg = string.Empty;
+            var authorizationMapper = base.AuthorizationMapper();
+            var authMappers = authorizationMapper?.GetValue(this.Domain.Name);
+
+            if (authMappers == null || !authMappers.Any())
+            {
+                return (false, "無法取得授權對應表");
+            }
+
+            foreach (var authMapper in authMappers ?? [])
+            {
+                foreach (string pattern in authMapper.DepartmentId ?? [])
+                {
+                    if (Regex.Match(member.DepartmentCode, pattern).Success)
+                    {
+                        bool isMatch = true;
+                        foreach (string code in authMapper.Codes)
+                        {
+                            if (Regex.Match(member.SupervisorCode, code).Success)
+                            {
+                                isMatch = true;
+                            }
+                            else
+                            {
+                                isMatch = false;
+                            }
+                        }
+                        if (isMatch)
+                        {
+                            return SetRoles(scUser, authMapper.Roles);
+                        }
+                    }
+                }
+            }
+            return (false, msg);
+        }
+
+        private (bool Success, string Message) SetRoles(User scUser, IEnumerable<Role> roles)
+        {
+            using (new SecurityDisabler())
+            {
+                if (!scUser.IsAdministrator)
+                {
+                    scUser.Roles.RemoveAll();
+                }
+                List<string> roleName = new List<string>();
+                foreach (var role in roles)
+                {
+                    scUser.Roles.Add(role);
+                    scUser.Profile.Save();
+                    roleName.Add(role.Name);
+                }
+                Sitecore.Diagnostics.Log.Info($"用戶 '{scUser.LocalName}' 已成功分配角色 '{string.Join(", ", roleName)}'.", this);
+            }
+            return (true, null);
         }
 
         /// <summary>
@@ -69,7 +174,7 @@ namespace Feature.Wealth.Account.SingleSignOn
             }
 
             //// 檢查 Sitecore user 是否可用
-            if (scUser.IsApproved() == false)
+            if (!scUser.IsApproved())
             {
                 return (false, $"{scUser.Name} 停用中，請與管理人員聯繫");
             }
@@ -88,7 +193,7 @@ namespace Feature.Wealth.Account.SingleSignOn
             roles = null;
             var authorizationMapper = base.AuthorizationMapper();
             var authMappers = authorizationMapper?.GetValue(this.Domain.Name)?.ToList();
-            if (authMappers == null || authMappers.Any() == false)
+            if (authMappers == null || !authMappers.Any())
             {
                 return (false, "無法取得授權對應表");
             }
