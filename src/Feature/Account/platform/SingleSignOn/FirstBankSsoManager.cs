@@ -13,7 +13,7 @@ namespace Feature.Wealth.Account.SingleSignOn
 {
     public class FirstBankSsoManager : SsoManagerBase
     {
-        public readonly SsoDomain DomainName = SsoDomain.Fcb;
+        public readonly SsoDomain DomainName = SsoDomain.fcb;
 
         private string _workforceId;
 
@@ -71,14 +71,29 @@ namespace Feature.Wealth.Account.SingleSignOn
             }
 
             User scUser = MemberUtils.AddOrGetUser(domainName, userName, member.EmployeeCode);
+
             UpdateToSitecoreProfile(scUser, user);
-            GrantRole(scUser, member);
+            var result = GrantRole(scUser, member);
+
+            if (!result.Item1)
+            {
+                this.Log.Error($"{nameof(FirstBankSsoManager)} 無法取得授權對應表 {result.Item2}");
+                return null;
+            }
             return scUser;
         }
 
-        private bool GrantRole(User scUser, Employee member)
+        private (bool Success, string Message) GrantRole(User scUser, Employee member)
         {
-            AuthorizationMapper().TryGetValue("fcb", out IEnumerable<AuthMapper> authMappers);
+            var msg = string.Empty;
+            var authorizationMapper = base.AuthorizationMapper();
+            var authMappers = authorizationMapper?.GetValue(this.Domain.Name);
+
+            if (authMappers == null || !authMappers.Any())
+            {
+                return (false, "無法取得授權對應表");
+            }
+
             foreach (var authMapper in authMappers ?? [])
             {
                 foreach (string pattern in authMapper.DepartmentId ?? [])
@@ -104,10 +119,10 @@ namespace Feature.Wealth.Account.SingleSignOn
                     }
                 }
             }
-            return false;
+            return (false, msg);
         }
 
-        private bool SetRoles(User scUser, IEnumerable<Role> roles)
+        private (bool Success, string Message) SetRoles(User scUser, IEnumerable<Role> roles)
         {
             using (new SecurityDisabler())
             {
@@ -124,7 +139,7 @@ namespace Feature.Wealth.Account.SingleSignOn
                 }
                 Sitecore.Diagnostics.Log.Info($"用戶 '{scUser.LocalName}' 已成功分配角色 '{string.Join(", ", roleName)}'.", this);
             }
-            return true;
+            return (true, null);
         }
 
         /// <summary>
@@ -178,7 +193,7 @@ namespace Feature.Wealth.Account.SingleSignOn
             roles = null;
             var authorizationMapper = base.AuthorizationMapper();
             var authMappers = authorizationMapper?.GetValue(this.Domain.Name)?.ToList();
-            if (authMappers == null || authMappers.Any() == false)
+            if (authMappers == null || !authMappers.Any())
             {
                 return (false, "無法取得授權對應表");
             }
