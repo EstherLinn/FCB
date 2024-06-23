@@ -12,6 +12,7 @@ using System.Text;
 using System.Diagnostics;
 using Foundation.Wealth.Manager;
 using System.Data;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -23,8 +24,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
         {
             //CIF 一次性排程 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM WEA_DW_CIF_VIEW";
-
-            var results = DbManager.Cif.ExecuteIList<Cif>(sql, null, CommandType.Text);
+            var results = await _repository.ConnectOdbc<Cif>(sql);
 
             foreach (var item in results)
             {
@@ -36,7 +36,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     + $"CIF_HIGH_ASSET_DATE: {item.CIF_HIGH_ASSET_DATE}" + $"CIF_EXT_DATE: {item.CIF_EXT_DATE}");
             }
 
-            if (results != null && results.Any())
+            if (!results.IsNullOrEmpty())
             {
                 try
                 {

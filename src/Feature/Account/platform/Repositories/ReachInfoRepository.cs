@@ -49,11 +49,11 @@ namespace Feature.Wealth.Account.Repositories
 USING (SELECT @PlatFormId,@InvestId,@InfoType ) AS source (PlatFormId,InvestId,InfoType) 
 ON (target.PlatFormId = source.PlatFormId and target.InvestId = source.InvestId and target.InfoType = source.InfoType) 
 WHEN MATCHED THEN UPDATE SET PriceValue=@PriceValue, ReachValue = @ReachValue,RiseValue =@RiseValue,RisePercent =@RisePercent,FallValue=@FallValue,FallPercent=@FallPercent,
-InfoStartDate=@InfoStartDate,InfoEndDate=@InfoEndDate,SetDateTime=@SetDateTime,OpenInfo=@OpenInfo,HaveRead=@HaveRead
+InfoStartDate=@InfoStartDate,InfoEndDate=@InfoEndDate,SetDateTime=@SetDateTime,OpenInfo=@OpenInfo
 WHEN NOT MATCHED BY TARGET THEN INSERT (PlatFormId,InvestType,InvestId,PriceValue,InfoType,ReachValue,RiseValue,RisePercent,FallValue,FallPercent,
-                InfoStartDate,InfoEndDate,SetDateTime,OpenInfo,HaveRead) values 
+                InfoStartDate,InfoEndDate,SetDateTime,OpenInfo) values 
                (@PlatFormId,@InvestType,@InvestId,@PriceValue,@InfoType,@ReachValue,@RiseValue,@RisePercent,@FallValue,@FallPercent,
-            @InfoStartDate,@InfoEndDate,@SetDateTime,@OpenInfo,@HaveRead);";
+            @InfoStartDate,@InfoEndDate,@SetDateTime,@OpenInfo);";
             var para = new ReachInfo()
             {
                 PlatFormId = FcbMemberHelper.GetMemberPlatFormId(),
@@ -70,7 +70,6 @@ WHEN NOT MATCHED BY TARGET THEN INSERT (PlatFormId,InvestType,InvestId,PriceValu
                 InfoEndDate = reachInfo.InfoEndDate,
                 SetDateTime = DateTime.Now,
                 OpenInfo = reachInfo.OpenInfo,
-                HaveRead = false
             };
             try
             {

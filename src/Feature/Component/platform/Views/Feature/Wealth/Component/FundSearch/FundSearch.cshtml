@@ -22,7 +22,7 @@
                                 </div>
                                 <div class="c-filterForm__value">
                                     <div class="o-actionbox o-actionbox--lg" data-clear="true">
-                                        <input id="keyword" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入代碼或名稱" data-keyword-input>
+                                        <input insertKeywords eh-search-pageid="@Sitecore.Context.Item.ID.Guid" eh-search-type="Fund" id="keyword" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入代碼或名稱" data-keyword-input>
                                         <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit></button>
                                         <button type="button" class="o-actionbox__clear" data-clear="button">清除</button>
                                     </div>
@@ -1852,7 +1852,7 @@
                 // 日期區間有值時，才需要帶tag下去
                 let releaseSetTag = $('[data-return-rate-date]:checked').length > 0;
                 // 若父層[data-filter-group]的值為'special'，則不會印出已選擇的tag
-                $(this).closest('[data-filter-group]').attr('data-filter-group', releaseSetTag ? '' : 'special');
+                $(this).closest('[data-filter-group]').data('filter-group', releaseSetTag ? '' : 'special');
             });
             // 報酬率日期區間
             $('[data-return-rate-date]').on('change.returnRateDate', function () {
@@ -1939,13 +1939,13 @@
                     // 申購按鈕
                     let $purchase = suggestion.Data.Purchase ? suggestion.Data.IsLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
                     return `<div class="c-itemKeyword">
-                                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                                <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
 
-                                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                            </a>
-                                            <div class="c-itemKeyword__collections">${$like}</div>
-                                            ${$purchase}
-                                        </div>`;
+                                                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                                </a>
+                                                <div class="c-itemKeyword__collections">${$like}</div>
+                                                ${$purchase}
+                                            </div>`;
                 }
             });
         }
@@ -1956,9 +1956,13 @@
             }
             initBind();
             let fjs;
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "FundSearch", "GetAllFunds")',
-                type: 'POST'
+                type: 'POST',
+                data: { __RequestVerificationToken: token },
             }).done(function (data, textStatus, jqXHR) {
                 QueryStringSearch();
                 initFilter(data);
@@ -2167,6 +2171,7 @@
                 $('[data-keyword-submit]').on('click.loading', function () {
                     if (!!$('[data-keyword-input]').val().trim()) {
                         loading();
+                        insertKeywords();
                     }
                 });
             }

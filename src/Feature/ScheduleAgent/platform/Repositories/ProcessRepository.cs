@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Foundation.Wealth.Manager;
 using Sitecore.Data.Items;
 using Sitecore.Xdb.Reporting;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Odbc;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -247,5 +249,36 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             return result;
         }
+
+
+
+        public async Task<List<T>> ConnectOdbc<T>(string sql)
+        {
+            string connString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString;
+
+            using (OdbcConnection connection = new OdbcConnection(connString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    this._logger.Info("Opened Successfully");
+
+                    var resultList = await connection.QueryAsync<T>(sql);
+
+                    return resultList.ToList();
+                }
+                catch (Exception ex)
+                {
+                    this._logger.Error(ex.ToString());
+                    return null; 
+                }
+                finally
+                {
+                    connection.Close();
+                    this._logger.Info("Connection closed.");
+                }
+            }
+        }
+
     }
 }

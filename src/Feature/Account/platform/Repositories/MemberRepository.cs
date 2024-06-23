@@ -203,6 +203,20 @@ namespace Feature.Wealth.Account.Repositories
             return fcbMemberModel;
         }
 
+
+        public FcbMemberModel GetRefreshMemberInfo(PlatFormEunm platFormEunm, string id)
+        {
+            FcbMemberModel fcbMemberModel = null;
+            var strSql = $"  Select A.*,B.CIF_EMP_RISK as Risk,B.CIF_ESTABL_BIRTH_DATE as Birthday,C.EmployeeName as Advisror FROM[FCB_Member] as A" +
+                              " left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)" +
+                              " left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, 3, len(EmployeeCode - 3))  " +
+                              " WHERE PlatForm = @Platform and PlatFormId = @id";
+            var para = new { Platform = platFormEunm.ToString(), id = id };
+            fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
+
+            return fcbMemberModel;
+        }
+
         public FcbMemberModel GetAppMemberInfo(PlatFormEunm platFormEunm, string promotionCode)
         {
             FcbMemberModel fcbMemberModel = null;

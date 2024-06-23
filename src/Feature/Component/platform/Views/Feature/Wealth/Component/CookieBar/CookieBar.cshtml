@@ -28,16 +28,19 @@
                 return;
             }
 
-            $("#cookieBarButton").on('click', function(e) {
+            $("#cookieBarButton").on('click', function (e) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     type: "POST",
+                    data: { __RequestVerificationToken: token },
                     url: '@ClientRoute.GenerateUrl(this, "CookieBar", "UpdateCookie")',
                     success: function (data) {
                         if (data.success == true) {
                             $("[data-cookie]").remove();
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.log(data.message);
                     }
                 });

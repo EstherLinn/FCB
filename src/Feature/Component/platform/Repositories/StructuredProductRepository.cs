@@ -1,4 +1,5 @@
 ﻿using Feature.Wealth.Component.Models.StructuredProduct;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Sitecore.Data;
 using Sitecore.Data.Items;
@@ -240,6 +241,15 @@ namespace Feature.Wealth.Component.Repositories
                 structuredProduct.KeywordTags = GetProductTags(StructuredProductTagEnum.KeywordTag, productCode);
                 structuredProduct.TopicTags = GetProductTags(StructuredProductTagEnum.SortTag, productCode);
                 structuredProduct.DiscountTags = GetProductTags(StructuredProductTagEnum.DiscountTag, productCode);
+                structuredProduct.ProductDisplayName = productCode + " " + structuredProduct.ProductName;
+                structuredProduct.ProductDetailUrl = StructuredProductRelatedLinkSetting.GetStructuredProductDetailUrl() + "?id=" + productCode;
+                structuredProduct.value = productCode + " " + structuredProduct.ProductName;
+                structuredProduct.IssuingInstitution = !string.IsNullOrEmpty(structuredProduct.IssuingInstitution) ? structuredProduct.IssuingInstitution : "-";
+                structuredProduct.CurrencyName = !string.IsNullOrEmpty(structuredProduct.CurrencyName) ? structuredProduct.CurrencyName : "-";
+                structuredProduct.ProductMaturityDate = !string.IsNullOrEmpty(structuredProduct.ProductMaturityDate) ? structuredProduct.ProductMaturityDate : "-";
+                structuredProduct.BankSellPrice = !string.IsNullOrEmpty(structuredProduct.BankSellPrice) ? structuredProduct.BankSellPrice : "-";
+                structuredProduct.PriceBaseDate = !string.IsNullOrEmpty(structuredProduct.PriceBaseDate) ? structuredProduct.PriceBaseDate : "-";
+                structuredProduct.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, structuredProduct.CurrencyName).ToString();
             }
 
             return structuredProducts;

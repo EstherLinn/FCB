@@ -29,7 +29,7 @@
                                     <div class="o-actionbox o-actionbox--lg" data-clear="true">
                                         <!-- #keyword: 請見頁面下方的script邏輯，套用jquery.autocomplete套件 -->
                                         <!-- [data-clear="textbox"]: 套用清除按鈕功能，標示此為文字輸入框 -->
-                                        <input id="keyword" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入代碼或名稱" data-keyword-input>
+                                        <input insertKeywords eh-search-pageid="@Sitecore.Context.Item.ID.Guid" eh-search-type="StructuredProduct" id="keyword" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入代碼或名稱" data-keyword-input>
                                         <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit></button>
                                         <!-- [data-clear="button"]: 套用清除按鈕功能，標示此為清除按鈕 -->
                                         <button type="button" class="o-actionbox__clear" data-clear="button">清除</button>
@@ -374,7 +374,7 @@
         <td class="c-cardTable__space"></td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">發行機構</div>
-            <div class="c-cardTable__content"><%= IssuingInstitution_DisplayText %></div>
+            <div class="c-cardTable__content"><%= IssuingInstitution %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">
@@ -387,15 +387,15 @@
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">到期日</div>
-            <div class="c-cardTable__content"><%= ProductMaturityDate_DisplayText %></div>
+            <div class="c-cardTable__content"><%= ProductMaturityDate %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-            <div class="c-cardTable__content"><%= BankSellPrice_DisplayText %></div>
+            <div class="c-cardTable__content"><%= BankSellPrice %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">價格日期</div>
-            <div class="c-cardTable__content"><%= PriceBaseDate_DisplayText %></div>
+            <div class="c-cardTable__content"><%= PriceBaseDate %></div>
         </td>
         <td class="c-cardTable__space"></td>
     </tr>
@@ -468,39 +468,13 @@
                     let detailUrl = suggestion.ProductDetailUrl ? suggestion.ProductDetailUrl : '#';
                     // 申購按鈕
                     return `<div class="c-itemKeyword">
-                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue) }</div>
-                            </a>
-                        </div>`;
+                                <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                </a>
+                            </div>`;
                 }
             });
 
-        }
-
-        function currencyLink(obj) {
-            let btnHtml = '@Html.CurrencyLink(null, "null")';
-            let $Btn = $(btnHtml);
-            $Btn.text(obj.CurrencyName_DisplayText);
-            return $Btn[0].outerHTML;
-        }
-
-        const resetProps = ['IssuingInstitution', 'CurrencyName', 'ProductMaturityDate', 'BankSellPrice', 'PriceBaseDate'];
-        const dateProps = ['ProductMaturityDate', 'PriceBaseDate'];
-
-        function resetProp(obj) {
-            for (var o in obj) {
-                let value = obj[o];
-
-                if (resetProps.includes(o)) {
-                    let newProp = o + '_DisplayText';
-                    obj[newProp] = value;
-                }
-
-                if (dateProps.includes(o) && value != null) {
-                    obj[o] = new Date(value).getTime().toString();
-                }
-            }
-            return obj;
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -508,51 +482,17 @@
                 return;
             }
 
-            let modelData = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
-
-            // 詳細頁頁面節點Url
-            let DetailPageItemUrl = JSON.parse(JSON.stringify(modelData.DetailPageItemUrl));
-
+            var token = $('input[name="__RequestVerificationToken"]').val();        
+    
             // 商品列表
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "StructuredProduct", "GetStructuredProducts")',
                 type: 'POST',
+                data: { __RequestVerificationToken: token },
                 success: function (data) {
                     console.log(data);
 
                     if (data != null && data.length != 0) {
-                        $.each(data, function (index, item) {
-                            // 新增 ProductDisplayName 欄位
-                            item.ProductDisplayName = item.ProductCode + " " + item.ProductName;
-
-                            // 新增 ProductDetailUrl 欄位
-                            item.ProductDetailUrl = DetailPageItemUrl + "?id=" + item.ProductCode;
-
-                            // 新增 value 欄位
-                            item.value = item.ProductCode + " " + item.ProductName;
-
-                            resetProp(item);
-                            item.CurrencyHtml = currencyLink(item);
-
-                            for (var d in item) {
-                                let value = item[d];
-
-                                if ((value == null || value == undefined || value == '')
-                                    && d.includes('_DisplayText')) {
-                                    item[d] = '-';
-                                }
-                            }
-                        });
-
-                        var template = document.getElementById('uid-template').innerHTML;
-                        var container = document.getElementById('uid-fjs');
-
-                        for (var i = 0; i < data.length; i++) {
-                            var filledTemplate = template.replace(/<%= ProductDisplayName %>/g, data[i].ProductDisplayName).replace(/<%= ProductDetailUrl %>/g, data[i].ProductDetailUrl).replace(/<%= IssuingInstitution %>/g, data[i].IssuingInstitution).replace(/<%= CurrencyName %>/g, data[i].CurrencyName).replace(/<%= ProductMaturityDate %>/g, data[i].ProductMaturityDate).replace(/<%= BankSellPrice %>/g, data[i].BankSellPrice).replace(/<%= PriceBaseDate %>/g, data[i].PriceBaseDate);
-
-                            container.innerHTML += DOMPurify.sanitize(filledTemplate);
-                        }
-
                         initFilter(data);
                         initAutocomplete(data);
 
@@ -564,7 +504,7 @@
                         if (keyword) {
                             $('[data-keyword-input]').val(keyword);
                             $('[data-keyword-submit]').trigger('click');
-                        }else if (hotproduct) {
+                        } else if (hotproduct) {
                             $("input[value='" + hotproduct + "']").trigger('click');
                         } else if (hotkeyword) {
                             $("input[value='" + hotkeyword + "']").trigger('click');
@@ -677,6 +617,7 @@
                 $('[data-keyword-submit]').on('click.loading', function () {
                     if (!!$('[data-keyword-input]').val().trim()) {
                         loading();
+                        insertKeywords();
                     }
                 });
             }

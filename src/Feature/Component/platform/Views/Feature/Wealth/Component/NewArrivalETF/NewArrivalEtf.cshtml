@@ -166,18 +166,25 @@
 
             // 為了 DOMPurify.sanitize 正常運作加上 <table><tbody></tbody></table>
             function DOMPurifyData(data) {
+                let focusAttr = ['eh-focus', 'eh-focus-type', 'eh-focus-id', 'eh-focus-name', 'eh-focus-add'];
+                let compareAttr = ['eh-compare', 'eh-compare-type', 'eh-compare-id', 'eh-compare-name', 'eh-compare-add'];
+                let subscriptionAttr = ['eh-subscription', 'eh-subscription-type', 'eh-subscription-id'];
+				let commonAttr = ['target'];
+				let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
                 data = '<table><tbody>' + data + '</tbody></table>';
-                data = DOMPurify.sanitize(data);
+                data = DOMPurify.sanitize(data, { ADD_ATTR: allCustomAttr });
                 data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');
                 return data;
             }
 
             //顯示基金資料 (頁面(第幾頁),頁面筆數(顯示幾筆))
             function loadData(page, pageSize, orderby, desc) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "NewArrivalEtf", "GetSortedNewArrivalEtf")',
                     type: 'POST',
-                    data: { page: page, pageSize: pageSize, orderby: orderby, desc: desc },
+                    data: { page: page, pageSize: pageSize, orderby: orderby, desc: desc, __RequestVerificationToken: token },
                     success: function (data) {
                         if (data) {
                             $('#result').empty();

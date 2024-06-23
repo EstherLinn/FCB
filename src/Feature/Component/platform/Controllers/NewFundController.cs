@@ -18,7 +18,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
 
-            var fund = _repository.GetFundData();
+            var fund = _repository.GetOrSetNewFundCache();
             var newfund = fund.Where(f => f.ListingDateFormat >= DateTime.Today.AddYears(-1));
 
             var total = newfund.Count();
@@ -34,9 +34,10 @@ namespace Feature.Wealth.Component.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetSortedNewFund(string page, string pageSize, string orderby, string desc)
         {
-            var fund = _repository.GetFundData();
+            var fund = _repository.GetOrSetNewFundCache();
             var newfund = fund.Where(f => f.ListingDateFormat >= DateTime.Today.AddYears(-1));
 
             if (page == null) { page = "1"; }

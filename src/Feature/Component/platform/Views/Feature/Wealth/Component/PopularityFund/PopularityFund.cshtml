@@ -5,7 +5,7 @@
 
 @{
     var modelitem = Model.Item;
-    if(Model==null){ return; }
+    if (Model == null) { return; }
 }
 
 <div class="l-mainstage">
@@ -138,10 +138,10 @@
                                                 {
                                                     <div class="l-target__additional">
                                                         <ul class="l-tag">
-                                                            @for (var i = 0; i < item.Tags.Count; i++)
+                                                            @foreach (var tag in item.Tags)
                                                             {
                                                                 <li class="l-tag__item">
-                                                                    <span class="o-tag">@item.Tags[i] </span>
+                                                                    <span class="o-tag">@tag</span>
                                                                 </li>
                                                             }
                                                         </ul>
@@ -247,17 +247,24 @@
 
             // 為了 DOMPurify.sanitize 正常運作加上 <table><tbody></tbody></table>
             function DOMPurifyData(data) {
+                let focusAttr = ['eh-focus', 'eh-focus-type', 'eh-focus-id', 'eh-focus-name', 'eh-focus-add'];
+                let compareAttr = ['eh-compare', 'eh-compare-type', 'eh-compare-id', 'eh-compare-name', 'eh-compare-add'];
+                let subscriptionAttr = ['eh-subscription', 'eh-subscription-type', 'eh-subscription-id'];
+				let commonAttr = ['target'];
+				let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
                 data = '<table><tbody>' + data + '</tbody></table>';
-                data = DOMPurify.sanitize(data);
+                data = DOMPurify.sanitize(data, { ADD_ATTR: allCustomAttr });
                 data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');
                 return data;
             }
 
             function ReturnView(selectedId, orderby, desc) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "PopularityFund", "GetSortedPopularityFund")',
                     type: 'POST',
-                    data: { selectedId: selectedId, orderby: orderby, desc: desc },
+                    data: { selectedId: selectedId, orderby: orderby, desc: desc, __RequestVerificationToken: token },
                     success: function (data) {
                         $('#result').empty();
                         document.getElementById('result').innerHTML = DOMPurifyData(data);

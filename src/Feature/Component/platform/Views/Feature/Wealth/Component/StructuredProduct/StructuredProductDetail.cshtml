@@ -1,5 +1,5 @@
 ﻿@model Feature.Wealth.Component.Models.StructuredProduct.StructuredProductDetailViewModel
-@using System.Web.Script.Serialization
+@using Foundation.Wealth.Helper;
 
 @{
     string productCode = Model.StructuredProduct.ProductCode;
@@ -14,17 +14,17 @@
                 return;
             };
 
-            var data = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
+            var data = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model)));
 
             // 產品資訊 資料
-            var ProductData = JSON.parse(JSON.stringify(data.StructuredProduct));
+            var ProductData = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.StructuredProduct)));
 
             // 配息 資料
-            let DividendData = JSON.parse(JSON.stringify(data.HistoryDividend));
+            let DividendData = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.HistoryDividend)));
 
             // 參考贖回價 資料
-            let HistoryBankSellPrice = JSON.parse(JSON.stringify(data.HistoryBankSellPrice));
-            let ThirtyDayBankSellPriceWithChange = JSON.parse(JSON.stringify(data.ThirtyDayBankSellPriceWithChange));
+            let HistoryBankSellPrice = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.HistoryBankSellPrice)));
+            let ThirtyDayBankSellPriceWithChange = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.ThirtyDayBankSellPriceWithChange)));
 
             RenderDividendFilter();
             RenderDividendList();
@@ -47,7 +47,7 @@
             // 配息 列表
             function RenderDividendList() {
 
-                if (DividendData.length != 0) {
+                if (DividendData != null && DividendData.length != 0) {
                     var data = DividendData;
                     var orderby = '';
                     var $this = $('[data-tab-panel-id="tab-2"] .o-sorting');
@@ -284,7 +284,10 @@
                         obj
                     };
 
-                    if (HistoryBankSellPrice.BankSellPrice.length != 0) {
+                    if (HistoryBankSellPrice != null &&
+                        HistoryBankSellPrice.BankSellPrice != null &&
+                        HistoryBankSellPrice.BankSellPrice.length != 0 &&
+                        HistoryBankSellPrice.UpdateDate != null) {
                         var historyBankSellPrice = HistoryBankSellPrice;
                         var _data = {
                             "updateDate": historyBankSellPrice.UpdateDate,
@@ -758,7 +761,7 @@
                                 </div>
                             </div>
                             <div class="l-dataNotes">
-                                <span class="t-date">資料日期：</span><span class="t-date" data-update-date="trend">2023/09/13</span>
+                                <span class="t-date">資料日期：</span><span class="t-date" data-update-date="trend"></span>
                             </div>
                         </div>
                     </div>

@@ -10,6 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
+    <ProjectReference Include="..\..\Account\platform\Feature.Wealth.Account.csproj" />
     <Reference Include="Xcms.Sitecore.Foundation.QuartzSchedule">
       <HintPath>..\..\..\..\build\nugets\Xcms.Sitecore.Foundation.QuartzSchedule.dll</HintPath>
     </Reference>

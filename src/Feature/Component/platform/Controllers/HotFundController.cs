@@ -35,7 +35,8 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetSortedHotFund(string[] selectedId, string orderby , string desc)
+        [ValidateAntiForgeryToken]
+        public ActionResult GetSortedHotFund(string[] selectedId, string orderby, string desc)
         {
             if (orderby.IsNullOrEmpty()) { orderby = "SixMonthReturnOriginalCurrency"; }
             if (desc.IsNullOrEmpty()) { orderby = "is-desc"; }

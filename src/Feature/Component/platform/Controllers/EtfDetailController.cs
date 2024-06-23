@@ -100,30 +100,44 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         /// <summary>
-        /// ETF績效圖
+        /// ETF績效圖－績效走勢
         /// </summary>
-        /// <param name="etfId"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GetReturnReferenceIndexChartData(string etfId, string startDate, string endDate)
+        public async Task<ActionResult> GetReturnReferenceIndexChartData(ReqReturnTrend req)
         {
-            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+            RespEtf resp = new RespEtf();
 
             try
             {
-                etfId = etfId?.ToUpper();
-                var respMarketPrice = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.MarketPrice, startDate, endDate);
-                var respNetAssetValue = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.NetAssetValue, startDate, endDate);
-                var respGlobalIndex = _detailRepository.GetGlobalIndexWithCloseYear(etfId, startDate, endDate);
+                req.EtfId = req.EtfId?.ToUpper();
+                resp = await _detailRepository.GetReturnTrendData(req);
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("EtfDetail－ETF績效圖", ex);
+            }
 
-                resp.Body = new
-                {
-                    respMarketPrice,
-                    respNetAssetValue,
-                    respGlobalIndex
-                };
+            return new JsonNetResult(resp);
+        }
+
+        /// <summary>
+        /// ETF績效圖－全球指數
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetReturnGlobalIndexChartData(ReqReturnTrend req)
+        {
+            RespEtf resp = new RespEtf();
+
+            try
+            {
+                req.EtfId = req.EtfId?.ToUpper();
+                resp = _detailRepository.GetGlobalIndex(req.IndexID, req.Cycle);
             }
             catch (Exception ex)
             {

@@ -137,10 +137,10 @@
 												{
 													<div class="l-target__additional">
 														<ul class="l-tag">
-															@for (var i = 0; i < item.Tags.Count; i++)
+															@foreach (var tag in item.Tags)
 															{
 																<li class="l-tag__item">
-																	<span class="o-tag">@item.Tags[i] </span>
+																	<span class="o-tag">@tag</span>
 																</li>
 															}
 														</ul>
@@ -206,26 +206,26 @@
                                         }
                                     </td>
                                     <td class="c-cardTable__space"></td>
-									<td class="c-cardTable__footer" data-card-table-width="@((item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability))) ? "2/3" : "1/1")">
-										<div class="c-cardTable__content">
-											<ul class="l-collect l-collect--divider@lt">
-												<li class="l-collect__item">
-													@Html.FocusButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
-												</li>
-												<li class="l-collect__item">
-													@Html.CompareButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
-												</li>
-											</ul>
-										</div>
-									</td>
-									<td class="c-cardTable__footer" data-card-table-width="1/3">
-										<div class="c-cardTable__content">
-											@if (item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
-											{
-												@Html.SubscriptionButton(null, item.ProductCode, InvestTypeEnum.Fund, true)
-											}
-										</div>
-									</td>
+                                    <td class="c-cardTable__footer" data-card-table-width="@((item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability))) ? "2/3" : "1/1")">
+                                        <div class="c-cardTable__content">
+                                            <ul class="l-collect l-collect--divider@lt">
+                                                <li class="l-collect__item">
+                                                    @Html.FocusButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
+                                                </li>
+                                                <li class="l-collect__item">
+                                                    @Html.CompareButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td class="c-cardTable__footer" data-card-table-width="1/3">
+                                        <div class="c-cardTable__content">
+                                            @if (item.AvailabilityStatus == "Y" && (item.OnlineSubscriptionAvailability == "Y" || string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
+                                            {
+                                                @Html.SubscriptionButton(null, item.ProductCode, InvestTypeEnum.Fund, true)
+                                            }
+                                        </div>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -247,17 +247,24 @@
 
             // 為了 DOMPurify.sanitize 正常運作加上 <table><tbody></tbody></table>
             function DOMPurifyData(data) {
+                let focusAttr = ['eh-focus', 'eh-focus-type', 'eh-focus-id', 'eh-focus-name', 'eh-focus-add'];
+                let compareAttr = ['eh-compare', 'eh-compare-type', 'eh-compare-id', 'eh-compare-name', 'eh-compare-add'];
+                let subscriptionAttr = ['eh-subscription', 'eh-subscription-type', 'eh-subscription-id'];
+				let commonAttr = ['target'];
+				let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
                 data = '<table><tbody>' + data + '</tbody></table>';
-                data = DOMPurify.sanitize(data);
+                data = DOMPurify.sanitize(data, { ADD_ATTR: allCustomAttr });
                 data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');
                 return data;
             }
 
             function ReturnView(selectedId, orderby, desc) {
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "HotFund", "GetSortedHotFund")',
                     type: 'POST',
-                    data: { selectedId: selectedId, orderby: orderby, desc: desc },
+                    data: { selectedId: selectedId, orderby: orderby, desc: desc, __RequestVerificationToken: token },
                     success: function (data) {
                         $('#result').empty();
                         document.getElementById('result').innerHTML = DOMPurifyData(data);

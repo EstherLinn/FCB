@@ -82,6 +82,50 @@
                 });
             }
 
+            function checkKeywordQueryString() {
+                let params = new URLSearchParams(window.location.search);
+                let urlParams = new URLSearchParams();
+
+                for (const [key, value] of params) {
+                    urlParams.append(key.toLowerCase(), decodeURIComponent(value));
+                }
+
+                function queryKeyword(key) {
+                    if (urlParams.has(key)) {
+                        let keywordValue = DOMPurify.sanitize(urlParams.get(key));
+                        $('[data-keyword-input]').val(keywordValue);
+                        $('[data-keyword-submit]').trigger('click');
+                    }
+                }
+
+                function queryAdvanced(key, selector) {
+                    if (urlParams.has(key)) {
+                        let paramVal = DOMPurify.sanitize(urlParams.get(key));
+                        let values = paramVal.split(',');
+
+                        $(selector).each(function(i, item) {
+                            let $self = $(this);
+                            let filterVal = $self.val();
+
+                            let isMatch = values.some(function (item) {
+                                return filterVal === item;
+                            });
+
+                            if (isMatch) {
+                                $self.trigger('click');
+                            }
+                        });
+                    }
+                }
+
+                // 關鍵字
+                queryKeyword('keyword');
+                // 熱門關鍵字
+                queryAdvanced('hotkeyword', '#uid-criteria-keywordsTags :checkbox');
+                // 熱門主題
+                queryAdvanced('hotproduct', '#uid-criteria-categoryTags :checkbox');
+            }
+
             const propertyResetObj = [
                 'InceptionDateMarketPriceOriginalCurrency'
                 , 'YeartoDateReturnMarketPriceOriginalCurrency'
@@ -217,7 +261,7 @@
                     // 日期區間有值時，才需要帶tag下去
                     let releaseSetTag = $('[data-return-rate-date]:checked').length > 0;
                     // 若父層[data-filter-group]的值為'special'，則不會印出已選擇的tag
-                    $(this).closest('[data-filter-group]').setEleAttribute('data-filter-group', releaseSetTag ? '' : 'special');
+                    $(this).closest('[data-filter-group]').data('filter-group', releaseSetTag ? '' : 'special');
                 });
                 // 報酬率日期區間
                 $('[data-return-rate-date]').on('change.returnRateDate', function () {
@@ -444,6 +488,7 @@
                 $('[data-keyword-submit]').on('click.loading', function () {
                     if (!!$('[data-keyword-input]').val().trim()) {
                         loading();
+                        insertKeywords();
                     }
                 });
 
@@ -552,6 +597,8 @@
 
                         $('[data-tab] [data-tab-target]:first').trigger('switch');
                         $('[data-filter-switch="#uid-template-marketPrice-original"]').trigger('change');
+                    }).then(() => {
+                        checkKeywordQueryString();
                     });
                 },
                 GenerateSearchKeywordList: function () {
@@ -579,9 +626,6 @@
                     }
                 }
             };
-
-            initBind();
-            window.ETFSearch.QueryList();
 
             $('[data-tab-currency]').on('change', function () {
                 var currency = $(this).data('tab-currency');
@@ -665,6 +709,9 @@
                     }
                 }
             });
+
+            initBind();
+            window.ETFSearch.QueryList();
         });
     })(jQuery, window, document);
 </script>

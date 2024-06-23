@@ -14,11 +14,14 @@
     var encodeUrl = uriSchemaAndHost + webBankLoginPath;
     encodeUrl = WebUtility.UrlEncode(System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(encodeUrl)));
 }
+
+@Html.AntiForgeryToken()
+
 <script>
     (function ($, window, document, undefined) {
         let isLogin = false;
         if (SC_DATA.IsLoggedIn) {
-            isLogin = true ;
+            isLogin = true;
         }
         if (SC_DATA.IsGlobalStyle) {
             $('html').addClass('is-globalization');
@@ -43,20 +46,20 @@
                 },
             })
             if (SC_DATA.WebBankId) {
-                    $.ajax({
-                        type: "post",
-                        url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackListFromFcb")",
-                        data: { "promotionCode": SC_DATA.WebBankId },
-                        success: function (msg) {
-                            console.log("TrackListFromFcb :");
-                            console.log(msg);
-                        },
-                        error: function (msg) {
-                            console.log("TrackListFromFcb :");
-                            console.log(msg);
-                        }
-                    })
-                 }
+                $.ajax({
+                    type: "post",
+                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackListFromFcb")",
+                    data: { "promotionCode": SC_DATA.WebBankId },
+                    success: function (msg) {
+                        console.log("TrackListFromFcb :");
+                        console.log(msg);
+                    },
+                    error: function (msg) {
+                        console.log("TrackListFromFcb :");
+                        console.log(msg);
+                    }
+                })
+            }
         }
         window.CompareObj = function (id, type, name) {
             this.id = id;
@@ -94,11 +97,40 @@
             }
         }
 
-        window.getNowDate = function ()
-        {
+        window.getNowDate = function () {
             let now = new Date();
-            return now.toISOString().split('T')[0].replaceAll('-','/') ;
+            return now.toISOString().split('T')[0].replaceAll('-', '/');
         }
+
+        window.insertKeywords = function () {
+            let self = $("input[insertKeywords]");
+            let isSeachBar = self.attr("issearchbar");
+            let params;
+
+            if (isSeachBar == "true") {
+                params = {
+                    pageId: self.attr("eh-search-pageid"),
+                    keyword: self.val().trim(),
+                    productType: $("#SearchCategory").find('option:selected').attr('producttype')
+                };
+            }
+            else {
+                params = {
+                    pageId: self.attr("eh-search-pageid"),
+                    keyword: self.val().trim(),
+                    productType: self.attr('eh-search-type')
+                };
+            }
+
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "SearchKeywords", "Insert")',
+                type: 'POST',
+                data: params
+            }).done(function (data, textStatus, jqXHR) {
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            });
+        }
+
         EventHandler.AddOnExec('compare-init', function (e) {
             let self = e.target;
             $(self).interactive();
@@ -107,8 +139,8 @@
             if (checkItemExists('compare', id)) {
                 $(self).addClass('is-active');
                 self.setAttribute('eh-compare-add', true);
-            }else{
-                  $(self).removeClass('is-active');
+            } else {
+                $(self).removeClass('is-active');
                 self.setAttribute('eh-compare-add', false);
             };
             if (compare.length == 7) {
@@ -204,25 +236,25 @@
                         removeItem('focus', obj);
                         self.setAttribute('eh-focus-add', false);
                     }
-                   $.ajax({
-                    type: "post",
-                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
-                    data: { "trackList": store.get("focus") || [] },
-                    beforeSend: function () { $('.c-loading').loading('show'); },
-                       success: function (msg) {
-                           $('.c-loading').loading('hide');
-                     },
-                    error: function (msg) {
-                         //設置error
-                        if (self.getAttribute('eh-focus-add').toString() == "false") {
-                            removeItem('focus', obj);
-                            self.setAttribute('eh-focus-add', false);
-                        } else {
-                            addItem('focus', obj);
-                            self.setAttribute('eh-focus-add', true);
-                        }
-                     },
-                })
+                    $.ajax({
+                        type: "post",
+                        url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
+                        data: { "trackList": store.get("focus") || [] },
+                        beforeSend: function () { $('.c-loading').loading('show'); },
+                        success: function (msg) {
+                            $('.c-loading').loading('hide');
+                        },
+                        error: function (msg) {
+                            //設置error
+                            if (self.getAttribute('eh-focus-add').toString() == "false") {
+                                removeItem('focus', obj);
+                                self.setAttribute('eh-focus-add', false);
+                            } else {
+                                addItem('focus', obj);
+                                self.setAttribute('eh-focus-add', true);
+                            }
+                        },
+                    })
                 }
 
             }
@@ -243,128 +275,128 @@
                 let self = e.target;
                 let id = self.getAttribute('eh-subscription-id');
                 let type = self.getAttribute('eh-subscription-type');
-                    let single = document.getElementById("subscriptionSingle");
-                    let regular = document.getElementById("subscriptionRegular");
-                    let go = document.getElementById("subscriptionGo");
-                    single.setAttribute('eh-subscription-id', id);
-                    regular.setAttribute('eh-subscription-id', id);
-                    go.setAttribute('eh-subscription-id', id);
-                    let singleUrl = new URL(single.getAttribute("href"));
-                    let singleOriginAndPath = singleUrl.origin + singleUrl.pathname;
-                    let singleCombined = singleOriginAndPath + "?";
-                    let regularUrl = new URL(regular.getAttribute("href"));
-                    let regularOriginAndPath = regularUrl.origin + regularUrl.pathname;
-                    let regularCombined = regularOriginAndPath + "?";
-                    let goUrl = new URL(go.getAttribute("href"));
-                    let goOriginAndPath = goUrl.origin + goUrl.pathname;
-                    let goCombined = goOriginAndPath + "?";
-                    let singleParms = singleUrl.searchParams;
-                    let regularParms = regularUrl.searchParams;
-                    let goParms = goUrl.searchParams;
-                     //行動版
-                    if (singleParms.has("link")) {
-                        let mobilePlatform = store.get("MobilePlatform") || "firste";
-                        let singleInsindeUrl = new URL(singleParms.get("link"));
-                        let regularInsindUrl = new URL(regularParms.get("link"));
-                        let goInsindUrl = new URL(goParms.get("link"));
-                        //第e行動
-                        if (mobilePlatform == "firste") {
-                            for (const [key, value] of singleParms.entries()) {
-                                if (key == "link") {
-                                    singleInsindeUrl.searchParams.delete("FundCode");
-                                    singleInsindeUrl.searchParams.append("FundCode", id);
-                                    singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
-                                    continue;
-                                }
-                                singleCombined += `${key}=${value}&`;
+                let single = document.getElementById("subscriptionSingle");
+                let regular = document.getElementById("subscriptionRegular");
+                let go = document.getElementById("subscriptionGo");
+                single.setAttribute('eh-subscription-id', id);
+                regular.setAttribute('eh-subscription-id', id);
+                go.setAttribute('eh-subscription-id', id);
+                let singleUrl = new URL(single.getAttribute("href"));
+                let singleOriginAndPath = singleUrl.origin + singleUrl.pathname;
+                let singleCombined = singleOriginAndPath + "?";
+                let regularUrl = new URL(regular.getAttribute("href"));
+                let regularOriginAndPath = regularUrl.origin + regularUrl.pathname;
+                let regularCombined = regularOriginAndPath + "?";
+                let goUrl = new URL(go.getAttribute("href"));
+                let goOriginAndPath = goUrl.origin + goUrl.pathname;
+                let goCombined = goOriginAndPath + "?";
+                let singleParms = singleUrl.searchParams;
+                let regularParms = regularUrl.searchParams;
+                let goParms = goUrl.searchParams;
+                //行動版
+                if (singleParms.has("link")) {
+                    let mobilePlatform = store.get("MobilePlatform") || "firste";
+                    let singleInsindeUrl = new URL(singleParms.get("link"));
+                    let regularInsindUrl = new URL(regularParms.get("link"));
+                    let goInsindUrl = new URL(goParms.get("link"));
+                    //第e行動
+                    if (mobilePlatform == "firste") {
+                        for (const [key, value] of singleParms.entries()) {
+                            if (key == "link") {
+                                singleInsindeUrl.searchParams.delete("FundCode");
+                                singleInsindeUrl.searchParams.append("FundCode", id);
+                                singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
+                                continue;
                             }
-                            for (const [key, value] of regularParms.entries()) {
-                                if (key == "link") {
-                                    regularInsindUrl.searchParams.delete("FundCode");
-                                    regularInsindUrl.searchParams.append("FundCode", id);
-                                    regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
-                                    continue;
-                                }
-                                regularCombined += `${key}=${value}&`;
+                            singleCombined += `${key}=${value}&`;
+                        }
+                        for (const [key, value] of regularParms.entries()) {
+                            if (key == "link") {
+                                regularInsindUrl.searchParams.delete("FundCode");
+                                regularInsindUrl.searchParams.append("FundCode", id);
+                                regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
+                                continue;
                             }
-                            for (const [key, value] of goParms.entries()) {
-                                if (key == "link") {
-                                    goCombined += `${key}=${encodeURIComponent(value + '&')}`;
-                                    continue;
-                                }
-                                if (key == "chn" || key == "emp_id") {
-                                    goCombined += `${key}${encodeURIComponent('='+ value + '&')}`;
-                                    continue;
-                                }
-                                if (key == "prdCode") {
-                                    goCombined += `${key}${encodeURIComponent('=' + id)}&`;
-                                    continue;
-                                }
-                                goCombined += `${key}=${value}&`;
+                            regularCombined += `${key}=${value}&`;
+                        }
+                        for (const [key, value] of goParms.entries()) {
+                            if (key == "link") {
+                                goCombined += `${key}=${encodeURIComponent(value + '&')}`;
+                                continue;
                             }
-                        } else
-                         //iLeo
-                        {
-                            for (const [key, value] of singleParms.entries()) {
-                                if (key == "link") {
-                                    singleInsindeUrl.searchParams.delete("FundCode");
-                                    singleInsindeUrl.searchParams.append("FundCode", id);
-                                    singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
-                                    continue;
-                                }
-                                singleCombined += `${key}=${value}&`;
+                            if (key == "chn" || key == "emp_id") {
+                                goCombined += `${key}${encodeURIComponent('=' + value + '&')}`;
+                                continue;
                             }
-                            for (const [key, value] of regularParms.entries()) {
-                                if (key == "link") {
-                                    regularInsindUrl.searchParams.delete("FundCode");
-                                    regularInsindUrl.searchParams.append("FundCode", id);
-                                    regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
-                                    continue;
-                                }
-                                regularCombined += `${key}=${value}&`;
+                            if (key == "prdCode") {
+                                goCombined += `${key}${encodeURIComponent('=' + id)}&`;
+                                continue;
                             }
-                            for (const [key, value] of goParms.entries()) {
-                                if (key == "link") {
-                                    goInsindUrl.searchParams.delete("FundCode");
-                                    goInsindUrl.searchParams.append("FundCode", id);
-                                    goCombined += `${key}=${encodeURIComponent(goInsindUrl)}&`;
-                                    continue;
-                                }
-                                goCombined += `${key}=${value}&`;
+                            goCombined += `${key}=${value}&`;
+                        }
+                    } else
+                    //iLeo
+                    {
+                        for (const [key, value] of singleParms.entries()) {
+                            if (key == "link") {
+                                singleInsindeUrl.searchParams.delete("FundCode");
+                                singleInsindeUrl.searchParams.append("FundCode", id);
+                                singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
+                                continue;
                             }
+                            singleCombined += `${key}=${value}&`;
+                        }
+                        for (const [key, value] of regularParms.entries()) {
+                            if (key == "link") {
+                                regularInsindUrl.searchParams.delete("FundCode");
+                                regularInsindUrl.searchParams.append("FundCode", id);
+                                regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
+                                continue;
+                            }
+                            regularCombined += `${key}=${value}&`;
+                        }
+                        for (const [key, value] of goParms.entries()) {
+                            if (key == "link") {
+                                goInsindUrl.searchParams.delete("FundCode");
+                                goInsindUrl.searchParams.append("FundCode", id);
+                                goCombined += `${key}=${encodeURIComponent(goInsindUrl)}&`;
+                                continue;
+                            }
+                            goCombined += `${key}=${value}&`;
                         }
                     }
-                    //第e個網
-                    else {
-                        if (singleParms.has("FundCode")) {
-                            for (const [key, value] of singleParms.entries()) {
-                                if (key == "FundCode") {
-                                    singleCombined += `${key}=${id}&`;
-                                    continue;
-                                }
-                                singleCombined += `${key}=${value}&`;
-                            }
-                            for (const [key, value] of regularParms.entries()) {
-                                if (key == "FundCode") {
-                                    regularCombined += `${key}=${id}&`;
-                                    continue;
-                                }
-                                regularCombined += `${key}=${value}&`;
-                            }
-                        }
-                        if (goParms.has("prdCode")) {
-                            for (const [key, value] of goParms.entries()) {
-                                if (key == "prdCode") {
-                                    goCombined += `${key}=${id}&`;
-                                    continue;
-                                }
-                                goCombined += `${key}=${value}&`;
-                            }
-                        }
                 }
-                    single.setAttribute("href", singleCombined.slice(0, -1));
-                    regular.setAttribute("href", regularCombined.slice(0, -1));
-                    go.setAttribute("href", goCombined.slice(0, -1));
+                //第e個網
+                else {
+                    if (singleParms.has("FundCode")) {
+                        for (const [key, value] of singleParms.entries()) {
+                            if (key == "FundCode") {
+                                singleCombined += `${key}=${id}&`;
+                                continue;
+                            }
+                            singleCombined += `${key}=${value}&`;
+                        }
+                        for (const [key, value] of regularParms.entries()) {
+                            if (key == "FundCode") {
+                                regularCombined += `${key}=${id}&`;
+                                continue;
+                            }
+                            regularCombined += `${key}=${value}&`;
+                        }
+                    }
+                    if (goParms.has("prdCode")) {
+                        for (const [key, value] of goParms.entries()) {
+                            if (key == "prdCode") {
+                                goCombined += `${key}=${id}&`;
+                                continue;
+                            }
+                            goCombined += `${key}=${value}&`;
+                        }
+                    }
+                }
+                single.setAttribute("href", singleCombined.slice(0, -1));
+                regular.setAttribute("href", regularCombined.slice(0, -1));
+                go.setAttribute("href", goCombined.slice(0, -1));
                 if (type.toLowerCase() == "fund") {
                     $(single).closest('div').removeClass('u-hidden');
                     $(regular).closest('div').removeClass('u-hidden');
@@ -379,10 +411,14 @@
 
         EventHandler.AddOnce('visit-update', function (e) {
             let self = e;
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
             let params = {
                 pageId: self.getAttribute('eh-visit-pageid'),
                 url: new URL(location.href).href,
-                querystring: self.getAttribute('eh-visit-qs').split('&')
+                querystring: self.getAttribute('eh-visit-qs').split('&'),
+                __RequestVerificationToken: token
             };
 
             $.ajax({
@@ -415,10 +451,10 @@
         EventHandler.AddOnExec('fcbapplogin-init', function (e) {
             let self = e.target;
             let loginType = self.getAttribute('eh-login-type');
-                let mobileLoginLink = "@MobileFristeLogin";
-                if (loginType == "ileo") {
-                    mobileLoginLink ="@MobileIleoLogin";
-                }
+            let mobileLoginLink = "@MobileFristeLogin";
+            if (loginType == "ileo") {
+                mobileLoginLink = "@MobileIleoLogin";
+            }
             let mobileLoginUrl = new URL(mobileLoginLink.replaceAll('&amp;', '&'));
             let loginUrl = "";
             let urlOriginAndPath = mobileLoginUrl.origin + mobileLoginUrl.pathname;
@@ -434,7 +470,7 @@
                     }
                     continue;
                 }
-                if (key == "channel" ) {
+                if (key == "channel") {
                     loginUrl += `${key}=${encodeURIComponent(value + '&')}`;
                     continue;
                 }
@@ -442,7 +478,7 @@
                     loginUrl += `${key}${encodeURIComponent('=')}@(encodeUrl)&`;
                     continue;
                 }
-                if (key== "ibi") {
+                if (key == "ibi") {
                     loginUrl += `${key}=${value}`;
                 } else {
                     loginUrl += `${key}=${value}&`;
@@ -451,47 +487,47 @@
             self.setAttribute('href', loginUrl);
         });
 
-         EventHandler.AddClick('fcbapplogin-click', function (e) {
+        EventHandler.AddClick('fcbapplogin-click', function (e) {
             let self = e.target;
             let loginType = self.getAttribute('eh-login-type');
-             store.set("MobilePlatform", loginType);
+            store.set("MobilePlatform", loginType);
         });
 
         EventHandler.AddClick('fcblogin-click', function (e) {
-                $.ajax({
-                    type: "post",
-                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "WebBankLogin")",
-                    beforeSend: function () { $('.c-loading').loading('show'); },
-                    success: function (resp) {
-                        console.log(resp)
-                        if (resp && resp.success) {
-                            let postDataUrl = '@AppPayLoginUrl';
-                            postDataUrl = postDataUrl;
-                            let postdata =
-                            {
-                                merchantId: resp.merchantId,
-                                txReqId: resp.txReqId,
-                                sign: resp.sign,
-                            };
-                            let form = document.createElement("form");
-                            form.setAttribute("method", "post");
-                            form.setAttribute("action", postDataUrl);
-                            for (let key in postdata) {
-                                let hiddenField = document.createElement("input");
-                                hiddenField.setAttribute("type", "hidden");
-                                hiddenField.setAttribute("name", key);
-                                hiddenField.setAttribute("value", postdata[key]);
-                                form.appendChild(hiddenField);
-                            }
-                            document.body.appendChild(form);
-                            form.submit();
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "WebBankLogin")",
+                beforeSend: function () { $('.c-loading').loading('show'); },
+                success: function (resp) {
+                    console.log(resp)
+                    if (resp && resp.success) {
+                        let postDataUrl = '@AppPayLoginUrl';
+                        postDataUrl = postDataUrl;
+                        let postdata =
+                        {
+                            merchantId: resp.merchantId,
+                            txReqId: resp.txReqId,
+                            sign: resp.sign,
+                        };
+                        let form = document.createElement("form");
+                        form.setAttribute("method", "post");
+                        form.setAttribute("action", postDataUrl);
+                        for (let key in postdata) {
+                            let hiddenField = document.createElement("input");
+                            hiddenField.setAttribute("type", "hidden");
+                            hiddenField.setAttribute("name", key);
+                            hiddenField.setAttribute("value", postdata[key]);
+                            form.appendChild(hiddenField);
                         }
-                    },
-                    error: function (err) {
-                        console.log(err);
-                    },
-                    complete: function () { $('.c-loading').loading('hide'); }
-                });
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                },
+                complete: function () { $('.c-loading').loading('hide'); }
+            });
 
         });
 
@@ -562,8 +598,7 @@
                 data: { "type": type, "id": id },
                 beforeSend: function () { $('.c-loading').loading('show'); },
                 success: function (data) {
-                    if (data && data.body.length > 0)
-                    {
+                    if (data && data.body.length > 0) {
                         $.each(data.body, function (idx, item) {
                             let startDate = '';
                             let endDate = '';
@@ -573,8 +608,8 @@
                                         $('input[name="price"]').prop("checked")
                                     }
                                     $("#popupAlert").find('[data-alert-price]').val(item.reachValue).trigger('change.count');
-                                    startDate = item.infoStartDate.split('T')[0].replaceAll('-','/');
-                                    endDate= item.infoEndDate.split('T')[0].replaceAll('-','/');
+                                    startDate = item.infoStartDate.split('T')[0].replaceAll('-', '/');
+                                    endDate = item.infoEndDate.split('T')[0].replaceAll('-', '/');
                                     $('[data-infostart]').val(startDate);
                                     $('[data-infoend]').val(endDate);
                                     $('[data-infostart]').datepicker('setDate', startDate);
@@ -584,8 +619,8 @@
                                     if (item.openInfo) {
                                         $('input[name="quoteChange"]').prop("checked")
                                     }
-                                    startDate = item.infoStartDate.split('T')[0].replaceAll('-','/');
-                                    endDate= item.infoEndDate.split('T')[0].replaceAll('-','/');
+                                    startDate = item.infoStartDate.split('T')[0].replaceAll('-', '/');
+                                    endDate = item.infoEndDate.split('T')[0].replaceAll('-', '/');
                                     $("#popupAlert").find('[data-alert-rise]').val(item.risePercent);
                                     $("#popupAlert").find('[data-alert-fall]').val(item.fallPercent);
                                     $('[data-quotestart]').val(startDate);

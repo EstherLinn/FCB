@@ -222,15 +222,17 @@
                                             $container.append(kdEl);
                                         },
                                         addSeries: function (event) {
-                                            var _yAxis = parseInt(event.options.yAxis);
-                                            var _eventOptionsName = String(event.options.name).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-                                            var $tooltipContainer = $(`[data-id="${highChartId}-tooltips-yAxis${_yAxis}"]`);
-                                            var id = 'tooltip-' + _eventOptionsName;
-                                            if ($tooltipContainer.find('[data-id="' + id + '"]').length === 0) {
-                                                var slashEl = document.createElement('div');
-                                                slashEl.classList.add('l-slash__item');
-                                                slashEl.setAttribute('data-id', id);
-                                                $tooltipContainer.append(slashEl);
+                                            var arrPoints = ['成交量', 'MA5', 'MA10', 'K(9,3)'];
+                                            if (arrPoints.includes(event.options.name)) {
+                                                var _yAxis = parseInt(event.options.yAxis);
+                                                var $tooltipContainer = $(`[data-id="${highChartId}-tooltips-yAxis${_yAxis}"]`);
+                                                var id = 'tooltip-' + arrPoints[arrPoints.indexOf(event.options.name)];
+                                                if ($tooltipContainer.find('[data-id="' + id + '"]').length === 0) {
+                                                    var slashEl = document.createElement('div');
+                                                    slashEl.classList.add('l-slash__item');
+                                                    slashEl.setAttribute('data-id', id);
+                                                    $tooltipContainer.append(slashEl);
+                                                }
                                             }
                                         },
                                         render: function () {

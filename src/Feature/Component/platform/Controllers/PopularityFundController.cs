@@ -38,10 +38,11 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetSortedPopularityFund(string[] selectedId,string orderby, string desc)
+        [ValidateAntiForgeryToken]
+        public ActionResult GetSortedPopularityFund(string[] selectedId, string orderby, string desc)
         {
-            if (orderby==null) { orderby = "ViewCountOrderBy"; }
-            if (desc==null) { desc = "is-desc"; }
+            if (orderby == null) { orderby = "ViewCountOrderBy"; }
+            if (desc == null) { desc = "is-desc"; }
 
             var funds = _popularityFundRepository.GetFundData();
             var popularFunds = funds.Where(fund => selectedId.Contains(fund.ProductCode)).ToList();

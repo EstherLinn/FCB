@@ -1,13 +1,17 @@
 ﻿namespace Feature.Wealth.Component.Models.News
 {
-    public class MarketNewsModel
+    public class MarketNewsTableModel
     {
-        public string HotNews { get; set; }
         public string NewsDate { get; set; }
         public string NewsTime { get; set; }
-        public string NewsType { get; set; }
         public string NewsTitle { get; set; }
         public string NewsSerialNumber { get; set; }
+    }
+
+    public class MarketNewsModel : MarketNewsTableModel
+    {
+        public string HotNews { get; set; }
+        public string NewsType { get; set; }
         public int? NewsViewCount { get; set; }
         public string DisplayNewsViewCount { get; set; }
         public string NewsDetailLink { get; set; }

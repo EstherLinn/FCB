@@ -22,7 +22,7 @@ namespace Feature.Wealth.Component.Controllers
             var viewModel = new AwardFundModel { Item = dataSourceItem };
 
             List<Funds> awardFunds = _repository.GetOrSetAwardFundCache();
-            viewModel.AwardFunds = awardFunds.OrderByDescending(a => a.Year).ThenBy(a=>a.AwardName).ThenBy(a=>a.ProductCode).ToList();
+            viewModel.AwardFunds = awardFunds.OrderByDescending(a => a.Year).ThenBy(a => a.AwardName).ThenBy(a => a.ProductCode).ToList();
             viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
 
             return View("/Views/Feature/Wealth/Component/AwardFund/AwardFund.cshtml", viewModel);
@@ -30,6 +30,7 @@ namespace Feature.Wealth.Component.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> GetSortedAwardFund(string orderby, string desc)
         {
             if (orderby.IsNullOrEmpty()) { orderby = "Year"; }

@@ -26,8 +26,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             string sql = "SELECT * FROM CFMBSEL_STG";
             try
             {
-                var results = DbManager.Cif.ExecuteIList<Cfmbsel>(sql, null, CommandType.Text);
-
+                var results = await _repository.ConnectOdbc<Cfmbsel>(sql);
 
                 foreach (var item in results)
                 {
