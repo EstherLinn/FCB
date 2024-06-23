@@ -402,9 +402,11 @@ namespace Feature.Wealth.Component.Repositories
                     ,[NetAssetValue]
                     ,[NetAssetValueDate]
                 FROM [vw_BasicETF]
+                WHERE [FirstBankCode] <> @ETFId AND [FirstBankCode] IS NOT NULL AND [FirstBankCode] <> ''
                 ORDER BY [SixMonthReturnNetValueOriginalCurrency] DESC
                 """;
-            var collection = DbManager.Custom.ExecuteIList<BasicEtfDto>(sqlQuery, null, CommandType.Text);
+            var param = new { ETFId = this.ETFId };
+            var collection = DbManager.Custom.ExecuteIList<BasicEtfDto>(sqlQuery, param, CommandType.Text);
 
             var config = new TypeAdapterConfig();
             config.ForType<BasicEtfDto, EtfTypeRanking>()
