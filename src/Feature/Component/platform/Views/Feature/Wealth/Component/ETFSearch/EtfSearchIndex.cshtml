@@ -261,7 +261,7 @@
                     // 日期區間有值時，才需要帶tag下去
                     let releaseSetTag = $('[data-return-rate-date]:checked').length > 0;
                     // 若父層[data-filter-group]的值為'special'，則不會印出已選擇的tag
-                    $(this).closest('[data-filter-group]').setEleAttribute('data-filter-group', releaseSetTag ? '' : 'special');
+                    $(this).closest('[data-filter-group]').data('filter-group', releaseSetTag ? '' : 'special');
                 });
                 // 報酬率日期區間
                 $('[data-return-rate-date]').on('change.returnRateDate', function () {
