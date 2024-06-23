@@ -1,6 +1,6 @@
-﻿using Sitecore.Web;
+﻿using Sitecore.Configuration;
+using Sitecore.Web;
 using System;
-using System.Configuration;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
@@ -32,12 +32,10 @@ namespace Feature.Wealth.Account.SingleSignOn.PageCodeBehind
         private async Task TaskAsync()
         {
             string workforceId = WebUtil.GetRequestHeader("X-workforceID");
-
-            if (string.IsNullOrEmpty(workforceId) && bool.TryParse(ConfigurationManager.AppSettings["Feature.Wealth.Account.SSO.LoginQueryString"], out bool isLoginQueryString))
+            if (string.IsNullOrEmpty(workforceId) && bool.TryParse(Settings.GetSetting("Feature.Wealth.Account.SSO.LoginQueryString"), out bool isLoginQueryString))
             {
                 workforceId = isLoginQueryString ? HttpContext.Current.Request.QueryString["workforceID"] : string.Empty;
             }
-
             // 未包含 AuthCode 參數
             if (string.IsNullOrEmpty(workforceId))
             {

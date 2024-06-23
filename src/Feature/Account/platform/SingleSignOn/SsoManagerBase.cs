@@ -1,10 +1,8 @@
 ﻿using Feature.Wealth.Account.Models.SingleSignOn;
 using log4net;
-using Sitecore.Data.Items;
 using Sitecore.Security.Accounts;
 using Sitecore.Security.Domains;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
@@ -126,7 +124,7 @@ namespace Feature.Wealth.Account.SingleSignOn
             bool success = MemberUtils.Authentication.LoginUser(user, true);
 
             string message = $"{user.Name} 登入成功";
-            if (success == false)
+            if (!success)
             {
                 message = $"{user.Name} 無法登入，請與管理人員聯繫";
             }
@@ -193,7 +191,7 @@ namespace Feature.Wealth.Account.SingleSignOn
             var scUser = MemberUtils.AddOrGetUser(domainName, userName, RandomMethod.NextAlphaNumeric());
 
             string profileItemId = this.ProfileItemId;
-            if (profileItemId.IsNullOrEmpty() == false)
+            if (!profileItemId.IsNullOrEmpty())
             {
                 scUser.Profile.ProfileItemId = profileItemId;
             }

@@ -13,7 +13,7 @@ namespace Feature.Wealth.Account.Pipelines
         public void Process(LogoutArgs args)
         {
             Assert.ArgumentNotNull(args, nameof(args));
-            if (Context.User.Domain.Name.Equals(SsoDomain.Fcb.ToString(), StringComparison.OrdinalIgnoreCase))
+            if (Context.User.Domain.Name.Equals(SsoDomain.fcb.ToString(), StringComparison.OrdinalIgnoreCase))
             {
                 string uri = Settings.GetSetting("Feature.Wealth.Account.SSO.LogoutUrl");
                 args.RedirectUrl = new UrlString(uri);
