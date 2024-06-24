@@ -35,6 +35,16 @@ namespace Feature.Wealth.ScheduleAgent.Services
             if (settings != null)
             {
                 this.WorkingDirectory = settings["WorkingDirectory"].EnsurePrefix("/");
+
+                if (settings["LocalDirectory"] != null)
+                {
+                    this.LocalDirectory = settings["LocalDirectory"];
+                }
+                else
+                {
+                    this.LocalDirectory = Settings.GetSetting("LocalDirectory");
+                }
+
                 string parentDirectory = Path.GetDirectoryName(this.WorkingDirectory);
 
                 // 在上一層目錄的基礎上建立目錄路徑
@@ -46,7 +56,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
         }
 
-        public string LocalDirectory { get; } = Settings.GetSetting("LocalDirectory");
+        public string LocalDirectory { get; }
         private string BackUpDirectory { get; } = Settings.GetSetting("BackUpDirectory");
         private string WorkingDirectory { get; }
 
