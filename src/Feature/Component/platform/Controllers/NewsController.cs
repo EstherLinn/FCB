@@ -114,5 +114,13 @@ namespace Feature.Wealth.Component.Controllers
 
             return View("/Views/Feature/Wealth/Component/News/HeadlineNews.cshtml", datas);
         }
+        public ActionResult Headlines() {
+            var item = RenderingContext.Current.Rendering.Item;
+            return View("/Views/Feature/Wealth/Component/News/Headline.cshtml", new HeadlineModel(item));
+        }
+        
+        
+
+
     }
 }
