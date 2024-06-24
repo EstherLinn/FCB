@@ -10,17 +10,17 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
     public class InsertFundEtf : SitecronAgentBase
     {
-        private readonly ProcessRepository _repository = new();
-
         protected override async Task Execute()
         {
+            var _repository = new ProcessRepository(this.Logger);
+
             if (this.JobItems != null)
             {
                 var jobitem = this.JobItems.FirstOrDefault();
                 var etlService = new EtlService(this.Logger, jobitem);
 
                 string filename = "FUND_ETF";
-                bool IsfilePath = etlService.ExtractFile("FUND_ETF");
+                bool IsfilePath = await etlService.ExtractFile("FUND_ETF");
 
                 if (IsfilePath)
                 {

@@ -5,15 +5,19 @@ using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using System.Linq;
+using Renci.SshNet.Sftp;
+using Renci.SshNet;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
     public class InsertTfjeNav : SitecronAgentBase
     {
-        private readonly ProcessRepository _repository = new();
-
         protected override async Task Execute()
         {
+            var _repository = new ProcessRepository(this.Logger);
+
             if (this.JobItems != null)
             {
                 var jobitem = this.JobItems.FirstOrDefault();

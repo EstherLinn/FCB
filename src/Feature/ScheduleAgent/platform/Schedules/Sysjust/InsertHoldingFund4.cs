@@ -17,10 +17,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     public class InsertHoldingFund4 : SitecronAgentBase
     {
-        private readonly ProcessRepository _repository = new();
-
         protected override async Task Execute()
         {
+            var _repository = new ProcessRepository(this.Logger);
+
             string filePath = Sitecore.Configuration.Settings.GetSetting("HoldingFund4");
 
             if (File.Exists(filePath))
@@ -47,7 +47,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 var etlService = new EtlService(this.Logger, jobitem);
 
                 string filename = "SYSJUST-HOLDING-FUND-4";
-                bool IsfilePath = etlService.ExtractFile(filename);
+                bool IsfilePath = await etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {

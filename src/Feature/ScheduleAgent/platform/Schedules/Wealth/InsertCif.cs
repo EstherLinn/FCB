@@ -18,10 +18,11 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
     public class InsertCif : SitecronAgentBase
     {
-        private readonly ProcessRepository _repository = new();
 
         protected override async Task Execute()
         {
+            var _repository = new ProcessRepository(this.Logger);
+
             //CIF 一次性排程 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM WEA_DW_CIF_VIEW";
             var results = await _repository.ConnectOdbc<Cif>(sql);
@@ -51,7 +52,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             }
             else
             {
-                this.Logger.Error("ERROR: File not found");
+                this.Logger.Warn("ERROR: File not found");
                 _repository.LogChangeHistory(DateTime.UtcNow, sql, "沒有資料", " ", 0);
 
             }

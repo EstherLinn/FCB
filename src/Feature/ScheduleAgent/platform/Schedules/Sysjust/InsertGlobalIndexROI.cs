@@ -10,16 +10,16 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
     internal class InsertGlobalIndexRoi : SitecronAgentBase
     {
-        private readonly ProcessRepository _repository = new();
-
         protected override async Task Execute()
         {
+            var _repository = new ProcessRepository(this.Logger);
+
             if (this.JobItems != null)
             {
                 var jobitem = this.JobItems.FirstOrDefault();
                 var etlService = new EtlService(this.Logger, jobitem);
                 string filename = "SYSJUST-GLOBALINDEX-ROI";
-                bool IsfilePath = etlService.ExtractFile(filename);
+                bool IsfilePath = await etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {
