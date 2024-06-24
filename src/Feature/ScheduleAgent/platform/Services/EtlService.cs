@@ -36,7 +36,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
             {
                 this.WorkingDirectory = settings["WorkingDirectory"].EnsurePrefix("/");
 
-                if (settings["LocalDirectory"] != null)
+                if (string.IsNullOrEmpty(settings["LocalDirectory"]))
                 {
                     this.LocalDirectory = settings["LocalDirectory"];
                 }
