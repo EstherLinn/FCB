@@ -35,6 +35,16 @@ namespace Feature.Wealth.ScheduleAgent.Services
             if (settings != null)
             {
                 this.WorkingDirectory = settings["WorkingDirectory"].EnsurePrefix("/");
+
+                if (string.IsNullOrEmpty(settings["LocalDirectory"]))
+                {
+                    this.LocalDirectory = settings["LocalDirectory"];
+                }
+                else
+                {
+                    this.LocalDirectory = Settings.GetSetting("LocalDirectory");
+                }
+
                 string parentDirectory = Path.GetDirectoryName(this.WorkingDirectory);
 
                 // 在上一層目錄的基礎上建立目錄路徑
@@ -46,7 +56,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
         }
 
-        public string LocalDirectory { get; } = Settings.GetSetting("LocalDirectory");
+        public string LocalDirectory { get; }
         private string BackUpDirectory { get; } = Settings.GetSetting("BackUpDirectory");
         private string WorkingDirectory { get; }
 
@@ -415,7 +425,9 @@ namespace Feature.Wealth.ScheduleAgent.Services
                             fileName = Path.ChangeExtension(fileName, "txt");
                         }
 
-                        if (!await ftpClient.FileExists(fileName))
+                        var filePath = Path.Combine(this.WorkingDirectory, fileName);
+
+                        if (!await ftpClient.FileExists(filePath))
                         {
                             this._logger.Error($"File {fileName} not found.");
                             return false;
@@ -423,27 +435,24 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         string localFilePath = Path.Combine(this.LocalDirectory, fileName);
                         string backupFilePath = Path.Combine(this.BackUpDirectory, fileName);
 
-                        if (File.Exists(localFilePath) && await ftpClient.CompareFile(localFilePath, fileName, FtpCompareOption.Checksum) == FtpCompareResult.Equal)
+                        if (File.Exists(localFilePath) && await ftpClient.CompareFile(localFilePath, filePath, FtpCompareOption.Checksum) == FtpCompareResult.Equal)
                         {
-                            if (File.Exists(localFilePath))
-                            {
-                                string localFileHash = CalculateHash(localFilePath);
+                            string localFileHash = CalculateHash(localFilePath);
 
-                                if (File.Exists(localFiledonePath))
+                            if (File.Exists(localFiledonePath))
+                            {
+                                string localFiledoneHash = CalculateHash(localFiledonePath);
+                                if (localFileHash.Equals(localFiledoneHash))
                                 {
-                                    string localFiledoneHash = CalculateHash(localFiledonePath);
-                                    if (localFileHash.Equals(localFiledoneHash))
-                                    {
-                                        this._logger.Error("Same file content, skip download.");
-                                        return false;
-                                    }
+                                    this._logger.Error("Same file content, skip download.");
+                                    return false;
                                 }
                             }
                             this._logger.Error("Same file content, skip download.");
                             return false;
                         }
 
-                        if (await ftpClient.DownloadFile(localFilePath, fileName, FtpLocalExists.Overwrite) == FtpStatus.Success)
+                        if (await ftpClient.DownloadFile(localFilePath, filePath, FtpLocalExists.Overwrite) == FtpStatus.Success)
                         {
                             return true;
                         }
@@ -472,6 +481,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         ftpClient.SetWorkingDirectory(this.WorkingDirectory);
                         ftpClient.Connect();
 
+                        var filePath = Path.Combine(this.WorkingDirectory, fileName);
                         string localFiledonePath = Directory.GetFiles(this.LocalDirectory, $"*{fileName}_done.txt").FirstOrDefault();
 
                         var files = ftpClient.GetListing(ftpClient.GetWorkingDirectory())
@@ -484,7 +494,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                             this._logger.Error($"No file exists.");
                             return false;
                         }
-                        if (!ftpClient.FileExists(fileName))
+                        if (!ftpClient.FileExists(filePath))
                         {
                             this._logger.Error($"File {fileName} not found.");
                             return false;
@@ -494,8 +504,8 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         string localFilePath = Path.Combine(this.LocalDirectory, latestFile.Name);
                         localFilePath = Path.ChangeExtension(localFilePath, "txt");
 
-                        ftpClient.DownloadFile(localFilePath, fileName, FtpLocalExists.Overwrite);
-                        
+                        ftpClient.DownloadFile(localFilePath, filePath, FtpLocalExists.Overwrite);
+
                         if (File.Exists(localFilePath))
                         {
                             string localFileHash = CalculateHash(localFilePath);
