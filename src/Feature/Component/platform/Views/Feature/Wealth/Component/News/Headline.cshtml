@@ -4,12 +4,9 @@
 @using System
 @using Sitecore.Resources.Media
 @model HeadlineModel
-@if (Model == null)
+@if (Model.Datasource == null)
 {
     return;
-}
-@{
-    var model = new HeadlineModel(Model.Item);
 }
     <div class="c-section">
     <div class="l-wrap">
@@ -23,7 +20,7 @@
                                 <img src="@Model.Image" class="c-gridview__img" alt="">
                             </div>
                             <div class="c-gridview__content">
-                                @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link1.ToString(), Model.Item, new { haschildren = true, @class = "c-gridview__title s3 u-ellipsis-2" })
+                                @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link1.ToString(), Model.Datasource, new { haschildren = true, @class = "c-gridview__title s3 u-ellipsis-2" })
                                 @Html.Sitecore().Field(Template.HeadlineDetail.Fields.Title1.ToString())
                                 @Html.Sitecore().EndField()
                                 <div class="c-gridview__minor">
@@ -46,7 +43,7 @@
                         <li class="c-listGroup__item">
                             <div class="c-gridview">
                                 <div class="c-gridview__content">
-                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link2.ToString(), Model.Item, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
+                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link2.ToString(), Model.Datasource, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
                                     @Html.Sitecore().Field(Template.HeadlineDetail.Fields.Title2.ToString())
                                     @Html.Sitecore().EndField()
                                     <div class="c-gridview__minor">
@@ -66,7 +63,7 @@
                         <li class="c-listGroup__item">
                             <div class="c-gridview">
                                 <div class="c-gridview__content">
-                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link3.ToString(), Model.Item, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
+                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link3.ToString(), Model.Datasource, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
                                     @Html.Sitecore().Field(Template.HeadlineDetail.Fields.Title3.ToString())
                                     @Html.Sitecore().EndField()
                                     <div class="c-gridview__minor">
@@ -86,7 +83,7 @@
                         <li class="c-listGroup__item">
                             <div class="c-gridview">
                                 <div class="c-gridview__content">
-                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link4.ToString(), Model.Item, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
+                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link4.ToString(), Model.Datasource, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
                                     @Html.Sitecore().Field(Template.HeadlineDetail.Fields.Title4.ToString())
                                     @Html.Sitecore().EndField()
                                     <div class="c-gridview__minor">
@@ -106,7 +103,7 @@
                         <li class="c-listGroup__item">
                             <div class="c-gridview">
                                 <div class="c-gridview__content">
-                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link5.ToString(), Model.Item, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
+                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link5.ToString(), Model.Datasource, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
                                     @Html.Sitecore().Field(Template.HeadlineDetail.Fields.Title5.ToString())
                                     @Html.Sitecore().EndField()
                                     <div class="c-gridview__minor">
