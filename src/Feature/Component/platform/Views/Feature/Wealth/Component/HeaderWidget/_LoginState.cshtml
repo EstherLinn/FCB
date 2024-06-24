@@ -112,7 +112,7 @@
                             html += `<li class="c-listGroup__item" data-topInfoList>
                                             <div class="c-itemNotify ${isRead}" data-haveread=${data[i].HaveRead}  data-recordnum="${data[i].RecordNumber}">
                                                 <div class="c-itemNotify__topbar">
-                                                    <span class="t-date">${ConvertSqlDateTimeToJsDateTime(data[i].InfoDateTime)}</span>
+                                                    <span class="t-date">${data[i].InfoDateTimeString}</span>
                                                     <span class="o-hangTag" data-mailType>${data[i].MailInfoType}</span>
                                                 </div>
                                                 <div class="c-itemNotify__link">
