@@ -452,10 +452,10 @@
                     var query = apiRequest('@ETFHistoryPriceApiUrl', params);
                     query.then((data) => {
                         if (Object.keys(data).length != 0
-                            && Object.keys(data.Body.Item1).length != 0 ) {
+                            && Object.keys(data.Body).length != 0 ) {
                             let bankSellPrice_array = [];
 
-                            bankBuyPrice_array = data.Body.Item1.map(item => {
+                            bankBuyPrice_array = data.Body.map(item => {
                                 let date = new Date(item.Date).getTime();
                                 bankSellPrice_array.push(
                                     {
@@ -484,9 +484,11 @@
                                 legendSymbol: 'rectangle',
                             }];
 
-                            let latestDate = bankBuyPrice_array[bankBuyPrice_array.length - 1].name;
-                            const updateDate = latestDate.replaceAll('-', '/');
-                            $('[data-update-date="price"]').text(updateDate);
+                            if (bankBuyPrice_array) {
+                                let latestDate = bankBuyPrice_array[bankBuyPrice_array.length - 1].name;
+                                const updateDate = latestDate.replaceAll('-', '/');
+                                $('[data-update-date="price"]').text(updateDate);
+                            }
 
                             chart = Highcharts.stockChart('priceTrendChart', {
                                 chart: {
@@ -505,6 +507,7 @@
                                                 maxPoint,
                                                 minValue,
                                                 minPoint;
+
                                             allPoints.filter(function (point) {
                                                 if (!maxValue || maxValue < point.y) {
                                                     maxValue = point.y;
@@ -515,44 +518,50 @@
                                                     minPoint = point;
                                                 }
                                             });
+
                                             var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
                                             var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+
                                             setTimeout(function () {
-                                                maxPoint.update({
-                                                    dataLabels: {
-                                                        enabled: true,
-                                                        verticalAlign: 'middle',
-                                                        x: maxPointMoreThanHalf ? -45 : 45,
-                                                        y: -5,
-                                                        formatter: function () {
-                                                            var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
-                                                            return label;
-                                                        },
-                                                        style: {
-                                                            fontSize: 14,
-                                                            fontWeight: 'normal',
-                                                            textOutline: 'none'
+                                                if (maxPoint) {
+                                                    maxPoint.update({
+                                                        dataLabels: {
+                                                            enabled: true,
+                                                            verticalAlign: 'middle',
+                                                            x: maxPointMoreThanHalf ? -45 : 45,
+                                                            y: -5,
+                                                            formatter: function () {
+                                                                var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
+                                                                return label;
+                                                            },
+                                                            style: {
+                                                                fontSize: 14,
+                                                                fontWeight: 'normal',
+                                                                textOutline: 'none'
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }, 300);
                                             setTimeout(function () {
-                                                minPoint.update({
-                                                    dataLabels: {
-                                                        enabled: true,
-                                                        verticalAlign: 'middle',
-                                                        x: minPointMoreThanHalf ? -45 : 45,
-                                                        formatter: function () {
-                                                            var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
-                                                            return label;
-                                                        },
-                                                        style: {
-                                                            fontSize: 14,
-                                                            fontWeight: 'normal',
-                                                            textOutline: 'none'
+                                                if (minPoint) {
+                                                    minPoint.update({
+                                                        dataLabels: {
+                                                            enabled: true,
+                                                            verticalAlign: 'middle',
+                                                            x: minPointMoreThanHalf ? -45 : 45,
+                                                            formatter: function () {
+                                                                var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
+                                                                return label;
+                                                            },
+                                                            style: {
+                                                                fontSize: 14,
+                                                                fontWeight: 'normal',
+                                                                textOutline: 'none'
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }, 300);
                                         }
                                     },
