@@ -38,7 +38,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 }
             }
 
-            if (this.JobItems != null && filePath == null)
+            if (this.JobItems != null && string.IsNullOrEmpty(filePath))
             {
                 var jobitem = this.JobItems.FirstOrDefault();
                 var etlService = new EtlService(this.Logger, jobitem);
