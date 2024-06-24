@@ -81,11 +81,7 @@ namespace Feature.Wealth.Account.Controllers
                 user.Profile.Name = member.MemberName;
                 user.Profile.Email = member.MemberEmail;
             }
-
-            string objToJson = JsonConvert.SerializeObject(member);
-            user.Profile.SetCustomProperty("MemberInfo", objToJson);
-            user.Profile.Save();
-            Authentication.LoginVirtualUser(user);
+            this.SetCustomPropertyAndLogin(member, user);        
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
         [HttpGet]
@@ -124,11 +120,7 @@ namespace Feature.Wealth.Account.Controllers
                 user.Profile.Name = member.MemberName;
                 user.Profile.Email = member.MemberEmail;
             }
-
-            string objToJson = JsonConvert.SerializeObject(member);
-            user.Profile.SetCustomProperty("MemberInfo", objToJson);
-            user.Profile.Save();
-            Authentication.LoginVirtualUser(user);
+            this.SetCustomPropertyAndLogin(member, user);
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
 
@@ -215,10 +207,8 @@ namespace Feature.Wealth.Account.Controllers
                                     User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
                                     user.Profile.Name = cifMember.CIF_CUST_NAME;
                                     user.Profile.Email = cifMember.CIF_E_MAIL_ADDRESS;
-                                    string objToJson = JsonConvert.SerializeObject(member);
-                                    user.Profile.SetCustomProperty("MemberInfo", objToJson);
-                                    user.Profile.Save();
-                                    Authentication.LoginVirtualUser(user);
+                                    this.SetCustomPropertyAndLogin(member, user);
+
                                 }
                                 else
                                 {
@@ -228,10 +218,7 @@ namespace Feature.Wealth.Account.Controllers
                                     User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
                                     user.Profile.Name = member.MemberName;
                                     user.Profile.Email = member.MemberEmail;
-                                    string objToJson = JsonConvert.SerializeObject(member);
-                                    user.Profile.SetCustomProperty("MemberInfo", objToJson);
-                                    user.Profile.Save();
-                                    Authentication.LoginVirtualUser(user);
+                                    this.SetCustomPropertyAndLogin(member, user);
                                 }
                             }
                         }
@@ -263,7 +250,7 @@ namespace Feature.Wealth.Account.Controllers
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
 
-        public ActionResult SignInWebBankByApp()
+        public async Task<ActionResult> SignInWebBankByApp()
         {
             if (FcbMemberHelper.CheckMemberLogin())
             {
@@ -282,6 +269,7 @@ namespace Feature.Wealth.Account.Controllers
                     Session["IsAppLogin"] = true;
                     var code = qs["promotionCode"];
                     var isExists = _memberRepository.CheckAppUserExists(PlatFormEunm.WebBank, code);
+                    User user = Authentication.BuildVirtualUser("extranet", code, true);
                     if (!isExists)
                     {
                         step = $"Step3 創建用戶開始，取得CIF資料";
@@ -297,28 +285,23 @@ namespace Feature.Wealth.Account.Controllers
                         FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME, cifMember.CIF_E_MAIL_ADDRESS,
                         cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE);
                         _memberRepository.CreateNewMember(member);
-                        User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
                         user.Profile.Name = cifMember.CIF_CUST_NAME;
                         user.Profile.Email = cifMember.CIF_E_MAIL_ADDRESS;
-                        string objToJson = JsonConvert.SerializeObject(member);
-                        user.Profile.SetCustomProperty("MemberInfo", objToJson);
-                        user.Profile.Save();
-                        Authentication.LoginVirtualUser(user);
+                        this.SetCustomPropertyAndLogin(member, user);
                         Session["AppLoginSuccess"] = true;
                     }
                     else
                     {
                         step = $"Step3 理財網已有會員，直接登入";
                         FcbMemberModel member = _memberRepository.GetAppMemberInfo(PlatFormEunm.WebBank, code);
-                        User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
                         user.Profile.Name = member.MemberName;
                         user.Profile.Email = member.MemberEmail;
-                        string objToJson = JsonConvert.SerializeObject(member);
-                        user.Profile.SetCustomProperty("MemberInfo", objToJson);
-                        user.Profile.Save();
-                        Authentication.LoginVirtualUser(user);
+                        this.SetCustomPropertyAndLogin(member, user);
                         Session["AppLoginSuccess"] = true;
                     }
+                    step = $"Step4 同步iLeo關注清單";
+                    FirstBankApiService firstBankApiService = new();
+                    firstBankApiService.SyncTrackList(await firstBankApiService.GetTrackListFromIleo(code));
                 }
             }
             catch (Exception ex)
@@ -389,15 +372,6 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GetTrackListFromFcb(string promotionCode)
-        {
-            FirstBankApiService firstBankApiService = new();
-            var res = await firstBankApiService.GetTrackList(promotionCode);
-
-            return new JsonNetResult(res);
-        }
-
-        [HttpPost]
         public ActionResult InsertTrack(List<TrackListModel> trackList)
         {
             if (trackList == null)
@@ -412,14 +386,13 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetTrackListFromDb()
+        public ActionResult GetTrackList()
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
                 return new EmptyResult();
             }
-            var listdb = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
-            return new JsonNetResult(listdb);
+            return new JsonNetResult(_memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId()));
         }
 
 
@@ -546,6 +519,14 @@ namespace Feature.Wealth.Account.Controllers
             string objToJson = JsonConvert.SerializeObject(member);
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
             user.Profile.Save();
+        }
+
+        private void SetCustomPropertyAndLogin(FcbMemberModel fcbMember, User user)
+        {
+            string objToJson = JsonConvert.SerializeObject(fcbMember);
+            user.Profile.SetCustomProperty("MemberInfo", objToJson);
+            user.Profile.Save();
+            Authentication.LoginVirtualUser(user);
         }
 
         [HttpPost]

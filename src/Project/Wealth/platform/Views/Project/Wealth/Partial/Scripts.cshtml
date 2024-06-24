@@ -37,29 +37,14 @@
         if (isLogin) {
             $.ajax({
                 type: "post",
-                url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackListFromDb")",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackList")",
                 success: function (msg) {
-                    console.log("TrackListFromDb :");
+                    console.log("TrackList");
                     console.log(msg);
                     store.set('focus', msg);
                     $('[eh-focus]').trigger('exec');
                 },
             })
-            if (SC_DATA.WebBankId) {
-                $.ajax({
-                    type: "post",
-                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackListFromFcb")",
-                    data: { "promotionCode": SC_DATA.WebBankId },
-                    success: function (msg) {
-                        console.log("TrackListFromFcb :");
-                        console.log(msg);
-                    },
-                    error: function (msg) {
-                        console.log("TrackListFromFcb :");
-                        console.log(msg);
-                    }
-                })
-            }
         }
         window.CompareObj = function (id, type, name) {
             this.id = id;
