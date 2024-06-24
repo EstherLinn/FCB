@@ -54,7 +54,21 @@
                                     <div class="c-member__value">
                                         @if (!string.IsNullOrEmpty(member.Risk))
                                         {
-                                            <b>@member.Risk</b>
+                                            string riskName = string.Empty;
+                                            switch (member.Risk)
+                                            {
+                                                case "1":
+                                                    riskName = "保守型";
+                                                    break;
+                                                case "2":
+                                                    riskName = "穩健型";
+                                                    break;
+                                                case "3":
+                                                    riskName = "積極型";
+                                                    break;
+
+                                            }
+                                            <b>@riskName</b>
                                             <a href="@WebKycLink" target="_blank" class="o-link t4 u-hidden" id="GoKYC">進行風險屬性評估</a>
 
                                         }
