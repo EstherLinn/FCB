@@ -1,0 +1,774 @@
+﻿@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.Consult
+@model ConsultModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">遠距理財諮詢預約</h1>
+        </div>
+    </div>
+</div>
+
+<div class="l-wrap" id="step01">
+    <div class="l-stage">
+        <div class="l-formWrap">
+            <div class="l-flex u-flex-col u-flex-gap-max">
+                <div class="l-flex__item">
+                    <ol class="c-progress">
+                        <li class="c-progress__item is-active"><span>填寫表單</span></li>
+                        <li class="c-progress__item"><span>選擇時段</span></li>
+                    </ol>
+                </div>
+                <div class="l-flex__item">
+                    <form class="l-formBlock">
+                        <div class="l-formBlock__group">
+                            <div class="l-formBlock__item">
+                                <div class="c-form">
+                                    <div class="c-form__title">客戶姓名</div>
+                                    <div class="c-form__content">
+                                        <div class="l-form is-error" id="l-form-customername">
+                                            <div class="l-form__input">
+                                                <input id="input-customername" type="text" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入客戶姓名" data-name>
+                                            </div>
+                                            <div class="l-form__text l-form__text--error">
+                                                <div class="o-errorText"><span class="s4">請輸入客戶姓名</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="l-formBlock__item">
+                                <div class="c-form">
+                                    <div class="c-form__title">客戶ID</div>
+                                    <div class="c-form__content">
+                                        <div class="l-form is-error" id="l-form-customerid">
+                                            <div class="l-form__input">
+                                                <input id="input-customerid" type="text" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入客戶ID">
+                                            </div>
+                                            <div class="l-form__text l-form__text--error">
+                                                <div class="o-errorText"><span class="s4">請輸入客戶ID</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="l-formBlock__item">
+                                <div class="c-form">
+                                    <div class="c-form__title">聯絡電話</div>
+                                    <div class="c-form__content">
+                                        <div class="l-form is-error" id="l-form-phone">
+                                            <div class="l-form__input">
+                                                <input id="input-tel" type="tel" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入聯絡電話">
+                                            </div>
+                                            <div class="l-form__text l-form__text--error">
+                                                <div class="o-errorText"><span class="s4">請輸入聯絡電話</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="l-formBlock__item">
+                                <div class="c-form">
+                                    <div class="c-form__title">電子信箱</div>
+                                    <div class="c-form__content">
+                                        <div class="l-form is-error" id="l-form-mail">
+                                            <div class="l-form__input">
+                                                <input id="input-email" type="email" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入電子信箱">
+                                            </div>
+                                            <div class="l-form__text l-form__text--error">
+                                                <div class="o-errorText"><span class="s4">請輸入電子信箱</span></div>
+                                            </div>
+                                            <div class="l-form__text">
+                                                <span class="t-warning s4">請確實填寫電子信箱，系統將自動寄發本次預約訊息</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="l-formBlock__item">
+                                <div class="c-form">
+                                    <div class="c-form__title">諮詢主題(可複選)</div>
+                                    <div class="c-form__content">
+                                        <div class="l-form is-error" id="l-form-subject">
+                                            <div class="l-form__item">
+                                                <div class="l-pickGroup l-pickGroup--form">
+                                                    <div class="l-pickGroup__item">
+                                                        <label class="o-checkbox">
+                                                            <input class="o-checkbox__input" type="checkbox" value="投資市場諮詢" data-subject>
+                                                            <div class="o-checkbox__text">
+                                                                投資市場諮詢
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="l-pickGroup__item">
+                                                        <label class="o-checkbox">
+                                                            <input class="o-checkbox__input" type="checkbox" value="投資組合建議" data-subject>
+                                                            <div class="o-checkbox__text">
+                                                                投資組合建議
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="l-pickGroup__item">
+                                                        <label class="o-checkbox">
+                                                            <input class="o-checkbox__input" type="checkbox" value="資產配置規劃" data-subject>
+                                                            <div class="o-checkbox__text">
+                                                                資產配置規劃
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="l-pickGroup__item">
+                                                        <label class="o-checkbox">
+                                                            <input class="o-checkbox__input" type="checkbox" value="稅務及資金規劃" data-subject>
+                                                            <div class="o-checkbox__text">
+                                                                稅務及資金規劃
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="l-pickGroup__item">
+                                                        <label class="o-checkbox">
+                                                            <input class="o-checkbox__input" type="checkbox" value="家族及企業財富傳承" data-subject>
+                                                            <div class="o-checkbox__text">
+                                                                家族及企業財富傳承
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="l-pickGroup__item">
+                                                        <label class="o-checkbox">
+                                                            <input class="o-checkbox__input" type="checkbox" value="退休理財規劃" data-subject>
+                                                            <div class="o-checkbox__text">
+                                                                退休理財規劃
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="l-pickGroup__item">
+                                                        <label class="o-checkbox">
+                                                            <input class="o-checkbox__input" type="checkbox" value="全方位理財健診" data-subject>
+                                                            <div class="o-checkbox__text">
+                                                                全方位理財健診
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    <div class="l-pickGroup__item">
+                                                        <label class="o-checkbox">
+                                                            <input class="o-checkbox__input" type="checkbox" value="投資研究報告" data-subject>
+                                                            <div class="o-checkbox__text">
+                                                                投資研究報告
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="l-form__text l-form__text--error">
+                                                <div class="o-errorText"><span class="s4">請至少選一個主題</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="l-formBlock__item">
+                                <div class="c-form">
+                                    <div class="c-form__title">其他諮詢主題及諮詢內容(選填)</div>
+                                    <div class="c-form__content">
+                                        <div class="l-form" id="l-form-discription">
+                                            <div class="l-form__item">
+                                                <textarea id="description" class="o-textarea" placeholder="輸入諮詢內容(限50字)" maxlength="50"></textarea>
+                                            </div>
+                                            <div class="l-form__text l-form__text--error">
+                                                <div class="o-errorText"><span class="s4"></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-formBlock__group">
+                            <div class="l-formBlock__item">
+                                <label class="o-checkbox">
+                                    <input class="o-checkbox__input" type="checkbox" id="picheck">
+                                    <div class="o-checkbox__text">
+                                        為保護您的權益，請詳細閱讀<a href="#" class="o-link">個人資料運用告知聲明</a>，當表單送出時，即視同您已充分了解與同意。
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="l-formBlock__action">
+                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-next>下一步</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="l-wrap" id="step02" style="display: none;">
+    <div class="l-stage">
+        <div class="l-formWrap">
+            <div class="l-flex u-flex-col u-flex-gap-max">
+                <div class="l-flex__item">
+                    <ol class="c-progress">
+                        <li class="c-progress__item"><span>填寫表單</span></li>
+                        <li class="c-progress__item is-active"><span>選擇時段</span></li>
+                    </ol>
+                </div>
+                <div class="l-flex__item">
+                    <form class="l-formBlock">
+                        <div class="l-formBlock__group">
+                            <div class="u-center s3">
+                                開放近10個工作天(不含例假日)的預約時段，每個時段為20分鐘。<br>
+                                一日至多可預約2個時段，10個工作天內至多可預約6個時段。
+                            </div>
+                        </div>
+                        <div class="l-formBlock__group">
+                            <div class="l-formBlock__wrap l-formBlock__wrap--time">
+                                <div class="l-formBlock__item">
+                                    <div class="c-form c-form--time">
+                                        <div class="c-form__title">選擇日期</div>
+                                        <div class="c-form__content">
+                                            <div class="l-form is-error" id="l-form-date">
+                                                <div class="l-form__item">
+                                                    <div class="o-calendarBox o-calendarBox--noMax">
+                                                        <input type="text" class="o-calendarBox__input" custom-data-calendar="true" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="l-form__text l-form__text--error">
+                                                    <div class="o-errorText"><span class="s4">請選擇日期</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-formBlock__item">
+                                    <div class="c-form c-form--time">
+                                        <div class="c-form__title">選擇時段</div>
+                                        <div class="c-form__content">
+                                            <div class="l-form is-error" id="l-form-time">
+                                                <div class="l-form__item">
+                                                    <div class="l-pickGroup l-pickGroup--time">
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--simple">
+                                                                <input class="o-btnRadio__input" type="radio" name="time" value="10:00" disabled data-time>
+                                                                <div class="o-btnRadio__text">10:00</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--simple">
+                                                                <input class="o-btnRadio__input" type="radio" name="time" value="10:30" disabled data-time>
+                                                                <div class="o-btnRadio__text">10:30</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--simple">
+                                                                <input class="o-btnRadio__input" type="radio" name="time" value="11:00" disabled data-time>
+                                                                <div class="o-btnRadio__text">11:00</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--simple">
+                                                                <input class="o-btnRadio__input" type="radio" name="time" value="11:30" disabled data-time>
+                                                                <div class="o-btnRadio__text">11:30</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--simple">
+                                                                <input class="o-btnRadio__input" type="radio" name="time" value="13:30" disabled data-time>
+                                                                <div class="o-btnRadio__text">13:30</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--simple">
+                                                                <input class="o-btnRadio__input" type="radio" name="time" value="14:00" disabled data-time>
+                                                                <div class="o-btnRadio__text">14:00</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--simple">
+                                                                <input class="o-btnRadio__input" type="radio" name="time" value="14:30" disabled data-time>
+                                                                <div class="o-btnRadio__text">14:30</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--simple">
+                                                                <input class="o-btnRadio__input" type="radio" name="time" value="15:00" disabled data-time>
+                                                                <div class="o-btnRadio__text">15:00</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--simple">
+                                                                <input class="o-btnRadio__input" type="radio" name="time" value="15:30" disabled data-time>
+                                                                <div class="o-btnRadio__text">15:30</div>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="l-form__text l-form__text--error">
+                                                    <div class="o-errorText"><span class="s4">請選擇時段</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-formBlock__group">
+                            <div class="l-formBlock__action">
+                                <a href="#" id="btn-check" class="o-btn o-btn--primary o-btn--lg" data-popup>確認時段</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupRemind" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">提醒</h2>
+        </header>
+        <div class="c-modal__content">
+            因您同一日已預約超過二個時段，請重新預約其他日期，不便之處敬請見諒。
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true">確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupConfirm" class="c-modal mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">確認預約資訊</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-info">
+                <div class="l-info__item">
+                    <div class="l-info__title">預約理專</div>
+                    <div class="l-info__val">李智祥</div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">預約日期</div>
+                    <div class="l-info__val" id="l-info-scheduleDate"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">預約時段</div>
+                    <div class="l-info__val" id="l-info-scheduleTime"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">客戶姓名</div>
+                    <div class="l-info__val" id="l-info-customername"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">客戶ID</div>
+                    <div class="l-info__val" id="l-info-customerid"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">聯絡電話</div>
+                    <div class="l-info__val" id="l-info-tel"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">電子信箱</div>
+                    <div class="l-info__val" id="l-info-email"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">諮詢主題</div>
+                    <div class="l-info__val" id="l-info-subject">投資組合建議、資產配置規劃、退休理財規劃</div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">其他諮詢內容</div>
+                    <div class="l-info__val" id="l-info-description">預計在50歲退休，想了解退休缺口多大，如何進行資產配置，有機會可以提早退休</div>
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-send>送出預約</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupSuccess" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">送出成功</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-flex u-flex-col u-flex-gap-min u-center">
+                <div class="l-flex__item">
+                    <img src="~/themes/images/icons/status/success.svg" alt="">
+                </div>
+                <div class="l-flex__item">
+                    感謝您的預約，本行理財專員將盡速回覆您，並確認預約時間。如您有留存電子信箱，系統將自動寄發本次預約訊息。
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a class="o-btn o-btn--primary o-btn--sm">確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupFail" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">送出失敗</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-flex u-flex-col u-flex-gap-min u-center">
+                <div class="l-flex__item">
+                    <img src="~/themes/images/icons/status/fail.svg" alt="">
+                </div>
+                <div class="l-flex__item">
+                    因您選取的時段已有其他貴賓預約，請重新預約其他時段
+                    ，不便之處敬請見諒。
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a class="o-btn o-btn--primary o-btn--sm" data-edit>確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const holidayDates = @Model.HolidayDatesHtmlString;
+    const consultSchedules = @Model.ConsultSchedulesHtmlString;
+    const reserveds = @Model.ReservedsHtmlString;
+    const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六']
+
+    var currentConsultSchedule = {
+        CustomerID: '',
+        CustomerName: '',
+        ScheduleDateString: '',
+        StartTime: '',
+        EndTime: '',
+        Phone: '',
+        Mail: '',
+        Subject: '',
+        Description: '',
+        Type: '2',
+        StatusCode: '1'
+    };
+
+    $(function () {
+        function bindText() {
+            currentConsultSchedule.ScheduleDateString = DOMPurify.sanitize($('[custom-data-calendar]').val());
+
+            if (currentConsultSchedule.ScheduleDateString) {
+                var weekday = $('[custom-data-calendar]').datepicker('getDate').getDay();
+
+                $('#scheduleDate').text(currentConsultSchedule.ScheduleDateString + ' (' + dayNamesZh[weekday] + ')');
+                $('#l-info-scheduleDate').text(currentConsultSchedule.ScheduleDateString + ' (' + dayNamesZh[weekday] + ')');
+            }
+
+            if ($('[data-time]:checked').val()) {
+                var value = currentConsultSchedule.ScheduleDateString + ' ' + DOMPurify.sanitize($('[data-time]:checked').val());
+                var d1 = new Date(value);
+                var d2 = new Date(d1.getTime() + 20 * 60000);
+
+                currentConsultSchedule.StartTime = d1.toTimeString().split(' ')[0].substring(0, 5);
+                currentConsultSchedule.EndTime = d2.toTimeString().split(' ')[0].substring(0, 5);
+
+                var s = currentConsultSchedule.StartTime + '~' + currentConsultSchedule.EndTime;
+
+                if (d1.getHours < 12) {
+                    s = '上午 ' + s;
+                }
+                else {
+                    s = '下午 ' + s;
+                }
+
+                $('#scheduleTime').text(s);
+                $('#l-info-scheduleTime').text(s);
+            }
+
+            currentConsultSchedule.CustomerName = DOMPurify.sanitize($('#input-customername').val());
+            $('#l-info-customername').text(currentConsultSchedule.CustomerName);
+
+            currentConsultSchedule.CustomerID = DOMPurify.sanitize($('#input-customerid').val());
+            $('#l-info-customerid').text(currentConsultSchedule.CustomerID);
+
+            currentConsultSchedule.Phone = DOMPurify.sanitize($('#input-tel').val());
+            $('#l-info-tel').text(currentConsultSchedule.Phone);
+
+            currentConsultSchedule.Mail = DOMPurify.sanitize($('#input-email').val());
+            $('#l-info-email').text(currentConsultSchedule.Mail);
+
+            currentConsultSchedule.Subject = '';
+
+            $('[data-subject]').each(function (i, el) {
+                if ($(el).prop("checked")) {
+                    var val = DOMPurify.sanitize($(el).val());
+                    if (currentConsultSchedule.Subject) {
+                        currentConsultSchedule.Subject = currentConsultSchedule.Subject + '、' + val;
+                    }
+                    else {
+                        currentConsultSchedule.Subject = val;
+                    }
+                }
+            });
+
+            $('#l-info-subject').text(currentConsultSchedule.Subject);
+
+            currentConsultSchedule.Description = DOMPurify.sanitize($('#description').val());
+            $('#l-info-description').text(currentConsultSchedule.Description);
+        }
+
+        function verify() {
+            var flag = true;
+
+            if (currentConsultSchedule.Phone) {
+            }
+            else {
+                flag = false;
+            }
+
+            if (currentConsultSchedule.Mail) {
+            }
+            else {
+                flag = false;
+            }
+
+            if (currentConsultSchedule.Subject) {
+            }
+            else {
+                flag = false;
+            }
+
+            if ($('#picheck').prop("checked")) {
+            }
+            else {
+                flag = false;
+            }
+
+            return flag;
+        }
+
+        function getStringDate(date) {
+            const offset = date.getTimezoneOffset()
+            date = new Date(date.getTime() - (offset * 60 * 1000))
+            var stringDate = date.toISOString().split('T')[0];
+
+            return stringDate;
+        }
+
+        function checkConsult() {
+            var selectedDate = $('[custom-data-calendar]').datepicker('getDate');
+            var stringDate = getStringDate(selectedDate);
+            var schedules = [];
+
+            // 判斷每日至多可預約2個時段
+            // TODO 抓取正確的客戶ID
+            schedules = consultSchedules.filter(c => c.ScheduleDateString == stringDate && c.CustomerID == "AAAA");
+
+            if (schedules.length > 1) {
+                // 提示訊息
+                $.magnificPopup.open({
+                    items: {
+                        src: '#popupRemind'
+                    }
+                }, 0);
+
+                //顯示錯誤訊息
+                $('#l-form-date').addClass('is-error');
+
+                return;
+            }
+
+            // 確認當日排程顯示可預約時段
+            $('[data-time]').each(function (i, el) {
+                var val = DOMPurify.sanitize($(el).val());
+
+                // 排除理顧已預約時間
+                var startTimes = reserveds.filter(c => c.Date == stringDate).map(c => c.StartTime);
+                if (startTimes.includes(val)) {
+                    return;
+                }
+
+                // 排除分機已滿時間
+                schedules = consultSchedules.filter(c => c.ScheduleDateString == stringDate && c.StartTime == val);
+
+                if (schedules.length > 4) {
+                    return;
+                }
+
+                $(el).attr('disabled', false);
+            });
+
+            //隱藏錯誤訊息
+            $('#l-form-date').removeClass('is-error');
+        }
+
+        //為了不讓 plugins.min.js 統一 datepickerExtend
+        //所以自己取名 custom-data-calendar
+        var options = {
+            autoclose: true,
+            language: 'zh-TW',
+            format: 'yyyy/mm/dd',
+            todayHighlight: false,
+            startDate: '@Model.Start',
+            endDate: '@Model.End',
+            beforeShowDay: function (date) {
+                var stringDate = getStringDate(date);
+                return holidayDates.indexOf(stringDate) == -1;
+            }
+        };
+
+        $('[custom-data-calendar]').datepicker(options)
+            .on('changeDate', function (ev) {
+                //disabled全部時段
+                $('[data-time]').attr('disabled', true);
+                //取消選擇全部時段
+                $('[data-time]').prop('checked', false);
+                //顯示沒選擇時段錯誤訊息
+                $('#l-form-time').addClass('is-error');
+
+                checkConsult();
+
+                if ($('[custom-data-calendar]').val()) {
+                    bindText();
+                }
+            });;
+
+        //然後再把 data-calendar 這個 attr 加上
+        $('[custom-data-calendar]').attr('data-calendar', true);
+
+        $('[data-time]').on('click', function (i, el) {
+            $('#btn-check').attr("href", "#");
+
+            if ($('[data-time]:checked').val()) {
+                //隱藏沒選擇時段錯誤訊息
+                $('#l-form-time').removeClass('is-error');
+                bindText();
+                $('#btn-check').attr("href", "#popupConfirm");
+            }
+        });
+
+        $('[data-next]').on('click', function (e) {
+            e.preventDefault();
+
+            if (verify()) {
+                $('#step01').hide();
+                $('#step02').show();
+            }
+        });
+
+        $('[data-edit]').on('click', function (e) {
+            e.preventDefault();
+        });
+
+        $('#input-customername').change(function () {
+            $('#l-form-customername').addClass('is-error');
+            bindText();
+            if (currentConsultSchedule.CustomerName) {
+                $('#l-form-customername').removeClass('is-error');
+            }
+        });
+
+        $('#input-customerid').change(function () {
+            $('#l-form-customerid').addClass('is-error');
+            bindText();
+            if (currentConsultSchedule.CustomerID) {
+                $('#l-form-customerid').removeClass('is-error');
+            }
+        });
+
+        $('#input-tel').change(function () {
+            $('#l-form-phone').addClass('is-error');
+            bindText();
+            if (currentConsultSchedule.Phone) {
+                $('#l-form-phone').removeClass('is-error');
+            }
+        });
+
+        $('#input-email').change(function () {
+            $('#l-form-mail').addClass('is-error');
+            bindText();
+            if (currentConsultSchedule.Mail) {
+                $('#l-form-mail').removeClass('is-error');
+            }
+        });
+
+        $('[data-subject]').on('click', function (e) {
+            $('#l-form-subject').addClass('is-error');
+            bindText();
+            if (currentConsultSchedule.Subject) {
+                $('#l-form-subject').removeClass('is-error');
+            }
+        });
+
+        $('#description').change(function () {
+            bindText();
+        });
+
+        $('#picheck').on('click', function (e) {
+            bindText();
+        });
+
+        $('[data-send]').on('click', function (e) {
+            e.preventDefault();
+            window.loading('show');
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "Consult", "CreateConsultSchedule")',
+                type: 'POST',
+                data: currentConsultSchedule
+            }).done(function (data, textStatus, jqXHR) {
+                debugger;
+                $.magnificPopup.close();
+                if (data) {
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#popupSuccess'
+                        },
+                        closeOnBgClick: false,
+                        callbacks: {
+                            afterClose: function () {
+                                window.location.href = '@Model.ReturnLink';
+                            }
+                        }
+                    });
+                }
+                else {
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#popupFail'
+                        },
+                        closeOnBgClick: false,
+                        callbacks: {
+                            afterClose: function () {
+                                $('#step01').show();
+                                $('#step02').hide();
+                            }
+                        }
+                    });
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function () {
+                window.loading('hide');
+            });
+        });
+
+    });
+</script>
