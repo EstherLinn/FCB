@@ -1,101 +1,46 @@
 ﻿using Sitecore.Data.Items;
 using Sitecore.Data;
-using System;
 using Sitecore.Resources.Media;
+using Sitecore.Data.Fields;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 
 namespace Feature.Wealth.Component.Models.News
 {
     public class HeadlineModel
     {
-        public Item Item { get; set; }
+        public Item Datasource { get; set; }
         public string MainTitle { get; set; }
         public string Image { get; set; }
         public string Title1 { get; set; }
-        public string DateTime1 { get; set; }
+        public string DateTime1 => ((DateField)this.Datasource?.Fields[Template.HeadlineDetail.Fields.DateTime1])?.GetLocalDateFieldValue()?.ToString("yyyy/MM/dd HH:mm");
         public string Link1 { get; set; }
         public string Title2 { get; set; }
-        public string DateTime2 { get; set; }
+        public string DateTime2 => ((DateField)this.Datasource?.Fields[Template.HeadlineDetail.Fields.DateTime2])?.GetLocalDateFieldValue()?.ToString("yyyy/MM/dd HH:mm");
         public string Link2 { get; set; }
         public string Title3 { get; set; }
-        public string DateTime3 { get; set; }
+        public string DateTime3 => ((DateField)this.Datasource?.Fields[Template.HeadlineDetail.Fields.DateTime3])?.GetLocalDateFieldValue()?.ToString("yyyy/MM/dd HH:mm");
         public string Link3 { get; set; }
         public string Title4 { get; set; }
-        public string DateTime4 { get; set; }
+        public string DateTime4 => ((DateField)this.Datasource?.Fields[Template.HeadlineDetail.Fields.DateTime4])?.GetLocalDateFieldValue()?.ToString("yyyy/MM/dd HH:mm");
         public string Link4 { get; set; }
         public string Title5 { get; set; }
-        public string DateTime5 { get; set; }
+        public string DateTime5 => ((DateField)this.Datasource?.Fields[Template.HeadlineDetail.Fields.DateTime5])?.GetLocalDateFieldValue()?.ToString("yyyy/MM/dd HH:mm");
         public string Link5 { get; set; }
 
         public HeadlineModel(Item item)
         {
-            this.Item = item;
-
-            var field1 = item.Fields[Template.HeadlineDetail.Fields.DateTime1];
-            string dateTime1Value = field1.HasValue ? field1.Value : string.Empty;
-            if (!string.IsNullOrEmpty(dateTime1Value))
+            if (item == null || item.TemplateID != Template.HeadlineDetail.Id)
             {
-                var dateTime1UTC = DateTime.ParseExact(dateTime1Value, "yyyyMMddTHHmmssZ", null);
-                this.DateTime1 = dateTime1UTC.ToString("yyyy/MM/dd HH:mm");
+                return;
             }
-            else
-            {
-                this.DateTime1 = string.Empty;
-            }
-
-            var field2 = item.Fields[Template.HeadlineDetail.Fields.DateTime2];
-            string dateTime2Value = field2.HasValue ? field2.Value : string.Empty;
-            if (!string.IsNullOrEmpty(dateTime2Value))
-            {
-                var dateTime2UTC = DateTime.ParseExact(dateTime2Value, "yyyyMMddTHHmmssZ", null);
-                this.DateTime2 = dateTime2UTC.ToString("yyyy/MM/dd HH:mm");
-            }
-            else
-            {
-                this.DateTime2 = string.Empty;
-            }
-
-            var field3 = item.Fields[Template.HeadlineDetail.Fields.DateTime3];
-            string dateTime3Value = field3.HasValue ? field3.Value : string.Empty;
-            if (!string.IsNullOrEmpty(dateTime3Value))
-            {
-                var dateTime3UTC = DateTime.ParseExact(dateTime3Value, "yyyyMMddTHHmmssZ", null);
-                this.DateTime3 = dateTime3UTC.ToString("yyyy/MM/dd HH:mm");
-            }
-            else
-            {
-                this.DateTime3 = string.Empty;
-            }
-
-            var field4 = item.Fields[Template.HeadlineDetail.Fields.DateTime4];
-            string dateTime4Value = field4.HasValue ? field4.Value : string.Empty;
-            if (!string.IsNullOrEmpty(dateTime4Value))
-            {
-                var dateTime4UTC = DateTime.ParseExact(dateTime4Value, "yyyyMMddTHHmmssZ", null);
-                this.DateTime4 = dateTime4UTC.ToString("yyyy/MM/dd HH:mm");
-            }
-            else
-            {
-                this.DateTime4 = string.Empty;
-            }
-
-            var field5 = item.Fields[Template.HeadlineDetail.Fields.DateTime5];
-            string dateTime5Value = field5.HasValue ? field5.Value : string.Empty;
-            if (!string.IsNullOrEmpty(dateTime5Value))
-            {
-                var dateTime5UTC = DateTime.ParseExact(dateTime5Value, "yyyyMMddTHHmmssZ", null);
-                this.DateTime5 = dateTime5UTC.ToString("yyyy/MM/dd HH:mm");
-            }
-            else
-            {
-                this.DateTime5 = string.Empty;
-            }
+            this.Datasource = item;
 
             var imageField = item.Fields[Template.HeadlineDetail.Fields.Image];
 
             if (imageField != null && imageField.HasValue)
             {
-                var imageItem = ((Sitecore.Data.Fields.ImageField)imageField).MediaItem;
+                var imageItem = ((ImageField)imageField).MediaItem;
                 if (imageItem != null)
                 {
                     this.Image = MediaManager.GetMediaUrl(imageItem);
