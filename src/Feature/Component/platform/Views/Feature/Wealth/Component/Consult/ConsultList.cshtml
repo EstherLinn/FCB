@@ -1,0 +1,829 @@
+﻿@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.Consult
+@model ConsultListModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="c-section">
+    <div class="c-section__content">
+        <div class="c-tab c-tab--icon" data-tab="true" data-docking="false">
+            <div class="c-tab__header">
+                <div class="c-tab__title">
+                    <b class="t2">我的預約</b>
+                </div>
+                <ul class="c-tab__navs">
+                    <!-- .is-active: 作用中的項目 -->
+                    <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                    <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                    <li>
+                        <a href="#" class="c-tab__item is-active" target="_self" title="列表" data-tab-target="tab-icon-1">
+                            <img src="~/themes/images/icons/tab/list.svg" alt="">
+                            <img src="~/themes/images/icons/tab/list-active.svg" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="c-tab__item " target="_self" title="行事曆" data-tab-target="tab-icon-2">
+                            <img src="~/themes/images/icons/tab/calendar.svg" alt="">
+                            <img src="~/themes/images/icons/tab/calendar-active.svg" alt="">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- is-active: 作用中的項目 -->
+            <div class="c-tab__panel is-active" data-tab-panel-id="tab-icon-1">
+                <div class="c-tab c-tab--capsule" data-tab="true" data-docking="false">
+                    <div class="c-tab__header">
+                        <ul class="c-tab__navs">
+                            <li>
+                                <a href="#" class="c-tab__item is-active" target="_self" title="預約成功" data-tab-target="tab-status-1">預約成功</a>
+                            </li>
+                            <li>
+                                <a href="#" class="c-tab__item" target="_self" title="預約確認中" data-tab-target="tab-status-2">預約確認中</a>
+                            </li>
+                            <li>
+                                <a href="#" class="c-tab__item" target="_self" title="歷史紀錄" data-tab-target="tab-status-3">歷史紀錄</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- is-active: 作用中的項目 -->
+                    <div class="c-tab__panel is-active" data-tab-panel-id="tab-status-1">
+                        <div class="l-table">
+                            <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
+                                <colgroup>
+                                    <col style="width: 1%;">
+                                    <col style="width: 2%;">
+                                    <col style="width: 3%;">
+                                    <col style="width: 3%;">
+                                    <col style="width: 2%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                </colgroup>
+                                <thead>
+                                    <tr class="u-nowrap">
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>即將到來</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約日期</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約時段</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>電子信箱</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約明細</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>取消預約</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>開始諮詢</span>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody1">
+                                </tbody>
+                            </table>
+                            <div class="l-pagination">
+                                <div class="l-pagination__size" id="uid-perPage-1">
+                                </div>
+                                <div class="l-pagination__switch" id="uid-pagination-1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="c-tab__panel" data-tab-panel-id="tab-status-2">
+                        <div class="l-table">
+                            <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
+                                <colgroup>
+                                    <col style="width: 2%;">
+                                    <col style="width: 2%;">
+                                    <col style="width: 3%;">
+                                    <col style="width: 2%;">
+                                    <col style="width: 1%;">
+                                </colgroup>
+                                <thead>
+                                    <tr class="u-nowrap">
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約日期</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約時段</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>電子信箱</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約明細</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>取消預約</span>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody0">
+                                </tbody>
+                            </table>
+                            <div class="l-pagination">
+                                <div class="l-pagination__size" id="uid-perPage-0">
+                                </div>
+                                <div class="l-pagination__switch" id="uid-pagination-0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="c-tab__panel" data-tab-panel-id="tab-status-3">
+                        <div class="l-table">
+                            <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
+                                <colgroup>
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 2%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                </colgroup>
+                                <thead>
+                                    <tr class="u-nowrap">
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約日期</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約時段</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>電子信箱</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約狀態</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約明細</span>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody2">
+                                </tbody>
+                            </table>
+                            <div class="l-pagination">
+                                <div class="l-pagination__size" id="uid-perPage-2">
+                                </div>
+                                <div class="l-pagination__switch" id="uid-pagination-2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="c-tab__panel" data-tab-panel-id="tab-icon-2">
+                <div class="c-schedule">
+                    <div class="c-schedule__main" data-schedule></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="c-section">
+    <div class="c-section__content">
+        <div class="c-feature c-feature--join c-feature--personalize">
+            <div class="c-feature__content u-center">
+                <h3 class="c-feature__title">遠距諮詢 解決您的理財大小事</h3>
+                <p class="c-feature__desc">貴賓專屬服務，不必再舟車勞頓到分行找您的理顧了，線上立即預約，視訊諮詢！如有任何問題請洽分行理專</p>
+                <div class="c-feature__actions">
+                    <a href="@Model.ConsultLink" class="o-btn o-btn--primary o-btn--flat o-btn--sm">立即預約</a>
+                </div>
+            </div>
+            <div class="c-feature__plate">
+                <img src="~/themes/images/features/rsp.png" alt="遠距諮詢 解決您的理財大小事" class="c-feature__img">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="c-section">
+    <div class="c-section__title u-left">常見問題</div>
+    <div class="c-section__content">
+        <div class="l-flex u-flex-col u-flex-gap-sm">
+
+            @foreach (var item in Model.QandAList)
+            {
+                <div class="l-flex__item">
+                    <div class="c-collapse" data-collapse="true">
+                        <div class="c-collapse__head" data-collapse-button="true">
+                            <span>@item.Question</span>
+                        </div>
+                        <div class="c-collapse__content" data-collapse-content="true">
+                            <div class="c-collapse__inner">
+                                @item.Answer
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<div class="c-section">
+    <div class="c-section__content">
+        <div class="c-collapse c-collapse--warning" data-collapse="true">
+            <div class="c-collapse__head" data-collapse-button="true">
+                <span>注意事項</span>
+            </div>
+            <div class="c-collapse__content" data-collapse-content="true">
+                <div class="c-collapse__inner">
+                    <div class="l-list l-list--xs">
+                        @Model.Notice
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script id="template0" type="text/html">
+    <tr class="c-cardTable__item u-center@dt-only">
+        <td class="c-cardTable__space"></td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">預約日期</div>
+            <div class="c-cardTable__content"><%= ScheduleDate %></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">預約時段</div>
+            <div class="c-cardTable__content"><%= StartTime %>~<%= EndTime %></div>
+        </td>
+        <td class="c-cardTable__body">
+            <div class="c-cardTable__title" data-length="5">電子信箱</div>
+            <div class="c-cardTable__content"><%= Mail %></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">預約明細</div>
+            <div class="c-cardTable__content">
+                <a href="#popupDetail" class="o-link" data-popup="true">查看</a>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        <td class="c-cardTable__footer" data-card-table-width="1/1">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <a href="#popupCancel" class="o-statusBtn o-statusBtn--cancel" data-after-lt="取消預約" data-msg="取消預約" data-ia="true" data-ia-toast="false" data-popup="true"></a>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</script>
+
+<script id="template1" type="text/html">
+    <tr class="c-cardTable__item u-center@dt-only">
+        <td class="c-cardTable__space"></td>
+        <% if (Comming) { %>
+            <td class="c-cardTable__body" data-card-table-width="1/1">
+                <div class="c-cardTable__content">
+                    <div class="o-iconText o-iconText--attention t-focus" data-after-lt="即將到來"></div>
+                </div>
+            </td>
+        <% } else { %>
+            <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
+                <div class="c-cardTable__content">
+                    <div class="o-iconText o-iconText--attention t-focus u-invisible" data-after-lt="即將到來"></div>
+                </div>
+            </td>
+        <% } %>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">預約日期</div>
+            <div class="c-cardTable__content"><%= ScheduleDate %></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">預約時段</div>
+            <div class="c-cardTable__content"><%= StartTime %>~<%= EndTime %></div>
+        </td>
+        <td class="c-cardTable__body">
+            <div class="c-cardTable__title" data-length="5">電子信箱</div>
+            <div class="c-cardTable__content"><%= Mail %></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">預約明細</div>
+            <div class="c-cardTable__content">
+                <a href="#popupDetail" class="o-link" data-popup="true">查看</a>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <a href="#popupCancel" class="o-statusBtn o-statusBtn--cancel" data-after-lt="取消預約" data-msg="取消預約" data-ia="true" data-ia-toast="false" data-popup="true"></a>
+                    </li>
+                </ul>
+            </div>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+                <% if (Start) { %>
+                    <a href="(@Model.ConsultScheduleLink)?id=<%= ScheduleID %>" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult">開始諮詢</a>
+                <% } else { %>
+                    <a href="" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult is-disabled">等待中</a>
+                <% } %>
+            </div>
+        </td>
+    </tr>
+</script>
+
+<script id="template2" type="text/html">
+    <tr class="c-cardTable__item u-center@dt-only">
+        <td class="c-cardTable__space"></td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">預約日期</div>
+            <div class="c-cardTable__content"><%= ScheduleDate %></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">預約時段</div>
+            <div class="c-cardTable__content"><%= StartTime %>~<%= EndTime %></div>
+        </td>
+        <td class="c-cardTable__body">
+            <div class="c-cardTable__title" data-length="5">電子信箱</div>
+            <div class="c-cardTable__content"><%= Mail %></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">預約狀態</div>
+            <% if (StatusCode == '2') { %>
+                <div class="c-cardTable__content">預約成功</div>
+            <% } else { %>
+                <div class="c-cardTable__content">預約取消</div>
+            <% } %>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__title" data-length="5">預約明細</div>
+            <div class="c-cardTable__content">
+                <a href="#popupDetail" class="o-link" data-popup="true">查看</a>
+            </div>
+        </td>
+    </tr>
+</script>
+
+<script id="uid-template-perPage" type="text/html">
+    <span>每頁顯示</span>
+    <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+    <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+        <% for(var i = 0; i < values.length - 1; i++ ) { %>
+        <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+        <% } %>
+        <option value="<%= values[values.length - 1] %>">全部</option>
+    </select>
+</script>
+
+<script id="uid-template-pagination" type="text/html">
+    <div class="o-pagination">
+        <% if (currentPage > 1) { %>
+        <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+        <% } else { %>
+        <!-- .is-disabled: 停用狀態，無法點擊 -->
+        <a href="#" class="o-pagination__prev is-disabled"></a>
+        <% } %>
+        <span class="o-pagination__pager">
+            <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+            <span class="o-pagination__total"><%= totalPages %></span>
+        </span>
+        <% if (currentPage < totalPages ) { %>
+        <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+        <% } else { %>
+        <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+        <% } %>
+    </div>
+</script>
+
+<!-- 行事曆事件模板 start -->
+<script id="apptemplate" type="text/x-template">
+        <div>${Status}</div>
+    <div>${ej2TimeFormat(StartTime)}</div>
+</script>
+<!-- 行事曆事件模板 end -->
+<!-- 點擊行事曆事件跳出quick模板 start -->
+<script id="header-template" type="text/x-template">
+        <div class="e-popup-header-tmpl" style="background-color: ${PopupColor};">
+        <span>預約明細</span>
+        <a href="#" data-quick-close>
+            <img src="./../themes/images/icons/white/x-lg.svg" alt="">
+        </a>
+    </div>
+</script>
+<script id="content-template" type="text/x-template">
+        <div class="l-info">
+        <div class="l-info__item">
+            <div class="l-info__title">預約狀態</div>
+            <div class="l-info__val">${Status}</div>
+        </div>
+        <div class="l-info__item">
+            <div class="l-info__title">預約日期</div>
+            <div class="l-info__val">${moment(StartTime).format('YYYY/MM/DD (dd)')}</div>
+        </div>
+        <div class="l-info__item">
+            <div class="l-info__title">預約時段</div>
+            <div class="l-info__val">${moment(StartTime).format('AHH:mm')}~${moment(EndTime).format('HH:mm')}</div>
+        </div>
+        <div class="l-info__item">
+            <div class="l-info__title">聯絡電話</div>
+            <div class="l-info__val">${Phone}</div>
+        </div>
+        <div class="l-info__item">
+            <div class="l-info__title">電子信箱</div>
+            <div class="l-info__val">${Email}</div>
+        </div>
+        <div class="l-info__item">
+            <div class="l-info__title">諮詢主題</div>
+            <div class="l-info__val">${Topic}</div>
+        </div>
+        <div class="l-info__item">
+            <div class="l-info__title">其他諮詢內容</div>
+            <div class="l-info__val">${Other}</div>
+        </div>
+    </div>
+</script>
+<script id="footer-template" type="text/x-template">
+        <div class="l-action l-action--inline" data-footer-tmpl="success">
+        <div class="l-action__item">
+            <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-quick-close data-cancel>取消預約</a>
+        </div>
+        <div class="l-action__item">
+            <a href="#" class="o-btn o-btn--primary o-btn--sm is-disabled" data-start-btn>等待中</a>
+        </div>
+    </div>
+    <div class="l-action l-action--inline" data-footer-tmpl="reserving">
+        <div class="l-action__item">
+            <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-quick-close data-cancel>取消預約</a>
+        </div>
+    </div>
+</script>
+<!-- 點擊行事曆事件跳出quick模板 end -->
+
+<script>
+    const consultSchedules = @Model.ConsultSchedulesHtmlString;
+    const consultScheduleForCalendars = @Model.ConsultScheduleForCalendarsHtmlString;
+
+    $(function () {
+
+        var data0 = consultSchedules.filter(c => c.StatusCode == '0');
+        var data1 = consultSchedules.filter(c => c.StatusCode == '1');
+        var data2 = consultSchedules.filter(c => c.StatusCode == '2' || c.StatusCode == '3');
+
+        var fjs0 = FilterJS(data0, '#tbody0', {
+            template: '#template0',
+            callbacks: {
+                afterFilter: function (result) {
+                    window.loading('hide');
+                }
+            },
+            search: {},
+            order: {
+                default_sort: 'asc',
+                sorts: [],
+                onSortEvent: function (f, e) { },
+            },
+            pagination: {
+                //headerView: '#uid-filter-header',
+                container: '#uid-pagination-0',
+                paginationView: '#uid-template-pagination',
+                visiblePages: 5,
+                perPage: {
+                    values: [10, 50, 100, data0.length],
+                    container: '#uid-perPage-0',
+                    perPageView: '#uid-template-perPage'
+                },
+                onPagination: function () {
+                }
+            }
+        });
+
+        var fjs1 = FilterJS(data1, '#tbody1', {
+            template: '#template1',
+            callbacks: {
+                afterFilter: function (result) {
+                    window.loading('hide');
+                }
+            },
+            search: {},
+            order: {
+                default_sort: 'asc',
+                sorts: [],
+                onSortEvent: function (f, e) { },
+            },
+            pagination: {
+                //headerView: '#uid-filter-header',
+                container: '#uid-pagination-1',
+                paginationView: '#uid-template-pagination',
+                visiblePages: 5,
+                perPage: {
+                    values: [10, 50, 100, data1.length],
+                    container: '#uid-perPage-1',
+                    perPageView: '#uid-template-perPage'
+                },
+                onPagination: function () {
+                }
+            }
+        });
+
+        var fjs2 = FilterJS(data2, '#tbody2', {
+            template: '#template2',
+            callbacks: {
+                afterFilter: function (result) {
+                    window.loading('hide');
+                }
+            },
+            search: {},
+            order: {
+                default_sort: 'asc',
+                sorts: [],
+                onSortEvent: function (f, e) { },
+            },
+            pagination: {
+                //headerView: '#uid-filter-header',
+                container: '#uid-pagination-2',
+                paginationView: '#uid-template-pagination',
+                visiblePages: 5,
+                perPage: {
+                    values: [10, 50, 100, data2.length],
+                    container: '#uid-perPage-2',
+                    perPageView: '#uid-template-perPage'
+                },
+                onPagination: function () {
+                }
+            }
+        });
+
+        moment.locale('zh-tw', {
+            weekdaysMin: '日_一_二_三_四_五_六'.split('_'),
+            meridiemParse: /凌晨|早上|上午|中午|下午|晚上/,
+            meridiemHour: function (h, meridiem) {
+                let hour = h;
+                if (hour === 12) {
+                    hour = 0;
+                }
+                if (meridiem === '凌晨' || meridiem === '早上' || meridiem === '上午') {
+                    return hour;
+                } else if (meridiem === '下午' || meridiem === '晚上') {
+                    return hour + 12;
+                } else {
+                    // '中午'
+                    return hour >= 11 ? hour : hour + 12;
+                }
+            },
+            meridiem: function (hour, minute, isLower) {
+                const hm = hour * 100 + minute;
+                if (hm < 600) {
+                    return '凌晨';
+                } else if (hm < 900) {
+                    return '早上';
+                } else if (hm < 1130) {
+                    return '上午';
+                } else if (hm < 1230) {
+                    return '中午';
+                } else if (hm < 1800) {
+                    return '下午';
+                } else {
+                    return '晚上';
+                }
+            }
+        });
+
+        ej.base.registerLicense('ORg4AjUWIQA/Gnt2UVhhQlVFfVtdXGdWfFN0QXNbdV9wfldDcC0sT3RfQFljSn9WdkZjXH1ec3RQRA==');
+
+        // 語系
+        loadCultureFiles();
+        ej.base.L10n.load({
+            'zh-Hant-MO': {
+                calendar: {
+                    today: '今日'
+                }
+            }
+        });
+
+        createSchedule(consultScheduleForCalendars);
+
+        // 建立行事曆
+        let schedule;
+
+        function createSchedule(data) {
+            schedule = new ej.schedule.Schedule({
+                width: '100%',
+                height: 'auto',
+                // 語系
+                locale: 'zh-Hant-MO',
+                // 顯示工具列選項
+                toolbarItems: [{
+                    name: 'Previous',
+                    align: 'Center'
+                }, {
+                    id: 'calendar',
+                    name: 'DateRangeText',
+                    align: 'Center'
+                }, {
+                    name: 'Next',
+                    align: 'Center'
+                }],
+                // 顯示行事曆模式
+                views: ['MonthAgenda', 'Month'],
+                currentView: window.innerWidth < 1200 ? 'MonthAgenda' : 'Month',
+                // 預設日期
+                selectedDate: new Date(),
+                // 行事曆事件資料, 模板
+                eventSettings: {
+                    dataSource: data.data,
+                    template: '#apptemplate'
+                },
+                quickInfoTemplates: {
+                    header: '#header-template',
+                    content: '#content-template',
+                    footer: '#footer-template'
+                },
+                // 只能讀取，新增/編輯/刪除事件禁止
+                readonly: true,
+                // 日期1-31 format
+                cellHeaderTemplate: '${ej2CellHeaderDate(data.date)}',
+                // 行事曆事件顏色
+                eventRendered: args => {
+                    return applyCategoryColor(args, schedule.currentView);
+                },
+                // 點擊還有X筆，彈出更多事件popup並format日期
+                popupOpen: args => {
+                    if (args.type === 'EventContainer') {
+                        const date = instance.formatDate(args.data.date, {
+                            skeleton: 'Md'
+                        });
+                        const month = date.split('/')[0];
+                        const day = date.split('/')[1];
+                        $('.e-more-event-date-header').find('.e-header-day').text(month + '月' + day + '日');
+                    }
+
+                    // 依據狀態顯示不同按鈕
+                    if (args.type === 'ViewEventInfo' || args.type === 'QuickInfo') {
+                        switch (args.data.Type) {
+                            case 'history':
+                                $(args.element).find('.e-popup-footer').remove();
+                                break;
+                            case 'success':
+                                $(args.element).find('[data-footer-tmpl="reserving"]').remove();
+                                // 只在預約時段時顯示「開始諮詢」，尚未到來皆顯示「等待中」
+                                if (args.data.Release) {
+                                    $(args.element).find('[data-start-btn]').removeClass('is-disabled').text('開始諮詢');
+                                }
+                                break;
+                            case 'reserving':
+                                $(args.element).find('[data-footer-tmpl="success"]').remove();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    if (args.type === 'ViewEventInfo') {
+                        $('body').css('overflow', 'hidden');
+                    }
+                },
+                popupClose: () => {
+                    $('body').css('overflow', 'initial');
+                },
+                // 初始化資料綁定時，+1 more文字更改成還有x筆文字
+                dataBinding: () => {
+                    moreReText();
+                },
+                // 切換日期, 月份時，+1 more文字更改成還有x筆文字
+                navigating: date => {
+                    formatTitleDate(date.currentDate);
+                    moreReText();
+                }
+            });
+            schedule.appendTo('[data-schedule]');
+
+            // init set
+            formatTitleDate(new Date());
+            $('.e-quick-popup-wrapper').on('click', function (e) {
+                if ($(e.target).closest('.e-event-popup').length !== 0 && $(e.target).closest('[data-quick-close]').length === 0) {
+                    return;
+                }
+                e.preventDefault();
+                schedule.quickPopup.quickPopupHide();
+            });
+        };
+
+        // 因html模板format需要，把format方法掛載在window物件底下
+        let instance = new ej.base.Internationalization();
+        window.ej2CellHeaderDate = date => {
+            return instance.formatDate(date, {
+                skeleton: 'd'
+            });
+        };
+        window.ej2TimeFormat = date => {
+            return instance.formatDate(date, {
+                skeleton: 'Hm'
+            });
+        };
+        window.ej2DateFormat = date => {
+            return instance.formatDate(date, {
+                skeleton: 'Hm'
+            });
+        };
+
+        // 載入語系設定
+        function loadCultureFiles() {
+            var files = ['ca-generic.json', 'ca-gregorian.json', 'dateFields.json', 'numbers.json', 'time-zone-names.json'];
+            var loader = ej.base.loadCldr;
+            var loadCulture = function (prop) {
+                var val, ajax;
+                ajax = new ej.base.Ajax('../themes/vendor/ej2/lang/' + files[prop], 'GET', false);
+                ajax.onSuccess = function (value) {
+                    val = value;
+                };
+                ajax.send();
+                loader(JSON.parse(val));
+            };
+            for (var prop = 0; prop < files.length; prop++) {
+                loadCulture(prop);
+            }
+        }
+
+        // 行事曆事件顏色
+        function applyCategoryColor(args, currentView) {
+            let categoryColor = args.data.CategoryColor;
+            if (!args.element || !categoryColor) {
+                return;
+            }
+            if (currentView === 'Agenda') {
+                args.element.firstChild.style.borderLeftColor = categoryColor;
+            } else {
+                args.element.style.backgroundColor = categoryColor;
+            }
+        }
+
+        // 文字"+1 more"改成"還有x筆"
+        function moreReText() {
+            setTimeout(() => {
+                $('.e-more-indicator').each(function () {
+                    $(this).text('還有' + $(this).data('count') + '筆');
+                });
+            });
+        }
+
+        // 月曆選擇器format
+        function formatTitleDate(date) {
+            const nowDate = instance.formatDate(date, {
+                skeleton: 'yM'
+            });
+            const month = nowDate.split('/')[0];
+            const year = nowDate.split('/')[1];
+            setTimeout(() => {
+                $('.e-tbar-btn-text').text(year + '年' + month + '月');
+            });
+        }
+
+        // resize事件
+        $(window).on('resize.schedule', () => {
+            // 大網->Month，小網->MonthAgenda
+            if (window.innerWidth < 1200) {
+                schedule.currentView = 'MonthAgenda';
+            } else {
+                schedule.currentView = 'Month';
+            }
+            moreReText();
+        });
+    });
+</script>

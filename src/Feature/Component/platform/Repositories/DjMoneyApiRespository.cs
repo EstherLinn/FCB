@@ -339,6 +339,7 @@ namespace Feature.Wealth.Component.Repositories
             var request = _route.
             AppendPathSegments("api", "News", "kmdjnews", "type", id, 5).
             WithOAuthBearerToken(_token).
+            AllowAnyHttpStatus().
             GetAsync().
             ReceiveString().Result;
 
