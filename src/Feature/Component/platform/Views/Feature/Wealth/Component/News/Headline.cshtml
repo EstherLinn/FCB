@@ -1,0 +1,131 @@
+﻿@using Feature.Wealth.Component.Models.News
+@using Sitecore.Data.Fields
+@using Sitecore.Data.Items
+@using System
+@using Sitecore.Resources.Media
+@model HeadlineModel
+@if (Model == null)
+{
+    return;
+}
+@{
+    var model = new HeadlineModel(Model.Item);
+}
+    <div class="c-section">
+    <div class="l-wrap">
+        <div class="c-section__title">@Html.Sitecore().Field(Template.HeadlineDetail.Fields.MainTitle.ToString())</div>
+        <div class="c-section__content">
+            <div class="l-headlines">
+                <div class="l-headlines__focus">
+                    <div class="c-box c-box--gapless u-shadow-animation">
+                        <div class="c-gridview">
+                            <div class="c-gridview__media">
+                                <img src="@Model.Image" class="c-gridview__img" alt="">
+                            </div>
+                            <div class="c-gridview__content">
+                                @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link1.ToString(), Model.Item, new { haschildren = true, @class = "c-gridview__title s3 u-ellipsis-2" })
+                                @Html.Sitecore().Field(Template.HeadlineDetail.Fields.Title1.ToString())
+                                @Html.Sitecore().EndField()
+                                <div class="c-gridview__minor">
+                                    <div class="c-minorInfo s4">
+                                        <div class="c-minorInfo__main">  
+                                            <span class="t-date11">@Model.DateTime1</span>
+                                            @* <span class="o-views o-views--xs">888,888,888</span> *@
+                                        </div>
+                                        @* <div class="c-minorInfo__like">
+                                            <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                        </div> *@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-headlines__list">
+                    <ul class="c-listGroup c-listGroup--article">
+                        <li class="c-listGroup__item">
+                            <div class="c-gridview">
+                                <div class="c-gridview__content">
+                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link2.ToString(), Model.Item, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
+                                    @Html.Sitecore().Field(Template.HeadlineDetail.Fields.Title2.ToString())
+                                    @Html.Sitecore().EndField()
+                                    <div class="c-gridview__minor">
+                                        <div class="c-minorInfo s4">
+                                            <div class="c-minorInfo__main">
+                                                <span class="t-date">@Model.DateTime2</span>
+                                                @* <span class="o-views o-views--xs">888,888,888</span> *@
+                                            </div>
+                                            @* <div class="c-minorInfo__like">
+                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like is-active" data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                            </div> *@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="c-listGroup__item">
+                            <div class="c-gridview">
+                                <div class="c-gridview__content">
+                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link3.ToString(), Model.Item, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
+                                    @Html.Sitecore().Field(Template.HeadlineDetail.Fields.Title3.ToString())
+                                    @Html.Sitecore().EndField()
+                                    <div class="c-gridview__minor">
+                                        <div class="c-minorInfo s4">
+                                            <div class="c-minorInfo__main">
+                                                <span class="t-date">@Model.DateTime3</span>
+                                                @* <span class="o-views o-views--xs">8,888,888,888</span> *@
+                                            </div>
+                                            @* <div class="c-minorInfo__like">
+                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like " data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                            </div> *@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="c-listGroup__item">
+                            <div class="c-gridview">
+                                <div class="c-gridview__content">
+                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link4.ToString(), Model.Item, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
+                                    @Html.Sitecore().Field(Template.HeadlineDetail.Fields.Title4.ToString())
+                                    @Html.Sitecore().EndField()
+                                    <div class="c-gridview__minor">
+                                        <div class="c-minorInfo s4">
+                                            <div class="c-minorInfo__main">
+                                                <span class="t-date">@Model.DateTime4</span>
+                                                @* <span class="o-views o-views--xs">2,082</span> *@
+                                            </div>
+                                            @* <div class="c-minorInfo__like">
+                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like " data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                            </div> *@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="c-listGroup__item">
+                            <div class="c-gridview">
+                                <div class="c-gridview__content">
+                                    @Html.Sitecore().BeginField(Template.HeadlineDetail.Fields.Link5.ToString(), Model.Item, new { haschildren = true, @class = "c-gridview__title t4 u-ellipsis-1 u-ellipsis-2@mb-only" })
+                                    @Html.Sitecore().Field(Template.HeadlineDetail.Fields.Title5.ToString())
+                                    @Html.Sitecore().EndField()
+                                    <div class="c-gridview__minor">
+                                        <div class="c-minorInfo s4">
+                                            <div class="c-minorInfo__main">
+                                                <span class="t-date">@Model.DateTime5</span>
+                                                @* <span class="o-views o-views--xs">2,082</span> *@
+                                            </div>
+                                            @* <div class="c-minorInfo__like">
+                                                <a href="#" class="o-statusBtn o-statusBtn--sm o-statusBtn--like " data-after="收藏" data-msg="加入收藏|取消收藏" data-ia="true" data-ia-tooltip="false"></a>
+                                            </div> *@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
