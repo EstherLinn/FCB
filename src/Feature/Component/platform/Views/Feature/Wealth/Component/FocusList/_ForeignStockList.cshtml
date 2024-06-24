@@ -34,8 +34,8 @@
                 <option value="收盤價低至高" data-sorting-column="ClosingPrice" data-sorting-class="is-asc">收盤價低至高</option>
                 <option value="漲跌幅高至低" data-sorting-column="ChangePercentage" data-sorting-class="is-desc">漲跌幅高至低</option>
                 <option value="漲跌幅低至高" data-sorting-column="ChangePercentage" data-sorting-class="is-asc">漲跌幅低至高</option>
-                <option value="6個月績效高至低" data-sorting-column="SixMonthReturn" data-sorting-class="is-desc">6個月績效高至低</option>
-                <option value="6個月績效低至高" data-sorting-column="SixMonthReturn" data-sorting-class="is-asc">6個月績效低至高</option>
+                <option value="1個月績效高至低" data-sorting-column="MonthlyReturn" data-sorting-class="is-desc">1個月績效高至低</option>
+                <option value="1個月績效低至高" data-sorting-column="MonthlyReturn" data-sorting-class="is-asc">1個月績效低至高</option>
 
             </select>
         </div>
@@ -65,7 +65,7 @@
                         </th>
                         <th>
                             <div class="c-table__title">
-                                <span>交易所名稱</span>
+                                <span>交易所代碼</span>
                                 <a href="#" class="o-sorting" data-sorting-column="FundCode"></a>
                             </div>
                         </th>
@@ -83,8 +83,8 @@
                         </th>
                         <th>
                             <div class="c-table__title">
-                                <span>6個月績效</span>
-                                <a href="#" class="o-sorting" data-sorting-column="SixMonthReturn"></a>
+                                <span>1個月績效</span>
+                                <a href="#" class="o-sorting" data-sorting-column="MonthlyReturn"></a>
                             </div>
                         </th>
                         <th>
@@ -170,9 +170,9 @@
                             <% } %>
                         </td>
                         <td class="c-cardTable__body" data-card-table-width="1/2">
-                            <div class="c-cardTable__title" data-length="5">6個月績效</div>
+                            <div class="c-cardTable__title" data-length="5">1個月績效</div>
                             <div class="c-cardTable__content">
-                                <% if (SixMonthReturn != null ) { %>
+                                <% if (MonthlyReturn != null ) { %>
                                 <span class="<%= SixMonthReturnStyle %>">
                                     <%= SixMonthReturnText %>%
                                 </span>
