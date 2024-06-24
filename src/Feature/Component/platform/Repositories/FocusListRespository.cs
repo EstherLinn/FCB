@@ -54,11 +54,11 @@ namespace Feature.Wealth.Component.Repositories
                            ,REPLACE(CONVERT(char(10), A.[DataDate],126),'-','/') [ClosingPriceDate]
                            ,A.[ClosingPrice]
                            ,CONVERT(decimal(16,2), A.[ChangePercentage]) [ChangePercentage]
-                           ,CONVERT(decimal(16,2), A.[SixMonthReturn]) [SixMonthReturn]
+                           ,CONVERT(decimal(16,2), A.[MonthlyReturn]) [MonthlyReturn]
                            ,B.[OnlineSubscriptionAvailability]
                            ,B.[AvailabilityStatus]
                            FROM [Sysjust_USStockList] A WITH (NOLOCK)
-                           LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode] WHERE FirstBankCode in @foreignStockList order by [SixMonthReturn]
+                           LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode] WHERE FirstBankCode in @foreignStockList order by [MonthlyReturn] desc
                 ";
             var para = new { foreignStockList = foreignStockFocusList };
             var results = DbManager.Custom.ExecuteIList<ForeignStockListModel>(sql, para, CommandType.Text)?.ToList();

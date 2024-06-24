@@ -8,6 +8,12 @@
             if (!jQuery) {
                 return;
               }
+              function loading() {
+                  window.loading('show');
+                  setTimeout(() => {
+                      window.loading('hide');
+                  }, 300);
+              }
              // #region 基金
 
                          function resetTable()
@@ -437,9 +443,9 @@
                     beforeRecordRender: function (record) {
                         const dot2 = 2;
                         record.ClosingPrice = record.ClosingPrice.toFixed(dot2);
-                        record.SixMonthReturnText = Math.abs(record.SixMonthReturn).toFixed(dot2);
+                        record.SixMonthReturnText = Math.abs(record.MonthlyReturn).toFixed(dot2);
                         record.ChangePercentageText = Math.abs(record.ChangePercentage).toFixed(dot2);
-                        record.SixMonthReturnStyle = record.SixMonthReturn == 0 ? "" : record.SixMonthReturn > 0 ? "o-rise" : "o-fall";
+                        record.SixMonthReturnStyle = record.MonthlyReturn == 0 ? "" : record.MonthlyReturn > 0 ? "o-rise" : "o-fall";
                         record.ChangePercentageStyle = record.ChangePercentage == 0 ? "" : record.ChangePercentage > 0 ? "o-rise" : "o-fall";
                     },
                 afterFilter: function (result) {
@@ -515,16 +521,9 @@
                 }
                 });
                     $('#uid-foreignStock-view-perPage').on('change.pagesize', function() {
-                fnScrollUp();
-                fjs.paginator.setCurrentPage(1);
+                        fnScrollUpPageTo1();
                 }).sizebox();
-                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
-                $('[data-keyword-submit]').on('click.loading', function () {
-                if (!!$('[data-keyword-input]').val().trim()) {
-                loading();
-                }
-                });
-                $('.c-loading').loading('hide');
+
                 }
 
                 // table 排序功能

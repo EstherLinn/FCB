@@ -12,6 +12,6 @@ namespace Feature.Wealth.Component.Models.FocusList
         public decimal? ClosingPrice { get; set; }
         public string ClosingPriceDate { get; set; }
         public decimal? ChangePercentage { get; set; }
-        public decimal? SixMonthReturn { get; set; }
+        public decimal? MonthlyReturn { get; set; }
     }
 }
