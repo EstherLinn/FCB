@@ -153,6 +153,13 @@
                     $(self).removeData('plugin_interactive');
                     $(self).magnificPopup();
                 }
+            } else {
+                self.setAttribute('href', '#');
+                self.removeAttribute('data-popup');
+                self.setAttribute('data-ia', 'true');
+                self.setAttribute('data-msg', '加入比較|取消比較');
+                $(self).interactive();
+                $(self).off('click.magnificPopup');
             }
         });
         EventHandler.AddClick('compare-click', function (e) {
@@ -183,7 +190,7 @@
                 self.setAttribute('eh-compare-add', false);
                 if (compare.length == 7) {
                     $('[eh-compare][eh-compare-add=false]').each(function (idx, ele) {
-                        ele.setAttribute('href', 'javascript:;');
+                        ele.setAttribute('href', '#');
                         ele.removeAttribute('data-popup');
                         ele.setAttribute('data-ia', 'true');
                         ele.setAttribute('data-msg', '加入比較|取消比較');
