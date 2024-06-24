@@ -744,7 +744,7 @@
                         closeOnBgClick: false,
                         callbacks: {
                             afterClose: function () {
-                                window.location.href = new URL('@Model.ReturnLink');
+                                window.location.href = new URL(window.location.origin + '@Model.ReturnLink');
                             }
                         }
                     });
