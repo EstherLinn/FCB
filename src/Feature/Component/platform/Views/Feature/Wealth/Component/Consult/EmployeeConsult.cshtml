@@ -735,7 +735,6 @@
                 type: 'POST',
                 data: currentConsultSchedule
             }).done(function (data, textStatus, jqXHR) {
-                debugger;
                 $.magnificPopup.close();
                 if (data) {
                     $.magnificPopup.open({
@@ -745,7 +744,7 @@
                         closeOnBgClick: false,
                         callbacks: {
                             afterClose: function () {
-                                window.location.href = '@Model.ReturnLink';
+                                window.location.href = new URL(window.location.origin + '@Model.ReturnLink');
                             }
                         }
                     });
