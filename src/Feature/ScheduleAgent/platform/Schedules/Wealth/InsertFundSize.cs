@@ -22,7 +22,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 string filePath = "FUND_SIZE";
                 string tableName = "[FUND_SIZE]";
 
-                bool IsfilePath = etlService.ExtractFile("FUND_SIZE");
+                bool IsfilePath = await etlService.ExtractFile("FUND_SIZE");
 
                 if (IsfilePath)
                 {

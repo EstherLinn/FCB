@@ -20,7 +20,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var etlService = new EtlService(this.Logger, jobitem);
 
                 string filename = "FUND_ETF";
-                bool IsfilePath = etlService.ExtractFile("FUND_ETF");
+                bool IsfilePath = await etlService.ExtractFile("FUND_ETF");
 
                 if (IsfilePath)
                 {

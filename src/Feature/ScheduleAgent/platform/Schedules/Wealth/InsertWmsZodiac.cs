@@ -21,7 +21,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var etlService = new EtlService(this.Logger, jobitem);
 
                 string filename = "wms_zodiac_profile_d_mf";
-                bool IsfilePath = etlService.ExtractFile(filename);
+                bool IsfilePath = await etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {

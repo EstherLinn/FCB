@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using FixedWidthParserWriter;
+using FluentFTP;
 using FluentFTP.Helpers;
 using Renci.SshNet;
 using Renci.SshNet.Sftp;
@@ -54,7 +55,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public bool ExtractFile(string fileName)
+        public bool ExtractFileSftp(string fileName)
         {
 
             if (this._settings != null)
@@ -133,7 +134,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public bool ExtractFileContainsDate(string fileName)
+        public bool ExtractFileContainsDateSftp(string fileName)
         {
 
             if (this._settings != null)
@@ -367,7 +368,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 }
                 File.Move(localFilePath, localDoneFilePath);
             }
-           
+
         }
 
         /// <summary>
@@ -390,5 +391,135 @@ namespace Feature.Wealth.ScheduleAgent.Services
             File.Move(localFiledonePath, localDoneFilePath);
         }
 
+
+        public async Task<bool> ExtractFile(string fileName)
+        {
+            if (this._settings != null)
+            {
+                try
+                {
+                    using (var ftpClient = new AsyncFtpClient(this._settings["Ip"], this._settings["UserName"], this._settings["Password"], this._settings.GetInteger("Port") ?? 21))
+                    {
+                        await ftpClient.SetWorkingDirectory(this.WorkingDirectory);
+                        await ftpClient.Connect();
+
+                        string localFiledonePath = "";
+                        if (fileName.Equals("Fundlist"))
+                        {
+                            localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.csv");
+                            fileName = Path.ChangeExtension(fileName, "csv");
+                        }
+                        else
+                        {
+                            localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.txt");
+                            fileName = Path.ChangeExtension(fileName, "txt");
+                        }
+
+                        if (!await ftpClient.FileExists(fileName))
+                        {
+                            this._logger.Error($"File {fileName} not found.");
+                            return false;
+                        }
+                        string localFilePath = Path.Combine(this.LocalDirectory, fileName);
+                        string backupFilePath = Path.Combine(this.BackUpDirectory, fileName);
+
+                        if (File.Exists(localFilePath) && await ftpClient.CompareFile(localFilePath, fileName, FtpCompareOption.Checksum) == FtpCompareResult.Equal)
+                        {
+                            if (File.Exists(localFilePath))
+                            {
+                                string localFileHash = CalculateHash(localFilePath);
+
+                                if (File.Exists(localFiledonePath))
+                                {
+                                    string localFiledoneHash = CalculateHash(localFiledonePath);
+                                    if (localFileHash.Equals(localFiledoneHash))
+                                    {
+                                        this._logger.Error("Same file content, skip download.");
+                                        return false;
+                                    }
+                                }
+                            }
+                            this._logger.Error("Same file content, skip download.");
+                            return false;
+                        }
+
+                        if (await ftpClient.DownloadFile(localFilePath, fileName, FtpLocalExists.Overwrite) == FtpStatus.Success)
+                        {
+                            return true;
+                        }
+
+                        this._logger.Error($"File {fileName} not found on FTPS server.");
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this._logger.Error($"Error while downloading file from FTPS server: {ex.Message}", ex);
+                }
+            }
+
+            return false;
+        }
+
+        public bool ExtractFileContainsDate(string fileName)
+        {
+            if (this._settings != null)
+            {
+                try
+                {
+                    using (var ftpClient = new FtpClient(this._settings["Ip"], this._settings["UserName"], this._settings["Password"], this._settings.GetInteger("Port") ?? 21))
+                    {
+                        ftpClient.SetWorkingDirectory(this.WorkingDirectory);
+                        ftpClient.Connect();
+
+                        string localFiledonePath = Directory.GetFiles(this.LocalDirectory, $"*{fileName}_done.txt").FirstOrDefault();
+
+                        var files = ftpClient.GetListing(ftpClient.GetWorkingDirectory())
+                                     .Where(file => file.Name.Contains(fileName))
+                                     .OrderByDescending(file => file.Modified)
+                                     .ToList();
+
+                        if (files.Count == 0)
+                        {
+                            this._logger.Error($"No file exists.");
+                            return false;
+                        }
+                        if (!ftpClient.FileExists(fileName))
+                        {
+                            this._logger.Error($"File {fileName} not found.");
+                            return false;
+                        }
+                        var latestFile = files[0];
+
+                        string localFilePath = Path.Combine(this.LocalDirectory, latestFile.Name);
+                        localFilePath = Path.ChangeExtension(localFilePath, "txt");
+
+                        ftpClient.DownloadFile(localFilePath, fileName, FtpLocalExists.Overwrite);
+                        
+                        if (File.Exists(localFilePath))
+                        {
+                            string localFileHash = CalculateHash(localFilePath);
+                            if (File.Exists(localFiledonePath))
+                            {
+                                string localFiledoneHash = CalculateHash(localFiledonePath);
+                                if (localFileHash.Equals(localFiledoneHash))
+                                {
+                                    this._logger.Error("Same file content, skip download.");
+                                    return false;
+                                }
+                            }
+                        }
+
+                        return true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this._logger.Error($"Error while connecting to SFTP server: {ex.Message}", ex);
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -5,6 +5,10 @@ using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using System.Linq;
+using Renci.SshNet.Sftp;
+using Renci.SshNet;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
