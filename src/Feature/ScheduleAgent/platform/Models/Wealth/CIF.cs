@@ -27,7 +27,6 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         public string CIF_UNHEALTH_TYPE { get; set; }
         public string CIF_SAL_FLAG { get; set; }
         public string CIF_HIGH_ASSET_FLAG { get; set; }
-        public string CIF_HIGH_ASSET_DATE { get; set; }
         public string CIF_EXT_DATE { get; set; }
     }
 
