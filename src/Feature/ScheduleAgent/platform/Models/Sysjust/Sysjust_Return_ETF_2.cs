@@ -12,28 +12,33 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 一銀代碼
         /// </summary>
+        [Index(0)]
         public string FirstBankCode { get; set; }
 
         /// <summary>
         /// ETF代碼
         /// </summary>
+        [Index(1)]
         [NullValues("", "NULL", null)]
         public string ETFCode { get; set; }
 
         /// <summary>
         /// 資料日期
-        [NullValues("", "NULL", null)]
         /// </summary>
+        [Index(2)]
+        [NullValues("", "NULL", null)]
         public string DataDate { get; set; }
 
         /// <summary>
         /// 淨值原幣年報酬
         /// </summary>
+        [Index(3)]
         public float? NetValueAnnualReturnOriginalCurrency { get; set; }
 
         /// <summary>
         /// 參考指數年報酬
         /// </summary>
+        [Index(4)]
         public float? ReferenceIndexAnnualReturn { get; set; }
     }
 }

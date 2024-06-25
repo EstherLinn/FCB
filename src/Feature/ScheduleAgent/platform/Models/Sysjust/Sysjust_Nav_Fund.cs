@@ -12,22 +12,26 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 一銀代碼
         /// </summary>
+        [Index(0)]
         public string FirstBankCode { get; set; }
 
         /// <summary>
         /// 淨值日期
         /// </summary>
+        [Index(1)]
         [NullValues("", "NULL", null)]
         public string NetAssetValueDate { get; set; }
 
         /// <summary>
         /// 淨值
         /// </summary>
+        [Index(2)]
         public decimal? NetAssetValue { get; set; }
 
         /// <summary>
         ///嘉實代碼
         /// </summary>
+        [Index(3)]
         [NullValues("", "NULL", null)]
         public string SysjustCode { get; set; }
     }

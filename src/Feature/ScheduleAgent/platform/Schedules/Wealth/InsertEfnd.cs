@@ -51,7 +51,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     try
                     {
                         var basic = await etlService.ParseFixedLength<Efnd>(filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[EFND]", filename);
+                        _repository.BulkInsertToDatabase(basic, "[EFND]", "INVEST_FUND_NO", "DEPOSIT_DAY", "BASE_DAY", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
@@ -62,7 +62,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 }
                 else
                 {
-                    this.Logger.Error("ERROR: File not found");
+                    this.Logger.Error($"{filename} not found");
                     _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
                 }
             }

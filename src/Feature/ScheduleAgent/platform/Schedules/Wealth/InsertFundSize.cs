@@ -41,7 +41,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 }
                 else
                 {
-                    this.Logger.Error("ERROR: File not found");
+                    this.Logger.Error("FUND_SIZE not found");
                     _repository.LogChangeHistory(DateTime.UtcNow, filePath, "找不到檔案", " ", 0);
                 }
             }
