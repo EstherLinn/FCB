@@ -591,7 +591,7 @@
                 fjs.bindEvent('[data-keyword-submit]', 'click.loading');
 
                 $('[data-keyword-input]').on('keypress.loading', function (e) {
-                    if (e.which === 13 && !!$(this).val().trim()) {
+                    if (e.which === 13 && !!$(this).val().toString().trim()) {
                         $('[data-keyword-submit]').trigger('click.loading');
                     }
                 });
@@ -615,7 +615,7 @@
                 }).sizebox();
                 $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
                 $('[data-keyword-submit]').on('click.loading', function () {
-                    if (!!$('[data-keyword-input]').val().trim()) {
+                    if (!!$('[data-keyword-input]').val().toString().trim()) {
                         loading();
                         insertKeywords();
                     }

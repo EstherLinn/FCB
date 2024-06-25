@@ -132,7 +132,7 @@
                 }).sizebox();
                 $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
                 $('[data-keyword-submit]').on('click.loading', function () {
-                    if (!!$('[data-keyword-input]').val().trim()) {
+                    if (!!$('[data-keyword-input]').val().toString().trim()) {
                         loading();
                     }
                 });
@@ -329,7 +329,7 @@
                 }).sizebox();
                 $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
                 $('[data-keyword-submit]').on('click.loading', function () {
-                    if (!!$('[data-keyword-input]').val().trim()) {
+                    if (!!$('[data-keyword-input]').val().toString().trim()) {
                         loading();
                     }
                 });
@@ -643,7 +643,7 @@
                   const requiredMsg = '欄位必填';
                   let $parents = $element.closest('.l-form');
                   let $msg = $parents.find('.o-errorText');
-                  let isEmpty = $element.val().trim() == '';
+                  let isEmpty = $element.val().toString().trim() == '';
                   $parents.toggleClass('is-error', isEmpty);
                   $msg.text(isEmpty ? requiredMsg : '');
                   return !isEmpty;
