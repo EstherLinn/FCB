@@ -30,7 +30,7 @@
                 <li><a href="#" class="c-tab__item " target="_self" title="淨值風險" data-tab-target="tab-4" data-filter-switch-columns="netWorthRiskTable" data-filter-switch="#uid-template-netWorthRisk">淨值風險</a></li>
                 <li><a href="#" class="c-tab__item " target="_self" title="交易狀況" data-tab-target="tab-5" data-filter-switch-columns="tradeTable" data-filter-switch="#uid-template-trade">交易狀況</a></li>
                 <li><a href="#" class="c-tab__item " target="_self" title="基本資料" data-tab-target="tab-6" data-filter-switch-columns="baseTable" data-filter-switch="#uid-template-base">基本資料</a></li>
-                <li>@*<a href="#" class="c-tab__item " target="_self" title="查無商品" data-tab-target="tab-7" data-filter-empty="true">查無商品</a>*@</li>
+                @*<li><a href="#" class="c-tab__item " target="_self" title="查無商品" data-tab-target="tab-7" data-filter-empty="true">查無商品</a></li>*@
             </ul>
             <div class="c-tab__collapse">
                 <a href="#" class="c-tab__switch"></a>
@@ -77,27 +77,29 @@
                                     <option value="">排序</option>
                                     <option value="ETF名稱高至低" data-sorting-column="FirstBankCode" data-sorting-class="is-desc">ETF名稱高至低</option>
                                     <option value="ETF名稱低至高" data-sorting-column="FirstBankCode" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="交易所代碼高至低" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-desc">交易所代碼高至低</option>
+                                    <option value="交易所代碼低至高" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-asc">交易所代碼低至高</option>
                                     <option value="市價高至低" data-sorting-column="MarketPrice.Value" data-sorting-class="is-desc">市價高至低</option>
                                     <option value="市價低至高" data-sorting-column="MarketPrice.Value" data-sorting-class="is-asc">市價低至高</option>
                                     <option value="幣別高至低" data-sorting-column="CurrencyPair.Key" data-sorting-class="is-desc">幣別高至低</option>
                                     <option value="幣別低至高" data-sorting-column="CurrencyPair.Key" data-sorting-class="is-asc">幣別低至高</option>
-                                    <option value="1個月績效高至低" data-sorting-column="MonthlyReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">1個月績效高至低</option>
-                                    <option value="1個月績效低至高" data-sorting-column="MonthlyReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">1個月績效低至高</option>
-                                    <option value="3個月績效高至低" data-sorting-column="ThreeMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">3個月績效高至低</option>
-                                    <option value="3個月績效低至高" data-sorting-column="ThreeMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">3個月績效低至高</option>
-                                    <option value="6個月績效高至低" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">6個月績效高至低</option>
-                                    <option value="6個月績效低至高" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">6個月績效低至高</option>
-                                    <option value="1年績效高至低" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">1年績效高至低</option>
-                                    <option value="1年績效低至高" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">1年績效低至高</option>
+                                    <option value="1個月原幣績效高至低" data-sorting-column="MonthlyReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">1個月原幣績效高至低</option>
+                                    <option value="1個月原幣績效低至高" data-sorting-column="MonthlyReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">1個月原幣績效低至高</option>
+                                    <option value="3個月原幣績效高至低" data-sorting-column="ThreeMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">3個月原幣績效高至低</option>
+                                    <option value="3個月原幣績效低至高" data-sorting-column="ThreeMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">3個月原幣績效低至高</option>
+                                    <option value="6個月原幣績效高至低" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">6個月原幣績效高至低</option>
+                                    <option value="6個月原幣績效低至高" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">6個月原幣績效低至高</option>
+                                    <option value="1年原幣績效高至低" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">1年原幣績效高至低</option>
+                                    <option value="1年原幣績效低至高" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">1年原幣績效低至高</option>
 
-                                    <option value="1個月績效高至低" data-sorting-column="MonthlyReturnMarketPriceTWD.Value" data-sorting-class="is-desc">1個月績效高至低</option>
-                                    <option value="1個月績效低至高" data-sorting-column="MonthlyReturnMarketPriceTWD.Value" data-sorting-class="is-asc">1個月績效低至高</option>
-                                    <option value="3個月績效高至低" data-sorting-column="ThreeMonthReturnMarketPriceTWD.Value" data-sorting-class="is-desc">3個月績效高至低</option>
-                                    <option value="3個月績效低至高" data-sorting-column="ThreeMonthReturnMarketPriceTWD.Value" data-sorting-class="is-asc">3個月績效低至高</option>
-                                    <option value="6個月績效高至低" data-sorting-column="SixMonthReturnMarketPriceTWD.Value" data-sorting-class="is-desc">6個月績效高至低</option>
-                                    <option value="6個月績效低至高" data-sorting-column="SixMonthReturnMarketPriceTWD.Value" data-sorting-class="is-asc">6個月績效低至高</option>
-                                    <option value="1年績效高至低" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">1年績效高至低</option>
-                                    <option value="1年績效低至高" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">1年績效低至高</option>
+                                    <option value="1個月台幣績效高至低" data-sorting-column="MonthlyReturnMarketPriceTWD.Value" data-sorting-class="is-desc">1個月台幣績效高至低</option>
+                                    <option value="1個月台幣績效低至高" data-sorting-column="MonthlyReturnMarketPriceTWD.Value" data-sorting-class="is-asc">1個月台幣績效低至高</option>
+                                    <option value="3個月台幣績效高至低" data-sorting-column="ThreeMonthReturnMarketPriceTWD.Value" data-sorting-class="is-desc">3個月台幣績效高至低</option>
+                                    <option value="3個月台幣績效低至高" data-sorting-column="ThreeMonthReturnMarketPriceTWD.Value" data-sorting-class="is-asc">3個月台幣績效低至高</option>
+                                    <option value="6個月台幣績效高至低" data-sorting-column="SixMonthReturnMarketPriceTWD.Value" data-sorting-class="is-desc">6個月台幣績效高至低</option>
+                                    <option value="6個月台幣績效低至高" data-sorting-column="SixMonthReturnMarketPriceTWD.Value" data-sorting-class="is-asc">6個月台幣績效低至高</option>
+                                    <option value="1年台幣績效高至低" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-desc">1年台幣績效高至低</option>
+                                    <option value="1年台幣績效低至高" data-sorting-column="OneYearReturnMarketPriceOriginalCurrency.Value" data-sorting-class="is-asc">1年台幣績效低至高</option>
                                 </select>
                             </div>
                         </div>
@@ -136,27 +138,29 @@
                                     <option value="">排序</option>
                                     <option value="ETF名稱高至低" data-sorting-column="FirstBankCode" data-sorting-class="is-desc">ETF名稱高至低</option>
                                     <option value="ETF名稱低至高" data-sorting-column="FirstBankCode" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="交易所代碼高至低" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-desc">交易所代碼高至低</option>
+                                    <option value="交易所代碼低至高" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-asc">交易所代碼低至高</option>
                                     <option value="最新淨值高至低" data-sorting-column="NetAssetValue.Value" data-sorting-class="is-desc">最新淨值高至低</option>
                                     <option value="最新淨值低至高" data-sorting-column="NetAssetValue.Value" data-sorting-class="is-asc">最新淨值低至高</option>
                                     <option value="幣別高至低" data-sorting-column="CurrencyPair.Key" data-sorting-class="is-desc">幣別高至低</option>
                                     <option value="幣別低至高" data-sorting-column="CurrencyPair.Key" data-sorting-class="is-asc">幣別低至高</option>
-                                    <option value="1個月績效高至低" data-sorting-column="MonthlyReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">1個月績效高至低</option>
-                                    <option value="1個月績效低至高" data-sorting-column="MonthlyReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">1個月績效低至高</option>
-                                    <option value="3個月績效高至低" data-sorting-column="ThreeMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">3個月績效高至低</option>
-                                    <option value="3個月績效低至高" data-sorting-column="ThreeMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">3個月績效低至高</option>
-                                    <option value="6個月績效高至低" data-sorting-column="SixMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">6個月績效高至低</option>
-                                    <option value="6個月績效低至高" data-sorting-column="SixMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">6個月績效低至高</option>
-                                    <option value="1年績效高至低" data-sorting-column="OneYearReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">1年績效高至低</option>
-                                    <option value="1年績效低至高" data-sorting-column="OneYearReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">1年績效低至高</option>
+                                    <option value="1個月原幣績效高至低" data-sorting-column="MonthlyReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">1個月原幣績效高至低</option>
+                                    <option value="1個月原幣績效低至高" data-sorting-column="MonthlyReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">1個月原幣績效低至高</option>
+                                    <option value="3個月原幣績效高至低" data-sorting-column="ThreeMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">3個月原幣績效高至低</option>
+                                    <option value="3個月原幣績效低至高" data-sorting-column="ThreeMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">3個月原幣績效低至高</option>
+                                    <option value="6個月原幣績效高至低" data-sorting-column="SixMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">6個月原幣績效高至低</option>
+                                    <option value="6個月原幣績效低至高" data-sorting-column="SixMonthReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">6個月原幣績效低至高</option>
+                                    <option value="1年原幣績效高至低" data-sorting-column="OneYearReturnNetValueOriginalCurrency.Value" data-sorting-class="is-desc">1年原幣績效高至低</option>
+                                    <option value="1年原幣績效低至高" data-sorting-column="OneYearReturnNetValueOriginalCurrency.Value" data-sorting-class="is-asc">1年原幣績效低至高</option>
 
-                                    <option value="1個月績效高至低" data-sorting-column="MonthlyReturnNetValueTWD.Value" data-sorting-class="is-desc">1個月績效高至低</option>
-                                    <option value="1個月績效低至高" data-sorting-column="MonthlyReturnNetValueTWD.Value" data-sorting-class="is-asc">1個月績效低至高</option>
-                                    <option value="3個月績效高至低" data-sorting-column="ThreeMonthReturnNetValueTWD.Value" data-sorting-class="is-desc">3個月績效高至低</option>
-                                    <option value="3個月績效低至高" data-sorting-column="ThreeMonthReturnNetValueTWD.Value" data-sorting-class="is-asc">3個月績效低至高</option>
-                                    <option value="6個月績效高至低" data-sorting-column="SixMonthReturnNetValueTWD.Value" data-sorting-class="is-desc">6個月績效高至低</option>
-                                    <option value="6個月績效低至高" data-sorting-column="SixMonthReturnNetValueTWD.Value" data-sorting-class="is-asc">6個月績效低至高</option>
-                                    <option value="1年績效高至低" data-sorting-column="OneYearReturnNetValueTWD.Value" data-sorting-class="is-desc">1年績效高至低</option>
-                                    <option value="1年績效低至高" data-sorting-column="OneYearReturnNetValueTWD.Value" data-sorting-class="is-asc">1年績效低至高</option>
+                                    <option value="1個月台幣績效高至低" data-sorting-column="MonthlyReturnNetValueTWD.Value" data-sorting-class="is-desc">1個月台幣績效高至低</option>
+                                    <option value="1個月台幣績效低至高" data-sorting-column="MonthlyReturnNetValueTWD.Value" data-sorting-class="is-asc">1個月台幣績效低至高</option>
+                                    <option value="3個月台幣績效高至低" data-sorting-column="ThreeMonthReturnNetValueTWD.Value" data-sorting-class="is-desc">3個月台幣績效高至低</option>
+                                    <option value="3個月台幣績效低至高" data-sorting-column="ThreeMonthReturnNetValueTWD.Value" data-sorting-class="is-asc">3個月台幣績效低至高</option>
+                                    <option value="6個月台幣績效高至低" data-sorting-column="SixMonthReturnNetValueTWD.Value" data-sorting-class="is-desc">6個月台幣績效高至低</option>
+                                    <option value="6個月台幣績效低至高" data-sorting-column="SixMonthReturnNetValueTWD.Value" data-sorting-class="is-asc">6個月台幣績效低至高</option>
+                                    <option value="1年台幣績效高至低" data-sorting-column="OneYearReturnNetValueTWD.Value" data-sorting-class="is-desc">1年台幣績效高至低</option>
+                                    <option value="1年台幣績效低至高" data-sorting-column="OneYearReturnNetValueTWD.Value" data-sorting-class="is-asc">1年台幣績效低至高</option>
                                 </select>
                             </div>
                         </div>
@@ -183,6 +187,8 @@
                                     <option value="">排序</option>
                                     <option value="ETF名稱高至低" data-sorting-column="FirstBankCode" data-sorting-class="is-desc">ETF名稱高至低</option>
                                     <option value="ETF名稱低至高" data-sorting-column="FirstBankCode" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="交易所代碼高至低" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-desc">交易所代碼高至低</option>
+                                    <option value="交易所代碼低至高" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-asc">交易所代碼低至高</option>
                                     <option value="市價高至低" data-sorting-column="MarketPrice.Value" data-sorting-class="is-desc">市價高至低</option>
                                     <option value="市價低至高" data-sorting-column="MarketPrice.Value" data-sorting-class="is-asc">市價低至高</option>
                                     <option value="風險屬性RR5至RR1" data-sorting-column="RiskLevel.Value" data-sorting-class="is-desc">風險屬性RR5至RR1</option>
@@ -219,6 +225,8 @@
                                     <option value="">排序</option>
                                     <option value="ETF名稱高至低" data-sorting-column="FirstBankCode" data-sorting-class="is-desc">ETF名稱高至低</option>
                                     <option value="ETF名稱低至高" data-sorting-column="FirstBankCode" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="交易所代碼高至低" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-desc">交易所代碼高至低</option>
+                                    <option value="交易所代碼低至高" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-asc">交易所代碼低至高</option>
                                     <option value="最新淨值高至低" data-sorting-column="NetAssetValue.Value" data-sorting-class="is-desc">最新淨值高至低</option>
                                     <option value="最新淨值低至高" data-sorting-column="NetAssetValue.Value" data-sorting-class="is-asc">最新淨值低至高</option>
                                     <option value="風險屬性RR5至RR1" data-sorting-column="RiskLevel.Value" data-sorting-class="is-desc">風險屬性RR5至RR1</option>
@@ -255,6 +263,8 @@
                                     <option value="">排序</option>
                                     <option value="ETF名稱高至低" data-sorting-column="FirstBankCode" data-sorting-class="is-asc">ETF名稱高至低</option>
                                     <option value="ETF名稱低至高" data-sorting-column="FirstBankCode" data-sorting-class="is-desc">ETF名稱低至高</option>
+                                    <option value="交易所代碼高至低" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-desc">交易所代碼高至低</option>
+                                    <option value="交易所代碼低至高" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-asc">交易所代碼低至高</option>
                                     <option value="市價高至低" data-sorting-column="MarketPrice.Value" data-sorting-class="is-asc">市價高至低</option>
                                     <option value="市價低至高" data-sorting-column="MarketPrice.Value" data-sorting-class="is-desc">市價低至高</option>
                                     <option value="折溢價高至低" data-sorting-column="DiscountPremium.Value" data-sorting-class="is-asc">折溢價高至低</option>
@@ -289,6 +299,8 @@
                                     <option value="">排序</option>
                                     <option value="ETF名稱高至低" data-sorting-column="FirstBankCode" data-sorting-class="is-desc">ETF名稱高至低</option>
                                     <option value="ETF名稱低至高" data-sorting-column="FirstBankCode" data-sorting-class="is-asc">ETF名稱低至高</option>
+                                    <option value="交易所代碼高至低" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-desc">交易所代碼高至低</option>
+                                    <option value="交易所代碼低至高" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-asc">交易所代碼低至高</option>
                                     <option value="市價高至低" data-sorting-column="MarketPrice.Value" data-sorting-class="is-desc">市價高至低</option>
                                     <option value="市價低至高" data-sorting-column="MarketPrice.Value" data-sorting-class="is-asc">市價低至高</option>
                                     <option value="幣別高至低" data-sorting-column="CurrencyPair.Key" data-sorting-class="is-desc">幣別高至低</option>
@@ -318,6 +330,8 @@
                 <option value="">排序</option>
                 <option value="ETF名稱高至低" data-sorting-column="FirstBankCode" data-sorting-class="is-desc">ETF名稱高至低</option>
                 <option value="ETF名稱低至高" data-sorting-column="FirstBankCode" data-sorting-class="is-asc">ETF名稱低至高</option>
+                <option value="交易所代碼高至低" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-desc">交易所代碼高至低</option>
+                <option value="交易所代碼低至高" data-sorting-column="ExchangeCode.Value" data-sorting-class="is-asc">交易所代碼低至高</option>
                 <option value="市價高至低" data-sorting-column="MarketPrice.Value" data-sorting-class="is-desc">市價高至低</option>
                 <option value="市價低至高" data-sorting-column="MarketPrice.Value" data-sorting-class="is-asc">市價低至高</option>
                 <option value="最新淨值高至低" data-sorting-column="NetAssetValue.Value" data-sorting-class="is-desc">最新淨值高至低</option>
@@ -416,14 +430,13 @@
                         <th @*data-table-name="marketPriceTable,netWorthTable,marketRiskTable,netWorthRiskTable,tradeTable,baseTable"*@>
                             <div class="c-table__title">
                                 <span>ETF名稱</span>
-                                <!-- .is-asc: 升冪 -->
-                                <!-- .is-desc: 降冪 -->
                                 <a href="#" class="o-sorting" data-sorting-column="FirstBankCode"></a>
                             </div>
                         </th>
                         <th @*data-table-name="marketPriceTable,netWorthTable,marketRiskTable,netWorthRiskTable,tradeTable,baseTable"*@>
                             <div class="c-table__title">
                                 <span>交易所代碼</span>
+                                <a href="#" class="o-sorting" data-sorting-column="ExchangeCode.Value"></a>
                             </div>
                         </th>
                         @*【市價(日期)】=> 市價績效,市價風險,交易狀況,基本資料*@

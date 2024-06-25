@@ -73,7 +73,7 @@ namespace Feature.Wealth.Component.Repositories
                 .IgnoreMember((member, side) => ignoreTypes.Contains(member.Type))
                 .AfterMapping((src, dest) =>
                 {
-                    dest.ETFName = src.ETFName.Normalize(NormalizationForm.FormKC);
+                    dest.ETFName = src.ETFName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
                     dest.RegionType = IdentifyRegion(src.SysjustCode);
                     dest.ExchangeCode = new StringPair()
                     {
