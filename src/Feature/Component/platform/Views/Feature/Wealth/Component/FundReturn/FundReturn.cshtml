@@ -246,7 +246,7 @@
 
             // 搜尋事件處理
             function HandleSearch() {
-                let query = $('[data-search-input]').val().trim();
+                let query = $('[data-search-input]').val().toString().trim();
                 //若查詢為空或輸入空白 不作效果
                 if (!query || !query.length) {
                     return;
