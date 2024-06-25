@@ -27,7 +27,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             string sql = "SELECT * FROM WEA_ODS_CIF_VIEW";
             try
             {
-                var results = await _repository.ConnectOdbc<Cif>(sql);
+                var results = _repository.ConnectOdbc<Cif>(sql);
 
                 foreach (var item in results)
                 {

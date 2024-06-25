@@ -260,7 +260,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
 
 
-        public async Task<List<T>> ConnectOdbc<T>(string sql) where T : new()
+        public List<T> ConnectOdbc<T>(string sql) where T : new()
         {
             string connString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString;
             var resultList = new List<T>();
@@ -269,27 +269,38 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             {
                 try
                 {
-                    await connection.OpenAsync();
+                    connection.Open();
                     this._logger.Info("Opened Successfully");
 
                     using (OdbcCommand command = new OdbcCommand(sql, connection))
                     {
-                        using (DbDataReader reader = await command.ExecuteReaderAsync())
-                        {
-                            var properties = typeof(T).GetProperties();
+                        this._logger.Info("Command created successfully");
 
-                            while (await reader.ReadAsync())
+                        using (DbDataReader reader = command.ExecuteReader())
+                        {
+                            this._logger.Info("Reader created successfully");
+
+                            var properties = typeof(T).GetProperties();
+                            this._logger.Info("Properties retrieved successfully");
+
+                            while (reader.Read())
                             {
+                                this._logger.Info("Reading data");
+
                                 var item = new T();
                                 foreach (var property in properties)
                                 {
+                                    this._logger.Info($"Reading property {property.Name}");
+
                                     var ordinal = reader.GetOrdinal(property.Name);
-                                    if (!await reader.IsDBNullAsync(ordinal))
+                                    if (!reader.IsDBNull(ordinal))
                                     {
                                         property.SetValue(item, reader.GetValue(ordinal), null);
+                                        this._logger.Info($"Set property {property.Name}");
                                     }
                                 }
                                 resultList.Add(item);
+                                this._logger.Info("Item added to result list");
                             }
                         }
                     }
@@ -308,6 +319,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             return resultList;
         }
+
 
 
     }
