@@ -1,28 +1,25 @@
 ﻿using Feature.Wealth.Account.Helpers;
+using Feature.Wealth.Account.Models.Api;
 using Feature.Wealth.Account.Models.FundTrackList;
 using Feature.Wealth.Account.Models.OAuth;
 using Feature.Wealth.Account.Repositories;
 using Feature.Wealth.Account.Services;
+using Foundation.Wealth.Extensions;
 using Newtonsoft.Json;
+using Sitecore.Configuration;
 using Sitecore.Security.Accounts;
 using Sitecore.Web;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
-using static Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MemberUtils;
-using Foundation.Wealth.Extensions;
-using Feature.Wealth.Account.Models.Api;
-using Feature.Wealth.Account.Filter;
-using Foundation.Wealth.Helper;
-using System;
-using Newtonsoft.Json.Linq;
-using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-using System.Web;
 using Xcms.Sitecore.Foundation.Basic.Logging;
-using System.Runtime.Caching;
-using Sitecore.Configuration;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using static Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MemberUtils;
 
 namespace Feature.Wealth.Account.Controllers
 {
@@ -43,6 +40,7 @@ namespace Feature.Wealth.Account.Controllers
             this._memberRepository = new MemberRepository();
             this.callBackUrl = WebUtil.GetCookieValue("ReturnUrl");
         }
+
         [HttpGet]
         public async Task<ActionResult> SignInLine(string code, string error, string error_description)
         {
@@ -84,6 +82,7 @@ namespace Feature.Wealth.Account.Controllers
             this.SetCustomPropertyAndLogin(member, user);        
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
+
         [HttpGet]
         public async Task<ActionResult> SignInFacebook(string code, string error, string error_description)
         {
@@ -102,7 +101,7 @@ namespace Feature.Wealth.Account.Controllers
             var responseProfile = await _facebookService.GetProfileByToken(responseToken.AccessToken);
 
             User user = Authentication.BuildVirtualUser("extranet", responseProfile.Id, true);
-            FcbMemberModel member = null;
+            FcbMemberModel member;
 
             var isExist = _memberRepository.CheckUserExists(PlatFormEunm.FaceBook, responseProfile.Id);
             if (!isExist)
@@ -315,6 +314,7 @@ namespace Feature.Wealth.Account.Controllers
             }
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
+
         [HttpPost]
         public async Task<ActionResult> WebBankLogin()
         {
@@ -395,13 +395,13 @@ namespace Feature.Wealth.Account.Controllers
             return new JsonNetResult(_memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId()));
         }
 
-
         [HttpPost]
         public ActionResult SetUrlCookie(string url)
         {
             WebUtil.SetCookieValue("ReturnUrl", url, DateTime.MinValue, true);
             return new JsonNetResult();
         }
+
         [HttpPost]
         public ActionResult GetUrlCookie()
         {
@@ -478,6 +478,7 @@ namespace Feature.Wealth.Account.Controllers
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
+
         [HttpPost]
         public ActionResult SetQuoteChangeColor(string color)
         {
@@ -526,6 +527,16 @@ namespace Feature.Wealth.Account.Controllers
             string objToJson = JsonConvert.SerializeObject(fcbMember);
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
             user.Profile.Save();
+            var roleName = "extranet\anonymous";
+            // Get the role
+            Role role = Role.FromName(roleName);
+
+            // Check if the role exists
+            if (Role.Exists(roleName))
+            {
+                // Add the role to the virtual user
+                user.Roles.Add(role);
+            }
             Authentication.LoginVirtualUser(user);
         }
 
