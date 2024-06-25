@@ -210,7 +210,7 @@
 
             // Add Lister to
             $(_selector)
-                .bind('load', iframeLstr)
+                .on('load', iframeLstr)
                 .trigger('load');
 
             window.addEventListener('message', receiveMessage);
