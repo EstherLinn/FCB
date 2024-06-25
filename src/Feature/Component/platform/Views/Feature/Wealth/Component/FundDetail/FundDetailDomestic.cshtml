@@ -1384,9 +1384,9 @@
                         <ul class="l-divideList l-divideList--sm">
                             @foreach (var item in Model.TagsDic[FundTagEnum.SortTag])
                             {
-                            <li class="l-divideList__item l-divideList__item--auto">
-                                <a href="@(searchUrl + "?HotProduct=" + item)" class="o-hashTag u-nowrap">#@item</a>
-                            </li>
+                                <li class="l-divideList__item l-divideList__item--auto">
+                                    <a href="@(searchUrl + "?HotProduct=" + item)" class="o-hashTag u-nowrap">#@item</a>
+                                </li>
                             }
                         </ul>
                     </div>
@@ -2799,6 +2799,19 @@
             if (!jQuery) {
                 return;
             }
+            let prevVal;
+            function CheckSameYear(d1, d2) {
+                let d1Year = new Date(d1).getFullYear();
+                let d2Year = new Date(d2).getFullYear();
+                return d1Year == d2Year
+            }
+            function CheckSameYearAndMonth(d1, d2) {
+                let d1Year = new Date(d1).getFullYear();
+                let d2Year = new Date(d2).getFullYear();
+                let d1Month = new Date(d1).getMonth() + 1;
+                let d2Month = new Date(d2).getMonth() + 1;
+                return d1Year == d2Year && d1Month == d2Month
+            }
             var nearlySetting = {
                 chart: {
                     zooming: {
@@ -2859,31 +2872,6 @@
                             }
                         }
                     }
-                },
-                xAxis: {
-                    type: 'datetime',
-                    tickPosition: 'inside',
-                    tickWidth: 0.5,
-                    tickLength: 7,
-                    labels: {
-                        formatter: function () {
-                            const format = {
-                                day: '%Y/%m',
-                                week: '%Y/%m',
-                                month: '%Y/%m'
-                            }[this.tickPositionInfo.unitName];
-                            return Highcharts.dateFormat(format, this.value);
-                        },
-                        style: {
-                            color: '#6e6e6e'
-                        }
-                    },
-                    crosshair: {
-                        width: 1,
-                        color: '#c3c3c3'
-                    },
-                    lineColor: '#ebebeb',
-                    tickColor: '#ebebeb'
                 }
             };
             var chart = Highcharts.stockChart('performanceChart', {
@@ -2965,6 +2953,39 @@
                                 mapData.reverse();
                                 Highcharts.stockChart('performanceChart', {
                                     ...nearlySetting,
+                                    xAxis: {
+                                        type: 'datetime',
+                                        tickPosition: 'inside',
+                                        tickWidth: 0.5,
+                                        tickLength: 7,
+                                        tickInterva: (24 * 3600 * 1000) * 7,
+                                        labels: {
+                                            formatter: function () {
+                                                let format = CheckSameYear(this.axis.min, this.axis.max) ? '%m/%d' : '%Y/%m';
+                                                let output = null;
+                                                if (!this.isFirst && format == '%Y/%m') {
+                                                    if (!CheckSameYearAndMonth(prevVal, this.value)) {
+                                                        output = Highcharts.dateFormat(format, this.value);
+                                                    }
+                                                    prevVal = this.value;
+                                                } else {
+                                                    output = Highcharts.dateFormat(format, this.value);
+                                                    prevVal = this.value;
+                                                }
+                                                return output;
+                                            },
+                                            style: {
+                                                color: '#6e6e6e'
+                                            }
+                                        },
+                                            crosshair: {
+                                                width: 1,
+                                                color: '#c3c3c3'
+                                            },
+                                            lineColor: '#ebebeb',
+                                            tickColor: '#ebebeb'
+                                        
+                                    },
                                     tooltip: {
                                         split: false,
                                         useHTML: true,
@@ -3047,6 +3068,39 @@
                         // $('[data-update-date="netWorth"]').text(updateDate);
                         Highcharts.stockChart('netWorthChart', {
                             ...nearlySetting,
+                            xAxis: {
+                                type: 'datetime',
+                                tickPosition: 'inside',
+                                tickWidth: 0.5,
+                                tickLength: 7,
+                                tickInterva: (24 * 3600 * 1000) * 7,
+                                labels: {
+                                    formatter: function () {
+                                        console.log(this)
+                                        let format = CheckSameYear(this.axis.min, this.axis.max) ? '%m/%d' : '%Y/%m';
+                                        let output = null;
+                                        if (!this.isFirst && format == '%Y/%m') {
+                                            if (!CheckSameYearAndMonth(prevVal, this.value)) {
+                                                output = Highcharts.dateFormat(format, this.value);
+                                            }
+                                            prevVal = this.value;
+                                        } else {
+                                            output = Highcharts.dateFormat(format, this.value);
+                                            prevVal = this.value;
+                                        }
+                                        return output;
+                                    },
+                                    style: {
+                                        color: '#6e6e6e'
+                                    }
+                                },
+                               crosshair: {
+                                    width: 1,
+                                    color: '#c3c3c3'
+                                },
+                                lineColor: '#ebebeb',
+                                tickColor: '#ebebeb'
+                            },
                             tooltip: {
                                 split: false,
                                 useHTML: true,
@@ -3238,6 +3292,21 @@
             function roundToTwo(num) {
                 return +(Math.round(num + 'e+2') + 'e-2');
             }
+            function CheckSameYear(d1,d2)
+            {
+                let d1Year = new Date(d1).getFullYear();
+                let d2Year = new Date(d2).getFullYear();
+                return d1Year == d2Year
+            }
+              function CheckSameYearAndMonth(d1,d2)
+            {
+                let d1Year = new Date(d1).getFullYear();
+                let d2Year = new Date(d2).getFullYear();
+                let d1Month = new Date(d1).getMonth() + 1;
+                let d2Month = new Date(d2).getMonth() + 1;
+                return d1Year == d2Year && d1Month == d2Month
+            }
+            let preVal;
             async function initTrendChart(obj, text) {
                 try {
                     /*
@@ -3357,15 +3426,22 @@
                                     tickPosition: 'inside',
                                     tickWidth: 0.5,
                                     tickLength: 7,
+                                    tickInterval: (24*3600*1000) * 7,
                                     labels: {
                                         formatter: function () {
-                                            const format = {
-                                                day: '%Y/%m',
-                                                week: '%Y/%m',
-                                                month: '%Y/%m',
-                                                year: '%Y/%m'
-                                            }[this.tickPositionInfo.unitName];
-                                            return Highcharts.dateFormat(format, this.value);
+                                            let format = CheckSameYear(obj.startdate, obj.enddate)? '%m/%d' : '%Y/%m';
+                                            let output = null;
+                                            if(!this.isFirst && format=='%Y/%m'){
+                                                if(!CheckSameYearAndMonth(prevVal,this.value))
+                                                {
+                                                        output = Highcharts.dateFormat(format, this.value);
+                                                }
+                                                 prevVal = this.value;
+                                            }else {
+                                                output = Highcharts.dateFormat(format, this.value);
+                                                prevVal = this.value;
+                                            }
+                                            return output;
                                         },
                                         style: {
                                             color: '#6e6e6e'

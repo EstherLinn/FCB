@@ -82,8 +82,8 @@ namespace Feature.Wealth.Account.Services
                         txReqId = txReqIdString,
                         sign = SHA1Helper.Encrypt(computeStr2),
                     };
+                    Logger.Account.Info($"網銀0201 {step}  routeWithParms = {routeWithParms} ,merchantId={_id},txReqId={txReqIdString},sign={SHA1Helper.Encrypt(computeStr2)}");
                 }
-
             }
             catch (FlurlHttpException ex)
             {
@@ -93,7 +93,6 @@ namespace Feature.Wealth.Account.Services
             {
                 Logger.Account.Info($"網銀0201 {step} routeWithParms = {routeWithParms}, Exception Message {ex.Message}");
             }
-
             return objReturn;
         }
 
