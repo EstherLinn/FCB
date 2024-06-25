@@ -527,7 +527,7 @@ namespace Feature.Wealth.Account.Controllers
             string objToJson = JsonConvert.SerializeObject(fcbMember);
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
             user.Profile.Save();
-            var roleName = "extranet\anonymous";
+            var roleName = "extranet\\anonymous";
             // Get the role
             Role role = Role.FromName(roleName);
 
