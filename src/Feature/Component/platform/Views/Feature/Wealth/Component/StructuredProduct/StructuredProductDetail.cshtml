@@ -312,8 +312,10 @@
                         var data = _data;
 
                         const mapData = data.navs.map(item => {
+                            const localDate = new Date(item.date);
+                            const taiwanDate = new Date(localDate.getTime() + (8 * 60 * 60 * 1000));
                             return {
-                                x: new Date(item.date).getTime(),
+                                x: taiwanDate.getTime(),
                                 name: item.date,
                                 y: item.value
                             };
@@ -393,7 +395,7 @@
                                     split: false,
                                     useHTML: true,
                                     formatter: function () {
-                                        const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + this.point.name + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '</div>';
+                                        const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '</div>';
                                         return tooltip;
                                     },
                                     shadow: {
@@ -407,12 +409,19 @@
                                     tickLength: 7,
                                     labels: {
                                         formatter: function () {
-                                            const format = {
-                                                day: '%Y/%m',
-                                                week: '%Y/%m',
-                                                month: '%Y/%m'
-                                            }[this.tickPositionInfo.unitName];
-                                            return Highcharts.dateFormat(format, this.value);
+                                            const allDates = this.axis.series[0].xData.map(timestamp => new Date(timestamp));
+                                            const dateSet = new Set(allDates.map(date => date.toISOString().slice(0, 10)));
+                                            const minYear = allDates[0].getFullYear();
+                                            const maxYear = allDates[allDates.length - 1].getFullYear();
+                                            const isCrossYear = minYear !== maxYear;
+
+                                            const format = isCrossYear ? '%Y/%m' : '%m/%d';
+
+                                            const closestDate = Array.from(dateSet).reduce((prev, curr) => {
+                                                return (Math.abs(new Date(curr) - this.value) < Math.abs(new Date(prev) - this.value) ? curr : prev);
+                                            });
+
+                                            return Highcharts.dateFormat(format, new Date(closestDate).getTime());
                                         },
                                         style: {
                                             color: '#6e6e6e'
