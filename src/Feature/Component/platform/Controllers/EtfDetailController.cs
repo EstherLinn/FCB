@@ -45,16 +45,23 @@ namespace Feature.Wealth.Component.Controllers
         /// <summary>
         /// 近一年績效走勢
         /// </summary>
-        /// <param name="etfId"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GetPerformanceTrend(string etfId)
+        public async Task<ActionResult> GetPerformanceTrend(ReqBase req)
         {
-            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
 
             try
             {
-                resp.Body = await _djMoneyApiRespository.GetPerformanceTrend(etfId?.ToUpper());
+                var result = await _djMoneyApiRespository.GetPerformanceTrend(req.EtfId?.ToUpper());
+                resp.Body = result;
+
+                if (result != null)
+                {
+                    resp.Message = "Success";
+                    resp.StatusCode = (int)HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
@@ -74,20 +81,14 @@ namespace Feature.Wealth.Component.Controllers
         /// <param name="endDate"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GetReturnChartData(string etfId, string startDate, string endDate)
+        public async Task<ActionResult> GetReturnChartData(ReqReturnTrend req)
         {
-            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+            RespEtf resp = new RespEtf();
 
             try
             {
-                etfId = etfId?.ToUpper();
-                var respMarketPrice = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.MarketPrice, startDate, endDate);
-                var respNetAssetValue = await _djMoneyApiRespository.GetReturnChartData(etfId, EtfReturnTrend.NetAssetValue, startDate, endDate);
-                resp.Body = new
-                {
-                    respMarketPrice,
-                    respNetAssetValue,
-                };
+                req.EtfId = req.EtfId?.ToUpper();
+                resp = await _detailRepository.GetReturnTrendData(req);
             }
             catch (Exception ex)
             {
@@ -130,7 +131,7 @@ namespace Feature.Wealth.Component.Controllers
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetReturnGlobalIndexChartData(ReqReturnTrend req)
+        public ActionResult GetReturnGlobalIndexChartData(ResGlobalIndex req)
         {
             RespEtf resp = new RespEtf();
 
@@ -152,18 +153,17 @@ namespace Feature.Wealth.Component.Controllers
         /// <summary>
         /// 買賣價走勢圖
         /// </summary>
-        /// <param name="etfId"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetHistoryPrice(string etfId, string startDate, string endDate)
+        public ActionResult GetHistoryPrice(ReqHistory req)
         {
-            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+            RespEtf resp = new RespEtf();
 
             try
             {
-                resp.Body = _detailRepository.GetHistoryPrice(etfId?.ToUpper(), startDate, endDate);
+                req.EtfId = req.EtfId?.ToUpper();
+                resp = _detailRepository.GetHistoryPrice(req);
             }
             catch (Exception ex)
             {
@@ -178,17 +178,29 @@ namespace Feature.Wealth.Component.Controllers
         /// <summary>
         /// K線圖
         /// </summary>
-        /// <param name="etfId"></param>
-        /// <param name="type"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GetKLineChart(string etfId, string type)
+        public async Task<ActionResult> GetKLineChart(ReqKLine req)
         {
-            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
+
+            if (string.IsNullOrWhiteSpace(req.Type))
+            {
+                resp.Message = "錯誤的查詢，請確認您的查詢參數";
+                resp.StatusCode = (int)HttpStatusCode.Forbidden;
+            }
 
             try
             {
-                resp.Body = await _djMoneyApiRespository.GetKLineChart(etfId?.ToUpper(), type);
+                var result = await _djMoneyApiRespository.GetKLineChart(req.EtfId?.ToUpper(), req.Type);
+                resp.Body = result;
+
+                if (result != null)
+                {
+                    resp.Message = "Success";
+                    resp.StatusCode = (int)HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
@@ -203,17 +215,23 @@ namespace Feature.Wealth.Component.Controllers
         /// <summary>
         /// ETF PDF文件下載點
         /// </summary>
-        /// <param name="etfId"></param>
-        /// <param name="idx">文件類型</param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GetDocLink(string etfId, string idx)
+        public async Task<ActionResult> GetDocLink(ReqDocLink req)
         {
-            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
 
             try
             {
-                resp.Body = await _djMoneyApiRespository.GetEtfDocLink(etfId?.ToUpper(), idx);
+                var result = await _djMoneyApiRespository.GetEtfDocLink(req.EtfId?.ToUpper(), req.Idx);
+                resp.Body = result;
+
+                if (result != null)
+                {
+                    resp.Message = "Success";
+                    resp.StatusCode = (int)HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
@@ -228,21 +246,29 @@ namespace Feature.Wealth.Component.Controllers
         /// <summary>
         /// 產業、區域持股狀況
         /// </summary>
-        /// <param name="etfId"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetETFHoldings(string etfId)
+        public ActionResult GetETFHoldings(ReqBase req)
         {
-            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
 
             try
             {
-                etfId = etfId?.ToUpper();
-                resp.Body = new RespHolding()
+                req.EtfId = req.EtfId?.ToUpper();
+                var result = new RespHolding()
                 {
-                    IndustryHoldings = _detailRepository.GetETFIndustryPercent(etfId),
-                    RegionHoldings = _detailRepository.GetETFRegionPercent(etfId)
+                    IndustryHoldings = _detailRepository.GetETFIndustryPercent(req.EtfId),
+                    RegionHoldings = _detailRepository.GetETFRegionPercent(req.EtfId)
                 };
+
+                resp.Body = result;
+
+                if (result.IndustryHoldings != null && result.RegionHoldings != null)
+                {
+                    resp.Message = "Success";
+                    resp.StatusCode = (int)HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
@@ -257,19 +283,25 @@ namespace Feature.Wealth.Component.Controllers
         /// <summary>
         /// 風險象限圖
         /// </summary>
-        /// <param name="etfId"></param>
-        /// <param name="selectType"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetETFRiskGraph(string etfId, string selectType)
+        public ActionResult GetETFRiskGraph(ReqRiskGraph req)
         {
-            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.OK, Message = "Success" };
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
 
             try
             {
-                selectType = string.IsNullOrEmpty(selectType) ? "Type" : selectType;
-                resp.Body = _detailRepository.GetRiskindicatorsGraph(etfId?.ToUpper(), selectType);
-                return new JsonNetResult(resp);
+                req.EtfId = req.EtfId?.ToUpper();
+                req.SelectType = string.IsNullOrEmpty(req.SelectType) ? "Type" : req.SelectType;
+                var result = _detailRepository.GetRiskindicatorsGraph(req.EtfId, req.SelectType);
+                resp.Body = result;
+
+                if (result != null)
+                {
+                    resp.Message = "Success";
+                    resp.StatusCode = (int)HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {

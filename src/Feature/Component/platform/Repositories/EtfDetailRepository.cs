@@ -424,7 +424,7 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 取得 ETF 績效圖資訊
+        /// 取得 ETF 績效走勢資訊
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
@@ -446,14 +446,14 @@ namespace Feature.Wealth.Component.Repositories
                 this._log.Error("ETF績效圖－取得績效走勢資訊", ex);
             }
 
+            resp.Body = new
+            {
+                respMarketPrice,
+                respNetAssetValue,
+            };
+
             if (respMarketPrice != null && respNetAssetValue != null)
             {
-                resp.Body = new
-                {
-                    respMarketPrice,
-                    respNetAssetValue,
-                };
-
                 resp.Message = "Success";
                 resp.StatusCode = (int)HttpStatusCode.OK;
             }
@@ -483,7 +483,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 respGlobalIndex = new GlobalIndexRepository().GetGlobalInedxPriceData(indexCode, cycle);
 
-                if (respGlobalIndex.Count > 0)
+                if (respGlobalIndex != null && respGlobalIndex.Any())
                 {
                     resp.Message = "Success";
                     resp.StatusCode = (int)HttpStatusCode.OK;
@@ -692,7 +692,50 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="etfId"></param>
         /// <returns></returns>
-        public (List<EtfHistoryPrice>, string) GetHistoryPrice(string etfId, string startdate, string enddate)
+        public RespEtf GetHistoryPrice(ReqHistory req)
+        {
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
+            string etfId = req.EtfId;
+            string startDate = req.StartDate;
+            string endDate = req.EndDate;
+
+            if (string.IsNullOrWhiteSpace(etfId) &&
+                (string.IsNullOrWhiteSpace(startDate) || string.IsNullOrWhiteSpace(endDate)))
+            {
+                resp.Message = "錯誤的查詢，請確認您的查詢參數";
+                resp.StatusCode = (int)HttpStatusCode.Forbidden;
+                return resp;
+            }
+
+            try
+            {
+                var data = GetHistoryPriceData(etfId, startDate, endDate);
+                resp.Body = data;
+
+                if (data != null && data.Any())
+                {
+                    resp.Message = "Success";
+                    resp.StatusCode = (int)HttpStatusCode.OK;
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("ETF買賣價走勢圖－取得歷史買賣盤", ex);
+            }
+
+            return resp;
+        }
+
+        /// <summary>
+        /// 取得歷史買賣價資訊
+        /// </summary>
+        /// <param name="etfId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        public List<EtfHistoryPrice> GetHistoryPriceData(string etfId, string startDate, string endDate)
         {
             var sql = """
                 SELECT [BankBuyPrice]
@@ -703,16 +746,9 @@ namespace Feature.Wealth.Component.Repositories
                     AND [PriceBaseDate] BETWEEN FORMAT(CONVERT(DATE, @StartDate), 'yyyyMMdd') -19110000 AND  FORMAT(CONVERT(DATE, @EndDate), 'yyyyMMdd') -19110000
                 ORDER BY [PriceBaseDate]
                 """;
-            var param = new { ETFId = etfId, StartDate = startdate, EndDate = enddate };
-            List<EtfHistoryPrice> etfScaleMove = DbManager.Custom.ExecuteIList<EtfHistoryPrice>(sql, param, CommandType.Text)?.ToList();
-
-            sql = """
-                SELECT [QuoteCurrency]
-                FROM [vw_BasicETF]
-                WHERE [FirstBankCode] = @ETFId
-                """;
-            string indicator = DbManager.Custom.Execute<string>(sql, param, CommandType.Text);
-            return (etfScaleMove, indicator);
+            var param = new { ETFId = etfId, StartDate = startDate, EndDate = endDate };
+            List<EtfHistoryPrice> result = DbManager.Custom.ExecuteIList<EtfHistoryPrice>(sql, param, CommandType.Text)?.ToList();
+            return result;
         }
 
         /// <summary>
@@ -968,7 +1004,7 @@ namespace Feature.Wealth.Component.Repositories
             var result = DbManager.Custom.ExecuteIList<EtfRiskGraph>("sp_ETFRiskindicatorsPicture", param, CommandType.StoredProcedure)
                 .Select(r =>
                 {
-                    r.ETFName = r.ETFName.Normalize(NormalizationForm.FormKC);
+                    r.ETFName = r.ETFName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
                     return r;
                 });
 

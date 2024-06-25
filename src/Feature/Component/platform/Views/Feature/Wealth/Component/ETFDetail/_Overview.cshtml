@@ -338,6 +338,7 @@
                     tickPosition: 'inside',
                     tickWidth: 0.5,
                     tickLength: 7,
+                    tickInterval: 24 * 3600 * 1000 * 7,
                     labels: {
                         formatter: function () {
                             const format = {
@@ -434,9 +435,11 @@
                             });
 
                             mapData.sort((a, b) => { return a.x - b.x; });
-                            let latestDate = mapData[mapData.length - 1].name;
-                            const updateDate = latestDate.replaceAll('-', '/');
-                            $('[data-update-date="performance"]').text(updateDate);
+                            if (mapData) {
+                                let latestDate = mapData[mapData.length - 1].name;
+                                const updateDate = latestDate.replaceAll('-', '/');
+                                $('[data-update-date="performance"]').text(updateDate);
+                            }
 
                             Highcharts.stockChart('performanceChart', {
                                 ...nearlySetting,
@@ -529,10 +532,12 @@
                         mapMarketData.sort((a, b) => { return a.x - b.x; });
                         mapNetWorthData.sort((a, b) => { return a.x - b.x; });
 
-                        let latestDate = mapMarketData[mapMarketData.length - 1].name;
-                        const updateDate = latestDate.replaceAll('-', '/');
-                        // 資料日期
-                        $('[data-update-date="netWorth"]').text(updateDate);
+                        if (mapMarketData) {
+                            let latestDate = mapMarketData[mapMarketData.length - 1].name;
+                            const updateDate = latestDate.replaceAll('-', '/');
+                            // 資料日期
+                            $('[data-update-date="netWorth"]').text(updateDate);
+                        }
 
                         Highcharts.stockChart('netWorthChart', {
                             ...nearlySetting,

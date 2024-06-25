@@ -927,9 +927,11 @@
                                 turboThreshold: 0,
                             }];
 
-                            let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
-                            const updateDate = latestDate.replaceAll('-', '/');
-                            $('[data-update-date="market"]').text(updateDate);
+                            if (mapMarketPriceData) {
+                                let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
+                                const updateDate = latestDate.replaceAll('-', '/');
+                                $('[data-update-date="market"]').text(updateDate);
+                            }
 
                             chart = Highcharts.stockChart('marketTrendChart', {
                                 chart: {
@@ -964,41 +966,45 @@
                                             var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
 
                                             setTimeout(function () {
-                                                maxPoint.update({
-                                                    dataLabels: {
-                                                        enabled: true,
-                                                        verticalAlign: 'middle',
-                                                        x: maxPointMoreThanHalf ? -45 : 45,
-                                                        y: -5,
-                                                        formatter: function () {
-                                                            var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
-                                                            return label;
-                                                        },
-                                                        style: {
-                                                            fontSize: 14,
-                                                            fontWeight: 'normal',
-                                                            textOutline: 'none'
+                                                if (maxPoint) {
+                                                    maxPoint.update({
+                                                        dataLabels: {
+                                                            enabled: true,
+                                                            verticalAlign: 'middle',
+                                                            x: maxPointMoreThanHalf ? -45 : 45,
+                                                            y: -5,
+                                                            formatter: function () {
+                                                                var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
+                                                                return label;
+                                                            },
+                                                            style: {
+                                                                fontSize: 14,
+                                                                fontWeight: 'normal',
+                                                                textOutline: 'none'
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }, 300);
                                             setTimeout(function () {
-                                                minPoint.update({
-                                                    dataLabels: {
-                                                        enabled: true,
-                                                        verticalAlign: 'middle',
-                                                        x: minPointMoreThanHalf ? -45 : 45,
-                                                        formatter: function () {
-                                                            var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
-                                                            return label;
-                                                        },
-                                                        style: {
-                                                            fontSize: 14,
-                                                            fontWeight: 'normal',
-                                                            textOutline: 'none'
+                                                if (minPoint) {
+                                                    minPoint.update({
+                                                        dataLabels: {
+                                                            enabled: true,
+                                                            verticalAlign: 'middle',
+                                                            x: minPointMoreThanHalf ? -45 : 45,
+                                                            formatter: function () {
+                                                                var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
+                                                                return label;
+                                                            },
+                                                            style: {
+                                                                fontSize: 14,
+                                                                fontWeight: 'normal',
+                                                                textOutline: 'none'
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                                }
                                             }, 300);
                                         }
                                     },
@@ -1391,9 +1397,11 @@
                             turboThreshold: 0,
                         }];
 
-                        let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
-                        const updateDate = latestDate.replaceAll('-', '/');
-                        $('[data-update-date="etf"]').text(updateDate);
+                        if (mapMarketPriceData) {
+                            let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
+                            const updateDate = latestDate.replaceAll('-', '/');
+                            $('[data-update-date="etf"]').text(updateDate);
+                        }
 
                         chart = Highcharts.stockChart('etfTrendChart', {
                             chart: {
@@ -1412,6 +1420,7 @@
                                             maxPoint,
                                             minValue,
                                             minPoint;
+
                                         allPoints.filter(function (point) {
                                             if (!maxValue || maxValue < point.y) {
                                                 maxValue = point.y;
@@ -1427,41 +1436,45 @@
                                         var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
 
                                         setTimeout(function () {
-                                            maxPoint.update({
-                                                dataLabels: {
-                                                    enabled: true,
-                                                    verticalAlign: 'middle',
-                                                    x: maxPointMoreThanHalf ? -45 : 45,
-                                                    y: -5,
-                                                    formatter: function () {
-                                                        var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
-                                                        return label;
-                                                    },
-                                                    style: {
-                                                        fontSize: 14,
-                                                        fontWeight: 'normal',
-                                                        textOutline: 'none'
+                                            if (maxPoint) {
+                                                maxPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: maxPointMoreThanHalf ? -45 : 45,
+                                                        y: -5,
+                                                        formatter: function () {
+                                                            var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
+                                            }
                                         }, 300);
                                         setTimeout(function () {
-                                            minPoint.update({
-                                                dataLabels: {
-                                                    enabled: true,
-                                                    verticalAlign: 'middle',
-                                                    x: minPointMoreThanHalf ? -45 : 45,
-                                                    formatter: function () {
-                                                        var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
-                                                        return label;
-                                                    },
-                                                    style: {
-                                                        fontSize: 14,
-                                                        fontWeight: 'normal',
-                                                        textOutline: 'none'
+                                            if (minPoint) {
+                                                minPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: minPointMoreThanHalf ? -45 : 45,
+                                                        formatter: function () {
+                                                            var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
+                                            }
                                         }, 300);
                                     }
                                 },
@@ -1590,7 +1603,7 @@
                             },
                             series: series
                         });
-                        
+
                     }).catch((err) => {
                         $('[data-chart="etfTrend"]').find('.c-empty').removeClass('u-hidden');
                         $('[data-chart="etfTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
