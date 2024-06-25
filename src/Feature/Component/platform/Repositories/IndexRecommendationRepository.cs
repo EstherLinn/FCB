@@ -192,7 +192,7 @@ namespace Feature.Wealth.Component.Repositories
                    ,B.[AvailabilityStatus]
                    FROM [Sysjust_USStockList] A WITH (NOLOCK)
                    LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
-                   ORDER BY SixMonthReturn DESC, A.[FirstBankCode] ASC
+                   ORDER BY MonthlyReturn DESC, A.[FirstBankCode] ASC
                    """;
 
             var results = DbManager.Custom.ExecuteIList<USStock>(sql, null, CommandType.Text);
