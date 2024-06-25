@@ -40,7 +40,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 }
                 else
                 {
-                    this.Logger.Warn("File not found");
+                    this.Logger.Warn($"{sql} no data.");
                     _repository.LogChangeHistory(DateTime.UtcNow, sql, "沒有資料", " ", 0);
                 }
             }

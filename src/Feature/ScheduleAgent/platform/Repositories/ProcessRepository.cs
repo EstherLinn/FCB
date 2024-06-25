@@ -3,11 +3,13 @@ using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Foundation.Wealth.Manager;
 using Sitecore.Data.Items;
+using Sitecore.Shell.Framework.Commands;
 using Sitecore.Xdb.Reporting;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
 using System.Data.Odbc;
 using System.Data.SqlClient;
 using System.IO;
@@ -127,11 +129,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             string truncateQuery = $"TRUNCATE TABLE {tableName};";
             ExecuteNonQuery(truncateQuery, null, CommandType.Text, true);
 
-            using (var connection = DbManager.Cif.DbConnection())
+            using (var connection = (SqlConnection)DbManager.Cif.DbConnection()) 
             {
                 await connection.OpenAsync();
 
-                using (SqlBulkCopy bulkCopy = new SqlBulkCopy((SqlConnection)connection))
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
                 {
                     bulkCopy.DestinationTableName = tableName;
 
@@ -258,9 +260,10 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
 
 
-        public async Task<List<T>> ConnectOdbc<T>(string sql)
+        public async Task<List<T>> ConnectOdbc<T>(string sql) where T : new()
         {
             string connString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString;
+            var resultList = new List<T>();
 
             using (OdbcConnection connection = new OdbcConnection(connString))
             {
@@ -269,14 +272,32 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     await connection.OpenAsync();
                     this._logger.Info("Opened Successfully");
 
-                    var resultList = await connection.QueryAsync<T>(sql);
+                    using (OdbcCommand command = new OdbcCommand(sql, connection))
+                    {
+                        using (DbDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            var properties = typeof(T).GetProperties();
 
-                    return resultList.ToList();
+                            while (await reader.ReadAsync())
+                            {
+                                var item = new T();
+                                foreach (var property in properties)
+                                {
+                                    var ordinal = reader.GetOrdinal(property.Name);
+                                    if (!await reader.IsDBNullAsync(ordinal))
+                                    {
+                                        property.SetValue(item, reader.GetValue(ordinal), null);
+                                    }
+                                }
+                                resultList.Add(item);
+                            }
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
                     this._logger.Error(ex.ToString());
-                    return null; 
+                    return null;
                 }
                 finally
                 {
@@ -284,7 +305,10 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     this._logger.Info("Connection closed.");
                 }
             }
+
+            return resultList;
         }
+
 
     }
 }

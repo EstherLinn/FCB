@@ -67,7 +67,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 }
                 else
                 {
-                    this.Logger.Error("ERROR: File not found");
+                    this.Logger.Error($"{filename} not found");
                     _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
                 }
             }

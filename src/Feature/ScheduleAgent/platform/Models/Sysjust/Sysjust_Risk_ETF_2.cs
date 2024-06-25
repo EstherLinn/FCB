@@ -1,4 +1,9 @@
-﻿using CsvHelper.Configuration.Attributes;
+﻿using CsvHelper.Configuration;
+using CsvHelper;
+using CsvHelper.Configuration.Attributes;
+using CsvHelper.TypeConversion;
+using System.Globalization;
+using System;
 
 namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
 {
@@ -27,6 +32,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// </summary>
         [Index(2)]
         [NullValues("", "NULL", null)]
+        [TypeConverter(typeof(DateConverteryyMdd))]
         public string Date { get; set; }
 
         /// <summary>
@@ -274,5 +280,26 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// </summary>
         [Index(43)]
         public decimal? TwoYearStandardDeviation { get; set; }
+    }
+
+    public class DateConverteryyMdd : DefaultTypeConverter
+    {
+        public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return null;
+            }
+            else
+            {
+                var cultureInfo = new CultureInfo("zh-TW");
+                var formats = new[] { "yyyy/M/dd", "yyyy/MM/dd" };
+                if (DateTime.TryParseExact(text, formats, cultureInfo, DateTimeStyles.None, out DateTime establishment))
+                {
+                    return establishment.ToString("yyyy/MM/dd");
+                }
+            }
+            return base.ConvertFromString(text, row, memberMapData);
+        }
     }
 }
