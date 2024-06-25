@@ -8,6 +8,8 @@ using log4net;
 using Mapster;
 using Newtonsoft.Json.Linq;
 using Sitecore.Data.Items;
+using Sitecore.Data.Query;
+using Sitecore.IO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -35,9 +37,9 @@ namespace Feature.Wealth.Component.Repositories
         public string ETFId { get; set; }
 
         /// <summary>
-        /// 產品註記
+        /// ETF 類型
         /// </summary>
-        public string Indicator { get; set; }
+        private Dictionary<string, RegionType> RegionTypeMapping { get; set; }
 
         /// <summary>
         /// 標籤
@@ -46,28 +48,11 @@ namespace Feature.Wealth.Component.Repositories
 
         public EtfDetailModel GetETFDetailModel(string etfId, Item dataSource)
         {
-            this.Indicator = GetProductIdentifier(etfId);
+            this.RegionTypeMapping = InitializePrefixToRegionType();
             EtfDetailModel model;
             model = GetOrSetETFDetailsCache(etfId);
             GetDatasourceData(model, dataSource);
             return model;
-        }
-
-        /// <summary>
-        /// 取得產品註記
-        /// </summary>
-        /// <param name="etfId"></param>
-        /// <returns></returns>
-        private string GetProductIdentifier(string etfId)
-        {
-            string sql = """
-                SELECT ProductIdentifier
-                FROM [FUND_ETF] WITH (NOLOCK)
-                WHERE [BankProductCode] = @ETFId
-                """;
-            var para = new { ETFId = etfId };
-            string indicator = DbManager.Custom.Execute<string>(sql, para, CommandType.Text);
-            return indicator;
         }
 
         public EtfDetailModel GetOrSetETFDetailsCache(string etfId)
@@ -166,11 +151,10 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 依一銀代碼區分國內或境外 ETF
+        /// RegionType 初始化
         /// </summary>
-        /// <param name="firstBankCode">一銀代碼</param>
         /// <returns></returns>
-        private RegionType CheckRegionType(string firstBankCode)
+        private Dictionary<string, RegionType> InitializePrefixToRegionType()
         {
             // 依一銀代碼分為: 國內ETF (35 系列)、舊境外ETF (EA、EB 系列)、境外ETF (EF、EK、EH 系列)
             Dictionary<string, RegionType> prefixToRegionTypeMap = new Dictionary<string, RegionType>()
@@ -182,13 +166,22 @@ namespace Feature.Wealth.Component.Repositories
                 { "EK", RegionType.Overseas },
                 { "EH", RegionType.Overseas }
             };
+            return prefixToRegionTypeMap;
+        }
 
+        /// <summary>
+        /// 依一銀代碼區分國內或境外 ETF
+        /// </summary>
+        /// <param name="firstBankCode">一銀代碼</param>
+        /// <returns></returns>
+        private RegionType CheckRegionType(string firstBankCode)
+        {
             if (string.IsNullOrEmpty(firstBankCode))
             {
                 return RegionType.None;
             }
 
-            var type = prefixToRegionTypeMap.FirstOrDefault(p => firstBankCode.StartsWith(p.Key, StringComparison.OrdinalIgnoreCase)).Value;
+            var type = this.RegionTypeMapping.FirstOrDefault(p => firstBankCode.StartsWith(p.Key, StringComparison.OrdinalIgnoreCase)).Value;
             return type;
         }
 
@@ -403,6 +396,7 @@ namespace Feature.Wealth.Component.Repositories
                     ,[NetAssetValueDate]
                 FROM [vw_BasicETF]
                 WHERE [FirstBankCode] <> @ETFId AND [FirstBankCode] IS NOT NULL AND [FirstBankCode] <> ''
+                    AND [FirstBankCode] NOT LIKE 'EA%' AND [FirstBankCode] NOT LIKE 'EB%' 
                 ORDER BY [SixMonthReturnNetValueOriginalCurrency] DESC
                 """;
             var param = new { ETFId = this.ETFId };
