@@ -61,7 +61,7 @@ namespace Feature.Wealth.Account.Controllers
 
             User user = Authentication.BuildVirtualUser("extranet", responseProfile.UserId, true);
 
-            FcbMemberModel member = null;
+            FcbMemberModel member;
 
             var isExist = _memberRepository.CheckUserExists(PlatFormEunm.Line, responseProfile.UserId);
             if (!isExist)
@@ -79,7 +79,7 @@ namespace Feature.Wealth.Account.Controllers
                 user.Profile.Name = member.MemberName;
                 user.Profile.Email = member.MemberEmail;
             }
-            this.SetCustomPropertyAndLogin(member, user);        
+            SetCustomPropertyAndLogin(member, user);
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
 
@@ -119,7 +119,7 @@ namespace Feature.Wealth.Account.Controllers
                 user.Profile.Name = member.MemberName;
                 user.Profile.Email = member.MemberEmail;
             }
-            this.SetCustomPropertyAndLogin(member, user);
+            SetCustomPropertyAndLogin(member, user);
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
 
@@ -206,7 +206,7 @@ namespace Feature.Wealth.Account.Controllers
                                     User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
                                     user.Profile.Name = cifMember.CIF_CUST_NAME;
                                     user.Profile.Email = cifMember.CIF_E_MAIL_ADDRESS;
-                                    this.SetCustomPropertyAndLogin(member, user);
+                                    SetCustomPropertyAndLogin(member, user);
 
                                 }
                                 else
@@ -217,7 +217,7 @@ namespace Feature.Wealth.Account.Controllers
                                     User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
                                     user.Profile.Name = member.MemberName;
                                     user.Profile.Email = member.MemberEmail;
-                                    this.SetCustomPropertyAndLogin(member, user);
+                                    SetCustomPropertyAndLogin(member, user);
                                 }
                             }
                         }
@@ -256,7 +256,7 @@ namespace Feature.Wealth.Account.Controllers
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
             //第一行動&&iLeo登入
-            var qs = HttpContext.Request.QueryString;
+            var qs = this.Request.QueryString;
             var step = string.Empty;
             try
             {
@@ -286,7 +286,7 @@ namespace Feature.Wealth.Account.Controllers
                         _memberRepository.CreateNewMember(member);
                         user.Profile.Name = cifMember.CIF_CUST_NAME;
                         user.Profile.Email = cifMember.CIF_E_MAIL_ADDRESS;
-                        this.SetCustomPropertyAndLogin(member, user);
+                        SetCustomPropertyAndLogin(member, user);
                         Session["AppLoginSuccess"] = true;
                     }
                     else
@@ -295,7 +295,7 @@ namespace Feature.Wealth.Account.Controllers
                         FcbMemberModel member = _memberRepository.GetAppMemberInfo(PlatFormEunm.WebBank, code);
                         user.Profile.Name = member.MemberName;
                         user.Profile.Email = member.MemberEmail;
-                        this.SetCustomPropertyAndLogin(member, user);
+                        SetCustomPropertyAndLogin(member, user);
                         Session["AppLoginSuccess"] = true;
                     }
                     step = $"Step4 同步iLeo關注清單";
@@ -334,7 +334,6 @@ namespace Feature.Wealth.Account.Controllers
         {
             string obj = string.Format("txReqId:{0} LoginResult:{1} LoginDttm:{2} errMsg:{3} fnct:{4} custData:{5} sign:{6}",
                 txReqId, LoginResult, LoginDttm, errMsg, fnct, custData, sign);
-            var step = string.Empty;
             var getCustData = custData ?? string.Empty;
             var getCustDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(HttpUtility.UrlDecode(getCustData));
             object returnObj = new
@@ -344,7 +343,6 @@ namespace Feature.Wealth.Account.Controllers
             };
             if (LoginResult == "0000")
             {
-                step = "Step1 ok";
                 if (!getCustDic.TryGetValue("custId", out string id))
                 {
                     Logger.Account.Info("個網登入0203回應:" + obj + ",custData UrlDecode:" + HttpUtility.UrlDecode(getCustData));
@@ -527,16 +525,6 @@ namespace Feature.Wealth.Account.Controllers
             string objToJson = JsonConvert.SerializeObject(fcbMember);
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
             user.Profile.Save();
-            var roleName = "extranet\\anonymous";
-            // Get the role
-            Role role = Role.FromName(roleName);
-
-            // Check if the role exists
-            if (Role.Exists(roleName))
-            {
-                // Add the role to the virtual user
-                user.Roles.Add(role);
-            }
             Authentication.LoginVirtualUser(user);
         }
 
