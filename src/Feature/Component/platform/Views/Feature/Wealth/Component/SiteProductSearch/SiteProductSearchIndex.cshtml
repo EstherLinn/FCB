@@ -767,7 +767,7 @@
                         this.GenerateSearchKeywordList();
                         initAutocomplete();
 
-                        $('[data-tab] [data-tab-target]:first').trigger('switch');
+                        $('[data-tab] [data-tab-target]').first().trigger('switch');
                         $('[data-filter-switch="#uid-template-etf-original"]').trigger('change');
 
                         hideLoading();
@@ -846,7 +846,7 @@
             });
 
             $('[data-filter-reset]').on('click.reset', function (e) {
-                $('[data-tab] [data-tab-target]:first').trigger('switch');
+                $('[data-tab] [data-tab-target]').first().trigger('switch');
             });
 
             $('[data-keyword-input]').on('keypress.loading', function (e) {

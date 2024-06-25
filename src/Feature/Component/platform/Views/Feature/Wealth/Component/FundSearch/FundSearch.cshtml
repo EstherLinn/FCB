@@ -1968,7 +1968,7 @@
                 initFilter(data);
                 initAutocomplete(data);
 
-                $('[data-tab] [data-tab-target]:first').trigger('switch');
+                $('[data-tab] [data-tab-target]').first().trigger('switch');
                 $('[data-filter-switch="#uid-template"]').trigger('change');
             }).fail(function (jqXHR, textStatus, errorThrown) {
             }).always(function () {
@@ -2095,7 +2095,7 @@
                     }
                 });
                 $('[data-filter-reset]').on('click.reset', function (e) {
-                    $('[data-tab] [data-tab-target]:first').trigger('switch');
+                    $('[data-tab] [data-tab-target]').first().trigger('switch');
                 });
                 $('[data-keyword-input]').on('keypress.loading', function (e) {
                     if (e.which === 13 && !!$(this).val().toString().trim()) {
