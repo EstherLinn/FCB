@@ -285,22 +285,16 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
                             while (reader.Read())
                             {
-                                this._logger.Info("Reading data");
-
                                 var item = new T();
                                 foreach (var property in properties)
                                 {
-                                    this._logger.Info($"Reading property {property.Name}");
-
                                     var ordinal = reader.GetOrdinal(property.Name);
                                     if (!reader.IsDBNull(ordinal))
                                     {
                                         property.SetValue(item, reader.GetValue(ordinal), null);
-                                        this._logger.Info($"Set property {property.Name}");
                                     }
                                 }
                                 resultList.Add(item);
-                                this._logger.Info("Item added to result list");
                             }
                         }
                     }
