@@ -480,7 +480,7 @@
                                     </th>
                                     <th>
                                         <div class="c-table__title">
-                                            <span>6個月績效</span>
+                                            <span>1個月績效</span>
                                         </div>
                                     </th>
                                     <th>
@@ -571,19 +571,19 @@
                                             </div>
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
-                                            <div class="c-cardTable__title" data-length="5">6個月績效</div>
+                                            <div class="c-cardTable__title" data-length="5">1個月績效</div>
                                             <div class="c-cardTable__content">
-                                                @if (item.SixMonthReturn == null)
+                                                @if (item.MonthlyReturn == null)
                                                 {
                                                     <span>-</span>
                                                 }
-                                                else if (item.SixMonthReturn >= 0)
+                                                else if (item.MonthlyReturn >= 0)
                                                 {
-                                                    <span class="o-rise">@(item.SixMonthReturn)%</span>
+                                                    <span class="o-rise">@(item.MonthlyReturn)%</span>
                                                 }
-                                                else if (item.SixMonthReturn < 0)
+                                                else if (item.MonthlyReturn < 0)
                                                 {
-                                                    <span class="o-fall">@(Math.Abs(item.SixMonthReturn.Value)) %</span>
+                                                    <span class="o-fall">@(Math.Abs(item.MonthlyReturn.Value)) %</span>
                                                 }
                                             </div>
                                         </td>
