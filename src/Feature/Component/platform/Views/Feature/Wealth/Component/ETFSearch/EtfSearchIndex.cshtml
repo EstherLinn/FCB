@@ -406,7 +406,7 @@
                 fjs.bindEvent('[data-keyword-submit]', 'click.loading');
 
                 $('[data-filter-reset]').on('click.reset', function (e) {
-                    $('[data-tab] [data-tab-target]:first').trigger('switch');
+                    $('[data-tab] [data-tab-target]').first().trigger('switch');
                 });
 
                 $('[data-keyword-input]').on('keypress.loading', function (e) {
@@ -595,7 +595,7 @@
                         this.GenerateSearchKeywordList();
                         initAutocomplete();
 
-                        $('[data-tab] [data-tab-target]:first').trigger('switch');
+                        $('[data-tab] [data-tab-target]').first().trigger('switch');
                         $('[data-filter-switch="#uid-template-marketPrice-original"]').trigger('change');
                     }).then(() => {
                         checkKeywordQueryString();
