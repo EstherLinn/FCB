@@ -43,20 +43,20 @@
                 closeOnBgClick: false,
                 callbacks: {
                     afterClose: function () {
-                        window.location.href = new URL(window.location.origin + '@Model.ReturnLink');
+                        location.href = new URL(location.origin + '@Model.ReturnLink');
                     }
                 }
             });
         }
         else {
-            window.location.href = new URL(window.location.origin + '@Model.ReturnLink');
+            location.href = new URL(location.origin + '@Model.ReturnLink');
         }
     });
 
     $('[data-return]').on('click', function (e) {
         e.preventDefault();
 
-        window.location.href = new URL(window.location.origin + '@Model.ReturnLink');
+        location.href = new URL(location.origin + '@Model.ReturnLink');
     });
 </script>
 
