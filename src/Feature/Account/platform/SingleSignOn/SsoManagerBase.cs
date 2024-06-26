@@ -121,6 +121,11 @@ namespace Feature.Wealth.Account.SingleSignOn
         /// <returns></returns>
         public virtual (bool Success, string Message) Login(User user)
         {
+            if (Sitecore.Context.IsLoggedIn)
+            {
+                MemberUtils.Authentication.LogOutUser();
+            }
+
             bool success = MemberUtils.Authentication.LoginUser(user, true);
 
             string message = $"{user.Name} 登入成功";
