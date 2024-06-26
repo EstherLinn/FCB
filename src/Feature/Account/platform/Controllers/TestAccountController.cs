@@ -22,7 +22,7 @@ namespace Feature.Wealth.Account.Controllers
         public ActionResult Index()
         {
             var id = Settings.GetSetting("StressTestId");
-            FcbMemberModel member = new FcbMemberModel(id, "一銀測試", "fcb@fcb.com", "1", "xxx", true, true,
+            FcbMemberModel member = new FcbMemberModel(id, "一銀測試", "fcb@fcb.com", "1", "xxx", "ooo", true, true,
                 QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, id);
             User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
             user.Profile.Name = member.MemberName;
