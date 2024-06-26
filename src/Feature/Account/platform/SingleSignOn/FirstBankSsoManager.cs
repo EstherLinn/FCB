@@ -77,7 +77,7 @@ namespace Feature.Wealth.Account.SingleSignOn
 
             if (!result.Item1)
             {
-                this.Log.Error($"{nameof(FirstBankSsoManager)} 無法取得授權對應表 {result.Item2}");
+                this.Log.Error($"{nameof(FirstBankSsoManager)} {result.Item2}");
                 return null;
             }
             return scUser;
@@ -85,7 +85,6 @@ namespace Feature.Wealth.Account.SingleSignOn
 
         private (bool Success, string Message) GrantRole(User scUser, Employee member)
         {
-            var msg = string.Empty;
             var authorizationMapper = base.AuthorizationMapper();
             var authMappers = authorizationMapper?.GetValue(this.Domain.Name);
 
@@ -119,17 +118,17 @@ namespace Feature.Wealth.Account.SingleSignOn
                     }
                 }
             }
-            return (false, msg);
+            return (false, "無符合授權對應");
         }
 
         private (bool Success, string Message) SetRoles(User scUser, IEnumerable<Role> roles)
         {
             using (new SecurityDisabler())
             {
-                if (!scUser.IsAdministrator)
-                {
-                    scUser.Roles.RemoveAll();
-                }
+                //if (!scUser.IsAdministrator)
+                //{
+                //    scUser.Roles.RemoveAll();
+                //}
                 List<string> roleName = new List<string>();
                 foreach (var role in roles)
                 {
