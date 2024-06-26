@@ -124,7 +124,7 @@
                 insertKeywords();
 
                 let option = SC_DATA.KeywordSearch_Option;
-                redirect(option.data('advance-url') + '?keyword=' + DOMPurify.sanitize(input.value) + '&keywordFromSearchbar=true');
+                redirect(option.data('advance-url') + '?keyword=' + DOMPurify.sanitize(input.value));
             }
 
             function redirect(url) {
