@@ -264,6 +264,7 @@ namespace Feature.Wealth.Account.Controllers
                 //檢查網址參數
                 if (!string.IsNullOrEmpty(qs["promotionCode"]) && !string.IsNullOrEmpty(qs["rtCode"]) && qs["rtCode"] == "0000")
                 {
+                    Logger.Api.Info($"一銀App登入回理財網 接收參數: promotionCode={qs["promotionCode"]},rtCode={qs["rtCode"]}");
                     step = $"Step2 promotionCode和rtCode通過，確認會員是否存在理財網";
                     Session["IsAppLogin"] = true;
                     var code = qs["promotionCode"];
@@ -298,8 +299,9 @@ namespace Feature.Wealth.Account.Controllers
                         SetCustomPropertyAndLogin(member, user);
                         Session["AppLoginSuccess"] = true;
                     }
-                    step = $"Step4 同步iLeo關注清單";
+                    step = $"Step4 理財網會員登入完成 同步iLeo關注清單";
                     FirstBankApiService firstBankApiService = new();
+                    Logger.Api.Info($"{step},帶入promotionCode = {code}");
                     firstBankApiService.SyncTrackList(await firstBankApiService.GetTrackListFromIleo(code));
                 }
             }
