@@ -85,8 +85,7 @@ namespace Feature.Wealth.Account.SingleSignOn
 
         private (bool Success, string Message) GrantRole(User scUser, Employee member)
         {
-            var authorizationMapper = base.AuthorizationMapper();
-            var authMappers = authorizationMapper?.GetValue(this.Domain.Name);
+            var authMappers = this.AuthorizationMapper?.GetValue(this.Domain.Name);
 
             if (authMappers == null || !authMappers.Any())
             {
@@ -181,30 +180,13 @@ namespace Feature.Wealth.Account.SingleSignOn
             return (true, string.Empty);
         }
 
-        /// <summary>
-        /// 有效認證條件
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="roles"></param>
-        /// <returns></returns>
-        public (bool Success, string Message) ValidAuthCondition(FirstBankUser user, out List<Role> roles)
+        private new Dictionary<string, IEnumerable<AuthMapper>> AuthorizationMapper
         {
-            roles = null;
-            var authorizationMapper = base.AuthorizationMapper();
-            var authMappers = authorizationMapper?.GetValue(this.Domain.Name)?.ToList();
-            if (authMappers == null || !authMappers.Any())
+            get
             {
-                return (false, "無法取得授權對應表");
+                using (new SecurityDisabler())
+                    return base.AuthorizationMapper();
             }
-
-            roles = authMappers
-                .Where(x =>
-                    x.DepartmentId.Any(y =>
-                        string.IsNullOrEmpty(y) || user.Profile.DepartmentCode.Equals(y))
-                )
-                .SelectMany(x => x.Roles).Distinct().ToList();
-
-            return roles.Any() ? (true, string.Empty) : (false, "找不到角色對應表");
         }
 
         public void UpdateToSitecoreProfile(User scUser, FirstBankUser user)
