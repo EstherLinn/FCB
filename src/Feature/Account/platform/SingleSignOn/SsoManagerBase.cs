@@ -63,10 +63,21 @@ namespace Feature.Wealth.Account.SingleSignOn
             string roleMappingItem = "{CD2AF335-D392-4B45-AAEE-0CA296BDC413}";
             string domainNameField = "domain name";
             var mappingItem = ItemUtils.GetContentItem(ssoMapDatasource);
-            var domainItems = mappingItem?.GetChildren(domainFolderTemplateId)?.Where(x => x.FieldHasValue(domainNameField)).ToList();
+            if (mappingItem == null)
+            {
+                this.Log.Warn($"{nameof(SsoManagerBase)} Sitecore 不存在 Sso 對應表 [mappingItem]");
+                return null;
+            }
+            var items = mappingItem?.GetChildren(domainFolderTemplateId);
+            if (items == null)
+            {
+                this.Log.Warn($"{nameof(SsoManagerBase)} Sitecore 不存在 Sso 對應表 [items]");
+                return null;
+            }
+            var domainItems = items?.Where(x => x.FieldHasValue(domainNameField)).ToList();
             if (domainItems == null)
             {
-                this.Log.Warn($"{nameof(SsoManagerBase)} Sitecore 不存在 Sso 對應表");
+                this.Log.Warn($"{nameof(SsoManagerBase)} Sitecore 不存在 Sso 對應表 [domainItems]");
                 return null;
             }
 
