@@ -19,6 +19,7 @@
 
 <script>
     (function ($, window, document, undefined) {
+        let isKeywordFromSearchbar = true;
         let isLogin = false;
         if (SC_DATA.IsLoggedIn) {
             isLogin = true;
@@ -90,6 +91,8 @@
         window.insertKeywords = function () {
             let self = $("input[insertKeywords]");
             let isSeachBar = self.attr("issearchbar");
+            let urlParams = new URLSearchParams(window.location.search);
+            let keyword = DOMPurify.sanitize(urlParams.get('keyword'));
             let params;
 
             if (isSeachBar == "true") {
@@ -100,11 +103,17 @@
                 };
             }
             else {
-                params = {
-                    pageId: self.attr("eh-search-pageid"),
-                    keyword: self.val().trim(),
-                    productType: self.attr('eh-search-type')
-                };
+                if (keyword != undefined && isKeywordFromSearchbar) {
+                    isKeywordFromSearchbar = false;
+                    return;
+                }
+                else {
+                    params = {
+                        pageId: self.attr("eh-search-pageid"),
+                        keyword: self.val().trim(),
+                        productType: self.attr('eh-search-type')
+                    };
+                }
             }
 
             $.ajax({
