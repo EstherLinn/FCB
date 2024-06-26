@@ -35,7 +35,7 @@ namespace Feature.Wealth.Component.Repositories
                         ProductType = productType,
                         SearchKeywords = keyword,
                         UpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-                    }, CommandType.Text) ;
+                    }, CommandType.Text);
 
                     return true;
                 }
