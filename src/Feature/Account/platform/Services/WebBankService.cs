@@ -87,11 +87,11 @@ namespace Feature.Wealth.Account.Services
             }
             catch (FlurlHttpException ex)
             {
-                Logger.Account.Info($"網銀0201 {step} routeWithParms = {routeWithParms} ,StatusCode :{ex.StatusCode} , Error Message : {ex.Message}");
+                Logger.Account.Info($"網銀0201 {step} routeWithParms = {routeWithParms} ,StatusCode :{ex.StatusCode} , Error Message : {ex.ToString()}");
             }
             catch (Exception ex)
             {
-                Logger.Account.Info($"網銀0201 {step} routeWithParms = {routeWithParms}, Exception Message {ex.Message}");
+                Logger.Account.Info($"網銀0201 {step} routeWithParms = {routeWithParms}, Exception Message {ex.ToString()}");
             }
             return objReturn;
         }
