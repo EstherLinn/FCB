@@ -22,26 +22,28 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
         {
             var _repository = new ProcessRepository(this.Logger);
 
-            //CIF 一次性排程 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
+            //Cfmbsel 一次性排程 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM CFMBSEL_STG";
+
+            List<Cfmbsel> batch = new List<Cfmbsel>();
+            int batchSize = 1000;
+
             try
             {
-                var results = _repository.ConnectOdbc<Cfmbsel>(sql);
-
-                foreach (var item in results)
+                foreach (var result in _repository.Enumerate<Cfmbsel>(sql))
                 {
-                    this.Logger.Info($"EXT_DATE: {item.EXT_DATE}" + $"CUST_ID: {item.CUST_ID}" + $"TELLER_CODE: {item.TELLER_CODE}" + $"PROMOTION_CODE: {item.PROMOTION_CODE}" + $"LOAD_DATE: {item.LOAD_DATE}");
+                    batch.Add(result);
+
+                    if (batch.Count >= batchSize)
+                    {
+                        await _repository.BulkInsertFromOracle(batch, "[CFMBSEL]");
+                        batch.Clear();
+                    }
                 }
 
-                if (!results.IsNullOrEmpty())
+                if (batch.Any())
                 {
-                    //使用BulkInsert寫入sql資料庫
-                    await _repository.BulkInsertFromOracle(results, "[CFMBSEL]");
-                }
-                else
-                {
-                    this.Logger.Warn($"{sql} no data.");
-                    _repository.LogChangeHistory(DateTime.UtcNow, sql, "沒有資料", " ", 0);
+                    await _repository.BulkInsertFromOracle(batch, "[CFMBSEL]");
                 }
             }
             catch (Exception ex)

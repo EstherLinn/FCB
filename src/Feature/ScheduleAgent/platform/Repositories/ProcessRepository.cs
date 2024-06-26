@@ -126,10 +126,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         {
             var properties = typeof(T).GetProperties();
 
-            string truncateQuery = $"TRUNCATE TABLE {tableName};";
-            ExecuteNonQuery(truncateQuery, null, CommandType.Text, true);
+            string connString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
 
-            using (var connection = (SqlConnection)DbManager.Cif.DbConnection()) 
+            using (SqlConnection connection = new SqlConnection(connString))
             {
                 await connection.OpenAsync();
 
@@ -312,6 +311,110 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
 
             return resultList;
+        }
+
+        public IEnumerable<T> Enumerate<T>(string sql) where T : new()
+        {
+            string connString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString;
+            OdbcConnection connection = null;
+            OdbcCommand command = null;
+            DbDataReader reader = null;
+
+            try
+            {
+                connection = new OdbcConnection(connString);
+                connection.Open();
+                this._logger.Info("Opened Successfully");
+
+                command = new OdbcCommand(sql, connection);
+                this._logger.Info("Command created successfully");
+
+                reader = command.ExecuteReader();
+                this._logger.Info("Reader created successfully");
+            }
+            catch (Exception ex)
+            {
+                this._logger.Error(ex.ToString());
+                yield break;
+            }
+
+            var properties = typeof(T).GetProperties();
+            this._logger.Info("Properties retrieved successfully");
+
+            try
+            {
+                while (reader.Read())
+                {
+                    var item = new T();
+                    foreach (var property in properties)
+                    {
+                        var ordinal = reader.GetOrdinal(property.Name);
+                        if (!reader.IsDBNull(ordinal))
+                        {
+                            property.SetValue(item, reader.GetValue(ordinal), null);
+                        }
+                    }
+                    yield return item;
+                }
+            }
+            finally
+            {
+                reader?.Close();
+                connection.Close();
+                this._logger.Info("Reader and Connection closed.");
+            }
+        }
+
+        public IEnumerable<T> EnumerateSQL<T>(string sql) where T : new()
+        {
+            string connString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
+            SqlConnection connection = null;
+            SqlCommand command = null;
+            DbDataReader reader = null;
+
+            try
+            {
+                connection = new SqlConnection(connString);
+                connection.Open();
+                this._logger.Info("Opened Successfully");
+
+                command = new SqlCommand(sql, connection);
+                this._logger.Info("Command created successfully");
+
+                reader = command.ExecuteReader();
+                this._logger.Info("Reader created successfully");
+            }
+            catch (Exception ex)
+            {
+                this._logger.Error(ex.ToString());
+                yield break;
+            }
+
+            var properties = typeof(T).GetProperties();
+            this._logger.Info("Properties retrieved successfully");
+
+            try
+            {
+                while (reader.Read())
+                {
+                    var item = new T();
+                    foreach (var property in properties)
+                    {
+                        var ordinal = reader.GetOrdinal(property.Name);
+                        if (!reader.IsDBNull(ordinal))
+                        {
+                            property.SetValue(item, reader.GetValue(ordinal), null);
+                        }
+                    }
+                    yield return item;
+                }
+            }
+            finally
+            {
+                reader?.Close();
+                connection.Close();
+                this._logger.Info("Reader and Connection closed.");
+            }
         }
 
 
