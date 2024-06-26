@@ -161,7 +161,18 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             foreach (var property in properties)
             {
-                dataTable.Columns.Add(property.Name, Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType);
+                DataColumn column = new DataColumn(property.Name);
+
+                if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
+                {
+                    column.DataType = typeof(DateTime);
+                }
+                else
+                {
+                    column.DataType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                }
+
+                dataTable.Columns.Add(column);
             }
 
             foreach (T item in data)
