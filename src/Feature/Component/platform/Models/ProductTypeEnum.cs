@@ -11,7 +11,7 @@ namespace Feature.Wealth.Component.Models
         [Description("ETF")]
         ETF,
         [Description("國外股票")]
-        USStock,
+        ForeignStock,
         [Description("結構型商品")]
         StructuredProduct,
         [Description("市場新聞")]

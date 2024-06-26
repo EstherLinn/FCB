@@ -28,13 +28,14 @@ namespace Feature.Wealth.Component.Repositories
                 if (Enum.GetNames(typeof(ProductTypeEnum)).Contains(productType))
                 {
                     await DbManager.Custom.ExecuteNonQueryAsync(@"
-                INSERT INTO [dbo].[SearchKeywords] ([PageId], [ProductType], [SearchKeywords])
-                VALUES (@PageId, @ProductType, @SearchKeywords)", new
+                INSERT INTO [dbo].[SearchKeywords] ([PageId], [ProductType], [SearchKeywords],[UpdateTime])
+                VALUES (@PageId, @ProductType, @SearchKeywords, @UpdateTime)", new
                     {
                         PageId = pageId.Value,
                         ProductType = productType,
-                        SearchKeywords = keyword
-                    }, CommandType.Text);
+                        SearchKeywords = keyword,
+                        UpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                    }, CommandType.Text) ;
 
                     return true;
                 }
