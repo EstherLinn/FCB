@@ -140,6 +140,7 @@ namespace Feature.Wealth.Account.Repositories
                         left join [CFMBSEL] as C on CIF_ID = CUST_ID
                         WHERE CIF_ID = @id ";
             var para = new { id = id };
+
             try
             {
                 member = DbManager.Custom.Execute<CIFMember>(strSql, para, commandType: System.Data.CommandType.Text);
@@ -165,6 +166,7 @@ namespace Feature.Wealth.Account.Repositories
                         left join [CFMBSEL] as C on CIF_ID = CUST_ID
                         WHERE C.PROMOTION_CODE = @promotioncode ";
             var para = new { promotioncode = promotioncode };
+
             try
             {
                 member = DbManager.Custom.Execute<CIFMember>(strSql, para, commandType: System.Data.CommandType.Text);
@@ -191,12 +193,13 @@ namespace Feature.Wealth.Account.Repositories
                               " WHERE PlatForm = @Platform and ";
             if (platFormEunm == PlatFormEunm.WebBank)
             {
-                strSql += "PlatFormId =(SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @id)";
+                strSql += "PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @id)";
             }
             else
             {
                 strSql += "PlatFormId = @id";
             }
+
             var para = new { Platform = platFormEunm.ToString(), id = id };
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
 
