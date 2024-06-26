@@ -23,12 +23,15 @@ namespace Feature.Wealth.Account.Services
             FocusListResp result = new FocusListResp();
             if (string.IsNullOrEmpty(_route))
             {
+                Logger.Api.Info($"關注清單API Function開始 ,取得promotionCode ={promotionCode},api route =null or empty");
                 return result;
             }
             try
             {
+                var routeWithParams = _route + string.Format("?promotionCode={0}&channel=wms", promotionCode);
                 var reqObj = new { promotionCode = promotionCode, channel = "wms" };
-                var request = await _route.
+                Logger.Api.Info($"關注清單API Function開始 ,取得promotionCode ={promotionCode},api route ={routeWithParams},帶入參數promotionCode={promotionCode},channel=wms");
+                var request = await routeWithParams.
                     AllowAnyHttpStatus().
                     PostJsonAsync(reqObj);
                 if (request.StatusCode < 300)
@@ -38,7 +41,7 @@ namespace Feature.Wealth.Account.Services
                     {
                         result = JsonConvert.DeserializeObject<FocusListResp>(resp);
                     }
-                    Logger.Api.Info($"ileo關注清單response: {resp}");
+                    Logger.Api.Info($"ileo關注清單回覆 StatusCode={request.StatusCode}, 回覆內容={resp}");
                 }
                 else
                 {

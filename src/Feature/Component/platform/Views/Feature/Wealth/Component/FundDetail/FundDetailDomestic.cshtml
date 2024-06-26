@@ -3076,7 +3076,6 @@
                                 tickInterva: (24 * 3600 * 1000) * 7,
                                 labels: {
                                     formatter: function () {
-                                        console.log(this)
                                         let format = CheckSameYear(this.axis.min, this.axis.max) ? '%m/%d' : '%Y/%m';
                                         let output = null;
                                         if (!this.isFirst && format == '%Y/%m') {
