@@ -80,8 +80,14 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             string columns = string.Join(",", properties.Select(p => p.Name));
             string parameters = string.Join(",", properties.Select(p => "@" + p.Name));
 
-            string truncateQuery = $"TRUNCATE TABLE {tableName};";
-            ExecuteNonQuery(truncateQuery, null, CommandType.Text, true);
+            var spparameters = new DynamicParameters();
+            spparameters.Add("@schemaname", "dbo", DbType.String, ParameterDirection.Input);
+            spparameters.Add("@tablename", tableName, DbType.String, ParameterDirection.Input);
+
+            string storedProcedureName = "P_TruncateTable";
+            string truncateQuery = storedProcedureName;
+            ExecuteNonQuery(truncateQuery, spparameters, CommandType.StoredProcedure, true);
+
 
             string insertQuery = $@"
             INSERT INTO {tableName} ({columns})
