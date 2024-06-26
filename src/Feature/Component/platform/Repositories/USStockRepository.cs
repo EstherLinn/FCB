@@ -126,7 +126,7 @@ namespace Feature.Wealth.Component.Repositories
                 string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
                 string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
 
-                if (productCodeList.Contains(uSStock.FirstBankCode))
+                if (productCodeList.Contains(uSStock.FirstBankCode) && !uSStock.HotKeywordTags.Contains(tagName))
                 {
                     uSStock.HotKeywordTags.Add(tagName);
                 }
@@ -137,7 +137,7 @@ namespace Feature.Wealth.Component.Repositories
                 string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
                 string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
 
-                if (productCodeList.Contains(uSStock.FirstBankCode))
+                if (productCodeList.Contains(uSStock.FirstBankCode) && !uSStock.HotProductTags.Contains(tagName))
                 {
                     uSStock.HotProductTags.Add(tagName);
                 }
@@ -148,7 +148,7 @@ namespace Feature.Wealth.Component.Repositories
                 string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
                 string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
 
-                if (productCodeList.Contains(uSStock.FirstBankCode))
+                if (productCodeList.Contains(uSStock.FirstBankCode) && !uSStock.Discount.Contains(tagName))
                 {
                     uSStock.Discount.Add(tagName);
                 }
