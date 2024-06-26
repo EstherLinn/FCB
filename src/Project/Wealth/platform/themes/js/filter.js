@@ -105,7 +105,7 @@ $(function () {
 
   // input輸入
   $('[data-filter-input]').on('change.filter', function () {
-    $(this).val($(this).val().trim());
+    $(this).val($(this).val().toString().trim());
     setTag();
   });
 
