@@ -259,7 +259,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         await ftpClient.Connect();
 
                         string localFiledonePath = "";
-                        if (fileName.Equals("Fundlist"))
+                        if (fileName.Equals("Fundlist") || fileName.Contains("BondList"))
                         {
                             localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.csv");
                             fileName = Path.ChangeExtension(fileName, "csv");
