@@ -266,6 +266,19 @@
             }
         }
 
+        function checkSameYear(time1, time2) {
+            let year1 = new Date(time1).getFullYear();
+            let year2 = new Date(time2).getFullYear();
+            return year1 === year2;
+        }
+
+        function checkSameYearAndMonth(time1, time2) {
+            let prevDate = new Date(time1);
+            let currentDate = new Date(time2);
+            return prevDate.getMonth() + 1 === currentDate.getMonth() + 1
+                && prevDate.getFullYear() === currentDate.getFullYear();
+        }
+
         //#region ETF概況 – 近一年績效走勢、近一年市價/淨值走勢
         document.addEventListener('DOMContentLoaded', function () {
             if (!jQuery) {
@@ -338,15 +351,21 @@
                     tickPosition: 'inside',
                     tickWidth: 0.5,
                     tickLength: 7,
-                    tickInterval: 24 * 3600 * 1000 * 7,
                     labels: {
                         formatter: function () {
+                            let unitName = '';
+
+                            if (checkSameYear(this.axis.min, this.axis.max)) {
+                                unitName = 'day';
+                            } else {
+                                unitName = 'year';
+                            }
+
                             const format = {
-                                day: '%Y/%m',
-                                week: '%Y/%m',
-                                month: '%Y/%m',
-                                year: '%Y/%m' //
-                            }[this.tickPositionInfo.unitName];
+                                day: '%m/%d',
+                                year: '%Y/%m'
+                            }[unitName];
+
                             return Highcharts.dateFormat(format, this.value);
                         },
                         style: {

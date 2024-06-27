@@ -768,6 +768,19 @@
             return +(Math.round(num + 'e+' + scale) + 'e-' + scale);
         }
 
+        function checkSameYear(time1, time2) {
+            let year1 = new Date(time1).getFullYear();
+            let year2 = new Date(time2).getFullYear();
+            return year1 === year2;
+        }
+
+        function checkSameYearAndMonth(time1, time2) {
+            let prevDate = new Date(time1);
+            let currentDate = new Date(time2);
+            return prevDate.getMonth() + 1 === currentDate.getMonth() + 1 
+                && prevDate.getFullYear() === currentDate.getFullYear();
+        }
+
         //#region 績效/淨值 – 市價/淨值走勢
         document.addEventListener('DOMContentLoaded', function () {
             if (!jQuery) {
@@ -1087,16 +1100,35 @@
                                     tickPosition: 'inside',
                                     tickWidth: 0.5,
                                     tickLength: 7,
-                                    tickInterval: 24 * 3600 * 1000 * 7,
                                     labels: {
                                         formatter: function () {
+                                            let unitName = '';
+                                            let output = null;
+
+                                            if (checkSameYear(obj.startDate, obj.endDate)) {
+                                                unitName = 'day';
+                                            } else {
+                                                unitName = 'year';
+                                            }
+
                                             const format = {
-                                                day: '%Y/%m/%d',
-                                                week: '%Y/%m',
-                                                month: '%Y/%m',
+                                                day: '%m/%d',
                                                 year: '%Y/%m'
-                                            }[this.tickPositionInfo.unitName];
-                                            return Highcharts.dateFormat(format, this.value);
+                                            }[unitName];
+
+                                            if (this.isFirst) {
+                                                previousVal = this.value;
+                                                return Highcharts.dateFormat(format, this.value);
+                                            }
+
+                                            let currentVal = this.value;
+
+                                            if (!checkSameYearAndMonth(previousVal, currentVal)) {  // 比較前一個點和當前點的日期
+                                                output = Highcharts.dateFormat(format, currentVal);
+                                            }
+
+                                            previousVal = this.value;
+                                            return output;
                                         },
                                         style: {
                                             color: '#6e6e6e'
@@ -1563,16 +1595,35 @@
                                 tickPosition: 'inside',
                                 tickWidth: 0.5,
                                 tickLength: 7,
-                                tickInterval: 24 * 3600 * 1000 * 7,
                                 labels: {
                                     formatter: function () {
+                                        let unitName = '';
+                                        let output = null;
+
+                                        if (checkSameYear(obj.startDate, obj.endDate)) {
+                                            unitName = 'day';
+                                        } else {
+                                            unitName = 'year';
+                                        }
+
                                         const format = {
-                                            day: '%Y/%m/%d',
-                                            week: '%Y/%m',
-                                            month: '%Y/%m',
+                                            day: '%m/%d',
                                             year: '%Y/%m'
-                                        }[this.tickPositionInfo.unitName];
-                                        return Highcharts.dateFormat(format, this.value);
+                                        }[unitName];
+
+                                        if (this.isFirst) {
+                                            previousVal = this.value;
+                                            return Highcharts.dateFormat(format, this.value);
+                                        }
+
+                                        let currentVal = this.value;
+
+                                        if (!checkSameYearAndMonth(previousVal, currentVal)) {  // 比較前一個點和當前點的日期
+                                            output = Highcharts.dateFormat(format, currentVal);
+                                        }
+
+                                        previousVal = this.value;
+                                        return output;
                                     },
                                     style: {
                                         color: '#6e6e6e'
