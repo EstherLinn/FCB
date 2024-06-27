@@ -23,16 +23,18 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var jobitem = this.JobItems.FirstOrDefault();
                 var etlService = new EtlService(this.Logger, jobitem);
 
-                string filename = "TFJENAV";
-                bool IsfilePath = etlService.ExtractFileContainsDate(filename);
+                var date = DateTime.UtcNow.ToString("yyMMdd");
+                string filename = "TFJENAV." + date + ".1000.txt";
+
+                bool IsfilePath = await etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsvContainsDate<EtfNavTfjeNav>(filename);
+                        var basic = await etlService.ParseCsv<EtfNavTfjeNav>(filename);
                         _repository.BulkInsertToNewDatabase(basic, "[ETF_NAV_TFJENAV]", filename);
-                        etlService.FinishJobContainsDate(filename);
+                        etlService.FinishJob("TFJENAV");
                     }
                     catch (Exception ex)
                     {
