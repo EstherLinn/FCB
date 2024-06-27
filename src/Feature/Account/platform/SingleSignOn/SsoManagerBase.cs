@@ -35,11 +35,6 @@ namespace Feature.Wealth.Account.SingleSignOn
         public IEnumerable<string> Codes { get; set; }
     }
 
-    public static class Setting
-    {
-        public static Item ItemUtils = ItemUtils.GetItem();
-    }
-
     public abstract class SsoManagerBase
     {
         public ILog Log { get; } = Logger.Account;
