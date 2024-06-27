@@ -124,10 +124,15 @@ namespace Feature.Wealth.Account.SingleSignOn
         {
             using (new SecurityDisabler())
             {
-                //if (!scUser.IsAdministrator)
-                //{
-                //    scUser.Roles.RemoveAll();
-                //}
+                if (scUser.Roles.Any())
+                {
+                    scUser.Roles.RemoveAll();
+                }
+                else
+                {
+                    scUser.Profile.ClientLanguage = this.ClientLanguage;
+                    scUser.Profile.ContentLanguage = this.ContentLanguage;
+                }
                 List<string> roleName = new List<string>();
                 foreach (var role in roles)
                 {
