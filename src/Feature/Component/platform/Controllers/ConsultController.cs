@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.Component.Repositories;
 using Newtonsoft.Json;
@@ -16,13 +17,11 @@ namespace Feature.Wealth.Component.Controllers
     public class ConsultController : Controller
     {
         private readonly ConsultRepository _consultRepository = new ConsultRepository();
+        private readonly FcbMemberHelper _fcbMemberHelper = new FcbMemberHelper();
 
         public ActionResult Consult()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
-
-            // 取得客戶資訊
-
 
             return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", CreateConsultModel(item));
         }
@@ -30,9 +29,6 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult EmployeeConsult()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
-
-            // 取得客戶資訊
-
 
             return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", CreateConsultModel(item));
         }
