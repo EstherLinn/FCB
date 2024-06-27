@@ -44,7 +44,7 @@
                                             {
                                                 <div class="l-pickGroup__item">
                                                     <label class="o-btnCheckBox o-btnCheckBox--gn" data-filter-checkbox>
-                                                        <input id="hotkeyword-@tag" class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
                                                         <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
                                                     </label>
                                                 </div>
@@ -78,7 +78,7 @@
                                                     {
                                                         <div class="l-pickGroup__item">
                                                             <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                                <input id="hotproduct-@tag" class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
                                                                 <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
                                                             </label>
                                                         </div>
@@ -92,7 +92,7 @@
                                                     {
                                                         <div class="l-pickGroup__item">
                                                             <label class="o-btnCheckBox o-btnCheckBox--og" data-filter-checkbox>
-                                                                <input id="hotproduct-@tag" class="o-btnCheckBox__input" type="checkbox" value="@tag">
+                                                                <input class="o-btnCheckBox__input" type="checkbox" value="@tag">
                                                                 <div class="o-btnCheckBox__text" data-filter-value="@tag"></div>
                                                             </label>
                                                         </div>
@@ -1752,10 +1752,24 @@
             var keyword = DOMPurify.sanitize(urlParams.get('keyword'));
 
             if (hotkeyword) {
-                $("#hotkeyword-" + hotkeyword).trigger('click');
+                $("#hotkey_criteria input[type='checkbox']").each(function () {
+                    var checkboxValue = $(this).val();
+
+                    if (hotkeyword === checkboxValue) {
+                        $(this).trigger('click');
+                        return false;
+                    }
+                });
             }
             else if (hotproduct) {
-                $("#hotproduct-" + hotproduct).trigger('click');
+                $("#hotproducts_criteria input[type='checkbox']").each(function () {
+                    var checkboxValue = $(this).val();
+
+                    if (hotproduct === checkboxValue) {
+                        $(this).trigger('click');
+                        return false;
+                    }
+                });
             }
             else if (keyword) {
                 $('[data-keyword-input]').val(keyword);
