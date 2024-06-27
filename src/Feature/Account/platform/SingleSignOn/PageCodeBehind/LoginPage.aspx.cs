@@ -68,7 +68,12 @@ namespace Feature.Wealth.Account.SingleSignOn.PageCodeBehind
                 var login = sso.Login(scUser);
                 if (login.Success)
                 {
-                    this.Response.Redirect(sso.StartPage);
+                    var startPage = sso.StartPage;
+                    if (!sso.StartPage.Contains("?") && !string.IsNullOrEmpty(scUser.Profile.ClientLanguage))
+                    {
+                        startPage += $"?sc_lang={scUser.Profile.ClientLanguage}";
+                    }
+                    this.Response.Redirect(startPage);
                 }
 
                 ErrorMessage(login.Message);
