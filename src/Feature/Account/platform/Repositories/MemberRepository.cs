@@ -135,11 +135,21 @@ namespace Feature.Wealth.Account.Repositories
         public CIFMember GetWebBankUserInfo(string id)
         {
             CIFMember member = null;
-            var strSql = @$"  Select a.CIF_CUST_NAME,a.CIF_E_MAIL_ADDRESS,a.CIF_EMP_RISK,a.CIF_AO_EMPNO,b.EmployeeName as CIF_AO_EMPName,C.PROMOTION_CODE as CIF_PROMO_CODE FROM [CIF]  as a
-                        left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
-                        left join [CFMBSEL] as C on CIF_ID = CUST_ID
-                        WHERE CIF_ID = @id ";
+            var strSql = @$"Select
+                            a.CIF_CUST_NAME,
+                            a.CIF_E_MAIL_ADDRESS,
+                            a.CIF_EMP_RISK,
+                            a.CIF_AO_EMPNO,
+                            b.EmployeeName as CIF_AO_EMPName,
+                            b.EmployeeCode as HRIS_EmployeeCode,
+                            c.PROMOTION_CODE as CIF_PROMO_CODE
+                            FROM [CIF] as a
+                            left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
+                            left join [CFMBSEL] as c on CIF_ID = CUST_ID
+                            WHERE CIF_ID = @id ";
+
             var para = new { id = id };
+
             try
             {
                 member = DbManager.Custom.Execute<CIFMember>(strSql, para, commandType: System.Data.CommandType.Text);
@@ -160,11 +170,21 @@ namespace Feature.Wealth.Account.Repositories
         public CIFMember GetAppUserInfo(string promotioncode)
         {
             CIFMember member = null;
-            var strSql = @$"  Select a.CIF_CUST_NAME,a.CIF_E_MAIL_ADDRESS,a.CIF_EMP_RISK,a.CIF_AO_EMPNO,b.EmployeeName as CIF_AO_EMPName,C.PROMOTION_CODE as CIF_PROMO_CODE FROM [CIF]  as a
-                        left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
-                        left join [CFMBSEL] as C on CIF_ID = CUST_ID
-                        WHERE C.PROMOTION_CODE = @promotioncode ";
+            var strSql = @$"Select
+                            a.CIF_CUST_NAME,
+                            a.CIF_E_MAIL_ADDRESS,
+                            a.CIF_EMP_RISK,
+                            a.CIF_AO_EMPNO,
+                            b.EmployeeName as CIF_AO_EMPName,
+                            b.EmployeeCode as HRIS_EmployeeCode,
+                            C.PROMOTION_CODE as CIF_PROMO_CODE
+                            FROM [CIF] as a
+                            left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
+                            left join [CFMBSEL] as C on CIF_ID = CUST_ID
+                            WHERE C.PROMOTION_CODE = @promotioncode ";
+
             var para = new { promotioncode = promotioncode };
+
             try
             {
                 member = DbManager.Custom.Execute<CIFMember>(strSql, para, commandType: System.Data.CommandType.Text);
@@ -185,18 +205,26 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetMemberInfo(PlatFormEunm platFormEunm, string id)
         {
             FcbMemberModel fcbMemberModel = null;
-            var strSql = $"  Select A.*,B.CIF_EMP_RISK as Risk,B.CIF_ESTABL_BIRTH_DATE as Birthday,C.EmployeeName as Advisror FROM[FCB_Member] as A" +
-                              " left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)" +
-                              " left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))  " +
-                              " WHERE PlatForm = @Platform and ";
+            var strSql = @$"Select
+                            A.*,
+                            B.CIF_EMP_RISK as Risk,
+                            B.CIF_ESTABL_BIRTH_DATE as Birthday,
+                            C.EmployeeName as Advisror,
+                            C.EmployeeCode as AdvisrorID
+                            FROM [FCB_Member] as A
+                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)
+                            left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
+                            WHERE PlatForm = @Platform and ";
+
             if (platFormEunm == PlatFormEunm.WebBank)
             {
-                strSql += "PlatFormId =(SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @id)";
+                strSql += "PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @id)";
             }
             else
             {
                 strSql += "PlatFormId = @id";
             }
+
             var para = new { Platform = platFormEunm.ToString(), id = id };
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
 
@@ -207,10 +235,17 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetRefreshMemberInfo(PlatFormEunm platFormEunm, string id)
         {
             FcbMemberModel fcbMemberModel = null;
-            var strSql = $"  Select A.*,B.CIF_EMP_RISK as Risk,B.CIF_ESTABL_BIRTH_DATE as Birthday,C.EmployeeName as Advisror FROM[FCB_Member] as A" +
-                              " left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)" +
-                              " left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))  " +
-                              " WHERE PlatForm = @Platform and PlatFormId = @id";
+            var strSql = @$"Select
+                            A.*,
+                            B.CIF_EMP_RISK as Risk,
+                            B.CIF_ESTABL_BIRTH_DATE as Birthday,
+                            C.EmployeeName as Advisror,
+                            C.EmployeeCode as AdvisrorID
+                            FROM [FCB_Member] as A
+                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)
+                            left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
+                            WHERE PlatForm = @Platform and PlatFormId = @id";
+
             var para = new { Platform = platFormEunm.ToString(), id = id };
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
 
@@ -220,10 +255,16 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetAppMemberInfo(PlatFormEunm platFormEunm, string promotionCode)
         {
             FcbMemberModel fcbMemberModel = null;
-            var strSql = $"  Select A.*,B.CIF_EMP_RISK as Risk,B.CIF_ESTABL_BIRTH_DATE as Birthday,C.EmployeeName as Advisror FROM[FCB_Member] as A" +
-                              " left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)" +
-                              " left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))  " +
-                              " WHERE PlatForm = @Platform and PlatFormId = @promotionCode ";
+            var strSql = @$"Select
+                            A.*,
+                            B.CIF_EMP_RISK as Risk,
+                            B.CIF_ESTABL_BIRTH_DATE as Birthday,
+                            C.EmployeeName as Advisror,
+                            C.EmployeeCode as AdvisrorID
+                            FROM [FCB_Member] as A
+                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)
+                            left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
+                            WHERE PlatForm = @Platform and PlatFormId = @promotionCode";
 
             var para = new { Platform = platFormEunm.ToString(), promotionCode = promotionCode };
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);

@@ -10,12 +10,11 @@ namespace Feature.Wealth.Account.Models.OAuth
     {
         public string CIF_CUST_NAME { get; set; }
         public string CIF_E_MAIL_ADDRESS { get; set; }
-
         public string CIF_PROMO_CODE { get; set; }
         public string CIF_ID { get; set; }
         public string CIF_EMP_RISK { get; set; }
         public string CIF_AO_EMPNO { get; set; }
-
         public string CIF_AO_EMPName { get; set; }
+        public string HRIS_EmployeeCode { get; set; }
     }
 }

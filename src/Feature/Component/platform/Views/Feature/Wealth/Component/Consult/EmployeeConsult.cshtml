@@ -355,7 +355,7 @@
             <div class="l-info">
                 <div class="l-info__item">
                     <div class="l-info__title">預約理專</div>
-                    <div class="l-info__val">李智祥</div>
+                    <div class="l-info__val">@Model.EmployeeName</div>
                 </div>
                 <div class="l-info__item">
                     <div class="l-info__title">預約日期</div>
@@ -580,8 +580,7 @@
             var schedules = [];
 
             // 判斷每日至多可預約2個時段
-            // TODO 抓取正確的客戶ID
-            schedules = consultSchedules.filter(c => c.ScheduleDateString == stringDate && c.CustomerID == "AAAA");
+            schedules = consultSchedules.filter(c => c.ScheduleDateString == stringDate && c.CustomerID.toLowerCase() == currentConsultSchedule.CustomerID.toLowerCase())
 
             if (schedules.length > 1) {
                 // 提示訊息

@@ -16,6 +16,10 @@ namespace Feature.Wealth.Component.Models.Consult
         public string End { get; set; }
         public HtmlString HolidayDatesHtmlString { get; set; }
         public HtmlString ReservedsHtmlString { get; set; }
+        public string EmployeeID { get; set; }
+        public string EmployeeName { get; set; }
+        public string CustomerID { get; set; }
+        public string CustomerName { get; set; }
     }
 
     public class ConsultScheduleModel
