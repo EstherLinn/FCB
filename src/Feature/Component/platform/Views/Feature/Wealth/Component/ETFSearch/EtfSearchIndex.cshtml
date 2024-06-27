@@ -9,8 +9,12 @@
     }
     var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId().ToSearchId();
 }
-@Html.Partial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchFilter.cshtml", Model.FilterModel)
-@Html.Partial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchResult.cshtml", Model.SearchResultModel)
+@{ if (Model.FilterModel != null)
+    {
+        Html.RenderPartial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchFilter.cshtml", Model.FilterModel);
+    }
+    Html.RenderPartial("/Views/Feature/Wealth/Component/ETFSearch/_EtfSearchResult.cshtml", Model.SearchResultModel);
+}
 
 <template id="tmplKeywordNotFound">
     <div class="c-empty">
@@ -75,8 +79,8 @@
                         success: function (data) {
                             resolve(data);
                         },
-                        error: function (xhr, status, error) {
-                            reject(xhr, status, error);
+                        error: function (xhr, status, errorThrown) {
+                            reject({xhr, status, errorThrown});
                         }
                     });
                 });
@@ -586,17 +590,17 @@
                     query.then((data) => {
                         console.log(data);
                         this.Result.List = data;
-                        return data;
-                    }).catch((err) => {
-                        console.log(err);
-                    }).then((data) => {
-                        var fjs = initFilterJS();
-                        this.FJS = fjs;
+                        if (data) {
+                            var fjs = initFilterJS();
+                            this.FJS = fjs;
+                        }
                         this.GenerateSearchKeywordList();
                         initAutocomplete();
 
                         $('[data-tab] [data-tab-target]').first().trigger('switch');
                         $('[data-filter-switch="#uid-template-marketPrice-original"]').trigger('change');
+                    }).catch((error) => {
+                        console.log(error);
                     }).then(() => {
                         checkKeywordQueryString();
                     });

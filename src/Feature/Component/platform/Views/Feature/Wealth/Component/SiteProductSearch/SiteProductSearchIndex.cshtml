@@ -8,9 +8,10 @@
     }
     var uid = Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MainUtils.UniqueId().ToSearchId();
 }
-
-@Html.Partial("/Views/Feature/Wealth/Component/SiteProductSearch/_ProductSearchFilter.cshtml")
-@Html.Partial("/Views/Feature/Wealth/Component/SiteProductSearch/_ProductSearchResult.cshtml", Model.SearchResultModel)
+@{
+    Html.RenderPartial("/Views/Feature/Wealth/Component/SiteProductSearch/_ProductSearchFilter.cshtml");
+    Html.RenderPartial("/Views/Feature/Wealth/Component/SiteProductSearch/_ProductSearchResult.cshtml", Model.SearchResultModel);
+}
 
 <template id="tmplKeywordNotFound">
     <div class="c-empty">
@@ -105,8 +106,8 @@
                         success: function (data) {
                             resolve(data);
                         },
-                        error: function (xhr, status, error) {
-                            reject(xhr, status, error);
+                        error: function (xhr, status, errorThrown) {
+                            reject({ xhr, status, errorThrown });
                         }
                     });
                 });
@@ -756,14 +757,20 @@
                             SIP: data.StructuredProducts,
                             FStock: data.ForeignStocks
                         };
-                        return data;
-                    }).catch((err) => {
-                        console.log(err);
-                    }).then((data) => {
-                        this.FJS.ETF = initEtfFilterJS();
-                        this.FJS.Fund = initFundFilterJS();
-                        this.FJS.SIP = initSipFilterJS();
-                        this.FJS.FStock = initForeignStockFilterJS();
+
+                        if (data.ETFProducts) {
+                            this.FJS.ETF = initEtfFilterJS();
+                        }
+                        if (data.FundProducts) {
+                            this.FJS.Fund = initFundFilterJS();
+                        }
+                        if (data.FundProducts) {
+                            this.FJS.SIP = initSipFilterJS();
+                        }
+                        if (data.ForeignStocks) {
+                            this.FJS.FStock = initForeignStockFilterJS();
+                        }
+
                         this.GenerateSearchKeywordList();
                         initAutocomplete();
 
@@ -771,8 +778,11 @@
                         $('[data-filter-switch="#uid-template-etf-original"]').trigger('change');
 
                         hideLoading();
-                        window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
+                    }).catch((err) => {
+                        console.log(err);
+                        hideLoading();
                     }).then(() => {
+                        window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
                         checkKeywordQueryString();
                     });
                 },
