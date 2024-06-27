@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
-    public class InsertFundBsc : SitecronAgentBase
+    public class InsertBondNav : SitecronAgentBase
     {
         protected override async Task Execute()
         {
@@ -19,18 +19,17 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var jobitem = this.JobItems.FirstOrDefault();
                 var etlService = new EtlService(this.Logger, jobitem);
 
-                var date = DateTime.UtcNow.ToString("yyMMdd");
-
-                string filename = "TFJSBSC."+date+".1000.txt";
+                var date = DateTime.UtcNow.ToString("yyyyMMdd");
+                string filename = "bondnav-" + date + ".csv";
                 bool IsfilePath = await etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsv<FundBsc>(filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[FUND_BSC]", filename);
-                        etlService.FinishJob("TFJSBSC");
+                        var basic = await etlService.ParseCsvNotTXT<BondNav>(filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[BondNav]", filename);
+                        etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
                     {

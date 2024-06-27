@@ -5,10 +5,11 @@ using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
-    public class InsertFundBsc : SitecronAgentBase
+    public class InsertBranchData : SitecronAgentBase
     {
         protected override async Task Execute()
         {
@@ -19,18 +20,16 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var jobitem = this.JobItems.FirstOrDefault();
                 var etlService = new EtlService(this.Logger, jobitem);
 
-                var date = DateTime.UtcNow.ToString("yyMMdd");
-
-                string filename = "TFJSBSC."+date+".1000.txt";
+                string filename = "BRANCH_DATA";
                 bool IsfilePath = await etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsv<FundBsc>(filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[FUND_BSC]", filename);
-                        etlService.FinishJob("TFJSBSC");
+                        var basic = await etlService.ParseFixedLength<BranchData>(filename);
+                        _repository.BulkInsertToNewDatabase(basic, "[Branch_Data]", filename);
+                        etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
                     {
@@ -43,7 +42,6 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     this.Logger.Error($"{filename} not found");
                     _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
                 }
-
             }
         }
     }

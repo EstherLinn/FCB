@@ -259,7 +259,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         await ftpClient.Connect();
 
                         string localFiledonePath = "";
-                        if (fileName.Equals("Fundlist"))
+                        if (fileName.Equals("Fundlist") || fileName.Contains("BondList"))
                         {
                             localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.csv");
                             fileName = Path.ChangeExtension(fileName, "csv");
@@ -323,31 +323,28 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 {
                     using (var ftpClient = new FtpClient(this._settings["Ip"], this._settings["UserName"], this._settings["Password"], this._settings.GetInteger("Port") ?? 21))
                     {
-                        ftpClient.SetWorkingDirectory(this.WorkingDirectory);
                         ftpClient.Connect();
+                        ftpClient.SetWorkingDirectory(this.WorkingDirectory);
 
-                        var filePath = Path.Combine(this.WorkingDirectory, fileName);
                         string localFiledonePath = Directory.GetFiles(this.LocalDirectory, $"*{fileName}_done.txt").FirstOrDefault();
+                        var filesinftp = ftpClient.GetListing();
 
-                        var files = ftpClient.GetListing(ftpClient.GetWorkingDirectory())
-                                     .Where(file => file.Name.Contains(fileName))
+                        var files = filesinftp.Where(file => file.Name.Contains(fileName))
                                      .OrderByDescending(file => file.Modified)
                                      .ToList();
 
                         if (files.Count == 0)
                         {
-                            this._logger.Error($"No file exists.");
+                            this._logger.Error($"No {fileName} exists.");
                             return false;
                         }
-                        if (!ftpClient.FileExists(filePath))
-                        {
-                            this._logger.Error($"File {fileName} not found.");
-                            return false;
-                        }
+                       
                         var latestFile = files[0];
 
                         string localFilePath = Path.Combine(this.LocalDirectory, latestFile.Name);
                         localFilePath = Path.ChangeExtension(localFilePath, "txt");
+
+                        var filePath = Path.Combine(this.WorkingDirectory, latestFile.Name);
 
                         ftpClient.DownloadFile(localFilePath, filePath, FtpLocalExists.Overwrite);
 
