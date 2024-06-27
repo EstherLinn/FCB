@@ -17,11 +17,15 @@ namespace Feature.Wealth.Component.Controllers
     public class ConsultController : Controller
     {
         private readonly ConsultRepository _consultRepository = new ConsultRepository();
-        private readonly FcbMemberHelper _fcbMemberHelper = new FcbMemberHelper();
 
         public ActionResult Consult()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
+
+            if(!FcbMemberHelper.CheckMemberLogin() || string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", null);
+            }
 
             return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", CreateConsultModel(item));
         }
@@ -30,6 +34,11 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
+            if (!FcbMemberHelper.CheckMemberLogin() || string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", null);
+            }
+
             return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", CreateConsultModel(item));
         }
 
@@ -37,14 +46,31 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
+            if (!FcbMemberHelper.CheckMemberLogin() || string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", null);
+            }
+
             return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", CreateConsultListModel(item));
         }
 
         private ConsultListModel CreateConsultListModel(Item item)
         {
-            var consultScheduleList = this._consultRepository.GetConsultScheduleList();
+            var temps = this._consultRepository.GetConsultScheduleList();
 
-            // TODO 根據使用者過濾顯示
+            // 根據使用者過濾顯示
+            var consultScheduleList = new List<ConsultSchedule>();
+
+            if (temps != null && temps.Any())
+            {
+                foreach (var c in temps)
+                {
+                    if(c.CustomerID.ToLower() == FcbMemberHelper.GetMemberWebBankId().ToLower())
+                    {
+                        consultScheduleList.Add(c);
+                    }
+                }
+            }
 
             var consultScheduleForCalendarList = new List<ConsultScheduleForCalendar>();
 
@@ -122,16 +148,34 @@ namespace Feature.Wealth.Component.Controllers
 
         private ConsultModel CreateConsultModel(Item item)
         {
-            var consultScheduleList = this._consultRepository.GetConsultScheduleList();
+            var temps = this._consultRepository.GetConsultScheduleList();
 
-            consultScheduleList = consultScheduleList.Where(c => DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0 && c.StatusCode != "3").ToList();
+            temps = temps.Where(c => DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0 && c.StatusCode != "3").ToList();
+
+            var consultScheduleList = new List<ConsultSchedule>();
+
+
+            if(temps != null && temps.Any())
+            {
+                foreach(var c  in temps)
+                {
+                    // TODO 非本人的預約資料只留下時間及分機相關資訊
+                    consultScheduleList.Add(c);
+                }
+            }
+
+            var info = FcbMemberHelper.GetMemberAllInfo();
 
             var consultModel = new ConsultModel
             {
                 Item = item,
                 ReturnLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.ReturnLink)?.Url,
                 ConsultSchedules = consultScheduleList,
-                ConsultSchedulesHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleList))
+                ConsultSchedulesHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleList)),
+                EmployeeID = info.WebBankId,
+                EmployeeName = info.MemberName,
+                CustomerID = info.AdvisrorID,
+                CustomerName = info.Advisror
             };
 
             // 取得近30日假日           
@@ -165,16 +209,13 @@ namespace Feature.Wealth.Component.Controllers
             consultModel.End = allowDates[allowDates.Count - 1];
             consultModel.HolidayDatesHtmlString = new HtmlString(JsonConvert.SerializeObject(holidayDates));
 
-            // 取得對應理顧
-
             //TODO 呼叫 IMVP API 取得理顧已佔用時間
             var reserveds = new List<Reserved>();
             reserveds.Add(new Reserved { Date = "2024-06-11", StartTime = "10:30", EndTime = "11:00" });
             reserveds.Add(new Reserved { Date = "2024-06-12", StartTime = "14:30", EndTime = "15:00" });
 
             // 把對應理顧已預約時間加入已佔用時間
-            //TODO 使用正確的理顧資訊
-            var temp = consultScheduleList.Where(c => c.EmployeeID == "00230286" && c.StatusCode != "3"
+            var temp = consultScheduleList.Where(c => c.EmployeeID.ToLower() == FcbMemberHelper.GetMemberAllInfo().AdvisrorID.ToLower() && c.StatusCode != "3"
             && DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0);
 
             if (temp != null && temp.Any())
@@ -230,7 +271,7 @@ namespace Feature.Wealth.Component.Controllers
                     {
                         if (string.IsNullOrEmpty(consultSchedule.EmployeeURL) || string.IsNullOrEmpty(consultSchedule.CustomerURL))
                         {
-                            // 呼叫API取得視訊連結
+                            // TODO 呼叫API取得視訊連結
 
                             // 更新DB資料
                             this._consultRepository.UpdateConsultSchedule(consultSchedule);
@@ -264,27 +305,25 @@ namespace Feature.Wealth.Component.Controllers
             return consultScheduleModel;
         }
 
-        /// <summary>
-        /// 搜尋回傳值
-        /// </summary>
         [HttpPost]
         public ActionResult CreateConsultSchedule(ConsultSchedule consultSchedule)
         {
             consultSchedule.ScheduleID = Guid.NewGuid();
 
-            //TODO 找到對應理顧
-            consultSchedule.EmployeeID = "00230286";
-            consultSchedule.EmployeeName = "楊Ｏ";
+            var info = FcbMemberHelper.GetMemberAllInfo();
+
+            consultSchedule.EmployeeID = info.AdvisrorID;
+            consultSchedule.EmployeeName = info.Advisror;
+            //TODO 找到對應分行資訊
             consultSchedule.BranchCode = "B203050000";
             consultSchedule.BranchName = "樹林分行";
             consultSchedule.BranchPhone = "(02)123456789";
             consultSchedule.DepartmentCode = "B20307E001";
 
-            //TODO 找到使用者資訊
             if (string.IsNullOrEmpty(consultSchedule.CustomerID) || string.IsNullOrEmpty(consultSchedule.CustomerName))
             {
-                consultSchedule.CustomerID = "AAAA";
-                consultSchedule.CustomerName = "林嘉欣";
+                consultSchedule.CustomerID = info.WebBankId;
+                consultSchedule.CustomerName = info.MemberName;
             }
             else
             {

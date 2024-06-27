@@ -150,7 +150,7 @@
                     <div class="l-info l-info--form l-info--block">
                         <div class="l-info__item u-flex-center">
                             <div class="l-info__title">預約理專</div>
-                            <div class="l-info__val"><span class="t3 t-bold">李智祥</span></div>
+                            <div class="l-info__val"><span class="t3 t-bold">@(Model.EmployeeName)</span></div>
                         </div>
                         <div class="l-info__item u-flex-center">
                             <div class="l-info__title">預約日期</div>
@@ -180,7 +180,7 @@
                                 <div class="l-info l-info--form">
                                     <div class="l-info__item u-flex-center">
                                         <div class="l-info__title">預約姓名</div>
-                                        <div class="l-info__val"><span class="t3 t-bold">林嘉欣 小姐</span></div>
+                                        <div class="l-info__val"><span class="t3 t-bold">@(Model.CustomerName)</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -360,7 +360,7 @@
             <div class="l-info">
                 <div class="l-info__item">
                     <div class="l-info__title">預約理專</div>
-                    <div class="l-info__val">李智祥</div>
+                    <div class="l-info__val">@(Model.EmployeeName)</div>
                 </div>
                 <div class="l-info__item">
                     <div class="l-info__title">預約日期</div>
@@ -372,7 +372,7 @@
                 </div>
                 <div class="l-info__item">
                     <div class="l-info__title">預約姓名</div>
-                    <div class="l-info__val">林嘉欣 小姐</div>
+                    <div class="l-info__val">@(Model.CustomerName)</div>
                 </div>
                 <div class="l-info__item">
                     <div class="l-info__title">聯絡電話</div>
@@ -575,8 +575,7 @@
             var schedules = [];
 
             // 判斷每日至多可預約2個時段
-            // TODO 抓取正確的客戶ID
-            schedules = consultSchedules.filter(c => c.ScheduleDateString == stringDate && c.CustomerID == "AAAA");
+            schedules = consultSchedules.filter(c => c.ScheduleDateString == stringDate && c.CustomerID == @Model.EmployeeID);
 
             if (schedules.length > 1) {
                 // 提示訊息
