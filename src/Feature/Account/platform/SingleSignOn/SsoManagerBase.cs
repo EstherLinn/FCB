@@ -1,5 +1,7 @@
 ﻿using Feature.Wealth.Account.Models.SingleSignOn;
 using log4net;
+using Sitecore.Data.Items;
+using Sitecore.Extensions.ItemClonesExtensions;
 using Sitecore.Security.Accounts;
 using Sitecore.Security.Domains;
 using System;
@@ -33,6 +35,11 @@ namespace Feature.Wealth.Account.SingleSignOn
         public IEnumerable<string> Codes { get; set; }
     }
 
+    public static class Setting
+    {
+        public static Item ItemUtils = ItemUtils.GetItem();
+    }
+
     public abstract class SsoManagerBase
     {
         public ILog Log { get; } = Logger.Account;
@@ -62,10 +69,10 @@ namespace Feature.Wealth.Account.SingleSignOn
             string domainFolderTemplateId = "{CDB8962C-F15C-4FC9-AC69-CC5133C0076E}";
             string roleMappingItem = "{CD2AF335-D392-4B45-AAEE-0CA296BDC413}";
             string domainNameField = "domain name";
-            var mappingItem = ItemUtils.GetContentItem(ssoMapDatasource);
+            var mappingItem = ItemUtils.GetContentItem(ssoMapDatasource) ?? ItemUtils.GetItem(ssoMapDatasource);
             if (mappingItem == null)
             {
-                this.Log.Warn($"{nameof(SsoManagerBase)} Sitecore 不存在 Sso 對應表 [mappingItem]");
+                this.Log.Warn($"{nameof(SsoManagerBase)} Sitecore 不存在 Sso 對應表 [mappingItem] {ssoMapDatasource}");
                 return null;
             }
             var items = mappingItem?.GetChildren(domainFolderTemplateId);
@@ -132,11 +139,6 @@ namespace Feature.Wealth.Account.SingleSignOn
         /// <returns></returns>
         public virtual (bool Success, string Message) Login(User user)
         {
-            if (Sitecore.Context.IsLoggedIn)
-            {
-                MemberUtils.Authentication.LogOutUser();
-            }
-
             bool success = MemberUtils.Authentication.LoginUser(user, true);
 
             string message = $"{user.Name} 登入成功";
