@@ -19,7 +19,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var jobitem = this.JobItems.FirstOrDefault();
                 var etlService = new EtlService(this.Logger, jobitem);
 
-                var date = DateTime.UtcNow.ToString("yyyyMMdd");
+                var date = DateTime.Now.ToString("yyyyMMdd");
                 string filename = "bondnav-" + date + ".csv";
                 bool IsfilePath = await etlService.ExtractFile(filename);
 

@@ -19,7 +19,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var jobitem = this.JobItems.FirstOrDefault();
                 var etlService = new EtlService(this.Logger, jobitem);
 
-                var date = DateTime.UtcNow.ToString("yyMMdd");
+                var date = DateTime.Now.ToString("yyMMdd");
 
                 string filename = "TFJSBSC."+date+".1000.txt";
                 bool IsfilePath = await etlService.ExtractFile(filename);
