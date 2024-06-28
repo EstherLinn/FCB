@@ -61,6 +61,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wealth", "Wealth", "{DE9E73
 		src\Foundation\Wealth\README.md = src\Foundation\Wealth\README.md
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foundation.WorkBox", "src\Foundation\WorkBox\platform\Foundation.WorkBox.csproj", "{5BFC4A72-9FC5-4BE5-9606-26B1F80DC226}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkBox", "WorkBox", "{AC2C85C6-2B35-4C55-B0E7-513150233CE3}"
+	ProjectSection(SolutionItems) = preProject
+		src\Foundation\WorkBox\Foundation.WorkBox.module.json = src\Foundation\WorkBox\Foundation.WorkBox.module.json
+		src\Foundation\WorkBox\README.md = src\Foundation\WorkBox\README.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Account", "Account", "{2035F016-21B3-42D2-9801-5E0FE5B61EFD}"
 	ProjectSection(SolutionItems) = preProject
 		src\Feature\Account\Feature..Wealth.Account.module.json = src\Feature\Account\Feature..Wealth.Account.module.json
@@ -95,8 +103,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Wealth.Octon", "src
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Tools", "_Tools", "{AC0B302B-AC34-416D-B854-43ADBA4A8787}"
 	ProjectSection(SolutionItems) = preProject
-		tools\export.ps1 = tools\export.ps1
 		tools\build.ps1 = tools\build.ps1
+		tools\export.ps1 = tools\export.ps1
 		tools\offline.ps1 = tools\offline.ps1
 	EndProjectSection
 EndProject
@@ -134,6 +142,10 @@ Global
 		{8F6E3B00-2CAD-4244-AC91-DB0BD4F88D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F6E3B00-2CAD-4244-AC91-DB0BD4F88D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F6E3B00-2CAD-4244-AC91-DB0BD4F88D74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BFC4A72-9FC5-4BE5-9606-26B1F80DC226}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BFC4A72-9FC5-4BE5-9606-26B1F80DC226}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BFC4A72-9FC5-4BE5-9606-26B1F80DC226}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BFC4A72-9FC5-4BE5-9606-26B1F80DC226}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -153,6 +165,8 @@ Global
 		{5FA6B441-2341-437E-AEF9-526F64E3FCA2} = {ACBE49FA-D85A-482A-A269-82F495F04D3A}
 		{5FA88619-6896-472A-97A1-C28AD0996237} = {29EC27BC-A457-43F7-80D4-5BC4652E3B1E}
 		{8F6E3B00-2CAD-4244-AC91-DB0BD4F88D74} = {5FA88619-6896-472A-97A1-C28AD0996237}
+		{AC2C85C6-2B35-4C55-B0E7-513150233CE3} = {2FAA7571-FDE5-4C40-B707-2DF817B106DC}
+		{5BFC4A72-9FC5-4BE5-9606-26B1F80DC226} = {AC2C85C6-2B35-4C55-B0E7-513150233CE3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {009BAE54-E7BA-4B2B-AA86-F25104B0B1F1}
