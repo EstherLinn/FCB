@@ -210,6 +210,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                     File.Delete(localDoneFilePath);
                 }
                 File.Move(localFilePath, localDoneFilePath);
+                this._logger.Info(filename + " 執行完成");
             }
             else
             {
@@ -222,6 +223,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                     File.Delete(localDoneFilePath);
                 }
                 File.Move(localFilePath, localDoneFilePath);
+                this._logger.Info(filename + " 執行完成");
             }
 
         }
