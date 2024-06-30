@@ -40,6 +40,12 @@ namespace Feature.Wealth.Account.SingleSignOn
             user.Profile.EmployeeId = this._workforceId;
         }
 
+        private void SetUserProfile(FirstBankUser user, Employee member)
+        {
+            user.Profile.EmployeeEmail = member.EmployeeCode.TrimStart('0') + "@firstbank.com.tw";
+            user.Profile.EmployeeName = member.EmployeeName;
+        }
+
         /// <summary>
         /// 產生 Sitecore User
         /// </summary>
@@ -55,6 +61,8 @@ namespace Feature.Wealth.Account.SingleSignOn
                 this.Log.Error($"{nameof(FirstBankSsoManager)} 未存在 HRIS");
                 return null;
             }
+
+            SetUserProfile(user, member);
 
             string domainName = this.Domain?.Name;
             if (string.IsNullOrEmpty(domainName))
