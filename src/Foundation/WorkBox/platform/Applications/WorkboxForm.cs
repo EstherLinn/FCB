@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
+﻿using Feature.WorkBox;
 using Microsoft.Extensions.DependencyInjection;
 using Sitecore;
 using Sitecore.Abstractions;
@@ -34,6 +27,14 @@ using Sitecore.Web.UI.XmlControls;
 using Sitecore.Workflows;
 using Sitecore.Workflows.Helpers;
 using Sitecore.Workflows.Simple;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
 
 namespace Foundation.WorkBox.Applications.Workflows
 {
@@ -64,7 +65,7 @@ namespace Foundation.WorkBox.Applications.Workflows
         /// <summary>
         /// 草稿狀態
         /// </summary>
-        private const string DRAFT = "{C3692B28-F467-43F5-93B5-21AFB23D2BBA}";
+        private const string DRAFT = WorkBoxTemplates.WorkflowsState.Draft;
 
         /// <summary>
         /// 檢驗是否為第一銀行使用者
