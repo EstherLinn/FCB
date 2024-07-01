@@ -130,13 +130,6 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
         public async Task BulkInsertFromOracle<T>(IList<T> data, string tableName)
         {
-            var spparameters = new DynamicParameters();
-            spparameters.Add("@schemaname", "dbo", DbType.String, ParameterDirection.Input);
-            spparameters.Add("@tablename", tableName, DbType.String, ParameterDirection.Input);
-
-            string storedProcedureName = "P_TruncateTable";
-            ExecuteNonQuery(storedProcedureName, spparameters, CommandType.StoredProcedure, true);
-
             var properties = typeof(T).GetProperties();
 
             string connString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
@@ -201,6 +194,16 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             return dataTable;
         }
 
+
+        public void TrancateTable(string tableName)
+        {
+            var spparameters = new DynamicParameters();
+            spparameters.Add("@schemaname", "dbo", DbType.String, ParameterDirection.Input);
+            spparameters.Add("@tablename", tableName, DbType.String, ParameterDirection.Input);
+
+            string storedProcedureName = "P_TruncateTable";
+            ExecuteNonQuery(storedProcedureName, spparameters, CommandType.StoredProcedure, true);
+        }
 
         public void LogChangeHistory(DateTime timestamp, string filePath, string operationType, string tableName, int line)
         {
