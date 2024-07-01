@@ -30,6 +30,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
             try
             {
+                _repository.TrancateTable("[CFMBSEL]");
+
                 foreach (var result in _repository.Enumerate<Cfmbsel>(sql))
                 {
                     batch.Add(result);

@@ -21,7 +21,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                 var date = DateTime.Now.ToString("yyMMdd");
 
-                string filename = "TFJSBSC."+date+".1000.txt";
+                string filename = "TFJSBSC." + date + ".1000.txt";
                 bool IsfilePath = await etlService.ExtractFile(filename);
 
                 if (IsfilePath)

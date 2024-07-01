@@ -24,13 +24,15 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             var _repository = new ProcessRepository(this.Logger);
 
             //CIF 一次性排程 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
-            string sql = "SELECT * FROM WEA_ODS_CIF_VIEW";
+            string sql = "SELECT * FROM WEA_DW_CIF_VIEW";
 
             List<Cif> batch = new List<Cif>();
             int batchSize = 1000;
 
             try
             {
+                _repository.TrancateTable("[CIF]");
+
                 foreach (var result in _repository.Enumerate<Cif>(sql))
                 {
                     batch.Add(result);
