@@ -1273,7 +1273,7 @@ namespace Foundation.WorkBox.Applications.Workflows
                 {
                     string name = "hidden_" + text2.Substring(6);
                     string text3 = Context.ClientPage.ClientRequest.Form[name];
-                    string[] array = text2.Split(',');
+                    string[] array = text3.Split(',');
                     if (array.Length == 3)
                     {
                         ItemUri item = new ItemUri(array[0] ?? string.Empty, Language.Parse(array[1]), Sitecore.Data.Version.Parse(array[2]), Context.ContentDatabase);
