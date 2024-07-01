@@ -8,8 +8,6 @@ using log4net;
 using Mapster;
 using Newtonsoft.Json.Linq;
 using Sitecore.Data.Items;
-using Sitecore.Data.Query;
-using Sitecore.IO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -48,7 +46,6 @@ namespace Feature.Wealth.Component.Repositories
 
         public EtfDetailModel GetETFDetailModel(string etfId, Item dataSource)
         {
-            this.RegionTypeMapping = InitializePrefixToRegionType();
             EtfDetailModel model;
             model = GetOrSetETFDetailsCache(etfId);
             GetDatasourceData(model, dataSource);
@@ -57,9 +54,10 @@ namespace Feature.Wealth.Component.Repositories
 
         public EtfDetailModel GetOrSetETFDetailsCache(string etfId)
         {
+            this.RegionTypeMapping = InitializePrefixToRegionType();
             this.ETFId = etfId;
             var etfDic = (Dictionary<string, EtfDetailModel>)_cache.Get(ETFDetailsCacheKey) ?? new Dictionary<string, EtfDetailModel>();
-            EtfDetailModel etfFullData = null;
+            EtfDetailModel etfFullData;
 
             if (!etfDic.Any())
             {
