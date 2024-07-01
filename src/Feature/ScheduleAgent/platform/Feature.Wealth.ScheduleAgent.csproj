@@ -20,5 +20,6 @@
     <PackageReference Include="FluentFTP" />
     <PackageReference Include="Quartz" />
     <PackageReference Include="SSH.NET" VersionOverride="2024.0.0" />
+    <PackageReference Include="Mapster" />
   </ItemGroup>
 </Project>
