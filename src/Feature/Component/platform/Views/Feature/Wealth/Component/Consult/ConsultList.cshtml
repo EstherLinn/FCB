@@ -285,7 +285,7 @@
         <td class="c-cardTable__space"></td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約日期</div>
-            <div class="c-cardTable__content"><%= ScheduleDate %></div>
+            <div class="c-cardTable__content"><%= ScheduleDateString %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約時段</div>
@@ -332,7 +332,7 @@
         <% } %>
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約日期</div>
-            <div class="c-cardTable__content"><%= ScheduleDate %></div>
+            <div class="c-cardTable__content"><%= ScheduleDateString %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約時段</div>
@@ -361,7 +361,7 @@
         <td class="c-cardTable__footer" data-card-table-width="1/2">
             <div class="c-cardTable__content">
                 <% if (Start) { %>
-                    <a href="(@Model.ConsultScheduleLink)?id=<%= ScheduleID %>" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult">開始諮詢</a>
+                    <a href="@(Model.ConsultScheduleLink)?id=<%= ScheduleID %>" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult">開始諮詢</a>
                 <% } else { %>
                     <a href="" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult is-disabled">等待中</a>
                 <% } %>
@@ -375,7 +375,7 @@
         <td class="c-cardTable__space"></td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約日期</div>
-            <div class="c-cardTable__content"><%= ScheduleDate %></div>
+            <div class="c-cardTable__content"><%= ScheduleDateString %></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約時段</div>
@@ -500,8 +500,17 @@
 <script>
     const consultSchedules = @Model.ConsultSchedulesHtmlString;
     const consultScheduleForCalendars = @Model.ConsultScheduleForCalendarsHtmlString;
+    const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六']
 
     $(function () {
+
+        consultSchedules.forEach((c) => {
+            if (c.ScheduleDateString) {
+                var weekday = (new Date(c.ScheduleDateString)).getDay();
+
+                c.ScheduleDateString = c.ScheduleDateString.replaceAll('-', '/') + ' (' + dayNamesZh[weekday] + ')');
+            }
+        });
 
         var data0 = consultSchedules.filter(c => c.StatusCode == '0');
         var data1 = consultSchedules.filter(c => c.StatusCode == '1');

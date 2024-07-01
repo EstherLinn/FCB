@@ -26,7 +26,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,[CreatedOn],[ModifiedOn]
                            ,IIF([ScheduleDate] = CAST(GETDATE() AS DATE), 1, 0) [Comming]
                            ,IIF(GETDATE() BETWEEN (CAST([ScheduleDate] AS varchar) + ' ' + [StartTime]) AND (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]) , 1, 0) [Start]
-                           FROM [ConsultSchedule] WITH (NOLOCK)";
+                           FROM [ConsultSchedule] WITH (NOLOCK)
+                           ORDER BY [ScheduleDate],[StartTime]";
 
             var result = this._dbConnection.Query<ConsultSchedule>(sql)?.ToList() ?? new List<ConsultSchedule>();
 
@@ -55,7 +56,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,[CreatedOn],[ModifiedOn]
                            ,IIF([ScheduleDate] = CAST(GETDATE() AS DATE), 1, 0) [Comming]
                            ,IIF(GETDATE() BETWEEN (CAST([ScheduleDate] AS varchar) + ' ' + [StartTime]) AND (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]) , 1, 0) [Start]
-                           FROM [ConsultSchedule] WITH (NOLOCK) WHERE ScheduleID = @ScheduleID";
+                           FROM [ConsultSchedule] WITH (NOLOCK)
+                           WHERE ScheduleID = @ScheduleID";
 
             var result = this._dbConnection.Query<ConsultSchedule>(sql, new { ScheduleID = scheduleID })?.FirstOrDefault() ?? new ConsultSchedule();
 
