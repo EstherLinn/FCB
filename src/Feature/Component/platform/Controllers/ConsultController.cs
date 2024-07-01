@@ -172,10 +172,10 @@ namespace Feature.Wealth.Component.Controllers
                 ReturnLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.ReturnLink)?.Url,
                 ConsultSchedules = consultScheduleList,
                 ConsultSchedulesHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleList)),
-                EmployeeID = info.WebBankId,
-                EmployeeName = info.MemberName,
-                CustomerID = info.AdvisrorID,
-                CustomerName = info.Advisror
+                EmployeeID = info.AdvisrorID,
+                EmployeeName = info.Advisror,
+                CustomerID = info.WebBankId,                
+                CustomerName = info.MemberName,                
             };
 
             // 取得近30日假日           
