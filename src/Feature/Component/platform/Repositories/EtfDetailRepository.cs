@@ -292,9 +292,9 @@ namespace Feature.Wealth.Component.Repositories
                     dest.SubscriptionNAVDate = src.SubscriptionNAVDate.CheckNullOrEmptyString();
                     dest.RedemptionNAVDate = src.RedemptionNAVDate.CheckNullOrEmptyString();
                     dest.RedemptionDepositDate = src.RedemptionDepositDate.CheckNullOrEmptyString();
-                    dest.MinimumSingleInvestmentAmount = src.MinimumSingleInvestmentAmount.CheckNullOrEmptyString();
-                    dest.MinimumRegularInvestmentAmount = src.MinimumRegularInvestmentAmount.CheckNullOrEmptyString();
-                    dest.MinimumIrregularInvestmentAmount = src.MinimumIrregularInvestmentAmount.CheckNullOrEmptyString();
+                    dest.MinimumSingleInvestmentAmount = src.MinimumSingleInvestmentAmount.FormatCurrencyWithValue();
+                    dest.MinimumRegularInvestmentAmount = src.MinimumRegularInvestmentAmount.FormatCurrencyWithValue();
+                    dest.MinimumIrregularInvestmentAmount = src.MinimumIrregularInvestmentAmount.FormatCurrencyWithValue();
                     dest.BankRelatedInstructions = src.BankRelatedInstructions.CheckNullOrEmptyString();
                     dest.DividendDistributionFrequency = src.DividendDistributionFrequency.CheckNullOrEmptyString();
 
