@@ -28,43 +28,47 @@ namespace Feature.Wealth.ScheduleAgent.Services
         private readonly Item _settings;
         private readonly Item _Supplementsettings;
 
-        public EtlService(ILoggerService logger, IEnumerable<Item> settings)
+        public EtlService(ILoggerService logger, IEnumerable<Item> jobItems)
         {
             this._logger = logger;
 
-            if (settings != null)
+            if (jobItems == null)
             {
-                this._Supplementsettings = settings.FirstOrDefault(j => j.Name == "Supplement Setting");
+                return;
+            }
 
-                if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
+            this._Supplementsettings = jobItems.FirstOrDefault(j => j.Name == "Supplement Setting");
+
+            if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
+            {
+                this.LocalDirectory = this._Supplementsettings["LocalDirectory"];
+            }
+            else
+            {
+                this._settings = jobItems.FirstOrDefault();
+                if (this._settings != null)
                 {
-                    this.LocalDirectory = this._Supplementsettings["LocalDirectory"];
-                }
-                else
-                {
-                    this._settings = settings.FirstOrDefault();
-                    if (this._settings != null)
+                    // 取得工作目錄
+                    this.WorkingDirectory = this._settings["WorkingDirectory"].EnsurePrefix("/");
+
+                    // 取得本機檔案目錄
+                    if (!string.IsNullOrEmpty(this._settings["LocalDirectory"]))
                     {
-                        this.WorkingDirectory = this._settings["WorkingDirectory"].EnsurePrefix("/");
-
-                        if (!string.IsNullOrEmpty(this._settings["LocalDirectory"]))
-                        {
-                            this.LocalDirectory = this._settings["LocalDirectory"];
-                        }
-                        else
-                        {
-                            this.LocalDirectory = Settings.GetSetting("LocalDirectory");
-                        }
-
-                        string parentDirectory = Path.GetDirectoryName(this.WorkingDirectory);
-
-                        // 在上一層目錄的基礎上建立目錄路徑
-                        this.LocalDirectory = Path.Combine(parentDirectory, this.LocalDirectory);
-                        this.BackUpDirectory = Path.Combine(parentDirectory, this.BackUpDirectory);
-
-                        EnsureDirectoryExists(this.LocalDirectory);
-                        EnsureDirectoryExists(this.BackUpDirectory);
+                        this.LocalDirectory = this._settings["LocalDirectory"];
                     }
+                    else
+                    {
+                        this.LocalDirectory = Settings.GetSetting("LocalDirectory");
+                    }
+
+                    string parentDirectory = Path.GetDirectoryName(this.WorkingDirectory);
+
+                    // 在上一層目錄的基礎上建立目錄路徑
+                    this.LocalDirectory = Path.Combine(parentDirectory, this.LocalDirectory);
+                    this.BackUpDirectory = Path.Combine(parentDirectory, this.BackUpDirectory);
+
+                    EnsureDirectoryExists(this.LocalDirectory);
+                    EnsureDirectoryExists(this.BackUpDirectory);
                 }
             }
         }
@@ -133,30 +137,6 @@ namespace Feature.Wealth.ScheduleAgent.Services
         }
 
         /// <summary>
-        /// TXT 檔案解析含日期的
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public async Task<IEnumerable<T>> ParseCsvContainsDate<T>(string fileName)
-        {
-            var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
-            config.BadDataFound = null;
-
-            string[] files = Directory.GetFiles(this.LocalDirectory)
-                          .Where(f => f.Contains(fileName))
-                          .ToArray();
-            string localFiledonePath = files.FirstOrDefault();
-
-            using (var reader = new StreamReader(localFiledonePath, Encoding.Default))
-            using (var csv = new CsvReader(reader, config))
-            {
-                var records = csv.GetRecordsAsync<T>().ToListAsync();
-                return await records;
-            }
-        }
-
-        /// <summary>
         /// TXT 檔案解析，固定長度
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -212,7 +192,8 @@ namespace Feature.Wealth.ScheduleAgent.Services
         /// <param name="filename"></param>
         public void FinishJob(string filename)
         {
-            if (filename.Equals("Fundlist"))
+            //CSV檔案資料完成後，檔案改名加_done
+            if (filename.Equals("Fundlist") || filename.ToLower().Contains("bond"))
             {
                 filename = Path.ChangeExtension(filename, "csv");
                 string localFilePath = Path.Combine(LocalDirectory, filename);
@@ -225,6 +206,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 File.Move(localFilePath, localDoneFilePath);
                 this._logger.Info(filename + " 執行完成");
             }
+            //補檔案完成，修改後台checkbox設定，改成false
             else if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
             {
                 bool newValue = false;
@@ -236,6 +218,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 }
                 this._logger.Info(filename + " 完成補檔執行");
             }
+            //TXT檔案資料完成後，檔案改名加_done
             else
             {
                 filename = Path.ChangeExtension(filename, "txt");
@@ -253,39 +236,27 @@ namespace Feature.Wealth.ScheduleAgent.Services
         }
 
         /// <summary>
-        /// 完成資料插入後，檔案改名加_done，包含日期的
+        /// 檢查Ftps檔案存不存在，以及是否要做補檔
         /// </summary>
-        /// <param name="filename"></param>
-        public void FinishJobContainsDate(string filename)
-        {
-            string[] files = Directory.GetFiles(this.LocalDirectory)
-                          .Where(f => f.Contains(filename))
-                          .ToArray();
-            string localFiledonePath = files.FirstOrDefault();
-
-            string doneFileName = $"{Path.GetFileNameWithoutExtension(filename)}_done.txt";
-            string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
-            if (File.Exists(localDoneFilePath))
-            {
-                File.Delete(localDoneFilePath);
-            }
-            File.Move(localFiledonePath, localDoneFilePath);
-        }
-
-
         public async Task<bool> ExtractFile(string fileName)
         {
-            if (this._settings != null)
+            if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
+            {
+                return true;
+            }
+            else if (this._settings != null)
             {
                 try
                 {
+                    // 建立FTPs連線
                     using (var ftpClient = new AsyncFtpClient(this._settings["Ip"], this._settings["UserName"], this._settings["Password"], this._settings.GetInteger("Port") ?? 21))
                     {
                         await ftpClient.SetWorkingDirectory(this.WorkingDirectory);
                         await ftpClient.Connect();
 
+                        //建立本機檔案目錄路徑
                         string localFiledonePath = "";
-                        if (fileName.Equals("Fundlist") || fileName.Contains("BondList"))
+                        if (fileName.Equals("Fundlist") || fileName.ToLower().Contains("bond"))
                         {
                             localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.csv");
                             fileName = Path.ChangeExtension(fileName, "csv");
@@ -296,8 +267,10 @@ namespace Feature.Wealth.ScheduleAgent.Services
                             fileName = Path.ChangeExtension(fileName, "txt");
                         }
 
+                        //建立ftps上檔案目錄路徑
                         var filePath = Path.Combine(this.WorkingDirectory, fileName);
 
+                        //確認檔案是否存在
                         if (!await ftpClient.FileExists(filePath))
                         {
                             this._logger.Error($"File {fileName} not found.");
@@ -306,6 +279,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         string localFilePath = Path.Combine(this.LocalDirectory, fileName);
                         string backupFilePath = Path.Combine(this.BackUpDirectory, fileName);
 
+                        //確認檔案是否相同
                         if (File.Exists(localFilePath) && await ftpClient.CompareFile(localFilePath, filePath, FtpCompareOption.Checksum) == FtpCompareResult.Equal)
                         {
                             string localFileHash = CalculateHash(localFilePath);
@@ -322,7 +296,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                             this._logger.Error("Same file content, skip download.");
                             return false;
                         }
-
+                        //下載檔案
                         if (await ftpClient.DownloadFile(localFilePath, filePath, FtpLocalExists.Overwrite) == FtpStatus.Success)
                         {
                             return true;
@@ -337,71 +311,9 @@ namespace Feature.Wealth.ScheduleAgent.Services
                     this._logger.Error($"Error while downloading file from FTPS server: {ex.Message}", ex);
                 }
             }
-            else if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
-            {
-                return true;
-            }
 
             return false;
         }
 
-        public bool ExtractFileContainsDate(string fileName)
-        {
-            if (this._settings != null)
-            {
-                try
-                {
-                    using (var ftpClient = new FtpClient(this._settings["Ip"], this._settings["UserName"], this._settings["Password"], this._settings.GetInteger("Port") ?? 21))
-                    {
-                        ftpClient.Connect();
-                        ftpClient.SetWorkingDirectory(this.WorkingDirectory);
-
-                        string localFiledonePath = Directory.GetFiles(this.LocalDirectory, $"*{fileName}_done.txt").FirstOrDefault();
-                        var filesinftp = ftpClient.GetListing();
-
-                        var files = filesinftp.Where(file => file.Name.Contains(fileName))
-                                     .OrderByDescending(file => file.Modified)
-                                     .ToList();
-
-                        if (files.Count == 0)
-                        {
-                            this._logger.Error($"No {fileName} exists.");
-                            return false;
-                        }
-
-                        var latestFile = files[0];
-
-                        string localFilePath = Path.Combine(this.LocalDirectory, latestFile.Name);
-                        localFilePath = Path.ChangeExtension(localFilePath, "txt");
-
-                        var filePath = Path.Combine(this.WorkingDirectory, latestFile.Name);
-
-                        ftpClient.DownloadFile(localFilePath, filePath, FtpLocalExists.Overwrite);
-
-                        if (File.Exists(localFilePath))
-                        {
-                            string localFileHash = CalculateHash(localFilePath);
-                            if (File.Exists(localFiledonePath))
-                            {
-                                string localFiledoneHash = CalculateHash(localFiledonePath);
-                                if (localFileHash.Equals(localFiledoneHash))
-                                {
-                                    this._logger.Error("Same file content, skip download.");
-                                    return false;
-                                }
-                            }
-                        }
-
-                        return true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    this._logger.Error($"Error while connecting to SFTP server: {ex.Message}", ex);
-                }
-            }
-
-            return false;
-        }
     }
 }
