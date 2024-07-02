@@ -88,7 +88,7 @@
                                 <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnMarketPriceOriginalCurrency"></a>
                             </div>
                         </th>
-                        <th>
+                        <th data-fcblevel>
                             <div class="c-table__title">
                                 <span>淨值/<br>漲跌幅通知</span>
                             </div>
@@ -185,7 +185,7 @@
                             <% } %>
                         </div>
                     </td>
-                    <td class="c-cardTable__body c-cardTable__body--line" data-card-table-width="1/1">
+                    <td class="c-cardTable__body c-cardTable__body--line" data-card-table-width="1/1" data-fcblevel>
                         <div class="c-cardTable__title" data-length="5">淨值/<br>漲跌幅通知</div>
                         <div class="c-cardTable__content" data-infostatus="<% if (Info != null){%><%= 'true' %><% } else {%><%= 'false' %> <%}%>">
                             <% if (Info  == null ) { %>
@@ -217,7 +217,7 @@
                     <td class="c-cardTable__footer" data-card-table-width="<% if (AvailabilityStatus == 'Y' && OnlineSubscriptionAvailability != 'N'){%><%= '3/4' %><% } else {%><%= '1/1' %> <%}%>">
                         <div class="c-cardTable__content">
                             <ul class="l-collect l-collect--divider@lt">
-                                <li class="l-collect__item">
+                                <li class="l-collect__item" data-fcblevel>
                                     <%= Button.InfoButtonHtml %>
                                 </li>
                                 <li class="l-collect__item">
