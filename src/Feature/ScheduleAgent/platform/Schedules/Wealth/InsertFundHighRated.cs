@@ -13,12 +13,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
     {
         protected override async Task Execute()
         {
-            var _repository = new ProcessRepository(this.Logger);
-
             if (this.JobItems != null)
             {
-                var jobitem = this.JobItems.FirstOrDefault();
-                var etlService = new EtlService(this.Logger, jobitem);
+                var _repository = new ProcessRepository(this.Logger);
+                var etlService = new EtlService(this.Logger, this.JobItems);
 
                 string filename = "wms_fund_top15_m_mf";
                 bool IsfilePath = await etlService.ExtractFile(filename);

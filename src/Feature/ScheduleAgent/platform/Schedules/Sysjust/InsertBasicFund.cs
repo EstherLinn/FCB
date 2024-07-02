@@ -18,32 +18,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
     {
         protected override async Task Execute()
         {
-            var _repository = new ProcessRepository(this.Logger);
-
-            string filePath = Sitecore.Configuration.Settings.GetSetting("BasicFund");
-
-            if (File.Exists(filePath))
+            if (this.JobItems != null)
             {
-                try
-                {
-                    var basic = await ParseCsv<SysjustBasicFund>(filePath);
-
-                    if (basic.Any())
-                    {
-                        _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Basic_Fund]", filePath);
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Basic_Fund_History]", "FirstBankCode", "FirstBankCode", filePath);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _repository.LogChangeHistory(DateTime.UtcNow, filePath, ex.Message, " ", 0);
-                }
-            }
-
-            if (this.JobItems != null && string.IsNullOrEmpty(filePath))
-            {
-                var jobitem = this.JobItems.FirstOrDefault();
-                var etlService = new EtlService(this.Logger, jobitem);
+                var _repository = new ProcessRepository(this.Logger);
+                var etlService = new EtlService(this.Logger, this.JobItems);
 
                 string filename = "SYSJUST-BASIC-FUND";
                 bool IsfilePath = await etlService.ExtractFile(filename);
@@ -68,19 +46,6 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     this.Logger.Error($"{filename} not found");
                     _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
                 }
-            }
-        }
-
-        public async Task<IEnumerable<T>> ParseCsv<T>(string fileName)
-        {
-            var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
-            config.BadDataFound = null;
-
-            using (var reader = new StreamReader(fileName, Encoding.Default))
-            using (var csv = new CsvReader(reader, config))
-            {
-                var records = csv.GetRecordsAsync<T>().ToListAsync();
-                return await records;
             }
         }
     }
