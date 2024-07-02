@@ -18,31 +18,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
     {
         protected override async Task Execute()
         {
-            var _repository = new ProcessRepository(this.Logger);
-
-            string filePath = Sitecore.Configuration.Settings.GetSetting("WMS");
-
-            if (File.Exists(filePath))
+            if (this.JobItems != null)
             {
-                try
-                {
-                    var basic = await ParseCsv<WmsDocRecm>(filePath);
-
-                    if (basic.Any())
-                    {
-                        _repository.BulkInsertToNewDatabase(basic, "[WMS_DOC_RECM]", filePath);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _repository.LogChangeHistory(DateTime.UtcNow, filePath, ex.Message, " ", 0);
-                }
-            }
-
-            if (this.JobItems != null && string.IsNullOrEmpty(filePath))
-            {
-                var jobitem = this.JobItems.FirstOrDefault();
-                var etlService = new EtlService(this.Logger, jobitem);
+                var _repository = new ProcessRepository(this.Logger);
+                var etlService = new EtlService(this.Logger, this.JobItems);
 
                 string filename = "WMS_DOC_RECM";
                 bool IsfilePath = await etlService.ExtractFile(filename);
@@ -66,19 +45,6 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     this.Logger.Error($"{filename} not found");
                     _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
                 }
-            }
-        }
-
-        private async Task<IEnumerable<T>> ParseCsv<T>(string filePath)
-        {
-            var config = CsvConfiguration.FromAttributes<T>(CultureInfo.InvariantCulture);
-            config.BadDataFound = null;
-
-            using (var reader = new StreamReader(filePath, Encoding.Default))
-            using (var csv = new CsvReader(reader, config))
-            {
-                var records = csv.GetRecordsAsync<T>().ToListAsync();
-                return await records;
             }
         }
     }

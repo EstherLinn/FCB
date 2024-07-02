@@ -3,11 +3,11 @@ using CsvHelper.Configuration;
 using FixedWidthParserWriter;
 using FluentFTP;
 using FluentFTP.Helpers;
-using Renci.SshNet;
-using Renci.SshNet.Sftp;
+using MimeKit.Cryptography;
 using Sitecore.Configuration;
 using Sitecore.Data.Items;
 using Sitecore.IO;
+using Sitecore.Mvc.Common;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -26,33 +26,46 @@ namespace Feature.Wealth.ScheduleAgent.Services
     {
         private readonly ILoggerService _logger;
         private readonly Item _settings;
+        private readonly Item _Supplementsettings;
 
-        public EtlService(ILoggerService logger, Item settings)
+        public EtlService(ILoggerService logger, IEnumerable<Item> settings)
         {
             this._logger = logger;
-            this._settings = settings;
 
             if (settings != null)
             {
-                this.WorkingDirectory = settings["WorkingDirectory"].EnsurePrefix("/");
+                this._Supplementsettings = settings.FirstOrDefault(j => j.Name == "Supplement Setting");
 
-                if (!string.IsNullOrEmpty(settings["LocalDirectory"]))
+                if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
                 {
-                    this.LocalDirectory = settings["LocalDirectory"];
+                    this.LocalDirectory = this._Supplementsettings["LocalDirectory"];
                 }
                 else
                 {
-                    this.LocalDirectory = Settings.GetSetting("LocalDirectory");
+                    this._settings = settings.FirstOrDefault();
+                    if (this._settings != null)
+                    {
+                        this.WorkingDirectory = this._settings["WorkingDirectory"].EnsurePrefix("/");
+
+                        if (!string.IsNullOrEmpty(this._settings["LocalDirectory"]))
+                        {
+                            this.LocalDirectory = this._settings["LocalDirectory"];
+                        }
+                        else
+                        {
+                            this.LocalDirectory = Settings.GetSetting("LocalDirectory");
+                        }
+
+                        string parentDirectory = Path.GetDirectoryName(this.WorkingDirectory);
+
+                        // 在上一層目錄的基礎上建立目錄路徑
+                        this.LocalDirectory = Path.Combine(parentDirectory, this.LocalDirectory);
+                        this.BackUpDirectory = Path.Combine(parentDirectory, this.BackUpDirectory);
+
+                        EnsureDirectoryExists(this.LocalDirectory);
+                        EnsureDirectoryExists(this.BackUpDirectory);
+                    }
                 }
-
-                string parentDirectory = Path.GetDirectoryName(this.WorkingDirectory);
-
-                // 在上一層目錄的基礎上建立目錄路徑
-                this.LocalDirectory = Path.Combine(parentDirectory, this.LocalDirectory);
-                this.BackUpDirectory = Path.Combine(parentDirectory, this.BackUpDirectory);
-
-                EnsureDirectoryExists(this.LocalDirectory);
-                EnsureDirectoryExists(this.BackUpDirectory);
             }
         }
 
@@ -212,6 +225,17 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 File.Move(localFilePath, localDoneFilePath);
                 this._logger.Info(filename + " 執行完成");
             }
+            else if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
+            {
+                bool newValue = false;
+                using (new Sitecore.SecurityModel.SecurityDisabler())
+                {
+                    this._Supplementsettings.Editing.BeginEdit();
+                    this._Supplementsettings["Do Supplement"] = newValue.ToString();
+                    this._Supplementsettings.Editing.EndEdit();
+                }
+                this._logger.Info(filename + " 完成補檔執行");
+            }
             else
             {
                 filename = Path.ChangeExtension(filename, "txt");
@@ -313,6 +337,10 @@ namespace Feature.Wealth.ScheduleAgent.Services
                     this._logger.Error($"Error while downloading file from FTPS server: {ex.Message}", ex);
                 }
             }
+            else if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
+            {
+                return true;
+            }
 
             return false;
         }
@@ -340,7 +368,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                             this._logger.Error($"No {fileName} exists.");
                             return false;
                         }
-                       
+
                         var latestFile = files[0];
 
                         string localFilePath = Path.Combine(this.LocalDirectory, latestFile.Name);

@@ -12,12 +12,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
     {
         protected override async Task Execute()
         {
-            var _repository = new ProcessRepository(this.Logger);
-
             if (this.JobItems != null)
             {
-                var jobitem = this.JobItems.FirstOrDefault();
-                var etlService = new EtlService(this.Logger, jobitem);
+                var _repository = new ProcessRepository(this.Logger);
+                var etlService = new EtlService(this.Logger, this.JobItems);
 
                 string filename = "SYSJUST-RISK-FUND-2-DOMESTIC";
                 bool IsfilePath = await etlService.ExtractFile(filename);
@@ -27,7 +25,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     try
                     {
                         var basic = await etlService.ParseCsv<SysjustRiskFund2Domestic>(filename);
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Risk_Fund_2_Domestic_History]", "FirstBankCode","Date", filename);
+                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Risk_Fund_2_Domestic_History]", "FirstBankCode", "Date", filename);
                         _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Risk_Fund_2_Domestic]", filename);
                         etlService.FinishJob(filename);
                     }
