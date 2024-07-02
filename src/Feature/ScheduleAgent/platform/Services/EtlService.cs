@@ -3,11 +3,9 @@ using CsvHelper.Configuration;
 using FixedWidthParserWriter;
 using FluentFTP;
 using FluentFTP.Helpers;
-using MimeKit.Cryptography;
 using Sitecore.Configuration;
 using Sitecore.Data.Items;
 using Sitecore.IO;
-using Sitecore.Mvc.Common;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -37,7 +35,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 return;
             }
 
-            this._Supplementsettings = jobItems.FirstOrDefault(j => j.Name == "Supplement Setting");
+            this._Supplementsettings = jobItems.FirstOrDefault(j => j.TemplateID == Templates.SupplementSetting.Id);
 
             if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
             {
@@ -45,37 +43,44 @@ namespace Feature.Wealth.ScheduleAgent.Services
             }
             else
             {
-                this._settings = jobItems.FirstOrDefault();
+                this._settings = jobItems.FirstOrDefault(j => j.TemplateID == Templates.FtpsSettings.Id);
                 if (this._settings != null)
                 {
-                    // 取得工作目錄
-                    this.WorkingDirectory = this._settings["WorkingDirectory"].EnsurePrefix("/");
-
-                    // 取得本機檔案目錄
-                    if (!string.IsNullOrEmpty(this._settings["LocalDirectory"]))
-                    {
-                        this.LocalDirectory = this._settings["LocalDirectory"];
-                    }
-                    else
-                    {
-                        this.LocalDirectory = Settings.GetSetting("LocalDirectory");
-                    }
-
-                    string parentDirectory = Path.GetDirectoryName(this.WorkingDirectory);
-
-                    // 在上一層目錄的基礎上建立目錄路徑
-                    this.LocalDirectory = Path.Combine(parentDirectory, this.LocalDirectory);
-                    this.BackUpDirectory = Path.Combine(parentDirectory, this.BackUpDirectory);
-
+                    SetDirectory();
                     EnsureDirectoryExists(this.LocalDirectory);
                     EnsureDirectoryExists(this.BackUpDirectory);
                 }
             }
         }
 
-        public string LocalDirectory { get; }
-        private string BackUpDirectory { get; } = Settings.GetSetting("BackUpDirectory");
-        private string WorkingDirectory { get; }
+        public string LocalDirectory { get; set; }
+        private string BackUpDirectory { get; set; } = Settings.GetSetting("BackUpDirectory");
+        private string WorkingDirectory { get; set; }
+
+        /// <summary>
+        /// 設定FTPs目錄
+        /// </summary>
+        private void SetDirectory()
+        {
+            // 取得工作目錄
+            this.WorkingDirectory = this._settings["WorkingDirectory"].EnsurePrefix("/");
+
+            // 取得本機檔案目錄
+            if (!string.IsNullOrEmpty(this._settings["LocalDirectory"]))
+            {
+                this.LocalDirectory = this._settings["LocalDirectory"];
+            }
+            else
+            {
+                this.LocalDirectory = Settings.GetSetting("LocalDirectory");
+            }
+
+            string parentDirectory = Path.GetDirectoryName(this.WorkingDirectory);
+
+            // 在上一層目錄的基礎上建立目錄路徑
+            this.LocalDirectory = Path.Combine(parentDirectory, this.LocalDirectory);
+            this.BackUpDirectory = Path.Combine(parentDirectory, this.BackUpDirectory);
+        }
 
         /// <summary>
         /// 檢查預設資料夾是否存在
