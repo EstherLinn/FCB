@@ -71,10 +71,10 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 }
             }
 
-            int retryCount = 0, days = 1;
+            int retryCount = 0, hours = 12;
             List<NewsListDto> newDatas = null;
 
-            while (retryCount <= 2)
+            while (retryCount <= 3)
             {
                 try
                 {
@@ -84,10 +84,10 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     {
                         if (DateTime.TryParseExact(req.StartDateTime, dateFormat_iso8601, cultureInfo, DateTimeStyles.None, out startDate))
                         {
-                            req.EndDateTime = startDate.AddDays(days).ToString(dateFormat_iso8601);
+                            req.EndDateTime = startDate.AddHours(hours).ToString(dateFormat_iso8601);
                         }
 
-                        days++;
+                        hours += 12;
                         retryCount++;
                     }
                     else
