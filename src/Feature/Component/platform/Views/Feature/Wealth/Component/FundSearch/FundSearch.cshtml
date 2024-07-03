@@ -1937,29 +1937,26 @@
                     $(container).find('[data-ia]').interactive();
                     // 綁定 like icon 的彈跳登入畫面
                     $(container).find('[data-popup]').magnificPopup();
+                    $(container).find('[eh-compare]').trigger('exec');
+                    $(container).find('[eh-focus]').trigger('exec');
+                    $(container).find('[eh-subscription-type]').trigger('exec');
                 },
                 formatResult: function (suggestion, currentValue) {
                     let detailUrl = suggestion.Data.DetailUrl ? suggestion.Data.DetailUrl : '#';
-                    let className = suggestion.Data.IsLike ? 'is-active' : '';
 
                     // like 按鈕
-                    let likeWord = suggestion.Data.IsNews ? '加入收藏|取消收藏' : '加入關注|取消關注';
-                    let $like = suggestion.Data.IsLike != null ? suggestion.Data.IsLogin == true ?
-                        // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
-                        `<a href="#" class="o-statusBtn o-statusBtn--like ${className}" data-msg="${likeWord}" data-ia="true"></a>` :
-                        // <!-- [data-popup]: 未登入開啟登入彈跳視窗 -->
-                        `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
+                    let $like = `<a ${suggestion.Data.AutoFocusButtonHtml}></a>`;
 
                     // 申購按鈕
-                    let $purchase = suggestion.Data.Purchase ? suggestion.Data.IsLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
+                    let $purchase = suggestion.Data.Purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.Data.AutoSubscribeButtonHtml}>申購</a></div>` : '';
                     return `<div class="c-itemKeyword">
-                                                <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                                    <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
 
-                                                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                                </a>
-                                                <div class="c-itemKeyword__collections">${$like}</div>
-                                                ${$purchase}
-                                            </div>`;
+                                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                                    </a>
+                                                    <div class="c-itemKeyword__collections">${$like}</div>
+                                                    ${$purchase}
+                                                </div>`;
                 }
             });
         }
