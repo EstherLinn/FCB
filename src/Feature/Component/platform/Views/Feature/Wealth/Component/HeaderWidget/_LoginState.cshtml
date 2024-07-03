@@ -2,33 +2,38 @@
 @using Foundation.Wealth.Helper;
 @using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 @using Feature.Wealth.Component.Models.HeaderWidget;
+@using Sitecore.Configuration;
 @{
     var logoutUrl = ClientRoute.GenerateUrl(this, "Accounts", "Logout");
     var member = FcbMemberHelper.GetMemberAllInfo();
+    var fcbLevel = Settings.GetSetting("FcbLevel");
 }
 <div class="l-header__tools">
     <div class="l-topbar">
         <!-- 登入狀態 -->
-        <div class="l-topbar__list">
-            <div class="l-topbar__item">
-                <a href="#" class="o-topBtn o-topBtn--notify u-hidden" data-popover="#popoverNotify"></a>
-                <div id="popoverNotify" class="c-popover">
-                    <div class="c-popover__wrap">
-                        <nav class="c-popover__content">
-                            <div class="l-flex u-flex-col">
-                                <div class="l-flex__item">
-                                    <ul class="c-listGroup" id="topInfoList">
-                                    </ul>
+        @if (fcbLevel == "2")
+        {
+            <div class="l-topbar__list">
+                <div class="l-topbar__item">
+                    <a href="#" class="o-topBtn o-topBtn--notify u-hidden" data-popover="#popoverNotify"></a>
+                    <div id="popoverNotify" class="c-popover">
+                        <div class="c-popover__wrap">
+                            <nav class="c-popover__content">
+                                <div class="l-flex u-flex-col">
+                                    <div class="l-flex__item">
+                                        <ul class="c-listGroup" id="topInfoList">
+                                        </ul>
+                                    </div>
+                                    <div class="l-flex__item u-center">
+                                        <a href="@MemberRelatedLinkHelper.GetInfoListUrl()" class="o-link">更多通知</a>
+                                    </div>
                                 </div>
-                                <div class="l-flex__item u-center">
-                                    <a href="@MemberRelatedLinkHelper.GetInfoListUrl()" class="o-link">更多通知</a>
-                                </div>
-                            </div>
-                        </nav>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
         <div class="l-topbar__login">
             <!--登入狀態 電腦版-->
             <a href="#" class="o-topBtn o-topBtn--login" data-popover="#popoverMember">
@@ -51,35 +56,41 @@
                                     <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
                                 </a>
                             </li>
-                            <li class="c-listGroup__item">
-                                <a href="@MemberRelatedLinkHelper.GetExclusiveRecommendationUrl()" class="o-itemLink">
-                                    <span class="o-itemLink__title t-bold">專屬推薦</span>
-                                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                </a>
-                            </li>
-                            <li class="c-listGroup__item">
-                                <a href="@MemberRelatedLinkHelper.GetFinancialManagementTrialUrl()" class="o-itemLink">
-                                    <span class="o-itemLink__title t-bold">理財試算</span>
-                                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                </a>
-                            </li>
-                            <li class="c-listGroup__item">
-                                <a href="@MemberRelatedLinkHelper.GetFavoriteNewsUrl()" class="o-itemLink">
-                                    <span class="o-itemLink__title t-bold">收藏新聞</span>
-                                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                </a>
-                            </li>
-                            <li class="c-listGroup__item">
-                                <a href="@MemberRelatedLinkHelper.GetRemoteFinancialConsultingUrl()" class="o-itemLink">
-                                    <span class="o-itemLink__title t-bold">遠距理財諮詢</span>
-                                    <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                </a>
-                            </li>
+                            @if (fcbLevel == "2")
+                            {
+                                <li class="c-listGroup__item">
+                                    <a href="@MemberRelatedLinkHelper.GetExclusiveRecommendationUrl()" class="o-itemLink">
+                                        <span class="o-itemLink__title t-bold">專屬推薦</span>
+                                        <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                    </a>
+                                </li>
+                                <li class="c-listGroup__item">
+                                    <a href="@MemberRelatedLinkHelper.GetFinancialManagementTrialUrl()" class="o-itemLink">
+                                        <span class="o-itemLink__title t-bold">理財試算</span>
+                                        <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                    </a>
+                                </li>
+                                <li class="c-listGroup__item">
+                                    <a href="@MemberRelatedLinkHelper.GetFavoriteNewsUrl()" class="o-itemLink">
+                                        <span class="o-itemLink__title t-bold">收藏新聞</span>
+                                        <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                    </a>
+                                </li>
+                                <li class="c-listGroup__item">
+                                    <a href="@MemberRelatedLinkHelper.GetRemoteFinancialConsultingUrl()" class="o-itemLink">
+                                        <span class="o-itemLink__title t-bold">遠距理財諮詢</span>
+                                        <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                    </a>
+                                </li>
+                            }
                         </ul>
                     </nav>
-                    <div class="c-popover__footer">
-                        <a href="@MemberRelatedLinkHelper.GetReserveConsultingUrl()" class="o-btn o-btn--primary o-btn--sm o-btn--flat">預約諮詢</a>
-                    </div>
+                    @if (fcbLevel == "2")
+                    {
+                        <div class="c-popover__footer">
+                            <a href="@MemberRelatedLinkHelper.GetReserveConsultingUrl()" class="o-btn o-btn--primary o-btn--sm o-btn--flat">預約諮詢</a>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

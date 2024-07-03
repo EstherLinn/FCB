@@ -87,7 +87,7 @@
                                 <a href="#" class="o-sorting" data-sorting-column="MonthlyReturn"></a>
                             </div>
                         </th>
-                        <th>
+                        <th data-fcblevel>
                             <div class="c-table__title">
                                 <span>淨值/<br>漲跌幅通知</span>
                             </div>
@@ -181,7 +181,7 @@
                                 <% } %>
                             </div>
                         </td>
-                        <td class="c-cardTable__body c-cardTable__body--line" data-card-table-width="1/1">
+                        <td class="c-cardTable__body c-cardTable__body--line" data-card-table-width="1/1" data-fcblevel>
                             <div class="c-cardTable__title" data-length="5">淨值/<br>漲跌幅通知</div>
                             <div class="c-cardTable__content" data-infostatus="<% if (Info != null){%><%= 'true' %><% } else {%><%= 'false' %> <%}%>">
                                 <% if (Info  == null ) { %>

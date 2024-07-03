@@ -1,7 +1,10 @@
 ﻿
 @using Foundation.Wealth.Helper
 @using Feature.Wealth.Component.Models.Invest
-
+@using Sitecore.Configuration
+@{
+    var fcbLevel = Settings.GetSetting("FcbLevel");
+}
 <script>
     (function ($, window, document, undefined) {
           document.addEventListener('DOMContentLoaded', function () {
@@ -69,6 +72,10 @@
                             $('[eh-tracklist-info]', '#fundTable').interactive();
                             $('[eh-tracklist-focus]', '#fundTable').off('click.interactive');
                             $('[eh-tracklist-info]', '#fundTable').off('click.interactive');
+                              let level = '@fcbLevel';
+                              if (level !== "2") {
+                                  $('[data-fcblevel]').addClass('u-hidden');
+                              }
                         }
                     },
                     order: {
@@ -265,7 +272,11 @@
                             $('[eh-tracklist-focus]','#etfTable').interactive();
                             $('[eh-tracklist-info]','#etfTable').interactive();
                             $('[eh-tracklist-focus]','#etfTable').off('click.interactive');
-                            $('[eh-tracklist-info]','#etfTable').off('click.interactive');
+                            $('[eh-tracklist-info]', '#etfTable').off('click.interactive');
+                              let level = '@fcbLevel';
+                              if (level !== "2") {
+                                  $('[data-fcblevel]').addClass('u-hidden');
+                              }
                         }
                     },
                     order: {
@@ -462,7 +473,12 @@
                 $('[eh-tracklist-focus]','#foreignStockTable').interactive();
                 $('[eh-tracklist-info]','#foreignStockTable').interactive();
                 $('[eh-tracklist-focus]','#foreignStockTable').off('click.interactive');
-                $('[eh-tracklist-info]','#foreignStockTable').off('click.interactive');
+                  $('[eh-tracklist-info]', '#foreignStockTable').off('click.interactive');
+
+                      let level = '@fcbLevel';
+                      if (level !== "2") {
+                          $('[data-fcblevel]').addClass('u-hidden');
+                      }
                 }
                 },
                 order: {
@@ -843,7 +859,15 @@
                       });
               })
               // #endregion 共用
-
+              //第二階段tab hide
+             let level = '@fcbLevel';
+              if (level !== "2") {
+                  $('.c-tab__navs').first().children().each(function (index) {
+                      if (index > 0) {
+                          $(this).addClass('u-hidden');
+                      }
+                  });
+              }
           });
     })(jQuery, window, document);
 </script>
