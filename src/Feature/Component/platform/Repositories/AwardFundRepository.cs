@@ -3,17 +3,18 @@ using System;
 using Dapper;
 using Flurl.Http;
 using System.Data;
+using System.Linq;
+using System.Text;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System.Runtime.Caching;
 using Sitecore.Configuration;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
-using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
 using Foundation.Wealth.Extensions;
-using System.Runtime.Caching;
-using System.Linq;
-using System.Text;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 using Feature.Wealth.Component.Models.FundDetail;
+using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -127,7 +128,7 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                Logger.Api.Info($"An error occurred: {ex.Message}");
             }
 
             return awardFundList;
