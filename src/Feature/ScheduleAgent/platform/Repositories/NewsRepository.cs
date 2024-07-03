@@ -29,7 +29,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         #region 新聞列表
 
         /// <summary>
-        /// 存入新聞列表
+        /// 存入新聞列表資訊
         /// </summary>
         public async Task SaveNewsListData(Item settings)
         {
@@ -49,45 +49,83 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             List<NewsListDto> latestTimeDataList = QueryLastestNewsListTable()?.ToList();
             NewsListDto lastestData = latestTimeDataList.FirstOrDefault();
 
-            string dateFormat = "yyyy-MM-ddTHH:mm"; // 轉換為 ISO 8601 格式
+            string dateformat = "yyyy/MM/dd HH:mm";
+            string dateFormat_iso8601 = "yyyy-MM-ddTHH:mm"; // 轉換為 ISO 8601 格式
+            var cultureInfo = new CultureInfo("zh-TW");
+
+            DateTime startDate;
             DateTime? startDateTime = settings.GetLocalDateFieldValue("Start DateTime");
 
             if (startDateTime.HasValue)
             {
-                req.StartDateTime = startDateTime.Value.ToString(dateFormat);
-                req.EndDateTime = startDateTime.Value.AddMinutes(interval.Value).ToString(dateFormat);
+                req.StartDateTime = startDateTime.Value.ToString(dateFormat_iso8601);
+                req.EndDateTime = startDateTime.Value.AddMinutes(interval.Value).ToString(dateFormat_iso8601);
             }
-            else
+            else if (lastestData != null) // 以最後一筆資料的時間為準
             {
-                // 以最後一筆資料的時間為準
-                if (lastestData != null)
+                // 解析日期和時間
+                if (DateTime.TryParseExact($"{lastestData.NewsDate} {lastestData.NewsTime}", dateformat, cultureInfo, DateTimeStyles.None, out startDate))
                 {
-                    var cultureInfo = new CultureInfo("zh-TW");
-                    // 解析日期和時間
-                    if (DateTime.TryParseExact($"{lastestData.NewsDate} {lastestData.NewsTime}", "yyyy/MM/dd HH:mm", cultureInfo, DateTimeStyles.None, out DateTime startDate))
-                    {
-                        req.StartDateTime = startDate.ToString(dateFormat);
-                        req.EndDateTime = startDate.AddMinutes(interval.Value).ToString(dateFormat);
-                    }
+                    req.StartDateTime = startDate.ToString(dateFormat_iso8601);
+                    req.EndDateTime = startDate.AddMinutes(interval.Value).ToString(dateFormat_iso8601);
                 }
             }
 
+            int retryCount = 0, days = 1;
+            List<NewsListDto> newDatas = null;
+
+            while (retryCount <= 2)
+            {
+                try
+                {
+                    newDatas = await GetAndProcessNewsListData(req, latestTimeDataList);
+
+                    if (newDatas == null || !newDatas.Any()) // 取得API回應並且過濾最新日期的資料後, 若還是無資料則重打API
+                    {
+                        if (DateTime.TryParseExact(req.StartDateTime, dateFormat_iso8601, cultureInfo, DateTimeStyles.None, out startDate))
+                        {
+                            req.EndDateTime = startDate.AddDays(days).ToString(dateFormat_iso8601);
+                        }
+
+                        days++;
+                        retryCount++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this._logger.Error(ex.Message, ex);
+                    break;
+                }
+            }
+
+            await UpdateNewsListIntoTableAsync(newDatas);
+        }
+
+        /// <summary>
+        /// 取得並處理新聞列表API回應
+        /// </summary>
+        /// <param name="req">Request</param>
+        /// <param name="latestTimeDataList">最新日期的新聞列表資料</param>
+        /// <returns></returns>
+        private async Task<List<NewsListDto>> GetAndProcessNewsListData(NewsListRequest req, List<NewsListDto> latestTimeDataList)
+        {
             // Call API
             List<NewsListResult> dataResponse = await _service.GetNewsListData(req);
 
             if (dataResponse == null || !dataResponse.Any())
             {
                 this._logger.Info("No data received from API.");
-                return;
+                return null;
             }
 
             var dto = dataResponse.Adapt<List<NewsListDto>>();
             var newData = dto.Except(latestTimeDataList, new NewsListDtoComparer()).ToList();
 
-            if (newData != null && newData.Any())
-            {
-                await UpdateNewsListIntoTableAsync(newData);
-            }
+            return newData;
         }
 
         /// <summary>
@@ -124,11 +162,16 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         }
 
         /// <summary>
-        /// 寫入新聞列表到資料表
+        /// 更新新聞列表到資料表
         /// </summary>
         /// <param name="list"></param>
         private async Task UpdateNewsListIntoTableAsync(List<NewsListDto> list)
         {
+            if (list == null || !list.Any())
+            {
+                return;
+            }
+
             string sql = """
                 DECLARE @SummaryOfChanges TABLE(
                     [Action] VARCHAR(10), [NewsSerialNumber] NVARCHAR (50)
