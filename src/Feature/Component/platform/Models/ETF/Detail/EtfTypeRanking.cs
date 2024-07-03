@@ -13,11 +13,10 @@
         public string ETFName { get; set; }
 
         /// <summary>
-        /// 六個月 報酬率 (淨值原幣)
+        /// 六個月 報酬率 (市價原幣)
         /// </summary>
-        public string SixMonthReturnNetValueOriginalCurrency { get; set; }
-
-        public string SixMonthReturnNetValueOriginalCurrencyStyle { get; set; }
+        public string SixMonthReturnMarketPriceOriginalCurrency { get; set; }
+        public string SixMonthReturnMarketPriceOriginalCurrencyStyle { get; set; }
 
         /// <summary>
         /// 價格(淨值)
