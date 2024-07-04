@@ -6,10 +6,12 @@
 {
     var isGlobalStyle = FcbMemberHelper.IsMemberStyleGlobal();
     var WebBankId = FcbMemberHelper.GetMemberWebBankId();
+    var PlatForm = FcbMemberHelper.GetMemberPlatForm().ToString();
 <script>
     addObjectValue(SC_DATA, 'IsLoggedIn', @(isLogin ? "true" : "false"));
     addObjectValue(SC_DATA, 'IsGlobalStyle', @(isGlobalStyle ? "true" : "false"));
     addObjectValue(SC_DATA, 'WebBankId', "@WebBankId");
+    addObjectValue(SC_DATA, 'PlatForm', "@PlatForm");
     addObjectValue(SC_DATA, 'ItemId', '@Sitecore.Context.Item.ID');
 </script>
 
@@ -19,18 +21,3 @@ else
 {
     Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LogoutState.cshtml");
 }
-<script>
-
-@{
-    if (Session["IsAppLogin"] != null)
-    {
-@:addObjectValue(SC_DATA, 'IsAppLogin', @(Session["IsAppLogin"].ToString() =="True" ? "true": "false"));
-    Session["IsAppLogin"] = null;
-    }
-    if (Session["AppLoginSuccess"] != null)
-    {
-@:addObjectValue(SC_DATA, 'LoginStatus', @(Session["AppLoginSuccess"].ToString() =="True" ? "true": "false"));
-    Session["AppLoginSuccess"] = null;
-    }
- }
-</script>

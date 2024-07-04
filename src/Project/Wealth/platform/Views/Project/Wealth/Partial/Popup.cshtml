@@ -482,10 +482,10 @@
         </div>
     </div>
 </div>
-@if (Session["OAuthErrorMsg"] != null)
+@if (Session["ErrorMsg"] != null)
 {
 <script>
-        $('[data-errormsg]', '#loginFail').text("「@Session["OAuthErrorMsg"].ToString()」");
+        $('[data-errormsg]', '#loginFail').text("「@Session["ErrorMsg"].ToString()」");
         $.magnificPopup.open({
             items: {
                 src: '#loginFail'
@@ -493,32 +493,11 @@
             type: 'inline'
         });
 </script>
-    Session["OAuthErrorMsg"] = null;
-}
-
-@if (Session["WebBankErrorMsg"] != null)
-{
-<script>
-        $('[data-errormsg]', '#loginFail').text("「@Session["WebBankErrorMsg"].ToString()」");
-        $.magnificPopup.open({
-            items: {
-                src: '#loginFail'
-            },
-            type: 'inline'
-        });
-</script>
-    Session["WebBankErrorMsg"] = null;
+    Session["ErrorMsg"] = null;
 }
 
 <script>
-    if (SC_DATA.IsAppLogin && !SC_DATA.LoginStatus) {
-        $.magnificPopup.open({
-            items: {
-                src: '#loginFail'
-            },
-            type: 'inline'
-        });
-    }
+
     $('[data-calendar]').datepickerExtend();
     $('[data-tab="true"]').tab();
 
