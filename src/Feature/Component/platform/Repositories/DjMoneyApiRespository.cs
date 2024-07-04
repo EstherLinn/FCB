@@ -411,7 +411,6 @@ namespace Feature.Wealth.Component.Repositories
                         request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
                             .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 1 })
                             .WithOAuthBearerToken(_token)
-                            .AllowAnyHttpStatus()
                             .GetAsync()
                             .ReceiveString();
                         break;
@@ -420,7 +419,6 @@ namespace Feature.Wealth.Component.Repositories
                         request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
                             .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 2 })
                             .WithOAuthBearerToken(_token)
-                            .AllowAnyHttpStatus()
                             .GetAsync()
                             .ReceiveString();
                         break;
@@ -452,16 +450,15 @@ namespace Feature.Wealth.Component.Repositories
             JObject result = null;
             try
             {
-                var request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
+                var response = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
                     .SetQueryParams(new { etfId = etfId, startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddYears(-1)).ToString("yyyy/MM/dd"), enddate = _today })
                     .WithOAuthBearerToken(_token)
-                    .AllowAnyHttpStatus()
                     .GetAsync()
                     .ReceiveString();
 
-                if (!string.IsNullOrEmpty(request))
+                if (!string.IsNullOrEmpty(response))
                 {
-                    result = JObject.Parse(request);
+                    result = JObject.Parse(response);
                 }
             }
             catch (FlurlHttpException ex)
@@ -494,16 +491,15 @@ namespace Feature.Wealth.Component.Repositories
             JObject result = null;
             try
             {
-                var request = await _route.AppendPathSegments("api", "etf", "kline")
+                var response = await _route.AppendPathSegments("api", "etf", "kline")
                     .SetQueryParams(new { etfId = etfId, period = period })
                     .WithOAuthBearerToken(_token)
-                    .AllowAnyHttpStatus()
                     .GetAsync()
                     .ReceiveString();
 
-                if (!string.IsNullOrEmpty(request))
+                if (!string.IsNullOrEmpty(response))
                 {
-                    result = JObject.Parse(request);
+                    result = JObject.Parse(response);
                 }
             }
             catch (FlurlHttpException ex)
@@ -536,16 +532,15 @@ namespace Feature.Wealth.Component.Repositories
             JObject result = null;
             try
             {
-                var request = await _route.AppendPathSegments("api", "etf", etfId, "etfdoc")
+                var response = await _route.AppendPathSegments("api", "etf", etfId, "etfdoc")
                     .SetQueryParams(new { idx = idx })
                     .WithOAuthBearerToken(_token)
-                    .AllowAnyHttpStatus()
                     .GetAsync()
                     .ReceiveString();
 
-                if (!string.IsNullOrEmpty(request))
+                if (!string.IsNullOrEmpty(response))
                 {
-                    result = JObject.Parse(request);
+                    result = JObject.Parse(response);
                 }
             }
             catch (FlurlHttpException ex)
@@ -561,5 +556,37 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         #endregion ETF
+
+        /// <summary>
+        /// ETF/基金 績效(報酬) 指標指數走勢資訊
+        /// </summary>
+        /// <returns></returns>
+        public async Task<JObject> GetBenchmarkROIDuringDate(string id, string startdate, string enddate)
+        {
+            JObject result = null;
+            try
+            {
+                var response = await _route.AppendPathSegments("api", "fund", id, "benchmark-roi-duringdate-all")
+                    .SetQueryParams(new { startdate = startdate, enddate = enddate })
+                    .WithOAuthBearerToken(_token)
+                    .GetAsync()
+                    .ReceiveString();
+
+                if (!string.IsNullOrEmpty(response))
+                {
+                    result = JObject.Parse(response);
+                }
+            }
+            catch (FlurlHttpException ex)
+            {
+                this._log.Error($"Error returned from {ex.Call.Request.Url}: {ex}");
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+            }
+
+            return result;
+        }
     }
 }

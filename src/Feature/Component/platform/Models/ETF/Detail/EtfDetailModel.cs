@@ -108,10 +108,11 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         public string EndDate { get; set; }
     }
 
-    public class ResGlobalIndex : ReqBase
+    public class ResReferenceIndex
     {
         public string IndexID { get; set; }
-        public string Cycle { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
     }
 
     public class ReqHistory : ReqBase
