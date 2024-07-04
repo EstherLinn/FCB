@@ -27,7 +27,7 @@ namespace Foundation.Wealth.Events.PublishProcessed
                     {
                         var title = processedItem.TemplateID == new ID(_WeekMonthlyNewsTemplatedId) ? processedItem.Fields["Title"].ToString() : processedItem.Fields["Main Title"].ToString();
                         var itemId = processedItem.ID.ToString();
-                        var type = processedItem.TemplateID == new ID(_WeekMonthlyNewsTemplatedId) ? "週月報" : "優惠活動";
+                        var type = processedItem.TemplateID == new ID(_WeekMonthlyNewsTemplatedId) ? "週月報" : "專屬優惠";
                         string strSql = $@"MERGE PublishItemRecord AS Target
                             USING (SELECT @ItemId) AS Source (ItemId) ON Target.ItemId = Source.ItemId
                             WHEN NOT MATCHED THEN

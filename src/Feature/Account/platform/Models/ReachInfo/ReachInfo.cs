@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Feature.Wealth.Account.Models.ReachInfo
 {
-  public  class ReachInfo
+    public class ReachInfo
     {
+        [JsonIgnore]
         public string PlatFormId { get; set; }
         public string InvestType { get; set; }
         public string InvestId { get; set; }
