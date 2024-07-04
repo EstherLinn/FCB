@@ -1,5 +1,4 @@
 ﻿using Feature.Wealth.Component.Models.FundDetail;
-using Feature.Wealth.Component.Models.GlobalIndex;
 using Foundation.Wealth.Manager;
 using Newtonsoft.Json;
 using System;
@@ -17,7 +16,7 @@ namespace Feature.Wealth.Component.Repositories
         public FundViewModel GetOrSetFundDetailsCache(string fundId, string indicator)
         {
             var FundDic = (Dictionary<string, FundViewModel>)_cache.Get(FundDetailsCacheKey) ?? new Dictionary<string, FundViewModel>();
-            FundViewModel FundFullData = null;
+            FundViewModel FundFullData;
             if (!FundDic.Any())
             {
                 FundDic.Add(fundId, CreateFundDetailsData(fundId, indicator));
@@ -43,30 +42,30 @@ namespace Feature.Wealth.Component.Repositories
             FundViewModel fundViewModel = new FundViewModel();
             if (indicator == nameof(FundEnum.D))
             {
-                fundViewModel.FundBaseData = this.GetDomesticFundBasic(fundId);
-                fundViewModel.FundAccordingStockHoldings = this.GetFundHoldingStockPercent(fundId);
+                fundViewModel.FundBaseData = GetDomesticFundBasic(fundId);
+                fundViewModel.FundAccordingStockHoldings = GetFundHoldingStockPercent(fundId);
             }
             else
             {
-                fundViewModel.FundBaseData = this.GetOverseasFundBasic(fundId);
+                fundViewModel.FundBaseData = GetOverseasFundBasic(fundId);
             }
 
-            fundViewModel.TagsDic = this.GetTagsById(fundId);
-            fundViewModel.FundCloseYearsNetValue = this.GetNetAssetValueWithCloseYear(fundId);
-            fundViewModel.FundTypeRanks = this.GetSameTypeFundRank(fundId);
-            fundViewModel.FundRateOfReturn = this.GetRateOfReturn(fundId);
-            fundViewModel.FundThiryDaysNetValue = this.GetThrityDaysNetValue(fundId);
-            fundViewModel.FundAnnunalRateOfReturn = this.GetAnnualRateOfReturn(fundId);
-            fundViewModel.FundAccumulationRateOfReturn = this.GetAccumulationRateOfReturn(fundId);
-            fundViewModel.FundDowJonesIndexs = this.GetDowJonesIndex(fundId);
-            fundViewModel.FundStockHoldings = this.GetFundIndustryPercent(fundId);
-            fundViewModel.FundStockAreaHoldings = this.GetFundAreaPercent(fundId);
-            fundViewModel.FundTopTenStockHolding = this.GetTopTenHoldingFund(fundId, indicator);
-            fundViewModel.FundRiskindicators = this.GetRiskindicators(fundId);
-            fundViewModel.FundReturnCompare = this.GetRateOfReturnCompare(fundId, indicator);
-            fundViewModel.FundYearRateOfReturn = this.GetYearRateOfReturnCompare(fundId);
-            fundViewModel.FundDividendRecords = this.GetDividendRecord(fundId);
-            fundViewModel.FundScaleRecords = this.GetScaleMove(fundId, indicator);
+            fundViewModel.TagsDic = GetTagsById(fundId);
+            fundViewModel.FundCloseYearsNetValue = GetNetAssetValueWithCloseYear(fundId);
+            fundViewModel.FundTypeRanks = GetSameTypeFundRank(fundId);
+            fundViewModel.FundRateOfReturn = GetRateOfReturn(fundId);
+            fundViewModel.FundThiryDaysNetValue = GetThrityDaysNetValue(fundId);
+            fundViewModel.FundAnnunalRateOfReturn = GetAnnualRateOfReturn(fundId);
+            fundViewModel.FundAccumulationRateOfReturn = GetAccumulationRateOfReturn(fundId);
+            fundViewModel.FundDowJonesIndexs = GetDowJonesIndex(fundId);
+            fundViewModel.FundStockHoldings = GetFundIndustryPercent(fundId);
+            fundViewModel.FundStockAreaHoldings = GetFundAreaPercent(fundId);
+            fundViewModel.FundTopTenStockHolding = GetTopTenHoldingFund(fundId, indicator);
+            fundViewModel.FundRiskindicators = GetRiskindicators(fundId);
+            fundViewModel.FundReturnCompare = GetRateOfReturnCompare(fundId, indicator);
+            fundViewModel.FundYearRateOfReturn = GetYearRateOfReturnCompare(fundId);
+            fundViewModel.FundDividendRecords = GetDividendRecord(fundId);
+            fundViewModel.FundScaleRecords = GetScaleMove(fundId, indicator);
             return fundViewModel;
         }
         /// <summary>
@@ -76,10 +75,9 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public string GetDometicOrOverseas(string fundId)
         {
-            string indicator = string.Empty;
             string sql = @"Select DomesticForeignFundIndicator From [FUND_BSC] (NOLOCK) Where  [BankProductCode] =@fundId";
-            var para = new { fundId = fundId };
-            indicator = DbManager.Custom.Execute<string>(sql, para, commandType: System.Data.CommandType.Text);
+            var para = new { fundId };
+            string indicator = DbManager.Custom.Execute<string>(sql, para, commandType: System.Data.CommandType.Text);
             return indicator;
         }
 
@@ -114,27 +112,14 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="fundId"></param>
         /// <returns></returns>
-        public DomesticFundBase GetDomesticFundBasic(string fundId)
-        {
-            DomesticFundBase domesticFundBase = null;
-            var para = new { fundId = fundId };
-            domesticFundBase = DbManager.Custom.Execute<DomesticFundBase>("sp_DomesticFundBasicData", para, commandType: System.Data.CommandType.StoredProcedure);
-            return domesticFundBase;
-        }
+        public DomesticFundBase GetDomesticFundBasic(string fundId) => DbManager.Custom.Execute<DomesticFundBase>("sp_DomesticFundBasicData", new { fundId }, commandType: System.Data.CommandType.StoredProcedure);
 
         /// <summary>
         /// 取得海外基金基本資料
         /// </summary>
         /// <param name="fundId"></param>
         /// <returns></returns>
-        public OverseasFundBase GetOverseasFundBasic(string fundId)
-        {
-            OverseasFundBase overseasFundBase = null;
-            var para = new { fundId = fundId };
-            overseasFundBase = DbManager.Custom.Execute<OverseasFundBase>("sp_OverseasFundBasicData", para, commandType: System.Data.CommandType.StoredProcedure);
-            return overseasFundBase;
-        }
-
+        public OverseasFundBase GetOverseasFundBasic(string fundId) => DbManager.Custom.Execute<OverseasFundBase>("sp_OverseasFundBasicData", new { fundId }, commandType: System.Data.CommandType.StoredProcedure);
 
         /// <summary>
         /// 取得最近一年淨值
@@ -143,51 +128,34 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundCloseYearNetValue> GetNetAssetValueWithCloseYear(string fundId)
         {
-            List<FundCloseYearNetValue> fundCloseYearNetValue = new List<FundCloseYearNetValue>();
             string sql = @"SELECT Format([Date],'yyyy-MM-dd') NetAssetValueDate,[NetAssetValue] 
-                            FROM [Sysjust_FUNDNAV_HIS] where [FirstBankCode]=@fundid and Date >= DATEADD(year, -1, GETDATE()) ORDER BY [Date] ";
-            var para = new { fundid = fundId };
-            fundCloseYearNetValue = DbManager.Custom.ExecuteIList<FundCloseYearNetValue>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+                            FROM [Sysjust_FUNDNAV_HIS] where [FirstBankCode]=@fundId and Date >= DATEADD(year, -1, GETDATE()) ORDER BY [Date] ";
+            var para = new { fundId };
+            List<FundCloseYearNetValue> fundCloseYearNetValue = DbManager.Custom.ExecuteIList<FundCloseYearNetValue>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundCloseYearNetValue;
         }
+
         /// <summary>
         /// 取得同類型基金排行
         /// </summary>
         /// <param name="fundId"></param>
         /// <returns></returns>
-        public List<FundTypeRank> GetSameTypeFundRank(string fundId)
-        {
-            List<FundTypeRank> fundTypeRank = new List<FundTypeRank>();
-            var para = new { fundid = fundId };
-            fundTypeRank = DbManager.Custom.ExecuteIList<FundTypeRank>("sp_FundSameTypeRank", para, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
-            return fundTypeRank;
-        }
+        public List<FundTypeRank> GetSameTypeFundRank(string fundId) => DbManager.Custom.ExecuteIList<FundTypeRank>("sp_FundSameTypeRank", new { fundId }, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
+
         /// <summary>
         /// 取得近30日淨值
         /// </summary>
         /// <param name="fundId"></param>
         /// <returns></returns>
+        public List<FundThiryDays> GetThrityDaysNetValue(string fundId) => DbManager.Custom.ExecuteIList<FundThiryDays>("sp_CountFundNavForThirtyDays", new { fundId }, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
 
-        public List<FundThiryDays> GetThrityDaysNetValue(string fundId)
-        {
-            List<FundThiryDays> fundThiryDays = new List<FundThiryDays>();
-
-            var para = new { fundid = fundId };
-            fundThiryDays = DbManager.Custom.ExecuteIList<FundThiryDays>("sp_CountFundNavForThirtyDays", para, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
-            return fundThiryDays;
-        }
         /// <summary>
         /// 取得報酬率
         /// </summary>
         /// <param name="fundId"></param>
         /// <returns></returns>
-        public FundRateOfReturn GetRateOfReturn(string fundId)
-        {
-            FundRateOfReturn fundRateOfReturn = null;
-            var para = new { fundId = fundId };
-            fundRateOfReturn = DbManager.Custom.Execute<FundRateOfReturn>("sp_FundRateOfReturn", para, commandType: System.Data.CommandType.StoredProcedure);
-            return fundRateOfReturn;
-        }
+        public FundRateOfReturn GetRateOfReturn(string fundId) => DbManager.Custom.Execute<FundRateOfReturn>("sp_FundRateOfReturn", new { fundId }, commandType: System.Data.CommandType.StoredProcedure);
+
         /// <summary>
         /// 取得近五年報酬率
         /// </summary>
@@ -196,7 +164,6 @@ namespace Feature.Wealth.Component.Repositories
 
         public List<FundAnnunalRateOfReturn> GetAnnualRateOfReturn(string fundId)
         {
-            List<FundAnnunalRateOfReturn> fundAnnunalRateOfReturn = new List<FundAnnunalRateOfReturn>();
             var sql = @"SELECT TOP(5)
                        [FirstBankCode]
                       ,[Year]
@@ -207,8 +174,8 @@ namespace Feature.Wealth.Component.Repositories
                   FROM [Sysjust_Return_Fund_2] 
                   where [FirstBankCode] = @fundId 
                   ORDER BY [Year] DESC";
-            var para = new { fundid = fundId };
-            fundAnnunalRateOfReturn = DbManager.Custom.ExecuteIList<FundAnnunalRateOfReturn>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            var para = new { fundId };
+            List<FundAnnunalRateOfReturn> fundAnnunalRateOfReturn = DbManager.Custom.ExecuteIList<FundAnnunalRateOfReturn>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundAnnunalRateOfReturn;
         }
         /// <summary>
@@ -218,7 +185,6 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public FundAccumulationRateOfReturn GetAccumulationRateOfReturn(string fundId)
         {
-            FundAccumulationRateOfReturn fundAccumulationRateOfReturn = null;
             string sql = @"SELECT [FirstBankCode]     
                                   ,[OneWeekReturnOriginalCurrency]
                                   ,[MonthtoDateReturnOriginalCurrency]
@@ -231,9 +197,9 @@ namespace Feature.Wealth.Component.Repositories
                                   ,[ThreeYearReturnOriginalCurrency]
                                   ,[FiveYearReturnOriginalCurrency]
                                   ,[DataDate]
-                              FROM [Sysjust_Return_Fund] where [FirstBankCode] = @fundid";
-            var para = new { fundid = fundId };
-            fundAccumulationRateOfReturn = DbManager.Custom.Execute<FundAccumulationRateOfReturn>(sql, para, System.Data.CommandType.Text);
+                              FROM [Sysjust_Return_Fund] where [FirstBankCode] = @fundId";
+            var para = new { fundId };
+            FundAccumulationRateOfReturn fundAccumulationRateOfReturn = DbManager.Custom.Execute<FundAccumulationRateOfReturn>(sql, para, System.Data.CommandType.Text);
             return fundAccumulationRateOfReturn;
         }
 
@@ -244,7 +210,6 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundDowJonesIndex> GetDowJonesIndex(string fundId)
         {
-            List<FundDowJonesIndex> fundDowJonesIndex = new List<FundDowJonesIndex>();
             var sql = @" SELECT TOP(12)
                           [FirstBankCode]
                           ,FORMAT(CAST([Date] as date),'yyyy/MM')  [Date]
@@ -252,9 +217,9 @@ namespace Feature.Wealth.Component.Repositories
                           ,[IndicatorIndexPriceChange]
                           ,[MonthlyReturnRate] - [IndicatorIndexPriceChange] as Difference
                       FROM [Sysjust_Return_Fund_3]
-                      WHERE [FirstBankCode] = @fundid";
-            var para = new { fundid = fundId };
-            fundDowJonesIndex = DbManager.Custom.ExecuteIList<FundDowJonesIndex>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+                      WHERE [FirstBankCode] = @fundId";
+            var para = new { fundId };
+            List<FundDowJonesIndex> fundDowJonesIndex = DbManager.Custom.ExecuteIList<FundDowJonesIndex>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundDowJonesIndex;
         }
 
@@ -265,17 +230,16 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundStockHolding> GetFundHoldingStockPercent(string fundId)
         {
-            List<FundStockHolding> fundStockHolding = new List<FundStockHolding>();
             string sql = @"SELECT  [FirstBankCode]
                                   ,Format([Date],'yyyy/MM/dd') Date
                                   ,[FundName]
                                   ,[StockName] Category
                                   ,[Shareholding] Holding
                               FROM [Sysjust_Holding_Fund_1]
-                              where [FirstBankCode] = @fundid and [StockName]!='合計'
+                              where [FirstBankCode] = @fundId and [StockName]!='合計'
                               order by [Shareholding] desc";
-            var para = new { fundid = fundId };
-            fundStockHolding = DbManager.Custom.ExecuteIList<FundStockHolding>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            var para = new { fundId };
+            List<FundStockHolding> fundStockHolding = DbManager.Custom.ExecuteIList<FundStockHolding>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundStockHolding;
         }
 
@@ -286,7 +250,6 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundStockHolding> GetFundIndustryPercent(string fundId)
         {
-            List<FundStockHolding> fundStockHolding = new List<FundStockHolding>();
             string sql = @"SELECT  [FirstBankCode]
                                   ,Format([Date],'yyyy/MM/dd') Date
                                   ,[FundName]
@@ -294,10 +257,10 @@ namespace Feature.Wealth.Component.Repositories
                                   ,[HoldingSector] Holding
                                   ,[Currency]
                               FROM [Sysjust_Holding_Fund_3]
-                              where [FirstBankCode] = @fundid and Sector!='合計'
+                              where [FirstBankCode] = @fundId and Sector!='合計'
                               order by [HoldingSector] desc";
-            var para = new { fundid = fundId };
-            fundStockHolding = DbManager.Custom.ExecuteIList<FundStockHolding>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            var para = new { fundId };
+            List<FundStockHolding> fundStockHolding = DbManager.Custom.ExecuteIList<FundStockHolding>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundStockHolding;
         }
         /// <summary>
@@ -307,7 +270,6 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundStockHolding> GetFundAreaPercent(string fundId)
         {
-            List<FundStockHolding> fundStockHolding = new List<FundStockHolding>();
             string sql = $@"SELECT [FirstBankCode]
                                   ,Format([Date],'yyyy/MM/dd') Date
                                   ,[FundName]
@@ -315,10 +277,10 @@ namespace Feature.Wealth.Component.Repositories
                                   ,[HoldingArea] Holding
                                   ,[Currency]
                               FROM [Sysjust_Holding_Fund_2]
-                              where [FirstBankCode] = @fundid and [Area]!='合計'
+                              where [FirstBankCode] = @fundId and [Area]!='合計'
                               order by [HoldingArea] desc";
-            var para = new { fundid = fundId };
-            fundStockHolding = DbManager.Custom.ExecuteIList<FundStockHolding>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            var para = new { fundId };
+            List<FundStockHolding> fundStockHolding = DbManager.Custom.ExecuteIList<FundStockHolding>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundStockHolding;
         }
 
@@ -331,16 +293,15 @@ namespace Feature.Wealth.Component.Repositories
         {
             string tableName = domesticOroverseas == nameof(FundEnum.D) ? "[Sysjust_Holding_Fund_5]" : "[Sysjust_Holding_Fund_4]";
 
-            List<FundStockHolding> fundStockHolding = new List<FundStockHolding>();
             string sql = $@"SELECT TOP (10)
                                     Format([Date],'yyyy/MM/dd') Date
                                     ,[StockName] FundName
                                     ,[Shareholding] Holding
                                       FROM {tableName}
-                                     WHERE [FirstBankCode] = @fundid
+                                     WHERE [FirstBankCode] = @fundId
                                      ORDER BY [Shareholding] DESC";
-            var para = new { fundid = fundId };
-            fundStockHolding = DbManager.Custom.ExecuteIList<FundStockHolding>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            var para = new { fundId };
+            List<FundStockHolding> fundStockHolding = DbManager.Custom.ExecuteIList<FundStockHolding>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundStockHolding;
         }
 
@@ -351,7 +312,6 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public FundRiskindicators GetRiskindicators(string fundId)
         {
-            FundRiskindicators fundRiskindicators = null;
             string sql = @"SELECT  [FirstBankCode]
                       ,Format([Date],'yyyy/MM/dd') Date
                       ,[SixMonthStandardDeviation]
@@ -395,9 +355,9 @@ namespace Feature.Wealth.Component.Repositories
                       ,[FiveYearVariance]
                       ,[TenYearVariance]
                   FROM [Sysjust_Risk_Fund]
-                WHERE  [FirstBankCode] = @fundid";
-            var para = new { fundid = fundId };
-            fundRiskindicators = DbManager.Custom.Execute<FundRiskindicators>(sql, para, System.Data.CommandType.Text);
+                WHERE  [FirstBankCode] = @fundId";
+            var para = new { fundId };
+            FundRiskindicators fundRiskindicators = DbManager.Custom.Execute<FundRiskindicators>(sql, para, System.Data.CommandType.Text);
 
             return fundRiskindicators;
         }
@@ -410,10 +370,8 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundRiskGraph> GetRiskindicatorsGraph(string fundId, string selectType)
         {
-
-            List<FundRiskGraph> fundRiskGraphs = new List<FundRiskGraph>();
-            var para = new { fundId = fundId, condition = selectType };
-            fundRiskGraphs = DbManager.Custom.ExecuteIList<FundRiskGraph>("sp_FundRiskindicatorsPicture", para, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
+            var para = new { fundId, condition = selectType };
+            List<FundRiskGraph> fundRiskGraphs = DbManager.Custom.ExecuteIList<FundRiskGraph>("sp_FundRiskindicatorsPicture", para, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
             return fundRiskGraphs;
         }
 
@@ -425,9 +383,8 @@ namespace Feature.Wealth.Component.Repositories
         public FundReturnCompare GetRateOfReturnCompare(string fundId, string domesticOroverseas)
         {
             string domestic = domesticOroverseas == nameof(FundEnum.D) ? "_Domestic" : string.Empty;
-            FundReturnCompare fundReturnCompare = null;
-            var para = new { fundid = fundId };
-            fundReturnCompare = DbManager.Custom.Execute<FundReturnCompare>("sp_FundReturnCompare" + domestic, para, System.Data.CommandType.StoredProcedure);
+            var para = new { fundId };
+            FundReturnCompare fundReturnCompare = DbManager.Custom.Execute<FundReturnCompare>("sp_FundReturnCompare" + domestic, para, System.Data.CommandType.StoredProcedure);
             return fundReturnCompare;
         }
 
@@ -438,7 +395,6 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundYearRateOfReturn> GetYearRateOfReturnCompare(string fundId)
         {
-            List<FundYearRateOfReturn> fundYearRateOfReturn = new List<FundYearRateOfReturn>();
             var sql = @"SELECT TOP(5)
                           [FirstBankCode]
                           ,[Date]
@@ -449,9 +405,9 @@ namespace Feature.Wealth.Component.Repositories
                           ,[JensenIndex]
                           ,[TreynorIndex]
                       FROM [Sysjust_Risk_Fund_3] 
-                      where [FirstBankCode]=@fundid ORDER BY [Date] DESC";
-            var para = new { fundid = fundId };
-            fundYearRateOfReturn = DbManager.Custom.ExecuteIList<FundYearRateOfReturn>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+                      where [FirstBankCode]=@fundId ORDER BY [Date] DESC";
+            var para = new { fundId };
+            List<FundYearRateOfReturn> fundYearRateOfReturn = DbManager.Custom.ExecuteIList<FundYearRateOfReturn>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundYearRateOfReturn;
         }
 
@@ -462,10 +418,9 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundDividendRecord> GetDividendRecord(string fundId)
         {
-            List<FundDividendRecord> fundDividendRecord = new List<FundDividendRecord>();
             var sql = @";WITH CTE AS (
                          SELECT * FROM [Sysjust_Dividend_Fund] (NOLOCK)
-                         WHERE [FirstBankCode]=@fundid
+                         WHERE [FirstBankCode]=@fundId
                         )
                         SELECT [FirstBankCode]
                               ,FORMAT([ExDividendDate],'yyyy/MM/dd') [ExDividendDate]
@@ -477,8 +432,8 @@ namespace Feature.Wealth.Component.Repositories
                           FROM CTE
                           WHERE ExDividendDate >= CAST(CAST(YEAR(DATEADD(YEAR,-2,(SELECT MAX(ExDividendDate) FROM CTE))) AS varchar(4))+'-01-01' AS smalldatetime)
                           ORDER BY [ExDividendDate] DESC";
-            var para = new { fundid = fundId };
-            fundDividendRecord = DbManager.Custom.ExecuteIList<FundDividendRecord>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            var para = new { fundId };
+            List<FundDividendRecord> fundDividendRecord = DbManager.Custom.ExecuteIList<FundDividendRecord>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
 
             return fundDividendRecord;
         }
@@ -491,10 +446,9 @@ namespace Feature.Wealth.Component.Repositories
         public List<FundScaleRecord> GetScaleMove(string fundId, string domesticOroverseas = nameof(FundEnum.D))
         {
             string tableName = domesticOroverseas == nameof(FundEnum.D) ? "[Sysjust_Fundsize_Fund_2]" : "[Sysjust_Fundsize_Fund_1]";
-            List<FundScaleRecord> fundScaleMove = new List<FundScaleRecord>();
             var sql = $@" ;WITH CTE AS (
                              SELECT * FROM {tableName} (NOLOCK)
-                             WHERE [FirstBankCode]=@fundid
+                             WHERE [FirstBankCode]=@fundId
                             )
                             SELECT [FirstBankCode]
                                 ,FORMAT([ScaleDate],'yyyy/MM/dd') [ScaleDate]
@@ -503,17 +457,17 @@ namespace Feature.Wealth.Component.Repositories
                               FROM CTE
                               WHERE [ScaleDate] >= CAST(CAST(YEAR(DATEADD(YEAR,-2,(SELECT MAX([ScaleDate]) FROM CTE))) AS varchar(4))+'-01-01' AS smalldatetime)
                               ORDER BY [ScaleDate] DESC";
-            var para = new { fundid = fundId };
-            fundScaleMove = DbManager.Custom.ExecuteIList<FundScaleRecord>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            var para = new { fundId };
+            List<FundScaleRecord> fundScaleMove = DbManager.Custom.ExecuteIList<FundScaleRecord>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundScaleMove;
         }
 
-        public FundViewModel GetDocLinks(string fundid, FundViewModel fundViewModel, string fundIndicator, DjMoneyApiRespository djMoneyApiRespository)
+        public FundViewModel GetDocLinks(string fundId, FundViewModel fundViewModel, string fundIndicator, DjMoneyApiRespository djMoneyApiRespository)
         {
             //嘗試撈取暫存
-            string sqlSelect = @"SELECT * FROM FundDetailTemp WITH (NOLOCK) WHERE FundID = @FundID";
+            string sqlSelect = @"SELECT * FROM FundDetailTemp WITH (NOLOCK) WHERE FundID = @fundId";
 
-            var fundDetailTemp = DbManager.Custom.Execute<FundDetailTemp>(sqlSelect, new { FundID = fundid }, System.Data.CommandType.Text);
+            var fundDetailTemp = DbManager.Custom.Execute<FundDetailTemp>(sqlSelect, new { fundId }, System.Data.CommandType.Text);
 
             var temp = new FundViewModel();
             var updateDateTime = DateTime.Now;
@@ -535,18 +489,18 @@ namespace Feature.Wealth.Component.Repositories
             {
                 if (fundIndicator == nameof(FundEnum.D))
                 {
-                    fundViewModel.OpenDoc = GetDocLink(djMoneyApiRespository, fundid, "1");
-                    fundViewModel.FinancialReportDoc = GetDocLink(djMoneyApiRespository, fundid, "2");
-                    fundViewModel.EasyOpenDoc = GetDocLink(djMoneyApiRespository, fundid, "4");
-                    fundViewModel.MonthReportDoc = GetDocLink(djMoneyApiRespository, fundid, "5");
+                    fundViewModel.OpenDoc = GetDocLink(djMoneyApiRespository, fundId, "1");
+                    fundViewModel.FinancialReportDoc = GetDocLink(djMoneyApiRespository, fundId, "2");
+                    fundViewModel.EasyOpenDoc = GetDocLink(djMoneyApiRespository, fundId, "4");
+                    fundViewModel.MonthReportDoc = GetDocLink(djMoneyApiRespository, fundId, "5");
                 }
                 else
                 {
-                    fundViewModel.OpenDoc = GetDocLink(djMoneyApiRespository, fundid, "1");
-                    fundViewModel.FinancialReportDoc = GetDocLink(djMoneyApiRespository, fundid, "2");
-                    fundViewModel.MonthReportDoc = GetDocLink(djMoneyApiRespository, fundid, "5");
-                    fundViewModel.InvestExclusiveDoc = GetDocLink(djMoneyApiRespository, fundid, "6");
-                    fundViewModel.InvestNomnalDoc = GetDocLink(djMoneyApiRespository, fundid, "7");
+                    fundViewModel.OpenDoc = GetDocLink(djMoneyApiRespository, fundId, "1");
+                    fundViewModel.FinancialReportDoc = GetDocLink(djMoneyApiRespository, fundId, "2");
+                    fundViewModel.MonthReportDoc = GetDocLink(djMoneyApiRespository, fundId, "5");
+                    fundViewModel.InvestExclusiveDoc = GetDocLink(djMoneyApiRespository, fundId, "6");
+                    fundViewModel.InvestNomnalDoc = GetDocLink(djMoneyApiRespository, fundId, "7");
                 }
 
                 temp.OpenDoc = fundViewModel.OpenDoc;
@@ -566,12 +520,12 @@ namespace Feature.Wealth.Component.Repositories
                                      ,[Data]
                                      ,[DataDate])
                                      VALUES
-                                     (@FundID
+                                     (@fundId
                                      ,@Data
                                      ,@DataDate)"
                 ;
 
-                DbManager.Custom.ExecuteNonQuery(sqlInsert, new { FundID = fundid, Data = JsonConvert.SerializeObject(temp), DataDate = updateDateTime }, commandType: System.Data.CommandType.Text);
+                DbManager.Custom.ExecuteNonQuery(sqlInsert, new { fundId, Data = JsonConvert.SerializeObject(temp), DataDate = updateDateTime }, commandType: System.Data.CommandType.Text);
             }
             else
             {
@@ -579,9 +533,9 @@ namespace Feature.Wealth.Component.Repositories
                 string sqlUpdate = @"UPDATE [FundDetailTemp]
                                      SET [Data] = @Data,
                                      [DataDate] = @DataDate
-                                     WHERE [FundID] = @FundID";
+                                     WHERE [FundID] = @fundId";
 
-                DbManager.Custom.ExecuteNonQuery(sqlUpdate, new { FundID = fundid, Data = JsonConvert.SerializeObject(temp), DataDate = updateDateTime }, commandType: System.Data.CommandType.Text);
+                DbManager.Custom.ExecuteNonQuery(sqlUpdate, new { fundId, Data = JsonConvert.SerializeObject(temp), DataDate = updateDateTime }, commandType: System.Data.CommandType.Text);
             }
 
             return fundViewModel;

@@ -61,6 +61,12 @@ namespace Feature.Wealth.Component.Models.FundDetail
         public string Currency { get; set; }
 
         /// <summary>
+        /// 計價幣別代碼-排序使用
+        /// </summary>
+        public string CurrencyCode { get; set; }
+
+
+        /// <summary>
         /// 計價幣別-中文
         /// </summary>
         public string ValuationCurrency { get; set; }

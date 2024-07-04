@@ -616,8 +616,8 @@
                             <option value="">排序</option>
                             <option value="基金名稱高至低" data-sorting-column="name" data-sorting-class="is-desc">基金名稱高至低</option>
                             <option value="基金名稱低至高" data-sorting-column="name" data-sorting-class="is-asc">基金名稱低至高</option>
-                            <option value="幣別高至低" data-sorting-column="currency" data-sorting-class="is-desc">幣別高至低</option>
-                            <option value="幣別低至高" data-sorting-column="currency" data-sorting-class="is-asc">幣別低至高</option>
+                            <option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
+                            <option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
                         </select>
                     </div>
                 </div>
@@ -637,7 +637,7 @@
                                         <div class="c-table__title">
                                             <span>幣別</span>
                                             <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                            <a href="#" class="o-sorting" data-sorting-column="currency"></a>
+                                            <a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
                                         </div>
                                     </th>
                                     <th>
@@ -2029,7 +2029,7 @@
                                         d.name = result.name;
                                         d.lable = data.lables.find((item) => item.id == key);
                                         if (params.etf.includes(key)) {
-                                            d.currency = d.CurrencyName || '-';
+                                            d.currency = d.CurrencyName || '-';                                            
                                             d.dividendFrequency = d.DividendDistributionFrequency || '-';
                                             d.dateOfEstablishment = d.EstablishmentDate || '-';
                                             d.type = d.ProductType || '-';
@@ -2081,7 +2081,7 @@
                                         tickPosition: 'inside',
                                         tickWidth: 0.5,
                                         tickLength: 7,
-                                        tickInterval: 24 * 3600 * 1000 * 5,
+                                        tickInterval: (24 * 3600 * 1000) * 7,
                                         labels: {
                                             formatter: function () {
                                                 const format = {
