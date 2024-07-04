@@ -76,9 +76,7 @@ namespace Feature.Wealth.Component.Controllers
         /// <summary>
         /// 市價/淨值走勢
         /// </summary>
-        /// <param name="etfId"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> GetReturnChartData(ReqReturnTrend req)
@@ -126,19 +124,17 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         /// <summary>
-        /// ETF績效圖－全球指數
+        /// ETF績效圖－績效(報酬) 指標指數
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        [HttpPost]
-        public ActionResult GetReturnGlobalIndexChartData(ResGlobalIndex req)
+        public async Task<ActionResult> GetBenchmarkROIChartData(ResReferenceIndex req)
         {
             RespEtf resp = new RespEtf();
 
             try
             {
-                req.EtfId = req.EtfId?.ToUpper();
-                resp = _detailRepository.GetGlobalIndex(req.IndexID, req.Cycle);
+                resp = await _detailRepository.GetReferenceIndex(req);
             }
             catch (Exception ex)
             {

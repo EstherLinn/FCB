@@ -459,34 +459,35 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 取得全球指數
+        /// 取得績效(報酬)指標指數
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        public RespEtf GetGlobalIndex(string indexCode, string cycle)
+        public async Task<RespEtf> GetReferenceIndex(ResReferenceIndex req)
         {
             RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
 
-            if (string.IsNullOrWhiteSpace(indexCode) || string.IsNullOrWhiteSpace(cycle))
+            if (string.IsNullOrWhiteSpace(req.IndexID) || string.IsNullOrWhiteSpace(req.StartDate) || string.IsNullOrWhiteSpace(req.EndDate))
             {
                 resp.Message = "錯誤的查詢，請確認您的查詢參數";
                 resp.StatusCode = (int)HttpStatusCode.Forbidden;
                 return resp;
             }
 
-            List<PriceData> respGlobalIndex = null;
+            this._djMoneyApiRespository = new DjMoneyApiRespository();
+            JObject respReferenceIndex = null;
 
             try
             {
-                respGlobalIndex = new GlobalIndexRepository().GetGlobalInedxPriceData(indexCode, cycle);
+                respReferenceIndex = await _djMoneyApiRespository.GetBenchmarkROIDuringDate(req.IndexID, req.StartDate, req.EndDate);
 
-                if (respGlobalIndex != null && respGlobalIndex.Any())
+                if (respReferenceIndex != null)
                 {
                     resp.Message = "Success";
                     resp.StatusCode = (int)HttpStatusCode.OK;
                     resp.Body = new
                     {
-                        respGlobalIndex
+                        respReferenceIndex
                     };
                 }
             }
@@ -494,7 +495,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 resp.Message = ex.Message;
                 resp.StatusCode = (int)HttpStatusCode.InternalServerError;
-                this._log.Error("ETF績效圖－取得全球指數資訊", ex);
+                this._log.Error("ETF績效圖－取得績效(報酬)指標指數資訊", ex);
             }
 
             return resp;
