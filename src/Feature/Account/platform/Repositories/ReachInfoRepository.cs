@@ -35,7 +35,7 @@ namespace Feature.Wealth.Account.Repositories
         public List<ReachInfo> GetProductReachInfo(string platFormId, string type, string id)
         {
             string sql = $@" SELECT PlatFormId,InvestType,InvestId,PriceValue,InfoType,ReachValue,RiseValue,RisePercent,FallValue,FallPercent,
-                Format(InfoStartDate,'yyyy/MM/dd')InfoStartDate,Format(InfoEndDate,'yyyy/MM/dd')InfoEndDate,Format(SetDateTime,'yyyy/MM/dd')SetDateTime,OpenInfo,HaveRead
+                Format(InfoStartDate,'yyyy/MM/dd')InfoStartDate,Format(InfoEndDate,'yyyy/MM/dd')InfoEndDate,Format(SetDateTime,'yyyy/MM/dd')SetDateTime,OpenInfo
                 from MemberReachInfo  where PlatFormId=@platFormId and InvestType=@type and InvestId=@id";
             var para = new { platFormId = platFormId, type = type, id = id };
             var results = DbManager.Custom.ExecuteIList<ReachInfo>(sql, para, CommandType.Text)?.ToList();

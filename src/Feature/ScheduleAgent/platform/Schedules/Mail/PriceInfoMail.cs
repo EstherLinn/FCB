@@ -11,7 +11,11 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Mail
 {
     public class PriceInfoMail : SitecronAgentBase
     {
-       private readonly  MailRepository mailRepository = new MailRepository();
+       private readonly  MailRepository mailRepository;
+        public PriceInfoMail()
+        {
+            this.mailRepository = new MailRepository(this.Logger);
+        }
         protected override Task Execute()
         {
             return Task.Run(() =>

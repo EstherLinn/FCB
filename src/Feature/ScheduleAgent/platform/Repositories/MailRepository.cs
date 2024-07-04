@@ -19,8 +19,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
     public class MailRepository : IMailInfo<MemebrReachInfo>, IMailRecord<MailRecord>
     {
         private readonly MailServerOption mailServerOption = new MailServerOption();
-        private readonly ILog Log = Logger.Account;
-
+        private readonly ILoggerService _logger;
+        public MailRepository(ILoggerService logger)
+        {
+            this._logger = logger;
+        }
         public List<MemebrReachInfo> GetAllMemebrReachInfos()
         {
             List<MemebrReachInfo> memebrReachInfos = null;
@@ -39,7 +42,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         {
             if (memebrReachInfos == null || !memebrReachInfos.Any())
             {
-                Log.Info("empty");
+                _logger.Info("empty");
                 return;
             }
             var GroupByMember = memebrReachInfos.GroupBy(x => x.PlatFormId);
@@ -50,10 +53,10 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             foreach (var group in GroupByMember)
             {
                 List<MailRecord> mailRecords = new List<MailRecord>();
-                var Mail1 = group.Where(x => x.InfoType == "1" && x.InvestType.ToLower() == "fund");
-                var Mail2 = group.Where(x => x.InfoType == "1" && x.InvestType.ToLower() != "fund");
-                var Mail3 = group.Where(x => x.InfoType == "2" && x.RiseValue != null);
-                var Mail4 = group.Where(x => x.InfoType == "2" && x.FallValue != null);
+                var Mail1 = group.Where(x => x.InfoType == "1" && x.InvestType.ToLower() == "fund");//基金目標價格
+                var Mail2 = group.Where(x => x.InfoType == "1" && x.InvestType.ToLower() != "fund");//etf、國外股票收盤價
+                var Mail3 = group.Where(x => x.InfoType == "2" && x.RiseValue != null);//全部商品漲幅
+                var Mail4 = group.Where(x => x.InfoType == "2" && x.FallValue != null);//全部商品跌幅
 
                 if (Mail1 != null)
                 {
@@ -127,7 +130,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         Mail.MailTo = item.MemberEmail;
                         if (item.NewestValue >= item.RiseValue)
                         {
-                            sb.Append(string.Format("<p>截至{0}(收盤價基準日)止，您關注的「<span style='color:red;'> {1} </span>」漲幅達{2}%，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestId + item.ProductName, item.RisePercent));
+                            sb.Append(string.Format("<p>截至{0}({1}基準日)止，您關注的「<span style='color:red;'> {2} </span>」漲幅達{3}%，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestType.ToLower() == "fund" ? "淨值" : "收盤價", item.InvestId + item.ProductName, item.RisePercent));
                             mailRecords.Add(new MailRecord
                             {
                                 PlatFormId = item.PlatFormId,
@@ -158,7 +161,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         Mail.MailTo = item.MemberEmail;
                         if (item.NewestValue <= item.FallValue)
                         {
-                            sb.Append(string.Format("<p>截至{0}(收盤價基準日)止，您關注的「<span style='color:red;'> {1} </span>」跌幅達{2}%，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestId + item.ProductName, item.FallPercent));
+                            sb.Append(string.Format("<p>截至{0}({1}基準日)止，您關注的「<span style='color:red;'> {2} </span>」跌幅達{3}%，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestType.ToLower() == "fund" ? "淨值" : "收盤價", item.InvestId + item.ProductName, item.FallPercent));
                             mailRecords.Add(new MailRecord
                             {
                                 PlatFormId = item.PlatFormId,
@@ -205,10 +208,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                     //add EnableSsl
                                     client.EnableSsl = Sitecore.MainUtil.GetBool(Settings.GetSetting("MailServerUseSsl"), true);
                                     client.Send(message);
+                                    _logger.Error($"到價通知Mail發送To:{item.MailTo}");
                                 }
                                 catch (Exception ex)
                                 {
-                                    Log.Error($"到價通知Mail發送失敗:{ex.Message}");
+                                    _logger.Error($"到價通知Mail發送失敗:{ex.Message}");
                                 }
                             }
                         }
