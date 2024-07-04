@@ -16,11 +16,10 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// autocomplete回傳內容
         /// </summary>
-        public string Type { get; set; }
-        public bool IsLogin { get; set; }
-        public bool IsLike { get; set; }
         public string DetailUrl { get; set; }
         public bool Purchase { get; set; }
+        public string AutoFocusButtonHtml { get; set; }
+        public string AutoSubscribeButtonHtml { get; set; }
     }
 
     /// <summary>

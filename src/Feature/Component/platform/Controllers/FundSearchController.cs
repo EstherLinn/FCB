@@ -98,17 +98,5 @@ namespace Feature.Wealth.Component.Controllers
             var funds = _fundsearchrepository.GetFundRenderData(items);
             return new JsonNetResult(funds);
         }
-
-        /// <summary>
-        ///autocomplete串接資料
-        /// </summary>
-        [HttpGet]
-        public JsonResult GetFundNames()
-        {
-            var fundItems = _fundsearchrepository.GetAutoCompleteData();
-            return Json(fundItems, JsonRequestBehavior.AllowGet);
-        }
-
-
     }
 }

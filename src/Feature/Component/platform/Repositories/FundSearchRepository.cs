@@ -126,11 +126,10 @@ namespace Feature.Wealth.Component.Repositories
 
                 vm.Data = new FundData
                 {
-                    Type = f.FundType,
-                    IsLogin = false,
-                    IsLike = false,
                     DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl() + "?id=" + f.ProductCode,
-                    Purchase = f.OnlineSubscriptionAvailability == "Y" ? true : false
+                    Purchase = vm.IsOnlineSubscriptionAvailability,
+                    AutoFocusButtonHtml = PublicHelpers.FocusTag(null, null, f.ProductCode, f.FundName, InvestTypeEnum.Fund).ToString(),
+                    AutoSubscribeButtonHtml = PublicHelpers.SubscriptionTag(null, null, f.ProductCode, f.FundName, InvestTypeEnum.Fund).ToString()
                 };
 
                 vm.InvestmentTargetName = f.InvestmentTargetName ?? string.Empty;
@@ -197,40 +196,6 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             return Math.Round(number.Value, 4, MidpointRounding.AwayFromZero);
-        }
-
-        public IList<FundItem> GetAutoCompleteData()
-        {
-            List<FundItem> fundItems = new List<FundItem>();
-
-            string sql = """
-                         SELECT * FROM [vw_BasicFund]
-                         ORDER BY SixMonthReturnOriginalCurrency DESC
-                        """;
-
-            var results = DbManager.Custom.ExecuteIList<FundSearchModel>(sql, null, CommandType.Text);
-
-
-            foreach (var item in results)
-            {
-                FundItem fundItem = new FundItem
-                {
-                    value = FullWidthToHalfWidth(item.FundName),
-                    data = new FundData
-                    {
-                        Type = item.FundType,
-                        IsLogin = false,
-                        IsLike = false,
-                        DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl() + "?id=" + item.ProductCode,
-                        Purchase = item.OnlineSubscriptionAvailability == "Y" ? true : false
-                    }
-                };
-
-                fundItems.Add(fundItem);
-            }
-
-
-            return fundItems;
         }
 
         public static string FullWidthToHalfWidth(string input)
