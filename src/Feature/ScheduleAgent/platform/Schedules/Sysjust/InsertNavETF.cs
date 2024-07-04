@@ -25,8 +25,6 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     try
                     {
                         var basic = await etlService.ParseCsv<SysjustNavEtf>(filename);
-
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Nav_ETF_History]", "NetAssetValueDate", "FirstBankCode", filename);
                         _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Nav_ETF]", filename);
                         etlService.FinishJob(filename);
                     }

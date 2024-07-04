@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
-using Feature.Wealth.ScheduleAgent.Models.Wealth;
+using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using System.Linq;
 
-namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
+namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
-    public class InsertFundEtf : SitecronAgentBase
+    public class InsertNavEtfToHis : SitecronAgentBase
     {
         protected override async Task Execute()
         {
@@ -17,15 +17,15 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var _repository = new ProcessRepository(this.Logger);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
-                string filename = "FUND_ETF";
-                bool IsfilePath = await etlService.ExtractFile("FUND_ETF");
+                string filename = "SYSJUST-NAV-ETF";
+                bool IsfilePath = await etlService.ExtractFile(filename);
 
                 if (IsfilePath)
                 {
                     try
                     {
-                        var basic = await etlService.ParseFixedLength<FundEtf>(filename);
-                        _repository.BulkInsertToDatabase(basic, "[FUND_ETF]", "BankProductCode", "DataDate", filename);
+                        var basic = await etlService.ParseCsv<SysjustNavEtfToHis>(filename);
+                        _repository.BulkInsertToDatabase(basic, "[Sysjust_ETFNAV_HIS]", "FirstBankCode", "Date", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)

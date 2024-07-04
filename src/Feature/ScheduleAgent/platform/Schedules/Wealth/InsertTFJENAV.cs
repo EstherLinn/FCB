@@ -31,7 +31,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     try
                     {
                         var basic = await etlService.ParseCsv<EtfNavTfjeNav>(filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[ETF_NAV_TFJENAV]", filename);
+                        _repository.BulkInsertToDatabase(basic, "[ETF_NAV_TFJENAV]", "BankProductCode", "NetAssetValueDate", "DataDate", filename);
                         etlService.FinishJob("TFJENAV");
                     }
                     catch (Exception ex)
