@@ -240,7 +240,7 @@
                     $.ajax({
                         type: "post",
                         url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
-                        data: { "trackList": store.get("focus") || [] },
+                        data: { "trackList": store.get("focus") || [], "productId": id },
                         beforeSend: function () { $('.c-loading').loading('show'); },
                         success: function (msg) {
                             $('.c-loading').loading('hide');
@@ -545,8 +545,8 @@
             let focusId = e.target.getAttribute('eh-focus-id');
             if (focusStore.length > 0 && focusId != '') {
                 let idx = focusStore.findIndex((x) => x.id == focusId);
-                if (idx >= 0 && focusStore[idx].trackDate != null) {
-                    e.target.innerText = focusStore[idx].trackDate + "加入關注";
+                if (idx >= 0) {
+                    e.target.innerText = focusStore[idx].trackDate != null ?　focusStore[idx].trackDate + "加入關注" : "iLeo";
                 }
             }
         });

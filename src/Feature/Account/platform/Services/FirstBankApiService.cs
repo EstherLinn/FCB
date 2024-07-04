@@ -2,6 +2,7 @@
 using Feature.Wealth.Account.Models.Api;
 using Feature.Wealth.Account.Models.FundTrackList;
 using Feature.Wealth.Account.Repositories;
+using Flurl;
 using Flurl.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -62,7 +63,47 @@ namespace Feature.Wealth.Account.Services
 
         }
 
-        public void SyncTrackList(FocusListResp focusListResp)
+        public async Task SyncTrackListToIleo(string promotionCode, string productId)
+        {
+            if (string.IsNullOrEmpty(_route))
+            {
+                Logger.Api.Info($"關注清單API Function開始 理財網同步回ileo,取得promotionCode ={promotionCode},api route =null or empty");
+                return;
+            }
+            try
+            {
+                var routeWithParams = _route.
+                    AppendQueryParam("promotionCode", promotionCode)
+                   .AppendQueryParam("channel", "wms")
+                   .AppendQueryParam("fundCode", productId);
+
+                var reqObj = new { promotionCode = promotionCode, channel = "wms", fundCode = productId };
+                Logger.Api.Info($"關注清單API Function開始 理財網同步回ileo,取得promotionCode ={promotionCode},api route ={routeWithParams},帶入參數promotionCode={promotionCode},channel=wms,fundCode={productId}");
+                var request = await routeWithParams.
+                    AllowAnyHttpStatus().
+                    PostJsonAsync(reqObj);
+                if (request.StatusCode < 300)
+                {
+                    var resp = await request.GetStringAsync();
+                    Logger.Api.Info($"ileo關注清單回覆 理財網同步回ileo, StatusCode={request.StatusCode}, 回覆內容={resp}");
+                }
+                else
+                {
+                    var error = await request.GetStringAsync();
+                    Logger.Api.Info("ileo關注清單,StatusCode :" + request.StatusCode + "response :" + error);
+                }
+            }
+            catch (FlurlHttpException ex)
+            {
+                Logger.Api.Info($"ileo關注清單 理財網同步回ileo,Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Api.Info($"ileo關注清單 理財網同步回ileo,Error Message :{ex.Message}");
+            }
+        }
+
+        public void SyncTrackListFormIleo(FocusListResp focusListResp)
         {
             if (focusListResp.rt == "0000" && focusListResp.TrackList != null)
             {
@@ -72,31 +113,11 @@ namespace Feature.Wealth.Account.Services
                 {
                     foreach (var item in focusListResp.TrackList)
                     {
-                        if (item.fundType == "1" || item.fundType == "2" || item.fundType == "E" || item.fundType == "S")
+                        originData.Add(new TrackListModel()
                         {
-                            string getType = string.Empty;
-                            switch (item.fundType)
-                            {
-                                case "1":
-                                    getType = "fund";
-                                    break;
-                                case "2":
-                                    getType = "fund";
-                                    break;
-                                case "E":
-                                    getType = "etf";
-                                    break;
-                                case "S":
-                                    getType = "foreignstocks";
-                                    break;
-                            }
-
-                            originData.Add(new TrackListModel()
-                            {
-                                Id = item.fundCode,
-                                Type = getType
-                            });
-                        }
+                            Id = item.fundCode,
+                            Type = "Fund"
+                        });
                     }
 
                 }
@@ -104,33 +125,14 @@ namespace Feature.Wealth.Account.Services
                 {
                     foreach (var item in focusListResp.TrackList)
                     {
-                        if (!originData.Any(x => x.Id == item.fundCode))
+                        if (!originData.Exists(x => x.Id == item.fundCode))
                         {
-                            if (item.fundType == "1" || item.fundType == "2" || item.fundType == "E" || item.fundType == "S")
-                            {
-                                string getType = string.Empty;
-                                switch (item.fundType)
-                                {
-                                    case "1":
-                                        getType = "fund";
-                                        break;
-                                    case "2":
-                                        getType = "fund";
-                                        break;
-                                    case "E":
-                                        getType = "etf";
-                                        break;
-                                    case "S":
-                                        getType = "foreignstocks";
-                                        break;
-                                }
 
-                                originData.Add(new TrackListModel()
-                                {
-                                    Id = item.fundCode,
-                                    Type = getType
-                                });
-                            }
+                            originData.Add(new TrackListModel()
+                            {
+                                Id = item.fundCode,
+                                Type = "Fund"
+                            });
                         }
                     }
                 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Odbc;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
@@ -559,5 +561,174 @@ namespace Feature.Wealth.Account.Repositories
                 };
             }
         }
+
+        /// <summary>
+        /// 檢查紅綠燈　綠燈:table可以讀取
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckEDHStatus()
+        {
+            string sql = "SELECT Status_code FROM EDHStatus where Status_item='CDC'";
+            string connString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString;
+
+            bool status = false;
+
+            using (var connection = new OdbcConnection(connString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (OdbcCommand command = new OdbcCommand(sql, connection))
+                    {
+                        object result = command.ExecuteScalar();
+                        if (result != null)
+                        {
+                            string value = result.ToString();
+                            status = value == "G";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Info("同步Oracle開始　檢查紅綠燈　table : EDHStatus, exception message:" + ex.ToString());
+                }
+            }
+            return status;
+        }
+
+        /// <summary>
+        /// 寫入cif資料from oracle
+        /// </summary>
+        /// <param name="id"></param>
+        public void InsertCifFormOracle(string id)
+        {
+            string odbcConnString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString;
+            string sqlConnString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
+
+            using (var odbcConn = new OdbcConnection(odbcConnString))
+            {
+                try
+                {
+                    odbcConn.Open();
+                    string query = "SELECT * FROM WEA_ODS_CIF_VIEW WHERE CIF_ID = ?";
+                    using (OdbcCommand command = new OdbcCommand(query, odbcConn))
+                    {
+                        command.Parameters.Add("param", OdbcType.NVarChar).Value = id;
+                        using (OdbcDataReader reader = command.ExecuteReader())
+                        {
+                            using (SqlConnection sqlConnection = new SqlConnection(sqlConnString))
+                            {
+                                sqlConnection.Open();
+                                string insertQuery = $@"INSERT INTO CIF (CIF_ID, CIF_CUST_NAME, CIF_ESTABL_BIRTH_DATE,CIF_CUST_ATTR,
+                                                        CIF_TEL_NO1,CIF_TEL_NO3,CIF_E_MAIL_ADDRESS,CIF_CHN_BU,
+                                                        CIF_CHN_CR,CIF_AO_EMPNO,CIF_MAIN_BRANCH,CIF_EMP_RISK,
+                                                        CIF_EMP_PI_RISK_ATTR,KYC_EXPIR_DATE,CIF_VIP_CODE,
+                                                        CIF_RECCONSENT_TYPE,CIF_UNHEALTH_TYPE,CIF_SAL_FLAG,
+                                                        CIF_HIGH_ASSET_FLAG,CIF_EXT_DATE)
+                                                 VALUES (@CIF_ID, @CIF_CUST_NAME, @CIF_ESTABL_BIRTH_DATE,@CIF_CUST_ATTR,
+                                                        @CIF_TEL_NO1,@CIF_TEL_NO3,@CIF_E_MAIL_ADDRESS,@CIF_CHN_BU,
+                                                        @CIF_CHN_CR,@CIF_AO_EMPNO,@CIF_MAIN_BRANCH,@CIF_EMP_RISK,
+                                                        @CIF_EMP_PI_RISK_ATTR,@KYC_EXPIR_DATE,@CIF_VIP_CODE,
+                                                        @CIF_RECCONSENT_TYPE,@CIF_UNHEALTH_TYPE,@CIF_SAL_FLAG,
+                                                        @CIF_HIGH_ASSET_FLAG,@CIF_EXT_DATE)";
+                                using (SqlCommand insertCommand = new SqlCommand(insertQuery, sqlConnection))
+                                {
+                                    while (reader.Read())
+                                    {
+                                        insertCommand.Parameters.AddWithValue("@CIF_ID", reader["CIF_ID"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_CUST_NAME", reader["CIF_CUST_NAME"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_ESTABL_BIRTH_DATE", reader.GetDateTime(reader.GetOrdinal("CIF_ESTABL_BIRTH_DATE")));
+                                        insertCommand.Parameters.AddWithValue("@CIF_CUST_ATTR", reader["CIF_CUST_ATTR"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_TEL_NO1", reader["CIF_TEL_NO1"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_TEL_NO3", reader["CIF_TEL_NO3"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_E_MAIL_ADDRESS", reader["CIF_E_MAIL_ADDRESS"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_CHN_BU", reader["CIF_CHN_BU"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_CHN_CR", reader["CIF_CHN_CR"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_AO_EMPNO", reader["CIF_AO_EMPNO"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_MAIN_BRANCH", reader["CIF_MAIN_BRANCH"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_EMP_RISK", reader["CIF_EMP_RISK"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_EMP_PI_RISK_ATTR", reader["CIF_EMP_PI_RISK_ATTR"]);
+                                        insertCommand.Parameters.AddWithValue("@KYC_EXPIR_DATE", reader["KYC_EXPIR_DATE"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_VIP_CODE", reader["CIF_VIP_CODE"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_RECCONSENT_TYPE", reader["CIF_RECCONSENT_TYPE"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_UNHEALTH_TYPE", reader["CIF_UNHEALTH_TYPE"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_SAL_FLAG", reader["CIF_SAL_FLAG"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_HIGH_ASSET_FLAG", reader["CIF_HIGH_ASSET_FLAG"]);
+                                        insertCommand.Parameters.AddWithValue("@CIF_EXT_DATE", reader["CIF_EXT_DATE"]);
+                                        insertCommand.ExecuteNonQuery();
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Info("同步Oracle table : WEA_ODS_CIF_VIEW To SQL table : CIF, exception message:" + ex.ToString());
+                }
+            }
+        }
+
+        /// <summary>
+        /// 寫入數存推薦人資料from oracle
+        /// </summary>
+        /// <param name="id">身分證號或六碼</param>
+        /// <param name="loginBy">個網或app登入</param>
+        /// <returns></returns>
+        public string InsertCFMBSELFormOracle(string id, string loginBy)
+        {
+            string odbcConnString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString;
+            string sqlConnString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
+            string userId = string.Empty;
+            using (var odbcConn = new OdbcConnection(odbcConnString))
+            {
+                try
+                {
+                    odbcConn.Open();
+                    //個網回傳身分證號
+                    string query = "SELECT * FROM CFMBSEL_STG WHERE CUST_ID = ?";
+                    if (loginBy.Equals("app", StringComparison.OrdinalIgnoreCase))
+                    {
+                        //app回傳6碼
+                        query = "SELECT * FROM CFMBSEL_STG WHERE PROMOTION_CODE = ?";
+                    }
+                    using (OdbcCommand command = new OdbcCommand(query, odbcConn))
+                    {
+                        command.Parameters.Add("param", OdbcType.NVarChar).Value = id;
+                        using (OdbcDataReader reader = command.ExecuteReader())
+                        {
+                            using (SqlConnection sqlConnection = new SqlConnection(sqlConnString))
+                            {
+                                sqlConnection.Open();
+                                string insertQuery = "INSERT INTO CFMBSEL (EXT_DATE, CUST_ID, TELLER_CODE,PROMOTION_CODE,LOAD_DATE) VALUES (@Param1, @Param2, @Param3, @Param4, @Param5)";
+                                using (SqlCommand insertCommand = new SqlCommand(insertQuery, sqlConnection))
+                                {
+                                    while (reader.Read())
+                                    {
+                                        insertCommand.Parameters.AddWithValue("@Param1", reader.GetDateTime(reader.GetOrdinal("EXT_DATE")));
+                                        insertCommand.Parameters.AddWithValue("@Param2", reader["CUST_ID"]);
+                                        insertCommand.Parameters.AddWithValue("@Param3", reader["TELLER_CODE"]);
+                                        insertCommand.Parameters.AddWithValue("@Param4", reader["PROMOTION_CODE"]);
+                                        insertCommand.Parameters.AddWithValue("@Param5", reader.GetDateTime(reader.GetOrdinal("LOAD_DATE")));
+                                        insertCommand.ExecuteNonQuery();
+                                        userId = reader["CUST_ID"].ToString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Info("同步Oracle table : CFMBSEL_STG To SQL table : CFMBSEL, exception message:" + ex.ToString());
+                }
+
+            }
+
+            return userId;
+        }
+
     }
 }
