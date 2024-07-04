@@ -197,7 +197,7 @@ namespace Feature.Wealth.Component.Repositories
             config.ForType<BasicEtfDto, EtfDetail>()
                 .AfterMapping((src, dest) =>
                 {
-                    dest.ETFName = src.ETFName.Normalize(NormalizationForm.FormKC);
+                    dest.ETFName = src.ETFName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
                     //dest.MarketPrice = src.MarketPrice.FormatDecimalNumber();
                     dest.RiskLevel = src.RiskLevel;
 
@@ -389,13 +389,18 @@ namespace Feature.Wealth.Component.Repositories
             string sqlQuery = """
                 SELECT TOP 12 [FirstBankCode]
                     ,[ETFName]
-                    ,[SixMonthReturnNetValueOriginalCurrency]
+                    ,[SixMonthReturnMarketPriceOriginalCurrency]
                     ,[NetAssetValue]
                     ,[NetAssetValueDate]
                 FROM [vw_BasicETF]
-                WHERE [FirstBankCode] <> @ETFId AND [FirstBankCode] IS NOT NULL AND [FirstBankCode] <> ''
+                WHERE [InvestmentTargetName] = (
+                        SELECT [InvestmentTargetName]
+                        FROM [dbo].[Sysjust_Basic_ETF] WITH (NOLOCK)
+                        WHERE [FirstBankCode] = @ETFId
+                    )
+                    AND [FirstBankCode] <> @ETFId AND [FirstBankCode] IS NOT NULL AND [FirstBankCode] <> ''
                     AND [FirstBankCode] NOT LIKE 'EA%' AND [FirstBankCode] NOT LIKE 'EB%' 
-                ORDER BY [SixMonthReturnNetValueOriginalCurrency] DESC
+                ORDER BY [SixMonthReturnMarketPriceOriginalCurrency] DESC
                 """;
             var param = new { ETFId = this.ETFId };
             var collection = DbManager.Custom.ExecuteIList<BasicEtfDto>(sqlQuery, param, CommandType.Text);
@@ -404,9 +409,9 @@ namespace Feature.Wealth.Component.Repositories
             config.ForType<BasicEtfDto, EtfTypeRanking>()
                 .AfterMapping((src, dest) =>
                 {
-                    dest.ETFName = src.ETFName.Normalize(NormalizationForm.FormKC);
-                    dest.SixMonthReturnNetValueOriginalCurrency = src.SixMonthReturnNetValueOriginalCurrency.FormatDecimalNumber(needPercent: true);
-                    dest.SixMonthReturnNetValueOriginalCurrencyStyle = src.SixMonthReturnNetValueOriginalCurrency.DecimalNumberToStyle();
+                    dest.ETFName = src.ETFName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
+                    dest.SixMonthReturnMarketPriceOriginalCurrency = src.SixMonthReturnMarketPriceOriginalCurrency.FormatDecimalNumber(needPercent: true);
+                    dest.SixMonthReturnMarketPriceOriginalCurrencyStyle = src.SixMonthReturnMarketPriceOriginalCurrency.DecimalNumberToStyle();
                     dest.NetAssetValue = src.NetAssetValue.FormatDecimalNumber(4);
                 });
 
