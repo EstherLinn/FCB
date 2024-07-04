@@ -411,7 +411,6 @@ namespace Feature.Wealth.Component.Repositories
                         request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
                             .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 1 })
                             .WithOAuthBearerToken(_token)
-                            .AllowAnyHttpStatus()
                             .GetAsync()
                             .ReceiveString();
                         break;
@@ -420,7 +419,6 @@ namespace Feature.Wealth.Component.Repositories
                         request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
                             .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 2 })
                             .WithOAuthBearerToken(_token)
-                            .AllowAnyHttpStatus()
                             .GetAsync()
                             .ReceiveString();
                         break;
@@ -455,7 +453,6 @@ namespace Feature.Wealth.Component.Repositories
                 var response = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
                     .SetQueryParams(new { etfId = etfId, startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddYears(-1)).ToString("yyyy/MM/dd"), enddate = _today })
                     .WithOAuthBearerToken(_token)
-                    .AllowAnyHttpStatus()
                     .GetAsync()
                     .ReceiveString();
 
@@ -497,7 +494,6 @@ namespace Feature.Wealth.Component.Repositories
                 var response = await _route.AppendPathSegments("api", "etf", "kline")
                     .SetQueryParams(new { etfId = etfId, period = period })
                     .WithOAuthBearerToken(_token)
-                    .AllowAnyHttpStatus()
                     .GetAsync()
                     .ReceiveString();
 
@@ -539,7 +535,6 @@ namespace Feature.Wealth.Component.Repositories
                 var response = await _route.AppendPathSegments("api", "etf", etfId, "etfdoc")
                     .SetQueryParams(new { idx = idx })
                     .WithOAuthBearerToken(_token)
-                    .AllowAnyHttpStatus()
                     .GetAsync()
                     .ReceiveString();
 
