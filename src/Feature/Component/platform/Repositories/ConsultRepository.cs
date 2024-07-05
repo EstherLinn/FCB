@@ -22,7 +22,13 @@ namespace Feature.Wealth.Component.Repositories
                            ,[BranchCode],[BranchName],[BranchPhone]
                            ,[Type],[Phone],[Mail]
                            ,[Subject],[Description]
-                           ,IIF([StatusCode] = '1' AND GETDATE() > (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]), '2', [StatusCode]) [StatusCode]
+                           ,CASE 
+                            WHEN ([StatusCode] = '1' AND GETDATE() > (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]))
+                            THEN '2'
+                            WHEN ([StatusCode] = '0' AND GETDATE() > (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]))
+                            THEN '3'
+                            ELSE [StatusCode] 
+                            END [StatusCode]
                            ,[CreatedOn],[ModifiedOn]
                            ,IIF([ScheduleDate] = CAST(GETDATE() AS DATE), 1, 0) [Comming]
                            ,IIF(GETDATE() BETWEEN (CAST([ScheduleDate] AS varchar) + ' ' + [StartTime]) AND (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]) , 1, 0) [Start]
@@ -52,7 +58,13 @@ namespace Feature.Wealth.Component.Repositories
                            ,[BranchCode],[BranchName],[BranchPhone]
                            ,[Type],[Phone],[Mail]
                            ,[Subject],[Description]
-                           ,IIF([StatusCode] = '1' AND GETDATE() > (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]), '2', [StatusCode]) [StatusCode]
+                           ,CASE 
+                            WHEN ([StatusCode] = '1' AND GETDATE() > (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]))
+                            THEN '2'
+                            WHEN ([StatusCode] = '0' AND GETDATE() > (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]))
+                            THEN '3'
+                            ELSE [StatusCode] 
+                            END [StatusCode]
                            ,[CreatedOn],[ModifiedOn]
                            ,IIF([ScheduleDate] = CAST(GETDATE() AS DATE), 1, 0) [Comming]
                            ,IIF(GETDATE() BETWEEN (CAST([ScheduleDate] AS varchar) + ' ' + [StartTime]) AND (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]) , 1, 0) [Start]
