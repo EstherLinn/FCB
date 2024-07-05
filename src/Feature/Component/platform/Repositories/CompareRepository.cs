@@ -34,27 +34,6 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 取得歷史全球指數走勢圖
-        /// </summary>
-        /// <param name="indexCode"></param>
-        /// <param name="startdate"></param>
-        /// <param name="enddate"></param>
-        /// <returns></returns>
-        public IList<GlobalIndex> GetGlobalIndexReturnChartData(string indexCode, string startdate, string enddate)
-        {
-            string sql = """
-                SELECT REPLACE(CONVERT(char(10), [DataDate],126),'-','/') [DataDate]
-                    ,[ChangePercentage]
-                    FROM [Sysjust_GlobalIndex_History] WITH (NOLOCK)                             
-                    WHERE IndexCode = @IndexCode
-                    AND [DataDate] BETWEEN @StartDate AND @EndDate
-                    ORDER BY [DataDate]
-                """;
-            var param = new { IndexCode = indexCode, StartDate = startdate, EndDate = enddate };
-            return DbManager.Custom.ExecuteIList<GlobalIndex>(sql, param, CommandType.Text);
-        }
-
-        /// <summary>
         /// 取得三個月內最高與最低淨值
         /// </summary>
         /// <param name="fundId"></param>
