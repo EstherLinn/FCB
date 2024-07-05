@@ -40,7 +40,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             };
 
             int? interval = settings.GetInteger("Interval Minutes");
-
+            
             if (!interval.HasValue)
             {
                 interval = 30;
@@ -71,10 +71,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 }
             }
 
-            int retryCount = 0, hours = 12;
+            int retryCount = 0, hours = 0;
+            int retryLimit = settings.GetInteger("Retry Count").HasValue ? settings.GetInteger("Retry Count").Value : 3;
             List<NewsListDto> newDatas = null;
 
-            while (retryCount <= 3)
+            while (retryCount <= retryLimit)
             {
                 try
                 {
@@ -84,10 +85,10 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     {
                         if (DateTime.TryParseExact(req.StartDateTime, dateFormat_iso8601, cultureInfo, DateTimeStyles.None, out startDate))
                         {
+                            hours += 12;
                             req.EndDateTime = startDate.AddHours(hours).ToString(dateFormat_iso8601);
                         }
 
-                        hours += 12;
                         retryCount++;
                     }
                     else
