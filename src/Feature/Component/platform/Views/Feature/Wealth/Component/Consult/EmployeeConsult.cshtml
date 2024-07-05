@@ -419,7 +419,7 @@
         <div class="c-modal__action">
             <div class="l-action l-action--inline">
                 <div class="l-action__item">
-                    <a class="o-btn o-btn--primary o-btn--sm">確定</a>
+                    <a class="o-btn o-btn--primary o-btn--sm" data-done>確定</a>
                 </div>
             </div>
         </div>
@@ -676,6 +676,12 @@
 
         $('[data-edit]').on('click', function (e) {
             e.preventDefault();
+        });
+
+        $('[data-done]').on('click', function (e) {
+            e.preventDefault();
+
+            location.href = new URL(location.origin + '@Model.ReturnLink');
         });
 
         $('#input-customername').change(function () {
