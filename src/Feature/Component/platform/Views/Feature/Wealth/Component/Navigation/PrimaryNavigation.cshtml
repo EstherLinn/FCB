@@ -33,7 +33,7 @@
 
                                 <li class="c-menu__item c-menu__item--lv1">
                                     <!-- 第一層選單要加[data-megamenu="true"]以綁定互動操作功能 -->
-                                    <a href="javascript:;" target="@(pageLinkLv.Link.Target)" class="c-menu__name c-menu__name--lv1 @(pageLinkLv.Link.Class)" data-megamenu="true">
+                                    <a class="c-menu__name c-menu__name--lv1 @(pageLinkLv.Link.Class)" data-megamenu="true">
                                         @Html.Sitecore().Field(Templates.IconNavigationLink.Fields.Icon, pageLinkLv.Item, new { disableWebEditing = true })
                                         @pageLinkLv.GetBestLinkText()
                                     </a>
