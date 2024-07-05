@@ -39,7 +39,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Compare(List<string> fund, List<string> etf, List<string> stock, string range, string startDate, string endDate)
+        public async Task<ActionResult> Compare(List<string> fund, List<string> etf, List<string> stock, string range, string startDate, string endDate, string cycle)
         {
             Dictionary<string, object> respNetAssetValue = new Dictionary<string, object>();
             Dictionary<string, object> respRateOfReturn = new Dictionary<string, object>();
@@ -96,7 +96,7 @@ namespace Feature.Wealth.Component.Controllers
 
             foreach (string id in stock?.Distinct().Take(3) ?? [])
             {
-                respNetAssetValue[id] = _compareRepository.GetGlobalIndexReturnChartData(id, startDate, endDate);
+                respNetAssetValue[id] = _djMoneyApiRespository.GetGlobalInedxPriceData(id, cycle);
             }
 
             return new JsonNetResult(new

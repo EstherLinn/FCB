@@ -1026,7 +1026,7 @@
             <div class="c-cardTable__title" data-length="6">投資類別</div>
             <div class="c-cardTable__content">
                 <% if (investmentCategory.length == 1) { %>
-                    <%= investmentCategory[0] %>
+                <%= investmentCategory[0] %>
                 <% } else { %>
                 <ul>
                     <% for (var i = 0; i < investmentCategory.length; i++) { %>
@@ -1040,7 +1040,7 @@
             <div class="c-cardTable__title" data-length="6">投資國家</div>
             <div class="c-cardTable__content">
                 <% if (investmentCountry.length == 1) { %>
-                    <%= investmentCountry[0] %>
+                <%= investmentCountry[0] %>
                 <% } else { %>
                 <ul>
                     <% for (var i = 0; i < investmentCountry.length; i++) { %>
@@ -1054,7 +1054,7 @@
             <div class="c-cardTable__title" data-length="6">投資產業</div>
             <div class="c-cardTable__content">
                 <% if (investmentIndustry.length == 1) { %>
-                    <%= investmentIndustry[0] %>
+                <%= investmentIndustry[0] %>
                 <% } else { %>
                 <ul>
                     <% for (var i = 0; i < investmentIndustry.length; i++) { %>
@@ -1068,7 +1068,7 @@
             <div class="c-cardTable__title" data-length="6">前十大持股</div>
             <div class="c-cardTable__content">
                 <% if (topTenHoldings.length == 1) { %>
-                    <%= topTenHoldings[0] %>
+                <%= topTenHoldings[0] %>
                 <% } else { %>
                 <ul>
                     <% for (var i = 0; i < topTenHoldings.length; i++) { %>
@@ -1278,6 +1278,14 @@
                 }
             }
 
+            function calMonthDiff(start, end) {
+                let startTime = new Date(start).getTime();
+                let endTime = new Date(end).getTime();
+                let timeDiff = Math.abs(endTime - startTime);
+                let monthDiff = Math.floor(timeDiff / (30 * 24 * 60 * 60 * 1000));
+                return monthDiff;
+            }
+
             function getParamsAndRedraw() {
                 const obj = {
                     range: $('[data-compare-filter="dateRange"]:checked').val() || 'custom',
@@ -1297,34 +1305,42 @@
                         case 'sinceYear':
                             obj.startDate = today.getFullYear() + '-' + '01-01';
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'D';
                             break;
                         case '3m':
                             obj.startDate = calDateRange(3)
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'D';
                             break;
                         case '6m':
                             obj.startDate = calDateRange(6)
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'D';
                             break;
                         case '12m':
                             obj.startDate = calDateRange(12);
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'W';
                             break;
                         case '24m':
                             obj.startDate = calDateRange(24);
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'W';
                             break;
                         case '36m':
                             obj.startDate = calDateRange(36);
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'W';
                             break;
                         case '60m':
                             obj.startDate = calDateRange(60);
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'W';
                             break;
                         case 'establishment':
                             obj.startDate = $('span[data-establishmentDate]').text().replaceAll('/', '-') || '1900-01-01';
                             obj.endDate = today.toISOString().split('T')[0];
+                            obj.cycle = 'M';
                             break;
                     }
                     $('[data-compare-filter="inputStart"]').val(obj.startDate.replaceAll('-', '/'));
@@ -1334,6 +1350,16 @@
                 } else {
                     obj.startDate = obj.startDate.replaceAll('/', '-');
                     obj.endDate = obj.endDate.replaceAll('/', '-');
+
+                    let monthDiff = calMonthDiff(obj.startDate, obj.endDate);
+
+                    if (monthDiff <= 6) {
+                        obj.cycle = 'D';
+                    } else if (monthDiff <= 60) {
+                        obj.cycle = 'W';
+                    } else {
+                        obj.cycle = 'M';
+                    }
                 }
 
                 // 有 基金/ETF 比較的json 資料才需要呼叫API
@@ -1471,6 +1497,27 @@
                 var parts = number.toFixed(4).toString().split('.');
                 parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 return parts.join('.');
+            }
+
+            function dataRange(date, params) {
+                let d = new Date(date);
+                let startDate = new Date(params.startDate.replaceAll('-', '/'));
+                let endDate = new Date(params.endDate.replaceAll('-', '/'));
+                switch (params.cycle) {
+                    case 'D':
+                        startDate.setDate(startDate.getDate() - 3);
+                        endDate.setDate(endDate.getDate() + 3);
+                        break;
+                    case 'M':
+                        startDate.setMonth(startDate.getMonth() - 1);
+                        endDate.setMonth(endDate.getMonth() + 1);
+                        break;
+                    case 'W':
+                        startDate.setDate(startDate.getDate() - 7);
+                        endDate.setDate(endDate.getDate() + 7);
+                        break;
+                }
+                return d < startDate || d > endDate;
             }
 
             async function initCompareChart(obj) {
@@ -1628,66 +1675,16 @@
                                 let mapData = new Array();
                                 let lables = new Array();
                                 for (let key in data.respNetAssetValue) {
-                                    if (params.fund.includes(key)) {
-                                        let result = compareParams.find((item) => item.id == key);
-                                        if (data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
-                                            mapData.push({
-                                                id: key,
-                                                name: result.name,
-                                                data: data.respNetAssetValue[key].resultSet.result.map((item, i) => {
-                                                    return {
-                                                        upDown: Number(item.v2) < 0 ? 'down' : 'up',
-                                                        x: new Date(item.v1).getTime(),
-                                                        y: roundTo(item.v2, 2)
-                                                    };
-                                                }).reverse()
-                                            });
-                                            let mapLable = mapData[mapData.length - 1].data;
-                                            let lableData = mapLable[mapLable.length - 1];
-                                            lables.push({
-                                                id: key,
-                                                name: result.name,
-                                                type: 'fund',
-                                                upDown: lableData.upDown,
-                                                value: lableData.y,
-                                            });
-                                        }
-                                    }
-                                    if (params.etf.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
-                                        let result = compareParams.find((item) => item.id == key);
-                                        const navDate = data.respNetAssetValue[key].resultSet.result[0].v1.split(',');
-                                        const nav = data.respNetAssetValue[key].resultSet.result[0].v2.split(',');
-                                        mapData.push({
-                                            id: key,
-                                            name: result.name,
-                                            data: navDate.map((date, i) => {
-                                                return {
-                                                    upDown: Number(nav[i]) < 0 ? 'down' : 'up',
-                                                    x: new Date(date).getTime(),
-                                                    y: roundTo(nav[i], 2)
-                                                };
-                                            })
-                                        });
-                                        let mapLable = mapData[mapData.length - 1].data;
-                                        let lableData = mapLable[mapLable.length - 1];
-                                        lables.push({
-                                            id: key,
-                                            name: result.name,
-                                            type: 'etf',
-                                            upDown: lableData.upDown,
-                                            value: lableData.y,
-                                        });
-                                    }
-                                    if (params.stock.includes(key)) {
+                                    if (params.fund.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
                                         let result = compareParams.find((item) => item.id == key);
                                         mapData.push({
                                             id: key,
                                             name: result.name,
-                                            data: data.respNetAssetValue[key].map((item, i) => {
+                                            data: data.respNetAssetValue[key].resultSet.result.map((item, i) => {
                                                 return {
-                                                    upDown: Number(item.ChangePercentage) < 0 ? 'down' : 'up',
-                                                    x: new Date(item.DataDate).getTime(),
-                                                    y: roundTo(item.ChangePercentage, 2)
+                                                    upDown: Number(item.v2) < 0 ? 'down' : 'up',
+                                                    x: new Date(item.v1).getTime(),
+                                                    y: roundTo(item.v2, 2)
                                                 };
                                             }).reverse()
                                         });
@@ -1696,9 +1693,67 @@
                                         lables.push({
                                             id: key,
                                             name: result.name,
-                                            type: 'stock',
+                                            type: 'fund',
                                             upDown: lableData.upDown,
                                             value: lableData.y,
+                                        });
+                                    }
+                                    if (params.etf.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
+                                        let result = compareParams.find((item) => item.id == key);
+                                        const navDate = data.respNetAssetValue[key].resultSet.result[0].v1.split(',');
+                                        const nav = data.respNetAssetValue[key].resultSet.result[0].v2.split(',');
+                                        let lastData = null;
+                                        mapData.push({
+                                            id: key,
+                                            name: result.name,
+                                            data: navDate.map((date, i) => {
+                                                lastData = {
+                                                    upDown: Number(nav[i]) < 0 ? 'down' : 'up',
+                                                    x: new Date(date).getTime(),
+                                                    y: roundTo(nav[i], 2)
+                                                };
+                                                return lastData;
+                                            }).reverse()
+                                        });
+
+                                        lables.push({
+                                            id: key,
+                                            name: result.name,
+                                            type: 'etf',
+                                            upDown: lastData.upDown,
+                                            value: lastData.y,
+                                        });
+                                    }
+                                    if (params.stock.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
+                                        let result = compareParams.find((item) => item.id == key);
+                                        const navDate = data.respNetAssetValue[key].resultSet.result[0].v1.split(',');
+                                        const nav = data.respNetAssetValue[key].resultSet.result[0].v5.split(',');
+                                        let startPoint = roundTo(nav[0], 2);
+                                        let lastData = null;
+                                        mapData.push({
+                                            id: key,
+                                            name: result.name,
+                                            data: navDate.map((date, i) => {
+                                                let current = roundTo(nav[i], 2);
+                                                if (startPoint === undefined || current === undefined || dataRange(date,params)) {
+                                                    return false;
+                                                }
+                                                let extent = current - startPoint;
+                                                lastData = {
+                                                    upDown: extent < 0 ? 'down' : 'up',
+                                                    x: new Date(date).getTime(),
+                                                    y: roundTo(extent / startPoint * 100, 2)
+                                                };
+                                                return lastData;
+                                            }).reverse()
+                                        });
+                                     
+                                        lables.push({
+                                            id: key,
+                                            name: result.name,
+                                            type: 'stock',
+                                            upDown: lastData.upDown,
+                                            value: lastData.y,
                                         });
                                     }
                                     data.mapData = mapData;
@@ -1754,13 +1809,13 @@
                                             d.threeMonthVal = d.threeMonth;
                                             d.threeMonthStyle = undefined;
                                             d.sixMonth = roundTo(d.SixMonthReturnOriginalCurrency, 2);
-                                            d.sixMonthVal = d.sixMonth; 
+                                            d.sixMonthVal = d.sixMonth;
                                             d.sixMonthStyle = undefined;
                                             d.year = roundTo(d.YeartoDateReturnOriginalCurrency, 2);
-                                            d.yearVal = d.year; 
+                                            d.yearVal = d.year;
                                             d.yearStyle = undefined;
                                             d.oneYear = roundTo(d.OneYearReturnOriginalCurrency, 2);
-                                            d.oneYearVal = d.oneYear; 
+                                            d.oneYearVal = d.oneYear;
                                             d.oneYearStyle = undefined;
                                             d.twoYear = roundTo(d.TwoYearReturnOriginalCurrency, 2);
                                             d.twoYearVal = d.twoYear;
@@ -2029,7 +2084,7 @@
                                         d.name = result.name;
                                         d.lable = data.lables.find((item) => item.id == key);
                                         if (params.etf.includes(key)) {
-                                            d.currency = d.CurrencyName || '-';                                            
+                                            d.currency = d.CurrencyName || '-';
                                             d.dividendFrequency = d.DividendDistributionFrequency || '-';
                                             d.dateOfEstablishment = d.EstablishmentDate || '-';
                                             d.type = d.ProductType || '-';
