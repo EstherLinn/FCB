@@ -260,7 +260,7 @@ namespace Feature.Wealth.Account.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Account.Info($"個網登入回理財網 {step} ,exception Messags: {ex.Message}");
+                Logger.Account.Info($"個網登入回理財網 {step} ,exception Messags: {ex.ToString()}");
                 Session["ErrorMsg"] = "理財網身分驗證伺服器有誤，請聯絡資訊處";
             }
             finally
@@ -334,7 +334,7 @@ namespace Feature.Wealth.Account.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Account.Info($"網銀登入byApp {step} ,exception Messags: {ex.Message}");
+                Logger.Account.Info($"網銀登入byApp {step} ,exception Messags: {ex.ToString()}");
                 Session["ErrorMsg"] = "理財網身分驗證伺服器有誤，請聯絡資訊處";
             }
             finally
