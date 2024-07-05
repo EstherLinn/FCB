@@ -2,7 +2,7 @@
 
 namespace Feature.Wealth.Component.Models.ETF.Detail
 {
-    internal class EtfNavHis
+    public class EtfNavHis
     {
         /// <summary>
         /// 一銀代碼

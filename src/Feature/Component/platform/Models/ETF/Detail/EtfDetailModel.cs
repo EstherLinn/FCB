@@ -32,14 +32,9 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         public string[] CategoryTags { get; set; }
 
         /// <summary>
-        /// 近一年市價表現
+        /// 近一年市價/淨值表現
         /// </summary>
-        public List<EtfPriceHistory> ETFMarketPriceOverPastYear { get; set; }
-
-        /// <summary>
-        /// 近一年淨值表現
-        /// </summary>
-        public List<EtfPriceHistory> ETFNetWorthOverPastYear { get; set; }
+        public List<EtfPriceHistory> ETFPriceOverPastYear { get; set; }
 
         /// <summary>
         /// 同類ETF排行

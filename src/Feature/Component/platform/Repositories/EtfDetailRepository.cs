@@ -111,8 +111,7 @@ namespace Feature.Wealth.Component.Repositories
             this.TagCollection = tagRepository.GetTagCollection();
             model.DiscountTags = GetTags(TagType.Discount);
             model.CategoryTags = GetTags(TagType.Category);
-            model.ETFMarketPriceOverPastYear = GetMarketPriceWithOverPastYear();
-            model.ETFNetWorthOverPastYear = GetNetWorthWithOverPastYear();
+            model.ETFPriceOverPastYear = GetMarketPriceAndNetWortOverPastYear();
             model.ETFTypeRanks = GetSameTypeETFRank();
             model.ETFThiryDaysNav = GetThrityDaysNav();
             model.ETFNetWorthAnnunalReturn = GetAnnualReturn();
@@ -330,52 +329,36 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 近一年市價走勢
+        /// 近一年市價/淨值走勢
         /// </summary>
         /// <returns></returns>
-        private List<EtfPriceHistory> GetMarketPriceWithOverPastYear()
+        private List<EtfPriceHistory> GetMarketPriceAndNetWortOverPastYear()
         {
-            string sql = """
-                SELECT [NetAssetValueDate], [MarketPrice]
-                FROM [Sysjust_Nav_ETF] WITH (NOLOCK)
-                WHERE [FirstBankCode] = @ETFId AND [NetAssetValueDate] >= DATEADD(year, -1, GETDATE())
-                """;
-            var param = new { ETFId = this.ETFId };
-            var collection = DbManager.Custom.ExecuteIList<EtfNav>(sql, param, CommandType.Text)?.ToList();
-            var config = new TypeAdapterConfig();
-            config.ForType<EtfNav, EtfPriceHistory>()
-                .AfterMapping((src, dest) =>
-                {
-                    dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
-                    dest.MarketPrice = src.MarketPrice.RoundingValue();
-                });
+            List<EtfPriceHistory> result = new List<EtfPriceHistory>();
 
-            var result = collection.Adapt<List<EtfPriceHistory>>(config);
-            return result;
-        }
+            try
+            {
+                var datas = GetOrSetNavHistoryDataCache(this.ETFId);
+                DateTime endDate = DateTime.Now;
+                DateTime startDate = endDate.AddYears(-1);
+                var filteredDatas = datas.Where(i => i.Date.HasValue && i.Date >= startDate && i.Date <= endDate);
 
-        /// <summary>
-        /// 近一年淨值走勢
-        /// </summary>
-        /// <returns></returns>
-        private List<EtfPriceHistory> GetNetWorthWithOverPastYear()
-        {
-            string sql = """
-                SELECT [NetAssetValueDate], [NetAssetValue]
-                FROM [Sysjust_Nav_ETF] WITH (NOLOCK)
-                WHERE [FirstBankCode] = @ETFId AND [NetAssetValueDate] >= DATEADD(year, -1, GETDATE())
-                """;
-            var param = new { ETFId = this.ETFId };
-            var collection = DbManager.Custom.ExecuteIList<EtfNav>(sql, param, CommandType.Text)?.ToList();
-            var config = new TypeAdapterConfig();
-            config.ForType<EtfNav, EtfPriceHistory>()
-                .AfterMapping((src, dest) =>
-                {
-                    dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
-                    dest.NetAssetValue = src.NetAssetValue.RoundingValue();
-                });
+                var config = new TypeAdapterConfig();
+                config.ForType<EtfNavHis, EtfPriceHistory>()
+                    .AfterMapping((src, dest) =>
+                    {
+                        dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.Date);
+                        dest.MarketPrice = src.MarketPrice.RoundingValue();
+                        dest.NetAssetValue = src.NetAssetValue.RoundingValue();
+                    });
 
-            var result = collection.Adapt<List<EtfPriceHistory>>(config);
+                result = filteredDatas.Adapt<List<EtfPriceHistory>>(config);
+            }
+            catch (Exception ex)
+            {
+                this._log.Error("近一年市價/淨值走勢圖", ex);
+            }
+
             return result;
         }
 
@@ -424,7 +407,7 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="etfId"></param>
         /// <returns></returns>
-        private async Task<List<EtfNavHis>> GetOrSetNavHistoryDataCache(string etfId)
+        private List<EtfNavHis> GetOrSetNavHistoryDataCache(string etfId)
         {
             var cacheKey = "ETF_NavHIS";
             Dictionary<string, List<EtfNavHis>> result;
@@ -434,14 +417,14 @@ namespace Feature.Wealth.Component.Repositories
             if (result == null)
             {
                 result = new Dictionary<string, List<EtfNavHis>>();
-                datas = await GetNavHistoryData(etfId);
+                datas = GetNavHistoryData(etfId);
                 result.Add(etfId, datas);
                 _cache.Set(cacheKey, result, DateTimeOffset.Now.AddMinutes(60));
             }
 
             if (!result.TryGetValue(etfId, out datas))
             {
-                datas = await GetNavHistoryData(etfId);
+                datas = GetNavHistoryData(etfId);
                 result.Add(etfId, datas);
             }
 
@@ -452,7 +435,7 @@ namespace Feature.Wealth.Component.Repositories
         /// 取得歷史市價/淨值資料
         /// </summary>
         /// <returns></returns>
-        private async Task<List<EtfNavHis>> GetNavHistoryData(string etfId)
+        private List<EtfNavHis> GetNavHistoryData(string etfId)
         {
             string sql = """
                 SELECT [Date], [MarketPrice], [NetAssetValue]
@@ -460,7 +443,7 @@ namespace Feature.Wealth.Component.Repositories
                 WHERE [FirstBankCode] = @ETFId
                 """;
             var param = new { ETFId = etfId };
-            var collection = await DbManager.Custom.ExecuteIListAsync<EtfNavHis>(sql, param, CommandType.Text);
+            var collection = DbManager.Custom.ExecuteIList<EtfNavHis>(sql, param, CommandType.Text);
             return collection?.ToList();
         }
 
@@ -469,7 +452,7 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        public async Task<RespEtf> GetNavHisReturnTrendDataAsync(ReqReturnTrend req)
+        public RespEtf GetNavHisReturnTrendData(ReqReturnTrend req)
         {
             RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
 
@@ -494,7 +477,7 @@ namespace Feature.Wealth.Component.Repositories
                     return resp;
                 }
 
-                var datas = await GetOrSetNavHistoryDataCache(req.EtfId);
+                var datas = GetOrSetNavHistoryDataCache(req.EtfId);
 
                 // 判斷 datas 的資料是否介於 startDate 與 endDate
                 var filteredDatas = datas.Where(i => i.Date.HasValue && i.Date >= startDate && i.Date <= endDate);

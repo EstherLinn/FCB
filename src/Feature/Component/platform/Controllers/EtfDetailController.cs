@@ -79,14 +79,14 @@ namespace Feature.Wealth.Component.Controllers
         /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> GetReturnChartData(ReqReturnTrend req)
+        public ActionResult GetReturnChartData(ReqReturnTrend req)
         {
             RespEtf resp = new RespEtf();
 
             try
             {
                 req.EtfId = req.EtfId?.ToUpper();
-                resp = await _detailRepository.GetNavHisReturnTrendDataAsync(req);
+                resp = _detailRepository.GetNavHisReturnTrendData(req);
             }
             catch (Exception ex)
             {
