@@ -573,20 +573,23 @@ namespace Feature.Wealth.Account.Repositories
 
             bool status = false;
 
+            Log.Info("同步Oracle開始　檢查紅綠燈　table : EDHStatus,connection start");
             using (var connection = new OdbcConnection(connString))
             {
                 try
                 {
                     connection.Open();
-
+                    Log.Info("同步Oracle開始　檢查紅綠燈　table : EDHStatus,command start");
                     using (OdbcCommand command = new OdbcCommand(sql, connection))
                     {
+                        Log.Info("同步Oracle開始　檢查紅綠燈　table : EDHStatus,command ExecuteScalar start");
                         object result = command.ExecuteScalar();
                         if (result != null)
                         {
                             string value = result.ToString();
                             status = value == "G";
                         }
+                        Log.Info($"同步Oracle開始　檢查紅綠燈　table : EDHStatus,command ExecuteScalar end staus={status}");
                     }
                 }
                 catch (Exception ex)
@@ -606,6 +609,7 @@ namespace Feature.Wealth.Account.Repositories
             string odbcConnString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString;
             string sqlConnString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
 
+            Log.Info("同步Oracle開始　寫入cif　table : WEA_ODS_CIF_VIEW,Connection start");
             using (var odbcConn = new OdbcConnection(odbcConnString))
             {
                 try
@@ -617,6 +621,7 @@ namespace Feature.Wealth.Account.Repositories
                         command.Parameters.Add("param", OdbcType.NVarChar).Value = id;
                         using (OdbcDataReader reader = command.ExecuteReader())
                         {
+                            Log.Info("同步Oracle開始　寫入cif　table : WEA_ODS_CIF_VIEW, SqlConnection start");
                             using (SqlConnection sqlConnection = new SqlConnection(sqlConnString))
                             {
                                 sqlConnection.Open();
@@ -632,8 +637,10 @@ namespace Feature.Wealth.Account.Repositories
                                                         @CIF_EMP_PI_RISK_ATTR,@KYC_EXPIR_DATE,@CIF_VIP_CODE,
                                                         @CIF_RECCONSENT_TYPE,@CIF_UNHEALTH_TYPE,@CIF_SAL_FLAG,
                                                         @CIF_HIGH_ASSET_FLAG,@CIF_EXT_DATE)";
+                                Log.Info("同步Oracle開始　寫入cif　table : WEA_ODS_CIF_VIEW, SqlCommand start");
                                 using (SqlCommand insertCommand = new SqlCommand(insertQuery, sqlConnection))
                                 {
+                                    Log.Info("同步Oracle開始　寫入cif　table : WEA_ODS_CIF_VIEW, Sqlreader start");
                                     while (reader.Read())
                                     {
                                         insertCommand.Parameters.AddWithValue("@CIF_ID", reader["CIF_ID"]);
@@ -657,6 +664,7 @@ namespace Feature.Wealth.Account.Repositories
                                         insertCommand.Parameters.AddWithValue("@CIF_HIGH_ASSET_FLAG", reader["CIF_HIGH_ASSET_FLAG"]);
                                         insertCommand.Parameters.AddWithValue("@CIF_EXT_DATE", reader["CIF_EXT_DATE"]);
                                         insertCommand.ExecuteNonQuery();
+                                        Log.Info($"同步Oracle開始　寫入cif　table : WEA_ODS_CIF_VIEW, Sqlreader data={reader["CIF_ID"]},{reader["CIF_CUST_NAME"]},{reader.GetDateTime(reader.GetOrdinal("CIF_ESTABL_BIRTH_DATE"))}");
                                     }
 
                                 }
@@ -682,6 +690,7 @@ namespace Feature.Wealth.Account.Repositories
             string odbcConnString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString;
             string sqlConnString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
             string userId = string.Empty;
+            Log.Info("同步Oracle開始　寫入CFMBSEL　table : CFMBSEL_STG, OdbcConnection start");
             using (var odbcConn = new OdbcConnection(odbcConnString))
             {
                 try
@@ -699,6 +708,7 @@ namespace Feature.Wealth.Account.Repositories
                         command.Parameters.Add("param", OdbcType.NVarChar).Value = id;
                         using (OdbcDataReader reader = command.ExecuteReader())
                         {
+                            Log.Info("同步Oracle開始　寫入CFMBSEL　table : CFMBSEL_STG, SqlConnection start");
                             using (SqlConnection sqlConnection = new SqlConnection(sqlConnString))
                             {
                                 sqlConnection.Open();
@@ -714,6 +724,7 @@ namespace Feature.Wealth.Account.Repositories
                                         insertCommand.Parameters.AddWithValue("@Param5", reader.GetDateTime(reader.GetOrdinal("LOAD_DATE")));
                                         insertCommand.ExecuteNonQuery();
                                         userId = reader["CUST_ID"].ToString();
+                                        Log.Info($"同步Oracle開始　寫入CFMBSEL　table : CFMBSEL_STG, Sqlreader data={reader.GetDateTime(reader.GetOrdinal("EXT_DATE"))},{reader["CUST_ID"]},{reader["TELLER_CODE"]},{reader["PROMOTION_CODE"]},{reader.GetDateTime(reader.GetOrdinal("LOAD_DATE"))");
                                     }
                                 }
                             }
