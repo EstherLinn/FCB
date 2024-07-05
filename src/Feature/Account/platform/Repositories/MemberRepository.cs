@@ -724,7 +724,7 @@ namespace Feature.Wealth.Account.Repositories
                                         insertCommand.Parameters.AddWithValue("@Param5", reader.GetDateTime(reader.GetOrdinal("LOAD_DATE")));
                                         insertCommand.ExecuteNonQuery();
                                         userId = reader["CUST_ID"].ToString();
-                                        Log.Info($"同步Oracle開始　寫入CFMBSEL　table : CFMBSEL_STG, Sqlreader data={reader.GetDateTime(reader.GetOrdinal("EXT_DATE"))},{reader["CUST_ID"]},{reader["TELLER_CODE"]},{reader["PROMOTION_CODE"]},{reader.GetDateTime(reader.GetOrdinal("LOAD_DATE"))");
+                                        Log.Info($"同步Oracle開始　寫入CFMBSEL　table : CFMBSEL_STG, Sqlreader data={reader.GetDateTime(reader.GetOrdinal("EXT_DATE"))},{reader["CUST_ID"]},{reader["TELLER_CODE"]},{reader["PROMOTION_CODE"]},{reader.GetDateTime(reader.GetOrdinal("LOAD_DATE"))}");
                                     }
                                 }
                             }
