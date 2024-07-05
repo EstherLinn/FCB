@@ -420,7 +420,7 @@
         <div class="c-modal__action">
             <div class="l-action l-action--inline">
                 <div class="l-action__item">
-                    <a class="o-btn o-btn--primary o-btn--sm">確定</a>
+                    <a class="o-btn o-btn--primary o-btn--sm" data-done>確定</a>
                 </div>
             </div>
         </div>
@@ -457,7 +457,9 @@
     const holidayDates = @Model.HolidayDatesHtmlString;
     const consultSchedules = @Model.ConsultSchedulesHtmlString;
     const reserveds = @Model.ReservedsHtmlString;
-    const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六']
+    const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六'];
+    const emailReg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    const phoneReg = /^09[0-9]{8}$/;
 
     var currentConsultSchedule = {
         CustomerID: '',
@@ -536,13 +538,13 @@
         function verify() {
             $('#btn-check').attr("href", "#popupConfirm");
 
-            if (currentConsultSchedule.Phone) {
+            if (currentConsultSchedule.Phone && validatePhone(currentConsultSchedule.Phone)) {
             }
             else {
                 $('#btn-check').attr("href", "#");
             }
 
-            if (currentConsultSchedule.Mail) {
+            if (currentConsultSchedule.Mail && validateEmail(currentConsultSchedule.Mail)) {
             }
             else {
                 $('#btn-check').attr("href", "#");
@@ -673,10 +675,16 @@
             $('#step02').hide();
         });
 
+        $('[data-done]').on('click', function (e) {
+            e.preventDefault();
+
+            location.href = new URL(location.origin + '@Model.ReturnLink');
+        });
+
         $('#input-tel').change(function () {
             $('#l-form-phone').addClass('is-error');
             bindText();
-            if (currentConsultSchedule.Phone) {
+            if (currentConsultSchedule.Phone && validatePhone(currentConsultSchedule.Phone)) {
                 $('#l-form-phone').removeClass('is-error');
             }
         });
@@ -684,10 +692,18 @@
         $('#input-email').change(function () {
             $('#l-form-mail').addClass('is-error');
             bindText();
-            if (currentConsultSchedule.Mail) {
+            if (currentConsultSchedule.Mail && validateEmail(currentConsultSchedule.Mail)) {
                 $('#l-form-mail').removeClass('is-error');
             }
         });
+
+        function validateEmail(email) {
+            return emailReg.test(email);
+        }
+
+        function validatePhone(phone) {
+            return phoneReg.test(phone);
+        }
 
         $('[data-subject]').on('click', function (e) {
             $('#l-form-subject').addClass('is-error');
