@@ -1,7 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Detail;
 using Feature.Wealth.Component.Models.ETF.Tag;
-using Feature.Wealth.Component.Models.GlobalIndex;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
 using log4net;
@@ -399,7 +398,7 @@ namespace Feature.Wealth.Component.Repositories
                         WHERE [FirstBankCode] = @ETFId
                     )
                     AND [FirstBankCode] <> @ETFId AND [FirstBankCode] IS NOT NULL AND [FirstBankCode] <> ''
-                    AND [FirstBankCode] NOT LIKE 'EA%' AND [FirstBankCode] NOT LIKE 'EB%' 
+                    AND [FirstBankCode] NOT LIKE 'EA%' AND [FirstBankCode] NOT LIKE 'EB%'
                 ORDER BY [SixMonthReturnMarketPriceOriginalCurrency] DESC
                 """;
             var param = new { ETFId = this.ETFId };
@@ -421,6 +420,117 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
+        /// Set or get ETF ETFNAV_HIS data cache
+        /// </summary>
+        /// <param name="etfId"></param>
+        /// <returns></returns>
+        private async Task<List<EtfNavHis>> GetOrSetNavHistoryDataCache(string etfId)
+        {
+            var cacheKey = "ETF_NavHIS";
+            Dictionary<string, List<EtfNavHis>> result;
+            result = _cache.Get(cacheKey) as Dictionary<string, List<EtfNavHis>>;
+            List<EtfNavHis> datas = null;
+
+            if (result == null)
+            {
+                result = new Dictionary<string, List<EtfNavHis>>();
+                datas = await GetNavHistoryData(etfId);
+                result.Add(etfId, datas);
+                _cache.Set(cacheKey, result, DateTimeOffset.Now.AddMinutes(60));
+            }
+
+            if (!result.TryGetValue(etfId, out datas))
+            {
+                datas = await GetNavHistoryData(etfId);
+                result.Add(etfId, datas);
+            }
+
+            return datas;
+        }
+
+        /// <summary>
+        /// 取得歷史市價/淨值資料
+        /// </summary>
+        /// <returns></returns>
+        private async Task<List<EtfNavHis>> GetNavHistoryData(string etfId)
+        {
+            string sql = """
+                SELECT [Date], [MarketPrice], [NetAssetValue]
+                FROM [Sysjust_ETFNAV_HIS] WITH (NOLOCK)
+                WHERE [FirstBankCode] = @ETFId
+                """;
+            var param = new { ETFId = etfId };
+            var collection = await DbManager.Custom.ExecuteIListAsync<EtfNavHis>(sql, param, CommandType.Text);
+            return collection?.ToList();
+        }
+
+        /// <summary>
+        /// 取得市價/淨值走勢資訊
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        public async Task<RespEtf> GetNavHisReturnTrendDataAsync(ReqReturnTrend req)
+        {
+            RespEtf resp = new RespEtf() { StatusCode = (int)HttpStatusCode.NotFound, Message = "找不到資源" };
+
+            if (string.IsNullOrWhiteSpace(req.EtfId) &&
+                (string.IsNullOrWhiteSpace(req.StartDate) || string.IsNullOrWhiteSpace(req.EndDate)))
+            {
+                resp.Message = "錯誤的查詢，請確認您的查詢參數";
+                resp.StatusCode = (int)HttpStatusCode.Forbidden;
+                return resp;
+            }
+
+            string dateformat = "yyyy-MM-dd";
+            var cultureInfo = new CultureInfo("zh-TW");
+
+            try
+            {
+                if (!DateTime.TryParseExact(req.StartDate, dateformat, cultureInfo, DateTimeStyles.None, out DateTime startDate)
+                    || !DateTime.TryParseExact(req.EndDate, dateformat, cultureInfo, DateTimeStyles.None, out DateTime endDate))
+                {
+                    resp.Message = "錯誤的時間格式，請確認您的查詢參數";
+                    resp.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return resp;
+                }
+
+                var datas = await GetOrSetNavHistoryDataCache(req.EtfId);
+
+                // 判斷 datas 的資料是否介於 startDate 與 endDate
+                var filteredDatas = datas.Where(i => i.Date.HasValue && i.Date >= startDate && i.Date <= endDate);
+
+                var config = new TypeAdapterConfig();
+                config.ForType<EtfNavHis, EtfPriceHistory>()
+                    .AfterMapping((src, dest) =>
+                    {
+                        dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.Date);
+                        dest.MarketPrice = src.MarketPrice.RoundingValue();
+                        dest.NetAssetValue = src.NetAssetValue.RoundingValue();
+                    });
+                var result = filteredDatas.Adapt<List<EtfPriceHistory>>(config);
+
+                resp.Body = new
+                {
+                    respData = result
+                };
+
+                if (result != null && result.Any())
+                {
+                    resp.Message = "Success";
+                    resp.StatusCode = (int)HttpStatusCode.OK;
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.Message = ex.Message;
+                resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                this._log.Error("市價/淨值走勢圖－取得市價/淨值走勢資訊", ex);
+            }
+
+            return resp;
+        }
+
+        /// <summary>
         /// 取得 ETF 績效走勢資訊
         /// </summary>
         /// <param name="req"></param>
@@ -431,28 +541,36 @@ namespace Feature.Wealth.Component.Repositories
             JObject respMarketPrice = null, respNetAssetValue = null;
             this._djMoneyApiRespository = new DjMoneyApiRespository();
 
+            if (string.IsNullOrWhiteSpace(req.EtfId) &&
+                (string.IsNullOrWhiteSpace(req.StartDate) || string.IsNullOrWhiteSpace(req.EndDate)))
+            {
+                resp.Message = "錯誤的查詢，請確認您的查詢參數";
+                resp.StatusCode = (int)HttpStatusCode.Forbidden;
+                return resp;
+            }
+
             try
             {
                 respMarketPrice = await _djMoneyApiRespository.GetReturnChartData(req.EtfId, EtfReturnTrend.MarketPrice, req.StartDate, req.EndDate);
                 respNetAssetValue = await _djMoneyApiRespository.GetReturnChartData(req.EtfId, EtfReturnTrend.NetAssetValue, req.StartDate, req.EndDate);
+
+                resp.Body = new
+                {
+                    respMarketPrice,
+                    respNetAssetValue,
+                };
+
+                if (respMarketPrice != null && respNetAssetValue != null)
+                {
+                    resp.Message = "Success";
+                    resp.StatusCode = (int)HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
                 resp.Message = ex.Message;
                 resp.StatusCode = (int)HttpStatusCode.InternalServerError;
                 this._log.Error("ETF績效圖－取得績效走勢資訊", ex);
-            }
-
-            resp.Body = new
-            {
-                respMarketPrice,
-                respNetAssetValue,
-            };
-
-            if (respMarketPrice != null && respNetAssetValue != null)
-            {
-                resp.Message = "Success";
-                resp.StatusCode = (int)HttpStatusCode.OK;
             }
 
             return resp;
@@ -688,7 +806,7 @@ namespace Feature.Wealth.Component.Repositories
         /// <summary>
         /// 取得歷史買賣盤
         /// </summary>
-        /// <param name="etfId"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         public RespEtf GetHistoryPrice(ReqHistory req)
         {

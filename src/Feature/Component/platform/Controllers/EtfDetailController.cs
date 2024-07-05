@@ -86,7 +86,7 @@ namespace Feature.Wealth.Component.Controllers
             try
             {
                 req.EtfId = req.EtfId?.ToUpper();
-                resp = await _detailRepository.GetReturnTrendData(req);
+                resp = await _detailRepository.GetNavHisReturnTrendDataAsync(req);
             }
             catch (Exception ex)
             {
