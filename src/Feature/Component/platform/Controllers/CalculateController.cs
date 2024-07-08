@@ -8,6 +8,15 @@ namespace Feature.Wealth.Component.Controllers
         private readonly CalculateRepository _calculateRepository = new CalculateRepository();
 
         /// <summary>
+        ///  存一桶金試算
+        /// </summary>
+        public ActionResult Saving()
+        {
+            var model = _calculateRepository.GetCalculateModel();
+
+            return View("/Views/Feature/Wealth/Component/Calculate/Saving.cshtml", model);
+        }
+        /// <summary>
         ///  教育基金試算
         /// </summary>
         public ActionResult EducationFund()
