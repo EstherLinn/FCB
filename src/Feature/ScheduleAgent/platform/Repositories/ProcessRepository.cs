@@ -1,24 +1,19 @@
-﻿using Dapper;
-using Feature.Wealth.ScheduleAgent.Models.Sysjust;
-using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using Foundation.Wealth.Manager;
-using Sitecore.Data.Items;
-using Sitecore.Shell.Framework.Commands;
-using Sitecore.Xdb.Reporting;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.Common;
-using System.Data.Odbc;
-using System.Data.SqlClient;
+﻿using System;
+using Dapper;
 using System.IO;
 using System.Linq;
+using System.Data;
+using System.Data.Odbc;
 using System.Reflection;
-using System.Security.Cryptography;
+using System.Data.Common;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Foundation.Wealth.Manager;
+using System.Collections.Generic;
 using Xcms.Sitecore.Foundation.Basic.Logging;
-using static Sitecore.ContentSearch.Linq.Extensions.ReflectionExtensions;
+using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
 {
@@ -32,14 +27,15 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             this._logger = logger;
         }
 
-            /// <summary>
-            /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)
-            /// </summary>
-            public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath)
+        /// <summary>
+        /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)
+        /// </summary>
+        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath)
         {
             string mergeQuery = GenerateMergeQuery<T>(tableName, uniqueColumn, key);
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
             LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line);
+            _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
         /// <summary>
@@ -68,6 +64,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
             LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line);
+            _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
         /// <summary>
@@ -96,6 +93,27 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             int line = ExecuteNonQuery(insertQuery, data, CommandType.Text, true);
             LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, line);
+            _logger.Info($"{filePath} 最新資料 {tableName} {line}");
+        }
+
+        /// <summary>
+        /// 將資料直接插入最新的資料表中
+        /// </summary>
+
+        public void BulkInsertDirectToDatabase<T>(IEnumerable<T> data, string tableName, string filePath)
+        {
+            var properties = typeof(T).GetProperties();
+            string columns = string.Join(",", properties.Select(p => p.Name));
+            string parameters = string.Join(",", properties.Select(p => "@" + p.Name));
+
+            string insertQuery = $@"
+            INSERT INTO {tableName} ({columns})
+            VALUES ({parameters});
+            ";
+
+            int line = ExecuteNonQuery(insertQuery, data, CommandType.Text, true);
+            LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, line);
+            _logger.Info($"{filePath} 最新資料 {tableName} {line}");
         }
 
 
