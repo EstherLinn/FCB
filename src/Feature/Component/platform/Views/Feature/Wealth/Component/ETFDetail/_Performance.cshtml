@@ -821,7 +821,8 @@
                 function calDateRange(month) {
                     let set = new Date().setMonth(new Date().getMonth() - month);
                     let setDate = new Date(set);
-                    return setDate.getFullYear() + '-' + ((setDate.getMonth() + 1) < 10 ? '0' + (setDate.getMonth() + 1) : (setDate.getMonth() + 1)) + '-' + setDate.getDate();
+                    let formattedDate = setDate.getFullYear() + '-' + ('0' + (setDate.getMonth() + 1)).slice(-2) + '-' + ('0' + setDate.getDate()).slice(-2);
+                    return formattedDate;
                 }
 
                 if (!obj.startDate && !obj.endDate) {
@@ -902,26 +903,22 @@
                     // 呼叫 API ETF詳細頁 – 績效/淨值 - 市價/淨值走勢
                     var query = apiRequest('@ETFReturnChartDataApiUrl', params);
                     query.then((data) => {
-                        if (Object.keys(data).length != 0
-                            && data.Body.respMarketPrice
-                            && data.Body.respNetAssetValue) {
-                            const mpDate = data.Body.respMarketPrice.resultSet.result[0].v1.split(',');
-                            const mp = data.Body.respMarketPrice.resultSet.result[0].v2.split(',');
-                            let mapMarketPriceData = mpDate.map((item, index) => {
+                        if (Object.keys(data).length != 0 && data.Body.respData.length > 0) {
+
+                            const mapData = data.Body.respData;
+                            let mapMarketPriceData = mapData.map((item) => {
                                 return {
-                                    name: item,
-                                    x: new Date(item).getTime(),
-                                    y: roundToTwo(mp[index])
+                                    name: item.NetAssetValueDate,
+                                    x: new Date(item.NetAssetValueDate).getTime(),
+                                    y: roundToTwo(item.MarketPrice)
                                 };
                             });
 
-                            const navDate = data.Body.respNetAssetValue.resultSet.result[0].v1.split(',');
-                            const nav = data.Body.respNetAssetValue.resultSet.result[0].v2.split(',');
-                            let mapNetWorthData = navDate.map((item, index) => {
+                            let mapNetWorthData = mapData.map((item) => {
                                 return {
-                                    name: item,
-                                    x: new Date(item).getTime(),
-                                    y: roundToTwo(nav[index])
+                                    name: item.NetAssetValueDate,
+                                    x: new Date(item.NetAssetValueDate).getTime(),
+                                    y: roundToTwo(item.NetAssetValue)
                                 };
                             });
 
@@ -940,7 +937,7 @@
                                 turboThreshold: 0,
                             }];
 
-                            if (mapMarketPriceData) {
+                            if (mapMarketPriceData.length > 0) {
                                 let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
                                 const updateDate = latestDate.replaceAll('-', '/');
                                 $('[data-update-date="market"]').text(updateDate);
@@ -1220,7 +1217,8 @@
                 function calDateRange(month) {
                     let set = new Date().setMonth(new Date().getMonth() - month);
                     let setDate = new Date(set);
-                    return setDate.getFullYear() + '-' + ((setDate.getMonth() + 1) < 10 ? '0' + (setDate.getMonth() + 1) : (setDate.getMonth() + 1)) + '-' + setDate.getDate();
+                    let formattedDate = setDate.getFullYear() + '-' + ('0' + (setDate.getMonth() + 1)).slice(-2) + '-' + ('0' + setDate.getDate()).slice(-2);
+                    return formattedDate;
                 }
 
                 function calMonthDiff(start, end) {

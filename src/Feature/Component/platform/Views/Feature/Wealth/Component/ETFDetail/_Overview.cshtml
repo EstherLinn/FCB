@@ -266,6 +266,13 @@
             }
         }
 
+        function roundToFourString(num) {
+            return num.toFixed(4);
+        }
+        function roundToFourNum(num) {
+            return +(Math.round(num + 'e+4') + 'e-4');
+        }
+
         function checkSameYear(time1, time2) {
             let year1 = new Date(time1).getFullYear();
             let year2 = new Date(time2).getFullYear();
@@ -515,25 +522,18 @@
             async function initNetWorth() {
                 try {
                     // ETF概況 – 近一年市價/淨值走勢
-                    const marketPriceNavs = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.ETFMarketPriceOverPastYear)));
-                    const netWorthNavs = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.ETFNetWorthOverPastYear)));
+                    const mapData = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.ETFPriceOverPastYear)));
 
-                    function roundToFourString(num) {
-                        return num.toFixed(4);
-                    }
-                    function roundToFourNum(num) {
-                        return +(Math.round(num + 'e+4') + 'e-4');
-                    }
+                    if (mapData.length > 0) {
 
-                    if (Object.keys(netWorthNavs).length != 0 && Object.keys(marketPriceNavs).length != 0) {
-                        let mapMarketData = marketPriceNavs.map(item => {
+                        let mapMarketData = mapData.map((item) => {
                             return {
                                 name: item.NetAssetValueDate,
                                 x: new Date(item.NetAssetValueDate).getTime(),
                                 y: roundToFourNum(item.MarketPrice)
                             };
                         });
-                        let mapNetWorthData = netWorthNavs.map(item => {
+                        let mapNetWorthData = mapData.map((item) => {
                             return {
                                 name: item.NetAssetValueDate,
                                 x: new Date(item.NetAssetValueDate).getTime(),
@@ -542,16 +542,16 @@
                         });
 
                         @* 若有資料為 NULL，會顯示 0 *@
-                        $('#maxMarketPrice').text(roundToFourString(Math.max(...marketPriceNavs.map(p => p.MarketPrice))));
-                        $('#minMarketPrice').text(roundToFourString(Math.min(...marketPriceNavs.map(p => p.MarketPrice))));
+                        $('#maxMarketPrice').text(roundToFourString(Math.max(...mapData.map(p => p.MarketPrice))));
+                        $('#minMarketPrice').text(roundToFourString(Math.min(...mapData.map(p => p.MarketPrice))));
 
-                        $('#maxNetWorth').text(roundToFourString(Math.max(...netWorthNavs.map(p => p.NetAssetValue))));
-                        $('#minNetWorth').text(roundToFourString(Math.min(...netWorthNavs.map(p => p.NetAssetValue))));
+                        $('#maxNetWorth').text(roundToFourString(Math.max(...mapData.map(p => p.NetAssetValue))));
+                        $('#minNetWorth').text(roundToFourString(Math.min(...mapData.map(p => p.NetAssetValue))));
 
                         mapMarketData.sort((a, b) => { return a.x - b.x; });
                         mapNetWorthData.sort((a, b) => { return a.x - b.x; });
 
-                        if (mapMarketData) {
+                        if (mapMarketData.length > 0) {
                             let latestDate = mapMarketData[mapMarketData.length - 1].name;
                             const updateDate = latestDate.replaceAll('-', '/');
                             // 資料日期
