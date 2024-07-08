@@ -45,11 +45,11 @@ namespace Feature.Wealth.Component.Controllers
             var property = typeof(Funds).GetProperty(orderby);
             if (desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase))
             {
-                eFirstFunds = eFirstFunds.OrderByDescending(f => property.GetValue(f, null)).ToList();
+                eFirstFunds = eFirstFunds.OrderByDescending(f => property.GetValue(f, null)).ThenByDescending(f => f.ProductCode).ToList();
             }
             else
             {
-                eFirstFunds = eFirstFunds.OrderBy(f => property.GetValue(f, null)).ToList();
+                eFirstFunds = eFirstFunds.OrderBy(f => property.GetValue(f, null)).ThenBy(f => f.ProductCode).ToList();
             }
             var renderDatas = _repository.GetFundRenderData(eFirstFunds);
             var viewModel = new EFirstChoiceModel

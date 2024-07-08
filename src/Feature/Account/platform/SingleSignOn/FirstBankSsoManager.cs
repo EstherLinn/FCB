@@ -181,7 +181,7 @@ namespace Feature.Wealth.Account.SingleSignOn
             //// 檢查 Sitecore user
             if (scUser == null)
             {
-                return (false, $"{user.LocalName} 不存在");
+                return (false, $"{user.LocalName} 此帳號無此權限");
             }
 
             //// 檢查 Sitecore user 是否可用
