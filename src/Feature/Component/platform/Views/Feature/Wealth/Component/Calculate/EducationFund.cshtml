@@ -1,0 +1,3032 @@
+﻿@model Feature.Wealth.Component.Models.Calculate.CalculateModel
+@using Feature.Wealth.Component.Models.Calculate
+
+@if (Model == null)
+{
+    return;
+}
+
+<!-- 教育基金試算_描述區塊 -->
+<div class="c-section" id="calculateDescription">
+    <div class="l-wrap">
+        <div class="l-minorstage">
+            <div class="l-minorstage__content">
+                <div class="l-flex u-flex-col u-flex-gap-sm u-flex-top">
+                    @if (!string.IsNullOrEmpty(Model.MainTitle))
+                    {
+                        <div class="t2 t-bold">@Model.MainTitle</div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.MainContent))
+                    {
+                        @Html.Sitecore().Field(Template.Calculate.Fields.MainContent.ToString(), Model.Datasource)
+                    }
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <div class="l-minorstage__img">
+                    <img src="@Model.Image" alt="">
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- 教育基金試算_主要區塊 -->
+<div class="c-section" id="calculateMain">
+    <div class="l-wrap">
+        <div class="l-formWrap l-formWrap--trial">
+            <div class="l-formBlock l-formBlock--trial">
+                <div class="l-formBlock__group">
+                    <div class="l-formBlock__title">
+                        <span class="t2 t-bold">目標規劃</span>
+                    </div>
+                    <div class="l-formBlock__item">
+                        <div class="c-form c-form--trial">
+                            <div class="c-form__title">預計花費的教育金</div>
+                            <div class="c-form__content">
+                                <div class="l-form" id="educationalFundForm">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input id="educationalFund" type="number" value="100" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">萬元</span>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText">
+                                            <span class="s4" id="educationalFundErrorText"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-formBlock__item">
+                        <div class="c-form c-form--trial">
+                            <div class="c-form__title">預計幾年後達成目標</div>
+                            <div class="c-form__content">
+                                <div class="l-form">
+                                    <div class="l-form__set">
+                                        <div class="l-form__input">
+                                            <div class="o-unitbox">
+                                                <input id="years" type="number" value="10" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="year"
+                                                       oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                       onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                                <span class="o-unitbox__text">年</span>
+                                            </div>
+                                        </div>
+                                        <div class="l-form__input l-form__input--extra">
+                                            <div class="c-sliderBar c-sliderBar--flat">
+                                                <div class="c-sliderBar__main" data-slider-id="year"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText">
+                                            <span class="s4"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-formBlock__group">
+                    <div class="l-formBlock__title">
+                        <span class="t2 t-bold">投資規劃</span>
+                    </div>
+                    <div class="l-formBlock__item">
+                        <div class="c-form c-form--trial">
+                            <div class="c-form__title">已準備金額</div>
+                            <div class="c-form__content">
+                                <div class="l-form" id="amountPreparedForm">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input id="amountPrepared" type="number" value="0" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">萬元</span>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText">
+                                            <span class="s4" id="amountPreparedErrorText"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-formBlock__item">
+                        <div class="c-form c-form--trial">
+                            <div class="c-form__title">每月投入金額</div>
+                            <div class="c-form__content">
+                                <div class="l-form" id="monthlyInvestmentForm">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input id="monthlyInvestment" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">萬元</span>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText">
+                                            <span class="s4" id="monthlyInvestmentErrorText"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-formBlock__item">
+                        <div class="c-form c-form--trial">
+                            <div class="c-form__title">
+                                預期投資報酬率
+                                <a href="#popupRoi" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                            </div>
+                            <div class="c-form__content">
+                                <div class="l-form">
+                                    <div class="l-form__set">
+                                        <div class="l-form__input">
+                                            <div class="o-unitbox">
+                                                <input id="expectedRoi" type="number" value="2.00" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="roi"
+                                                       oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                       onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                                <span class="o-unitbox__text">％</span>
+                                            </div>
+                                        </div>
+                                        <div class="l-form__input l-form__input--extra">
+                                            <div class="c-sliderBar c-sliderBar--flat">
+                                                <div class="c-sliderBar__main" data-slider-id="roi"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText">
+                                            <span class="s4"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-formBlock__action">
+                        <button id="Calculate" type="button" class="o-btn o-btn--primary o-btn--lg">開始試算</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 預期投資報酬率彈窗內容 -->
+<div id="popupRoi" class="c-modal c-modal--xs mfp-hide">
+    <div class="c-modal__wrap">
+        @if (!string.IsNullOrEmpty(Model.AnticipatedInvestmentTipTitle))
+        {
+            <header class="c-modal__header">
+                <h2 class="c-modal__title">@Model.AnticipatedInvestmentTipTitle</h2>
+            </header>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.AnticipatedInvestmentTipContent))
+        {
+            <div class="c-modal__content">
+                <p>@Model.AnticipatedInvestmentTipContent</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- 重新試算彈窗 -->
+<div id="popupAdjustment" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">調整我的規劃</h2>
+        </header>
+        <div class="c-modal__content">
+            <form class="l-formBlock l-formBlock--popup">
+                <div class="l-formBlock__group">
+                    <div class="l-formBlock__title">
+                        <span class="t2 t-bold">目標規劃</span>
+                    </div>
+                    <div class="l-formBlock__item">
+                        <div class="c-form c-form--popup">
+                            <div class="c-form__title">預計花費的教育金</div>
+                            <div class="c-form__content">
+                                <div class="l-form l-form--popup" id="educationalFund_PopupForm">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input id="educationalFund_Popup" type="number" value="100" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">萬元</span>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText"><span class="s4" id="educationalFund_PopupErrorText"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-formBlock__item">
+                        <div class="c-form c-form--popup">
+                            <div class="c-form__title">預計幾年後達成目標</div>
+                            <div class="c-form__content">
+                                <div class="l-form l-form--popup">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input id="years_Popup" type="number" value="10" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="popup_year"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">年</span>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText"><span class="s4"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-formBlock__group">
+                    <div class="l-formBlock__title">
+                        <span class="t2 t-bold">投資規劃</span>
+                    </div>
+                    <div class="l-formBlock__item">
+                        <div class="c-form c-form--popup">
+                            <div class="c-form__title">已準備金額</div>
+                            <div class="c-form__content">
+                                <div class="l-form l-form--popup" id="amountPrepared_PopupForm">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input id="amountPrepared_Popup" type="number" value="0" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">萬元</span>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText"><span class="s4" id="amountPrepared_PopupErrorText"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-formBlock__item">
+                        <div class="c-form c-form--popup">
+                            <div class="c-form__title">每月投入金額</div>
+                            <div class="c-form__content">
+                                <div class="l-form l-form--popup" id="monthlyInvestment_PopupForm">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input id="monthlyInvestment_Popup" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">萬元</span>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText"><span class="s4" id="monthlyInvestment_PopupErrorText"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-formBlock__item">
+                        <div class="c-form c-form--popup">
+                            <div class="c-form__title">預期投資報酬率</div>
+                            <div class="c-form__content">
+                                <div class="l-form l-form--popup">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input id="expectedRoi_Popup" type="number" value="2.00" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="popup_roi"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">%</span>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText"><span class="s4"></span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-formBlock__action">
+                        <button id="Recalculate" type="button" class="o-btn o-btn--primary o-btn--lg">重新試算</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 教育基金試算結果_描述區塊 -->
+<div class="l-mainstage u-hidden" id="resultDescription">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">教育基金試算結果</h1>
+        </div>
+        <div class="l-mainstage__content">
+            <div class="l-calcResult">
+                <div class="l-calcResult__content">
+                    <div class="l-calcResult__desc t-bold s3" id="resultContent"></div>
+                    <div class="l-calcResult__charts">
+                        <div id="chartsGap"></div>
+                    </div>
+                </div>
+                <div class="l-calcResult__lecture u-hidden" id="resultSuccessMain">
+                    <div class="c-calcLecture">
+                        @if (!string.IsNullOrEmpty(Model.SuccessImage))
+                        {
+                            <div class="c-calcLecture__caption">
+                                <img src="@Model.SuccessImage" class="c-calcLecture__img" alt="">
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.SuccessContent))
+                        {
+                            @Html.Sitecore().Field(Template.Calculate.Fields.SuccessContent.ToString(), Model.Datasource)
+                        }
+
+                    </div>
+                </div>
+
+                <div class="l-calcResult__lecture u-hidden" id="resultUnsuccessfulMain">
+                    <div class="c-calcLecture">
+                        @if (!string.IsNullOrEmpty(Model.UnsuccessfulImage))
+                        {
+                            <div class="c-calcLecture__caption">
+                                <img src="@Model.UnsuccessfulImage" class="c-calcLecture__img" alt="">
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.UnsuccessfulContent))
+                        {
+                            @Html.Sitecore().Field(Template.Calculate.Fields.UnsuccessfulContent.ToString(), Model.Datasource)
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 教育基金試算結果_Tab區塊 -->
+<section class="c-section c-section--tab u-hidden" id="resultTab">
+    <div class="l-wrap">
+        <div class="c-tab c-tab--wide" data-tab="true">
+            <div class="c-tab__header">
+                <ul class="c-tab__navs">
+                    <li><a href="#" class="c-tab__item is-active tab1Btn u-hidden" target="_self" title="您的規劃" data-tab-target="tab-1">您的規劃</a></li>
+                    <li><a href="#" class="c-tab__item tab2Btn u-hidden" target="_self" title="推薦方案 1" data-tab-target="tab-2">推薦方案 1</a></li>
+                    <li><a href="#" class="c-tab__item tab3Btn u-hidden" target="_self" title="推薦方案 2" data-tab-target="tab-3">推薦方案 2</a></li>
+                    <li><a href="#" class="c-tab__item tab4Btn u-hidden" target="_self" title="推薦方案 3" data-tab-target="tab-4">推薦方案 3</a></li>
+                    <li><a href="#" class="c-tab__item tab5Btn u-hidden" target="_self" title="推薦方案 1" data-tab-target="tab-5">推薦方案 1</a></li>
+                </ul>
+                <div class="c-tab__collapse">
+                    <a href="#" class="c-tab__switch"></a>
+                    <div class="c-tab__dropdown">
+                        <a href="#" class="c-tab__clone is-active tab1Btn u-hidden" target="_self" title="您的規劃" data-tab-target="tab-1">您的規劃</a>
+                        <a href="#" class="c-tab__clone tab2Btn u-hidden" target="_self" title="推薦方案 1" data-tab-target="tab-2">推薦方案 1</a>
+                        <a href="#" class="c-tab__clone tab3Btn u-hidden" target="_self" title="推薦方案 2" data-tab-target="tab-3">推薦方案 2</a>
+                        <a href="#" class="c-tab__clone tab4Btn u-hidden" target="_self" title="推薦方案 3" data-tab-target="tab-4">推薦方案 3</a>
+                        <a href="#" class="c-tab__clone tab5Btn u-hidden" target="_self" title="推薦方案 1" data-tab-target="tab-5">推薦方案 1</a>
+                    </div>
+                </div>
+            </div>
+            <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+                <div class="c-section">
+                    <div class="c-section">
+                        <div class="c-section__content">
+                            <div class="l-calcCard">
+                                <div class="l-calcCard__head t-bold">
+                                    <span class="t3">預期總收益</span>
+                                    <span class="t1 t-warning" id="tab1_Total"></span>
+                                </div>
+                                <div class="l-calcCard__content">
+                                    <div class="l-pipeList">
+                                        <div class="l-pipeList__content">
+                                            <ul class="c-pipeList s3 t-bold">
+                                                <li class="c-pipeList__item ">
+                                                    <span>已準備金額</span>
+                                                    <span class="" id="tab1_AmountPrepared"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>每月投入</span>
+                                                    <span class="" id="tab1_MonthlyInvestment"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>投資報酬率</span>
+                                                    <span class="" id="tab1_ExpectedRoi"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>投資</span>
+                                                    <span class="" id="tab1_Years"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="l-pipeList__actions">
+                                            <a href="#popupAdjustment" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-popup="true">調整我的規劃</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 預期收益 & 投資報酬模擬 -->
+                    <div class="c-section">
+                        <div class="l-revenueResult">
+                            <div class="l-revenueResult__charts">
+                                <div class="l-calcCharts">
+                                    <div class="l-calcCharts__item l-calcCharts__item--1of3">
+                                        <div class="c-section">
+                                            <section class="c-section">
+                                                <div class="c-section__title" id="tab1_ExpectedReturnTitle"></div>
+                                                <div class="c-section__content">
+                                                    <div class="c-chartBox">
+                                                        <div id="chartsRevenue-01"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="l-calcCharts__item l-calcCharts__item--2of3">
+                                        <div class="c-section">
+                                            <section class="c-section">
+                                                <div class="c-section__title">投資報酬模擬</div>
+                                                <div class="c-section__content">
+                                                    <div class="c-chartBox">
+                                                        <div id="chartsReward-01"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.ExpectedReturnRemarks))
+                            {
+                                <div class="l-revenueResult__notes">
+                                    @Model.ExpectedReturnRemarks
+                                </div>
+                            }
+
+                            <div class="l-revenueResult__actions u-hidden">
+                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 遮罩 -->
+                <section class="c-section c-section--locker">
+                    <div class="c-calcLocker">
+                        <div class="l-wrap">
+                            <div class="c-calcLocker__icon">
+                                <img src="./../../themes/images/icons/others/lock.svg" alt="">
+                            </div>
+                            <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
+                            <div class="c-calcLocker__actions">
+                                <div class="c-calcLocker__btn"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--lg" data-popup="true">立即登入</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 風險屬性 & 資產配置 -->
+                <div class="c-section">
+                    <div class="c-section">
+                        <div class="l-calcCharts">
+                            <div class="l-calcCharts__item">
+                                <!-- 風險屬性 -->
+                                <section class="c-section">
+                                    <div class="c-section__title">我的風險屬性</div>
+                                    <div class="c-section__content">
+                                        <div class="c-chartBox c-chartBox--sm@dt-only">
+                                            <div class="l-riskCard">
+                                                <div class="l-riskCard__charts">
+                                                    <img src="./../../themes/images/charts/rr4.svg" alt="">
+                                                </div>
+                                                <div class="l-riskCard__content">
+                                                    <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
+                                                    <div class="l-riskCard__actions">
+                                                        <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--auto">進行風險屬性評估</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="l-calcCharts__item">
+                                <!-- 資產配置 -->
+                                <section class="c-section">
+                                    <div class="c-section__title">資產配置</div>
+                                    <div class="c-section__content">
+                                        <div class="c-chartBox c-chartBox--sm@dt-only">
+                                            <div id="chartsAssets-01" class="o-pie"></div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notice))
+                    {
+                        <div class="c-section">
+                            <div class="c-warning">@Model.Notice</div>
+                        </div>
+                    }
+
+                </div>
+
+                <!-- 推薦基金 -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦基金</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--3rows recommendedFunds" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦ETF -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦ETF</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--minor recommendedETF" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦國外股票 -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦國外股票</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--minor recommendedStock" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="c-tab__panel" data-tab-panel-id="tab-2">
+                <div class="c-section">
+                    <div class="c-section">
+                        <div class="c-section__content">
+                            <div class="l-calcCard">
+                                <div class="l-calcCard__head t-bold">
+                                    <span class="t3">預期總收益</span>
+                                    <span class="t1 t-warning" id="tab2_Total"></span>
+                                </div>
+                                <div class="l-calcCard__content">
+                                    <div class="l-pipeList">
+                                        <div class="l-pipeList__content">
+                                            <ul class="c-pipeList s3 t-bold">
+                                                <li class="c-pipeList__item">
+                                                    <span>已準備金額</span>
+                                                    <span class="" id="tab2_AmountPrepared"></span>
+                                                </li>
+                                                <li class="c-pipeList__item t-push">
+                                                    <span>每月投入</span>
+                                                    <span class="t2" id="tab2_MonthlyInvestment"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>投資報酬率</span>
+                                                    <span class="" id="tab2_ExpectedRoi"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>投資</span>
+                                                    <span class="" id="tab2_Years"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="l-pipeList__actions">
+                                            <a href="#popupAdjustment" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-popup="true">調整我的規劃</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-calcCard__desc">此推薦方案建議 增加每月投入金額，您可以嘗試調整多個項目來達成目標。</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 預期收益 & 投資報酬模擬 -->
+                    <div class="c-section">
+                        <div class="l-revenueResult">
+                            <div class="l-revenueResult__charts">
+                                <div class="l-calcCharts">
+                                    <div class="l-calcCharts__item l-calcCharts__item--1of3">
+                                        <div class="c-section">
+                                            <section class="c-section">
+                                                <div class="c-section__title" id="tab2_ExpectedReturnTitle"></div>
+                                                <div class="c-section__content">
+                                                    <div class="c-chartBox">
+                                                        <div id="chartsRevenue-02"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="l-calcCharts__item l-calcCharts__item--2of3">
+                                        <div class="c-section">
+                                            <section class="c-section">
+                                                <div class="c-section__title">投資報酬模擬</div>
+                                                <div class="c-section__content">
+                                                    <div class="c-chartBox">
+                                                        <div id="chartsReward-02"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.ExpectedReturnRemarks))
+                            {
+                                <div class="l-revenueResult__notes">
+                                    @Model.ExpectedReturnRemarks
+                                </div>
+                            }
+
+                            <div class="l-revenueResult__actions u-hidden">
+                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 遮罩 -->
+                <section class="c-section c-section--locker">
+                    <div class="c-calcLocker">
+                        <div class="l-wrap">
+                            <div class="c-calcLocker__icon">
+                                <img src="./../../themes/images/icons/others/lock.svg" alt="">
+                            </div>
+                            <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
+                            <div class="c-calcLocker__actions">
+                                <div class="c-calcLocker__btn"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--lg" data-popup="true">立即登入</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 風險屬性 & 資產配置 -->
+                <div class="c-section">
+                    <div class="c-section">
+                        <div class="l-calcCharts">
+                            <div class="l-calcCharts__item">
+                                <!-- 風險屬性 -->
+                                <section class="c-section">
+                                    <div class="c-section__title">我的風險屬性</div>
+                                    <div class="c-section__content">
+                                        <div class="c-chartBox c-chartBox--sm@dt-only">
+                                            <div class="l-riskCard">
+                                                <div class="l-riskCard__charts">
+                                                    <img src="./../../themes/images/charts/rr4.svg" alt="">
+                                                </div>
+                                                <div class="l-riskCard__content">
+                                                    <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
+                                                    <div class="l-riskCard__actions">
+                                                        <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--auto">進行風險屬性評估</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="l-calcCharts__item">
+                                <!-- 資產配置 -->
+                                <section class="c-section">
+                                    <div class="c-section__title">資產配置</div>
+                                    <div class="c-section__content">
+                                        <div class="c-chartBox c-chartBox--sm@dt-only">
+                                            <div id="chartsAssets-02" class="o-pie"></div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notice))
+                    {
+                        <div class="c-section">
+                            <div class="c-warning">@Model.Notice</div>
+                        </div>
+                    }
+
+                </div>
+
+                <!-- 推薦基金 -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦基金</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--3rows recommendedFunds" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦ETF -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦ETF</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--minor recommendedETF" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦國外股票 -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦國外股票</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--minor recommendedStock" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="c-tab__panel" data-tab-panel-id="tab-3">
+                <div class="c-section">
+                    <div class="c-section">
+                        <div class="c-section__content">
+                            <div class="l-calcCard">
+                                <div class="l-calcCard__head t-bold">
+                                    <span class="t3">預期總收益</span>
+                                    <span class="t1 t-warning" id="tab3_Total"></span>
+                                </div>
+                                <div class="l-calcCard__content">
+                                    <div class="l-pipeList">
+                                        <div class="l-pipeList__content">
+                                            <ul class="c-pipeList s3 t-bold">
+                                                <li class="c-pipeList__item ">
+                                                    <span>已準備金額</span>
+                                                    <span class="" id="tab3_AmountPrepared"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>每月投入</span>
+                                                    <span class="" id="tab3_MonthlyInvestment"></span>
+                                                </li>
+                                                <li class="c-pipeList__item t-push">
+                                                    <span>投資報酬率</span>
+                                                    <span class="t2" id="tab3_ExpectedRoi"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>投資</span>
+                                                    <span class="" id="tab3_Years"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="l-pipeList__actions">
+                                            <a href="#popupAdjustment" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-popup="true">調整我的規劃</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-calcCard__desc">此推薦方案只有提升投資報酬率，您可以嘗試調整多個項目來達成目標。</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 預期收益 & 投資報酬模擬 -->
+                    <div class="c-section">
+                        <div class="l-revenueResult">
+                            <div class="l-revenueResult__charts">
+                                <div class="l-calcCharts">
+                                    <div class="l-calcCharts__item l-calcCharts__item--1of3">
+                                        <div class="c-section">
+                                            <section class="c-section">
+                                                <div class="c-section__title" id="tab3_ExpectedReturnTitle"></div>
+                                                <div class="c-section__content">
+                                                    <div class="c-chartBox">
+                                                        <div id="chartsRevenue-03"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="l-calcCharts__item l-calcCharts__item--2of3">
+                                        <div class="c-section">
+                                            <section class="c-section">
+                                                <div class="c-section__title">投資報酬模擬</div>
+                                                <div class="c-section__content">
+                                                    <div class="c-chartBox">
+                                                        <div id="chartsReward-03"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.ExpectedReturnRemarks))
+                            {
+                                <div class="l-revenueResult__notes">
+                                    @Model.ExpectedReturnRemarks
+                                </div>
+                            }
+
+                            <div class="l-revenueResult__actions u-hidden">
+                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 遮罩 -->
+                <section class="c-section c-section--locker">
+                    <div class="c-calcLocker">
+                        <div class="l-wrap">
+                            <div class="c-calcLocker__icon">
+                                <img src="./../../themes/images/icons/others/lock.svg" alt="">
+                            </div>
+                            <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
+                            <div class="c-calcLocker__actions">
+                                <div class="c-calcLocker__btn"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--lg" data-popup="true">立即登入</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 風險屬性 & 資產配置 -->
+                <div class="c-section">
+                    <div class="c-section">
+                        <div class="l-calcCharts">
+                            <div class="l-calcCharts__item">
+                                <!-- 風險屬性 -->
+                                <section class="c-section">
+                                    <div class="c-section__title">我的風險屬性</div>
+                                    <div class="c-section__content">
+                                        <div class="c-chartBox c-chartBox--sm@dt-only">
+                                            <div class="l-riskCard">
+                                                <div class="l-riskCard__charts">
+                                                    <img src="./../../themes/images/charts/rr4.svg" alt="">
+                                                </div>
+                                                <div class="l-riskCard__content">
+                                                    <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
+                                                    <div class="l-riskCard__actions">
+                                                        <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--auto">進行風險屬性評估</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="l-calcCharts__item">
+                                <!-- 資產配置 -->
+                                <section class="c-section">
+                                    <div class="c-section__title">資產配置</div>
+                                    <div class="c-section__content">
+                                        <div class="c-chartBox c-chartBox--sm@dt-only">
+                                            <div id="chartsAssets-03" class="o-pie"></div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notice))
+                    {
+                        <div class="c-section">
+                            <div class="c-warning">@Model.Notice</div>
+                        </div>
+                    }
+
+                </div>
+
+                <!-- 推薦基金 -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦基金</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--3rows recommendedFunds" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦ETF -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦ETF</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--minor recommendedETF" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦國外股票 -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦國外股票</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--minor recommendedStock" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="c-tab__panel" data-tab-panel-id="tab-4">
+                <div class="c-section">
+                    <div class="c-section">
+                        <div class="c-section__content">
+                            <div class="l-calcCard">
+                                <div class="l-calcCard__head t-bold">
+                                    <span class="t3">預期總收益</span>
+                                    <span class="t1 t-warning" id="tab4_Total"></span>
+                                </div>
+                                <div class="l-calcCard__content">
+                                    <div class="l-pipeList">
+                                        <div class="l-pipeList__content">
+                                            <ul class="c-pipeList s3 t-bold">
+                                                <li class="c-pipeList__item ">
+                                                    <span>已準備金額</span>
+                                                    <span class="" id="tab4_AmountPrepared"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>每月投入</span>
+                                                    <span class="" id="tab4_MonthlyInvestment"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>投資報酬率</span>
+                                                    <span class="" id="tab4_ExpectedRoi"></span>
+                                                </li>
+                                                <li class="c-pipeList__item t-push">
+                                                    <span>投資</span>
+                                                    <span class="t2" id="tab4_Years"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="l-pipeList__actions">
+                                            <a href="#popupAdjustment" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-popup="true">調整我的規劃</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-calcCard__desc">此推薦方案只有延長投資年期，您可以嘗試調整多個項目來達成目標。</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 預期收益 & 投資報酬模擬 -->
+                    <div class="c-section">
+                        <div class="l-revenueResult">
+                            <div class="l-revenueResult__charts">
+                                <div class="l-calcCharts">
+                                    <div class="l-calcCharts__item l-calcCharts__item--1of3">
+                                        <div class="c-section">
+                                            <section class="c-section">
+                                                <div class="c-section__title" id="tab4_ExpectedReturnTitle"></div>
+                                                <div class="c-section__content">
+                                                    <div class="c-chartBox">
+                                                        <div id="chartsRevenue-04"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="l-calcCharts__item l-calcCharts__item--2of3">
+                                        <div class="c-section">
+                                            <section class="c-section">
+                                                <div class="c-section__title">投資報酬模擬</div>
+                                                <div class="c-section__content">
+                                                    <div class="c-chartBox">
+                                                        <div id="chartsReward-04"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.ExpectedReturnRemarks))
+                            {
+                                <div class="l-revenueResult__notes">
+                                    @Model.ExpectedReturnRemarks
+                                </div>
+                            }
+
+                            <div class="l-revenueResult__actions u-hidden">
+                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 遮罩 -->
+                <section class="c-section c-section--locker">
+                    <div class="c-calcLocker">
+                        <div class="l-wrap">
+                            <div class="c-calcLocker__icon">
+                                <img src="./../../themes/images/icons/others/lock.svg" alt="">
+                            </div>
+                            <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
+                            <div class="c-calcLocker__actions">
+                                <div class="c-calcLocker__btn"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--lg" data-popup="true">立即登入</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 風險屬性 & 資產配置 -->
+                <div class="c-section">
+                    <div class="c-section">
+                        <div class="l-calcCharts">
+                            <div class="l-calcCharts__item">
+                                <!-- 風險屬性 -->
+                                <section class="c-section">
+                                    <div class="c-section__title">我的風險屬性</div>
+                                    <div class="c-section__content">
+                                        <div class="c-chartBox c-chartBox--sm@dt-only">
+                                            <div class="l-riskCard">
+                                                <div class="l-riskCard__charts">
+                                                    <img src="./../../themes/images/charts/rr4.svg" alt="">
+                                                </div>
+                                                <div class="l-riskCard__content">
+                                                    <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
+                                                    <div class="l-riskCard__actions">
+                                                        <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--auto">進行風險屬性評估</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="l-calcCharts__item">
+                                <!-- 資產配置 -->
+                                <section class="c-section">
+                                    <div class="c-section__title">資產配置</div>
+                                    <div class="c-section__content">
+                                        <div class="c-chartBox c-chartBox--sm@dt-only">
+                                            <div id="chartsAssets-04" class="o-pie"></div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notice))
+                    {
+                        <div class="c-section">
+                            <div class="c-warning">@Model.Notice</div>
+                        </div>
+                    }
+
+                </div>
+
+                <!-- 推薦基金 -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦基金</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--3rows recommendedFunds" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦ETF -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦ETF</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--minor recommendedETF" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦國外股票 -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦國外股票</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--minor recommendedStock" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 試算結果無缺口推薦方案1內容 -->
+            <div class="c-tab__panel" data-tab-panel-id="tab-5">
+                <div class="c-section">
+                    <div class="c-section">
+                        <div class="c-section__content">
+                            <div class="l-calcCard">
+                                <div class="l-calcCard__head t-bold">
+                                    <span class="t3">預期總收益</span>
+                                    <span class="t1 t-warning" id="tab5_Total"></span>
+                                </div>
+                                <div class="l-calcCard__content">
+                                    <div class="l-pipeList">
+                                        <div class="l-pipeList__content">
+                                            <ul class="c-pipeList s3 t-bold">
+                                                <li class="c-pipeList__item ">
+                                                    <span>已準備金額</span>
+                                                    <span class="" id="tab5_AmountPrepared"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>每月投入</span>
+                                                    <span class="" id="tab5_MonthlyInvestment"></span>
+                                                </li>
+                                                <li class="c-pipeList__item t-push">
+                                                    <span>投資報酬率</span>
+                                                    <span class="t2" id="tab5_ExpectedRoi"></span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>投資</span>
+                                                    <span class="" id="tab5_Years"></span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="l-pipeList__actions">
+                                            <a href="#popupAdjustment" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-popup="true">調整我的規劃</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="l-calcCard__desc">此推薦方案只有提升投資報酬率，您可以嘗試調整多個項目來達成目標。</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 預期收益 & 投資報酬模擬 -->
+                    <div class="c-section">
+                        <div class="l-revenueResult">
+                            <div class="l-revenueResult__charts">
+                                <div class="l-calcCharts">
+                                    <div class="l-calcCharts__item l-calcCharts__item--1of3">
+                                        <div class="c-section">
+                                            <section class="c-section">
+                                                <div class="c-section__title" id="tab5_ExpectedReturnTitle"></div>
+                                                <div class="c-section__content">
+                                                    <div class="c-chartBox">
+                                                        <div id="chartsRevenue-05"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                    <div class="l-calcCharts__item l-calcCharts__item--2of3">
+                                        <div class="c-section">
+                                            <section class="c-section">
+                                                <div class="c-section__title">投資報酬模擬</div>
+                                                <div class="c-section__content">
+                                                    <div class="c-chartBox">
+                                                        <div id="chartsReward-05"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.ExpectedReturnRemarks))
+                            {
+                                <div class="l-revenueResult__notes">
+                                    @Model.ExpectedReturnRemarks
+                                </div>
+                            }
+
+                            <div class="l-revenueResult__actions u-hidden">
+                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 遮罩 -->
+                <section class="c-section c-section--locker">
+                    <div class="c-calcLocker">
+                        <div class="l-wrap">
+                            <div class="c-calcLocker__icon">
+                                <img src="./../../themes/images/icons/others/lock.svg" alt="">
+                            </div>
+                            <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
+                            <div class="c-calcLocker__actions">
+                                <div class="c-calcLocker__btn"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--lg" data-popup="true">立即登入</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 風險屬性 & 資產配置 -->
+                <div class="c-section">
+                    <div class="c-section">
+                        <div class="l-calcCharts">
+                            <div class="l-calcCharts__item">
+                                <!-- 風險屬性 -->
+                                <section class="c-section">
+                                    <div class="c-section__title">我的風險屬性</div>
+                                    <div class="c-section__content">
+                                        <div class="c-chartBox c-chartBox--sm@dt-only">
+                                            <div class="l-riskCard">
+                                                <div class="l-riskCard__charts">
+                                                    <img src="./../../themes/images/charts/rr4.svg" alt="">
+                                                </div>
+                                                <div class="l-riskCard__content">
+                                                    <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
+                                                    <div class="l-riskCard__actions">
+                                                        <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--auto">進行風險屬性評估</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="l-calcCharts__item">
+                                <!-- 資產配置 -->
+                                <section class="c-section">
+                                    <div class="c-section__title">資產配置</div>
+                                    <div class="c-section__content">
+                                        <div class="c-chartBox c-chartBox--sm@dt-only">
+                                            <div id="chartsAssets-04" class="o-pie"></div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Notice))
+                    {
+                        <div class="c-section">
+                            <div class="c-warning">@Model.Notice</div>
+                        </div>
+                    }
+
+                </div>
+
+                <!-- 推薦基金 -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦基金</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--3rows recommendedFunds" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦ETF -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦ETF</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--minor recommendedETF" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 推薦國外股票 -->
+                <div class="c-section">
+                    <div class="c-section__title">推薦國外股票</div>
+                    <div class="c-section__content">
+                        <div class="swiper c-swiper c-swiper--minor recommendedStock" >
+                            <div class="swiper-wrapper c-swiper__wrapper">
+
+                            </div>
+                            <div class="swiper-button-next c-swiper__next"></div>
+                            <div class="swiper-button-prev c-swiper__prev"></div>
+                            <div class="swiper-pagination c-swiper__pagination"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 遠距諮詢 -->
+<section id="consult" class="c-section  u-hidden">
+    <div class="l-wrap">
+        <div class="c-section__content">
+            <div class="l-feature l-feature--sm">
+                <ul class="l-feature__list">
+                    <li class="l-feature__item">
+                        <div class="c-feature c-feature--join c-feature--personalize">
+                            <div class="c-feature__content u-center">
+
+                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationTitle))
+                                {
+                                    <h3 class="c-feature__title">@Model.RemoteConsultationTitle</h3>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationContent))
+                                {
+                                    <p class="c-feature__desc">@Model.RemoteConsultationContent</p>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationButtonText) || !string.IsNullOrEmpty(Model.RemoteConsultationButtonLink))
+                                {
+                                    <div class="c-feature__actions">
+                                        @Html.Sitecore().BeginField(Template.Calculate.Fields.RemoteConsultationButtonLink.ToString(), Model.Datasource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--flat o-btn--sm" })
+                                        @Html.Sitecore().Field(Template.Calculate.Fields.RemoteConsultationButtonText.ToString(), Model.Datasource)
+                                        @Html.Sitecore().EndField()
+                                    </div>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.RemoteConsultationImage))
+                            {
+                                <div class="c-feature__plate">
+                                    <img src="@Model.RemoteConsultationImage" srcset="" alt="遠距諮詢 解決您的理財大小事" class="c-feature__img">
+                                </div>
+                            }
+
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function ($, window, document, undefined) {
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var resultHasGap;
+            var chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [];
+            var defaultRiskAttributes = '@Model.DefaultRiskAttributes';
+
+            //#region 預計幾年後達成目標綁定事件
+            let $sliderYear = $('[data-slider-id="year"]').get(0),
+                $inputYear = $('[data-id="year"]');
+            noUiSlider.create($sliderYear, {
+                start: 10,
+                connect: [true, false],
+                step: 1,
+                range: {
+                    'min': [1, 1],
+                    'max': 30
+                },
+                format: wNumb({
+                    decimals: 0
+                }),
+                pips: {
+                    mode: 'positions',
+                    values: [0, 100],
+                    density: -1,
+                    format: wNumb({
+                        decimals: 0,
+                        suffix: '年'
+                    })
+                }
+            });
+            $sliderYear.noUiSlider.on('update', function (values, handle) {
+                const year = Number(values[handle]);
+                $inputYear.val(year);
+            });
+            $inputYear.on('change', function () {
+                $sliderYear.noUiSlider.set([this.value]);
+            });
+            //#endregion
+
+            //#region 預期投資報酬率綁定事件
+            let $sliderRoi = $('[data-slider-id="roi"]').get(0),
+                $inputRoi = $('[data-id="roi"]');
+            noUiSlider.create($sliderRoi, {
+                start: 2,
+                connect: [true, false],
+                step: 0.01,
+                range: {
+                    'min': [1, 0.01],
+                    'max': 50
+                },
+                format: wNumb({
+                    decimals: 2
+                }),
+                pips: {
+                    mode: 'positions',
+                    values: [0, 100],
+                    density: -1,
+                    format: wNumb({
+                        decimals: 0,
+                        suffix: '％'
+                    })
+                }
+            });
+            $sliderRoi.noUiSlider.on('update', function (values, handle) {
+                const year = values[handle];
+                $inputRoi.val(year);
+            });
+            $inputRoi.on('change', function () {
+                $sliderRoi.noUiSlider.set([this.value]);
+            });
+            //#endregion
+
+            //#region 預計幾年後達成目標綁定事件(Popup)
+            $('[data-id="popup_year"]').on('change', function () {
+                let value = parseFloat(this.value);
+
+                if (isNaN(value)) {
+                    value = 1;
+                } else {
+                    value = Math.round(value);
+
+                    if (value < 1) {
+                        value = 1;
+                    } else if (value > 30) {
+                        value = 30;
+                    }
+                }
+
+                $(this).val(value);
+            });
+
+            //#endregion
+
+            //#region 預期投資報酬率綁定事件(Popup)
+            $('[data-id="popup_roi"]').on('change', function () {
+                let value = parseFloat(this.value);
+
+                if (isNaN(value)) {
+                    value = 1;
+                } else {
+                    if (value < 1) {
+                        value = 1;
+                    } else if (value > 50) {
+                        value = 50;
+                    }
+
+                    // 限制小數位為兩位
+                    value = value.toFixed(2);
+                }
+
+                $(this).val(value);
+            });
+            //#endregion
+
+            //#region 各欄位綁定事件
+            $("#educationalFund, #amountPrepared, #monthlyInvestment, #educationalFund_Popup, #amountPrepared_Popup, #monthlyInvestment_Popup").on('change', function () {
+                var id = this.id;
+                var val = $(this).val();
+                var formatVal = trimZeroAndDot(val);
+                inputCheck(id, formatVal);
+            });
+            //#endregion
+
+            //#region 開始試算按鈕綁定事件
+            $("#Calculate").click(function () {
+                if (clickCheck()) {
+                    loading();
+
+                    // 隱藏試算 HTML
+                    $("#calculateDescription").addClass("u-hidden");
+                    $("#calculateMain").addClass("u-hidden");
+
+                    let educationalFund = $("#educationalFund").val();
+                    let years = $("#years").val();
+                    let amountPrepared = $("#amountPrepared").val();
+                    let monthlyInvestment = $("#monthlyInvestment").val();
+                    let expectedRoi = $("#expectedRoi").val();
+
+                    // 試算結果
+                    let planningResults = planningCompute(years, amountPrepared, monthlyInvestment, expectedRoi);
+
+                    let tab1Results, tab2Results, tab3Results, tab4Results, tab5Results, currentYear;
+
+                    chartsRevenues.length = 0;
+                    chartsRewards.length = 0;
+                    chartsRewardsCategories.length = 0;
+
+                    // 顯示試算結果 - 描述區塊
+                    $("#resultDescription").removeClass("u-hidden");
+                    renderResultDescription(planningResults, educationalFund, years);
+
+                    // 顯示試算結果 - tab區塊
+                    $("#resultTab").removeClass("u-hidden");
+
+                    // 判斷試算結果是否有缺口
+                    if (resultHasGap) {
+                        $(".tab1Btn").removeClass("u-hidden");
+                        $(".tab2Btn").addClass("u-hidden");
+                        $(".tab3Btn").addClass("u-hidden");
+                        $(".tab4Btn").addClass("u-hidden");
+                        $(".tab5Btn").removeClass("u-hidden");
+
+                        tab1Results = planningResults;
+                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        renderResultTab1(tab1Results, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
+                        renderResultTab5(tab5Results, educationalFund, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
+                    }
+                    else {
+                        $(".tab1Btn").removeClass("u-hidden");
+                        $(".tab2Btn").removeClass("u-hidden");
+                        $(".tab3Btn").removeClass("u-hidden");
+                        $(".tab4Btn").removeClass("u-hidden");
+                        $(".tab5Btn").addClass("u-hidden");
+
+                        tab1Results = planningResults;
+                        tab2Results = tab2Compute(educationalFund, years, amountPrepared, expectedRoi);
+                        tab3Results = tab3Compute(educationalFund, years, amountPrepared, monthlyInvestment);
+                        tab4Results = tab4Compute(educationalFund, amountPrepared, monthlyInvestment, expectedRoi);
+
+                        renderResultTab1(tab1Results, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
+                        renderResultTab2(tab2Results, educationalFund, years, amountPrepared, expectedRoi);
+                        renderResultTab3(tab3Results, educationalFund, years, amountPrepared, monthlyInvestment);
+                        renderResultTab4(tab4Results, educationalFund, amountPrepared, monthlyInvestment, expectedRoi);
+
+                        currentYear = new Date().getFullYear() + tab4Results - 1;
+                    }
+
+                    // 顯示所有圓餅圖
+                    renderChartsRevenues(chartsRevenues);
+
+                    // 取得長條圖年份顯示範圍
+                    getRewardsYearsRange(currentYear);
+
+                    // 顯示投資報酬長條圖
+                    renderChartsRewards(chartsRewards);
+
+                    // 顯示推薦商品
+                    renderRecommendedFunds(9);
+                    renderRecommendedETFs(3);
+                    renderRecommendedStocks(3);
+
+                    // 顯示推薦商品走勢圖
+                    renderRecommendedProductChart();
+
+                    // 顯示試算結果 - 諮詢區塊
+                    $("#consult").removeClass("u-hidden");
+                }
+            });
+            //#endregion
+
+            //#region 重新試算按鈕綁定事件
+            $("#Recalculate").click(function () {
+                if (clickCheck()) {
+                    loading();
+
+                    $.magnificPopup.close();
+
+                    let educationalFund = $("#educationalFund_Popup").val();
+                    let years = $("#years_Popup").val();
+                    let amountPrepared = $("#amountPrepared_Popup").val();
+                    let monthlyInvestment = $("#monthlyInvestment_Popup").val();
+                    let expectedRoi = $("#expectedRoi_Popup").val();
+
+                    // 試算結果
+                    let planningResults = planningCompute(years, amountPrepared, monthlyInvestment, expectedRoi);
+
+                    let tab1Results, tab2Results, tab3Results, tab4Results, tab5Results, currentYear;
+
+                    chartsRevenues.length = 0;
+                    chartsRewards.length = 0;
+                    chartsRewardsCategories.length = 0;
+
+                    // 顯示試算結果 - 描述區塊
+                    $("#resultDescription").removeClass("u-hidden");
+                    renderResultDescription(planningResults, educationalFund, years);
+
+                    // 顯示試算結果 - tab區塊
+                    $("#resultTab").removeClass("u-hidden");
+
+                    // 判斷試算結果是否有缺口
+                    if (resultHasGap) {
+                        $(".tab1Btn").removeClass("u-hidden");
+                        $(".tab2Btn").addClass("u-hidden");
+                        $(".tab3Btn").addClass("u-hidden");
+                        $(".tab4Btn").addClass("u-hidden");
+                        $(".tab5Btn").removeClass("u-hidden");
+
+                        tab1Results = planningResults;
+                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        renderResultTab1(tab1Results, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
+                        renderResultTab5(tab5Results, educationalFund, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
+                    }
+                    else {
+                        $(".tab1Btn").removeClass("u-hidden");
+                        $(".tab2Btn").removeClass("u-hidden");
+                        $(".tab3Btn").removeClass("u-hidden");
+                        $(".tab4Btn").removeClass("u-hidden");
+                        $(".tab5Btn").addClass("u-hidden");
+
+                        tab1Results = planningResults;
+                        tab2Results = tab2Compute(educationalFund, years, amountPrepared, expectedRoi);
+                        tab3Results = tab3Compute(educationalFund, years, amountPrepared, monthlyInvestment);
+                        tab4Results = tab4Compute(educationalFund, amountPrepared, monthlyInvestment, expectedRoi);
+
+                        renderResultTab1(tab1Results, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
+                        renderResultTab2(tab2Results, educationalFund, years, amountPrepared, expectedRoi);
+                        renderResultTab3(tab3Results, educationalFund, years, amountPrepared, monthlyInvestment);
+                        renderResultTab4(tab4Results, educationalFund, amountPrepared, monthlyInvestment, expectedRoi);
+
+                        currentYear = new Date().getFullYear() + tab4Results - 1;
+                    }
+
+                    // tab active 狀態復原
+                    $('ul.c-tab__navs a:first').trigger('click');
+
+                    // 顯示所有圓餅圖
+                    renderChartsRevenues(chartsRevenues);
+
+                    // 取得長條圖年份顯示範圍
+                    getRewardsYearsRange(currentYear);
+
+                    // 顯示投資報酬長條圖
+                    renderChartsRewards(chartsRewards);
+
+                    // 顯示試算結果 - 諮詢區塊
+                    $("#consult").removeClass("u-hidden");
+                }
+            });
+            //#endregion
+
+            //#region 各欄位檢核方法
+            function inputCheck(id, val) {
+                var checkFlag = false;
+                var inputID = "#" + id;
+                var inputForm = inputID + "Form";
+                var inputErrorText = inputID + "ErrorText";
+                var errorMessage = "";
+
+                var educationalFundVal;
+                var amountPreparedVal;
+                var amountPreparedId;
+                var monthlyInvestmentVal;
+                var monthlyInvestmentId;
+
+                switch (id) {
+                    case "educationalFund": // 預計花費的教育金
+                    case "educationalFund_Popup":
+                        if (id == "educationalFund") {
+                            amountPreparedVal = parseFloat($("#amountPrepared").val());
+                            amountPreparedId = "#amountPrepared";
+                            monthlyInvestmentVal = parseFloat($("#monthlyInvestment").val());
+                        }
+                        else {
+                            amountPreparedVal = parseFloat($("#amountPrepared_Popup").val());
+                            amountPreparedId = "#amountPrepared_Popup";
+                            monthlyInvestmentVal = parseFloat($("#monthlyInvestment_Popup").val());
+                        }
+
+                        if (val == "" || isNaN(val)) {
+                            errorMessage = "此欄位為必填";
+                            checkFlag = false;
+                        } else if (parseFloat(amountPreparedVal) >= parseFloat(val)) {
+                            errorMessage = "已準備金額應小於預計花費的教育金";
+
+                            $(amountPreparedId + "ErrorText").text(errorMessage);
+                            $(amountPreparedId + "Form").addClass('is-error');
+                            checkFlag = true;
+                        } else if ((parseFloat(val) > parseFloat(amountPreparedVal)) && (amountPreparedVal== 0 && monthlyInvestmentVal == 0)) {
+                            errorMessage = "已準備金額和每月投入金額不能同時為0";
+
+                            $(amountPreparedId + "ErrorText").text(errorMessage);
+                            $(amountPreparedId + "Form").addClass('is-error');
+                            checkFlag = true;
+                        } else {
+                            $(amountPreparedId + "Form").removeClass('is-error');
+                            checkFlag = true;
+                        }
+
+                        $(inputID).val(val);
+                        break;
+                    case "amountPrepared": // 已準備金額
+                    case "amountPrepared_Popup":
+                        if (id == "amountPrepared") {
+                            educationalFundVal = parseFloat($("#educationalFund").val());
+                            monthlyInvestmentVal = parseFloat($("#monthlyInvestment").val());
+                            monthlyInvestmentId = "#monthlyInvestment";
+                        }
+                        else {
+                            educationalFundVal = parseFloat($("#educationalFund_Popup").val());
+                            monthlyInvestmentVal = parseFloat($("#monthlyInvestment_Popup").val());
+                            monthlyInvestmentId = "#monthlyInvestment_Popup";
+                        }
+
+                        if (val == "" || isNaN(val)) {
+                            errorMessage = "此欄位為必填";
+                            checkFlag = false;
+                        } else if (parseFloat(val) >= educationalFundVal) {
+                            errorMessage = "已準備金額應小於預計花費的教育金";
+                            $(monthlyInvestmentId + "Form").removeClass('is-error');
+                            checkFlag = false;
+                        } else if (parseFloat(val) == 0 && monthlyInvestmentVal == 0) {
+                            errorMessage = "已準備金額和每月投入金額不能同時為0";
+
+                            $(monthlyInvestmentId + "ErrorText").text(errorMessage);
+                            $(monthlyInvestmentId +"Form").addClass('is-error');
+                            checkFlag = false;
+                        } else {
+                            $(monthlyInvestmentId + "Form").removeClass('is-error');
+                            checkFlag = true;
+                        }
+
+                        $(inputID).val(val);
+                        break;
+                    case "monthlyInvestment": // 每月投入金額
+                    case "monthlyInvestment_Popup":
+                        if (id == "monthlyInvestment") {
+                            amountPreparedVal = parseFloat($("#amountPrepared").val());
+                            amountPreparedId = "#amountPrepared";
+                        }
+                        else {
+                            amountPreparedVal = parseFloat($("#amountPrepared_Popup").val());
+                            amountPreparedId = "#amountPrepared_Popup";
+                        }
+
+                        if (val == "" || isNaN(val)) {
+                            errorMessage = "此欄位為必填";
+                            checkFlag = false;
+                        } else if (parseFloat(val) == 0 && amountPreparedVal == 0) {
+                            errorMessage = "已準備金額和每月投入金額不能同時為0";
+
+                            $(amountPreparedId + "ErrorText").text(errorMessage);
+                            $(amountPreparedId + "Form").addClass('is-error');
+                            checkFlag = false;
+                        } else {
+                            $(amountPreparedId + "Form").removeClass('is-error');
+                            checkFlag = true;
+                        }
+
+                        $(inputID).val(val);
+                        break;
+                    default:
+                        return;
+                }
+
+                if (checkFlag) {
+                    $(inputForm).removeClass('is-error');
+                }
+                else {
+                    $(inputErrorText).text(errorMessage);
+                    $(inputForm).addClass('is-error');
+                }
+
+                return checkFlag;
+            }
+            //#endregion
+
+            //#region 點擊後檢核每個欄位方法
+            function clickCheck() {
+                var checkBox = [];
+
+                $("#educationalFund, #amountPrepared, #monthlyInvestment, #educationalFund_Popup, #amountPrepared_Popup, #monthlyInvestment_Popup").each(function (i, obj) {
+                    var inputID = obj.id;
+                    var val = obj.value;
+                    checkBox.push(inputCheck(inputID, val));
+                });
+
+                //檢查是否所有欄位檢核皆為通過，如有任一欄位不通過即回傳false
+                var checkFlag = checkBox.every(function (item) {
+                    return item;
+                });
+
+                return checkFlag;
+            };
+            //#endregion
+
+            //#region 開頭去 "0" 和 "." 方法
+            function trimZeroAndDot(val) {
+                var flag = false;
+                const zeroReg = /^0/g;
+                const dotReg = /^\./;
+
+                // 移除前導零
+                while (zeroReg.test(val)) {
+                    val = val.replace(zeroReg, "");
+                    flag = true;
+                }
+
+                // 如果結果在移除零後為空字串，設為 "0"
+                if (flag && val == "") {
+                    val = "0";
+                }
+
+                // 如果字串以 "." 開頭，前面加上 "0"
+                if (dotReg.test(val)) {
+                    val = "0" + val;
+                }
+
+                return val;
+            }
+            //#endregion
+
+            //#region 您的規劃-試算方法
+            function planningCompute(years, amountPrepared, monthlyInvestment, expectedRoi) {
+
+                // 預計幾年後達成目標
+                let yearsVal = parseFloat(years) * 12;
+
+                // 已準備金額
+                let amountPreparedVal = parseFloat(amountPrepared) * 10000;
+
+                // 每月投入金額
+                let monthlyInvestmentVal = parseFloat(monthlyInvestment) * 10000;
+
+                // 預期投資報酬率
+                let expectedRoiVal = parseFloat(expectedRoi) / 12 / 100;
+
+                return Math.round(formulajs.FV(expectedRoiVal, yearsVal, -monthlyInvestmentVal, -amountPreparedVal));
+            };
+            //#endregion
+
+            //#region 推薦方案1-試算方法
+            function tab2Compute(educationalFund, years, amountPrepared, expectedRoi) {
+                // 預計花費的教育金
+                let educationalFundVal = parseFloat(educationalFund) * 10000
+
+                // 預計幾年後達成目標
+                let yearsVal = parseFloat(years) * 12;
+
+                // 已準備金額
+                let amountPreparedVal = parseFloat(amountPrepared) * 10000;
+
+                // 預期投資報酬率
+                let expectedRoiVal = parseFloat(expectedRoi) / 12 / 100;
+
+                return formulajs.ROUNDUP(formulajs.PMT(expectedRoiVal, yearsVal, amountPreparedVal, -educationalFundVal), -3);
+            };
+            //#endregion
+
+            //#region 推薦方案2-試算方法
+            function tab3Compute(educationalFund, years, amountPrepared, monthlyInvestment) {
+                // 預計花費的教育金
+                let educationalFundVal = parseFloat(educationalFund) * 10000
+
+                // 預計幾年後達成目標
+                let yearsVal = parseFloat(years) * 12;
+
+                // 已準備金額
+                let amountPreparedVal = parseFloat(amountPrepared) * 10000;
+
+                // 每月投入金額
+                let monthlyInvestmentVal = parseFloat(monthlyInvestment) * 10000;
+
+                return formulajs.ROUNDUP(formulajs.RATE(yearsVal, -monthlyInvestmentVal, -amountPreparedVal, educationalFundVal) * 12, 4);
+            };
+            //#endregion
+
+            //#region 推薦方案3-試算方法
+            function tab4Compute(educationalFund, amountPrepared, monthlyInvestment, expectedRoi) {
+                // 預計花費的教育金
+                let educationalFundVal = parseFloat(educationalFund) * 10000
+
+                // 已準備金額
+                let amountPreparedVal = parseFloat(amountPrepared) * 10000;
+
+                // 每月投入金額
+                let monthlyInvestmentVal = parseFloat(monthlyInvestment) * 10000;
+
+                // 預期投資報酬率
+                let expectedRoiVal = parseFloat(expectedRoi) / 12 / 100;
+
+                return formulajs.ROUNDUP(formulajs.NPER(expectedRoiVal, -monthlyInvestmentVal, -amountPreparedVal, educationalFundVal) / 12, 0);
+            };
+            //#endregion
+
+            //#region 顯示試算結果 - 描述區塊
+            function renderResultDescription(result, educationalFund, years) {
+                let educationalFundVal = parseFloat(educationalFund) * 10000;
+                let educationalFundFormatVal = educationalFundVal.toLocaleString();
+                let InsufficientAmountVal;
+                let InsufficientAmountFormatVal;
+                let current;
+
+                if (result >= educationalFundVal) {
+                    InsufficientAmountVal = 0;
+                    InsufficientAmountFormatVal = "0";
+                    resultHasGap = true;
+                } else {
+                    InsufficientAmountVal = educationalFundVal - result;
+                    InsufficientAmountFormatVal = (InsufficientAmountVal).toLocaleString();
+                    resultHasGap = false;
+                }
+
+                $("#resultContent").html(`我目標教育基金 ${educationalFundFormatVal} 元，投資 ${years} 年後尚不足<span class='t1 t-warning u-nowrap'> ${InsufficientAmountFormatVal} 元</span>`);
+
+                if (!resultHasGap) {
+                    $("#resultSuccessMain").addClass("u-hidden");
+                    $("#resultUnsuccessfulMain").removeClass("u-hidden");
+                    current = result;
+                } else {
+                    $("#resultSuccessMain").removeClass("u-hidden");
+                    $("#resultUnsuccessfulMain").addClass("u-hidden");
+                    current = educationalFundVal;
+                }
+
+                // 試算結果讀條顯示
+                renderReadingbar('chartsGap', educationalFundVal, current, InsufficientAmountVal);
+            }
+            //#endregion
+
+            //#region 顯示試算結果 - tab1區塊
+            function renderResultTab1(result, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi) {
+                let resultFormatVal = result.toLocaleString();
+                let currentYear = new Date().getFullYear() + parseFloat(years) - 1;
+
+                let educationalFundVal = parseFloat(educationalFund) * 10000;
+                let InsufficientAmountVal;
+
+                if (result >= educationalFundVal) {
+                    InsufficientAmountVal = 0;
+                } else {
+                    InsufficientAmountVal = educationalFundVal - result;
+                }
+
+                let invest = (parseFloat(monthlyInvestment) * 10000) * parseFloat(years) * 12;
+                let prepared = parseFloat(amountPrepared) * 10000;
+
+                // 預期總收益
+                $("#tab1_Total").text(resultFormatVal + "元");
+                // 已準備金額
+                $("#tab1_AmountPrepared").text(amountPrepared + " 萬元");
+                // 每月投入
+                $("#tab1_MonthlyInvestment").text(monthlyInvestment + "萬元");
+                // 投資報酬率
+                $("#tab1_ExpectedRoi").text(expectedRoi + " %");
+                // 投資
+                $("#tab1_Years").text(years + " 年");
+                // 預期收益標題
+                $("#tab1_ExpectedReturnTitle").text(currentYear + "年預期收益");
+
+                // tab1圓餅圖資料
+                chartsRevenues.push({
+                    id: 'chartsRevenue-01',
+                    gap: InsufficientAmountVal,
+                    revenue: result - invest - prepared,
+                    invest: invest,
+                    prepared: prepared
+                });
+
+                // tab1長條圖資料
+                chartsRewards.push({
+                    id: 'chartsReward-01',
+                    target: educationalFundVal,
+                    gap: getRewardsGapData(InsufficientAmountVal, years),
+                    revenue: getRewardsRevenueData(monthlyInvestment, amountPrepared, years, expectedRoi),
+                    invest: getRewardsInvestData(monthlyInvestment, years),
+                    prepared: getRewardsPreparedData(amountPrepared, years)
+                });
+            }
+            //#endregion
+
+            //#region 顯示試算結果 - tab2區塊
+            function renderResultTab2(result, educationalFund, years, amountPrepared, expectedRoi) {
+                let resultFormatVal = result / 10000;
+                let currentYear = new Date().getFullYear() + parseFloat(years) - 1;
+                let total = planningCompute(years, amountPrepared, resultFormatVal, expectedRoi);
+                let totalFormatVal = total.toLocaleString();
+
+                let invest = result * parseFloat(years) * 12;
+                let prepared = parseFloat(amountPrepared) * 10000;
+
+                // 預期總收益
+                $("#tab2_Total").text(totalFormatVal + "元");
+                // 已準備金額
+                $("#tab2_AmountPrepared").text(amountPrepared + " 萬元");
+                //每月投入
+                $("#tab2_MonthlyInvestment").text(resultFormatVal + "萬元");
+                //投資報酬率
+                $("#tab2_ExpectedRoi").text(expectedRoi + " %");
+                //投資
+                $("#tab2_Years").text(years + " 年");
+                // 預期收益標題
+                $("#tab2_ExpectedReturnTitle").text(currentYear + "年預期收益");
+
+                // tab2圓餅圖資料
+                chartsRevenues.push({
+                    // 您的規劃
+                    id: 'chartsRevenue-02',
+                    // 缺口
+                    gap: 0,
+                    // 報酬
+                    revenue: total - invest - prepared,
+                    // 累積每月投入
+                    invest: invest,
+                    // 已準備金
+                    prepared: prepared
+                });
+
+                // tab2長條圖資料
+                chartsRewards.push({
+                    id: 'chartsReward-02',
+                    target: parseFloat(educationalFund) * 10000,
+                    gap: getRewardsGapData(0, years),
+                    revenue: getRewardsRevenueData(resultFormatVal, amountPrepared, years, expectedRoi),
+                    invest: getRewardsInvestData(resultFormatVal, years),
+                    prepared: getRewardsPreparedData(amountPrepared, years)
+                });
+            }
+            //#endregion
+
+            //#region 顯示試算結果 - tab3區塊
+            function renderResultTab3(result, educationalFund, years, amountPrepared, monthlyInvestment) {
+                let resultFormatVal = (result * 100).toFixed(2);
+                let currentYear = new Date().getFullYear() + parseFloat(years) - 1;
+                let total = planningCompute(years, amountPrepared, monthlyInvestment, resultFormatVal);
+                let totalFormatVal = total.toLocaleString();
+
+                let invest = (parseFloat(monthlyInvestment) * 10000) * parseFloat(years) * 12;
+                let prepared = parseFloat(amountPrepared) * 10000;
+
+                // 預期總收益
+                $("#tab3_Total").text(totalFormatVal + "元");
+                // 已準備金額
+                $("#tab3_AmountPrepared").text(amountPrepared + " 萬元");
+                //每月投入
+                $("#tab3_MonthlyInvestment").text(monthlyInvestment + "萬元");
+                //投資報酬率
+                $("#tab3_ExpectedRoi").text(resultFormatVal + " %");
+                //投資
+                $("#tab3_Years").text(years + " 年");
+                // 預期收益標題
+                $("#tab3_ExpectedReturnTitle").text(currentYear + "年預期收益");
+
+                // tab3圓餅圖資料
+                chartsRevenues.push({
+                    id: 'chartsRevenue-03',
+                    gap: 0,
+                    revenue: total - invest - prepared,
+                    invest: invest,
+                    prepared: prepared
+                });
+
+                // tab3長條圖資料
+                chartsRewards.push({
+                    id: 'chartsReward-03',
+                    target: parseFloat(educationalFund) * 10000,
+                    gap: getRewardsGapData(0, years),
+                    revenue: getRewardsRevenueData(monthlyInvestment, amountPrepared, years, resultFormatVal),
+                    invest: getRewardsInvestData(monthlyInvestment, years),
+                    prepared: getRewardsPreparedData(amountPrepared, years)
+                });
+            }
+            //#endregion
+
+            //#region 顯示試算結果 - tab4區塊
+            function renderResultTab4(result, educationalFund, amountPrepared, monthlyInvestment, expectedRoi) {
+                let currentYear = new Date().getFullYear() + result - 1;
+                let total = planningCompute(result, amountPrepared, monthlyInvestment, expectedRoi);
+                let totalFormatVal = total.toLocaleString();
+
+                let invest = (parseFloat(monthlyInvestment) * 10000) * parseFloat(result) * 12;
+                let prepared = parseFloat(amountPrepared) * 10000;
+
+                // 預期總收益
+                $("#tab4_Total").text(totalFormatVal + "元");
+                // 已準備金額
+                $("#tab4_AmountPrepared").text(amountPrepared + " 萬元");
+                //每月投入
+                $("#tab4_MonthlyInvestment").text(monthlyInvestment + "萬元");
+                //投資報酬率
+                $("#tab4_ExpectedRoi").text(expectedRoi + " %");
+                //投資
+                $("#tab4_Years").text(result + " 年");
+                // 預期收益標題
+                $("#tab4_ExpectedReturnTitle").text(currentYear + "年預期收益");
+
+                // tab4圓餅圖資料
+                chartsRevenues.push({
+                    id: 'chartsRevenue-04',
+                    gap: 0,
+                    revenue: total - invest - prepared,
+                    invest: invest,
+                    prepared: prepared
+                });
+
+                // tab4長條圖資料
+                chartsRewards.push({
+                    id: 'chartsReward-04',
+                    target: parseFloat(educationalFund) * 10000,
+                    gap: getRewardsGapData(0, result),
+                    revenue: getRewardsRevenueData(monthlyInvestment, amountPrepared, result, expectedRoi),
+                    invest: getRewardsInvestData(monthlyInvestment, result),
+                    prepared: getRewardsPreparedData(amountPrepared, result)
+                });
+            }
+            //#endregion
+
+            //#region 顯示試算結果 - tab5區塊
+            function renderResultTab5(result, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi) {
+                let resultFormatVal = result.toLocaleString();
+                let expectedRoiFormatVal = parseFloat(expectedRoi).toFixed(2);
+                let currentYear = new Date().getFullYear() + parseFloat(years) - 1;
+                let educationalFundVal = parseFloat(educationalFund) * 10000;
+                let invest = (parseFloat(monthlyInvestment) * 10000) * parseFloat(years) * 12;
+                let prepared = parseFloat(amountPrepared) * 10000;
+
+                // 預期總收益
+                $("#tab5_Total").text(resultFormatVal + "元");
+                // 已準備金額
+                $("#tab5_AmountPrepared").text(amountPrepared + " 萬元");
+                // 每月投入
+                $("#tab5_MonthlyInvestment").text(monthlyInvestment + "萬元");
+                // 投資報酬率
+                $("#tab5_ExpectedRoi").text(expectedRoiFormatVal + " %");
+                // 投資
+                $("#tab5_Years").text(years + " 年");
+                // 預期收益標題
+                $("#tab5_ExpectedReturnTitle").text(currentYear + "年預期收益");
+
+                // tab5圓餅圖資料
+                chartsRevenues.push({
+                    id: 'chartsRevenue-05',
+                    gap: 0,
+                    revenue: result - invest - prepared,
+                    invest: invest,
+                    prepared: prepared
+                });
+
+                // tab5長條圖資料
+                chartsRewards.push({
+                    id: 'chartsReward-05',
+                    target: educationalFundVal,
+                    gap: getRewardsGapData(0, years),
+                    revenue: getRewardsRevenueData(monthlyInvestment, amountPrepared, years, expectedRoi),
+                    invest: getRewardsInvestData(monthlyInvestment, years),
+                    prepared: getRewardsPreparedData(amountPrepared, years)
+                });
+            }
+            //#endregion
+
+            //#region 試算結果讀條顯示
+            function renderReadingbar(containerId, target, current, gap) {
+                const data = {
+                    target: Number(target),
+                    // 目標金額
+                    current: Number(current),
+                    // 已準備金額
+                    gap: Number(gap) // 缺口
+                };
+
+                Highcharts.chart(containerId, {
+                    chart: {
+                        type: 'bar',
+                        height: '81px',
+                        spacing: [16, 0, 0, 0],
+                        backgroundColor: 'transparent',
+                        style: {
+                            fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                            fontSize: '16px'
+                        }
+                    },
+                    title: {
+                        text: undefined
+                    },
+                    xAxis: {
+                        visible: false
+                    },
+                    yAxis: {
+                        tickAmount: 2,
+                        tickInterval: 0,
+                        reversedStacks: false,
+                        title: {
+                            enabled: false
+                        },
+                        labels: {
+                            format: '{value:,f} 元',
+                            padding: 0,
+                            y: 16,
+                            style: {
+                                color: '#9C9C9C',
+                                fontSize: '14px'
+                            }
+                        },
+                        max: data.target // 最大值
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            pointWidth: 40,
+                            stacking: 'normal'
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: undefined,
+                        format: '<div class="o-chartsTooltips">{y:,.f} 元</div>',
+                        useHTML: true,
+                        padding: 0,
+                        backgroundColor: 'transparent',
+                        style: {
+                            fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                            fontSize: '16px'
+                        },
+                        outside: true,
+                        positioner(w, h, point) {
+                            const tooltips = $(this.container).find('.o-chartsTooltips').removeClass('o-chartsTooltips--left o-chartsTooltips--right');
+                            let x = point.plotX - point.h / 2 - w / 2,
+                                y = 0;
+                            if (x < 0) {
+                                x = point.plotX + 8;
+                                y = 24;
+                                tooltips.addClass('o-chartsTooltips--right');
+                            }
+                            if (x + w > this.chart.plotWidth) {
+                                x = point.plotX - point.h - w - 8;
+                                y = 24;
+                                tooltips.addClass('o-chartsTooltips--left');
+                            }
+                            return {
+                                x: x,
+                                y: y
+                            };
+                        }
+                    },
+                    series: [{
+                        name: '已準備金額',
+                        data: [data.current],
+                        color: '#FDCE5E'
+                    }, {
+                        name: '缺口',
+                        data: [data.gap],
+                        color: {
+                            pattern: {
+                                image: '/themes/images/background/slash-column.svg',
+                                width: 8,
+                                height: 8
+                            }
+                        }
+                    }]
+                });
+            }
+            //#endregion
+
+            //#region 預期收益圓餅圖顯示
+            function renderChartsRevenues(chartsRevenues) {
+                chartsRevenues.forEach(item => {
+                    Highcharts.chart(item.id, {
+                        chart: {
+                            type: 'pie'
+                        },
+                        title: {
+                            text: undefined
+                        },
+                        tooltip: {
+                            pointFormat: '{point.name}：{point.y}',
+                            headerFormat: undefined,
+                            style: {
+                                fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                fontSize: '16px'
+                            },
+                            shadow: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            labelFormat: '{name}：{y:,.0f}元',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            itemMarginTop: 8,
+                            itemStyle: {
+                                font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                cursor: 'default'
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            pie: {
+                                showInLegend: true,
+                                dataLabels: false,
+                                height: 246,
+                                point: {
+                                    events: {
+                                        legendItemClick: function (e) {
+                                            e.preventDefault();
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        series: [{
+                            name: '2028年預期收益',
+                            colorByPoint: true,
+                            data: [{
+                                name: '缺口',
+                                y: item.gap,
+                                color: {
+                                    pattern: {
+                                        image: '/themes/images/background/slash-pie.svg',
+                                        width: 8,
+                                        height: 8
+                                    }
+                                },
+                                sliced: true
+                            }, {
+                                name: '報酬',
+                                y: item.revenue,
+                                color: '#ABA1E4'
+                            }, {
+                                name: '累積每月投入',
+                                y: item.invest,
+                                color: '#86BDDD'
+                            }, {
+                                name: '已準備金',
+                                y: item.prepared,
+                                color: '#FFAD04'
+                            }]
+                        }]
+                    });
+                });
+            }
+            //#endregion
+
+            //#region 取得長條圖缺口資料
+            function getRewardsGapData(InsufficientAmount, years) {
+                let data = [];
+
+                for (let i = 0; i < parseFloat(years); i++) {
+                    if (i === parseFloat(years) - 1) {
+                        data.push(InsufficientAmount);
+                    } else {
+                        data.push(null);
+                    }
+                }
+
+                return data;
+            }
+            //#endregion
+
+            //#region 取得長條圖報酬資料
+            function getRewardsRevenueData(monthlyInvestment, amountPrepared, years, expectedRoi) {
+                let data = [];
+
+                for (let i = 1; i <= parseFloat(years); i++) {
+                    let result = planningCompute(i, amountPrepared, monthlyInvestment, expectedRoi) - (parseFloat(amountPrepared) * 10000) - ((parseFloat(monthlyInvestment) * 10000) * i * 12);
+
+                    data.push(result);
+                }
+
+                return data;
+            }
+            //#endregion
+
+            //#region 取得長條圖累積每月投入資料
+            function getRewardsInvestData(monthlyInvestment, years) {
+                let data = [];
+
+                for (let i = 1; i <= parseFloat(years); i++) {
+                    data.push((parseFloat(monthlyInvestment) * 10000) * 12 * i);
+                }
+
+                return data;
+            }
+            //#endregion
+
+            //#region 取得長條圖已準備金資料
+            function getRewardsPreparedData(amountPrepared, years) {
+                let data = [];
+
+                for (let i = 0; i < parseFloat(years); i++) {
+                    data.push((parseFloat(amountPrepared) * 10000));
+                }
+
+                return data;
+            }
+            //#endregion
+
+            //#region 取得長條圖年份顯示範圍
+            function getRewardsYearsRange(currentYear) {
+                let startYear = new Date().getFullYear();
+                for (let year = startYear; year <= currentYear; year++) {
+                    chartsRewardsCategories.push(year.toString());
+                }
+            }
+            //#endregion
+
+            //#region 投資報酬長條圖顯示
+            function renderChartsRewards(chartsRewards) {
+                chartsRewards.forEach(item => {
+                    Highcharts.chart(item.id, {
+                        chart: {
+                            maxWidth: '100%',
+                            height: 400,
+                            type: 'column',
+                            //spacing: [24, 0, 0, 0],
+                            style: {
+                                fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                fontSize: '16px'
+                            }
+                        },
+                        title: {
+                            text: undefined
+                        },
+                        xAxis: {
+                            categories: chartsRewardsCategories
+                        },
+                        yAxis: {
+                            allowDecimals: false,
+                            min: 0,
+                            //max: item.target,
+                            title: {
+                                text: undefined
+                            },
+                            labels: {
+                                formatter: function () {
+                                    const dividend = 10000,
+                                        units = ['元', '萬', '億', '萬億'];
+                                    let result = {};
+                                    if (this.value < dividend) {
+                                        result.value = Number(this.value);
+                                        result.unit = units[0];
+                                    } else {
+                                        let index = Math.floor(Math.log(this.value) / Math.log(dividend));
+                                        result.value = Number(this.value / Math.pow(dividend, index));
+                                        result.unit = units[index];
+                                    }
+                                    return result.value + result.unit;
+                                }
+                            },
+                            plotLines: [{
+                                color: '#F58220',
+                                width: 3,
+                                value: item.target,
+                                // 目標金額值
+                                zIndex: 4,
+                                label: {
+                                    text: '目標金額',
+                                    align: 'left',
+                                    x: 0,
+                                    y: -8,
+                                    style: {
+                                        color: '#F58220',
+                                        fontSize: '16px',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            }]
+                        },
+                        tooltip: {
+                            enabled: true,
+                            shared: true,
+                            useHTML: true,
+                            formatter: function () {
+                                let tooltip = '';
+                                this.points.forEach(function (point) {
+                                    let bg = `background-color: ${point.color};`;
+                                    if (point.color.pattern && point.color.pattern.image) {
+                                        bg = `background: url(${point.color.pattern.image}) repeat left top / 6px;`;
+                                    }
+                                    tooltip += `<div style="display: flex; align-items: center; gap: 4px; margin: 8px 0;">
+                                <span style="display: block; width: 12px; height: 12px; border-radius: 50%; ${bg}"></span>
+                                <span>${point.series.name}：${Highcharts.numberFormat(point.y, 0)}</span>
+                            </div>`;
+                                });
+                                const index = this.points.findIndex(x => x.series.userOptions.name === '缺口');
+                                if (index > -1) {
+                                    this.total -= this.points[index].y;
+                                }
+                                tooltip += `<div style="margin: 8px 0;">預期收益：${Highcharts.numberFormat(this.total, 0)}</div>`;
+                                return tooltip;
+                            },
+                            style: {
+                                fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                fontSize: '16px'
+                            },
+                            shadow: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        legend: {
+                            align: 'left',
+                            itemStyle: {
+                                font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                cursor: 'default'
+                            }
+                        },
+                        plotOptions: {
+                            column: {
+                                stacking: 'normal',
+                                groupPadding: 0.1,
+                                maxPointWidth: 80,
+                                events: {
+                                    legendItemClick: function () {
+                                        return false;
+                                    }
+                                }
+                            },
+                            series: {
+                                states: {
+                                    inactive: {
+                                        opacity: 1
+                                    }
+                                }
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        series: [{
+                            name: "缺口",
+                            data: item.gap,
+                            color: {
+                                pattern: {
+                                    image: '/themes/images/background/slash-column.svg',
+                                    width: 8,
+                                    height: 8
+                                }
+                            },
+                            borderWidth: 2,
+                            borderColor: '#FF0000',
+                            dashStyle: 'Dot'
+                        }, {
+                            name: "報酬",
+                            data: item.revenue,
+                            color: '#ABA1E4'
+                        }, {
+                            name: "累積每月投入",
+                            data: item.invest,
+                            color: '#86BDDD'
+                        }, {
+                            name: "已準備金",
+                            data: item.prepared,
+                            color: '#FFAD04'
+                        }]
+                    });
+                });
+            }
+            //#endregion
+
+            //#region 查看推薦方案綁定事件
+            $('#btnSolutions').on('click', function (e) {
+                e.preventDefault();
+                $('[data-tab-target].is-active').trigger('click');
+            });
+            //#endregion
+
+            //#region 儲存試算結果按鈕綁定事件
+            $('[data-save]').on('click', function (e) {
+                e.preventDefault();
+                window.toast('已儲存');
+            });
+            //#endregion
+
+            //#region 資產配置圓餅圖顯示
+            let chartsAssets = [{
+                id: 'chartsAssets-01',
+                // 您的規劃
+                currency: 100000,
+                // 貨幣
+                bond: 400000,
+                // 債券
+                stock: 500000 // 股票
+            }, {
+                id: 'chartsAssets-02',
+                // 推薦方案1
+                currency: 100000,
+                // 貨幣
+                bond: 400000,
+                // 債券
+                stock: 500000 // 股票
+            }, {
+                id: 'chartsAssets-03',
+                // 推薦方案3
+                currency: 100000,
+                // 貨幣
+                bond: 400000,
+                // 債券
+                stock: 500000 // 股票
+            }, {
+                id: 'chartsAssets-04',
+                // 推薦方案4
+                currency: 100000,
+                // 貨幣
+                bond: 400000,
+                // 債券
+                stock: 500000 // 股票
+            }];
+
+            chartsAssets.forEach(item => {
+                Highcharts.chart(item.id, {
+                    chart: {
+                        type: 'pie'
+                    },
+                    title: {
+                        text: undefined
+                    },
+                    legend: {
+                        labelFormat: '{alias}',
+                        align: 'left',
+                        alignColumns: false,
+                        itemDistance: 12,
+                        margin: 0,
+                        padding: 0,
+                        itemStyle: {
+                            font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                            cursor: 'default'
+                        }
+                    },
+                    tooltip: {
+                        pointFormat: '{point.name}：{point.y}',
+                        headerFormat: undefined,
+                        style: {
+                            fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                            fontSize: '16px',
+                            fontWeight: 'normal'
+                        },
+                        shadow: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        pie: {
+                            size: 160,
+                            allowPointSelect: false,
+                            showInLegend: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                alignTo: 'connectors',
+                                format: '{point.name}：{point.percentage:.1f}%',
+                                style: {
+                                    fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    fontSize: '16px',
+                                    fontWeight: 'normal'
+                                }
+                            },
+                            point: {
+                                events: {
+                                    legendItemClick: function (e) {
+                                        e.preventDefault();
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        name: '資產配置',
+                        data: [{
+                            name: '股票',
+                            alias: '股票 (含平衡型)',
+                            y: item.stock,
+                            color: '#3AAB68'
+                        }, {
+                            name: '債券',
+                            alias: '債券',
+                            y: item.bond,
+                            color: '#D0AD72'
+                        }, {
+                            name: '貨幣',
+                            alias: '貨幣',
+                            y: item.currency,
+                            color: '#FDAA5E'
+                        }]
+                    }]
+                });
+            });
+            //#endregion
+
+            //#region  推薦基金商品顯示
+            function renderRecommendedFunds(count) {
+                for (let i = 1; i <= count; i++) {
+                    const fundHTML = `
+                <div class="swiper-slide c-swiper__slide">
+                    <div class="c-box c-box--goods">
+                        <div class="c-box__main">
+                            <div class="c-cardFund">
+                                <a href="#" class="c-cardFund__name u-ellipsis-2">
+                                    推薦基金 ${i}
+                                </a>
+                                <div class="c-cardFund__trend">
+                                    <div class="c-cardFund__rate">
+                                        <span class="t-small">
+                                            <span class="t-fall">月報酬率</span>
+                                            <span class="o-fall o-fall--sm">0%</span>
+                                        </span>
+                                    </div>
+                                    <div class="c-cardFund__charts">
+                                        <div class="o-charts o-charts--fall" data-chart="mini"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-box__actions">
+                            <ul class="l-collect l-collect--divider">
+                                <li class="l-collect__item">
+                                    <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                </li>
+                                <li class="l-collect__item">
+                                    <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                </li>
+                                <li class="l-collect__item l-collect__item--btn">
+                                    <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+                    $('.recommendedFunds .swiper-wrapper').append(fundHTML);
+                }
+            }
+            //#endregion
+
+            //#region  推薦ETF商品顯示
+            function renderRecommendedETFs(count) {
+                for (let i = 1; i <= count; i++) {
+                    const etfHTML = `
+                <div class="swiper-slide c-swiper__slide">
+                    <div class="c-box c-box--goods">
+                        <div class="c-box__main">
+                            <div class="c-cardFund">
+                                <a href="#" class="c-cardFund__name u-ellipsis-2">
+                                    推薦ETF ${i}
+                                </a>
+                                <div class="c-cardFund__trend">
+                                    <div class="c-cardFund__rate">
+                                        <span class="t-small">
+                                            <span class="t-rise">月報酬率</span>
+                                            <span class="o-rise o-rise--sm">0%</span>
+                                        </span>
+                                    </div>
+                                    <div class="c-cardFund__charts">
+                                        <div class="o-charts o-charts--rise" data-chart="mini"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-box__actions">
+                            <ul class="l-collect l-collect--divider">
+                                <li class="l-collect__item">
+                                    <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                </li>
+                                <li class="l-collect__item">
+                                    <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                </li>
+                                <li class="l-collect__item l-collect__item--btn">
+                                    <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+                    $('.recommendedETF .swiper-wrapper').append(etfHTML);
+                }
+            }
+            //#endregion
+
+            //#region  推薦國外股票商品顯示
+            function renderRecommendedStocks(count) {
+                for (let i = 1; i <= count; i++) {
+                    const stockHTML = `
+                <div class="swiper-slide c-swiper__slide">
+                    <div class="c-box c-box--goods">
+                        <div class="c-box__main">
+                            <div class="c-cardFund">
+                                <a href="#" class="c-cardFund__name u-ellipsis-2">
+                                    推薦國外股票 ${i}
+                                </a>
+                                <div class="c-cardFund__trend">
+                                    <div class="c-cardFund__rate">
+                                        <span class="t-small">
+                                            <span class="t-rise">月報酬率</span>
+                                            <span class="o-rise o-rise--sm">0%</span>
+                                        </span>
+                                    </div>
+                                    <div class="c-cardFund__charts">
+                                        <div class="o-charts o-charts--rise" data-chart="mini"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-box__actions">
+                            <ul class="l-collect l-collect--divider">
+                                <li class="l-collect__item">
+                                    <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                </li>
+                                <li class="l-collect__item l-collect__item--btn">
+                                    <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+                    $('.recommendedStock .swiper-wrapper').append(stockHTML);
+                }
+            }
+            //#endregion
+
+            //#region 所有推薦基金初始化設定
+            window.mySwiper = new Swiper('.recommendedFunds', {
+                slidesPerGroup: 1,
+                slidesPerView: 1,
+                grid: {
+                    rows: 1
+                },
+                spaceBetween: 20,
+                breakpoints: {
+                    1200: {
+                        slidesPerGroup: 3,
+                        slidesPerView: 3,
+                        grid: {
+                            rows: 3
+                        }
+                    }
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                    disabledClass: 'swiper-button-disabled'
+                }
+            });
+            //#endregion
+
+            //#region 所有推薦ETF初始化設定
+            window.mySwiper = new Swiper('.recommendedETF', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                breakpoints: {
+                    1200: {
+                        slidesPerView: 3
+                    }
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                    disabledClass: 'swiper-button-disabled'
+                }
+            });
+            //#endregion
+
+            //#region 所有推薦國外股票初始化設定
+            window.mySwiper = new Swiper('.recommendedStock', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                breakpoints: {
+                    1200: {
+                        slidesPerView: 3
+                    }
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                    disabledClass: 'swiper-button-disabled'
+                }
+            });
+            //#endregion
+
+            //#region 推薦基金、推薦ETF、推薦國外股票走勢圖顯示
+            function renderRecommendedProductChart() {
+                $('[data-chart="mini"]').each(function (i, el) {
+                    $(el).highcharts({
+                        chart: {
+                            type: 'area',
+                            margin: [0, 0, 0, 0],
+                            backgroundColor: 'transparent'
+                        },
+                        title: {
+                            text: undefined
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            series: {
+                                enableMouseTracking: false,
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        xAxis: {
+                            visible: false
+                        },
+                        yAxis: {
+                            visible: false
+                        },
+                        series: [{
+                            //lineColor: '#FF0000',
+                            //color: '#FF0000',
+                            fillOpacity: 0.06,
+                            data: [13.833, 12.524, 11.441, 10.651, 9.961, 4.566, 4.617, 4.728, 4.823, 4.844, 4.856, 4.87, 4.702, 4.679, 4.674, 4.641, 4.47, 4.688, 4.798, 2.015, 1.971, 1.894, 1.848, 1.835, 1.85, 2.036, 1.827, 1.904, 1.803, 1.852, 1.866, 1.906, 1.956, 1.954, 1.734, 1.904, 2.702, 2.893, 3.016, 3.073, 3.126, 3.283, 3.361, 3.33, 3.465, 3.916, 4.49, 5.074, 5.717, 6.523, 7.012, 6.726, 7.095, 7.471, 7.824, 7.802, 4.441, 4.625, 4.934, 4.952, 4.742, 4.666, 4.525, 4.126, 4.228, 4.334, 4.383, 5.287, 5.088, 5.28, 5.274, 5.251, 5.413, 5.365, 5.372, 5.512, 4.839, 5.099, 5.196, 5.219, 5.094, 5.582, 5.91, 5.952, 6.012, 5.854, 5.789, 5.465, 5.525, 5.659, 5.67, 5.173, 5.033, 5.318, 5.289, 5.226, 5.15, 5.106, 4.989, 5.103, 5.288, 5.428, 5.363, 5.026, 5, 4.941, 4.872, 4.751, 4.408, 4.425, 4.301, 4.134, 4.171, 4.272, 4.34, 4.543, 4.826, 5.381, 5.374, 5.433, 5.483, 5.539, 5.869, 6.956, 7.443, 7.654, 8.005, 8.181, 8.386, 9.202, 9.51, 9.66, 9.141, 8.79, 8.747, 8.949, 9.188, 9.625, 10.154, 10.173, 10.361, 11.186, 11.226, 11.091, 10.899, 10.945, 10.892, 9.618, 9.092, 8.465, 7.864, 7.396, 7.076, 7.053, 6.772, 6.958, 7.202]
+                        }]
+                    });
+                });
+            }
+            //#endregion
+
+            //#region loading方法
+            function loading() {
+                window.loading('show');
+                setTimeout(() => {
+                    window.loading('hide');
+                }, 300);
+            }
+            //#endregion
+        });
+    })(jQuery, window, document);
+</script>
