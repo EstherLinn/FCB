@@ -55,6 +55,10 @@
                         var source = item.TargetItem(Templates.SourceItem.Fields.Datasource);
                         var link = item.TargetItem(Templates.SourceItem.Fields.LinkItem)?.Url();
                         var val = item.GetFieldValue(Templates.SourceItem.Fields.LinkText);
+                        if (source == null || template == null)
+                        {
+                            continue;
+                        }
                         <ul class="l-tag u-hidden" data-hot-val="@val">
                             @foreach (var tag in source.GetMultiListValueItems(template.ID))
                             {
