@@ -146,7 +146,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// <summary>
         /// 配息頻率
         /// </summary>
-        public string DividendFrequencyName { get; set; }
+        public string DividendDistributionFrequency { get; set; }
 
         ///風險指標
         /// <summary>

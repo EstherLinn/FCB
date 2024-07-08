@@ -92,13 +92,13 @@ namespace Feature.Wealth.Component.Repositories
                 vm.FundSizeMillionTWD = Round4(f.FundSizeMillionTWD);
                 vm.FundType = f.FormatFundType;
 
-                if (f.DividendFrequencyName == "無" || f.DividendFrequencyName == null)
+                if (f.DividendDistributionFrequency == "無")
                 {
                     vm.DividendFrequencyName = "不配息";
                 }
                 else
                 {
-                    vm.DividendFrequencyName = f.DividendFrequencyName;
+                    vm.DividendFrequencyName = f.DividendDistributionFrequency;
                 }
 
                 //風險指標
