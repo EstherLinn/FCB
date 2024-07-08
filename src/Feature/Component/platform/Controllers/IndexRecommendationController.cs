@@ -8,7 +8,6 @@ using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.IndexRecommendation;
 using Feature.Wealth.Component.Models.USStock;
 
-
 namespace Feature.Wealth.Component.Controllers
 {
     public class IndexRecommendationController : Controller

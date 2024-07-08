@@ -1,16 +1,14 @@
-﻿using System.Text;
-using System.Linq;
-using System.Data;
+﻿using Feature.Wealth.Component.Models.ETF;
+using Feature.Wealth.Component.Models.ETF.Tag;
+using Feature.Wealth.Component.Models.FundDetail;
+using Feature.Wealth.Component.Models.IndexRecommendation;
+using Feature.Wealth.Component.Models.USStock;
+using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
-using Foundation.Wealth.Extensions;
-using Feature.Wealth.Component.Models.ETF;
-using Feature.Wealth.Component.Models.ETF.Tag;
-using Feature.Wealth.Component.Models.IndexRecommendation;
-using Sitecore.IO;
-using System.Security.Cryptography;
-using Feature.Wealth.Component.Models.FundDetail;
-using Feature.Wealth.Component.Models.USStock;
+using System.Data;
+using System.Linq;
+using System.Text;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -69,8 +67,7 @@ namespace Feature.Wealth.Component.Repositories
         public IList<Funds> GetFundsDatas()
         {
             var queryitem = FundRelatedSettingModel.GetFundDetailPageItem();
-            var query = queryitem.ID.ToGuid();
-            var fundData = GetFundData();
+            var query = queryitem?.ID.ToGuid();
 
             var funds = this._repository.GetVisitRecords(query, "id");
 
@@ -88,7 +85,7 @@ namespace Feature.Wealth.Component.Repositories
                 .ToList();
 
 
-            var results = fundData
+            var results = GetFundData()
                 .Where(e => fundIds.Contains(e.ProductCode))
                 .OrderBy(e => fundIds.IndexOf(e.ProductCode.ToString()))
                 .ToList();
