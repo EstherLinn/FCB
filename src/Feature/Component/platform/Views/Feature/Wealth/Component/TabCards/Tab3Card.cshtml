@@ -3,8 +3,6 @@
 @model Feature.Wealth.Component.Models.TabCards.Tab3CardModel
 
 @{
-    string pageview1 = "999,999,999,999", pageview2 = "999,999,999,999"; // TODO: 點閱率
-
     var item = Model.Datasource;
     var uid = string.Format("_{0}", Guid.NewGuid().ToString("N"));
 }
@@ -17,16 +15,19 @@
             <div class="l-trend__banner">
                 <!-- .u-shadow-animation: hover時陰影特效 -->
                 <div class="c-box c-box--gapless u-shadow-animation">
-                    <a href="@Model.ArticleLink1" class="c-cardArticle">
+                    <a href="@Model.ArticleLink1" class="c-cardArticle" target="@Model.ArticleTarget1" title="@Model.ArticleTitle1">
                         <div class="c-cardArticle__media">
                             <img src="@Model.CardImageUrl1" class="c-cardArticle__img" alt="">
                         </div>
                         <div class="c-cardArticle__content">
                             <div class="c-cardArticle__header">
                                 <span class="c-cardArticle__date">@Model.CardDateTime1</span>
-                                <span class="c-cardArticle__views">
-                                    <div class="o-views o-views--xs">@pageview1</div>
-                                </span>
+                                @if (Model.ArticleVisitCount1 != null)
+                                {
+                                    <span class="c-cardArticle__views">
+                                        <div class="o-views o-views--xs">@Model.ArticleVisitCount1</div>
+                                    </span>
+                                }
                             </div>
                             <div class="c-cardArticle__main">
                                 <h3 class="c-cardArticle__title u-ellipsis-3">@Html.Sitecore().Field(Tab3CardDatasource.Fields.Content1.ToString(), item)</h3>
@@ -38,16 +39,19 @@
             <div class="l-trend__banner">
                 <!-- .u-shadow-animation: hover時陰影特效 -->
                 <div class="c-box c-box--gapless u-shadow-animation">
-                    <a href="@Model.ArticleLink2" class="c-cardArticle">
+                    <a href="@Model.ArticleLink2" class="c-cardArticle" target="@Model.ArticleTarget2" title="@Model.ArticleTitle2">
                         <div class="c-cardArticle__media">
                             <img src="@Model.CardImageUrl2" class="c-cardArticle__img" alt="">
                         </div>
                         <div class="c-cardArticle__content">
                             <div class="c-cardArticle__header">
                                 <span class="c-cardArticle__date">@Model.CardDateTime2</span>
-                                <span class="c-cardArticle__views">
-                                    <div class="o-views o-views--xs">@pageview2</div>
-                                </span>
+                                @if (Model.ArticleVisitCount2 != null)
+                                {
+                                    <span class="c-cardArticle__views">
+                                        <div class="o-views o-views--xs">@Model.ArticleVisitCount2</div>
+                                    </span>
+                                }
                             </div>
                             <div class="c-cardArticle__main">
                                 <h3 class="c-cardArticle__title u-ellipsis-3">@Html.Sitecore().Field(Tab3CardDatasource.Fields.Content2.ToString(), item)</h3>
