@@ -2,6 +2,7 @@
 using System;
 using System.Web.Mvc;
 using Feature.Wealth.Account.Filter;
+using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Account.Models.ReachInfo;
 using Feature.Wealth.Account.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
@@ -19,6 +20,10 @@ namespace Feature.Wealth.Account.Controllers
         [HttpPost]
         public ActionResult SetReachInfo(ReachInfo reachInfo)
         {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
             object returnObj = new
               {
                   success = _reachInfoRepository.SetReachInfo(reachInfo)

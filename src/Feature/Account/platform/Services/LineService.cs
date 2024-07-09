@@ -52,12 +52,12 @@ namespace Feature.Wealth.Account.Services
             }
             catch (FlurlHttpException ex)
             {
-                Log.Error($"Error returned from {ex.Call.Request.Url}: {ex.Message} by Line Login");
+                Log.Error($"Error returned from {ex.Call.Request.Url}: {ex.ToString()} by Line Login");
                 return null;
             }
             catch (Exception ex)
             {
-                Log.Error($"Error returned from Line Login: {ex.Message}");
+                Log.Error($"Error returned from Line Login: {ex.ToString()}");
                 return null;
             }
             return JsonConvert.DeserializeObject<LineTokenResponse>(res);
@@ -75,12 +75,12 @@ namespace Feature.Wealth.Account.Services
             }
             catch (FlurlHttpException ex)
             {
-                Log.Error($"Error returned from {ex.Call.Request.Url}: {ex.Message} by Line Login");
+                Log.Error($"Error returned from {ex.Call.Request.Url}: {ex.ToString()} by Line Login");
                 return null;
             }
             catch (Exception ex)
             {
-                Log.Error($"Error returned from Line Login: {ex.Message}");
+                Log.Error($"Error returned from Line Login: {ex.ToString()}");
                 return null;
             }
             return JsonConvert.DeserializeObject<LineUser>(res);
@@ -103,12 +103,12 @@ namespace Feature.Wealth.Account.Services
             }
             catch (FlurlHttpException ex)
             {
-                Log.Error($"Error returned from {ex.Call.Request.Url}: {ex.Message} by Line Login");
+                Log.Error($"Error returned from {ex.Call.Request.Url}: {ex.ToString()} by Line Login");
                 return null;
             }
             catch (Exception ex)
             {
-                Log.Error($"Error returned from Line Login: {ex.Message}");
+                Log.Error($"Error returned from Line Login: {ex.ToString()}");
                 return null;
             }
             return JsonConvert.DeserializeObject<LineVerify>(res);

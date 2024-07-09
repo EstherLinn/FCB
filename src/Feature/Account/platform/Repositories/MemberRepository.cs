@@ -563,7 +563,7 @@ namespace Feature.Wealth.Account.Repositories
         }
 
         /// <summary>
-        /// 檢查紅綠燈　綠燈:table可以讀取
+        /// 檢查紅綠燈　綠燈:table可以讀取 暫無使用
         /// </summary>
         /// <returns></returns>
         public bool CheckEDHStatus()
@@ -574,9 +574,9 @@ namespace Feature.Wealth.Account.Repositories
             bool status = false;
 
             Log.Info("同步Oracle開始　檢查紅綠燈　table : EDHStatus,connection start");
-            using (var connection = new OdbcConnection(connString))
+            try
             {
-                try
+                using (var connection = new OdbcConnection(connString))
                 {
                     connection.Open();
                     Log.Info("同步Oracle開始　檢查紅綠燈　table : EDHStatus,command start");
@@ -591,17 +591,18 @@ namespace Feature.Wealth.Account.Repositories
                         }
                         Log.Info($"同步Oracle開始　檢查紅綠燈　table : EDHStatus,command ExecuteScalar end staus={status}");
                     }
+
                 }
-                catch (Exception ex)
-                {
-                    Log.Info("同步Oracle開始　檢查紅綠燈　table : EDHStatus, exception message:" + ex.ToString());
-                }
+            }
+            catch (Exception ex)
+            {
+                Log.Info("同步Oracle開始　檢查紅綠燈　table : EDHStatus, exception message:" + ex.ToString());
             }
             return status;
         }
 
         /// <summary>
-        /// 寫入cif資料from oracle
+        /// 寫入cif資料from oracle 暫無使用
         /// </summary>
         /// <param name="id"></param>
         public void InsertCifFormOracle(string id)
@@ -610,9 +611,9 @@ namespace Feature.Wealth.Account.Repositories
             string sqlConnString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
 
             Log.Info("同步Oracle開始　寫入cif　table : WEA_ODS_CIF_VIEW,Connection start");
-            using (var odbcConn = new OdbcConnection(odbcConnString))
+            try
             {
-                try
+                using (var odbcConn = new OdbcConnection(odbcConnString))
                 {
                     odbcConn.Open();
                     string query = "SELECT * FROM WEA_ODS_CIF_VIEW WHERE CIF_ID = ?";
@@ -672,73 +673,11 @@ namespace Feature.Wealth.Account.Repositories
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Log.Info("同步Oracle table : WEA_ODS_CIF_VIEW To SQL table : CIF, exception message:" + ex.ToString());
-                }
             }
-        }
-
-        /// <summary>
-        /// 寫入數存推薦人資料from oracle
-        /// </summary>
-        /// <param name="id">身分證號或六碼</param>
-        /// <param name="loginBy">個網或app登入</param>
-        /// <returns></returns>
-        public string InsertCFMBSELFormOracle(string id, string loginBy)
-        {
-            string odbcConnString = ConfigurationManager.ConnectionStrings["cif"].ConnectionString;
-            string sqlConnString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
-            string userId = string.Empty;
-            Log.Info("同步Oracle開始　寫入CFMBSEL　table : CFMBSEL_STG, OdbcConnection start");
-            using (var odbcConn = new OdbcConnection(odbcConnString))
+            catch (Exception ex)
             {
-                try
-                {
-                    odbcConn.Open();
-                    //個網回傳身分證號
-                    string query = "SELECT * FROM CFMBSEL_STG WHERE CUST_ID = ?";
-                    if (loginBy.Equals("app", StringComparison.OrdinalIgnoreCase))
-                    {
-                        //app回傳6碼
-                        query = "SELECT * FROM CFMBSEL_STG WHERE PROMOTION_CODE = ?";
-                    }
-                    using (OdbcCommand command = new OdbcCommand(query, odbcConn))
-                    {
-                        command.Parameters.Add("param", OdbcType.NVarChar).Value = id;
-                        using (OdbcDataReader reader = command.ExecuteReader())
-                        {
-                            Log.Info("同步Oracle開始　寫入CFMBSEL　table : CFMBSEL_STG, SqlConnection start");
-                            using (SqlConnection sqlConnection = new SqlConnection(sqlConnString))
-                            {
-                                sqlConnection.Open();
-                                string insertQuery = "INSERT INTO CFMBSEL (EXT_DATE, CUST_ID, TELLER_CODE,PROMOTION_CODE,LOAD_DATE) VALUES (@Param1, @Param2, @Param3, @Param4, @Param5)";
-                                using (SqlCommand insertCommand = new SqlCommand(insertQuery, sqlConnection))
-                                {
-                                    while (reader.Read())
-                                    {
-                                        insertCommand.Parameters.AddWithValue("@Param1", reader.GetDateTime(reader.GetOrdinal("EXT_DATE")));
-                                        insertCommand.Parameters.AddWithValue("@Param2", reader["CUST_ID"]);
-                                        insertCommand.Parameters.AddWithValue("@Param3", reader["TELLER_CODE"]);
-                                        insertCommand.Parameters.AddWithValue("@Param4", reader["PROMOTION_CODE"]);
-                                        insertCommand.Parameters.AddWithValue("@Param5", reader.GetDateTime(reader.GetOrdinal("LOAD_DATE")));
-                                        insertCommand.ExecuteNonQuery();
-                                        userId = reader["CUST_ID"].ToString();
-                                        Log.Info($"同步Oracle開始　寫入CFMBSEL　table : CFMBSEL_STG, Sqlreader data={reader.GetDateTime(reader.GetOrdinal("EXT_DATE"))},{reader["CUST_ID"]},{reader["TELLER_CODE"]},{reader["PROMOTION_CODE"]},{reader.GetDateTime(reader.GetOrdinal("LOAD_DATE"))}");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Info("同步Oracle table : CFMBSEL_STG To SQL table : CFMBSEL, exception message:" + ex.ToString());
-                }
-
+                Log.Info("同步Oracle table : WEA_ODS_CIF_VIEW To SQL table : CIF, exception message:" + ex.ToString());
             }
-
-            return userId;
         }
 
     }
