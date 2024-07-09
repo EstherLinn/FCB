@@ -4192,6 +4192,9 @@
                         });
                         $('#scale_select').trigger('change');
                         Highcharts.chart("scale", {
+                            time: {
+                                useUTC: false
+                            },
                             chart: {
                                 type: 'column'
                             },
