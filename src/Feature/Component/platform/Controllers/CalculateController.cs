@@ -16,6 +16,7 @@ namespace Feature.Wealth.Component.Controllers
 
             return View("/Views/Feature/Wealth/Component/Calculate/Saving.cshtml", model);
         }
+
         /// <summary>
         ///  教育基金試算
         /// </summary>
@@ -24,6 +25,16 @@ namespace Feature.Wealth.Component.Controllers
             var model = _calculateRepository.GetCalculateModel();
 
             return View("/Views/Feature/Wealth/Component/Calculate/EducationFund.cshtml", model);
+        }
+
+        /// <summary>
+        ///  買房首付試算
+        /// </summary>
+        public ActionResult BuyHouse()
+        {
+            var model = _calculateRepository.GetCalculateModel();
+
+            return View("/Views/Feature/Wealth/Component/Calculate/BuyHouse.cshtml", model);
         }
     }
 }
