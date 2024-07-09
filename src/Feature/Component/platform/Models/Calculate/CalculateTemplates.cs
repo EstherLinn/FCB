@@ -30,6 +30,12 @@ namespace Feature.Wealth.Component.Models.Calculate
                 public static readonly ID StockAllocation = new ID("{84CB4BBC-6E9F-4F5B-AB75-6A6E76F54A1C}");
                 public static readonly ID BondAllocation = new ID("{FEF9B7DA-2A2F-4899-B36C-3804C676C969}");
                 public static readonly ID CurrencyAllocation = new ID("{0F0DF087-72F2-4097-9C22-C853CB0885B5}");
+                public static readonly ID StockAllocationFieldName = new ID("{878476DB-8034-429B-8656-56CE56899345}");
+                public static readonly ID BondAllocationFieldName = new ID("{A481E8B9-09D8-47B6-A131-C78CDBF3321B}");
+                public static readonly ID CurrencyAllocationFieldName = new ID("{B49301CA-921B-4507-AC0D-53184DC62DDC}");
+                public static readonly ID StockAllocationText = new ID("{139256DA-D009-47B9-803D-F1BC5BC2C9E6}");
+                public static readonly ID BondAllocationText = new ID("{3E4130C7-C78B-4740-9ED6-A9329414D0BB}");
+                public static readonly ID CurrencyAllocationText = new ID("{6196D994-DE64-43A0-ABAB-4058268A0A4C}");
                 public static readonly ID Notice = new ID("{F6E26787-A45D-4424-8C7A-82DEF7FBBD7A}");
                 public static readonly ID RemoteConsultationTitle = new ID("{FFEE7E90-EFEC-42EE-B102-2C60766C12E1}");
                 public static readonly ID RemoteConsultationContent = new ID("{07158773-FDEB-4207-8AF3-660A0F51D9D3}");

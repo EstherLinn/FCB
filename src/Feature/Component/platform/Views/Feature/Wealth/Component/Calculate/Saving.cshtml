@@ -160,7 +160,7 @@
                         </div>
                     </div>
                     <div class="l-formBlock__action">
-                        <button type="button" class="o-btn o-btn--primary o-btn--lg" id="Calculate">開始試算</button>
+                        <button data-gotop type="button" class="o-btn o-btn--primary o-btn--lg" id="Calculate">開始試算</button>
                     </div>
                 </div>
             </div>
@@ -202,8 +202,8 @@
                     <div class="c-form c-form--popup">
                         <div class="c-form__title">目標金額</div>
                         <div class="c-form__content">
-                                        <div class="l-form l-form--popup" id="TargetRemarkForm">
-                                            <div class="l-form__input">
+                            <div class="l-form l-form--popup" id="TargetRemarkForm">
+                                <div class="l-form__input">
                                                 <div class="o-unitbox">
                                                     <input id="TargetRemark" type="number" value="100" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
                                                     oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
@@ -211,17 +211,17 @@
                                             <span class="o-unitbox__text">萬元</span>
                                                 </div>
                                             </div>
-                                            <div class="l-form__text l-form__text--error">
+                                <div class="l-form__text l-form__text--error">
                                                 <div class="o-errorText">
                                                     <span class="s4" id="TargetRemarkErrorText"></span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
+                            </div>
+                        </div>
                     </div>
                     </div>
                     <div class="l-formBlock__item">
-                                <div class="c-form c-form--popup">
+                        <div class="c-form c-form--popup">
                                     <div class="c-form__title">預計幾年後達成目標</div>
                                     <div class="c-form__content">
                                         <div class="l-form l-form--popup">
@@ -234,16 +234,16 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                    </div>
                 </div>
                 <div class="l-formBlock__group">
                     <div class="l-formBlock__title">
-                                <span class="t2 t-bold">投資規劃</span>
-                            </div>
+                        <span class="t2 t-bold">投資規劃</span>
+                    </div>
                     <div class="l-formBlock__item">
-                                <div class="c-form c-form--popup ">
-                                    <div class="c-form__title">已準備金額</div>
-                                    <div class="c-form__content">
+                        <div class="c-form c-form--popup ">
+                            <div class="c-form__title">已準備金額</div>
+                            <div class="c-form__content">
                                         <div class="l-form l-form--popup" id="PreparedRemarkForm" >
                                             <div class="l-form__input">
                                                 <div class="o-unitbox">
@@ -260,10 +260,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
                     <div class="l-formBlock__item">
-                                <div class="c-form c-form--popup ">
+                        <div class="c-form c-form--popup ">
                                     <div class="c-form__title">每月投入金額</div>
                                     <div class="c-form__content">
                                         <div class="l-form l-form--popup" id="MonthlyRemarkForm">
@@ -283,9 +283,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                    </div>
                     <div class="l-formBlock__item">
-                                <div class="c-form c-form--popup ">
+                    <div class="c-form c-form--popup ">
                                     <div class="c-form__title">預期投資報酬率</div>
                                     <div class="c-form__content">
                                         <div class="l-form l-form--popup">
@@ -298,10 +298,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                    </div>
                     <div class="l-formBlock__action">
-                                <button type="button" class="o-btn o-btn--primary o-btn--lg" id="CalculateRemark">重新試算</button>
-                            </div>
+                        <button type="button" class="o-btn o-btn--primary o-btn--lg" id="CalculateRemark">重新試算</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -432,7 +432,7 @@
                                 </div>
                             </div>
                             <!-- 預期收益 & 投資報酬模擬 -->
-                            <div class="c-section">
+                    <div class="c-section">
                         <div class="l-revenueResult">
                             <div class="l-revenueResult__charts">
                                 <div class="l-calcCharts">
@@ -1594,6 +1594,12 @@
                     let Prepared = $("#Prepared").val();
                     let Monthly = $("#Monthly").val();
                     let ExpectedRoi = $("#ExpectedRoi").val();
+
+                    $("#TargetRemark").val(Target);
+                    $("#EstimateYearRemark").val(Years);
+                    $("#PreparedRemark").val(Prepared);
+                    $("#MonthlyRemark").val(Monthly);
+                    $("#ExpectedRoiRemark").val(ExpectedRoi);
             
                     // 試算結果
                     let planningResults = planningCompute(Years, Prepared, Monthly, ExpectedRoi);
@@ -1669,85 +1675,93 @@
 
             //#region 重新試算按鈕綁定事件
             $("#CalculateRemark").click(function () {
-                if (clickCheck()) {
-                    loading();
+                 if (clickCheck()) {
+                     loading();
 
-                    $.magnificPopup.close();
-                    $('.l-mainstage').first().addClass('u-hidden');
+                     $.magnificPopup.close();
+                     $('.l-mainstage').first().addClass('u-hidden');
+                   
+                     let Target = $("#TargetRemark").val();
+                     let Years = $("#EstimateYearRemark").val();
+                     let Prepared = $("#PreparedRemark").val();
+                     let Monthly = $("#MonthlyRemark").val();
+                     let ExpectedRoi = $("#ExpectedRoiRemark").val();
 
-                    let Target = $("#TargetRemark").val();
-                    let Years = $("#EstimateYearRemark").val();
-                    let Prepared = $("#PreparedRemark").val();
-                    let Monthly = $("#MonthlyRemark").val();
-                    let ExpectedRoi = $("#ExpectedRoiRemark").val();
+                     $("#TargetRemark").val(Target);
+                     $("#EstimateYearRemark").val(Years);
+                     $("#PreparedRemark").val(Prepared);
+                     $("#MonthlyRemark").val(Monthly);
+                     $("#ExpectedRoiRemark").val(ExpectedRoi);
 
-                    // 試算結果
-                    let planningResults = planningCompute(Years, Prepared, Monthly, ExpectedRoi);
+                      // 試算結果
+                     let planningResults = planningCompute(Years, Prepared, Monthly, ExpectedRoi);
 
-                    let tab1Results, tab2Results, tab3Results, tab4Results, tab5Results, currentYear;
+                     let tab1Results, tab2Results, tab3Results, tab4Results, tab5Results, currentYear;
 
-                    chartsRevenues.length = 0;
-                    chartsRewards.length = 0;
-                    chartsRewardsCategories.length = 0;
+                     chartsRevenues.length = 0;
+                     chartsRewards.length = 0;
+                     chartsRewardsCategories.length = 0;
 
-                    // 顯示試算結果 - 描述區塊
-                    $("#ResultDescription").removeClass("u-hidden");
-                    renderResultDescription(planningResults, Target, Years);
+                     // 顯示試算結果 - 描述區塊
+                     $("#ResultDescription").removeClass("u-hidden");
+                     renderResultDescription(planningResults, Target, Years);
 
-                    // 顯示試算結果 - tab區塊
-                    $("#ResultTab").removeClass("u-hidden");
+                     // 顯示試算結果 - tab區塊
+                     $("#ResultTab").removeClass("u-hidden");
 
-                    // 判斷試算結果是否有缺口
-                    if (resultHasGap) {
-                        $(".tab1Btn").removeClass("u-hidden");
-                        $(".tab2Btn").addClass("u-hidden");
-                        $(".tab3Btn").addClass("u-hidden");
-                        $(".tab4Btn").addClass("u-hidden");
-                        $(".tab5Btn").removeClass("u-hidden");
+                   
 
-                        tab1Results = planningResults;
-                        tab5Results = planningCompute(Years,Prepared, Monthly, (parseFloat(ExpectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+                     // 判斷試算結果是否有缺口
+                     if (resultHasGap) {
+                         $(".tab1Btn").removeClass("u-hidden");
+                         $(".tab2Btn").addClass("u-hidden");
+                         $(".tab3Btn").addClass("u-hidden");
+                         $(".tab4Btn").addClass("u-hidden");
+                         $(".tab5Btn").removeClass("u-hidden");
 
-                        renderResultTab1(tab1Results, Target, Years, Prepared, Monthly, ExpectedRoi);
-                        renderResultTab5(tab5Results, Target, Years, Prepared, Monthly, (parseFloat(ExpectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+                         tab1Results = planningResults;
+                         tab5Results = planningCompute(Years,Prepared, Monthly, (parseFloat(ExpectedRoi) + parseFloat(defaultRiskAttributes)).toString());
 
-                        currentYear = new Date().getFullYear() + parseFloat($("#EstimateYearRemark").val()) - 1;
-                    }
-                    else {
-                        $(".tab1Btn").removeClass("u-hidden");
-                        $(".tab2Btn").removeClass("u-hidden");
-                        $(".tab3Btn").removeClass("u-hidden");
-                        $(".tab4Btn").removeClass("u-hidden");
-                        $(".tab5Btn").addClass("u-hidden");
+                         renderResultTab1(tab1Results, Target, Years, Prepared, Monthly, ExpectedRoi);
+                         renderResultTab5(tab5Results, Target, Years, Prepared, Monthly, (parseFloat(ExpectedRoi) + parseFloat(defaultRiskAttributes)).toString());
 
-                        tab1Results = planningResults;
-                        tab2Results = tab2Compute(Target, Years, Prepared, ExpectedRoi);
-                        tab3Results = tab3Compute(Target, Years, Prepared, Monthly);
-                        tab4Results = tab4Compute(Target, Prepared, Monthly, ExpectedRoi);
+                         currentYear = new Date().getFullYear() + parseFloat($("#EstimateYearRemark").val()) - 1;
+                     }
+                     else {
+                         $(".tab1Btn").removeClass("u-hidden");
+                         $(".tab2Btn").removeClass("u-hidden");
+                         $(".tab3Btn").removeClass("u-hidden");
+                         $(".tab4Btn").removeClass("u-hidden");
+                         $(".tab5Btn").addClass("u-hidden");
 
-                        renderResultTab1(tab1Results, Target, Years, Prepared, Monthly, ExpectedRoi);
-                        renderResultTab2(tab2Results, Target, Years, Prepared, ExpectedRoi);
-                        renderResultTab3(tab3Results, Target, Years, Prepared, Monthly);
-                        renderResultTab4(tab4Results, Target, Prepared, Monthly, ExpectedRoi);
+                         tab1Results = planningResults;
+                         tab2Results = tab2Compute(Target, Years, Prepared, ExpectedRoi);
+                         tab3Results = tab3Compute(Target, Years, Prepared, Monthly);
+                         tab4Results = tab4Compute(Target, Prepared, Monthly, ExpectedRoi);
 
-                        currentYear = new Date().getFullYear() + tab4Results - 1;
-                    }
+                         renderResultTab1(tab1Results, Target, Years, Prepared, Monthly, ExpectedRoi);
+                         renderResultTab2(tab2Results, Target, Years, Prepared, ExpectedRoi);
+                         renderResultTab3(tab3Results, Target, Years, Prepared, Monthly);
+                         renderResultTab4(tab4Results, Target, Prepared, Monthly, ExpectedRoi);
 
-                    // tab active 狀態復原
-                    $('ul.c-tab__navs a:first').trigger('click');
+                         currentYear = new Date().getFullYear() + tab4Results - 1;
+                     }
 
-                    // 顯示所有圓餅圖
-                    renderChartsRevenues(chartsRevenues);
+                     // tab active 狀態復原
+                     $('ul.c-tab__navs a:first').trigger('click');
 
-                    // 取得長條圖年份顯示範圍
-                    getRewardsYearsRange(currentYear);
+                     // 顯示所有圓餅圖
+                     renderChartsRevenues(chartsRevenues);
 
-                    // 顯示投資報酬長條圖
-                    renderChartsRewards(chartsRewards);
+                     // 取得長條圖年份顯示範圍
+                     getRewardsYearsRange(currentYear);
 
-                    // 顯示試算結果 - 諮詢區塊
-                    $("#consult").removeClass("u-hidden");
-                }
+                     // 顯示投資報酬長條圖
+                     renderChartsRewards(chartsRewards);
+
+                     // 顯示試算結果 - 諮詢區塊
+                     $("#consult").removeClass("u-hidden");
+                 }
             });
             //#endregion
 
@@ -2701,7 +2715,11 @@
 
 
             //#region 查看推薦方案綁定事件
-            $('#btnSolutions').on('click', function (e) {
+            $('#btnSolutionsSuccess').on('click', function (e) {
+                e.preventDefault();
+                $('[data-tab-target].is-active').trigger('click');
+            });
+            $('#btnSolutionsUnsuccess').on('click', function (e) {
                 e.preventDefault();
                 $('[data-tab-target].is-active').trigger('click');
             });
@@ -2713,6 +2731,7 @@
                 window.toast('已儲存');
             });
             //#endregion
+
 
             //#region 資產配置圓餅圖顯示
             let chartsAssets = [{

@@ -50,7 +50,7 @@
                                 <div class="l-form" id="downPaymentForm">
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
-                                            <input id="downPayment" type="number" value="100" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
+                                            <input id="downPayment" type="number" value="500" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
                                                    oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
                                                    onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">萬元</span>
@@ -73,7 +73,7 @@
                                     <div class="l-form__set">
                                         <div class="l-form__input">
                                             <div class="o-unitbox">
-                                                <input id="years" type="number" value="10" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="year"
+                                                <input id="years" type="number" value="15" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="year"
                                                        oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
                                                        onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                                 <span class="o-unitbox__text">年</span>
@@ -176,7 +176,7 @@
                         </div>
                     </div>
                     <div class="l-formBlock__action">
-                        <button id="Calculate" type="button" class="o-btn o-btn--primary o-btn--lg">開始試算</button>
+                        <button data-gotop id="Calculate" type="button" class="o-btn o-btn--primary o-btn--lg">開始試算</button>
                     </div>
                 </div>
             </div>
@@ -495,7 +495,7 @@
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
-                                <img src="./../../themes/images/icons/others/lock.svg" alt="">
+                                <img src="~/themes/images/icons/others/lock.svg" alt="">
                             </div>
                             <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
                             <div class="c-calcLocker__actions">
@@ -517,7 +517,7 @@
                                         <div class="c-chartBox c-chartBox--sm@dt-only">
                                             <div class="l-riskCard">
                                                 <div class="l-riskCard__charts">
-                                                    <img src="./../../themes/images/charts/rr4.svg" alt="">
+                                                    <img src="~/themes/images/charts/rr4.svg" alt="">
                                                 </div>
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
@@ -690,7 +690,7 @@
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
-                                <img src="./../../themes/images/icons/others/lock.svg" alt="">
+                                <img src="~/themes/images/icons/others/lock.svg" alt="">
                             </div>
                             <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
                             <div class="c-calcLocker__actions">
@@ -712,7 +712,7 @@
                                         <div class="c-chartBox c-chartBox--sm@dt-only">
                                             <div class="l-riskCard">
                                                 <div class="l-riskCard__charts">
-                                                    <img src="./../../themes/images/charts/rr4.svg" alt="">
+                                                    <img src="~/themes/images/charts/rr4.svg" alt="">
                                                 </div>
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
@@ -885,7 +885,7 @@
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
-                                <img src="./../../themes/images/icons/others/lock.svg" alt="">
+                                <img src="~/themes/images/icons/others/lock.svg" alt="">
                             </div>
                             <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
                             <div class="c-calcLocker__actions">
@@ -907,7 +907,7 @@
                                         <div class="c-chartBox c-chartBox--sm@dt-only">
                                             <div class="l-riskCard">
                                                 <div class="l-riskCard__charts">
-                                                    <img src="./../../themes/images/charts/rr4.svg" alt="">
+                                                    <img src="~/themes/images/charts/rr4.svg" alt="">
                                                 </div>
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
@@ -1080,7 +1080,7 @@
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
-                                <img src="./../../themes/images/icons/others/lock.svg" alt="">
+                                <img src="~/themes/images/icons/others/lock.svg" alt="">
                             </div>
                             <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
                             <div class="c-calcLocker__actions">
@@ -1102,7 +1102,7 @@
                                         <div class="c-chartBox c-chartBox--sm@dt-only">
                                             <div class="l-riskCard">
                                                 <div class="l-riskCard__charts">
-                                                    <img src="./../../themes/images/charts/rr4.svg" alt="">
+                                                    <img src="~/themes/images/charts/rr4.svg" alt="">
                                                 </div>
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
@@ -1277,7 +1277,7 @@
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
-                                <img src="./../../themes/images/icons/others/lock.svg" alt="">
+                                <img src="~/themes/images/icons/others/lock.svg" alt="">
                             </div>
                             <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
                             <div class="c-calcLocker__actions">
@@ -1299,7 +1299,7 @@
                                         <div class="c-chartBox c-chartBox--sm@dt-only">
                                             <div class="l-riskCard">
                                                 <div class="l-riskCard__charts">
-                                                    <img src="./../../themes/images/charts/rr4.svg" alt="">
+                                                    <img src="~/themes/images/charts/rr4.svg" alt="">
                                                 </div>
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
@@ -1571,6 +1571,12 @@
                     let monthlyInvestment = $("#monthlyInvestment").val();
                     let expectedRoi = $("#expectedRoi").val();
 
+                    $("#downPayment_Popup").val(downPayment);
+                    $("#years_Popup").val(years);
+                    $("#amountPrepared_Popup").val(amountPrepared);
+                    $("#monthlyInvestment_Popup").val(monthlyInvestment);
+                    $("#expectedRoi_Popup").val(expectedRoi);
+
                     // 試算結果
                     let planningResults = planningCompute(years, amountPrepared, monthlyInvestment, expectedRoi);
 
@@ -1660,6 +1666,11 @@
                     let monthlyInvestment = $("#monthlyInvestment_Popup").val();
                     let expectedRoi = $("#expectedRoi_Popup").val();
 
+                    $("#downPayment_Popup").val(downPayment);
+                    $("#years_Popup").val(years);
+                    $("#amountPrepared_Popup").val(amountPrepared);
+                    $("#monthlyInvestment_Popup").val(monthlyInvestment);
+                    $("#expectedRoi_Popup").val(expectedRoi);
                     // 試算結果
                     let planningResults = planningCompute(years, amountPrepared, monthlyInvestment, expectedRoi);
 
@@ -2645,7 +2656,11 @@
             //#endregion
 
             //#region 查看推薦方案綁定事件
-            $('#btnSolutions').on('click', function (e) {
+            $('#btnSolutionsSuccess').on('click', function (e) {
+                e.preventDefault();
+                $('[data-tab-target].is-active').trigger('click');
+            });
+            $('#btnSolutionsUnsuccess').on('click', function (e) {
                 e.preventDefault();
                 $('[data-tab-target].is-active').trigger('click');
             });

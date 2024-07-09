@@ -25,6 +25,12 @@ namespace Feature.Wealth.Component.Models.Calculate
         public int? StockAllocation { get; set; }
         public int? BondAllocation { get; set; }
         public int? CurrencyAllocation { get; set; }
+        public string StockAllocationFieldName { get; set; }
+        public string BondAllocationFieldName { get; set; }
+        public string CurrencyAllocationFieldName { get; set; }
+        public string StockAllocationText { get; set; }
+        public string BondAllocationText { get; set; }
+        public string CurrencyAllocationText { get; set; }
         public string Notice { get; set; }
         public string RemoteConsultationTitle { get; set; }
         public string RemoteConsultationContent { get; set; }
