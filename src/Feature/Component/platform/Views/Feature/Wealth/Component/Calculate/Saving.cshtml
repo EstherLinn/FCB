@@ -7,13 +7,6 @@
 
 <!--存一桶金試算頁-上半 -->
 <div class="c-section" id="CalculateDescription">
-    <div class="l-mainstage">
-        <div class="l-mainstage__wrap">
-            <div class="l-mainstage__title">
-                <h1 class="t-title">存一桶金</h1>
-            </div>
-        </div>
-    </div>
     <div class="l-wrap">
         <div class="l-minorstage">
             <div class="l-minorstage__content">
@@ -1594,6 +1587,7 @@
                     // 隱藏試算 HTML
                     $("#CalculateDescription").addClass("u-hidden");
                     $("#CalculateMain").addClass("u-hidden");
+                    $('.l-mainstage').first().addClass('u-hidden');
             
                     let Target = $("#Target").val();
                     let Years = $("#EstimateYear").val();
@@ -1679,6 +1673,7 @@
                     loading();
 
                     $.magnificPopup.close();
+                    $('.l-mainstage').first().addClass('u-hidden');
 
                     let Target = $("#TargetRemark").val();
                     let Years = $("#EstimateYearRemark").val();

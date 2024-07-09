@@ -1563,6 +1563,7 @@
                     // 隱藏試算 HTML
                     $("#calculateDescription").addClass("u-hidden");
                     $("#calculateMain").addClass("u-hidden");
+                    $('.l-mainstage').first().addClass('u-hidden');
 
                     let educationalFund = $("#educationalFund").val();
                     let years = $("#years").val();
@@ -1651,6 +1652,7 @@
                     loading();
 
                     $.magnificPopup.close();
+                    $('.l-mainstage').first().addClass('u-hidden');
 
                     let educationalFund = $("#educationalFund_Popup").val();
                     let years = $("#years_Popup").val();
