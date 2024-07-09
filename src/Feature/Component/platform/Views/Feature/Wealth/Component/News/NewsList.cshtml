@@ -1,10 +1,12 @@
-﻿@using Feature.Wealth.Component.Models.News
-@model NewsListModel
+﻿@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.News.NewsList
+@model NewsListViewModel
 
-@if (Model.Datasource == null)
+@if (Model == null || string.IsNullOrEmpty(Model.DatasourceId))
 {
     return;
 }
+
 <div class="c-section">
     <div class="l-mainstage">
         <div class="l-mainstage__wrap">
@@ -25,8 +27,8 @@
                                         <div class="o-actionbox o-actionbox--lg" data-clear="true">
                                             <!-- #keyword: 請見頁面下方的script邏輯，套用jquery.autocomplete套件 -->
                                             <!-- [data-clear="textbox"]: 套用清除按鈕功能，標示此為文字輸入框 -->
-                                            <input insertKeywords eh-search-pageid="@Sitecore.Context.Item.ID.Guid" eh-search-type="MarketNews" id="keyword" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入關鍵字" data-keyword-input>
-                                            <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit></button>
+                                            <input insertKeywords @*eh-search-pageid="@Sitecore.Context.Item.ID.Guid" eh-search-type="AnnouncementNews"*@ id="uid-searchbox" type="search" class="o-actionbox__input" data-clear="textbox" placeholder="請輸入關鍵字" data-keyword-input>
+                                            <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit id="uid-btn-search"></button>
                                             <!-- [data-clear="button"]: 套用清除按鈕功能，標示此為清除按鈕 -->
                                             <button type="button" class="o-actionbox__clear" data-clear="button">清除</button>
                                         </div>
@@ -43,147 +45,57 @@
                                 <div class="c-filter__wrap">
                                     <div class="c-filter__group c-filter__group--divider">
                                         <div class="l-flex u-flex-col u-flex-gap-lg u-flex-gap-max@mb-only">
-                                            <div class="l-flex__item">
-                                                <div class="c-filterForm" data-filter-group>
-                                                    <div class="c-filterForm__title" data-filter-title>
-                                                        <span>新聞類別</span>
-                                                    </div>
-                                                    <div class="c-filterForm__value">
-                                                        <div class="l-pickGroup">
-                                                            <div class="l-pickGroup__all">
-                                                                <label class="o-btnCheckBox">
-                                                                    <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall>
-                                                                    <div class="o-btnCheckBox__text">全部</div>
-                                                                </label>
-                                                            </div>
-                                                            <div class="l-pickGroup__wrap">
-                                                                <div class="l-pickCollapse" data-overflow-hide="category">
-                                                                    <div class="l-pickCollapse__content" data-overflow-content="category">
-                                                                        <div class="l-pickGroup">
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="頭條新聞"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="總體經濟"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="國際股市"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="台股"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="深滬港股"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="亞股"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="美股"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="歐股"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="基金"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="期權"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="商品原物料"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="外匯市場"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="債券市場"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="產業情報"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="金融市場"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="科技脈動"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="研究結果"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                            <div class="l-pickGroup__item">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="人民幣"></div>
-                                                                                </label>
+                                            @if (Model.CategoryList != null && Model.CategoryList.Any())
+                                            {
+                                                <div class="l-flex__item">
+                                                    <div class="c-filterForm" id="uid-criteria-category" data-filter-group>
+                                                        <div class="c-filterForm__title" data-filter-title>
+                                                            <span>類別</span>
+                                                        </div>
+                                                        <div class="c-filterForm__value">
+                                                            <div class="l-pickGroup">
+                                                                <div class="l-pickGroup__all">
+                                                                    <label class="o-btnCheckBox">
+                                                                        <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                        <div class="o-btnCheckBox__text">全部</div>
+                                                                    </label>
+                                                                </div>
+                                                                <div class="l-pickGroup__wrap">
+                                                                    <div class="l-pickCollapse" data-overflow-hide="category">
+                                                                        <div class="l-pickCollapse__content" data-overflow-content="category">
+                                                                            <div class="l-pickGroup">
+                                                                                @foreach (var category in Model.CategoryList)
+                                                                                {
+                                                                                    <div class="l-pickGroup__item">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="@category">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value="@category"></div>
+                                                                                        </label>
+                                                                                    </div>
+                                                                                }
+                                                                                <div class="l-pickGroup__item" style="display: none;">
+                                                                                    <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                        <input class="o-btnCheckBox__input" type="checkbox" value="">
+                                                                                        <div class="o-btnCheckBox__text" data-filter-value=""></div>
+                                                                                    </label>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="l-pickCollapse__expand">
-                                                                        <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
-                                                                            <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="category">展開</a>
+                                                                        <div class="l-pickCollapse__expand">
+                                                                            <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="category">展開</a>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="category"></a>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
-                                                                            <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="category"></a>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="l-pickCollapse__collapse">
-                                                                        <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
-                                                                            <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="category">收合</a>
-                                                                        </div>
-                                                                        <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
-                                                                            <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="category"></a>
+                                                                        <div class="l-pickCollapse__collapse">
+                                                                            <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                                <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="category">收合</a>
+                                                                            </div>
+                                                                            <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                                <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="category"></a>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -191,7 +103,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            }
+
                                             <div class="l-flex__item">
                                                 <div class="c-filterForm" data-filter-group="special">
                                                     <div class="c-filterForm__title" data-filter-title>
@@ -227,7 +140,7 @@
                                 <!-- 大小網展開收合功能觸發點[data-filter-collapse] -->
                                 <div class="c-filter__total" data-filter-collapse>
                                     <div class="o-total o-total--wt">
-                                        搜尋<span>@Model.Count</span>筆
+                                        搜尋<span data-uid-total>0</span>筆
                                     </div>
                                 </div>
                             </div>
@@ -265,7 +178,7 @@
                     <div class="l-filter__tool">
                         <div class="l-filter__total">
                             <div class="o-total">
-                                搜尋<span>@Model.Count</span>筆
+                                搜尋<span data-uid-total>0</span>筆
                             </div>
                         </div>
                         <div class="l-filter__reset">
@@ -278,26 +191,37 @@
         </div>
     </div>
 </div>
+
 <div class="c-section">
     <div class="l-wrap">
-        <div class="l-flex u-flex-col u-flex-gap-sm">
+
+        <div class="c-section" data-filter-empty="true" style="display:none;">
+            <div class="c-section__content">
+                <div class="c-empty">
+                    <div class="c-empty__img">
+                        <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                    </div>
+                    <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="l-flex u-flex-col u-flex-gap-sm" data-filter-empty="false" style="display:none;">
             <div class="l-flex__item">
                 <div class="l-flex l-flex--wrap u-flex-gap-sm">
                     <div class="l-flex__item u-right u-hidden@dt-only">
                         <div class="o-sortingbox">
                             <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
-                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="newsTable">
+                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="newsTable" id="uid-sortbox">
                                 <option value="">排序</option>
-                                <option value="焦點新聞高至低" data-sorting-column="focus" data-sorting-class="is-desc">焦點新聞高至低</option>
-                                <option value="焦點新聞低至高" data-sorting-column="focus" data-sorting-class="is-asc">焦點新聞低至高</option>
-                                <option value="日期高至低" data-sorting-column="date" data-sorting-class="is-desc">日期高至低</option>
-                                <option value="日期低至高" data-sorting-column="date" data-sorting-class="is-asc">日期低至高</option>
-                                <option value="新聞類別高至低" data-sorting-column="type" data-sorting-class="is-desc">新聞類別高至低</option>
-                                <option value="新聞類別低至高" data-sorting-column="type" data-sorting-class="is-asc">新聞類別低至高</option>
-                                <option value="標題高至低" data-sorting-column="title" data-sorting-class="is-desc">標題高至低</option>
-                                <option value="標題低至高" data-sorting-column="title" data-sorting-class="is-asc">標題低至高</option>
-                                <option value="瀏覽人次高至低" data-sorting-column="pageView" data-sorting-class="is-desc">瀏覽人次高至低</option>
-                                <option value="瀏覽人次低至高" data-sorting-column="pageView" data-sorting-class="is-asc">瀏覽人次低至高</option>
+                                <option value="焦點消息高至低" data-sorting-column="FocusPair.Key" data-sorting-class="is-desc">焦點消息高至低</option>
+                                <option value="焦點消息低至高" data-sorting-column="FocusPair.Key" data-sorting-class="is-asc">焦點消息低至高</option>
+                                <option value="日期高至低" data-sorting-column="DatePair.Key" data-sorting-class="is-desc">日期高至低</option>
+                                <option value="日期低至高" data-sorting-column="DatePair.Key" data-sorting-class="is-asc">日期低至高</option>
+                                <option value="類別高至低" data-sorting-column="CategoryPair.Value" data-sorting-class="is-desc">類別高至低</option>
+                                <option value="類別低至高" data-sorting-column="CategoryPair.Value" data-sorting-class="is-asc">類別低至高</option>
+                                <option value="標題高至低" data-sorting-column="PageTitlePair.Key" data-sorting-class="is-desc">標題高至低</option>
+                                <option value="標題低至高" data-sorting-column="PageTitlePair.Key" data-sorting-class="is-asc">標題低至高</option>
                             </select>
                         </div>
                     </div>
@@ -305,101 +229,44 @@
             </div>
             <div class="l-flex__item">
                 <div class="l-table">
-                    <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra" data-table-name="newsTable">
+                    <table id="table" class="c-table@dt-only c-cardTable@lt c-cardTable--zebra" data-table-name="newsTable">
                         <colgroup>
                             <col style="width: 1%;">
                             <col style="width: 1%;">
                             <col style="width: 1%;">
                             <col style="width: auto;">
-                            <col style="width: 1%;">
-                            <col style="width: 1%;">
                         </colgroup>
                         <thead>
                             <tr class="u-nowrap">
                                 <th>
                                     <div class="c-table__title">
-                                        <span>焦點新聞</span>
+                                        <span>焦點消息</span>
                                         <!-- .is-asc: 升冪 -->
                                         <!-- .is-desc: 降冪 -->
-                                        <a href="#" class="o-sorting" data-sorting-column="focus"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="FocusPair.Key"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>日期</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="date"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="DatePair.Key"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
-                                        <span>新聞類別</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="type"></a>
+                                        <span>類別</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="CategoryPair.Value"></a>
                                     </div>
                                 </th>
                                 <th>
                                     <div class="c-table__title">
                                         <span>標題</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="title"></a>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>瀏覽人次</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="pageView"></a>
-                                    </div>
-                                </th>
-                                <th>
-                                    <div class="c-table__title">
-                                        <span>收藏</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="PageTitlePair.Key"></a>
                                     </div>
                                 </th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- 表格內文字對齊樣式，可於tr/td標籤上使用(若內容物為flexbox將不會發生作用)：
-                            .u-center: 置中
-                            .u-center@lt: pad(含)以下版本(<= 1199px)置中
-                            .u-center@lt-up: pad(含)以上版本(>= 768px)置中
-                            .u-center@dt-only: 僅桌機版本(>= 1200px)置中
-                            .u-center@lt-only: 僅pad版本(>= 768px and <= 1199px)置中
-                            .u-center@mb-only: 僅手機版本(<= 767px)置中
-                            .u-left/.u-right: 置左/置右，比照置中模式 -->
-                            @foreach (var item in Model.NewsItems)
-                            {
-                                var url = string.IsNullOrEmpty(item.Url) ? "javascript:;" : item.Url;
-                                <tr class="c-cardTable__item u-center@dt-only">
-                                    <td class="c-cardTable__space"></td>
-                                    <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
-                                    <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
-                                    <td class="c-cardTable__body " data-card-table-width="1/1">
-                                        <div class="c-cardTable__content">
-                                            <!-- .u-invisible: 若非焦點新聞，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
-                                            <span class="o-iconText o-iconText--focus t-focus " data-after-lt="焦點新聞"></span>
-                                        </div>
-                                    </td>
-                                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                                        <div class="c-cardTable__content u-nowrap@dt-only">@item.Date</div>
-                                    </td>
-                                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                                        <div class="c-cardTable__content u-right@lt">
-                                            <span class="o-hangTag o-hangTag--gn">台股</span>
-                                        </div>
-                                    </td>
-                                    <!-- .u-left@dt-only: 桌機版(@@desktop)置左 -->
-                                    <td class="c-cardTable__body u-left@dt-only">
-                                        <div class="c-cardTable__content u-line-2@lt-only">
-                                            <a href="@url" target="@item.Target" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt">@item.PageTitle</a>
-                                        </div>
-                                    </td>
-                                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                                        <div class="c-cardTable__content">
-                                            <div class="o-views o-views@lt">888,888,888</div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-
-                        </tbody>
+                        <tbody id="uid-fjs"></tbody>
                     </table>
                     @{
                         Html.RenderPartial("~/Views/Feature/Wealth/Component/Partial/_Pagination.cshtml");
@@ -409,191 +276,85 @@
         </div>
     </div>
 </div>
-<!--<div class="c-section">
-    <div class="l-wrap">
-        <div class="c-collapse" data-collapse="true">
-            <div class="c-collapse__head" data-collapse-button="true">
-                <span>附註</span>
-            </div>
-            <div class="c-collapse__content" data-collapse-content="true">
-                <div class="c-collapse__inner">-->
-<!-- .c-list--num: 純數字樣式
-.c-list--bracketNum: 數字+刮號樣式
-.c-list--disc: 實心圓點樣式
-.c-list--circle: 空心圓點樣式 -->
-<!--<ol class="c-list c-list--num">
-                        <li>未經合法授權，請勿翻載，本站內容僅供參考，本公司不負任何法律責任。</li>
-                        <li>投資人若依此以為買賣依據，須自負盈虧之責。</li>
-                        <li>與本網站有關一切糾紛與法律問題，均依中華民國相關法令解釋及適用之。</li>
-                    </ol>
+
+@*<div class="c-section">
+        <div class="l-wrap">
+            <div class="c-collapse" data-collapse="true">
+                <div class="c-collapse__head" data-collapse-button="true">
+                    <span>附註</span>
+                </div>
+                <div class="c-collapse__content" data-collapse-content="true">
+                    <div class="c-collapse__inner">
+                        <!-- .c-list--num: 純數字樣式
+                        .c-list--bracketNum: 數字+刮號樣式
+                        .c-list--disc: 實心圓點樣式
+                        .c-list--circle: 空心圓點樣式 -->
+                        <ol class="c-list c-list--num">
+                            <li>未經合法授權，請勿翻載，本站內容僅供參考，本公司不負任何法律責任。</li>
+                            <li>投資人若依此以為買賣依據，須自負盈虧之責。</li>
+                            <li>與本網站有關一切糾紛與法律問題，均依中華民國相關法令解釋及適用之。</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>*@
+
+<template id="tmplKeywordNotFound">
+    <div class="c-empty">
+        <div class="c-empty__img">
+            <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
+        </div>
+        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
     </div>
-</div>-->
+</template>
+
+<script id="uid-template-newslist" type="text/html">
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only" data-item-id="<%= Id %>">
+        @*<td class="c-cardTable__top"></td>*@
+        <td class="c-cardTable__space"></td>
+        @*【焦點消息】*@
+        <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/1 ~ 3/4 -->
+        <!-- .u-important.u-hidden@mb-only: 若非焦點新聞，需要加上此樣式，以在手機版隱藏此欄位 -->
+        <td class="c-cardTable__body " data-card-table-width="1/1">
+            <div class="c-cardTable__content">
+                <!-- .u-invisible: 若非焦點消息，需要加上此樣式，以便在pad版佔位不顯示(pad版需預留高度) -->
+                <% if (FocusPair.Value) { %>
+                <span class="o-iconText o-iconText--focus t-focus" data-after-lt="焦點消息"></span>
+                <% } %>
+            </div>
+        </td>
+        @*【日期】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__content"><%= DatePair.Value %></div>
+        </td>
+        @*【類別】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__content @*u-right@lt*@">
+                <% if (CategoryPair.Key == null) { %>
+                <%= CategoryPair.Value %>
+                <% } else { %>
+                <span class="o-hangTag o-hangTag--gn"><%= CategoryPair.Value %></span>
+                <% } %>
+            </div>
+        </td>
+        @*【標題】*@
+        <td class="c-cardTable__body u-left@dt-only">
+            <div class="c-cardTable__content u-line-2@lt-only">
+                <a href="<%= Url %>" target="<%= Target %>" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt"><%= PageTitlePair.Value %></a>
+            </div>
+        </td>
+        @*<td class="c-cardTable__space"></td>*@
+    </tr>
+</script>
 
 <script>
     (function ($, window, document) {
-        const keywordSearchSampleDate = [{
-            value: '鋒裕匯理美元綜合債券基金等共計6檔基金變更英文名稱及部分基金變更永續投資最低比例、投資政策、目標及管理流程通知',
-            data: {
-                isLogin: JSON.parse('true'),
-                isLike: JSON.parse('true'),
-                isNews: true,
-                detailUrl: './../insight/news_detail.html'
-            }
-        }, {
-            value: '境外結構型商品配息暨自動提前出場通知---【商品代號：PC31】',
-            data: {
-                isLogin: JSON.parse('true'),
-                isLike: false,
-                isNews: true,
-                detailUrl: './../insight/news_detail.html'
-            }
-        }, {
-            value: '2024年3月份基金休市日公告',
-            data: {
-                isLogin: JSON.parse('true'),
-                isLike: false,
-                isNews: true,
-                detailUrl: './../insight/news_detail.html'
-            }
-        }, {
-            value: '境外結構型商品配息暨自動提前出場通知---【商品代號：PC27】',
-            data: {
-                isLogin: JSON.parse('true'),
-                isLike: false,
-                isNews: true,
-                detailUrl: './../insight/news_detail.html'
-            }
-        }, {
-            value: '「柏瑞巨人基金」等13檔基金修訂公開說明書通知',
-            data: {
-                isLogin: JSON.parse('true'),
-                isLike: false,
-                isNews: true,
-                detailUrl: './../insight/news_detail.html'
-            }
-        }];
-
         document.addEventListener('DOMContentLoaded', function () {
             if (!jQuery) {
                 return;
             }
 
-            // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
-            $('#keyword').autocomplete({
-                noCache: true,
-                minChars: 0,
-                containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
-                maxHeight: 'auto',
-                zIndex: 5,
-                preserveInput: true,
-                showNoSuggestionNotice: true,
-                noSuggestionNotice: $('#tmplKeywordNotFound').html(),
-                lookup: function (query, done) {
-                    // Do Ajax call or lookup locally, when done,
-                    // call the callback and pass your results:
-                    query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-                    let result = keywordSearchSampleDate.filter(function (item) {
-                        return query.length == 0 || new RegExp(query, 'gi').test(item.value);
-                    });
-                    done({
-                        suggestions: result
-                    });
-                },
-                onSearchComplete: function (query, suggestions) {
-                    var autocomplete = $(this).autocomplete();
-                    var container = autocomplete.suggestionsContainer;
-                    var $this = $(this);
-
-                    // 取消套件預設 blur 事件會關閉 suggestions container
-                    $this.off('blur.autocomplete');
-
-                    // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
-                    if (autocomplete.isRegisteGlobalEvent != true) {
-                        $(window).on('click.autocomplete', {
-                            source: this
-                        }, e => {
-                            if (e.target != e.data.source) {
-                                autocomplete.hide();
-                            }
-                        });
-                        autocomplete.isRegisteGlobalEvent = true;
-                    }
-
-                    // 停止 like icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
-                    $(container).find('.o-statusBtn').off('click.autocomplete').on('click.autocomplete', function (e) {
-                        e.stopPropagation();
-                    });
-                    // 綁定 like icon 的互動功能
-                    $(container).find('[data-ia]').interactive();
-                    // 綁定 like icon 的彈跳登入畫面
-                    $(container).find('[data-popup]').magnificPopup();
-                },
-                formatResult: function (suggestion, currentValue) {
-                    let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
-                    let className = suggestion.data.isLike ? 'is-active' : '';
-
-                    // like 按鈕
-                    let likeWord = suggestion.data.isNews ? '加入收藏|取消收藏' : '加入關注|取消關注';
-                    let $like = suggestion.data.isLike != null ? suggestion.data.isLogin == true ?
-                        // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
-                        `<a href="#" class="o-statusBtn o-statusBtn--like ${className}" data-msg="${likeWord}" data-ia="true"></a>` :
-                        // <!-- [data-popup]: 未登入開啟登入彈跳視窗 -->
-                        `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
-
-                    // 申購按鈕
-                    let $purchase = suggestion.data.purchase ? suggestion.data.isLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
-                    return `<div class="c-itemKeyword">
-                 <a href="${detailUrl}" class="c-itemKeyword__content">
-
-                     <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                 </a>
-                 <div class="c-itemKeyword__collections">${$like}</div>
-                 ${$purchase}
-             </div>`;
-                }
-            });
-
-
-            // 日期區間
-            let range = [];
-            $('[data-filter-part="range"] input').on('change.range', function () {
-                $('[data-filter-part="range"]').find('input').each((index, item) => {
-                    range[index] = $(item).val().replaceAll('/', '-');
-                });
-                const hasValue = range.every(item => !!item);
-                let isSameOrBefore = moment(range[0]).isSameOrBefore(range[1]);
-                if (!hasValue) {
-                    isSameOrBefore = true;
-                } else if (hasValue && isSameOrBefore) {
-                    // 僅示意用
-                    loading();
-                }
-
-                // 帶tag下去條件:
-                //  1. 日期區間有起訖都有值
-                //  2. 開始日在結束日之前
-                // 若父層[data-filter-group]的值為'special'，則不會印出已選擇的tag
-                $('[data-filter-part="range"]').toggleClass('is-error', !isSameOrBefore).find('[data-error-text]').toggleClass('u-hidden', isSameOrBefore);
-                $(this).closest('[data-filter-group]').data('filter-group', hasValue && isSameOrBefore ? '' : 'special');
-                $('[data-filter-part="range"] [data-filter-input]').trigger('change.filter');
-            });
-
-            // 日期區間預設半年(示意)
-            $('[data-filter-part="range"] input').eq(0).on('change.default', function () {
-                if (!$(this).val()) {
-                    $(this).val(moment().add(-6, 'M').format('YYYY/MM/DD')).datepicker('update');
-                }
-            }).trigger('change.default');
-            $('[data-filter-part="range"] input').eq(1).on('change.default', function () {
-                if (!$(this).val()) {
-                    $(this).val(moment().format('YYYY/MM/DD')).datepicker('update');
-                }
-            }).trigger('change.default');
-
-            // ------------- 示意資料載入出現loading畫面，請更換成正確程式碼 -------------
             function loading() {
                 // 開啟loading方式:
                 window.loading('show');
@@ -604,26 +365,348 @@
                 }, 300);
             }
 
-            // 僅示意用
-            $('.l-mainstage input:not([data-keyword-input], [data-calendar])').on('change.loading', function () {
-                loading();
-            });
-            $('[data-keyword-submit]').on('click.loading', function () {
-                if (!!$('[data-keyword-input]').val().toString().trim()) {
-                    loading();
-                    insertKeywords();
+            const keywordSearchSampleDate = [{
+                value: '鋒裕匯理美元綜合債券基金等共計6檔基金變更英文名稱及部分基金變更永續投資最低比例、投資政策、目標及管理流程通知',
+                data: {
+                    isLogin: JSON.parse('true'),
+                    isLike: JSON.parse('true'),
+                    isNews: true,
+                    detailUrl: './../insight/news_detail.html'
                 }
-            });
-            $('[data-keyword-input]').on('keypress.loading', function (e) {
-                if (e.which === 13 && !!$(this).val().toString().trim()) {
-                    $('[data-keyword-submit]').trigger('click.loading');
+            }, {
+                value: '境外結構型商品配息暨自動提前出場通知---【商品代號：PC31】',
+                data: {
+                    isLogin: JSON.parse('true'),
+                    isLike: false,
+                    isNews: true,
+                    detailUrl: './../insight/news_detail.html'
                 }
-            });
-            // ------------- 示意資料載入出現loading畫面，請更換成正確程式碼 -------------
+            }, {
+                value: '2024年3月份基金休市日公告',
+                data: {
+                    isLogin: JSON.parse('true'),
+                    isLike: false,
+                    isNews: true,
+                    detailUrl: './../insight/news_detail.html'
+                }
+            }, {
+                value: '境外結構型商品配息暨自動提前出場通知---【商品代號：PC27】',
+                data: {
+                    isLogin: JSON.parse('true'),
+                    isLike: false,
+                    isNews: true,
+                    detailUrl: './../insight/news_detail.html'
+                }
+            }, {
+                value: '「柏瑞巨人基金」等13檔基金修訂公開說明書通知',
+                data: {
+                    isLogin: JSON.parse('true'),
+                    isLike: false,
+                    isNews: true,
+                    detailUrl: './../insight/news_detail.html'
+                }
+            }];
 
+            function generateSearchKeywordList() {
+                let list = [];
+                $.each(data, function (i, item) {
+                    let obj = {
+                        value: item.PageTitle,
+                        data: {
+                            type: 'NewsList',
+                            detailUrl: item.Url
+                        }
+                    };
+                    list.push(obj);
+                });
+
+                return list;
+            }
+
+            function initAutocomplete(data) {
+                let searchKeywords = generateSearchKeywordList(data);; //keywordSearchSampleDate
+
+                // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
+                $('#uid-searchbox').autocomplete({
+                    noCache: true,
+                    minChars: 0,
+                    containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
+                    maxHeight: 'auto',
+                    zIndex: 5,
+                    preserveInput: true,
+                    showNoSuggestionNotice: true,
+                    noSuggestionNotice: $('#tmplKeywordNotFound').html(),
+                    lookup: function (query, done) {
+                        // Do Ajax call or lookup locally, when done,
+                        // call the callback and pass your results:
+                        query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+                        let result = searchKeywords.filter(function (item) {
+                            return query.length == 0 || new RegExp(query, 'gi').test(item.value);
+                        });
+                        done({
+                            suggestions: result.slice(0, 5)
+                        });
+                    },
+                    onSearchComplete: function (query, suggestions) {
+                        var autocomplete = $(this).autocomplete();
+                        var container = autocomplete.suggestionsContainer;
+                        var $this = $(this);
+
+                        // 取消套件預設 blur 事件會關閉 suggestions container
+                        $this.off('blur.autocomplete');
+
+                        // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
+                        if (autocomplete.isRegisteGlobalEvent != true) {
+                            $(window).on('click.autocomplete', {
+                                source: this
+                            }, e => {
+                                if (e.target != e.data.source) {
+                                    autocomplete.hide();
+                                }
+                            });
+                            autocomplete.isRegisteGlobalEvent = true;
+                        }
+
+                        // 停止 like icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
+                        $(container).find('.o-statusBtn').off('click.autocomplete').on('click.autocomplete', function (e) {
+                            e.stopPropagation();
+                        });
+                        // 綁定 like icon 的互動功能
+                        $(container).find('[data-ia]').interactive();
+                        // 綁定 like icon 的彈跳登入畫面
+                        $(container).find('[data-popup]').magnificPopup();
+                    },
+                    formatResult: function (suggestion, currentValue) {
+                        let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
+                        let className = suggestion.data.isLike ? 'is-active' : '';
+
+                        return `<div class="c-itemKeyword">
+                            <a href="${detailUrl}" class="c-itemKeyword__content">
+                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                            </a>
+                        </div>`;
+                    }
+                });
+            }
+
+            function initBind() {
+                // 日期區間
+                let range = [];
+                $('[data-filter-part="range"] input').on('change.range', function () {
+                    $('[data-filter-part="range"]').find('input').each((index, item) => {
+                        range[index] = $(item).val().replaceAll('/', '-');
+                    });
+                    const hasValue = range.every(item => !!item);
+                    let isSameOrBefore = moment(range[0]).isSameOrBefore(range[1]);
+                    if (!hasValue) {
+                        isSameOrBefore = true;
+                    } else if (hasValue && isSameOrBefore) {
+                        // 僅示意用
+                        loading();
+                    }
+
+                    // 帶tag下去條件:
+                    //  1. 日期區間有起訖都有值
+                    //  2. 開始日在結束日之前
+                    // 若父層[data-filter-group]的值為'special'，則不會印出已選擇的tag
+                    $('[data-filter-part="range"]').toggleClass('is-error', !isSameOrBefore).find('[data-error-text]').toggleClass('u-hidden', isSameOrBefore);
+                    $(this).closest('[data-filter-group]').data('filter-group', hasValue && isSameOrBefore ? '' : 'special');
+                    $('[data-filter-part="range"] [data-filter-input]').trigger('change.filter');
+                });
+
+                // 日期區間預設半年(示意)
+                $('[data-filter-part="range"] input').eq(0).on('change.default', function () {
+                    if (!$(this).val()) {
+                        $(this).val(moment().add(-6, 'M').format('YYYY/MM/DD')).datepicker('update');
+                    }
+                }).trigger('change.default');
+                $('[data-filter-part="range"] input').eq(1).on('change.default', function () {
+                    if (!$(this).val()) {
+                        $(this).val(moment().format('YYYY/MM/DD')).datepicker('update');
+                    }
+                }).trigger('change.default');
+            }
+
+            function initFilter(data) {
+                const dateProps = ['DatePair'];
+
+                let opts = {
+                    template: '#uid-template-newslist',
+                    criterias: [
+                        { field: 'CategoryPair.Value', ele: '#uid-criteria-category :checkbox' },
+                        { field: 'CategoryPair.Value', ele: '#uid-criteria-category :checkbox', all: 'all', selector: ':not(:checked)' },
+                        //{ field: 'SharpeRatioMarketPriceRisk.Value', ele: '[data-slider-val="sharpe"]', type: 'range', delimiter: ',' },
+                    ],
+                    search: {
+                        ele: '#uid-searchbox', fields: ['PageTitle'], start_length: 2, bindEvent: false, multi: function () {
+                            let texts = [];
+                            $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                                let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                                let text = matches && matches[1];
+                                texts.push(text);
+                            });
+                            return texts;
+                        }
+                    },
+                    pagination: {
+                        container: '#uid-pagination',
+                        paginationView: '#uid-template-pagination',
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, data.length],
+                            container: '#uid-perPage',
+                            perPageView: '#uid-template-perPage'
+                        }
+                    },
+                    callbacks: {
+                        onFilterSelect: function (obj) {
+                            //if (obj.criteria.type === 'range') {
+                            //    if (obj.values[0] !== obj.values[0]) {
+                            //        obj.values[0] = -9999999999;
+                            //    }
+                            //    if (obj.values[1] !== obj.values[1]) {
+                            //        obj.values[1] = 9999999999;
+                            //    }
+                            //}
+                        },
+                        beforeRecordRender: function (record) {
+                            record.DatePair.Key = new Date(record.DatePair.Key).getTime();
+                        },
+                        afterFilter: function (result) {
+                            $('[data-uid-total]').text(result.length);
+                            this.paginator.setCurrentPage(1);
+
+                            let isEmpty = result.length == 0;
+                            $(`[data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-filter-empty=${!isEmpty}]`).hide();
+
+                            window.loading('hide');
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select#uid-sortbox' }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') {
+                            } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order == 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var fjs = FilterJS(data, '#uid-fjs', opts);
+                fjs.bindEvent('[data-filter-reset]', 'click.reset');
+                fjs.bindEvent('[data-tag-close]', 'click.tag');
+                fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+
+                $('[data-keyword-input]').on('keypress.loading', function (e) {
+                    if (e.which === 13 && !!$(this).val().toString().trim()) {
+                        $('[data-keyword-submit]').trigger('click.loading');
+                    }
+                });
+
+                //TODO: 日期篩選
+                //$('[data-return-rate-money]').on('change.select2', function (e) {
+                //    let $currency = $('[data-currency]');
+                //    let $rateDate = $('[data-return-rate-date]');
+                //    $currency.each(function (i) {
+                //        let currencyData = $(this).data('filter-criteria-field');
+                //        let isCheck = this.checked;
+                //        $rateDate.each(function (ix) {
+                //            let rateDateData = $(this).data('filter-criteria-field').split('|');
+                //            let criteriaField = rateDateData[currencyData];
+                //            fjs.removeCriteria(criteriaField)
+                //            if (isCheck && this.checked) {
+                //                fjs.addCriteria({ field: criteriaField, ele: '[data-return-rate-money]', type: 'range', delimiter: ',' })
+                //            }
+                //        });
+                //    });
+                //});
+
+                function fnScrollUp() {
+                    loading();
+                    $('#table').scrollPosition('scroll');
+                }
+
+                function fnToFirstPage() {
+                    loading();
+                    $('#table').scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
+
+                $containgerPagination = $('#uid-pagination');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+
+                $('#uid-view-perPage').on('change.pagesize', fnToFirstPage).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+
+                $('[data-keyword-submit]').on('click.loading', function () {
+                    if (!!$('[data-keyword-input]').val().toString().trim()) {
+                        loading();
+                        insertKeywords();
+                    }
+                });
+
+                return fjs;
+            }
+
+            window.NewsList = {
+                ApiRequest: function () {
+                    //var token = $('input[name="__RequestVerificationToken"]').val();
+                    var reqSearch = {
+                        req: {
+                            DatasourceId: '@Model.DatasourceId'
+                        },
+                        //__RequestVerificationToken: token
+                    };
+
+                    $.ajax({
+                        url: '@ClientRoute.GenerateUrl(this, "News", "GetNewsListResultData")',
+                        type: 'POST',
+                        data: reqSearch,
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log(data);
+                        var fjs = initFilter(data);
+                        window.NewsList.FJS = fjs;
+                        //initAutocomplete(data);
+
+                        $('[data-tab] [data-tab-target]').first().trigger('switch');
+                        $('[data-filter-switch="#uid-template"]').trigger('change');
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log({ jqXHR, textStatus, errorThrown });
+                    }).always(function () {
+                        window.loading('hide');
+                    });
+                }
+            }
 
             // table 排序功能
-            $('.o-sorting').on('click.sorting', function (e) {
+            $('#table').on('click.sorting', '.o-sorting', function (e) {
                 e.preventDefault();
                 // 呼叫 loading
                 window.loading('show');
@@ -673,51 +756,8 @@
                 }, 300);
             });
 
-
-            // 分頁功能
-            $('.o-pagination__no').on('update.pagination', function (e) {
-                // 呼叫 loading
-                window.loading('show');
-                var page = parseInt($(this).val());
-                console.log(`頁碼：${page}`);
-
-                // scroll 到表頭
-                $(this).closest('.l-table').scrollPosition('scroll');
-
-                // 因展示，故使用 setTimeout 延遲關閉 loading
-                setTimeout(() => {
-                    // 關閉loading
-                    window.loading('hide');
-                }, 300);
-            });
-
-
-            // 分頁筆數功能
-            $('[data-sizebox="true"]').on('change.pagesize', function (e) {
-                // 呼叫 loading
-                window.loading('show');
-                var size = $(this).val();
-                console.log(`每頁顯示${size}筆`);
-
-                // 調整分頁
-                var $parentWrap = $(this).closest('.l-pagination');
-                var dataLength = parseInt($parentWrap.attr('data-length'));
-                $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', size === 'all');
-                if (size !== 'all') {
-                    var total = Math.ceil(dataLength / size);
-                    $parentWrap.find('[data-total]').attr('data-total', total);
-                    $parentWrap.find('.o-pagination__total').text(total);
-                    $parentWrap.find('[data-pagination="true"]').pagination('goto', 1);
-                }
-
-                // 因展示，使用 setTimeout 延遲關閉 loading
-                setTimeout(() => {
-                    // 關閉loading
-                    window.loading('hide');
-                }, 300);
-            });
-
+            initBind();
+            window.NewsList.ApiRequest();
         });
-
     })(jQuery, window, document);
 </script>
