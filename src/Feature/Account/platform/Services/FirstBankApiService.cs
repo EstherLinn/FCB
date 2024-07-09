@@ -62,7 +62,12 @@ namespace Feature.Wealth.Account.Services
             return result;
 
         }
-
+        /// <summary>
+        /// 同步關注清單項目到iLeo
+        /// </summary>
+        /// <param name="promotionCode"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
         public async Task SyncTrackListToIleo(string promotionCode, string productId)
         {
             if (string.IsNullOrEmpty(_route))
@@ -102,7 +107,10 @@ namespace Feature.Wealth.Account.Services
                 Logger.Api.Info($"ileo關注清單 理財網同步回ileo,Error Message :{ex.Message}");
             }
         }
-
+        /// <summary>
+        /// 同步關注清單回理財網
+        /// </summary>
+        /// <param name="focusListResp"></param>
         public void SyncTrackListFormIleo(FocusListResp focusListResp)
         {
             if (focusListResp.rt == "0000" && focusListResp.TrackList != null)
@@ -111,15 +119,30 @@ namespace Feature.Wealth.Account.Services
                 var originData = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
                 if (!originData.Any())
                 {
+                    var type = string.Empty;
                     foreach (var item in focusListResp.TrackList)
                     {
+                        switch (item.fundType)
+                        {
+                            case "S":
+                                type = "Fund";
+                                break;
+                            case "E":
+                                type = "ETF";
+                                break;
+                            case "X":
+                                type = "ForeignStocks";
+                                break;
+                            case "G":
+                                type = "ForeignBonds";
+                                break;
+                        }
                         originData.Add(new TrackListModel()
                         {
                             Id = item.fundCode,
-                            Type = "Fund"
+                            Type = type
                         });
                     }
-
                 }
                 else
                 {
@@ -127,11 +150,34 @@ namespace Feature.Wealth.Account.Services
                     {
                         if (!originData.Exists(x => x.Id == item.fundCode))
                         {
-
+                            var type = string.Empty;
+                            foreach (var item2 in focusListResp.TrackList)
+                            {
+                                switch (item.fundType)
+                                {
+                                    case "S":
+                                        type = "Fund";
+                                        break;
+                                    case "E":
+                                        type = "ETF";
+                                        break;
+                                    case "X":
+                                        type = "ForeignStocks";
+                                        break;
+                                    case "G":
+                                        type = "ForeignBonds";
+                                        break;
+                                }
+                                originData.Add(new TrackListModel()
+                                {
+                                    Id = item.fundCode,
+                                    Type = type
+                                });
+                            }
                             originData.Add(new TrackListModel()
                             {
                                 Id = item.fundCode,
-                                Type = "Fund"
+                                Type = type
                             });
                         }
                     }

@@ -18,5 +18,14 @@ namespace Project.Wealth.Platform
                 public static readonly ID Content = new ID("{6446F151-3557-47A4-97BA-19193BDBE894}");
             }
         }
+
+        public struct LoginErrorMesaage
+        {
+            public static readonly ID Root = new ID("{CFF12E21-8AA8-41A2-B9E6-FA3EE1B4341A}");
+            public struct Fields
+            {
+                public static readonly ID ErrorMessage = new ID("{C6896022-AA88-4341-B1BA-EE54E771B274}");
+            }
+        }
     }
 }
