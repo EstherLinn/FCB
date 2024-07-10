@@ -128,10 +128,8 @@
                                 <div class="l-form" id="monthlyInvestmentForm">
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
-                                            <input id="monthlyInvestment" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
-                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
-                                            <span class="o-unitbox__text">萬元</span>
+                                            <input id="monthlyInvestment" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="monthly" />
+                                                   <span class="o-unitbox__text">萬元</span>
                                         </div>
                                     </div>
                                     <div class="l-form__text l-form__text--error">
@@ -287,10 +285,8 @@
                                 <div class="l-form l-form--popup" id="monthlyInvestment_PopupForm">
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
-                                            <input id="monthlyInvestment_Popup" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
-                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
-                                            <span class="o-unitbox__text">萬元</span>
+                                            <input id="monthlyInvestment_Popup" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="popup_monthly" />
+                                                   <span class="o-unitbox__text">萬元</span>
                                         </div>
                                     </div>
                                     <div class="l-form__text l-form__text--error">
@@ -321,7 +317,7 @@
                         </div>
                     </div>
                     <div class="l-formBlock__action">
-                        <button id="Recalculate" type="button" class="o-btn o-btn--primary o-btn--lg">重新試算</button>
+                        <button data-gotop id="Recalculate" type="button" class="o-btn o-btn--primary o-btn--lg">重新試算</button>
                     </div>
                 </div>
             </form>
@@ -1546,8 +1542,42 @@
             });
             //#endregion
 
+            //#region 每月投入金額綁定事件
+            let $inputMonthly = $('[data-id="monthly"]');
+            let lastValidMonthly = parseFloat($inputMonthly.val()) || 1;
+
+            $inputMonthly.on('change', function () {
+                let monthly = parseFloat($(this).val());
+
+                if (isNaN(monthly)) {
+                    $(this).val(lastValidMonthly);
+                } else if (monthly < 1) {
+                    monthly = 1;
+                    $(this).val(monthly);
+                    lastValidMonthly = monthly;
+                } else {
+                    lastValidMonthly = monthly;
+                }
+            });
+            let $inputMonthly_popup = $('[data-id="popup_monthly"]');
+            let lastValidMonthly_popup = parseFloat($inputMonthly_popup.val()) || 1;
+            $inputMonthly_popup.on('change', function () {
+                let monthly = parseFloat($(this).val());
+
+                if (isNaN(monthly)) {
+                    $(this).val(lastValidMonthly_popup);
+                } else if (monthly < 1) {
+                    monthly = 1;
+                    $(this).val(monthly);
+                    lastValidMonthly_popup = monthly;
+                } else {
+                    lastValidMonthly_popup = monthly;
+                }
+            });
+            //#endregion
+
             //#region 各欄位綁定事件
-            $("#downPayment, #amountPrepared, #monthlyInvestment, #downPayment_Popup, #amountPrepared_Popup, #monthlyInvestment_Popup").on('change', function () {
+            $("#downPayment, #amountPrepared, #downPayment_Popup, #amountPrepared_Popup").on('change', function () {
                 var id = this.id;
                 var val = $(this).val();
                 var formatVal = trimZeroAndDot(val);
@@ -1724,7 +1754,110 @@
                     }
 
                     // tab active 狀態復原
-                    $('ul.c-tab__navs a:first').trigger('click');
+                    function bindTabSwitchEvent() {
+                        $("ul.c-tab__navs a:first").off("click.myEvent").on("click.myEvent", function (event) {
+                            event.preventDefault();
+
+                            $(".tab1Btn").addClass("is-active");
+                            $(".tab2Btn,.tab3Btn,.tab4Btn,.tab5Btn").removeClass("is-active");
+
+                            $('[data-tab-panel-id="tab-1"]').addClass("is-active");
+                            $('[data-tab-panel-id="tab-2"],[data-tab-panel-id="tab-3"],[data-tab-panel-id="tab-4"],[data-tab-panel-id="tab-5"]').removeClass("is-active");
+
+                            (function (s, i) {
+                                "use strict";
+                                var n = "tab",
+                                    o = {
+                                        docking: !0,
+                                        scroll: !0
+                                    };
+
+                                function a(t, e) {
+                                    this.element = t,
+                                        this.$element = s(t),
+                                        this.options = s.extend(!0, {}, o, e, this.$element.data()),
+                                        delete this.options.tab,
+                                        this._defaults = o,
+                                        this._name = n,
+                                        this.init(),
+                                        this.$element.data("plugin_tab", this)
+                                }
+
+                                s.extend(a.prototype, {
+                                    init: function () {
+                                        var n = this;
+                                        this.$element.find(".c-tab__switch").off("click").on("click", function (t) {
+                                            t.preventDefault(),
+                                                s(this).closest(".c-tab__collapse").toggleClass("is-open")
+                                        });
+                                        var t, o = this.$element.find("[data-tab-align]").data("tab-align");
+                                        this.$element.find("[data-tab-target]").off("switch").on("switch", function (t) {
+                                            var e = s(this).data("tabTarget"),
+                                                i = n.$element.find('> [data-tab-panel-id="' + e + '"]');
+                                            e && i.length && (t.preventDefault(),
+                                                n.$element.find("> .c-tab__header [data-tab-target], > [data-tab-panel-id]").removeClass("is-active"),
+                                                n.$element.find('> .c-tab__header [data-tab-target="' + e + '"]').addClass("is-active"),
+                                                i.addClass("is-active"),
+                                                n.scrollAlign.call(n, o)),
+                                                n.$element.find(".c-tab__collapse").removeClass("is-open")
+                                        }).off("click").on("click", function (t) {
+                                            t.preventDefault(),
+                                                s(this).trigger("switch")
+                                            // 不再執行滾動效果
+                                        }),
+                                            this.$element.find("> .c-tab__header > .c-tab__navs > [data-tab-target].is-active").trigger("switch"),
+                                            this.options.docking && s.fn.scrollToFixed && this.$element.find(".c-tab__header:first").scrollToFixed({
+                                                limit: function () {
+                                                    var t = s(this).closest('[data-tab="true"]');
+                                                    return t.offset().top + t.innerHeight() - s(this).outerHeight(!0)
+                                                },
+                                                fixed: function () {
+                                                    s(this).addClass("is-docking")
+                                                },
+                                                unfixed: function () {
+                                                    s(this).removeClass("is-docking")
+                                                },
+                                                preAbsolute: function () {
+                                                    s(this).addClass("is-freeze")
+                                                },
+                                                postAbsolute: function () {
+                                                    s(this).removeClass("is-freeze")
+                                                },
+                                                zIndex: 5
+                                            });
+                                        const e = location.href;
+                                        -1 === e.indexOf("?") || -1 === e.indexOf("tab") || (t = e.split("?")[1].split("&").find(t => 0 === t.indexOf("tab"))) && "tab" === t.split("=")[0] && s(`[data-tab-target="${t = t,
+                                            String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").split("=")[1]}"]`).trigger("switch"),
+                                            this.$element.attr("data-tab", !0)
+                                    },
+                                    scrollAlign: function (t) {
+                                        var e = this.$element.find(".c-tab__item.is-active").closest("li"),
+                                            i = this.$element.find(".c-tab__navs");
+                                        e = "left" === t ? e.position().left + i.scrollLeft() : e.position().left + e.width() / 2 + i.scrollLeft() - i.width() / 2,
+                                            i.animate({
+                                                scrollLeft: e
+                                            }, 300)
+                                    }
+                                });
+
+                                s.fn.tab = function (e) {
+                                    return this.each(function () {
+                                        var t = s.data(this, "plugin_tab") || new a(this, e);
+                                        "string" == typeof e && t[e] && t[e].apply(t, Array.prototype.slice.call(arguments, 1))
+                                    })
+                                };
+
+                                s('[data-tab="true"]').tab();
+                            })(jQuery, window);
+                        });
+
+                        // 觸發第一次點擊事件
+                        $("ul.c-tab__navs a:first").trigger("click.myEvent");
+                    }
+
+                    bindTabSwitchEvent();
+
+                    $("ul.c-tab__navs a:first").trigger("click.myEvent");
 
                     // 顯示所有圓餅圖
                     renderChartsRevenues(chartsRevenues);
@@ -1749,11 +1882,10 @@
                 var inputErrorText = inputID + "ErrorText";
                 var errorMessage = "";
 
+                var downPaymentId;
                 var downPaymentVal;
                 var amountPreparedVal;
                 var amountPreparedId;
-                var monthlyInvestmentVal;
-                var monthlyInvestmentId;
 
                 switch (id) {
                     case "downPayment": // 頭期款
@@ -1761,31 +1893,26 @@
                         if (id == "downPayment") {
                             amountPreparedVal = parseFloat($("#amountPrepared").val());
                             amountPreparedId = "#amountPrepared";
-                            monthlyInvestmentVal = parseFloat($("#monthlyInvestment").val());
                         }
                         else {
                             amountPreparedVal = parseFloat($("#amountPrepared_Popup").val());
                             amountPreparedId = "#amountPrepared_Popup";
-                            monthlyInvestmentVal = parseFloat($("#monthlyInvestment_Popup").val());
                         }
 
                         if (val == "" || isNaN(val)) {
                             errorMessage = "此欄位為必填";
                             checkFlag = false;
-                        } else if (parseFloat(amountPreparedVal) >= parseFloat(val)) {
+                        } else if (parseFloat(val) <= amountPreparedVal) {
                             errorMessage = "已準備金額應小於頭期款";
-
                             $(amountPreparedId + "ErrorText").text(errorMessage);
                             $(amountPreparedId + "Form").addClass('is-error');
                             checkFlag = true;
-                        } else if ((parseFloat(val) > parseFloat(amountPreparedVal)) && (amountPreparedVal== 0 && monthlyInvestmentVal == 0)) {
-                            errorMessage = "已準備金額和每月投入金額不能同時為0";
-
-                            $(amountPreparedId + "ErrorText").text(errorMessage);
-                            $(amountPreparedId + "Form").addClass('is-error');
-                            checkFlag = true;
-                        } else {
+                        } else if (parseFloat(val) > amountPreparedVal) {
+                            $(amountPreparedId + "ErrorText").text("");
                             $(amountPreparedId + "Form").removeClass('is-error');
+                            checkFlag = true;
+                        }
+                        else {
                             checkFlag = true;
                         }
 
@@ -1795,13 +1922,9 @@
                     case "amountPrepared_Popup":
                         if (id == "amountPrepared") {
                             downPaymentVal = parseFloat($("#downPayment").val());
-                            monthlyInvestmentVal = parseFloat($("#monthlyInvestment").val());
-                            monthlyInvestmentId = "#monthlyInvestment";
                         }
                         else {
                             downPaymentVal = parseFloat($("#downPayment_Popup").val());
-                            monthlyInvestmentVal = parseFloat($("#monthlyInvestment_Popup").val());
-                            monthlyInvestmentId = "#monthlyInvestment_Popup";
                         }
 
                         if (val == "" || isNaN(val)) {
@@ -1809,50 +1932,14 @@
                             checkFlag = false;
                         } else if (parseFloat(val) >= downPaymentVal) {
                             errorMessage = "已準備金額應小於頭期款";
-                            $(monthlyInvestmentId + "Form").removeClass('is-error');
-                            checkFlag = false;
-                        } else if (parseFloat(val) == 0 && monthlyInvestmentVal == 0) {
-                            errorMessage = "已準備金額和每月投入金額不能同時為0";
-
-                            $(monthlyInvestmentId + "ErrorText").text(errorMessage);
-                            $(monthlyInvestmentId +"Form").addClass('is-error');
                             checkFlag = false;
                         } else {
-                            $(monthlyInvestmentId + "Form").removeClass('is-error');
                             checkFlag = true;
                         }
 
                         $(inputID).val(val);
-                        break;
-                    case "monthlyInvestment": // 每月投入金額
-                    case "monthlyInvestment_Popup":
-                        if (id == "monthlyInvestment") {
-                            amountPreparedVal = parseFloat($("#amountPrepared").val());
-                            amountPreparedId = "#amountPrepared";
-                        }
-                        else {
-                            amountPreparedVal = parseFloat($("#amountPrepared_Popup").val());
-                            amountPreparedId = "#amountPrepared_Popup";
-                        }
-
-                        if (val == "" || isNaN(val)) {
-                            errorMessage = "此欄位為必填";
-                            checkFlag = false;
-                        } else if (parseFloat(val) == 0 && amountPreparedVal == 0) {
-                            errorMessage = "已準備金額和每月投入金額不能同時為0";
-
-                            $(amountPreparedId + "ErrorText").text(errorMessage);
-                            $(amountPreparedId + "Form").addClass('is-error');
-                            checkFlag = false;
-                        } else {
-                            $(amountPreparedId + "Form").removeClass('is-error');
-                            checkFlag = true;
-                        }
-
-                        $(inputID).val(val);
-                        break;
-                    default:
-                        return;
+                    break;
+                    
                 }
 
                 if (checkFlag) {
@@ -1871,7 +1958,7 @@
             function clickCheck() {
                 var checkBox = [];
 
-                $("#downPayment, #amountPrepared, #monthlyInvestment, #downPayment_Popup, #amountPrepared_Popup, #monthlyInvestment_Popup").each(function (i, obj) {
+                $("#downPayment, #amountPrepared, #downPayment_Popup, #amountPrepared_Popup").each(function (i, obj) {
                     var inputID = obj.id;
                     var val = obj.value;
                     checkBox.push(inputCheck(inputID, val));
