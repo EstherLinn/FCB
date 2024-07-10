@@ -68,7 +68,7 @@ namespace Feature.Wealth.Account.Services
         /// <param name="promotionCode"></param>
         /// <param name="productId"></param>
         /// <returns></returns>
-        public async Task SyncTrackListToIleo(string promotionCode, string productId)
+        public async Task SyncTrackListToIleo(string promotionCode, string productId , string productType)
         {
             if (string.IsNullOrEmpty(_route))
             {
@@ -77,12 +77,29 @@ namespace Feature.Wealth.Account.Services
             }
             try
             {
+                var type = string.Empty;
+                switch (productType.ToLower())
+                {
+                    case "fund":
+                        type = "F";
+                        break;
+                    case "etf":
+                        type = "E";
+                        break;
+                    case "foreignstocks":
+                        type = "X";
+                        break;
+                    case "foreignbonds":
+                        type = "G";
+                        break;
+                }
                 var routeWithParams = _route.
                     AppendQueryParam("promotionCode", promotionCode)
                    .AppendQueryParam("channel", "wms")
-                   .AppendQueryParam("fundCode", productId);
+                   .AppendQueryParam("fundCode", productId)
+                   .AppendQueryParam("fundType", type);
 
-                var reqObj = new { promotionCode = promotionCode, channel = "wms", fundCode = productId };
+                var reqObj = new { promotionCode = promotionCode, channel = "wms", fundCode = productId , fundType  = type};
                 Logger.Api.Info($"關注清單API Function開始 理財網同步回ileo,取得promotionCode ={promotionCode},api route ={routeWithParams},帶入參數promotionCode={promotionCode},channel=wms,fundCode={productId}");
                 var request = await routeWithParams.
                     AllowAnyHttpStatus().
@@ -124,7 +141,7 @@ namespace Feature.Wealth.Account.Services
                     {
                         switch (item.fundType)
                         {
-                            case "S":
+                            case "F":
                                 type = "Fund";
                                 break;
                             case "E":
@@ -155,7 +172,7 @@ namespace Feature.Wealth.Account.Services
                             {
                                 switch (item.fundType)
                                 {
-                                    case "S":
+                                    case "F":
                                         type = "Fund";
                                         break;
                                     case "E":

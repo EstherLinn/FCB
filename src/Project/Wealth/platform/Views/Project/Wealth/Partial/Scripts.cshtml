@@ -240,7 +240,7 @@
                     $.ajax({
                         type: "post",
                         url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
-                        data: { "trackList": store.get("focus") || [], "productId": id },
+                        data: { "trackList": store.get("focus") || [], "productId": id , productType : type},
                         beforeSend: function () { $('.c-loading').loading('show'); },
                         success: function (msg) {
                             $('.c-loading').loading('hide');

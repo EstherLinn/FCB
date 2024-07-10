@@ -661,7 +661,7 @@
                 $.ajax({
                     type: "post",
                     url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
-                    data: { "trackList": store.get("focus") || [], "productId": cancelId },
+                    data: { "trackList": store.get("focus") || [], "productId": cancelId, productType: cancelType },
                     beforeSend: function () { $('.c-loading').loading('show'); },
                     success: function (msg) {
                         switch (cancelType.toLowerCase()) {
