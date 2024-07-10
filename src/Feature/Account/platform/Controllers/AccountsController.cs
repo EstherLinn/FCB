@@ -357,7 +357,7 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> InsertTrack(List<TrackListModel> trackList, string productId)
+        public async Task<ActionResult> InsertTrack(List<TrackListModel> trackList, string productId, string productType)
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
@@ -374,7 +374,7 @@ namespace Feature.Wealth.Account.Controllers
             if (FcbMemberHelper.GetMemberPlatForm() == PlatFormEunm.WebBank)
             {
                 FirstBankApiService firstBankApiService = new();
-                await firstBankApiService.SyncTrackListToIleo(FcbMemberHelper.GetMemberPlatFormId(), productId);
+                await firstBankApiService.SyncTrackListToIleo(FcbMemberHelper.GetMemberPlatFormId(), productId, productType);
             }
             return new JsonNetResult(objReturn);
         }
