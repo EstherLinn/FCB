@@ -222,7 +222,7 @@
                                 <div class="l-form l-form--popup" id="downPayment_PopupForm">
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
-                                            <input id="downPayment_Popup" type="number" value="100" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
+                                            <input id="downPayment_Popup" type="number" value="500" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
                                                    oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
                                                    onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">萬元</span>
@@ -242,7 +242,7 @@
                                 <div class="l-form l-form--popup">
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
-                                            <input id="years_Popup" type="number" value="10" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="popup_year"
+                                            <input id="years_Popup" type="number" value="15" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="popup_year"
                                                    oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
                                                    onkeydown="return (event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">年</span>
@@ -1442,7 +1442,7 @@
             let $sliderYear = $('[data-slider-id="year"]').get(0),
                 $inputYear = $('[data-id="year"]');
             noUiSlider.create($sliderYear, {
-                start: 10,
+                start: 15,
                 connect: [true, false],
                 step: 1,
                 range: {
