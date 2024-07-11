@@ -42,14 +42,14 @@ namespace Feature.Wealth.Component.Controllers
 
             if (page == null) { page = "1"; }
             if (pageSize == null) { pageSize = "10"; }
-            if (orderby == null) { orderby = "SixMonthReturnOriginalCurrency"; }
+            if (orderby == null) { orderby = "ListingDateFormat"; }
             if (desc == null) { desc = "is-desc"; }
 
             var property = typeof(Funds).GetProperty(orderby);
             bool isDesc = desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase);
 
             newfund = isDesc
-                 ? newfund.OrderByDescending(f => property.GetValue(f, null)).ToList()
+                 ? newfund.OrderByDescending(f => property.GetValue(f, null)).ThenBy(f=>f.ProductCode).ToList()
                  : newfund.OrderBy(f => property.GetValue(f, null)).ToList();
 
 
