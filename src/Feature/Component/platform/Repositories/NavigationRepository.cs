@@ -58,7 +58,7 @@ namespace Feature.Wealth.Component.Repositories
                         Parent = parentNode,
                         Item = child,
                         NavigationTitle = child.GetFieldValue(Templates.PageNavigationTitle.Fields.NavigationTitle),
-                        Link = string.IsNullOrEmpty(child["RedirectUrl"]) ? child.GeneralLink(Templates.NavigationLink.Fields.Link) : child.GeneralLink("RedirectUrl") ?? new Link()
+                        Link = (string.IsNullOrEmpty(child["RedirectUrl"]) ? child.GeneralLink(Templates.NavigationLink.Fields.Link) : child.GeneralLink("RedirectUrl")) ?? new Link()
                     };
 
                     if (nav.Link.Type == LinkType.NotSet || nav.Link.Url.IsNullOrEmpty())
@@ -80,7 +80,7 @@ namespace Feature.Wealth.Component.Repositories
                         Parent = parentNode,
                         Item = child,
                         NavigationTitle = child.GetFieldValue(Templates.PageNavigationTitle.Fields.NavigationTitle),
-                        Link = string.IsNullOrEmpty(child["RedirectUrl"]) ? child.GeneralLink(Templates.NavigationLink.Fields.Link) : child.GeneralLink("RedirectUrl") ?? new Link()
+                        Link = (string.IsNullOrEmpty(child["RedirectUrl"]) ? child.GeneralLink(Templates.NavigationLink.Fields.Link) : child.GeneralLink("RedirectUrl")) ?? new Link()
                     };
 
                     if (nav.Link.Type == LinkType.NotSet || nav.Link.Url.IsNullOrEmpty())
