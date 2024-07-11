@@ -26,8 +26,7 @@ namespace Feature.Wealth.Component.Repositories
             var sql = """
              SELECT *
              FROM [vw_BasicFund]
-             ORDER BY SixMonthReturnOriginalCurrency
-             DESC,ProductCode
+             ORDER BY ListingDate DESC,ProductCode
              """;
 
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
