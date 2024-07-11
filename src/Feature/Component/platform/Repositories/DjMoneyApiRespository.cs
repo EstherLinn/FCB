@@ -431,7 +431,9 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url}: {ex}");
+                var status = ex.StatusCode;
+                var resp = await ex.GetResponseStringAsync();
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
             }
             catch (Exception ex)
             {
@@ -463,7 +465,9 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url}: {ex}");
+                var status = ex.StatusCode;
+                var resp = await ex.GetResponseStringAsync();
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
             }
             catch (Exception ex)
             {
@@ -504,7 +508,9 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url}: {ex}");
+                var status = ex.StatusCode;
+                var resp = await ex.GetResponseStringAsync();
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
             }
             catch (Exception ex)
             {
@@ -545,7 +551,9 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url}: {ex}");
+                var status = ex.StatusCode;
+                var resp = await ex.GetResponseStringAsync();
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
             }
             catch (Exception ex)
             {
@@ -579,7 +587,9 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url}: {ex}");
+                var status = ex.StatusCode;
+                var resp = await ex.GetResponseStringAsync();
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
             }
             catch (Exception ex)
             {
