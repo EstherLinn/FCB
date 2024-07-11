@@ -55,39 +55,15 @@
         if (!jQuery) {
             return;
         }
-        //let isInit = false;
+
         toolsColneTmpl();
         // 依據API所回傳的資料，進行圖表下方 lengend 區塊的渲染
         function toolsColneTmpl() {
-            //const template = ;
-            //if (isInit) {
-            //    $('.l-sharebar').last().remove();
-            //}
-            //const cloneTmpl = template.content;
-            //var product = cloneTmpl.querySelector('[data-product-id]');
-            //product.setAttribute('data-product-id', item.id);
-            //var legend = cloneTmpl.querySelector('.c-legend');
-            //legend.style.setProperty('--legend-color', chartColors[lables.length - 1 - i]);
-            //var name = cloneTmpl.querySelector('.c-legend__name');
-            //name.textContent = item.name;
-            //var rate = cloneTmpl.querySelector('[data-rate]');
-            //var upDownClass = item.upDown == 'up' ? 'o-rise' : 'o-fall';
-            //rate.setAttribute('data-rate', item.id);
-            //rate.classList.add(upDownClass);
-            //rate.textContent = Math.abs(item.value) + '%';
-            //var remove = cloneTmpl.querySelector('[data-stock-remove]');
-            //remove.setAttribute('data-stock-remove', item.id);
-            //if (item.type != 'stock') {
-            //    var trash = cloneTmpl.querySelector('.c-productItem__btn');
-            //    trash.remove();
-            //}
+
             let sharebar = document.querySelector('.l-sharebar');
             sharebar.classList.remove("u-hidden");
             $('.l-wrap').first().append(sharebar);
-            // 綁定 like icon 的互動功能
-            //$('.l-sharebar').find('[data-ia]').interactive();
-            // 綁定 like icon 的彈跳登入畫面
-            //$('.l-sharebar').find('[data-popover]').popover();
+
             isInit = true;
         }
      });

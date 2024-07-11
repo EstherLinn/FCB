@@ -6,7 +6,7 @@ using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.Models.Tags.FundTagsModel;
 using Feature.Wealth.Component.Models.FundDetail;
 using Foundation.Wealth.Manager;
-using Template = Feature.Wealth.Component.Models.Tags.FundTagsModel.Template;
+using Templates = Feature.Wealth.Component.Models.Tags.FundTagsModel.Template;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -16,17 +16,17 @@ namespace Feature.Wealth.Component.Repositories
         {
             List<Tags> TagModels = new List<Tags>();
 
-            Item TagsFolder = ItemUtils.GetItem(Template.Fields.TagsFolder);
+            Item TagsFolder = ItemUtils.GetItem(Templates.Fields.TagsFolder);
 
-            foreach (var item in TagsFolder.GetChildren(Template.Fields.TagFolder))
+            foreach (var item in TagsFolder.GetChildren(Templates.Fields.TagFolder))
             {
-                foreach (var i in item.GetChildren(Template.Fields.FundTags))
+                foreach (var i in item.GetChildren(Templates.Fields.FundTags))
                 {
                     Tags tagModel = new Tags()
                     {
-                        FundTagType = string.IsNullOrEmpty(item[Template.Fields.FundType]) ? FundTagEnum.DiscountTag : (FundTagEnum)Enum.Parse(typeof(FundTagEnum), item[Template.Fields.FundType]),
-                        TagName = i[Template.Fields.TagName],
-                        ProductCodes = i[Template.Fields.ProductCodeList].Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList()
+                        FundTagType = string.IsNullOrEmpty(item[Templates.Fields.FundType]) ? FundTagEnum.DiscountTag : (FundTagEnum)Enum.Parse(typeof(FundTagEnum), item[Templates.Fields.FundType]),
+                        TagName = i[Templates.Fields.TagName],
+                        ProductCodes = i[Templates.Fields.ProductCodeList].Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList()
                     };
 
                     TagModels.Add(tagModel);
@@ -68,10 +68,9 @@ namespace Feature.Wealth.Component.Repositories
         //基金搜尋頁熱門關鍵字顯示用
         public List<string> GetFundTenTagNameData()
         {
-            var db_data = new List<FundSortTagModel>();
             var topicname = new List<string>();
-            
-            db_data = DbManager.Custom.ExecuteIList<FundSortTagModel>("sp_FundTags", null, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
+
+            List<FundSortTagModel> db_data = DbManager.Custom.ExecuteIList<FundSortTagModel>("sp_FundTags", null, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
             if (db_data != null)
             {
                 foreach (var item in db_data)

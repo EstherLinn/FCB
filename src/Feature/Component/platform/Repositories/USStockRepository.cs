@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using Templates = Feature.Wealth.Component.Models.USStock.Template;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -96,25 +97,25 @@ namespace Feature.Wealth.Component.Repositories
         {
             if (!this._hotKeywordTags.Any() || !this._hotProductTags.Any() || !this._discounts.Any())
             {
-                var tagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Id);
-                var children = ItemUtils.GetChildren(tagFolder, Template.TagFolder.Id);
+                var tagFolder = ItemUtils.GetContentItem(Templates.USStockTagFolder.Id);
+                var children = ItemUtils.GetChildren(tagFolder, Templates.TagFolder.Id);
 
                 if (children != null && children.Any())
                 {
                     foreach (var child in children)
                     {
-                        var tagsType = ItemUtils.GetFieldValue(child, Template.TagFolder.Fields.TagType);
+                        var tagsType = ItemUtils.GetFieldValue(child, Templates.TagFolder.Fields.TagType);
 
                         switch (tagsType)
                         {
                             case "HotKeywordTag":
-                                this._hotKeywordTags.AddRange(ItemUtils.GetChildren(child, Template.USStockTag.Id));
+                                this._hotKeywordTags.AddRange(ItemUtils.GetChildren(child, Templates.USStockTag.Id));
                                 break;
                             case "HotProductTag":
-                                this._hotProductTags.AddRange(ItemUtils.GetChildren(child, Template.USStockTag.Id));
+                                this._hotProductTags.AddRange(ItemUtils.GetChildren(child, Templates.USStockTag.Id));
                                 break;
                             case "Discount":
-                                this._discounts.AddRange(ItemUtils.GetChildren(child, Template.USStockTag.Id));
+                                this._discounts.AddRange(ItemUtils.GetChildren(child, Templates.USStockTag.Id));
                                 break;
                         }
                     }
@@ -123,8 +124,8 @@ namespace Feature.Wealth.Component.Repositories
 
             foreach (var f in this._hotKeywordTags)
             {
-                string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
-                string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
+                string tagName = ItemUtils.GetFieldValue(f, Templates.USStockTag.Fields.TagName);
+                string productCodeList = ItemUtils.GetFieldValue(f, Templates.USStockTag.Fields.ProductCodeList);
 
                 if (productCodeList.Contains(uSStock.FirstBankCode) && !uSStock.HotKeywordTags.Contains(tagName))
                 {
@@ -134,8 +135,8 @@ namespace Feature.Wealth.Component.Repositories
 
             foreach (var f in this._hotProductTags)
             {
-                string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
-                string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
+                string tagName = ItemUtils.GetFieldValue(f, Templates.USStockTag.Fields.TagName);
+                string productCodeList = ItemUtils.GetFieldValue(f, Templates.USStockTag.Fields.ProductCodeList);
 
                 if (productCodeList.Contains(uSStock.FirstBankCode) && !uSStock.HotProductTags.Contains(tagName))
                 {
@@ -145,8 +146,8 @@ namespace Feature.Wealth.Component.Repositories
 
             foreach (var f in this._discounts)
             {
-                string tagName = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.TagName);
-                string productCodeList = ItemUtils.GetFieldValue(f, Template.USStockTag.Fields.ProductCodeList);
+                string tagName = ItemUtils.GetFieldValue(f, Templates.USStockTag.Fields.TagName);
+                string productCodeList = ItemUtils.GetFieldValue(f, Templates.USStockTag.Fields.ProductCodeList);
 
                 if (productCodeList.Contains(uSStock.FirstBankCode) && !uSStock.Discount.Contains(tagName))
                 {

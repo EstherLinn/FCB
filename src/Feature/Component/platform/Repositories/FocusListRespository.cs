@@ -1,19 +1,18 @@
 ﻿using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Account.Models.ReachInfo;
 using Feature.Wealth.Account.Repositories;
+using Feature.Wealth.Component.Models.ETF.Tag;
 using Feature.Wealth.Component.Models.FocusList;
+using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.Invest;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
-using System;
+using Sitecore.Data.Items;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-using Feature.Wealth.Component.Models.ETF.Tag;
-using Feature.Wealth.Component.Models.FundDetail;
-using Template = Feature.Wealth.Component.Models.USStock.Template;
-using Sitecore.Data.Items;
+using Templates = Feature.Wealth.Component.Models.USStock.Template;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -110,19 +109,19 @@ namespace Feature.Wealth.Component.Repositories
         }
         public List<ForeignStockListModel> SetTagsToForeignStock(List<ForeignStockListModel> baseList)
         {
-            var tagFolder = ItemUtils.GetContentItem(Template.USStockTagFolder.Id);
-            var children = ItemUtils.GetChildren(tagFolder, Template.TagFolder.Id);
+            var tagFolder = ItemUtils.GetContentItem(Templates.USStockTagFolder.Id);
+            var children = ItemUtils.GetChildren(tagFolder, Templates.TagFolder.Id);
             var discounts = new List<Item>();
 
             if (children != null && children.Any())
             {
                 foreach (var child in children)
                 {
-                    var tagsType = ItemUtils.GetFieldValue(child, Template.TagFolder.Fields.TagType);
+                    var tagsType = ItemUtils.GetFieldValue(child, Templates.TagFolder.Fields.TagType);
 
                     if (tagsType == "Discount")
                     {
-                        discounts.AddRange(ItemUtils.GetChildren(child, Template.USStockTag.Id));
+                        discounts.AddRange(ItemUtils.GetChildren(child, Templates.USStockTag.Id));
                     }
                 }
             }
@@ -131,8 +130,8 @@ namespace Feature.Wealth.Component.Repositories
             {
                 foreach (var d in discounts)
                 {
-                    string tagName = ItemUtils.GetFieldValue(d, Template.USStockTag.Fields.TagName);
-                    string productCodeList = ItemUtils.GetFieldValue(d, Template.USStockTag.Fields.ProductCodeList);
+                    string tagName = ItemUtils.GetFieldValue(d, Templates.USStockTag.Fields.TagName);
+                    string productCodeList = ItemUtils.GetFieldValue(d, Templates.USStockTag.Fields.ProductCodeList);
                     if (productCodeList.Contains(item.ProductCode))
                     {
                         item.Tags.Add(tagName);
@@ -180,7 +179,7 @@ namespace Feature.Wealth.Component.Repositories
                     }
                     if (item2.Info == null)
                     {
-                        switch (Int32.Parse(item.InfoType))
+                        switch (int.Parse(item.InfoType))
                         {
                             case (int)InfoTypeEnum.ReachValue:
                                 item2.Info = new Info
@@ -206,7 +205,7 @@ namespace Feature.Wealth.Component.Repositories
                     }
                     else
                     {
-                        switch (Int32.Parse(item.InfoType))
+                        switch (int.Parse(item.InfoType))
                         {
                             case (int)InfoTypeEnum.ReachValue:
                                 item2.Info.PriceValue = item.PriceValue;

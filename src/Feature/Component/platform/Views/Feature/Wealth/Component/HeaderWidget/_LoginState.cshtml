@@ -1,8 +1,5 @@
 ﻿@using Feature.Wealth.Account.Helpers;
 @using Foundation.Wealth.Helper;
-@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-@using Feature.Wealth.Component.Models.HeaderWidget;
-@using Sitecore.Configuration;
 @{
     var logoutUrl = ClientRoute.GenerateUrl(this, "Accounts", "Logout");
     var member = FcbMemberHelper.GetMemberAllInfo();

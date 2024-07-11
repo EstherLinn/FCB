@@ -1,13 +1,12 @@
-﻿using System;
-using System.Data;
-using System.Text;
+﻿using Feature.Wealth.Component.Models.ETF.Tag;
 using Foundation.Wealth.Manager;
+using System;
 using System.Collections.Generic;
-using static Feature.Wealth.Component.Models.NewArrivalETF.NewArrivalEtfModel;
+using System.Data;
 using System.Globalization;
 using System.Linq;
-using Feature.Wealth.Component.Models.FundDetail;
-using Feature.Wealth.Component.Models.ETF.Tag;
+using System.Text;
+using static Feature.Wealth.Component.Models.NewArrivalETF.NewArrivalEtfModel;
 
 namespace Feature.Wealth.Component.Repositories
 {
