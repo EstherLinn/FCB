@@ -1,4 +1,4 @@
-﻿using Feature.Wealth.Component.Template;
+﻿using Feature.Wealth.Component.Repositories.Template;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
@@ -15,12 +15,12 @@ namespace Feature.Wealth.Component.Repositories
     /// a tree of ViewModels for use in constructing HTML page navigation.
     /// Useful for static navigation such as primary site menus or footers.
     /// </summary>
-    public class DeclaredNavigationRepository
+    public class NavigationRepository
     {
         /// <summary>
-        /// Creates a new instance of DeclaredNavigationRepository
+        /// Creates a new instance of NavigationRepository
         /// </summary>
-        public DeclaredNavigationRepository() { }
+        public NavigationRepository() { }
 
         /// <summary>
         /// Returns an instance of NavigationMenu with available link groups and navigation links
@@ -121,7 +121,7 @@ namespace Feature.Wealth.Component.Repositories
     }
 }
 
-namespace Feature.Wealth.Component.Template
+namespace Feature.Wealth.Component.Repositories.Template
 {
     internal struct Templates
     {

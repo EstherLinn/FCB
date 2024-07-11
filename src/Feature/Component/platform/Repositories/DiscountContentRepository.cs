@@ -1,6 +1,5 @@
 ﻿using Feature.Wealth.Component.Models.DiscountContent;
 using Sitecore;
-using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using System;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
