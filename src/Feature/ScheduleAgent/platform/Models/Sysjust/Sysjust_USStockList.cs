@@ -70,31 +70,31 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 三個月報酬
         /// </summary>
-        [Index(0)]
+        [Index(9)]
         public decimal? ThreeMonthReturn { get; set; }
 
         /// <summary>
         /// 一年報酬
         /// </summary>
-        [Index(9)]
+        [Index(10)]
         public decimal? OneYearReturn { get; set; }
 
         /// <summary>
         /// 今年以來報酬
         /// </summary>
-        [Index(10)]
+        [Index(11)]
         public decimal? YeartoDateReturn { get; set; }
 
         /// <summary>
         /// 漲跌
         /// </summary>
-        [Index(11)]
+        [Index(12)]
         public decimal? ChangePercentage { get; set; }
 
         /// <summary>
         /// 六個月報酬
         /// </summary>
-        [Index(12)]
+        [Index(13)]
         public decimal? SixMonthReturn { get; set; }
     }
 }

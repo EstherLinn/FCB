@@ -18,27 +18,27 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// <summary>
         /// 基金代碼
         /// </summary>
-        [Index(0)]
+        [Index(1)]
         [NullValues("", "NULL", null)]
         public string FundCode { get; set; }
 
         /// <summary>
         /// 規模日期
         /// </summary>
-        [Index(1)]
+        [Index(2)]
         [NullValues("", "NULL", null)]
         public string ScaleDate { get; set; }
 
         /// <summary>
         /// 規模(百萬)
         /// </summary>
-        [Index(2)]
+        [Index(3)]
         public decimal? ScaleMillions { get; set; }
 
         /// <summary>
         /// 幣別
         /// </summary>
-        [Index(3)]
+        [Index(4)]
         [NullValues("", "NULL", null)]
         public string Currency { get; set; }
     }
