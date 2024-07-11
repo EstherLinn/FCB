@@ -6,9 +6,9 @@ using Xcms.Sitecore.Foundation.Caching;
 
 namespace Feature.Wealth.Component.ModelBuilders
 {
-    public class PrimaryNavigationModelBuilder(DeclaredNavigationRepository repository, ICacheManager cache)
+    public class PrimaryNavigationModelBuilder(NavigationRepository repository, ICacheManager cache)
     {
-        private DeclaredNavigationRepository Repository { get; } = repository;
+        private NavigationRepository Repository { get; } = repository;
 
         private ICacheManager Cache { get; } = cache;
 

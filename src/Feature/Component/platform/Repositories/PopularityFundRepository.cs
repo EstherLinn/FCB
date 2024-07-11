@@ -1,13 +1,11 @@
-﻿using System.Data;
+﻿using Feature.Wealth.Component.Models.FundDetail;
+using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
 using System.Collections.Generic;
-using static Feature.Wealth.Component.Models.PopularityFund.PopularityFundModel;
-using Foundation.Wealth.Extensions;
-using System.Text;
+using System.Data;
 using System.Linq;
-using Feature.Wealth.Component.Models.FundDetail;
-using Sitecore.Services.Core;
-using Feature.Wealth.Component.Models.FundReturn;
+using System.Text;
+using static Feature.Wealth.Component.Models.PopularityFund.PopularityFundModel;
 
 namespace Feature.Wealth.Component.Repositories
 {

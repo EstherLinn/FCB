@@ -219,7 +219,6 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private IEnumerable<VisitCountModel> QueryVisitRecords(Guid? pageId)
         {
-            IEnumerable<VisitCountModel> result = null;
             string sql = """
                 SELECT [PageId]
                       ,[VisitCount]
@@ -228,7 +227,7 @@ namespace Feature.Wealth.Component.Repositories
                 WHERE [PageId] = @PageId
                 """;
             var param = new { PageId = pageId.Value };
-            result = DbManager.Custom.ExecuteIList<VisitCountModel>(sql, param, CommandType.Text);
+            IEnumerable<VisitCountModel> result = DbManager.Custom.ExecuteIList<VisitCountModel>(sql, param, CommandType.Text);
             return result;
         }
 
