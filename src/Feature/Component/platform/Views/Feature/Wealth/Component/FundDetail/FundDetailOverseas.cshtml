@@ -4048,8 +4048,8 @@
                                             data: [{
                                                 id: selfData[0].firstBankCode,
                                                 name: selfData[0].firstBankCode + selfData[0].fundName,
-                                                x: selfData[0][standardField],
-                                                y: selfData[0][rateField]
+                                                x: roundToTwo(selfData[0][standardField]),
+                                                y: roundToTwo(selfData[0][rateField])
                                             }]
                                         }]
                                 });
