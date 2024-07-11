@@ -48,7 +48,6 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 {
                     SetDirectory();
                     EnsureDirectoryExists(this.LocalDirectory);
-                    EnsureDirectoryExists(this.BackUpDirectory);
                 }
             }
         }
@@ -79,7 +78,6 @@ namespace Feature.Wealth.ScheduleAgent.Services
 
             // 在上一層目錄的基礎上建立目錄路徑
             this.LocalDirectory = Path.Combine(parentDirectory, this.LocalDirectory);
-            this.BackUpDirectory = Path.Combine(parentDirectory, this.BackUpDirectory);
         }
 
         /// <summary>
@@ -282,7 +280,6 @@ namespace Feature.Wealth.ScheduleAgent.Services
                             return false;
                         }
                         string localFilePath = Path.Combine(this.LocalDirectory, fileName);
-                        string backupFilePath = Path.Combine(this.BackUpDirectory, fileName);
 
                         //確認檔案是否相同
                         if (File.Exists(localFilePath) && await ftpClient.CompareFile(localFilePath, filePath, FtpCompareOption.Checksum) == FtpCompareResult.Equal)
