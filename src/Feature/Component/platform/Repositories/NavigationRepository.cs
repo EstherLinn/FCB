@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Component.Repositories.Template;
+﻿using Feature.Wealth.Component.Repositories.PageLink;
+using Feature.Wealth.Component.Repositories.Template;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
@@ -52,7 +53,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 if (child.IsDerived(Templates.ImageNavigationLink.Id))
                 {
-                    var nav = new NavigationPageLink
+                    var nav = new ImageNavigationLink
                     {
                         Parent = parentNode,
                         Item = child,
@@ -119,6 +120,11 @@ namespace Feature.Wealth.Component.Repositories
             return link.TargetItem.Axes.IsAncestorOf(contextItem);
         }
     }
+}
+
+namespace Feature.Wealth.Component.Repositories.PageLink
+{
+    internal class ImageNavigationLink : NavigationPageLink;
 }
 
 namespace Feature.Wealth.Component.Repositories.Template
