@@ -251,6 +251,7 @@ namespace Feature.Wealth.Component.Repositories
                     dest.FiveYearReturnMarketPriceOriginalCurrency = src.FiveYearReturnMarketPriceOriginalCurrency.FormatDecimalNumber(needPercent: true);
                     dest.FiveYearReturnMarketPriceOriginalCurrencyStyle = src.FiveYearReturnMarketPriceOriginalCurrency.DecimalNumberToStyle();
 
+                    dest.BasicMarketPriceDate = DateTimeExtensions.FormatDate(src.BasicMarketPriceDate);
                     dest.MarketPriceChange = src.MarketPriceChange.FormatDecimalNumber();
                     dest.MarketPriceChangePercentage = src.MarketPriceChangePercentage.FormatDecimalNumber(needPercent: true);
                     dest.MarketPriceChangeStyle = src.MarketPriceChange.DecimalNumberToStyle();
@@ -265,6 +266,7 @@ namespace Feature.Wealth.Component.Repositories
 
                     dest.YeartoDateReturnNetValueOriginalCurrency = src.YeartoDateReturnNetValueOriginalCurrency.FormatDecimalNumber(needPercent: true);
                     dest.YeartoDateReturnNetValueOriginalCurrencyStyle = src.YeartoDateReturnNetValueOriginalCurrency.DecimalNumberToStyle();
+                    dest.BasicNetAssetValueDate = DateTimeExtensions.FormatDate(src.BasicNetAssetValueDate);
                     dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
                     dest.NetAssetValueChange = src.NetAssetValueChange.FormatDecimalNumber();
                     dest.NetAssetValueChangePercentage = src.NetAssetValueChangePercentage.FormatDecimalNumber(needPercent: true);
