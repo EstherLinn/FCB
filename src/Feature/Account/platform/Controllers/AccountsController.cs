@@ -30,7 +30,7 @@ namespace Feature.Wealth.Account.Controllers
         private readonly FacebookService _facebookService;
         private readonly MemberRepository _memberRepository;
         private readonly MemoryCache _cache = MemoryCache.Default;
-        private string callBackUrl;
+        private readonly string callBackUrl;
 
         public AccountsController()
         {
@@ -46,12 +46,14 @@ namespace Feature.Wealth.Account.Controllers
         {
             if (!string.IsNullOrEmpty(error) || string.IsNullOrEmpty(code))
             {
+                Session["LoginStatus"] = false;
                 Session["ErrorMsg"] = error_description;
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
             var responseToken = await _lineService.GetTokensByCode(code);
             if (responseToken == null)
             {
+                Session["LoginStatus"] = false;
                 Session["ErrorMsg"] = "Line Token身分驗證有誤，請聯絡資訊處。";
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
@@ -84,6 +86,7 @@ namespace Feature.Wealth.Account.Controllers
         {
             if (!string.IsNullOrEmpty(error) || string.IsNullOrEmpty(code))
             {
+                Session["LoginStatus"] = false;
                 Session["ErrorMsg"] = error_description;
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
@@ -91,6 +94,7 @@ namespace Feature.Wealth.Account.Controllers
             var responseToken = await _facebookService.GetTokensByCode(code);
             if (responseToken == null)
             {
+                Session["LoginStatus"] = false;
                 Session["ErrorMsg"] = "FB Token身分驗證有誤，請聯絡資訊處。";
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
@@ -151,22 +155,9 @@ namespace Feature.Wealth.Account.Controllers
                                 var cifMember = _memberRepository.GetWebBankUserInfo(id);
                                 if (cifMember == null)
                                 {
-                                    step = "Step3-1 第三方登入綁定網銀 理財網db cif無資料，開始判斷紅綠燈 ";
-                                    //紅綠燈判斷
-                                    if (_memberRepository.CheckEDHStatus())
-                                    {
-                                        step = "Step3-2 第三方登入綁定網銀入 紅綠燈通過　取cif&&數存推薦人資料from oracle";
-                                        //取客戶資料from Oracle
-                                        _memberRepository.InsertCFMBSELFormOracle(id, "WebBank");
-                                        _memberRepository.InsertCifFormOracle(id);
-                                        cifMember = _memberRepository.GetWebBankUserInfo(id);
-                                    }
-                                    if (cifMember == null)
-                                    {
-                                        step = "Step3-3 第三方登入綁定網銀 cifMember:null";
-                                        Session["ErrorMsg"] = "您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!";
-                                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
-                                    }
+                                    step = "Step3-3 第三方登入綁定網銀 cifMember:null";
+                                    Session["LoginStatus"] = false;
+                                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                                 }
                                 var isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), id);
                                 if (isBind)
@@ -182,7 +173,6 @@ namespace Feature.Wealth.Account.Controllers
                                 else
                                 {
                                     step = "Step4 第三方登入綁定網銀 error";
-                                    Session["ErrorMsg"] = "您好，您的會員資料目前正更新中，請於明日重新登入，再使用綁定網銀，造成不便，敬請見諒!";
                                 }
                             }
                             else
@@ -197,36 +187,21 @@ namespace Feature.Wealth.Account.Controllers
                                     var cifMember = _memberRepository.GetWebBankUserInfo(id);
                                     if (cifMember == null)
                                     {
-                                        step = "Step3-1 第e個網登入 理財網db cif無資料，開始判斷紅綠燈 ";
-                                        //紅綠燈判斷
-                                        if (_memberRepository.CheckEDHStatus())
-                                        {
-                                            step = "Step3-2 第e個網登入 紅綠燈通過　取cif&&數存推薦人資料from oracle";
-                                            //取客戶資料from Oracle
-                                            _memberRepository.InsertCFMBSELFormOracle(id, "WebBank");
-                                            _memberRepository.InsertCifFormOracle(id);
-                                            cifMember = _memberRepository.GetWebBankUserInfo(id);
-                                        }
-                                        if (cifMember == null)
-                                        {
-                                            step = "Step3-3 第e個網登入 cifMember:null";
-                                            Session["ErrorMsg"] = "您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!";
-                                            return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
-                                        }
+                                        step = "Step3-3 第e個網登入 cifMember:null";
+                                        Session["LoginStatus"] = false;
+                                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                                     }
                                     //創建會員
                                     step = "Step4 第e個網登入 創建會員並登入";
                                     FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
                                         cifMember.CIF_E_MAIL_ADDRESS, cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
                                         true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE);
-
                                     _memberRepository.CreateNewMember(member);
                                     User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
                                     SetCustomPropertyAndLogin(member, user);
                                     step = "Step5 第e個網登入 同步ileo關注清單";
                                     FirstBankApiService firstBankApiService = new();
                                     firstBankApiService.SyncTrackListFormIleo(await firstBankApiService.GetTrackListFromIleo(cifMember.CIF_PROMO_CODE));
-
                                 }
                                 else
                                 {
@@ -254,6 +229,7 @@ namespace Feature.Wealth.Account.Controllers
                 }
                 else
                 {
+                    Session["LoginStatus"] = false;
                     Session["ErrorMsg"] = "理財網登入佇列序號過期，請嘗試重新登入。";
                     step = "Step 1-1 取得 cache queueId, queueId no contain,queueId =" + queueId;
                 }
@@ -261,6 +237,7 @@ namespace Feature.Wealth.Account.Controllers
             catch (Exception ex)
             {
                 Logger.Account.Info($"個網登入回理財網 {step} ,exception Messags: {ex.ToString()}");
+                Session["LoginStatus"] = false;
                 Session["ErrorMsg"] = "理財網身分驗證伺服器有誤，請聯絡資訊處";
             }
             finally
@@ -272,7 +249,8 @@ namespace Feature.Wealth.Account.Controllers
 
         public async Task<ActionResult> SignInWebBankByApp()
         {
-            if (FcbMemberHelper.CheckMemberLogin())
+            //防止網銀身分重複登入
+            if (FcbMemberHelper.CheckMemberLogin() && FcbMemberHelper.GetMemberPlatForm() == PlatFormEunm.WebBank)
             {
                 return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
             }
@@ -296,22 +274,9 @@ namespace Feature.Wealth.Account.Controllers
                         CIFMember cifMember = _memberRepository.GetAppUserInfo(code);
                         if (cifMember == null)
                         {
-                            step = "Step3-1 App登入 理財網db cif無資料，開始判斷紅綠燈 ";
-                            //紅綠燈判斷
-                            if (_memberRepository.CheckEDHStatus())
-                            {
-                                step = "Step3-2 App登入 紅綠燈通過　取cif及數存推薦人資料from oracle";
-                                //取客戶資料from Oracle
-                                var getId = _memberRepository.InsertCFMBSELFormOracle(code, "App");
-                                _memberRepository.InsertCifFormOracle(getId);
-                                cifMember = _memberRepository.GetAppUserInfo(code);
-                            }
-                            if (cifMember == null)
-                            {
-                                step = "Step3-3 App登入 cifMember:null";
-                                Session["ErrorMsg"] = "您好，您的會員資料目前正更新中，請於明日重新登入，再使用會員相關功能，造成不便，敬請見諒!";
-                                return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
-                            }
+                            step = "Step3-1 App登入 cifMember:null";
+                            Session["LoginStatus"] = false;
+                            return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                         }
                         step = $"Step4 App登入 已取得CIF資料,理財網創建會員並登入";
                         FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
@@ -335,6 +300,7 @@ namespace Feature.Wealth.Account.Controllers
             catch (Exception ex)
             {
                 Logger.Account.Info($"網銀登入byApp {step} ,exception Messags: {ex.ToString()}");
+                Session["LoginStatus"] = false;
                 Session["ErrorMsg"] = "理財網身分驗證伺服器有誤，請聯絡資訊處";
             }
             finally
@@ -386,21 +352,17 @@ namespace Feature.Wealth.Account.Controllers
 
         public ActionResult Logout()
         {
-            var nowUrl = new Uri(callBackUrl);
-            var qs = HttpUtility.ParseQueryString(nowUrl.Query);
-            qs.Remove("promotionCode");
-            qs.Remove("rtCode");
-            qs.Remove("queueId");
-            string pagePathWithoutQueryString = nowUrl.GetLeftPart(UriPartial.Path);
-            string newUrl = qs.Count > 0 ? string.Format("{0}?{1}", pagePathWithoutQueryString, qs) : pagePathWithoutQueryString;
-            callBackUrl = newUrl;
             Authentication.LogOutUser();
             return Redirect(callBackUrl);
         }
 
         [HttpPost]
-        public async Task<ActionResult> InsertTrack(List<TrackListModel> trackList, string productId)
+        public async Task<ActionResult> InsertTrack(List<TrackListModel> trackList, string productId, string productType)
         {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
             if (trackList == null)
             {
                 trackList = Enumerable.Empty<TrackListModel>().ToList();
@@ -412,7 +374,7 @@ namespace Feature.Wealth.Account.Controllers
             if (FcbMemberHelper.GetMemberPlatForm() == PlatFormEunm.WebBank)
             {
                 FirstBankApiService firstBankApiService = new();
-                await firstBankApiService.SyncTrackListToIleo(FcbMemberHelper.GetMemberPlatFormId(), productId);
+                await firstBankApiService.SyncTrackListToIleo(FcbMemberHelper.GetMemberPlatFormId(), productId, productType);
             }
             return new JsonNetResult(objReturn);
         }
@@ -462,6 +424,10 @@ namespace Feature.Wealth.Account.Controllers
         [HttpPost]
         public ActionResult SetMemberEmail(string email)
         {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
             object objReturn = null;
             if (string.IsNullOrEmpty(email) || !email.IsValidEmail())
             {
