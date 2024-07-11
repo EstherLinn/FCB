@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.RecommendedProduct;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-using Template = Feature.Wealth.Component.Models.RecommendedProduct.Template;
-
+using Templates = Feature.Wealth.Component.Models.RecommendedProduct.Template;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -15,7 +14,7 @@ namespace Feature.Wealth.Component.Repositories
 
         public RecommendedProductModel recommendProduct(Item dataSourceItem)
         {
-            var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, Template.RecommendedProduct.Fields.FundIDLIst);
+            var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, Templates.RecommendedProduct.Fields.FundIDLIst);
             var viewModel = new RecommendedProductModel { Item = dataSourceItem };
 
 

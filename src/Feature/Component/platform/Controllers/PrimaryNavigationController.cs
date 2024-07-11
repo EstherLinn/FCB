@@ -1,7 +1,7 @@
 ﻿using Feature.Wealth.Component.ModelBuilders;
+using Feature.Wealth.Component.Repositories;
 using Sitecore.Mvc.Presentation;
 using System.Web.Mvc;
-using Xcms.Sitecore.Feature.Navigation.Repositories;
 using Xcms.Sitecore.Foundation.Caching;
 
 namespace Feature.Wealth.Component.Controllers
@@ -9,7 +9,7 @@ namespace Feature.Wealth.Component.Controllers
     public class PrimaryNavigationController : Controller
     {
         private readonly ICacheManager _cache = CachingContext.Current;
-        private readonly DeclaredNavigationRepository _repository = new();
+        private readonly NavigationRepository _repository = new();
 
         public ActionResult Index()
         {
