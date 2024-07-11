@@ -43,6 +43,12 @@ namespace Feature.Wealth.Component.Repositories
             model.StockAllocation = ItemUtils.GetInteger(dataSource, Template.Calculate.Fields.StockAllocation);
             model.BondAllocation = ItemUtils.GetInteger(dataSource, Template.Calculate.Fields.BondAllocation);
             model.CurrencyAllocation = ItemUtils.GetInteger(dataSource, Template.Calculate.Fields.CurrencyAllocation);
+            model.StockAllocationFieldName = ItemUtils.GetFieldValue(dataSource, Template.Calculate.Fields.StockAllocationFieldName);
+            model.BondAllocationFieldName = ItemUtils.GetFieldValue(dataSource, Template.Calculate.Fields.BondAllocationFieldName);
+            model.CurrencyAllocationFieldName = ItemUtils.GetFieldValue(dataSource, Template.Calculate.Fields.CurrencyAllocationFieldName);
+            model.StockAllocationText = ItemUtils.GetFieldValue(dataSource, Template.Calculate.Fields.StockAllocationText);
+            model.BondAllocationText = ItemUtils.GetFieldValue(dataSource, Template.Calculate.Fields.BondAllocationText);
+            model.CurrencyAllocationText = ItemUtils.GetFieldValue(dataSource, Template.Calculate.Fields.CurrencyAllocationText);
             model.Notice = ItemUtils.GetFieldValue(dataSource, Template.Calculate.Fields.Notice);
             model.RemoteConsultationTitle = ItemUtils.GetFieldValue(dataSource, Template.Calculate.Fields.RemoteConsultationTitle);
             model.RemoteConsultationContent = ItemUtils.GetFieldValue(dataSource, Template.Calculate.Fields.RemoteConsultationContent);

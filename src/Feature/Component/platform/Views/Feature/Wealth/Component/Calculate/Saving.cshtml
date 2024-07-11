@@ -119,9 +119,7 @@
                                 <div class="l-form" id="MonthlyForm">
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
-                                            <input id="Monthly" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
-                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <input id="Monthly" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="monthly">
                                             <span class="o-unitbox__text">萬元</span>
                                         </div>
                                     </div>
@@ -160,7 +158,7 @@
                         </div>
                     </div>
                     <div class="l-formBlock__action">
-                        <button type="button" class="o-btn o-btn--primary o-btn--lg" id="Calculate">開始試算</button>
+                        <button data-gotop type="button" class="o-btn o-btn--primary o-btn--lg" id="Calculate">開始試算</button>
                     </div>
                 </div>
             </div>
@@ -202,8 +200,8 @@
                     <div class="c-form c-form--popup">
                         <div class="c-form__title">目標金額</div>
                         <div class="c-form__content">
-                                        <div class="l-form l-form--popup" id="TargetRemarkForm">
-                                            <div class="l-form__input">
+                            <div class="l-form l-form--popup" id="TargetRemarkForm">
+                                <div class="l-form__input">
                                                 <div class="o-unitbox">
                                                     <input id="TargetRemark" type="number" value="100" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
                                                     oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
@@ -211,17 +209,17 @@
                                             <span class="o-unitbox__text">萬元</span>
                                                 </div>
                                             </div>
-                                            <div class="l-form__text l-form__text--error">
+                                <div class="l-form__text l-form__text--error">
                                                 <div class="o-errorText">
                                                     <span class="s4" id="TargetRemarkErrorText"></span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
+                            </div>
+                        </div>
                     </div>
                     </div>
                     <div class="l-formBlock__item">
-                                <div class="c-form c-form--popup">
+                        <div class="c-form c-form--popup">
                                     <div class="c-form__title">預計幾年後達成目標</div>
                                     <div class="c-form__content">
                                         <div class="l-form l-form--popup">
@@ -234,16 +232,16 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                    </div>
                 </div>
                 <div class="l-formBlock__group">
                     <div class="l-formBlock__title">
-                                <span class="t2 t-bold">投資規劃</span>
-                            </div>
+                        <span class="t2 t-bold">投資規劃</span>
+                    </div>
                     <div class="l-formBlock__item">
-                                <div class="c-form c-form--popup ">
-                                    <div class="c-form__title">已準備金額</div>
-                                    <div class="c-form__content">
+                        <div class="c-form c-form--popup ">
+                            <div class="c-form__title">已準備金額</div>
+                            <div class="c-form__content">
                                         <div class="l-form l-form--popup" id="PreparedRemarkForm" >
                                             <div class="l-form__input">
                                                 <div class="o-unitbox">
@@ -260,18 +258,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
                     <div class="l-formBlock__item">
-                                <div class="c-form c-form--popup ">
+                        <div class="c-form c-form--popup ">
                                     <div class="c-form__title">每月投入金額</div>
                                     <div class="c-form__content">
                                         <div class="l-form l-form--popup" id="MonthlyRemarkForm">
                                             <div class="l-form__input">
                                                 <div class="o-unitbox">
-                                                    <input id="MonthlyRemark" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
-                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                                    <input id="MonthlyRemark" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"data-id="popup_monthly">
                                                 <span class="o-unitbox__text">萬元</span>
                                                 </div>
                                             </div>
@@ -283,9 +279,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                    </div>
                     <div class="l-formBlock__item">
-                                <div class="c-form c-form--popup ">
+                    <div class="c-form c-form--popup ">
                                     <div class="c-form__title">預期投資報酬率</div>
                                     <div class="c-form__content">
                                         <div class="l-form l-form--popup">
@@ -298,10 +294,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                    </div>
                     <div class="l-formBlock__action">
-                                <button type="button" class="o-btn o-btn--primary o-btn--lg" id="CalculateRemark">重新試算</button>
-                            </div>
+                        <button data-gotop type="button" class="o-btn o-btn--primary o-btn--lg" id="CalculateRemark">重新試算</button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -394,45 +390,45 @@
             </div>
             <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
                 <div class="c-section">
-                            <div class="c-section">
-                                <div class="c-section__content">
-                                    <div class="l-calcCard">
-                                        <div class="l-calcCard__head t-bold">
-                                            <span class="t3">預期總收益</span>
-                                            <span class="t1 t-warning" id="tab1_Total"></span>
-                                        </div>
-                                        <div class="l-calcCard__content">
-                                            <div class="l-pipeList">
-                                                <div class="l-pipeList__content">
-                                                    <ul class="c-pipeList s3 t-bold">
-                                                        <li class="c-pipeList__item ">
-                                                            <span>已準備金額</span>
+                    <div class="c-section">
+                        <div class="c-section__content">
+                            <div class="l-calcCard">
+                                <div class="l-calcCard__head t-bold">
+                                    <span class="t3">預期總收益</span>
+                                    <span class="t1 t-warning" id="tab1_Total"></span>
+                                </div>
+                                <div class="l-calcCard__content">
+                                    <div class="l-pipeList">
+                                        <div class="l-pipeList__content">
+                                            <ul class="c-pipeList s3 t-bold">
+                                                <li class="c-pipeList__item ">
+                                                    <span>已準備金額</span>
                                                     <span class="" id="tab1_AmountPrepared"></span>
-                                                        </li>
-                                                        <li class="c-pipeList__item ">
-                                                            <span>每月投入</span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>每月投入</span>
                                                     <span class="" id="tab1_MonthlyInvestment"></span>
-                                                        </li>
-                                                        <li class="c-pipeList__item ">
-                                                            <span>投資報酬率</span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>投資報酬率</span>
                                                     <span class="" id="tab1_ExpectedRoi"></span>
-                                                        </li>
-                                                        <li class="c-pipeList__item ">
-                                                            <span>投資</span>
+                                                </li>
+                                                <li class="c-pipeList__item ">
+                                                    <span>投資</span>
                                                     <span class="" id="tab1_Years"></span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="l-pipeList__actions">
-                                                    <a href="#popupAdjustment" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-popup="true">調整我的規劃</a>
-                                                </div>
-                                            </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="l-pipeList__actions">
+                                            <a href="#popupAdjustment" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-popup="true">調整我的規劃</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- 預期收益 & 投資報酬模擬 -->
-                            <div class="c-section">
+                        </div>
+                    </div>
+                    <!-- 預期收益 & 投資報酬模擬 -->
+                    <div class="c-section">
                         <div class="l-revenueResult">
                             <div class="l-revenueResult__charts">
                                 <div class="l-calcCharts">
@@ -479,7 +475,7 @@
                         </div>
 
                 <!-- 遮罩 -->
-                <section class="c-section c-section--locker">
+                @* <section class="c-section c-section--locker">
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
@@ -491,7 +487,7 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> *@
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -671,7 +667,7 @@
                         </div>
 
                     <!-- 遮罩 -->
-                    <section class="c-section c-section--locker">
+                    @* <section class="c-section c-section--locker">
                         <div class="c-calcLocker">
                             <div class="l-wrap">
                                 <div class="c-calcLocker__icon">
@@ -683,7 +679,7 @@
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </section> *@
 
                     <!-- 風險屬性 & 資產配置 -->
                     <div class="c-section">
@@ -860,10 +856,10 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                </div>
 
                 <!-- 遮罩 -->
-                <section class="c-section c-section--locker">
+                @* <section class="c-section c-section--locker">
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
@@ -875,7 +871,7 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> *@
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -1056,7 +1052,7 @@
                         </div>
 
                 <!-- 遮罩 -->
-                <section class="c-section c-section--locker">
+                @* <section class="c-section c-section--locker">
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
@@ -1068,7 +1064,7 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> *@
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -1250,7 +1246,7 @@
                 </div>
 
                 <!-- 遮罩 -->
-                <section class="c-section c-section--locker">
+                @* <section class="c-section c-section--locker">
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
@@ -1262,7 +1258,7 @@
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> *@
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -1569,9 +1565,42 @@
             });
             //#endregion
 
+            //#region 每月投入金額綁定事件
+            let $inputMonthly = $('[data-id="monthly"]');
+            let lastValidMonthly = parseFloat($inputMonthly.val()) || 1;
 
+            $inputMonthly.on('change', function () {
+                let monthly = parseFloat($(this).val());
+
+                if (isNaN(monthly)) {
+                    $(this).val(lastValidMonthly);
+                } else if (monthly < 1) {
+                    monthly = 1;
+                    $(this).val(monthly);
+                    lastValidMonthly = monthly;
+                } else {
+                    lastValidMonthly = monthly;
+                }
+            });
+            let $inputMonthly_popup = $('[data-id="popup_monthly"]');
+            let lastValidMonthly_popup = parseFloat($inputMonthly_popup.val()) || 1;
+            $inputMonthly_popup.on('change', function () {
+                let monthly = parseFloat($(this).val());
+
+                if (isNaN(monthly)) {
+                    $(this).val(lastValidMonthly_popup);
+                } else if (monthly < 1) {
+                    monthly = 1;
+                    $(this).val(monthly);
+                    lastValidMonthly_popup = monthly;
+                } else {
+                    lastValidMonthly_popup = monthly;
+                }
+            });
+            //#endregion
+            
             //#region 各欄位綁定事件
-            $("#Target,#Prepared, #Monthly,#TargetRemark,#PreparedRemark, #MonthlyRemark").on('change', function () {
+            $("#Target,#Prepared,#TargetRemark,#PreparedRemark").on('change', function () {
                 var id = this.id;
                 var val = $(this).val();
                 var formatVal = trimZeroAndDot(val);
@@ -1594,6 +1623,12 @@
                     let Prepared = $("#Prepared").val();
                     let Monthly = $("#Monthly").val();
                     let ExpectedRoi = $("#ExpectedRoi").val();
+
+                    $("#TargetRemark").val(Target);
+                    $("#EstimateYearRemark").val(Years);
+                    $("#PreparedRemark").val(Prepared);
+                    $("#MonthlyRemark").val(Monthly);
+                    $("#ExpectedRoiRemark").val(ExpectedRoi);
             
                     // 試算結果
                     let planningResults = planningCompute(Years, Prepared, Monthly, ExpectedRoi);
@@ -1669,56 +1704,66 @@
 
             //#region 重新試算按鈕綁定事件
             $("#CalculateRemark").click(function () {
-                if (clickCheck()) {
-                    loading();
-
-                    $.magnificPopup.close();
-                    $('.l-mainstage').first().addClass('u-hidden');
-
-                    let Target = $("#TargetRemark").val();
-                    let Years = $("#EstimateYearRemark").val();
-                    let Prepared = $("#PreparedRemark").val();
-                    let Monthly = $("#MonthlyRemark").val();
-                    let ExpectedRoi = $("#ExpectedRoiRemark").val();
-
-                    // 試算結果
-                    let planningResults = planningCompute(Years, Prepared, Monthly, ExpectedRoi);
-
+                 if (clickCheck()) {
+                     loading();
                     let tab1Results, tab2Results, tab3Results, tab4Results, tab5Results, currentYear;
 
                     chartsRevenues.length = 0;
                     chartsRewards.length = 0;
                     chartsRewardsCategories.length = 0;
 
-                    // 顯示試算結果 - 描述區塊
-                    $("#ResultDescription").removeClass("u-hidden");
-                    renderResultDescription(planningResults, Target, Years);
+                     $.magnificPopup.close();
+                     $('.l-mainstage').first().addClass('u-hidden');
 
-                    // 顯示試算結果 - tab區塊
-                    $("#ResultTab").removeClass("u-hidden");
+                     let Target = $("#TargetRemark").val();
+                     let Years = $("#EstimateYearRemark").val();
+                     let Prepared = $("#PreparedRemark").val();
+                     let Monthly = $("#MonthlyRemark").val();
+                     let ExpectedRoi = $("#ExpectedRoiRemark").val();
 
-                    // 判斷試算結果是否有缺口
-                    if (resultHasGap) {
-                        $(".tab1Btn").removeClass("u-hidden");
-                        $(".tab2Btn").addClass("u-hidden");
-                        $(".tab3Btn").addClass("u-hidden");
-                        $(".tab4Btn").addClass("u-hidden");
-                        $(".tab5Btn").removeClass("u-hidden");
+                     $("#TargetRemark").val(Target);
+                     $("#EstimateYearRemark").val(Years);
+                     $("#PreparedRemark").val(Prepared);
+                     $("#MonthlyRemark").val(Monthly);
+                     $("#ExpectedRoiRemark").val(ExpectedRoi);
+
+                      // 試算結果
+                     let planningResults = planningCompute(Years, Prepared, Monthly, ExpectedRoi);
+
+                     
+
+                     // 顯示試算結果 - 描述區塊
+                     $("#ResultDescription").removeClass("u-hidden");
+                     renderResultDescription(planningResults, Target, Years);
+
+                     // 顯示試算結果 - tab區塊
+                     $("#ResultTab").removeClass("u-hidden");
+
+                   
+
+                     // 判斷試算結果是否有缺口
+                     if (resultHasGap) {
+
+                         $(".tab1Btn").removeClass("u-hidden");
+                         $(".tab2Btn").addClass("u-hidden");
+                         $(".tab3Btn").addClass("u-hidden");
+                         $(".tab4Btn").addClass("u-hidden");
+                         $(".tab5Btn").removeClass("u-hidden");
 
                         tab1Results = planningResults;
-                        tab5Results = planningCompute(Years,Prepared, Monthly, (parseFloat(ExpectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+                        tab5Results = planningCompute(Years, Prepared, Monthly, (parseFloat(ExpectedRoi) + parseFloat(defaultRiskAttributes)).toString());
 
                         renderResultTab1(tab1Results, Target, Years, Prepared, Monthly, ExpectedRoi);
                         renderResultTab5(tab5Results, Target, Years, Prepared, Monthly, (parseFloat(ExpectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
                         currentYear = new Date().getFullYear() + parseFloat($("#EstimateYearRemark").val()) - 1;
-                    }
-                    else {
-                        $(".tab1Btn").removeClass("u-hidden");
-                        $(".tab2Btn").removeClass("u-hidden");
-                        $(".tab3Btn").removeClass("u-hidden");
-                        $(".tab4Btn").removeClass("u-hidden");
-                        $(".tab5Btn").addClass("u-hidden");
+                     }
+                     else {
+
+                         $(".tab1Btn").removeClass("u-hidden");
+                         $(".tab2Btn").removeClass("u-hidden");
+                         $(".tab3Btn").removeClass("u-hidden");
+                         $(".tab4Btn").removeClass("u-hidden");
+                         $(".tab5Btn").addClass("u-hidden");
 
                         tab1Results = planningResults;
                         tab2Results = tab2Compute(Target, Years, Prepared, ExpectedRoi);
@@ -1731,23 +1776,127 @@
                         renderResultTab4(tab4Results, Target, Prepared, Monthly, ExpectedRoi);
 
                         currentYear = new Date().getFullYear() + tab4Results - 1;
+                     }
+
+                    function bindTabSwitchEvent() {
+                        $("ul.c-tab__navs a:first").off("click.myEvent").on("click.myEvent", function (event) {
+                            event.preventDefault();
+
+                             $(".tab1Btn").addClass("is-active");
+                             $(".tab2Btn,.tab3Btn,.tab4Btn,.tab5Btn").removeClass("is-active");
+
+                             $('[data-tab-panel-id="tab-1"]').addClass("is-active");
+                             $('[data-tab-panel-id="tab-2"],[data-tab-panel-id="tab-3"],[data-tab-panel-id="tab-4"],[data-tab-panel-id="tab-5"]').removeClass("is-active");
+
+                            (function (s, i) {
+                                "use strict";
+                                var n = "tab",
+                                    o = {
+                                        docking: !0,
+                                        scroll: !0
+                                    };
+
+                                function a(t, e) {
+                                    this.element = t,
+                                        this.$element = s(t),
+                                        this.options = s.extend(!0, {}, o, e, this.$element.data()),
+                                        delete this.options.tab,
+                                        this._defaults = o,
+                                        this._name = n,
+                                        this.init(),
+                                        this.$element.data("plugin_tab", this)
+                                }
+
+                                s.extend(a.prototype, {
+                                    init: function () {
+                                        var n = this;
+                                        this.$element.find(".c-tab__switch").off("click").on("click", function (t) {
+                                            t.preventDefault(),
+                                                s(this).closest(".c-tab__collapse").toggleClass("is-open")
+                                        });
+                                        var t, o = this.$element.find("[data-tab-align]").data("tab-align");
+                                        this.$element.find("[data-tab-target]").off("switch").on("switch", function (t) {
+                                            var e = s(this).data("tabTarget"),
+                                                i = n.$element.find('> [data-tab-panel-id="' + e + '"]');
+                                            e && i.length && (t.preventDefault(),
+                                                n.$element.find("> .c-tab__header [data-tab-target], > [data-tab-panel-id]").removeClass("is-active"),
+                                                n.$element.find('> .c-tab__header [data-tab-target="' + e + '"]').addClass("is-active"),
+                                                i.addClass("is-active"),
+                                                n.scrollAlign.call(n, o)),
+                                                n.$element.find(".c-tab__collapse").removeClass("is-open")
+                                        }).off("click").on("click", function (t) {
+                                            t.preventDefault(),
+                                                s(this).trigger("switch")
+                                            // 不再執行滾動效果
+                                        }),
+                                            this.$element.find("> .c-tab__header > .c-tab__navs > [data-tab-target].is-active").trigger("switch"),
+                                            this.options.docking && s.fn.scrollToFixed && this.$element.find(".c-tab__header:first").scrollToFixed({
+                                                limit: function () {
+                                                    var t = s(this).closest('[data-tab="true"]');
+                                                    return t.offset().top + t.innerHeight() - s(this).outerHeight(!0)
+                                                },
+                                                fixed: function () {
+                                                    s(this).addClass("is-docking")
+                                                },
+                                                unfixed: function () {
+                                                    s(this).removeClass("is-docking")
+                                                },
+                                                preAbsolute: function () {
+                                                    s(this).addClass("is-freeze")
+                                                },
+                                                postAbsolute: function () {
+                                                    s(this).removeClass("is-freeze")
+                                                },
+                                                zIndex: 5
+                                            });
+                                        const e = location.href;
+                                        -1 === e.indexOf("?") || -1 === e.indexOf("tab") || (t = e.split("?")[1].split("&").find(t => 0 === t.indexOf("tab"))) && "tab" === t.split("=")[0] && s(`[data-tab-target="${t = t,
+                                            String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").split("=")[1]}"]`).trigger("switch"),
+                                            this.$element.attr("data-tab", !0)
+                                    },
+                                    scrollAlign: function (t) {
+                                        var e = this.$element.find(".c-tab__item.is-active").closest("li"),
+                                            i = this.$element.find(".c-tab__navs");
+                                        e = "left" === t ? e.position().left + i.scrollLeft() : e.position().left + e.width() / 2 + i.scrollLeft() - i.width() / 2,
+                                            i.animate({
+                                                scrollLeft: e
+                                            }, 300)
+                                    }
+                                });
+
+                                s.fn.tab = function (e) {
+                                    return this.each(function () {
+                                        var t = s.data(this, "plugin_tab") || new a(this, e);
+                                        "string" == typeof e && t[e] && t[e].apply(t, Array.prototype.slice.call(arguments, 1))
+                                    })
+                                };
+
+                                s('[data-tab="true"]').tab();
+                            })(jQuery, window);
+                        });
+
+                        // 觸發第一次點擊事件
+                        $("ul.c-tab__navs a:first").trigger("click.myEvent");
                     }
 
-                    // tab active 狀態復原
-                    $('ul.c-tab__navs a:first').trigger('click');
+                    bindTabSwitchEvent();
 
-                    // 顯示所有圓餅圖
-                    renderChartsRevenues(chartsRevenues);
+                    $("ul.c-tab__navs a:first").trigger("click.myEvent");
 
-                    // 取得長條圖年份顯示範圍
-                    getRewardsYearsRange(currentYear);
 
-                    // 顯示投資報酬長條圖
-                    renderChartsRewards(chartsRewards);
 
-                    // 顯示試算結果 - 諮詢區塊
-                    $("#consult").removeClass("u-hidden");
-                }
+                     // 顯示所有圓餅圖
+                     renderChartsRevenues(chartsRevenues);
+
+                     // 取得長條圖年份顯示範圍
+                     getRewardsYearsRange(currentYear);
+
+                     // 顯示投資報酬長條圖
+                     renderChartsRewards(chartsRewards);
+
+                     // 顯示試算結果 - 諮詢區塊
+                     $("#consult").removeClass("u-hidden");
+                 }
             });
             //#endregion
 
@@ -1759,11 +1908,10 @@
                 var inputErrorText = inputID + "ErrorText";
                 var errorMessage = "";
 
+                var TargetId
                 var TargetVal;
                 var PreparedVal;
                 var PreparedId;
-                var monthlyVal;
-                var monthlyId;
 
                 switch (id) {
                     case "Target":
@@ -1779,14 +1927,15 @@
                         if (val == "" || isNaN(val)) {
                             errorMessage = "此欄位為必填";
                             checkFlag = false;
-                        } else if (parseFloat(val) > PreparedVal && PreparedVal != 0) {
-                            errorMessage = "";
-                            $(PreparedId + "ErrorText").text(errorMessage);
-                            $(PreparedId + "Form").removeClass('is-error');
-                            checkFlag = true;
                         } else if (parseFloat(val) <= PreparedVal) {
                             errorMessage = "已準備金額應小於目標金額";
-                            checkFlag = false;
+                            $(PreparedId + "ErrorText").text(errorMessage);
+                            $(PreparedId + "Form").addClass('is-error');
+                            checkFlag = true;
+                        } else if (parseFloat(val) > PreparedVal) {
+                            $(PreparedId + "ErrorText").text("");
+                            $(PreparedId + "Form").removeClass('is-error');
+                            checkFlag = true;
                         }
                         else {
                             checkFlag = true;
@@ -1798,102 +1947,23 @@
                     case "PreparedRemark":
                         if (id == "Prepared") {
                             TargetVal = parseFloat($("#Target").val());
-                            monthlyVal = parseFloat($("#Monthly").val());
-                            monthlyId = "#Monthly";
                         }
                         else {
                             TargetVal = parseFloat($("#TargetRemark").val());
-                            monthlyVal = parseFloat($("#MonthlyRemark").val());
-                            monthlyId = "#MonthlyRemark";
                         }
 
                         if (val == "" || isNaN(val)) {
                             errorMessage = "此欄位為必填";
                             checkFlag = false;
                         } else if (parseFloat(val) >= TargetVal) {
-                            if (monthlyVal == 0) {
-                                errorMessage2 = "";
-                                $(monthlyId + "Form").removeClass('is-error');
-                                $(monthlyId + "ErrorText").text(errorMessage2);
-                                errorMessage = "已準備金額應小於目標金額";
-                                $(inputErrorText).text(errorMessage);
-                                checkFlag = false;
-                            } else {
-                                errorMessage = "已準備金額應小於目標金額";
-                                $(inputErrorText).text(errorMessage);
-                                checkFlag = false;
-                            }
+                            errorMessage = "已準備金額應小於目標金額";
                             checkFlag = false;
-                        } else if (parseFloat(val) == 0 && monthlyVal == 0) {
-                            errorMessage = "已準備金額和每月投入金額不能同時為0";
-
-                            $(inputErrorText).text(errorMessage);
-                            $(inputForm).addClass('is-error');
-                            $(monthlyId + "ErrorText").text(errorMessage);
-                            $(monthlyId + "Form").addClass('is-error');
-                            checkFlag = false;
-                        } else if (parseFloat(val) < TargetVal) {
-                            if (parseFloat(val) == 0 && monthlyVal == 0) {
-                                errorMessage = "已準備金額和每月投入金額不能同時為0";
-                                $(inputErrorText).text(errorMessage);
-                                $(inputForm).addClass('is-error');
-                                $(monthlyId + "ErrorText").text(errorMessage);
-                                $(monthlyId + "Form").addClass('is-error');
-                                checkFlag = false;
-                            } else if (parseFloat(val) != 0 || monthlyVal != 0) {
-                                errorMessage = "";
-                                $(inputErrorText).text(errorMessage);
-                                $(inputForm).removeClass('is-error');
-                                $(monthlyId + "ErrorText").text(errorMessage);
-                                $(monthlyId + "Form").removeClass('is-error');
-                                checkFlag = true;
-                            }
-
-                        }
-
-                        else {
+                        }else {
                             checkFlag = true;
                         }
 
                         $(inputID).val(val);
-                        break;
-                    case "Monthly": // 每月投入金額
-                    case "MonthlyRemark":
-                        if (id == "Monthly") {
-                            PreparedVal = parseFloat($("#Prepared").val());
-                            PreparedId = "#Prepared";
-                        }
-                        else {
-                            PreparedVal = parseFloat($("#PreparedRemark").val());
-                            PreparedId = "#PreparedRemark";
-                        }
-
-                        if (val == "" || isNaN(val)) {
-                            errorMessage = "此欄位為必填";
-                            checkFlag = false;
-                        } else if (parseFloat(val) == 0 && PreparedVal == 0) {
-                            errorMessage = "已準備金額和每月投入金額不能同時為0";
-
-                            $(PreparedId + "ErrorText").text(errorMessage);
-                            $(PreparedId + "Form").addClass('is-error');
-                            $(inputErrorText).text(errorMessage);
-                            $(inputForm).addClass('is-error');
-                            checkFlag = false;
-                        } else if (parseFloat(val) != 0) {
-                            errorMessage = "已準備金額和每月投入金額不能同時為0";
-
-                            $(PreparedId + "Form").removeClass('is-error');
-                            $(inputForm).removeClass('is-error');
-                            checkFlag = true;
-
-                        } else {
-                            checkFlag = true;
-                        }
-
-                        $(inputID).val(val);
-                        break;
-                    default:
-                        return;
+                    break;
                 }
 
                 if (checkFlag) {
@@ -1912,7 +1982,7 @@
             function clickCheck() {
                 var checkBox = [];
 
-                $("#Target, #Prepared, #Monthly, #TargetRemark, #PreparedRemark, #MonthlyRemark").each(function (i, obj) {
+                $("#Target, #Prepared, #TargetRemark, #PreparedRemark").each(function (i, obj) {
                     var inputID = obj.id;
                     var val = obj.value;
                     checkBox.push(inputCheck(inputID, val));
@@ -2701,7 +2771,11 @@
 
 
             //#region 查看推薦方案綁定事件
-            $('#btnSolutions').on('click', function (e) {
+            $('#btnSolutionsSuccess').on('click', function (e) {
+                e.preventDefault();
+                $('[data-tab-target].is-active').trigger('click');
+            });
+            $('#btnSolutionsUnsuccess').on('click', function (e) {
                 e.preventDefault();
                 $('[data-tab-target].is-active').trigger('click');
             });
@@ -2714,39 +2788,40 @@
             });
             //#endregion
 
+
             //#region 資產配置圓餅圖顯示
             let chartsAssets = [{
                 id: 'chartsAssets-01',
                 // 您的規劃
-                currency: 100000,
+                currency: @Model.CurrencyAllocation,
                 // 貨幣
-                bond: 400000,
+                bond: @Model.BondAllocation,
                 // 債券
-                stock: 500000 // 股票
+                stock: @Model.StockAllocation // 股票
             }, {
                 id: 'chartsAssets-02',
                 // 推薦方案1
-                currency: 100000,
+                currency: @Model.CurrencyAllocation,
                 // 貨幣
-                bond: 400000,
+                bond: @Model.BondAllocation,
                 // 債券
-                stock: 500000 // 股票
+                stock: @Model.StockAllocation // 股票
             }, {
                 id: 'chartsAssets-03',
                 // 推薦方案3
-                currency: 100000,
+                currency: @Model.CurrencyAllocation,
                 // 貨幣
-                bond: 400000,
+                bond: @Model.BondAllocation,
                 // 債券
-                stock: 500000 // 股票
+                stock: @Model.StockAllocation // 股票
             }, {
                 id: 'chartsAssets-04',
                 // 推薦方案4
-                currency: 100000,
+                currency: @Model.CurrencyAllocation,
                 // 貨幣
-                bond: 400000,
+                bond: @Model.BondAllocation,
                 // 債券
-                stock: 500000 // 股票
+                stock: @Model.StockAllocation // 股票
             }];
 
             chartsAssets.forEach(item => {
@@ -2812,7 +2887,7 @@
                         name: '資產配置',
                         data: [{
                             name: '股票',
-                            alias: '股票 (含平衡型)',
+                            alias: '股票(平衡型)',
                             y: item.stock,
                             color: '#3AAB68'
                         }, {
