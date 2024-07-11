@@ -60,8 +60,8 @@
                                             <span>市價</span>
                                         </div>
                                         <div class="c-numerical__content c-numerical__content--xl u-left@dt-only">
-                                            <span>@etfData.MarketPrice.FormatDecimalNumber()</span>
-                                            <span class="t-unit">@etfData.QuoteCurrency</span>
+                                            <span>@etfData.BasicMarketPrice.FormatDecimalNumber()</span>
+                                            <span class="t-unit">@etfData.BasicQuoteCurrency</span>
                                         </div>
                                     </div>
                                 </div>
@@ -71,7 +71,7 @@
                                             <span>漲跌 / 漲跌幅</span>
                                         </div>
                                         <div class="c-numerical__content c-numerical__content--xl u-left@dt-only">
-                                            <span class="@etfData.NetAssetValueChangePercentageStyle">@(etfData.NetAssetValueChange) / @(etfData.NetAssetValueChangePercentage)</span>
+                                            <span class="@etfData.MarketPriceChangePercentageStyle">@(etfData.MarketPriceChange) / @(etfData.MarketPriceChangePercentage)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -83,7 +83,7 @@
                                             <span>日期</span>
                                         </div>
                                         <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only">
-                                            <span>@etfData.NetAssetValueDate</span>
+                                            <span>@etfData.BasicMarketPriceDate</span>
                                         </div>
                                     </div>
                                 </div>
