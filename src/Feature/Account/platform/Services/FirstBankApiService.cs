@@ -87,10 +87,10 @@ namespace Feature.Wealth.Account.Services
                         type = "E";
                         break;
                     case "foreignstocks":
-                        type = "X";
+                        type = "G";
                         break;
                     case "foreignbonds":
-                        type = "G";
+                        type = "X";
                         break;
                 }
                 var routeWithParams = _route.
@@ -147,10 +147,10 @@ namespace Feature.Wealth.Account.Services
                             case "E":
                                 type = "ETF";
                                 break;
-                            case "X":
+                            case "G":
                                 type = "ForeignStocks";
                                 break;
-                            case "G":
+                            case "X":
                                 type = "ForeignBonds";
                                 break;
                         }
@@ -178,10 +178,10 @@ namespace Feature.Wealth.Account.Services
                                     case "E":
                                         type = "ETF";
                                         break;
-                                    case "X":
+                                    case "G":
                                         type = "ForeignStocks";
                                         break;
-                                    case "G":
+                                    case "X":
                                         type = "ForeignBonds";
                                         break;
                                 }
