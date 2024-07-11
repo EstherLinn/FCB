@@ -96,9 +96,14 @@
                                 <a href="#" class="o-sorting" data-sorting-column="OneYearReturnOriginalCurrency"></a>
                             </div>
                         </th>
+                        <th data-fcblevel>
+                            <div class="c-table__title">
+                                <span>淨值/<br>漲跌幅通知</span>
+                            </div>
+                        </th>
                         <th>
                             <div class="c-table__title">
-                                <span>關注/比較</span>
+                                <span>通知/關注/比較</span>
                             </div>
                         </th>
                         <th>
@@ -201,12 +206,41 @@
                             <% } %>
                         </div>
                     </td>
+                    <td class="c-cardTable__body c-cardTable__body--line" data-card-table-width="1/1" data-fcblevel>
+                        <div class="c-cardTable__title" data-length="5">淨值/<br>漲跌幅通知</div>
+                        <div class="c-cardTable__content" data-infostatus="<% if (Info != null){%><%= 'true' %><% } else {%><%= 'false' %> <%}%>">
+                            <% if (Info  == null ) { %>
+                            <div class="t-tip--lt">點鈴鐺設定到價通知</div>
+                            <% } else {%>
+                            <% if (Info.ReachValue  != null ) { %>
+                            <div class="<% if ( (Info.ReachValue >= Info.PriceValue &&  Info.ReachValue <= NetAssetValue) || (Info.ReachValue <= Info.PriceValue &&  Info.ReachValue >= NetAssetValue)){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="淨值 <%= Info.ReachValue %>"></div>
+                            <% } %>
+                            <% if (Info.RisePercent  != null  || Info.FallPercent) { %>
+                            <div class="l-straight@lt">
+                                <% if (Info.RisePercent  != null ) { %>
+                                <div class="l-straight__item">
+                                    <span class="<% if (NetAssetValue >= Info.RiseValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="漲幅 <%= Info.RisePercent %>%"></span>
+                                </div>
+                                <% } %>
+                                <% if (Info.FallPercent  != null ) { %>
+                                <div class="l-straight__item">
+                                    <span class="<% if (NetAssetValue <= Info.FallValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="跌幅 <%= Info.FallPercent %>%"></span>
+                                </div>
+                                <% } %>
+                            </div>
+                            <% } %>
+                            <% } %>
+                        </div>
+                    </td>
                     <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
                     <td class="c-cardTable__space"></td>
                     <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
                     <td class="c-cardTable__footer" data-card-table-width="<% if (AvailabilityStatus == 'Y' && OnlineSubscriptionAvailability != 'N'){%><%= '3/4' %><% } else {%><%= '1/1' %> <%}%>">
                         <div class="c-cardTable__content">
                             <ul class="l-collect l-collect--divider@lt">
+                                <li class="l-collect__item" data-fcblevel>
+                                    <%= Button.InfoButtonHtml %>
+                                </li>
                                 <li class="l-collect__item">
                                     <%= Button.FocusButtonHtml %>
 

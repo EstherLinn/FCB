@@ -17,6 +17,7 @@
     var WebEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("WebEntrust"));
     var MobileEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("MobileEntrust"));
     var IleoEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("IleoEntrust"));
+    var fcbLevel = Settings.GetSetting("FcbLevel");
 }
 <div id="popupLogin" class="c-modal mfp-hide">
     <div class="c-modal__wrap">
@@ -36,6 +37,22 @@
                             <a href="#" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-eh="fcbapplogin-init,fcbapplogin-click" eh-login-type="ileo">ileo</a>
                         </div>
                     </div>
+                    @if (fcbLevel == "2")
+                    {
+                    <div class="c-loginBox__social">
+                        <div class="c-socialBox">
+                            <div class="c-socialBox__title">社群登入</div>
+                            <ul class="c-socialBox__list">
+                                <li class="c-socialBox__item">
+                                    <a href="@fbAuthUrl" class="o-social o-social--fb"></a>
+                                </li>
+                                <li class="c-socialBox__item">
+                                    <a href="@lineAuthUrl" class="o-social o-social--line"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    }
                 </div>
             </div>
             <div class="c-loginModal__item">
