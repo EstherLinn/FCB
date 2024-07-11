@@ -20,7 +20,7 @@ namespace Foundation.Wealth.Pipelines.HttpRequestBegin
         /// <summary>
         /// 定義 Redirect 的欄位，使用順序後至前，可使用 config 增加設定，DefineRedirectField = {guid/name}
         /// </summary>
-        public List<string> DefineRedirectFields { get; } = new List<string>() { "redirect url" };
+        public List<string> DefineRedirectFields { get; } = new List<string>() { "RedirectUrl" };
 
         private bool IgnoreDatabase => Context.Database == null || Context.Database.Name.Equals("core", StringComparison.InvariantCultureIgnoreCase);
 
