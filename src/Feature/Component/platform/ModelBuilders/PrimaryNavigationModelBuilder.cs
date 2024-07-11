@@ -1,8 +1,7 @@
-﻿using Sitecore.Data.Items;
+﻿using Feature.Wealth.Component.Repositories;
+using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
-using System;
 using Xcms.Sitecore.Feature.Navigation.Models;
-using Xcms.Sitecore.Feature.Navigation.Repositories;
 using Xcms.Sitecore.Foundation.Caching;
 
 namespace Feature.Wealth.Component.ModelBuilders

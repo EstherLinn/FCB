@@ -21,7 +21,7 @@
                             <div class="c-numerical__title c-numerical__title--dk"><span>價格</span></div>
                             <div class="c-numerical__content">
 
-                                <span>@(etfData.MarketPrice.FormatDecimalNumber(4))(@etfData.QuoteCurrency)</span>
+                                <span>@(etfData.BasicMarketPrice.FormatDecimalNumber(4))(@etfData.BasicQuoteCurrency)</span>
                             </div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                     </div>
                 </div>
             </div>
-            <div class="l-dataNotes"><span class="t-note">資料日期：@etfData.NetAssetValueDate</span></div>
+            <div class="l-dataNotes"><span class="t-note">資料日期：@etfData.BasicMarketPriceDate</span></div>
         </div>
     </section>
     <section class="c-section u-printBreak">
@@ -103,7 +103,7 @@
                             <div class="c-numerical__title c-numerical__title--dk"><span>價格</span></div>
                             <div class="c-numerical__content">
 
-                                <span>@(etfData.NetAssetValue.FormatDecimalNumber(4))(@etfData.QuoteCurrency)</span>
+                                <span>@(etfData.BasicNetAssetValue.FormatDecimalNumber(4))(@etfData.BasicNetAssetValueCurrency)</span>
                             </div>
                         </div>
                     </div>
@@ -172,7 +172,7 @@
                     </div>
                 </div>
             </div>
-            <div class="l-dataNotes"><span class="t-note">資料日期：@etfData.NetAssetValueDate</span></div>
+            <div class="l-dataNotes"><span class="t-note">資料日期：@etfData.BasicNetAssetValueDate</span></div>
         </div>
     </section>
     <section class="c-section u-printBreak">
