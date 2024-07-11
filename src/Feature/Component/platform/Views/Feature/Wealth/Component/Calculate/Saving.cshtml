@@ -71,7 +71,9 @@
                                     <div class="l-form__set">
                                         <div class="l-form__input">
                                             <div class="o-unitbox">
-                                                <input id="EstimateYear" type="number" value="5" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="year">
+                                                <input id="EstimateYear" type="number" value="5" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="year"
+                                                       oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                       onkeydown="return (event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                                 <span class="o-unitbox__text">年</span>
                                             </div>
                                         </div>
@@ -119,7 +121,9 @@
                                 <div class="l-form" id="MonthlyForm">
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
-                                            <input id="Monthly" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="monthly">
+                                            <input id="Monthly" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="monthly"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">萬元</span>
                                         </div>
                                     </div>
@@ -188,7 +192,7 @@
 <div id="popupAdjustment" class="c-modal c-modal--sm mfp-hide">
     <div class="c-modal__wrap">
         <header class="c-modal__header">
-                    <h2 class="c-modal__title">調整我的規劃</h2>
+            <h2 class="c-modal__title">調整我的規劃</h2>
         </header>
         <div class="c-modal__content">
             <form class="l-formBlock l-formBlock--popup">
@@ -202,36 +206,38 @@
                         <div class="c-form__content">
                             <div class="l-form l-form--popup" id="TargetRemarkForm">
                                 <div class="l-form__input">
-                                                <div class="o-unitbox">
-                                                    <input id="TargetRemark" type="number" value="100" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
-                                                    oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
-                                                    onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
-                                            <span class="o-unitbox__text">萬元</span>
-                                                </div>
-                                            </div>
+                                    <div class="o-unitbox">
+                                        <input id="TargetRemark" type="number" value="100" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
+                                            oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                            onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                        <span class="o-unitbox__text">萬元</span>
+                                    </div>
+                                </div>
                                 <div class="l-form__text l-form__text--error">
-                                                <div class="o-errorText">
-                                                    <span class="s4" id="TargetRemarkErrorText"></span>
-                                                </div>
-                                            </div>
+                                    <div class="o-errorText">
+                                        <span class="s4" id="TargetRemarkErrorText"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     </div>
                     <div class="l-formBlock__item">
                         <div class="c-form c-form--popup">
-                                    <div class="c-form__title">預計幾年後達成目標</div>
-                                    <div class="c-form__content">
-                                        <div class="l-form l-form--popup">
-                                            <div class="l-form__input">
-                                                <div class="o-unitbox">
-                                                    <input type="number" value="5" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" id="EstimateYearRemark" data-id="popup_year">
-                                                    <span class="o-unitbox__text">年</span>
-                                                </div>
-                                            </div>
+                            <div class="c-form__title">預計幾年後達成目標</div>
+                            <div class="c-form__content">
+                                <div class="l-form l-form--popup">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input type="number" value="5" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" id="EstimateYearRemark" data-id="popup_year"
+                                                oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                onkeydown="return (event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">年</span>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="l-formBlock__group">
@@ -242,58 +248,60 @@
                         <div class="c-form c-form--popup ">
                             <div class="c-form__title">已準備金額</div>
                             <div class="c-form__content">
-                                        <div class="l-form l-form--popup" id="PreparedRemarkForm" >
-                                            <div class="l-form__input">
-                                                <div class="o-unitbox">
-                                                    <input id="PreparedRemark" type="number" value="0" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
-                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
-                                                    <span class="o-unitbox__text">萬元</span>
-                                                </div>
-                                            </div>
-                                            <div class="l-form__text l-form__text--error">
-                                                <div class="o-errorText">
-                                                    <span class="s4" id="PreparedRemarkErrorText"></span>
-                                                </div>
-                                            </div>
+                                <div class="l-form l-form--popup" id="PreparedRemarkForm" >
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input id="PreparedRemark" type="number" value="0" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
+                                                oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">萬元</span>
                                         </div>
                                     </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText">
+                                            <span class="s4" id="PreparedRemarkErrorText"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="l-formBlock__item">
                         <div class="c-form c-form--popup ">
-                                    <div class="c-form__title">每月投入金額</div>
-                                    <div class="c-form__content">
-                                        <div class="l-form l-form--popup" id="MonthlyRemarkForm">
-                                            <div class="l-form__input">
-                                                <div class="o-unitbox">
-                                                    <input id="MonthlyRemark" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"data-id="popup_monthly">
-                                                <span class="o-unitbox__text">萬元</span>
-                                                </div>
-                                            </div>
-                                            <div class="l-form__text l-form__text--error">
-                                                <div class="o-errorText">
-                                                    <span class="s4" id="MonthlyRemarkErrorText"></span>
-                                                </div>
-                                            </div>
+                            <div class="c-form__title">每月投入金額</div>
+                            <div class="c-form__content">
+                                <div class="l-form l-form--popup" id="MonthlyRemarkForm">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input id="MonthlyRemark" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"data-id="popup_monthly"
+                                                oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">萬元</span>
+                                        </div>
+                                    </div>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText">
+                                            <span class="s4" id="MonthlyRemarkErrorText"></span>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="l-formBlock__item">
-                    <div class="c-form c-form--popup ">
-                                    <div class="c-form__title">預期投資報酬率</div>
-                                    <div class="c-form__content">
-                                        <div class="l-form l-form--popup">
-                                            <div class="l-form__input">
-                                                <div class="o-unitbox">
-                                                    <input type="number" value="2.00" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" id="ExpectedRoiRemark" data-id="popup_roi">
-                                                    <span class="o-unitbox__text">%</span>
-                                                </div>
-                                            </div>
+                        <div class="c-form c-form--popup ">
+                        <div class="c-form__title">預期投資報酬率</div>
+                            <div class="c-form__content">
+                                <div class="l-form l-form--popup">
+                                    <div class="l-form__input">
+                                        <div class="o-unitbox">
+                                            <input type="number" value="2.00" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" id="ExpectedRoiRemark" data-id="popup_roi">
+                                            <span class="o-unitbox__text">%</span>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="l-formBlock__action">
                         <button data-gotop type="button" class="o-btn o-btn--primary o-btn--lg" id="CalculateRemark">重新試算</button>
@@ -301,15 +309,6 @@
                 </div>
             </form>
         </div>
-    </div>
-</div>
-
-<div class="c-loading" id="LoadingResult">
-    <div class="c-loading__wrap">
-        <div class="c-loading__pic">
-            <img src="~/themes/images/lions/lion-loading.svg" alt="">
-        </div>
-        <div class="c-loading__text">Loading...</div>
     </div>
 </div>
 
@@ -465,17 +464,18 @@
                                     @Model.ExpectedReturnRemarks
                                 </div>
                             }
+                                <div class="l-revenueResult__actions u-hidden">
+                                    <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                                </div>
 
-                            <div class="l-revenueResult__actions u-hidden">
-                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
-                            </div>
+                            
 
                         </div>
                     </div>
-                        </div>
+                </div>
 
                 <!-- 遮罩 -->
-                @* <section class="c-section c-section--locker">
+                <section class="c-section c-section--locker">
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
@@ -487,7 +487,7 @@
                             </div>
                         </div>
                     </div>
-                </section> *@
+                </section>
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -658,16 +658,15 @@
                                             @Model.ExpectedReturnRemarks
                                         </div>
                                     }
-
-                                    <div class="l-revenueResult__actions u-hidden">
-                                        <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
-                                    </div>
+                            <div class="l-revenueResult__actions u-hidden">
+                                            <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                                        </div>
                                 </div>
                             </div>
                         </div>
 
                     <!-- 遮罩 -->
-                    @* <section class="c-section c-section--locker">
+                    <section class="c-section c-section--locker">
                         <div class="c-calcLocker">
                             <div class="l-wrap">
                                 <div class="c-calcLocker__icon">
@@ -679,7 +678,7 @@
                                 </div>
                             </div>
                         </div>
-                    </section> *@
+                    </section>
 
                     <!-- 風險屬性 & 資產配置 -->
                     <div class="c-section">
@@ -851,15 +850,17 @@
                                         </div>
                                     }
 
-                                    <div class="l-revenueResult__actions u-hidden">
-                                        <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
-                                    </div>
+
+                            <div class="l-revenueResult__actions u-hidden">
+                                            <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                                        </div>
+                                    
                                 </div>
                             </div>
                 </div>
 
                 <!-- 遮罩 -->
-                @* <section class="c-section c-section--locker">
+                <section class="c-section c-section--locker">
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
@@ -871,7 +872,7 @@
                             </div>
                         </div>
                     </div>
-                </section> *@
+                </section>
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -1043,16 +1044,15 @@
                                         </div>
                                     }
 
-                                    <div class="l-revenueResult__actions u-hidden">
-                                        <!-- [data-save]: 為了綁定按下後的結果通知，js 請參考下方 script 區塊 -->
-                                        <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
-                                    </div>
+                            <div class="l-revenueResult__actions u-hidden">
+                                            <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                                        </div>
                                 </div>
                             </div>
-                        </div>
+                </div>
 
                 <!-- 遮罩 -->
-                @* <section class="c-section c-section--locker">
+                <section class="c-section c-section--locker">
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
@@ -1064,7 +1064,7 @@
                             </div>
                         </div>
                     </div>
-                </section> *@
+                </section>
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -1239,14 +1239,15 @@
                             }
 
                             <div class="l-revenueResult__actions u-hidden">
-                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
-                            </div>
+                                    <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                                </div>
+                            
                         </div>
                     </div>
                 </div>
 
                 <!-- 遮罩 -->
-                @* <section class="c-section c-section--locker">
+                <section class="c-section c-section--locker">
                     <div class="c-calcLocker">
                         <div class="l-wrap">
                             <div class="c-calcLocker__icon">
@@ -1258,7 +1259,7 @@
                             </div>
                         </div>
                     </div>
-                </section> *@
+                </section>
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -1291,7 +1292,7 @@
                                     <div class="c-section__title">資產配置</div>
                                     <div class="c-section__content">
                                         <div class="c-chartBox c-chartBox--sm@dt-only">
-                                            <div id="chartsAssets-04" class="o-pie"></div>
+                                            <div id="chartsAssets-05" class="o-pie"></div>
                                         </div>
                                     </div>
                                 </section>
@@ -1695,6 +1696,9 @@
                     renderRecommendedFunds(9);
                     renderRecommendedETFs(3);
                     renderRecommendedStocks(3);
+
+                    // 顯示推薦商品走勢圖
+                    renderRecommendedProductChart();
             
                     // 顯示試算結果 - 諮詢區塊
                     $("#consult").removeClass("u-hidden");
@@ -2822,7 +2826,15 @@
                 bond: @Model.BondAllocation,
                 // 債券
                 stock: @Model.StockAllocation // 股票
-            }];
+                }, {
+                id: 'chartsAssets-05',
+                // 推薦方案5
+                currency: @Model.CurrencyAllocation,
+                // 貨幣
+                bond: @Model.BondAllocation,
+                // 債券
+                stock: @Model.StockAllocation // 股票
+                }];
 
             chartsAssets.forEach(item => {
                 Highcharts.chart(item.id, {
@@ -2886,18 +2898,18 @@
                     series: [{
                         name: '資產配置',
                         data: [{
-                            name: '股票',
-                            alias: '股票(平衡型)',
+                            name: '@Model.StockAllocationText',
+                            alias: '@Model.StockAllocationFieldName',
                             y: item.stock,
                             color: '#3AAB68'
                         }, {
-                            name: '債券',
-                            alias: '債券',
+                            name: '@Model.BondAllocationText',
+                            alias: '@Model.BondAllocationFieldName',
                             y: item.bond,
                             color: '#D0AD72'
                         }, {
-                            name: '貨幣',
-                            alias: '貨幣',
+                            name: '@Model.CurrencyAllocationText',
+                            alias: '@Model.CurrencyAllocationFieldName',
                             y: item.currency,
                             color: '#FDAA5E'
                         }]

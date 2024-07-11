@@ -75,7 +75,7 @@
                                             <div class="o-unitbox">
                                                 <input id="years" type="number" value="15" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="year"
                                                        oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
-                                                       onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                                       onkeydown="return (event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                                 <span class="o-unitbox__text">年</span>
                                             </div>
                                         </div>
@@ -128,8 +128,10 @@
                                 <div class="l-form" id="monthlyInvestmentForm">
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
-                                            <input id="monthlyInvestment" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="monthly" />
-                                                   <span class="o-unitbox__text">萬元</span>
+                                            <input id="monthlyInvestment" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="monthly"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">萬元</span>
                                         </div>
                                     </div>
                                     <div class="l-form__text l-form__text--error">
@@ -242,7 +244,7 @@
                                         <div class="o-unitbox">
                                             <input id="years_Popup" type="number" value="10" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="popup_year"
                                                    oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
-                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                                   onkeydown="return (event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">年</span>
                                         </div>
                                     </div>
@@ -285,8 +287,10 @@
                                 <div class="l-form l-form--popup" id="monthlyInvestment_PopupForm">
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
-                                            <input id="monthlyInvestment_Popup" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="popup_monthly" />
-                                                   <span class="o-unitbox__text">萬元</span>
+                                            <input id="monthlyInvestment_Popup" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="popup_monthly"
+                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
+                                            <span class="o-unitbox__text">萬元</span>
                                         </div>
                                     </div>
                                     <div class="l-form__text l-form__text--error">
@@ -1314,7 +1318,7 @@
                                     <div class="c-section__title">資產配置</div>
                                     <div class="c-section__content">
                                         <div class="c-chartBox c-chartBox--sm@dt-only">
-                                            <div id="chartsAssets-04" class="o-pie"></div>
+                                            <div id="chartsAssets-05" class="o-pie"></div>
                                         </div>
                                     </div>
                                 </section>
@@ -2793,7 +2797,15 @@
                 bond: 400000,
                 // 債券
                 stock: 500000 // 股票
-            }];
+            }, {
+                id: 'chartsAssets-05',
+                // 推薦方案5
+                currency: @Model.CurrencyAllocation,
+                // 貨幣
+                bond: @Model.BondAllocation,
+                // 債券
+                stock: @Model.StockAllocation // 股票
+                }];
 
             chartsAssets.forEach(item => {
                 Highcharts.chart(item.id, {
