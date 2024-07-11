@@ -211,8 +211,6 @@
                                     f.order = f.order === 'desc' ? 'asc' : 'desc';
                                 }
                             }
-
-                            console.log(f);
                         }
                     }
                 });
@@ -371,8 +369,6 @@
                                     f.order = f.order === 'desc' ? 'asc' : 'desc';
                                 }
                             }
-
-                            console.log(f);
                         }
                     }
                 });
@@ -512,8 +508,6 @@
                                     f.order = f.order === 'desc' ? 'asc' : 'desc';
                                 }
                             }
-
-                            console.log(f);
                         }
                     }
                 });
@@ -627,8 +621,6 @@
                                     f.order = f.order === 'desc' ? 'asc' : 'desc';
                                 }
                             }
-
-                            console.log(f);
                         }
                     }
                 });
@@ -825,7 +817,7 @@
                                 value: item.ProductCode + ' ' + item.ProductName,
                                 data: {
                                     type: 'SIP',
-                                    detailUrl: '@Model.SearchResultModel.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
+                                    detailUrl: '@Model.SearchResultModel.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode })
                                 }
                             };
                             list.push(obj);
