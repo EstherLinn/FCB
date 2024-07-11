@@ -1,4 +1,5 @@
-﻿using Sitecore.Data;
+﻿using Feature.Wealth.Component.Template;
+using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
 using System.Linq;
@@ -118,7 +119,10 @@ namespace Feature.Wealth.Component.Repositories
             return link.TargetItem.Axes.IsAncestorOf(contextItem);
         }
     }
+}
 
+namespace Feature.Wealth.Component.Template
+{
     internal struct Templates
     {
         internal struct Page
