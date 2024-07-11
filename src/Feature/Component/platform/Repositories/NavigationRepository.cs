@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Component.Repositories.Template;
+﻿using Feature.Wealth.Component.Repositories.PageLink;
+using Feature.Wealth.Component.Repositories.Template;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
@@ -52,12 +53,12 @@ namespace Feature.Wealth.Component.Repositories
             {
                 if (child.IsDerived(Templates.ImageNavigationLink.Id))
                 {
-                    var nav = new NavigationPageLink
+                    var nav = new ImageNavigationLink
                     {
                         Parent = parentNode,
                         Item = child,
                         NavigationTitle = child.GetFieldValue(Templates.PageNavigationTitle.Fields.NavigationTitle),
-                        Link = string.IsNullOrEmpty(child["RedirectUrl"]) ? child.GeneralLink(Templates.NavigationLink.Fields.Link) : child.GeneralLink("RedirectUrl") ?? new Link()
+                        Link = (string.IsNullOrEmpty(child["RedirectUrl"]) ? child.GeneralLink(Templates.NavigationLink.Fields.Link) : child.GeneralLink("RedirectUrl")) ?? new Link()
                     };
 
                     if (nav.Link.Type == LinkType.NotSet || nav.Link.Url.IsNullOrEmpty())
@@ -79,7 +80,7 @@ namespace Feature.Wealth.Component.Repositories
                         Parent = parentNode,
                         Item = child,
                         NavigationTitle = child.GetFieldValue(Templates.PageNavigationTitle.Fields.NavigationTitle),
-                        Link = string.IsNullOrEmpty(child["RedirectUrl"]) ? child.GeneralLink(Templates.NavigationLink.Fields.Link) : child.GeneralLink("RedirectUrl") ?? new Link()
+                        Link = (string.IsNullOrEmpty(child["RedirectUrl"]) ? child.GeneralLink(Templates.NavigationLink.Fields.Link) : child.GeneralLink("RedirectUrl")) ?? new Link()
                     };
 
                     if (nav.Link.Type == LinkType.NotSet || nav.Link.Url.IsNullOrEmpty())
@@ -119,6 +120,11 @@ namespace Feature.Wealth.Component.Repositories
             return link.TargetItem.Axes.IsAncestorOf(contextItem);
         }
     }
+}
+
+namespace Feature.Wealth.Component.Repositories.PageLink
+{
+    internal class ImageNavigationLink : NavigationPageLink;
 }
 
 namespace Feature.Wealth.Component.Repositories.Template
