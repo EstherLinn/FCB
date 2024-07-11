@@ -300,6 +300,36 @@ namespace Feature.Wealth.Component.Models.ETF
         /// </summary>
         public decimal? LowestNetAssestValue { get; set; }
 
+        /// <summary>
+        /// 市價 (Basic)
+        /// </summary>
+        public decimal? BasicMarketPrice { get; set; }
+
+        /// <summary>
+        /// 淨值 (Basic)
+        /// </summary>
+        public decimal? BasicNetAssetValue { get; set; }
+
+        /// <summary>
+        /// 市價日期  (Basic)
+        /// </summary>
+        public DateTime? BasicMarketPriceDate { get; set; }
+
+        /// <summary>
+        /// 淨值日期  (Basic)
+        /// </summary>
+        public DateTime? BasicNetAssetValueDate { get; set; }
+
+        /// <summary>
+        /// 計價幣別
+        /// </summary>
+        public string BasicQuoteCurrency { get; set; }
+
+        /// <summary>
+        /// 淨值幣別
+        /// </summary>
+        public string BasicNetAssetValueCurrency { get; set; }
+
         #endregion Basic
 
         #region ReturnTable
