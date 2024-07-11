@@ -1,12 +1,17 @@
 ﻿using Feature.Wealth.Component.Models.News;
+using Feature.Wealth.Component.Models.News.NewsList;
 using Foundation.Wealth.Manager;
+using Mapster;
 using Newtonsoft.Json.Linq;
+using Sitecore.Data;
+using Sitecore.Data.Items;
 using Sitecore.Mvc.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -14,6 +19,88 @@ namespace Feature.Wealth.Component.Repositories
     {
         private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
         private readonly VisitCountRepository _visitCountRepository = new VisitCountRepository();
+
+        #region 最新消息
+
+        public static readonly ID NewsCategorySettingFolder = new ID("{92B41AC0-BC37-472B-8189-79884404AAB4}");
+
+        public NewsListViewModel GetNewsListViewModel(string datasourceId)
+        {
+            NewsListViewModel viewModel = new NewsListViewModel
+            {
+                DatasourceId = datasourceId,
+                CategoryList = GetNewsListCategories()
+            };
+
+            return viewModel;
+        }
+
+        /// <summary>
+        /// 取得最新消息類別
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<string> GetNewsListCategories()
+        {
+            List<string> categoryList = new List<string>();
+            Item sourceFolder = ItemUtils.GetItem(NewsCategorySettingFolder);
+
+            if (sourceFolder != null)
+            {
+                var options = sourceFolder.GetChildren(ComponentTemplates.DropdownOption.Id);
+
+                foreach (var item in options)
+                {
+                    string text = item.GetFieldValue(ComponentTemplates.DropdownOption.Fields.OptionText);
+                    //string value = item.GetFieldValue(ComponentTemplates.DropdownOption.Fields.OptionValue);
+
+                    categoryList.Add(text);
+                }
+            }
+
+            return categoryList;
+        }
+
+        /// <summary>
+        /// 取得最新消息列表結果
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        public List<NewsListResult> GetNewsListResult(ReqNewsList req)
+        {
+            if (!req.DatasourceId.HasValue || req.DatasourceId.Value == Guid.Empty)
+            {
+                return new List<NewsListResult>();
+            }
+
+            var datasource = ItemUtils.GetItem(req.DatasourceId.Value);
+            if (datasource == null)
+            {
+                return new List<NewsListResult>();
+            }
+
+            var result = MapperNewsResult(datasource);
+            return result?.ToList();
+        }
+
+        private IEnumerable<NewsListResult> MapperNewsResult(Item item)
+        {
+            NewsListModel model = new NewsListModel();
+            model.Initialize(item);
+            var config = new TypeAdapterConfig();
+            config.ForType<Data, NewsListResult>()
+                .AfterMapping((src, dest) =>
+                {
+                    dest.PageTitlePair = new KeyValuePair<string, string>(src.PageTitle, string.IsNullOrEmpty(src.PageTitle) ? "-" : src.PageTitle);
+                    dest.DatePair = new KeyValuePair<string, string>(src.Date, string.IsNullOrEmpty(src.Date) ? "-" : src.Date);
+                    dest.CategoryPair = new KeyValuePair<string, string>(src.Category, string.IsNullOrEmpty(src.Category) ? string.Empty : src.Category);
+                    dest.FocusPair = new KeyValuePair<int, bool>(Convert.ToInt32(src.IsFocus), src.IsFocus);
+                });
+
+            var result = model.NewsItems.Adapt<IEnumerable<NewsListResult>>(config);
+            return result;
+        }
+
+        #endregion 最新消息
 
         #region 市場新聞
 
@@ -106,7 +193,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             // 构建 SQL 查询
             string query = @"
-        SELECT 
+        SELECT
             nl.[NewsDate],
             nl.[NewsTime],
             nl.[NewsTitle],
@@ -115,14 +202,14 @@ namespace Feature.Wealth.Component.Repositories
             nd.[NewsContent],
 	        nd.[NewsRelatedProducts],
 	        nd.[NewsType]
-        FROM 
+        FROM
             [dbo].[NewsList] nl
-        LEFT JOIN 
+        LEFT JOIN
             [dbo].[NewsDetail] nd
-        ON 
+        ON
             nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-        ORDER BY 
-            nl.[NewsDate] DESC, 
+        ORDER BY
+            nl.[NewsDate] DESC,
             nl.[NewsTime] DESC;";
 
             return DbManager.Custom.ExecuteIList<MarketNewsModel>(query, null, CommandType.Text);
@@ -152,7 +239,7 @@ namespace Feature.Wealth.Component.Repositories
                 var idList = id.Split(',').Select(x => x.Trim()).ToList();
 
                 string query = @"
-            SELECT [NewsType] 
+            SELECT [NewsType]
             FROM [dbo].[NewsType]
             WHERE [TypeNumber] IN @IdList";
 
@@ -218,7 +305,7 @@ namespace Feature.Wealth.Component.Repositories
             return datas;
         }
 
-        #endregion
+        #endregion 市場新聞
 
         #region 市場新聞詳細頁
 
@@ -347,7 +434,7 @@ namespace Feature.Wealth.Component.Repositories
 
                 string query = @"
             WITH CTE AS (
-            SELECT 
+            SELECT
                 nl.[NewsDate],
                 nl.[NewsTime],
                 nl.[NewsTitle],
@@ -357,19 +444,19 @@ namespace Feature.Wealth.Component.Repositories
                 nd.[NewsRelatedProducts],
                 nd.[NewsType],
                 ROW_NUMBER() OVER (ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC) AS RowNumber
-            FROM 
+            FROM
                 [dbo].[NewsList] nl
-            LEFT JOIN 
+            LEFT JOIN
                 [dbo].[NewsDetail] nd
-            ON 
+            ON
                 nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-            WHERE 
+            WHERE
                 nl.[NewsDate] BETWEEN @StartDate AND @EndDate
             )
-            SELECT 
+            SELECT
                 curr.[NewsSerialNumber],
                 curr.[NewsDetailDate],
-                curr.[NewsTitle], 
+                curr.[NewsTitle],
                 curr.[NewsContent],
                 curr.[NewsRelatedProducts],
                 curr.[NewsType],
@@ -429,7 +516,8 @@ namespace Feature.Wealth.Component.Repositories
 
             return model;
         }
-        #endregion
+
+        #endregion 市場新聞詳細頁
 
         #region 頭條新聞
 
@@ -455,16 +543,16 @@ namespace Feature.Wealth.Component.Repositories
             nd.[NewsContent],
             nd.[NewsRelatedProducts],
             nd.[NewsType]
-        FROM 
+        FROM
             [dbo].[NewsList] nl
-        LEFT JOIN 
+        LEFT JOIN
             [dbo].[NewsDetail] nd
-        ON 
+        ON
             nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-        WHERE 
+        WHERE
             nd.[NewsType] LIKE @HeadlineNewsType
-        ORDER BY 
-            nl.[NewsDate] DESC, 
+        ORDER BY
+            nl.[NewsDate] DESC,
             nl.[NewsTime] DESC;";
 
             var result = DbManager.Custom.ExecuteIList<HeadlineNewsData>(query, new { HeadlineNewsType = '%' + headlineNewsType[0] + '%' }, CommandType.Text);
@@ -490,7 +578,7 @@ namespace Feature.Wealth.Component.Repositories
                 datas.LatestHeadlines.NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + _datas[0].NewsSerialNumber;
 
                 datas.Headlines = new List<HeadlineNewsData>();
-                for (int i = 1; i < _datas.Count; i++)
+                for (int i = 1 ; i < _datas.Count ; i++)
                 {
                     var newsData = new HeadlineNewsData();
                     newsData.NewsDate = _datas[i].NewsDate;
@@ -524,7 +612,7 @@ namespace Feature.Wealth.Component.Repositories
                 visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
                 datas.LatestHeadlines.NewsViewCount = visitCount?.ToString("N0") ?? "0";
 
-                for (int i = 0; i < datas.Headlines.Count; i++)
+                for (int i = 0 ; i < datas.Headlines.Count ; i++)
                 {
                     currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.Headlines[i].NewsSerialNumber);
                     visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
@@ -535,6 +623,6 @@ namespace Feature.Wealth.Component.Repositories
             return datas;
         }
 
-        #endregion
+        #endregion 頭條新聞
     }
 }

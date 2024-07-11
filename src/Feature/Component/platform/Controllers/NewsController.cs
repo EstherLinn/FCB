@@ -1,4 +1,5 @@
 ﻿using Feature.Wealth.Component.Models.News;
+using Feature.Wealth.Component.Models.News.NewsList;
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Configuration;
 using Sitecore.Mvc.Presentation;
@@ -29,8 +30,15 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult NewsList()
         {
-            var model = new NewsListModel(RenderingContext.CurrentOrNull?.Rendering.Item);
+            var model = _newsRespository.GetNewsListViewModel(RenderingContext.Current.Rendering.DataSource);
             return View("/Views/Feature/Wealth/Component/News/NewsList.cshtml", model);
+        }
+
+        [HttpPost]
+        public ActionResult GetNewsListResultData(ReqNewsList req)
+        {
+            var resp = _newsRespository.GetNewsListResult(req);
+            return new JsonNetResult(resp);
         }
 
         public ActionResult MarketNewsSearch()
@@ -114,13 +122,11 @@ namespace Feature.Wealth.Component.Controllers
 
             return View("/Views/Feature/Wealth/Component/News/HeadlineNews.cshtml", datas);
         }
-        public ActionResult Headlines() {
+
+        public ActionResult Headlines()
+        {
             var item = RenderingContext.Current.Rendering.Item;
             return View("/Views/Feature/Wealth/Component/News/Headline.cshtml", new HeadlineModel(item));
         }
-        
-        
-
-
     }
 }
