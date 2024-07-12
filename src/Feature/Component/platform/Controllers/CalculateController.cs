@@ -36,5 +36,15 @@ namespace Feature.Wealth.Component.Controllers
 
             return View("/Views/Feature/Wealth/Component/Calculate/BuyHouse.cshtml", model);
         }
+
+        /// <summary>
+        ///  退休準備試算
+        /// </summary>
+        public ActionResult RetirementPreparation()
+        {
+            var model = _calculateRepository.GetCalculateModel();
+
+            return View("/Views/Feature/Wealth/Component/Calculate/RetirementPreparation.cshtml", model);
+        }
     }
 }
