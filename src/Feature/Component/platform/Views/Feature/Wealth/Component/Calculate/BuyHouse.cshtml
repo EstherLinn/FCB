@@ -1630,21 +1630,6 @@
                     // 判斷試算結果是否有缺口
                     if (resultHasGap) {
                         $(".tab1Btn").removeClass("u-hidden");
-                        $(".tab2Btn").addClass("u-hidden");
-                        $(".tab3Btn").addClass("u-hidden");
-                        $(".tab4Btn").addClass("u-hidden");
-                        $(".tab5Btn").removeClass("u-hidden");
-
-                        tab1Results = planningResults;
-                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
-                        renderResultTab1(tab1Results, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
-                        renderResultTab5(tab5Results, downPayment, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
-                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
-                    }
-                    else {
-                        $(".tab1Btn").removeClass("u-hidden");
                         $(".tab2Btn").removeClass("u-hidden");
                         $(".tab3Btn").removeClass("u-hidden");
                         $(".tab4Btn").removeClass("u-hidden");
@@ -1660,7 +1645,22 @@
                         renderResultTab3(tab3Results, downPayment, years, amountPrepared, monthlyInvestment);
                         renderResultTab4(tab4Results, downPayment, amountPrepared, monthlyInvestment, expectedRoi);
 
-                        currentYear = new Date().getFullYear() + tab4Results - 1;
+                        currentYear = new Date().getFullYear() + tab4Results - 1; 
+                    }
+                    else {
+                        $(".tab1Btn").removeClass("u-hidden");
+                        $(".tab2Btn").addClass("u-hidden");
+                        $(".tab3Btn").addClass("u-hidden");
+                        $(".tab4Btn").addClass("u-hidden");
+                        $(".tab5Btn").removeClass("u-hidden");
+
+                        tab1Results = planningResults;
+                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        renderResultTab1(tab1Results, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
+                        renderResultTab5(tab5Results, downPayment, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
                     }
 
                     // 顯示所有圓餅圖
@@ -1700,11 +1700,6 @@
                     let monthlyInvestment = $("#monthlyInvestment_Popup").val();
                     let expectedRoi = $("#expectedRoi_Popup").val();
 
-                    $("#downPayment_Popup").val(downPayment);
-                    $("#years_Popup").val(years);
-                    $("#amountPrepared_Popup").val(amountPrepared);
-                    $("#monthlyInvestment_Popup").val(monthlyInvestment);
-                    $("#expectedRoi_Popup").val(expectedRoi);
                     // 試算結果
                     let planningResults = planningCompute(years, amountPrepared, monthlyInvestment, expectedRoi);
 
@@ -1724,21 +1719,6 @@
                     // 判斷試算結果是否有缺口
                     if (resultHasGap) {
                         $(".tab1Btn").removeClass("u-hidden");
-                        $(".tab2Btn").addClass("u-hidden");
-                        $(".tab3Btn").addClass("u-hidden");
-                        $(".tab4Btn").addClass("u-hidden");
-                        $(".tab5Btn").removeClass("u-hidden");
-
-                        tab1Results = planningResults;
-                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
-                        renderResultTab1(tab1Results, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
-                        renderResultTab5(tab5Results, downPayment, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
-                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
-                    }
-                    else {
-                        $(".tab1Btn").removeClass("u-hidden");
                         $(".tab2Btn").removeClass("u-hidden");
                         $(".tab3Btn").removeClass("u-hidden");
                         $(".tab4Btn").removeClass("u-hidden");
@@ -1756,8 +1736,23 @@
 
                         currentYear = new Date().getFullYear() + tab4Results - 1;
                     }
+                    else {
+                        $(".tab1Btn").removeClass("u-hidden");
+                        $(".tab2Btn").addClass("u-hidden");
+                        $(".tab3Btn").addClass("u-hidden");
+                        $(".tab4Btn").addClass("u-hidden");
+                        $(".tab5Btn").removeClass("u-hidden");
 
-                    // tab active 狀態復原
+                        tab1Results = planningResults;
+                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        renderResultTab1(tab1Results, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
+                        renderResultTab5(tab5Results, downPayment, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
+                    }
+
+                    //#region 綁定TabSwitch事件
                     function bindTabSwitchEvent() {
                         $("ul.c-tab__navs a:first").off("click.myEvent").on("click.myEvent", function (event) {
                             event.preventDefault();
@@ -1858,6 +1853,7 @@
                         // 觸發第一次點擊事件
                         $("ul.c-tab__navs a:first").trigger("click.myEvent");
                     }
+                    //#endregion
 
                     bindTabSwitchEvent();
 
@@ -2087,16 +2083,16 @@
                 if (result >= downPaymentVal) {
                     InsufficientAmountVal = 0;
                     InsufficientAmountFormatVal = "0";
-                    resultHasGap = true;
+                    resultHasGap = false;
                 } else {
                     InsufficientAmountVal = downPaymentVal - result;
                     InsufficientAmountFormatVal = (InsufficientAmountVal).toLocaleString();
-                    resultHasGap = false;
+                    resultHasGap = true;
                 }
 
                 $("#resultContent").html(`我目標買房首付 ${downPaymentFormatVal} 元，投資 ${years} 年後尚不足<span class='t1 t-warning u-nowrap'> ${InsufficientAmountFormatVal} 元</span>`);
 
-                if (!resultHasGap) {
+                if (resultHasGap) {
                     $("#resultSuccessMain").addClass("u-hidden");
                     $("#resultUnsuccessfulMain").removeClass("u-hidden");
                     current = result;
