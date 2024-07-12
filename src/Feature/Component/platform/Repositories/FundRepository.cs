@@ -368,9 +368,9 @@ namespace Feature.Wealth.Component.Repositories
         /// <param name="fundId"></param>
         /// <param name="select"></param>
         /// <returns></returns>
-        public List<FundRiskGraph> GetRiskindicatorsGraph(string fundId, string selectType)
+        public List<FundRiskGraph> GetRiskindicatorsGraph(string fundId, string selectType, string indicator)
         {
-            var para = new { fundId, condition = selectType };
+            var para = new { fundId, condition = selectType, indicator };
             List<FundRiskGraph> fundRiskGraphs = DbManager.Custom.ExecuteIList<FundRiskGraph>("sp_FundRiskindicatorsPicture", para, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
             return fundRiskGraphs;
         }
