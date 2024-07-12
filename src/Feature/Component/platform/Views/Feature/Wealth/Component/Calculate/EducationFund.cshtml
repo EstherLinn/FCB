@@ -1630,21 +1630,6 @@
                     // 判斷試算結果是否有缺口
                     if (resultHasGap) {
                         $(".tab1Btn").removeClass("u-hidden");
-                        $(".tab2Btn").addClass("u-hidden");
-                        $(".tab3Btn").addClass("u-hidden");
-                        $(".tab4Btn").addClass("u-hidden");
-                        $(".tab5Btn").removeClass("u-hidden");
-
-                        tab1Results = planningResults;
-                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
-                        renderResultTab1(tab1Results, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
-                        renderResultTab5(tab5Results, educationalFund, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
-                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
-                    }
-                    else {
-                        $(".tab1Btn").removeClass("u-hidden");
                         $(".tab2Btn").removeClass("u-hidden");
                         $(".tab3Btn").removeClass("u-hidden");
                         $(".tab4Btn").removeClass("u-hidden");
@@ -1661,6 +1646,21 @@
                         renderResultTab4(tab4Results, educationalFund, amountPrepared, monthlyInvestment, expectedRoi);
 
                         currentYear = new Date().getFullYear() + tab4Results - 1;
+                    }
+                    else {
+                        $(".tab1Btn").removeClass("u-hidden");
+                        $(".tab2Btn").addClass("u-hidden");
+                        $(".tab3Btn").addClass("u-hidden");
+                        $(".tab4Btn").addClass("u-hidden");
+                        $(".tab5Btn").removeClass("u-hidden");
+
+                        tab1Results = planningResults;
+                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        renderResultTab1(tab1Results, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
+                        renderResultTab5(tab5Results, educationalFund, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
                     }
 
                     // 顯示所有圓餅圖
@@ -1700,12 +1700,6 @@
                     let monthlyInvestment = $("#monthlyInvestment_Popup").val();
                     let expectedRoi = $("#expectedRoi_Popup").val();
 
-                    $("#educationalFund_Popup").val(educationalFund);
-                    $("#years_Popup").val(years);
-                    $("#amountPrepared_Popup").val(amountPrepared);
-                    $("#monthlyInvestment_Popup").val(monthlyInvestment);
-                    $("#expectedRoi_Popup").val(expectedRoi);
-
                     // 試算結果
                     let planningResults = planningCompute(years, amountPrepared, monthlyInvestment, expectedRoi);
 
@@ -1725,21 +1719,6 @@
                     // 判斷試算結果是否有缺口
                     if (resultHasGap) {
                         $(".tab1Btn").removeClass("u-hidden");
-                        $(".tab2Btn").addClass("u-hidden");
-                        $(".tab3Btn").addClass("u-hidden");
-                        $(".tab4Btn").addClass("u-hidden");
-                        $(".tab5Btn").removeClass("u-hidden");
-
-                        tab1Results = planningResults;
-                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
-                        renderResultTab1(tab1Results, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
-                        renderResultTab5(tab5Results, educationalFund, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
-                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
-                    }
-                    else {
-                        $(".tab1Btn").removeClass("u-hidden");
                         $(".tab2Btn").removeClass("u-hidden");
                         $(".tab3Btn").removeClass("u-hidden");
                         $(".tab4Btn").removeClass("u-hidden");
@@ -1757,108 +1736,22 @@
 
                         currentYear = new Date().getFullYear() + tab4Results - 1;
                     }
+                    else {
+                        $(".tab1Btn").removeClass("u-hidden");
+                        $(".tab2Btn").addClass("u-hidden");
+                        $(".tab3Btn").addClass("u-hidden");
+                        $(".tab4Btn").addClass("u-hidden");
+                        $(".tab5Btn").removeClass("u-hidden");
 
-                    // tab active 狀態復原
-                    function bindTabSwitchEvent() {
-                        $("ul.c-tab__navs a:first").off("click.myEvent").on("click.myEvent", function (event) {
-                            event.preventDefault();
+                        tab1Results = planningResults;
+                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
 
-                            $(".tab1Btn").addClass("is-active");
-                            $(".tab2Btn,.tab3Btn,.tab4Btn,.tab5Btn").removeClass("is-active");
+                        renderResultTab1(tab1Results, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
+                        renderResultTab5(tab5Results, educationalFund, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
 
-                            $('[data-tab-panel-id="tab-1"]').addClass("is-active");
-                            $('[data-tab-panel-id="tab-2"],[data-tab-panel-id="tab-3"],[data-tab-panel-id="tab-4"],[data-tab-panel-id="tab-5"]').removeClass("is-active");
-
-                            (function (s, i) {
-                                "use strict";
-                                var n = "tab",
-                                    o = {
-                                        docking: !0,
-                                        scroll: !0
-                                    };
-
-                                function a(t, e) {
-                                    this.element = t,
-                                        this.$element = s(t),
-                                        this.options = s.extend(!0, {}, o, e, this.$element.data()),
-                                        delete this.options.tab,
-                                        this._defaults = o,
-                                        this._name = n,
-                                        this.init(),
-                                        this.$element.data("plugin_tab", this)
-                                }
-
-                                s.extend(a.prototype, {
-                                    init: function () {
-                                        var n = this;
-                                        this.$element.find(".c-tab__switch").off("click").on("click", function (t) {
-                                            t.preventDefault(),
-                                                s(this).closest(".c-tab__collapse").toggleClass("is-open")
-                                        });
-                                        var t, o = this.$element.find("[data-tab-align]").data("tab-align");
-                                        this.$element.find("[data-tab-target]").off("switch").on("switch", function (t) {
-                                            var e = s(this).data("tabTarget"),
-                                                i = n.$element.find('> [data-tab-panel-id="' + e + '"]');
-                                            e && i.length && (t.preventDefault(),
-                                                n.$element.find("> .c-tab__header [data-tab-target], > [data-tab-panel-id]").removeClass("is-active"),
-                                                n.$element.find('> .c-tab__header [data-tab-target="' + e + '"]').addClass("is-active"),
-                                                i.addClass("is-active"),
-                                                n.scrollAlign.call(n, o)),
-                                                n.$element.find(".c-tab__collapse").removeClass("is-open")
-                                        }).off("click").on("click", function (t) {
-                                            t.preventDefault(),
-                                                s(this).trigger("switch")
-                                            // 不再執行滾動效果
-                                        }),
-                                            this.$element.find("> .c-tab__header > .c-tab__navs > [data-tab-target].is-active").trigger("switch"),
-                                            this.options.docking && s.fn.scrollToFixed && this.$element.find(".c-tab__header:first").scrollToFixed({
-                                                limit: function () {
-                                                    var t = s(this).closest('[data-tab="true"]');
-                                                    return t.offset().top + t.innerHeight() - s(this).outerHeight(!0)
-                                                },
-                                                fixed: function () {
-                                                    s(this).addClass("is-docking")
-                                                },
-                                                unfixed: function () {
-                                                    s(this).removeClass("is-docking")
-                                                },
-                                                preAbsolute: function () {
-                                                    s(this).addClass("is-freeze")
-                                                },
-                                                postAbsolute: function () {
-                                                    s(this).removeClass("is-freeze")
-                                                },
-                                                zIndex: 5
-                                            });
-                                        const e = location.href;
-                                        -1 === e.indexOf("?") || -1 === e.indexOf("tab") || (t = e.split("?")[1].split("&").find(t => 0 === t.indexOf("tab"))) && "tab" === t.split("=")[0] && s(`[data-tab-target="${t = t,
-                                            String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").split("=")[1]}"]`).trigger("switch"),
-                                            this.$element.attr("data-tab", !0)
-                                    },
-                                    scrollAlign: function (t) {
-                                        var e = this.$element.find(".c-tab__item.is-active").closest("li"),
-                                            i = this.$element.find(".c-tab__navs");
-                                        e = "left" === t ? e.position().left + i.scrollLeft() : e.position().left + e.width() / 2 + i.scrollLeft() - i.width() / 2,
-                                            i.animate({
-                                                scrollLeft: e
-                                            }, 300)
-                                    }
-                                });
-
-                                s.fn.tab = function (e) {
-                                    return this.each(function () {
-                                        var t = s.data(this, "plugin_tab") || new a(this, e);
-                                        "string" == typeof e && t[e] && t[e].apply(t, Array.prototype.slice.call(arguments, 1))
-                                    })
-                                };
-
-                                s('[data-tab="true"]').tab();
-                            })(jQuery, window);
-                        });
-
-                        // 觸發第一次點擊事件
-                        $("ul.c-tab__navs a:first").trigger("click.myEvent");
+                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
                     }
+
 
                     bindTabSwitchEvent();
 
@@ -1877,6 +1770,109 @@
                     $("#consult").removeClass("u-hidden");
                 }
             });
+            //#endregion
+
+            //#region 綁定TabSwitch事件
+            function bindTabSwitchEvent() {
+                $("ul.c-tab__navs a:first").off("click.myEvent").on("click.myEvent", function (event) {
+                    event.preventDefault();
+
+                    $(".tab1Btn").addClass("is-active");
+                    $(".tab2Btn,.tab3Btn,.tab4Btn,.tab5Btn").removeClass("is-active");
+
+                    $('[data-tab-panel-id="tab-1"]').addClass("is-active");
+                    $('[data-tab-panel-id="tab-2"],[data-tab-panel-id="tab-3"],[data-tab-panel-id="tab-4"],[data-tab-panel-id="tab-5"]').removeClass("is-active");
+
+                    (function (s, i) {
+                        "use strict";
+                        var n = "tab",
+                            o = {
+                                docking: !0,
+                                scroll: !0
+                            };
+
+                        function a(t, e) {
+                            this.element = t,
+                                this.$element = s(t),
+                                this.options = s.extend(!0, {}, o, e, this.$element.data()),
+                                delete this.options.tab,
+                                this._defaults = o,
+                                this._name = n,
+                                this.init(),
+                                this.$element.data("plugin_tab", this)
+                        }
+
+                        s.extend(a.prototype, {
+                            init: function () {
+                                var n = this;
+                                this.$element.find(".c-tab__switch").off("click").on("click", function (t) {
+                                    t.preventDefault(),
+                                        s(this).closest(".c-tab__collapse").toggleClass("is-open")
+                                });
+                                var t, o = this.$element.find("[data-tab-align]").data("tab-align");
+                                this.$element.find("[data-tab-target]").off("switch").on("switch", function (t) {
+                                    var e = s(this).data("tabTarget"),
+                                        i = n.$element.find('> [data-tab-panel-id="' + e + '"]');
+                                    e && i.length && (t.preventDefault(),
+                                        n.$element.find("> .c-tab__header [data-tab-target], > [data-tab-panel-id]").removeClass("is-active"),
+                                        n.$element.find('> .c-tab__header [data-tab-target="' + e + '"]').addClass("is-active"),
+                                        i.addClass("is-active"),
+                                        n.scrollAlign.call(n, o)),
+                                        n.$element.find(".c-tab__collapse").removeClass("is-open")
+                                }).off("click").on("click", function (t) {
+                                    t.preventDefault(),
+                                        s(this).trigger("switch")
+                                    // 不再執行滾動效果
+                                }),
+                                    this.$element.find("> .c-tab__header > .c-tab__navs > [data-tab-target].is-active").trigger("switch"),
+                                    this.options.docking && s.fn.scrollToFixed && this.$element.find(".c-tab__header:first").scrollToFixed({
+                                        limit: function () {
+                                            var t = s(this).closest('[data-tab="true"]');
+                                            return t.offset().top + t.innerHeight() - s(this).outerHeight(!0)
+                                        },
+                                        fixed: function () {
+                                            s(this).addClass("is-docking")
+                                        },
+                                        unfixed: function () {
+                                            s(this).removeClass("is-docking")
+                                        },
+                                        preAbsolute: function () {
+                                            s(this).addClass("is-freeze")
+                                        },
+                                        postAbsolute: function () {
+                                            s(this).removeClass("is-freeze")
+                                        },
+                                        zIndex: 5
+                                    });
+                                const e = location.href;
+                                -1 === e.indexOf("?") || -1 === e.indexOf("tab") || (t = e.split("?")[1].split("&").find(t => 0 === t.indexOf("tab"))) && "tab" === t.split("=")[0] && s(`[data-tab-target="${t = t,
+                                    String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").split("=")[1]}"]`).trigger("switch"),
+                                    this.$element.attr("data-tab", !0)
+                            },
+                            scrollAlign: function (t) {
+                                var e = this.$element.find(".c-tab__item.is-active").closest("li"),
+                                    i = this.$element.find(".c-tab__navs");
+                                e = "left" === t ? e.position().left + i.scrollLeft() : e.position().left + e.width() / 2 + i.scrollLeft() - i.width() / 2,
+                                    i.animate({
+                                        scrollLeft: e
+                                    }, 300)
+                            }
+                        });
+
+                        s.fn.tab = function (e) {
+                            return this.each(function () {
+                                var t = s.data(this, "plugin_tab") || new a(this, e);
+                                "string" == typeof e && t[e] && t[e].apply(t, Array.prototype.slice.call(arguments, 1))
+                            })
+                        };
+
+                        s('[data-tab="true"]').tab();
+                    })(jQuery, window);
+                });
+
+                // 觸發第一次點擊事件
+                $("ul.c-tab__navs a:first").trigger("click.myEvent");
+            }
             //#endregion
 
             //#region 各欄位檢核方法
@@ -2088,16 +2084,16 @@
                 if (result >= educationalFundVal) {
                     InsufficientAmountVal = 0;
                     InsufficientAmountFormatVal = "0";
-                    resultHasGap = true;
+                    resultHasGap = false;
                 } else {
                     InsufficientAmountVal = educationalFundVal - result;
                     InsufficientAmountFormatVal = (InsufficientAmountVal).toLocaleString();
-                    resultHasGap = false;
+                    resultHasGap = true;
                 }
 
                 $("#resultContent").html(`我目標教育基金 ${educationalFundFormatVal} 元，投資 ${years} 年後尚不足<span class='t1 t-warning u-nowrap'> ${InsufficientAmountFormatVal} 元</span>`);
 
-                if (!resultHasGap) {
+                if (resultHasGap) {
                     $("#resultSuccessMain").addClass("u-hidden");
                     $("#resultUnsuccessfulMain").removeClass("u-hidden");
                     current = result;
