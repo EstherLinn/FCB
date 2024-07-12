@@ -27,7 +27,7 @@ namespace Feature.Wealth.Component.Models.News
             }
             this.Datasource = item;
             this.Image = this.Datasource.ImageUrl(Templates.NewsDetails.Fields.Image);
-            this.Category = this.Datasource.TargetItem(Templates.NewsDetails.Fields.Category)?.GetFieldValue(ComponentTemplates.DropdownOption.Fields.OptionText);
+            this.Category = this.Datasource.TargetItem(Templates.NewsDetails.Fields.Category)?.GetFieldValue(Templates.NewsListCategory.Fields.CategoryName);
         }
     }
 
@@ -97,7 +97,7 @@ namespace Feature.Wealth.Component.Models.News
                     Target = link?.Target,
                     Url = string.IsNullOrEmpty(link?.Url) ? item.Url() : link.Url,
                     Date = ((DateField)item?.Fields[Templates.NewsDetails.Fields.Date])?.GetLocalDateFieldValue()?.ToString(DateFormat),
-                    Category = item.TargetItem(Templates.NewsDetails.Fields.Category)?.GetFieldValue(ComponentTemplates.DropdownOption.Fields.OptionText),
+                    Category = item.TargetItem(Templates.NewsDetails.Fields.Category)?.GetFieldValue(Templates.NewsListCategory.Fields.CategoryName),
                     IsFocus = item.IsChecked(Templates.NewsDetails.Fields.IsFocus)
                 };
             }
@@ -198,6 +198,16 @@ namespace Feature.Wealth.Component.Models.News
                 /// 新聞詳細頁根節點
                 /// </summary>
                 public static readonly ID NewsDetailsRootPage = new ID("{3A44AD88-E8AE-498B-8DC6-147B48E82AD3}");
+            }
+        }
+
+        public struct NewsListCategory
+        {
+            public static readonly ID Id = new ID("{05B62C0E-1A52-48F8-A92F-564CAFCBBEDF}");
+
+            public struct Fields
+            {
+                public static readonly ID CategoryName = new ID("{92B68A8A-2469-4FD7-B703-AC7F194011F1}");
             }
         }
     }
