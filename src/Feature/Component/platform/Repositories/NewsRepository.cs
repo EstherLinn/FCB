@@ -46,13 +46,11 @@ namespace Feature.Wealth.Component.Repositories
 
             if (sourceFolder != null)
             {
-                var options = sourceFolder.GetChildren(ComponentTemplates.DropdownOption.Id);
+                var options = sourceFolder.GetChildren(Templates.NewsListCategory.Id);
 
                 foreach (var item in options)
                 {
-                    string text = item.GetFieldValue(ComponentTemplates.DropdownOption.Fields.OptionText);
-                    //string value = item.GetFieldValue(ComponentTemplates.DropdownOption.Fields.OptionValue);
-
+                    string text = item.GetFieldValue(Templates.NewsListCategory.Fields.CategoryName);
                     categoryList.Add(text);
                 }
             }
