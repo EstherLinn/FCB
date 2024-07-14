@@ -35,6 +35,8 @@ namespace Feature.Wealth.Component.Models.ETF.Detail
         /// 差額
         /// </summary>
         public string Difference { get; set; }
+
+        public string DifferenceStyle { get; set; }
     }
 
     /// <summary>
