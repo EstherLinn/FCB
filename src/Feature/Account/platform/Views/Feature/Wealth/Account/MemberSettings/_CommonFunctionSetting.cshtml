@@ -54,21 +54,21 @@
     let commonArray = [];
 
     $.ajax({
-                type: "post",
-                url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetCommonFunctions")",
-                success: function (resp) {
-                    if (resp && resp.statusCode == 200) {
-                        if (resp.body.length > 0) {
-                            $('[data-common-length]').text(resp.body.length);
-                            for (var i = 0; i < resp.body.length; i++) {
-                                let itemId = resp.body[i].pageGuid;
-                                commonArray.push(itemId);
-                                $('[data-itemid="' + itemId + '"]').prop('checked', 'checked');
-                            }
-                        }
+        type: "post",
+        url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetCommonFunctions")",
+        success: function (resp) {
+            if (resp && resp.statusCode == 200) {
+                if (resp.body.length > 0) {
+                    $('[data-common-length]').text(resp.body.length);
+                    for (var i = 0; i < resp.body.length; i++) {
+                        let itemId = resp.body[i].pageGuid;
+                        commonArray.push(itemId);
+                        $('[data-itemid="' + itemId + '"]').prop('checked', 'checked');
                     }
-                },
-            })
+                }
+            }
+        },
+    });
     $('[data-common-input]').on('change', function (e) {
         let self = e.target;
         let val = $(self).data('itemid');
@@ -83,15 +83,15 @@
     });
     $('#commonBtn').on('click', function () {
         $.ajax({
-                type: "post",
-                url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetCommonFunctions")",
-                beforeSend: function () { window.loading('show'); },
-                data: { "commons": commonArray },
-                success: function (resp) {
-                    //設置成功
-                    window.SetCommonFunctionList();
-                },
-                complete: function () { window.loading('hide'); }
-            })
+            type: "post",
+            url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetCommonFunctions")",
+            beforeSend: function () { window.loading('show'); },
+            data: { "commons": commonArray },
+            success: function (resp) {
+                //設置成功
+                window.SetCommonFunctionList();
+            },
+            complete: function () { window.loading('hide'); }
+        })
     });
 </script>
