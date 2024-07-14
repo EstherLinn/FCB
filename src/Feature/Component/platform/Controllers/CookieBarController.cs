@@ -1,4 +1,5 @@
 ﻿using Feature.Wealth.Component.Models.CookieBar;
+using Foundation.Wealth.Helper;
 using Sitecore.Mvc.Presentation;
 using Sitecore.Web;
 using System;
@@ -41,7 +42,7 @@ namespace Feature.Wealth.Component.Controllers
                 if (string.IsNullOrEmpty(WebUtil.GetCookieValue("CookieConsent")))
                 {
                     WebUtil.SetCookieValue("CookieConsent", "1", DateTime.MinValue, true);
-
+                    this.Response.SetSameSiteCookie("CookieConsent");
                     var objReturn = new
                     {
                         success = true

@@ -5,6 +5,7 @@ using Feature.Wealth.Account.Models.OAuth;
 using Feature.Wealth.Account.Repositories;
 using Feature.Wealth.Account.Services;
 using Foundation.Wealth.Extensions;
+using Foundation.Wealth.Helper;
 using Newtonsoft.Json;
 using Sitecore.Configuration;
 using Sitecore.Security.Accounts;
@@ -393,6 +394,7 @@ namespace Feature.Wealth.Account.Controllers
         public ActionResult SetUrlCookie(string url)
         {
             WebUtil.SetCookieValue("ReturnUrl", url, DateTime.MinValue, true);
+            this.Response.SetSameSiteCookie("ReturnUrl");
             return new JsonNetResult();
         }
 

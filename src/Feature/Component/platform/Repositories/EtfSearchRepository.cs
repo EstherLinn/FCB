@@ -37,7 +37,7 @@ namespace Feature.Wealth.Component.Repositories
             return model;
         }
 
-        public IEnumerable<EtfSearchResult> GetResultList(ReqSearch req)
+        public IEnumerable<EtfSearchResult> GetResultList()
         {
             var result = MapperResult();
             return result;
