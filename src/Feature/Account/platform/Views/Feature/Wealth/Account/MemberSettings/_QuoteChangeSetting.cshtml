@@ -53,20 +53,20 @@
 
 <script>
     (function ($, window, document, undefined) {
-            $('input[name="color"]', '#quoteTable').on('change', function (e) {
-                let val = $('input[name="color"]:checked', '#quoteTable').data('color');
-                if (val) {
-                    $.ajax({
-                        type: "post",
-                        url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetQuoteChangeColor")",
-                        beforeSend: function () { window.loading('show'); },
-                        data: { "color": val },
-                        success: function (msg) {
-                            //設置成功
-                        },
-                        complete: function () { window.loading('hide');}
-                    })
-                }
-        });
+        $('input[name="color"]', '#quoteTable').on('change', function (e) {
+            let val = $('input[name="color"]:checked', '#quoteTable').data('color');
+            if (val) {
+                $.ajax({
+                    type: "post",
+                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetQuoteChangeColor")",
+                    beforeSend: function () { window.loading('show'); },
+                    data: { "color": val },
+                    success: function (msg) {
+                        //設置成功
+                    },
+                    complete: function () { window.loading('hide'); }
+                })
+            }
+        })
     })(jQuery, window, document);
 </script>
