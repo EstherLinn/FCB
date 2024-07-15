@@ -74,11 +74,11 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetFundRiskGraph(string fundId, string selectType)
+        public ActionResult GetFundRiskGraph(string fundId, string selectType, string indicator)
         {
             selectType = string.IsNullOrEmpty(selectType) ? "Type" : selectType;
             var resp = new FundRiskGraphRespModel() { Body = Enumerable.Empty<FundRiskGraph>() };
-            resp.Body = _fundRepository.GetRiskindicatorsGraph(fundId.ToUpper(), selectType);
+            resp.Body = _fundRepository.GetRiskindicatorsGraph(fundId.ToUpper(), selectType, indicator);
 
             resp.StatusCode = HttpStatusCode.OK;
             resp.Message = "Success";

@@ -25,7 +25,7 @@ namespace Foundation.Wealth.Helper
             var result = @params.Concat(
                 new (string Key, object Value)[]
                 {
-                    ("sc_lang", Context.Language),
+                    //("sc_lang", Context.Language),
                     ("sc_site", Context.Site.Name)
                 }).ToArray();
             return webViewPage.GenerateUrl(route.RouteName, null, controller, action, result);

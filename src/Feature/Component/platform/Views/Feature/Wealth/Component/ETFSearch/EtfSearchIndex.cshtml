@@ -1,5 +1,4 @@
-﻿@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-@using Feature.Wealth.Component.Models.Invest
+﻿@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;@using Feature.Wealth.Component.Models.Invest
 @using Foundation.Wealth.Helper;
 @model Feature.Wealth.Component.Models.ETF.Search.EtfSearchModel
 @{
@@ -75,12 +74,12 @@
                         type: 'POST',
                         dataType: 'json',
                         contentType: 'application/json',
-                        data: JSON.stringify(params),
+                        data: params ? JSON.stringify(params) : null,
                         success: function (data) {
                             resolve(data);
                         },
                         error: function (xhr, status, errorThrown) {
-                            reject({xhr, status, errorThrown});
+                            reject({ xhr, status, errorThrown });
                         }
                     });
                 });
@@ -571,19 +570,13 @@
                 });
             }
 
-            var reqSearch = {
-                req: {
-                    DatasourceId: '@Model.DatasourceId'
-                }
-            };
-
             window.ETFSearch = {
                 FJS: null,
                 Result: new SearchResultRespList(),
                 SearchKeyword: new SearchKeywordDataRespList(),
                 QueryList: function () {
                     this.Result.Init();
-                    var query = apiRequest('@ClientRoute.GenerateUrl(this, "EtfSearch", "GetSearchResultData")', reqSearch);
+                    var query = apiRequest('@ClientRoute.GenerateUrl(this, "EtfSearch", "GetSearchResultData")');
 
                     query.then((data) => {
                         console.log(data);

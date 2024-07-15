@@ -680,7 +680,8 @@ namespace Feature.Wealth.Component.Repositories
                     dest.NetValueMonthlyReturnOriginalCurrencyStyle = src.NetValueMonthlyReturnOriginalCurrency.DecimalNumberToStyle();
                     dest.ReferenceIndexMonthlyReturn = src.ReferenceIndexMonthlyReturn.FormatDecimalNumber(needPercent: true);
                     dest.ReferenceIndexMonthlyReturnStyle = src.ReferenceIndexMonthlyReturn.DecimalNumberToStyle();
-                    dest.Difference = (src.NetValueMonthlyReturnOriginalCurrency - src.ReferenceIndexMonthlyReturn).FormatDecimalNumber();
+                    dest.Difference = (src.NetValueMonthlyReturnOriginalCurrency - src.ReferenceIndexMonthlyReturn).FormatDecimalNumber(needAbs: false);
+                    dest.DifferenceStyle = (src.NetValueMonthlyReturnOriginalCurrency - src.ReferenceIndexMonthlyReturn).DecimalNegativeStyle();
                 });
 
             var result = collection.Adapt<List<EtfReferenceIndexMonthlyReturn>>(config);

@@ -18,9 +18,9 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetSearchResultData(ReqSearch req)
+        public ActionResult GetSearchResultData()
         {
-            var resp = _searchRepository.GetResultList(req);
+            var resp = _searchRepository.GetResultList();
             return new JsonNetResult(resp);
         }
     }
