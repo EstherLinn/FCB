@@ -92,7 +92,7 @@
             let self = $("input[insertKeywords]");
             let isSeachBar = self.attr("issearchbar");
             let urlParams = new URLSearchParams(window.location.search);
-            let keyword = DOMPurify.sanitize(urlParams.get('keyword'));
+            let keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('keyword')));
             let params;
 
             if (isSeachBar == "true") {

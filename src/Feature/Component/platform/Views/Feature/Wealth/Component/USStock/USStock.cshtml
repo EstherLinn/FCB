@@ -636,15 +636,15 @@
 
                         // 申購按鈕
                         let $purchase = (suggestion.AvailabilityStatus == 'Y' && suggestion.OnlineSubscriptionAvailability != 'N') ?
-                        `<div class="c-itemKeyword__actions"><a ${suggestion.AutoSubscribeButtonHtml}>申購</a></div>` : '';
+                            `<div class="c-itemKeyword__actions"><a ${suggestion.AutoSubscribeButtonHtml}>申購</a></div>` : '';
 
                         return `<div class="c-itemKeyword">
-                                    <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                    </a>
-                                    <div class="c-itemKeyword__collections">${$like}</div>
-                                    ${$purchase}
-                                </div>`;
+                                        <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                            <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                        </a>
+                                        <div class="c-itemKeyword__collections">${$like}</div>
+                                        ${$purchase}
+                                    </div>`;
                     }
                 });
             });
@@ -727,27 +727,23 @@
                 }, 300);
             });
 
-            var urlParams = new URLSearchParams(window.location.search);
-            var keyword = DOMPurify.sanitize(urlParams.get('keyword'));
-            var hotkeyword = DOMPurify.sanitize(urlParams.get('HotKeyWord'));
-            var hotproduct = DOMPurify.sanitize(urlParams.get('HotProduct'));
+            let keywordObject = {};
 
-            if (keyword) {
-                $('#keyword').val(keyword);
-                setTimeout(() => {
-                    $('[data-keyword-submit]').trigger('click');
-                }, 300);
-                
+            let urlParams = new URLSearchParams(window.location.search);
+
+            for (const [key, value] of urlParams) {
+                keywordObject[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
             }
-            else if (hotkeyword) {
-                setTimeout(() => {
-                    $("#hotkeyword-" + hotkeyword).trigger('click');
-                }, 300);          
+
+            if (keywordObject['keyword']) {
+                $('#keyword').val(keywordObject['keyword']);
+                $('[data-keyword-submit]').trigger('click');
             }
-            else if (hotproduct) {
-                setTimeout(() => {
-                    $("#hotproduct-" + hotproduct).trigger('click');
-                }, 300);              
+            else if (keywordObject['hotkeyword']) {
+                $("#hotkeyword-" + keywordObject['hotkeyword']).trigger('click');
+            }
+            else if (keywordObject['hotproduct']) {
+                $("#hotproduct-" + keywordObject['hotproduct']).trigger('click');
             }
         });
     })(jQuery, window, document);
