@@ -86,24 +86,24 @@
             }
 
             function checkKeywordQueryString() {
-                let params = new URLSearchParams(window.location.search);
-                let urlParams = new URLSearchParams();
+                let keywordObject = {};
 
-                for (const [key, value] of params) {
-                    urlParams.append(key.toLowerCase(), decodeURIComponent(value));
+                let urlParams = new URLSearchParams(window.location.search);
+
+                for (const [key, value] of urlParams) {
+                    keywordObject[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
                 }
 
                 function queryKeyword(key) {
-                    if (urlParams.has(key)) {
-                        let keywordValue = DOMPurify.sanitize(urlParams.get(key));
-                        $('[data-keyword-input]').val(keywordValue);
+                    if (keywordObject[key]) {
+                        $('[data-keyword-input]').val(keywordObject[key]);
                         $('[data-keyword-submit]').trigger('click');
                     }
                 }
 
                 function queryAdvanced(key, selector) {
-                    if (urlParams.has(key)) {
-                        let paramVal = DOMPurify.sanitize(urlParams.get(key));
+                    if (keywordObject[key]) {
+                        let paramVal = keywordObject[key];
                         let values = paramVal.split(',');
 
                         $(selector).each(function(i, item) {
