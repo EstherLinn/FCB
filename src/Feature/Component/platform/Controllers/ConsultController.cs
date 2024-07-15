@@ -306,6 +306,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult CreateConsultSchedule(ConsultSchedule consultSchedule)
         {
             consultSchedule.ScheduleID = Guid.NewGuid();
