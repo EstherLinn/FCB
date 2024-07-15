@@ -26,26 +26,26 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 {
                     try
                     {
-                        string sql = @"WITH OldestDatesCTE AS (
-                                            SELECT
-                                                [FirstBankCode],
-                                                MIN([NetAssetValueDate]) AS OldestDate
-                                            FROM
-                                                [Sysjust_Nav_Fund]
-                                            GROUP BY
-                                                [FirstBankCode]
-                                        )
+                        string sql = @"WITH RankedDates AS (
+                                        SELECT
+                                            [FirstBankCode],
+                                            [NetAssetValueDate],
+                                            [NetAssetValue],
+                                            [SysjustCode],
+                                            ROW_NUMBER() OVER (PARTITION BY [FirstBankCode] ORDER BY [NetAssetValueDate]) AS DateRank
+                                        FROM
+                                            [Sysjust_Nav_Fund]
+                                    )
 
-                                        SELECT 
-                                            [a].[FirstBankCode],
-                                            [a].[NetAssetValueDate],
-                                            [a].[NetAssetValue],
-                                            [a].[SysjustCode]
-                                        FROM 
-                                            [Sysjust_Nav_Fund] AS [a]
-                                        JOIN 
-                                            OldestDatesCTE AS [b] ON [a].[FirstBankCode] = [b].[FirstBankCode] 
-                                                                  AND [a].[NetAssetValueDate] = [b].[OldestDate];
+                                    SELECT
+                                        [FirstBankCode],
+                                        [NetAssetValueDate],
+                                        [NetAssetValue],
+                                        [SysjustCode]
+                                    FROM
+                                        RankedDates
+                                    WHERE
+                                        DateRank = 2;
                                         ";
                         var results = await DbManager.Custom.ExecuteIListAsync<SysjustNavFund>(sql, null, CommandType.Text);
                         var basic = await etlService.ParseCsv<SysjustNavFund>(filename);
