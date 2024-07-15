@@ -1435,8 +1435,25 @@
         document.addEventListener("DOMContentLoaded", function () {
 
             var resultHasGap;
-            var chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [];
+            var chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [], chartsAssets = [];
             var defaultRiskAttributes = '@Model.DefaultRiskAttributes';
+            var assetsData = {
+                stock: {
+                    number: @Model.StockAllocation,
+                    fieldName: '@Model.StockAllocationFieldName',
+                    text: '@Model.StockAllocationText'
+                },
+                bond: {
+                    number: @Model.BondAllocation,
+                    fieldName: '@Model.BondAllocationFieldName',
+                    text: '@Model.BondAllocationText'
+                },
+                currency: {
+                    number: @Model.CurrencyAllocation,
+                    fieldName: '@Model.CurrencyAllocationFieldName',
+                    text: '@Model.CurrencyAllocationText'
+                }
+            };
 
             //#region 預計幾年後達成目標綁定事件
             let $sliderYear = $('[data-slider-id="year"]').get(0),
@@ -1616,98 +1633,8 @@
 
                     let tab1Results, tab2Results, tab3Results, tab4Results, tab5Results, currentYear;
 
-                    chartsRevenues.length = 0;
-                    chartsRewards.length = 0;
-                    chartsRewardsCategories.length = 0;
-
-                    // 顯示試算結果 - 描述區塊
-                    $("#resultDescription").removeClass("u-hidden");
-                    renderResultDescription(planningResults, downPayment, years);
-
-                    // 顯示試算結果 - tab區塊
-                    $("#resultTab").removeClass("u-hidden");
-
-                    // 判斷試算結果是否有缺口
-                    if (resultHasGap) {
-                        $(".tab1Btn").removeClass("u-hidden");
-                        $(".tab2Btn").removeClass("u-hidden");
-                        $(".tab3Btn").removeClass("u-hidden");
-                        $(".tab4Btn").removeClass("u-hidden");
-                        $(".tab5Btn").addClass("u-hidden");
-
-                        tab1Results = planningResults;
-                        tab2Results = tab2Compute(downPayment, years, amountPrepared, expectedRoi);
-                        tab3Results = tab3Compute(downPayment, years, amountPrepared, monthlyInvestment);
-                        tab4Results = tab4Compute(downPayment, amountPrepared, monthlyInvestment, expectedRoi);
-
-                        renderResultTab1(tab1Results, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
-                        renderResultTab2(tab2Results, downPayment, years, amountPrepared, expectedRoi);
-                        renderResultTab3(tab3Results, downPayment, years, amountPrepared, monthlyInvestment);
-                        renderResultTab4(tab4Results, downPayment, amountPrepared, monthlyInvestment, expectedRoi);
-
-                        currentYear = new Date().getFullYear() + tab4Results - 1; 
-                    }
-                    else {
-                        $(".tab1Btn").removeClass("u-hidden");
-                        $(".tab2Btn").addClass("u-hidden");
-                        $(".tab3Btn").addClass("u-hidden");
-                        $(".tab4Btn").addClass("u-hidden");
-                        $(".tab5Btn").removeClass("u-hidden");
-
-                        tab1Results = planningResults;
-                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
-                        renderResultTab1(tab1Results, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
-                        renderResultTab5(tab5Results, downPayment, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
-
-                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
-                    }
-
-                    // 顯示所有圓餅圖
-                    renderChartsRevenues(chartsRevenues);
-
-                    // 取得長條圖年份顯示範圍
-                    getRewardsYearsRange(currentYear);
-
-                    // 顯示投資報酬長條圖
-                    renderChartsRewards(chartsRewards);
-
-                    // 顯示推薦商品
-                    renderRecommendedFunds(9);
-                    renderRecommendedETFs(3);
-                    renderRecommendedStocks(3);
-
-                    // 顯示推薦商品走勢圖
-                    renderRecommendedProductChart();
-
-                    // 顯示試算結果 - 諮詢區塊
-                    $("#consult").removeClass("u-hidden");
-                }
-            });
-            //#endregion
-
-            //#region 重新試算按鈕綁定事件
-            $("#Recalculate").click(function () {
-                if (clickCheck()) {
-                    loading();
-
-                    $.magnificPopup.close();
-                    $('.l-mainstage').first().addClass('u-hidden');
-
-                    let downPayment = $("#downPayment_Popup").val();
-                    let years = $("#years_Popup").val();
-                    let amountPrepared = $("#amountPrepared_Popup").val();
-                    let monthlyInvestment = $("#monthlyInvestment_Popup").val();
-                    let expectedRoi = $("#expectedRoi_Popup").val();
-
-                    // 試算結果
-                    let planningResults = planningCompute(years, amountPrepared, monthlyInvestment, expectedRoi);
-
-                    let tab1Results, tab2Results, tab3Results, tab4Results, tab5Results, currentYear;
-
-                    chartsRevenues.length = 0;
-                    chartsRewards.length = 0;
-                    chartsRewardsCategories.length = 0;
+                    // 圖表資料清除
+                    clearChartDatas();
 
                     // 顯示試算結果 - 描述區塊
                     $("#resultDescription").removeClass("u-hidden");
@@ -1752,11 +1679,7 @@
                         currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
                     }
 
-                    bindTabSwitchEvent();
-
-                    $("ul.c-tab__navs a:first").trigger("click.myEvent");
-
-                    // 顯示所有圓餅圖
+                    // 顯示預期收益圓餅圖
                     renderChartsRevenues(chartsRevenues);
 
                     // 取得長條圖年份顯示範圍
@@ -1764,6 +1687,103 @@
 
                     // 顯示投資報酬長條圖
                     renderChartsRewards(chartsRewards);
+
+                    // 顯示資產配置圓餅圖
+                    renderChartsAssets(chartsAssets);
+
+                    // 顯示推薦商品
+                    renderRecommendedFunds(9);
+                    renderRecommendedETFs(3);
+                    renderRecommendedStocks(3);
+
+                    // 顯示推薦商品走勢圖
+                    renderRecommendedProductChart();
+
+                    // 顯示試算結果 - 諮詢區塊
+                    $("#consult").removeClass("u-hidden");
+                }
+            });
+            //#endregion
+
+            //#region 重新試算按鈕綁定事件
+            $("#Recalculate").click(function () {
+                if (clickCheck()) {
+                    loading();
+
+                    $.magnificPopup.close();
+                    $('.l-mainstage').first().addClass('u-hidden');
+
+                    let downPayment = $("#downPayment_Popup").val();
+                    let years = $("#years_Popup").val();
+                    let amountPrepared = $("#amountPrepared_Popup").val();
+                    let monthlyInvestment = $("#monthlyInvestment_Popup").val();
+                    let expectedRoi = $("#expectedRoi_Popup").val();
+
+                    // 試算結果
+                    let planningResults = planningCompute(years, amountPrepared, monthlyInvestment, expectedRoi);
+
+                    let tab1Results, tab2Results, tab3Results, tab4Results, tab5Results, currentYear;
+
+                    // 圖表資料清除
+                    clearChartDatas();
+
+                    // 顯示試算結果 - 描述區塊
+                    $("#resultDescription").removeClass("u-hidden");
+                    renderResultDescription(planningResults, downPayment, years);
+
+                    // 顯示試算結果 - tab區塊
+                    $("#resultTab").removeClass("u-hidden");
+
+                    // 判斷試算結果是否有缺口
+                    if (resultHasGap) {
+                        $(".tab1Btn").removeClass("u-hidden");
+                        $(".tab2Btn").removeClass("u-hidden");
+                        $(".tab3Btn").removeClass("u-hidden");
+                        $(".tab4Btn").removeClass("u-hidden");
+                        $(".tab5Btn").addClass("u-hidden");
+
+                        tab1Results = planningResults;
+                        tab2Results = tab2Compute(downPayment, years, amountPrepared, expectedRoi);
+                        tab3Results = tab3Compute(downPayment, years, amountPrepared, monthlyInvestment);
+                        tab4Results = tab4Compute(downPayment, amountPrepared, monthlyInvestment, expectedRoi);
+
+                        renderResultTab1(tab1Results, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
+                        renderResultTab2(tab2Results, downPayment, years, amountPrepared, expectedRoi);
+                        renderResultTab3(tab3Results, downPayment, years, amountPrepared, monthlyInvestment);
+                        renderResultTab4(tab4Results, downPayment, amountPrepared, monthlyInvestment, expectedRoi);
+
+                        currentYear = new Date().getFullYear() + tab4Results - 1;
+                    }
+                    else {
+                        $(".tab1Btn").removeClass("u-hidden");
+                        $(".tab2Btn").addClass("u-hidden");
+                        $(".tab3Btn").addClass("u-hidden");
+                        $(".tab4Btn").addClass("u-hidden");
+                        $(".tab5Btn").removeClass("u-hidden");
+
+                        tab1Results = planningResults;
+                        tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        renderResultTab1(tab1Results, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
+                        renderResultTab5(tab5Results, downPayment, years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
+
+                        currentYear = new Date().getFullYear() + parseFloat($("#years").val()) - 1;
+                    }
+
+                    // tab active 狀態復原
+                    bindTabSwitchEvent();
+
+                    // 顯示預期收益圓餅圖
+                    renderChartsRevenues(chartsRevenues);
+
+                    // 取得長條圖年份顯示範圍
+                    getRewardsYearsRange(currentYear);
+
+                    // 顯示投資報酬長條圖
+                    renderChartsRewards(chartsRewards);
+
+                    // 顯示資產配置圓餅圖
+                    renderChartsAssets(chartsAssets);
 
                     // 顯示試算結果 - 諮詢區塊
                     $("#consult").removeClass("u-hidden");
@@ -1939,7 +1959,7 @@
 
                         $(inputID).val(val);
                     break;
-                    
+
                 }
 
                 if (checkFlag) {
@@ -2072,6 +2092,15 @@
             };
             //#endregion
 
+            //#region 圖表資料清除
+            function clearChartDatas() {
+                chartsRevenues.length = 0;
+                chartsRewards.length = 0;
+                chartsRewardsCategories.length = 0;
+                chartsAssets.length = 0;
+            }
+             //#endregion
+
             //#region 顯示試算結果 - 描述區塊
             function renderResultDescription(result, downPayment, years) {
                 let downPaymentVal = parseFloat(downPayment) * 10000;
@@ -2155,6 +2184,14 @@
                     invest: getRewardsInvestData(monthlyInvestment, years),
                     prepared: getRewardsPreparedData(amountPrepared, years)
                 });
+
+                // tab1資產配置資料
+                chartsAssets.push({
+                    id: 'chartsAssets-01',
+                    currency: assetsData.currency.number,
+                    bond: assetsData.bond.number,
+                    stock: assetsData.stock.number
+                });
             }
             //#endregion
 
@@ -2204,6 +2241,14 @@
                     invest: getRewardsInvestData(resultFormatVal, years),
                     prepared: getRewardsPreparedData(amountPrepared, years)
                 });
+
+                // tab2資產配置資料
+                chartsAssets.push({
+                    id: 'chartsAssets-02',
+                    currency: assetsData.currency.number,
+                    bond: assetsData.bond.number,
+                    stock: assetsData.stock.number
+                });
             }
             //#endregion
 
@@ -2248,6 +2293,14 @@
                     invest: getRewardsInvestData(monthlyInvestment, years),
                     prepared: getRewardsPreparedData(amountPrepared, years)
                 });
+
+                // tab3資產配置資料
+                chartsAssets.push({
+                    id: 'chartsAssets-03',
+                    currency: assetsData.currency.number,
+                    bond: assetsData.bond.number,
+                    stock: assetsData.stock.number
+                });
             }
             //#endregion
 
@@ -2291,6 +2344,14 @@
                     invest: getRewardsInvestData(monthlyInvestment, result),
                     prepared: getRewardsPreparedData(amountPrepared, result)
                 });
+
+                // tab4資產配置資料
+                chartsAssets.push({
+                    id: 'chartsAssets-04',
+                    currency: assetsData.currency.number,
+                    bond: assetsData.bond.number,
+                    stock: assetsData.stock.number
+                });
             }
             //#endregion
 
@@ -2333,6 +2394,14 @@
                     revenue: getRewardsRevenueData(monthlyInvestment, amountPrepared, years, expectedRoi),
                     invest: getRewardsInvestData(monthlyInvestment, years),
                     prepared: getRewardsPreparedData(amountPrepared, years)
+                });
+
+                // tab5資產配置資料
+                chartsAssets.push({
+                    id: 'chartsAssets-05',
+                    currency: assetsData.currency.number,
+                    bond: assetsData.bond.number,
+                    stock: assetsData.stock.number
                 });
             }
             //#endregion
@@ -2761,128 +2830,88 @@
             //#endregion
 
             //#region 資產配置圓餅圖顯示
-            let chartsAssets = [{
-                id: 'chartsAssets-01',
-                // 您的規劃
-                currency: 100000,
-                // 貨幣
-                bond: 400000,
-                // 債券
-                stock: 500000 // 股票
-            }, {
-                id: 'chartsAssets-02',
-                // 推薦方案1
-                currency: 100000,
-                // 貨幣
-                bond: 400000,
-                // 債券
-                stock: 500000 // 股票
-            }, {
-                id: 'chartsAssets-03',
-                // 推薦方案3
-                currency: 100000,
-                // 貨幣
-                bond: 400000,
-                // 債券
-                stock: 500000 // 股票
-            }, {
-                id: 'chartsAssets-04',
-                // 推薦方案4
-                currency: 100000,
-                // 貨幣
-                bond: 400000,
-                // 債券
-                stock: 500000 // 股票
-            }, {
-                id: 'chartsAssets-05',
-                // 推薦方案5
-                currency: @Model.CurrencyAllocation,
-                // 貨幣
-                bond: @Model.BondAllocation,
-                // 債券
-                stock: @Model.StockAllocation // 股票
-                }];
-
-            chartsAssets.forEach(item => {
-                Highcharts.chart(item.id, {
-                    chart: {
-                        type: 'pie'
-                    },
-                    title: {
-                        text: undefined
-                    },
-                    legend: {
-                        labelFormat: '{alias}',
-                        align: 'left',
-                        alignColumns: false,
-                        itemDistance: 12,
-                        margin: 0,
-                        padding: 0,
-                        itemStyle: {
-                            font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
-                            cursor: 'default'
-                        }
-                    },
-                    tooltip: {
-                        pointFormat: '{point.name}：{point.y}',
-                        headerFormat: undefined,
-                        style: {
-                            fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
-                            fontSize: '16px',
-                            fontWeight: 'normal'
+            function renderChartsAssets(chartsAssets) {
+                chartsAssets.forEach(item => {
+                    Highcharts.chart(item.id, {
+                        chart: {
+                            type: 'pie'
                         },
-                        shadow: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    },
-                    credits: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        pie: {
-                            size: 160,
-                            allowPointSelect: false,
-                            showInLegend: true,
-                            cursor: 'pointer',
-                            dataLabels: {
-                                alignTo: 'connectors',
-                                format: '{point.name}：{point.percentage:.1f}%',
-                                style: {
-                                    fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
-                                    fontSize: '16px',
-                                    fontWeight: 'normal'
-                                }
+                        title: {
+                            text: undefined
+                        },
+                        legend: {
+                            labelFormat: '{alias}',
+                            align: 'left',
+                            alignColumns: false,
+                            itemDistance: 12,
+                            margin: 0,
+                            padding: 0,
+                            itemStyle: {
+                                font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                cursor: 'default'
+                            }
+                        },
+                        tooltip: {
+                            pointFormat: '{point.name}：{point.y}',
+                            headerFormat: undefined,
+                            style: {
+                                fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                fontSize: '16px',
+                                fontWeight: 'normal'
                             },
-                            point: {
-                                events: {
-                                    legendItemClick: function (e) {
-                                        e.preventDefault();
+                            shadow: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            pie: {
+                                size: 160,
+                                allowPointSelect: false,
+                                showInLegend: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    alignTo: 'connectors',
+                                    format: '{point.name}：{point.percentage:.1f}%',
+                                    style: {
+                                        fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                        fontSize: '16px',
+                                        fontWeight: 'normal'
+                                    }
+                                },
+                                point: {
+                                    events: {
+                                        legendItemClick: function (e) {
+                                            e.preventDefault();
+                                        }
                                     }
                                 }
                             }
-                        }
-                    },
-                    series: [{
-                        name: '資產配置',
-                        data: [{
-                            name: '股票',
-                            alias: '股票 (含平衡型)',
-                            y: item.stock,
-                            color: '#3AAB68'
-                        }, {
-                            name: '債券',
-                            alias: '債券',
-                            y: item.bond,
-                            color: '#D0AD72'
-                        }, {
-                            name: '貨幣',
-                            alias: '貨幣',
-                            y: item.currency,
-                            color: '#FDAA5E'
+                        },
+                        series: [{
+                            name: '資產配置',
+                            data: [{
+                                name: assetsData.stock.text,
+                                alias: assetsData.stock.fieldName,
+                                y: item.stock,
+                                color: '#3AAB68'
+                            }, {
+                                name: assetsData.bond.text,
+                                alias: assetsData.bond.fieldName,
+                                y: item.bond,
+                                color: '#D0AD72'
+                            }, {
+                                name: assetsData.currency.text,
+                                alias: assetsData.currency.fieldName,
+                                y: item.currency,
+                                color: '#FDAA5E'
+                            }]
                         }]
-                    }]
+                    });
                 });
-            });
+            }
             //#endregion
 
             //#region  推薦基金商品顯示

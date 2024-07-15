@@ -1,5 +1,18 @@
 ﻿@model Feature.Wealth.Component.Models.Calculate.CalculateModel
 @using Feature.Wealth.Component.Models.Calculate;
+@using Feature.Wealth.Account.Helpers;
+@using Sitecore.Configuration;
+@{
+    var isLogin = FcbMemberHelper.CheckMemberLogin();
+    var member = FcbMemberHelper.fcbMemberModel;
+}
+@if (isLogin)
+{
+    <script>
+        @* addObjectValue(SC_DATA, 'Risk', @member.Risk); *@
+            addObjectValue(SC_DATA, 'Risk','保守型');
+    </script>
+}
 @if (Model == null)
 {
     return;
@@ -469,7 +482,7 @@
                     </div>
                 </div>
                 <!-- 遮罩 -->
-                <section class="c-section" id="Locker"></section>
+                <section class="c-section Locker"></section>
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -644,7 +657,7 @@
                     </div>
                 </div>
                 <!-- 遮罩 -->
-                <section class="c-section" id="Locker"></section>
+                <section class="c-section Locker"></section>
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
                     <div class="c-section">
@@ -822,7 +835,7 @@
                 </div>
 
                 <!-- 遮罩 -->
-                <section class="c-section" id="Locker"></section>
+                <section class="c-section Locker"></section>
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -1002,7 +1015,7 @@
                 </div>
 
                 <!-- 遮罩 -->
-                <section class="c-section" id="Locker"></section>
+                <section class="c-section Locker"></section>
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -1185,7 +1198,7 @@
                 </div>
 
                 <!-- 遮罩 -->
-                <section class="c-section" id="Locker"></section>
+                <section class="c-section Locker"></section>
 
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
@@ -1376,15 +1389,62 @@
     </div>
 </div>
 
+<div id="popupRisk" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">獲得專屬推薦</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="c-calcLocker">
+                <div class="l-wrap">
+                    <div class="c-calcLocker__icon">
+                        <img src="~/themes/images/icons/others/lock.svg" alt="">
+                    </div>
+                    <div class="c-calcLocker__desc ">如已完成風險屬性評估，可立即解鎖專屬推薦！</div>
+                    <div class="c-calcLocker__actions">
+                        <div class="c-calcLocker__btn">
+                            <!-- #btnUnlock: 展示另開彈跳視窗用，開發時可參考下方 script 自行調整 -->
+                            <a id="btnUnlock" href="#" class="o-btn o-btn--primary o-btn--lg">解鎖專屬推薦</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupRiskInvalid" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">尚未進行風險屬性評估</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="c-calcLocker">
+                <div class="l-wrap">
+                    <div class="c-calcLocker__icon">
+                        <img src="~/themes/images/icons/others/attention.svg" alt="">
+                    </div>
+                    <div class="c-calcLocker__desc ">您尚未完成風險評估，可至網銀進行風險屬性評估</div>
+                    <div class="c-calcLocker__actions">
+                        <div class="c-calcLocker__btn">
+                            <button type="button" class="o-btn o-btn--primary o-btn--lg">風險屬性評估</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <script>
     (function ($, window, document, undefined) {
         document.addEventListener("DOMContentLoaded", function () {
             var resultHasGap;
-            var chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [];
+            var chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [], chartsAssets = [];
             var defaultRiskAttributes = '@Model.DefaultRiskAttributes';
-            var Allocations = {
+            var assetsData = {
                 stock: {
                     number: @Model.StockAllocation,
                     fieldName: '@Model.StockAllocationFieldName',
@@ -1402,6 +1462,7 @@
                 }
             };
 
+            let LockImagePath = "/themes/images/icons/others/lock.svg";
 
             //#region 預計幾年後達成目標綁定事件
             let $sliderYear = $('[data-slider-id="year"]').get(0),
@@ -1580,9 +1641,8 @@
 
                     let tab1Results, tab2Results, tab3Results, tab4Results, tab5Results, currentYear;
 
-                    chartsRevenues.length = 0;
-                    chartsRewards.length = 0;
-                    chartsRewardsCategories.length = 0;
+                    // 圖表資料清除
+                    clearChartDatas();
 
                     // 顯示試算結果 - 描述區塊
                     $("#ResultDescription").removeClass("u-hidden");
@@ -1627,7 +1687,7 @@
                         currentYear = new Date().getFullYear() + parseFloat($("#EstimateYear").val()) - 1;
                     }
 
-                    // 顯示所有圓餅圖
+                    // 顯示預期收益圓餅圖
                     renderChartsRevenues(chartsRevenues);
 
                     // 取得長條圖年份顯示範圍
@@ -1636,17 +1696,13 @@
                     // 顯示投資報酬長條圖
                     renderChartsRewards(chartsRewards);
 
-                    //產生遮罩
-                    renderLock();
-
-
+                    // 顯示資產配置圓餅圖
+                    renderChartsAssets(chartsAssets);
 
                     // 顯示推薦商品
                     renderRecommendedFunds(9);
                     renderRecommendedETFs(3);
                     renderRecommendedStocks(3);
-
-
 
                     // 顯示推薦商品走勢圖
                     renderRecommendedProductChart();
@@ -1663,9 +1719,8 @@
                     loading();
                     let tab1Results, tab2Results, tab3Results, tab4Results, tab5Results, currentYear;
 
-                    chartsRevenues.length = 0;
-                    chartsRewards.length = 0;
-                    chartsRewardsCategories.length = 0;
+                    // 圖表資料清除
+                    clearChartDatas();
 
                     $.magnificPopup.close();
                     $('.l-mainstage').first().addClass('u-hidden');
@@ -1679,16 +1734,12 @@
                     // 試算結果
                     let planningResults = planningCompute(Years, Prepared, Monthly, ExpectedRoi);
 
-
-
                     // 顯示試算結果 - 描述區塊
                     $("#ResultDescription").removeClass("u-hidden");
                     renderResultDescription(planningResults, Target, Years);
 
                     // 顯示試算結果 - tab區塊
                     $("#ResultTab").removeClass("u-hidden");
-
-
 
                     // 判斷試算結果是否有缺口
                     if (resultHasGap) {
@@ -1709,7 +1760,7 @@
                         renderResultTab4(tab4Results, Target, Prepared, Monthly, ExpectedRoi);
 
                         currentYear = new Date().getFullYear() + tab4Results - 1;
-                        
+
                     }
                     else {
                         $(".tab1Btn").removeClass("u-hidden");
@@ -1724,17 +1775,13 @@
                         renderResultTab1(tab1Results, Target, Years, Prepared, Monthly, ExpectedRoi);
                         renderResultTab5(tab5Results, Target, Years, Prepared, Monthly, (parseFloat(ExpectedRoi) + parseFloat(defaultRiskAttributes)).toString());
                         currentYear = new Date().getFullYear() + parseFloat($("#EstimateYearRemark").val()) - 1;
-                        
+
                     }
 
-                    
-
+                    // tab active 狀態復原
                     bindTabSwitchEvent();
 
-
-
-
-                    // 顯示所有圓餅圖
+                    // 顯示預期收益圓餅圖
                     renderChartsRevenues(chartsRevenues);
 
                     // 取得長條圖年份顯示範圍
@@ -1742,6 +1789,9 @@
 
                     // 顯示投資報酬長條圖
                     renderChartsRewards(chartsRewards);
+
+                    // 顯示資產配置圓餅圖
+                    renderChartsAssets(chartsAssets);
 
                     // 顯示試算結果 - 諮詢區塊
                     $("#consult").removeClass("u-hidden");
@@ -2048,6 +2098,14 @@
             };
             //#endregion
 
+            //#region 圖表資料清除
+            function clearChartDatas() {
+                chartsRevenues.length = 0;
+                chartsRewards.length = 0;
+                chartsRewardsCategories.length = 0;
+                chartsAssets.length = 0;
+            }
+             //#endregion
 
             //#region 顯示試算結果 - 描述區塊
             function renderResultDescription(result, Target, Years) {
@@ -2131,6 +2189,14 @@
                     invest: getRewardsInvestData(Monthly, Years),
                     prepared: getRewardsPreparedData(Prepared, Years)
                 });
+
+                // tab1資產配置資料
+                chartsAssets.push({
+                    id: 'chartsAssets-01',
+                    currency: assetsData.currency.number,
+                    bond: assetsData.bond.number,
+                    stock: assetsData.stock.number
+                });
             }
             //#endregion
 
@@ -2180,6 +2246,14 @@
                     invest: getRewardsInvestData(resultFormatVal, Years),
                     prepared: getRewardsPreparedData(Prepared, Years)
                 });
+
+                // tab2資產配置資料
+                chartsAssets.push({
+                    id: 'chartsAssets-02',
+                    currency: assetsData.currency.number,
+                    bond: assetsData.bond.number,
+                    stock: assetsData.stock.number
+                });
             }
             //#endregion
 
@@ -2224,6 +2298,14 @@
                     invest: getRewardsInvestData(Monthly, Years),
                     prepared: getRewardsPreparedData(Prepared, Years)
                 });
+
+                // tab3資產配置資料
+                chartsAssets.push({
+                    id: 'chartsAssets-03',
+                    currency: assetsData.currency.number,
+                    bond: assetsData.bond.number,
+                    stock: assetsData.stock.number
+                });
             }
             //#endregion
 
@@ -2266,6 +2348,14 @@
                     revenue: getRewardsRevenueData(Monthly, Prepared, result, ExpectedRoi),
                     invest: getRewardsInvestData(Monthly, result),
                     prepared: getRewardsPreparedData(Prepared, result)
+                });
+
+                // tab4資產配置資料
+                chartsAssets.push({
+                    id: 'chartsAssets-04',
+                    currency: assetsData.currency.number,
+                    bond: assetsData.bond.number,
+                    stock: assetsData.stock.number
                 });
             }
             //#endregion
@@ -2310,9 +2400,16 @@
                     invest: getRewardsInvestData(Monthly, Years),
                     prepared: getRewardsPreparedData(Prepared, Years)
                 });
+
+                // tab5資產配置資料
+                chartsAssets.push({
+                    id: 'chartsAssets-05',
+                    currency: assetsData.currency.number,
+                    bond: assetsData.bond.number,
+                    stock: assetsData.stock.number
+                });
             }
             //#endregion
-
 
             //#region 試算結果讀條顯示
             function renderReadingbar(containerId, target, current, gap) {
@@ -2719,9 +2816,6 @@
             }
             //#endregion
 
-
-
-
             //#region 查看推薦方案綁定事件
             $('#btnSolutionsSuccess').on('click', function (e) {
                 e.preventDefault();
@@ -2740,139 +2834,121 @@
             });
             //#endregion
 
-
             //#region 資產配置圓餅圖顯示
-            let chartsAssets = [{
-                id: 'chartsAssets-01',
-                // 您的規劃
-                currency: Allocations.currency.number,
-                // 貨幣
-                bond: Allocations.bond.number,
-                // 債券
-                stock: Allocations.stock.number // 股票
-            }, {
-                id: 'chartsAssets-02',
-                // 推薦方案1
-                currency: Allocations.currency.number,
-                // 貨幣
-                bond: Allocations.bond.number,
-                // 債券
-                stock: Allocations.stock.number // 股票
-            }, {
-                id: 'chartsAssets-03',
-                // 推薦方案3
-                currency: Allocations.currency.number,
-                // 貨幣
-                bond: Allocations.bond.number,
-                // 債券
-                stock: Allocations.stock.number // 股票
-            }, {
-                id: 'chartsAssets-04',
-                // 推薦方案4
-                currency: Allocations.currency.number,
-                // 貨幣
-                bond: Allocations.bond.number,
-                // 債券
-                stock: Allocations.stock.number // 股票
-            }, {
-                id: 'chartsAssets-05',
-                // 推薦方案5
-                currency: Allocations.currency.number,
-                // 貨幣
-                bond: Allocations.bond.number,
-                // 債券
-                stock: Allocations.stock.number // 股票
-            }];
-
-            chartsAssets.forEach(item => {
-                Highcharts.chart(item.id, {
-                    chart: {
-                        type: 'pie'
-                    },
-                    title: {
-                        text: undefined
-                    },
-                    legend: {
-                        labelFormat: '{alias}',
-                        align: 'left',
-                        alignColumns: false,
-                        itemDistance: 12,
-                        margin: 0,
-                        padding: 0,
-                        itemStyle: {
-                            font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
-                            cursor: 'default'
-                        }
-                    },
-                    tooltip: {
-                        pointFormat: '{point.name}：{point.y}',
-                        headerFormat: undefined,
-                        style: {
-                            fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
-                            fontSize: '16px',
-                            fontWeight: 'normal'
+            function renderChartsAssets(chartsAssets) {
+                chartsAssets.forEach(item => {
+                    Highcharts.chart(item.id, {
+                        chart: {
+                            type: 'pie'
                         },
-                        shadow: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    },
-                    credits: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        pie: {
-                            size: 160,
-                            allowPointSelect: false,
-                            showInLegend: true,
-                            cursor: 'pointer',
-                            dataLabels: {
-                                alignTo: 'connectors',
-                                format: '{point.name}：{point.percentage:.1f}%',
-                                style: {
-                                    fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
-                                    fontSize: '16px',
-                                    fontWeight: 'normal'
-                                }
+                        title: {
+                            text: undefined
+                        },
+                        legend: {
+                            labelFormat: '{alias}',
+                            align: 'left',
+                            alignColumns: false,
+                            itemDistance: 12,
+                            margin: 0,
+                            padding: 0,
+                            itemStyle: {
+                                font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                cursor: 'default'
+                            }
+                        },
+                        tooltip: {
+                            pointFormat: '{point.name}：{point.y}',
+                            headerFormat: undefined,
+                            style: {
+                                fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                fontSize: '16px',
+                                fontWeight: 'normal'
                             },
-                            point: {
-                                events: {
-                                    legendItemClick: function (e) {
-                                        e.preventDefault();
+                            shadow: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            pie: {
+                                size: 160,
+                                allowPointSelect: false,
+                                showInLegend: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    alignTo: 'connectors',
+                                    format: '{point.name}：{point.percentage:.1f}%',
+                                    style: {
+                                        fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                        fontSize: '16px',
+                                        fontWeight: 'normal'
+                                    }
+                                },
+                                point: {
+                                    events: {
+                                        legendItemClick: function (e) {
+                                            e.preventDefault();
+                                        }
                                     }
                                 }
                             }
-                        }
-                    },
-                    series: [{
-                        name: '資產配置',
-                        data: [{
-                            name: Allocations.stock.text,
-                            alias: Allocations.stock.fieldName,
-                            y: item.stock,
-                            color: '#3AAB68'
-                        }, {
-                            name: Allocations.bond.text,
-                            alias: Allocations.bond.fieldName,
-                            y: item.bond,
-                            color: '#D0AD72'
-                        }, {
-                            name: Allocations.currency.text,
-                            alias: Allocations.currency.fieldName,
-                            y: item.currency,
-                            color: '#FDAA5E'
+                        },
+                        series: [{
+                            name: '資產配置',
+                            data: [{
+                                name: assetsData.stock.text,
+                                alias: assetsData.stock.fieldName,
+                                y: item.stock,
+                                color: '#3AAB68'
+                            }, {
+                                name: assetsData.bond.text,
+                                alias: assetsData.bond.fieldName,
+                                y: item.bond,
+                                color: '#D0AD72'
+                            }, {
+                                name: assetsData.currency.text,
+                                alias: assetsData.currency.fieldName,
+                                y: item.currency,
+                                color: '#FDAA5E'
+                            }]
                         }]
-                    }]
+                    });
                 });
-            });
+            }
             //#endregion
 
+            if (SC_DATA.IsLoggedIn) {
+                if (SC_DATA.WebBankId == "") {
+                    if (SC_DATA.Risk == "undefined") {
+                        renderHaveRisk();
+                    }else {
+
+                        if (SC_DATA.Risk == "保守型") {
+                            $('.l-riskCard__charts img').attr('src', '/themes/images/charts/rr1.svg');
+                        } else if (SC_DATA.Risk == "穩健型") {
+                            $('.l-riskCard__charts img').attr('src', '/themes/images/charts/rr4.svg');
+                        } else if (SC_DATA.Risk == "積極型") {
+                            $('.l-riskCard__charts img').attr('src', '/themes/images/charts/rr5.svg');
+                        }
+
+
+                    };
+                } else {
+                    renderTPPLogin();
+                };
+            } else {
+                renderNotLogin();
+            };
+
             //#region 判斷登入遮罩顯示
-            function renderLock() {
-                const LockHTML = `
+            function renderNotLogin() {
+                const NotLoginHTML = `
                             <div class="c-calcLocker">
                                 <div class="l-wrap">
                                     <div class="c-calcLocker__icon">
-                                        <img src="~/themes/images/icons/others/lock.svg" alt="">
+                                            <img src="${LockImagePath}" alt="">
                                     </div>
                                     <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
                                     <div class="c-calcLocker__actions">
@@ -2881,14 +2957,77 @@
                                 </div>
                                 </div>
                         `;
-                $('#Locker').append(LockHTML);
-                $('#Locker').addClass("c-section--locker");
+                $('.Locker').append(NotLoginHTML);
+                $('.Locker').addClass("c-section--locker");
                 $('[data-popup="true"]').magnificPopup({
                     type: 'inline',
                     midClick: true
                 });
 
             }
+            //#endregion
+
+            //#region 判斷登入平台遮罩顯示
+            function renderTPPLogin() {
+                const TPPLoginHTML = `
+                                    <div class="c-calcLocker">
+                                        <div class="l-wrap">
+                                            <div class="c-calcLocker__icon">
+                                                    <img src="${LockImagePath}" alt="">
+                                            </div>
+                                            <div class="c-calcLocker__desc t2 t-bold">綁定一銀帳戶查看專屬推薦</div>
+                                            <div class="c-calcLocker__actions">
+                                                <div class="c-calcLocker__btn"><a href="https://ibank.firstbank.com.tw/NetBank/DigAMA/LandingPage/index.html" target="_blank" class="o-btn o-btn--secondary o-btn--lg" rel="noreferrer noopener">立即開戶</a></div>
+                                                <div class="c-calcLocker__btn"><a href="#" target="_self" class="o-btn o-btn--primary o-btn--lg" rel="">立即綁定</a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            `;
+                $('.Locker').append(TPPLoginHTML);
+                $('.Locker').addClass("c-section--locker");
+            }
+            //#endregion
+
+            //#region 判斷有無風險屬性遮罩顯示
+            function renderHaveRisk() {
+                const HaveRiskHTML = `
+                                            <div class="c-calcLocker">
+                                        <div class="l-wrap">
+                                            <div class="c-calcLocker__icon">
+                                                    <img src="${LockImagePath}" alt="">
+                                            </div>
+                                            <div class="c-calcLocker__desc t2 t-bold">進行風險屬性評估後即可獲得專屬推薦</div>
+                                            <div class="c-calcLocker__actions">
+                                                <div class="c-calcLocker__btn"><a href="#popupRisk" class="o-btn o-btn--primary o-btn--lg" data-popup="true">風險屬性評估</a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                $('.Locker').append(HaveRiskHTML);
+                $('.Locker').addClass("c-section--locker");
+            }
+            //#endregion
+
+            //#region
+            $(function () {
+                // 解鎖專屬推薦
+                $('#btnUnlock').on('click', function (e) {
+                    e.preventDefault();
+                    if (SC_DATA.Risk != "undefined" ) {
+                        // 因套件有 animation 的 delay 時間差，故必需要遞延再執行
+                        setTimeout(function (e) {
+                            $.magnificPopup.open({
+                                items: {
+                                    src: '#popupRiskInvalid'
+                                },
+                                type: 'inline'
+                            });
+                            // 移除 history ，避免關閉後開啟上一個彈跳視窗
+                            $.magnificPopup.instance.history.splice(0, $.magnificPopup.instance.history.length - 1);
+                        }, 100);
+                    }
+                });
+            });
             //#endregion
 
             //#region  推薦基金商品顯示
