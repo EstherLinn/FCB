@@ -90,7 +90,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.PercentageChangeInFundPrice = Percentage(f.PercentageChangeInFundPrice);
                 vm.FundSizeMillionOriginalCurrency = Round4(f.FundSizeMillionOriginalCurrency);
                 vm.FundSizeMillionTWD = Round4(f.FundSizeMillionTWD);
-                vm.FundType = f.FormatFundType;
+                vm.FundType = f.FormatFundType ?? string.Empty;
 
                 if (f.DividendDistributionFrequency == "無")
                 {
@@ -98,11 +98,11 @@ namespace Feature.Wealth.Component.Repositories
                 }
                 else
                 {
-                    vm.DividendFrequencyName = f.DividendDistributionFrequency;
+                    vm.DividendFrequencyName = f.DividendDistributionFrequency ?? string.Empty;
                 }
 
                 //風險指標
-                vm.RiskRewardLevel = f.RiskRewardLevel;
+                vm.RiskRewardLevel = f.RiskRewardLevel ?? string.Empty;
                 vm.Sharpe = Round4(f.Sharpe);
                 vm.Beta = Round4(f.Beta);
                 vm.OneYearAlpha = Round4(f.OneYearAlpha);
@@ -110,7 +110,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl();
 
                 //篩選用
-                vm.FundCompanyName = f.FundCompanyName;
+                vm.FundCompanyName = f.FundCompanyName ?? string.Empty;
                 if (!string.IsNullOrEmpty(f.InvestmentRegionName))
                 {
                     vm.InvestmentRegionName = f.InvestmentRegionName.Split(',')
@@ -119,7 +119,7 @@ namespace Feature.Wealth.Component.Repositories
                 }
                 else
                 {
-                    vm.InvestmentRegionName = [null];
+                    vm.InvestmentRegionName = [string.Empty];
                 }
 
                 vm.value = f.ProductCode + " " + FullWidthToHalfWidth(f.FundName);
@@ -133,7 +133,7 @@ namespace Feature.Wealth.Component.Repositories
                 };
 
                 vm.InvestmentTargetName = f.InvestmentTargetName ?? string.Empty;
-                vm.FundRating = f.FundRating;
+                vm.FundRating = f.FundRating ?? 0;
 
                 vm.YeartoDateReturnOriginalCurrency = RoundingPrice(f.YeartoDateReturnOriginalCurrency);
                 vm.InceptionDateReturnOriginalCurrency = RoundingPrice(f.InceptionDateReturnOriginalCurrency);
