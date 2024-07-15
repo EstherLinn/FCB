@@ -96,9 +96,12 @@
 
     <script type="text/javascript">
         function getQueryString() {
-            var result = {}, queryString = location.search.substring(1), re = /([^&=]+)=([^&]*)/g, m;
-            while (m = re.exec(queryString)) {
-                result[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+            var result = {};
+
+            let urlParams = new URLSearchParams(window.location.search);
+
+            for (const [key, value] of urlParams) {
+                result[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
             }
 
             return result;
