@@ -7,6 +7,7 @@ using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using System.Linq;
 using Foundation.Wealth.Manager;
 using System.Data;
+using System.Collections.Generic;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
@@ -26,33 +27,35 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 {
                     try
                     {
-                        string sql = @"WITH RankedDates AS (
-                                        SELECT
-                                            [FirstBankCode],
-                                            [NetAssetValueDate],
-                                            [NetAssetValue],
-                                            [SysjustCode],
-                                            ROW_NUMBER() OVER (PARTITION BY [FirstBankCode] ORDER BY [NetAssetValueDate]) AS DateRank
-                                        FROM
-                                            [Sysjust_Nav_Fund]
-                                    )
-
-                                    SELECT
-                                        [FirstBankCode],
-                                        [NetAssetValueDate],
-                                        [NetAssetValue],
-                                        [SysjustCode]
-                                    FROM
-                                        RankedDates
-                                    WHERE
-                                        DateRank = 2;
-                                        ";
-                        var results = await DbManager.Custom.ExecuteIListAsync<SysjustNavFund>(sql, null, CommandType.Text);
+                        //30日txt淨值資料
                         var basic = await etlService.ParseCsv<SysjustNavFund>(filename);
+
+                        //資料庫抓取原資料
+                        string sql = "SELECT * FROM [Sysjust_Nav_Fund]";
+                        var results = await DbManager.Custom.ExecuteIListAsync<SysjustNavFund>(sql, null, CommandType.Text);
+
+                        var oldestDatesQuery = basic.GroupBy(fund => fund.FirstBankCode).Select(group => new { FirstBankCode = group.Key, OldestDate = group.Min(fund => fund.NetAssetValueDate) });
+
+                        var filteredResults = new List<SysjustNavFund>();
+
+                        foreach (var oldestDate in oldestDatesQuery)
+                        {
+                            var fundId = oldestDate.FirstBankCode;
+                            var minDate = oldestDate.OldestDate;
+
+                            var fundResults = results.Where(fund => fund.FirstBankCode == fundId && fund.NetAssetValueDate < minDate);
+                            filteredResults.AddRange(fundResults);
+                        }
+
+                        var maxDatesQuery = filteredResults
+                        .GroupBy(fund => fund.FirstBankCode)
+                        .Select(group => group.OrderByDescending(fund => fund.NetAssetValueDate).First());
+                        
+
                         _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Nav_Fund]", filename);
                         if (results != null)
                         {
-                            _repository.BulkInsertDirectToDatabase(results, "[Sysjust_Nav_Fund]", "最舊日期的那筆");
+                            _repository.BulkInsertDirectToDatabase(maxDatesQuery, "[Sysjust_Nav_Fund]", "最舊日期的那筆");
                         }
                         etlService.FinishJob(filename);
                     }
