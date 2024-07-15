@@ -55,18 +55,17 @@
             });
 
             function checkKeywordQueryString() {
-                let params = new URLSearchParams(window.location.search);
-                let urlParams = new URLSearchParams();
 
-                for (const [key, value] of params) {
-                    urlParams.append(key.toLowerCase(), decodeURIComponent(value));
+                let keywordObject = {};
+
+                let urlParams = new URLSearchParams(window.location.search);
+
+                for (const [key, value] of urlParams) {
+                    keywordObject[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
                 }
 
-                let key = 'keyword';
-
-                if (urlParams.has(key)) {
-                    let keywordValue = DOMPurify.sanitize(urlParams.get(key));
-                    $('[data-keyword-input]').val(keywordValue);
+                if (keywordObject['keyword']) {
+                    $('[data-keyword-input]').val(keywordObject['keyword']);
                     $('[data-keyword-submit]').trigger('click');
                 }
             }
