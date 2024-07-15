@@ -335,6 +335,12 @@
                                                                             </label>
                                                                         </div>
 
+                                                                        <div class="l-pickGroup__item" style="display:none;">
+                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="">
+                                                                                <div class="o-btnCheckBox__text" data-filter-value=""></div>
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="l-pickCollapse__expand">
@@ -486,6 +492,13 @@
                                                                                         }
                                                                                     }
 
+                                                                                    <div class="l-pickGroup__item" style="display:none;">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value=""></div>
+                                                                                        </label>
+                                                                                    </div>
+
                                                                                 </div>
                                                                             </div>
                                                                             <div class="l-pickCollapse__expand">
@@ -519,7 +532,7 @@
                                                             <div class="c-filterForm__value">
                                                                 <div class="o-starLevel" data-level id="FundRating">
                                                                     <label class="o-starLevel__item" data-level-item data-filter-radio style="display:none;">
-                                                                        <input checked value="1-6" class="o-starLevel__input" type="radio" name="star" data-filter-checkall>
+                                                                        <input checked value="0-6" class="o-starLevel__input" type="radio" name="star" data-filter-checkall>
                                                                     </label>
                                                                     <label class="o-starLevel__item" data-level-item data-filter-radio>
                                                                         <input class="o-starLevel__input" type="radio" name="star" data-filter-value="1星以上" value="1-6">
@@ -569,6 +582,13 @@
                                                                                             </div>
                                                                                         }
                                                                                     }
+
+                                                                                    <div class="l-pickGroup__item" style="display:none;">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value=""></div>
+                                                                                        </label>
+                                                                                     </div>
 
                                                                                 </div>
                                                                             </div>
@@ -772,6 +792,12 @@
                                                                                         </label>
                                                                                     </div>
 
+                                                                                    <div class="l-pickGroup__item" style="display:none;">
+                                                                                        <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                            <input class="o-btnCheckBox__input" type="checkbox" value="">
+                                                                                            <div class="o-btnCheckBox__text" data-filter-value=""></div>
+                                                                                        </label>
+                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="l-pickCollapse__expand">
@@ -1577,7 +1603,7 @@
                         </td>
                         <td class="c-cardTable__body" data-card-table-width="1/2">
                             <div class="c-cardTable__title" data-length="4">基金類型</div>
-                            <% if (FundType != null) { %>
+                            <% if (FundType != "") { %>
                             <div class="c-cardTable__content"><%= FundType %></div>
                             <% } else {%>
                             <span>-</span>
@@ -1585,7 +1611,7 @@
                         </td>
                         <td class="c-cardTable__body" data-card-table-width="1/2">
                             <div class="c-cardTable__title" data-length="4">配息頻率</div>
-                            <% if (DividendFrequencyName != null) { %>
+                            <% if (DividendFrequencyName != "") { %>
                             <div class="c-cardTable__content"><%= DividendFrequencyName %></div>
                             <% } else {%>
                             <span>-</span>
@@ -1650,7 +1676,7 @@
                         </td>
                         <td class="c-cardTable__body" data-card-table-width="1/2">
                             <div class="c-cardTable__title" data-length="5">風險屬性</div>
-                            <% if (RiskRewardLevel != null) { %>
+                            <% if (RiskRewardLevel != "") { %>
                             <div class="c-cardTable__content"><%= RiskRewardLevel %></div>
                             <% } else {%>
                             <span>-</span>
