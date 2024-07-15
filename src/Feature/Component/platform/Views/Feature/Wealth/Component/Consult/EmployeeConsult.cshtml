@@ -471,7 +471,8 @@
         Subject: '',
         Description: '',
         Type: '2',
-        StatusCode: '1'
+        StatusCode: '1',
+        __RequestVerificationToken: ''
     };
 
     $(function () {
@@ -745,6 +746,10 @@
         $('[data-send]').on('click', function (e) {
             e.preventDefault();
             window.loading('show');
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            currentConsultSchedule.__RequestVerificationToken = token;
+
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "Consult", "CreateConsultSchedule")',
                 type: 'POST',

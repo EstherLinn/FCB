@@ -28,6 +28,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetFundReturnDetail(string productCode)
         {
             if (productCode == null)

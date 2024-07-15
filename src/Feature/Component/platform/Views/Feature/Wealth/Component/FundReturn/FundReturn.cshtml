@@ -391,11 +391,16 @@
                     scrollTop: $('.l-stage').offset().top
                 }, 300);
 
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "FundReturn", "GetFundReturnDetail")',
                     type: 'POST',
                     dataType: 'json',
-                    data: { "productCode": SelectedFund },
+                    data: {
+                        "productCode": SelectedFund,
+                        __RequestVerificationToken: token
+                    },
                     success: function (data) {
                         $('#returnDetail').html(DOMPurify.sanitize(data));
                     },
