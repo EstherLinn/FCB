@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Models.JoinMemberInfo;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
@@ -23,6 +24,7 @@ namespace Feature.Wealth.Component.Controllers
                 Image1 = ItemUtils.ImageUrl(item, Template.JoinMemberInfo.Fields.Image1),
                 Image2 = ItemUtils.ImageUrl(item, Template.JoinMemberInfo.Fields.Image2),
                 Image3 = ItemUtils.ImageUrl(item, Template.JoinMemberInfo.Fields.Image3),
+                IsLogin = FcbMemberHelper.CheckMemberLogin(),
             };
 
             return model;
