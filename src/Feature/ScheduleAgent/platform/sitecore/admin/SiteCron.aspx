@@ -95,23 +95,7 @@
     </div>
 
     <script type="text/javascript">
-        function getQueryString() {
-            var result = {};
 
-            let urlParams = new URLSearchParams(window.location.search);
-
-            const OBJECT_PROTOTYPE_KEYS = Object.getOwnPropertyNames(Object.prototype);
-
-            for (const [key, value] of urlParams) {
-                if (OBJECT_PROTOTYPE_KEYS.includes(key)) {
-                    continue;
-                }
-
-                result[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
-            }
-
-            return result;
-        }
     </script>
 </body>
 </html>
