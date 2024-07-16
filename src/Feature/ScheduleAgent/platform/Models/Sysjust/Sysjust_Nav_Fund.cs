@@ -1,4 +1,5 @@
 ﻿using CsvHelper.Configuration.Attributes;
+using System;
 
 namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
 {
@@ -19,8 +20,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         /// 淨值日期
         /// </summary>
         [Index(1)]
-        [NullValues("", "NULL", null)]
-        public string NetAssetValueDate { get; set; }
+        public DateTime? NetAssetValueDate { get; set; }
 
         /// <summary>
         /// 淨值
