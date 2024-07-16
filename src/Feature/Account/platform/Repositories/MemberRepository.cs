@@ -140,7 +140,7 @@ namespace Feature.Wealth.Account.Repositories
             var strSql = @$"Select
                             a.CIF_CUST_NAME,
                             a.CIF_E_MAIL_ADDRESS,
-                            a.CIF_EMP_RISK,
+                            SUBSTRING(a.CIF_EMP_RISK,1,1),
                             a.CIF_AO_EMPNO,
                             b.EmployeeName as CIF_AO_EMPName,
                             b.EmployeeCode as HRIS_EmployeeCode,
@@ -175,7 +175,7 @@ namespace Feature.Wealth.Account.Repositories
             var strSql = @$"Select
                             a.CIF_CUST_NAME,
                             a.CIF_E_MAIL_ADDRESS,
-                            a.CIF_EMP_RISK,
+                            SUBSTRING(a.CIF_EMP_RISK,1,1),
                             a.CIF_AO_EMPNO,
                             b.EmployeeName as CIF_AO_EMPName,
                             b.EmployeeCode as HRIS_EmployeeCode,
@@ -209,7 +209,7 @@ namespace Feature.Wealth.Account.Repositories
             FcbMemberModel fcbMemberModel = null;
             var strSql = @$"Select
                             A.*,
-                            B.CIF_EMP_RISK as Risk,
+                            SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
                             B.CIF_ESTABL_BIRTH_DATE as Birthday,
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
@@ -239,7 +239,7 @@ namespace Feature.Wealth.Account.Repositories
             FcbMemberModel fcbMemberModel = null;
             var strSql = @$"Select
                             A.*,
-                            B.CIF_EMP_RISK as Risk,
+                            SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
                             B.CIF_ESTABL_BIRTH_DATE as Birthday,
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
@@ -259,7 +259,7 @@ namespace Feature.Wealth.Account.Repositories
             FcbMemberModel fcbMemberModel = null;
             var strSql = @$"Select
                             A.*,
-                            B.CIF_EMP_RISK as Risk,
+                            SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
                             B.CIF_ESTABL_BIRTH_DATE as Birthday,
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
