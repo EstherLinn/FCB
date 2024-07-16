@@ -235,7 +235,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             if (newsList.Any())
             {
-                InsertNewsContentIntoTable(newsList);
+                await UpdateNewsContentIntoTable(newsList);
             }
         }
 
@@ -304,16 +304,37 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 寫入新聞內容到資料表
         /// </summary>
-        /// <param name="newsDetail"></param>
-        private void InsertNewsContentIntoTable(List<NewsContentDto> newsDetail)
+        /// <param name="list"></param>
+        private async Task UpdateNewsContentIntoTable(List<NewsContentDto> list)
         {
+            if (list == null || !list.Any())
+            {
+                return;
+            }
+
             string sql = """
-                INSERT INTO [dbo].[NewsDetail] ( [NewsSerialNumber], [NewsDetailDate], [NewsTitle], [NewsContent], [NewsRelatedProducts], [NewsType] )
-                VALUES (@NewsSerialNumber, @NewsDetailDate, @NewsTitle, @NewsContent, @NewsRelatedProducts, @NewsType)
+                DECLARE @SummaryOfChanges TABLE(
+                    [Action] VARCHAR(10), [NewsSerialNumber] NVARCHAR (50)
+                );
+            
+                MERGE NewsDetail AS target
+                USING (SELECT @NewsSerialNumber AS NewsSerialNumber) AS source
+                    ON target.NewsSerialNumber = source.NewsSerialNumber
+                WHEN MATCHED THEN
+                    UPDATE SET NewsDetailDate = @NewsDetailDate
+                    , NewsTitle = @NewsTitle
+                    , NewsContent = @NewsContent
+                    , NewsRelatedProducts = @NewsRelatedProducts
+                    , NewsType = @NewsType
+                    , NewsSerialNumber = @NewsSerialNumber
+                WHEN NOT MATCHED THEN
+                    INSERT ( [NewsSerialNumber], [NewsDetailDate], [NewsTitle], [NewsContent], [NewsRelatedProducts], [NewsType] )
+                    VALUES ( @NewsSerialNumber, @NewsDetailDate, @NewsTitle, @NewsContent, @NewsRelatedProducts, @NewsType );
             """;
             try
             {
-                DbManager.Custom.ExecuteNonQuery(sql, newsDetail, CommandType.Text);
+                var result = await DbManager.Custom.ExecuteNonQueryAsync(sql, list, CommandType.Text);
+                this._logger.Info($"新聞內容資更新數: {result}");
             }
             catch (Exception ex)
             {

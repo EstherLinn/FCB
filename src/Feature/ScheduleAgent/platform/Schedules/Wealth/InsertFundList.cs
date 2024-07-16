@@ -17,7 +17,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var _repository = new ProcessRepository(this.Logger);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
-                string filename = "Fundlist";
+                string filename = "fundlist";
                 bool IsfilePath = await etlService.ExtractFile(filename);
 
                 if (IsfilePath)
