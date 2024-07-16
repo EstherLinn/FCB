@@ -731,13 +731,20 @@
 
             let urlParams = new URLSearchParams(window.location.search);
 
+            const OBJECT_PROTOTYPE_KEYS = Object.getOwnPropertyNames(Object.prototype);
+
             for (const [key, value] of urlParams) {
+                if (OBJECT_PROTOTYPE_KEYS.includes(key)) {
+                    continue;
+                }
                 keywordObject[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
             }
 
             if (keywordObject['keyword']) {
                 $('#keyword').val(keywordObject['keyword']);
-                $('[data-keyword-submit]').trigger('click');
+                setTimeout(() => {
+                    $('[data-keyword-submit]').trigger('click');
+                }, 300);
             }
             else if (keywordObject['hotkeyword']) {
                 $("#hotkeyword-" + keywordObject['hotkeyword']).trigger('click');
