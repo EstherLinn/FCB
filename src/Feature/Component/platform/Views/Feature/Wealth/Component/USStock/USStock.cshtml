@@ -731,13 +731,12 @@
 
             let urlParams = new URLSearchParams(window.location.search);
 
-            const OBJECT_PROTOTYPE_KEYS = Object.getOwnPropertyNames(Object.prototype);
+            let keys = ['keyword', 'hotkeyword', 'hotproduct'];
 
             for (const [key, value] of urlParams) {
-                if (OBJECT_PROTOTYPE_KEYS.includes(key)) {
-                    continue;
+                if (keys.includes(key.toLowerCase())) {
+                    keywordObject[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
                 }
-                keywordObject[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
             }
 
             if (keywordObject['keyword']) {
