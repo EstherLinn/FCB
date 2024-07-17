@@ -1,8 +1,6 @@
-﻿using Feature.Wealth.Account.Models.ReachInfo;
-using Feature.Wealth.ScheduleAgent.Models.Mail;
+﻿using Feature.Wealth.ScheduleAgent.Models.Mail;
 using Feature.Wealth.ScheduleAgent.Schedules.Mail;
 using Foundation.Wealth.Manager;
-using log4net;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,8 +9,9 @@ using System.Net.Mail;
 using System.Text;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Sitecore.Configuration;
-using System.Web;
-using Sitecore.Text;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using Sitecore.Data;
+using Sitecore.Globalization;
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
 {
@@ -20,6 +19,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
     {
         private readonly MailServerOption mailServerOption = new MailServerOption();
         private readonly ILoggerService _logger;
+        private readonly ID fundRelatedRoot = new ID("{0FC0B4B7-AB28-4C66-91A5-C9A7A45A5499}");
+        private readonly ID fundDetailsLinkField = new ID("{E9D1628F-C48D-4353-8526-FEDAB06A8050}");
+        private readonly ID etfRelatedRoot = new ID("{7E546D5C-6D92-451B-8E56-D45AE14DDEE8}");
+        private readonly ID etfDetailsLinkField = new ID("{E0FA77EF-C5E8-4B8D-A6C7-3A149F729CF7}");
+        private readonly ID usStockRelatedRoot = new ID("{B6913A88-4FC4-48C2-8BAF-1350C93E8A5A}");
+        private readonly ID usStockDetailsLinkField = new ID("{93D8E15F-8DD2-49D5-9858-990673212E5A}");
+
         public MailRepository(ILoggerService logger)
         {
             this._logger = logger;
@@ -45,27 +51,43 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 _logger.Info("empty");
                 return;
             }
-            var GroupByMember = memebrReachInfos.GroupBy(x => x.PlatFormId);
-            List<MailSchema> Mails = new List<MailSchema>();
+            var groupByMember = memebrReachInfos.GroupBy(x => x.PlatFormId);
+            List<MailSchema> mails = new List<MailSchema>();
             var homeUrl = $"https://";
             var cdHostName = Settings.GetSetting("CDHostName");
             homeUrl += cdHostName;
-            foreach (var group in GroupByMember)
+            string fundDetailsUrl, etfDetailsUrl, usStockDetailsUrl;
+            using (new LanguageSwitcher("zh-TW"))
             {
-                List<MailRecord> mailRecords = new List<MailRecord>();
-                var Mail1 = group.Where(x => x.InfoType == "1" && x.InvestType.ToLower() == "fund");//基金目標價格
-                var Mail2 = group.Where(x => x.InfoType == "1" && x.InvestType.ToLower() != "fund");//etf、國外股票收盤價
-                var Mail3 = group.Where(x => x.InfoType == "2" && x.RiseValue != null);//全部商品漲幅
-                var Mail4 = group.Where(x => x.InfoType == "2" && x.FallValue != null);//全部商品跌幅
-
-                if (Mail1 != null)
+                Database db = Database.GetDatabase("web");
+                fundDetailsUrl = ItemUtils.GeneralLink(db.GetItem(fundRelatedRoot), fundDetailsLinkField)?.Url;
+                etfDetailsUrl = ItemUtils.GeneralLink(db.GetItem(etfRelatedRoot), etfDetailsLinkField)?.Url;
+                usStockDetailsUrl = ItemUtils.GeneralLink(db.GetItem(usStockRelatedRoot), usStockDetailsLinkField)?.Url;
+                fundDetailsUrl = new Uri(fundDetailsUrl).AbsolutePath.ToString();
+                etfDetailsUrl = new Uri(etfDetailsUrl).AbsolutePath.ToString();
+                usStockDetailsUrl = new Uri(usStockDetailsUrl).AbsolutePath.ToString();
+            }
+            foreach (var group in groupByMember)
+            {
+                //過濾無email之會員
+                if (string.IsNullOrEmpty(group.First().MemberEmail))
                 {
-                    var Mail = new MailSchema();
-                    StringBuilder sb = new StringBuilder();
-                    foreach (var item in Mail1)
-                    {
-                        Mail.MailTo = item.MemberEmail;
+                    continue;
+                }
+                List<MailRecord> mailRecords = new List<MailRecord>();
+                var mail1 = group.Where(x => x.InfoType == "1" && x.InvestType.ToLower() == "fund");//基金目標價格
+                var mail2 = group.Where(x => x.InfoType == "1" && x.InvestType.ToLower() != "fund");//etf、國外股票收盤價
+                var mail3 = group.Where(x => x.InfoType == "2" && x.RiseValue != null);//全部商品漲幅
+                var mail4 = group.Where(x => x.InfoType == "2" && x.FallValue != null);//全部商品跌幅
 
+                if (mail1 != null)
+                {
+                    var mailSchema = new MailSchema();
+                    StringBuilder sb = new StringBuilder();
+                    mailSchema.MailTo = mail1.First().MemberEmail;
+                    foreach (var item in mail1)
+                    {
+                        //設定時的產品價格<設定之到價價格 && 最新淨值 >=設定之到價價格 || 設定時的產品價格>設定之到價價格 && 最新淨值 <=設定之到價價格
                         if ((item.PriceValue < item.ReachValue && item.NewestValue >= item.ReachValue) || (item.PriceValue > item.ReachValue && item.NewestValue <= item.ReachValue))
                         {
                             sb.Append(string.Format("<p>截至{0}(淨值基準日)止，您關注的「<span style='color:red;'> {1} </span>」最新淨值已達到您設定的目標價格{2}，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestId + item.ProductName, item.ReachValue));
@@ -73,121 +95,160 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             {
                                 PlatFormId = item.PlatFormId,
                                 InfoDateTime = DateTime.Now,
-                                InfoContent = string.Format("{0}", item.ProductName),
-                                InfoLink = "",
+                                InfoContent = string.Format("{0}已達到您設定的目標價格囉 !", item.ProductName),
+                                InfoLink = string.Format("{0}?id={1}", fundDetailsUrl, item.InvestId),
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
                         }
                     }
-                    Mail.Topic = $@"【第一銀行 第e理財網】 基金商品最新淨值已達您設定的目標價格！趕快抓住投資機會！🚀 ";
+                    mailSchema.Topic = $@"【第一銀行 第e理財網】 基金商品最新淨值已達您設定的目標價格！趕快抓住投資機會！🚀 ";
                     if (sb.Length != 0)
                     {
                         sb.Insert(0, "<p>親愛的客戶您好：</p><p>第一銀行提醒您，</p>");
                         sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
-                        Mail.Content = sb.ToString();
-                        Mails.Add(Mail);
+                        mailSchema.Content = sb.ToString();
+                        mails.Add(mailSchema);
                     }
                 }
 
-                if (Mail2 != null)
+                if (mail2 != null)
                 {
-                    var Mail = new MailSchema();
+                    var mailSchema = new MailSchema();
                     StringBuilder sb = new StringBuilder();
-                    foreach (var item in Mail2)
+                    mailSchema.MailTo = mail1.First().MemberEmail;
+                    foreach (var item in mail2)
                     {
-                        Mail.MailTo = item.MemberEmail;
+                        //設定時的產品價格<設定之到價價格 && 最新淨值 >=設定之到價價格 || 設定時的產品價格>設定之到價價格 && 最新淨值 <=設定之到價價格
                         if ((item.PriceValue < item.ReachValue && item.NewestValue >= item.ReachValue) || (item.PriceValue > item.ReachValue && item.NewestValue <= item.ReachValue))
                         {
-                            sb.Append(string.Format("<p>截至{0}(收盤價基準日)止，您關注的「<span style='color:red;'> {1} </span>」最新淨值已達到您設定的目標價格{2}，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestId + item.ProductName, item.ReachValue));
+                            sb.Append(string.Format("<p>截至{0}(收盤價基準日)止，您關注的「<span style='color:red;'> {1} </span>」收盤價已達到您設定的目標價格{2}，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestId + item.ProductName, item.ReachValue));
+                            var detailsUrl = string.Empty;
+                            switch (item.InvestType.ToLower())
+                            {
+                                case "etf":
+                                    detailsUrl = etfDetailsUrl;
+                                    break;
+                                case "foreignstocks":
+                                    detailsUrl = usStockDetailsUrl;
+                                    break;
+                            }
                             mailRecords.Add(new MailRecord
                             {
                                 PlatFormId = item.PlatFormId,
                                 InfoDateTime = DateTime.Now,
-                                InfoContent = string.Format("{0}", item.ProductName),
-                                InfoLink = "",
+                                InfoContent = string.Format("{0} 收盤價已達到您設定的目標價格囉 !", item.ProductName),
+                                InfoLink = string.Format("{0}?id={1}", detailsUrl, item.InvestId),
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
                         }
                     }
-                    Mail.Topic = $@"【第一銀行 第e理財網】ETF/國外股票商品已達您設定的目標價格！趕快抓住投資機會！📈";
+                    mailSchema.Topic = $@"【第一銀行 第e理財網】ETF/國外股票商品已達您設定的目標價格！趕快抓住投資機會！📈";
                     if (sb.Length != 0)
                     {
                         sb.Insert(0, "<p>親愛的客戶您好：</p><p>第一銀行提醒您，</p>");
                         sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
-                        Mail.Content = sb.ToString();
-                        Mails.Add(Mail);
+                        mailSchema.Content = sb.ToString();
+                        mails.Add(mailSchema);
                     }
                 }
 
-                if (Mail3 != null)
+                if (mail3 != null)
                 {
-                    var Mail = new MailSchema();
+                    var mailSchema = new MailSchema();
                     StringBuilder sb = new StringBuilder();
-                    foreach (var item in Mail3)
+                    mailSchema.MailTo = mail1.First().MemberEmail;
+                    foreach (var item in mail3)
                     {
-                        Mail.MailTo = item.MemberEmail;
+                        //最新淨值or開盤價>=設定之漲幅價格
                         if (item.NewestValue >= item.RiseValue)
                         {
                             sb.Append(string.Format("<p>截至{0}({1}基準日)止，您關注的「<span style='color:red;'> {2} </span>」漲幅達{3}%，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestType.ToLower() == "fund" ? "淨值" : "收盤價", item.InvestId + item.ProductName, item.RisePercent));
+                            var detailsUrl = string.Empty;
+                            switch (item.InvestType.ToLower())
+                            {
+                                case "fund":
+                                    detailsUrl = fundDetailsUrl;
+                                    break;
+                                case "etf":
+                                    detailsUrl = etfDetailsUrl;
+                                    break;
+                                case "foreignstocks":
+                                    detailsUrl = usStockDetailsUrl;
+                                    break;
+                            }
                             mailRecords.Add(new MailRecord
                             {
                                 PlatFormId = item.PlatFormId,
                                 InfoDateTime = DateTime.Now,
-                                InfoContent = string.Format("{0}", item.ProductName),
-                                InfoLink = "",
+                                InfoContent = string.Format("{0}已達您設定的漲幅囉！", item.ProductName),
+                                InfoLink = string.Format("{0}?id={1}", detailsUrl, item.InvestId),
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
                         }
                     }
-                    Mail.Topic = $@"【第一銀行 第e理財網】 信託商品已達您設定的漲幅囉！";
+                    mailSchema.Topic = $@"【第一銀行 第e理財網】 信託商品已達您設定的漲幅囉！";
                     if (sb.Length != 0)
                     {
                         sb.Insert(0, "<p>親愛的客戶您好：</p><p>第一銀行提醒您，</p>");
                         sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
-                        Mail.Content = sb.ToString();
-                        Mails.Add(Mail);
+                        mailSchema.Content = sb.ToString();
+                        mails.Add(mailSchema);
                     }
                 }
 
-                if (Mail4 != null)
+                if (mail4 != null)
                 {
-                    var Mail = new MailSchema();
+                    var mailSchema = new MailSchema();
                     StringBuilder sb = new StringBuilder();
-                    foreach (var item in Mail4)
+                    mailSchema.MailTo = mail1.First().MemberEmail;
+                    foreach (var item in mail4)
                     {
-                        Mail.MailTo = item.MemberEmail;
+                        //最新淨值or開盤價<=設定之跌幅價格
                         if (item.NewestValue <= item.FallValue)
                         {
                             sb.Append(string.Format("<p>截至{0}({1}基準日)止，您關注的「<span style='color:red;'> {2} </span>」跌幅達{3}%，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestType.ToLower() == "fund" ? "淨值" : "收盤價", item.InvestId + item.ProductName, item.FallPercent));
+                            var detailsUrl = string.Empty;
+                            switch (item.InvestType.ToLower())
+                            {
+                                case "fund":
+                                    detailsUrl = fundDetailsUrl;
+                                    break;
+                                case "etf":
+                                    detailsUrl = etfDetailsUrl;
+                                    break;
+                                case "foreignstocks":
+                                    detailsUrl = usStockDetailsUrl;
+                                    break;
+                            }
                             mailRecords.Add(new MailRecord
                             {
                                 PlatFormId = item.PlatFormId,
                                 InfoDateTime = DateTime.Now,
-                                InfoContent = string.Format("{0}", item.ProductName),
-                                InfoLink = "",
+                                InfoContent = string.Format("{0}已達您設定的跌幅囉！", item.ProductName),
+                                InfoLink = string.Format("{0}?id={1}", detailsUrl, item.InvestId),
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
                         }
                     }
-                    Mail.Topic = $@"【第一銀行 第e理財網】 信託商品已達您設定的跌幅囉！";
+                    mailSchema.Topic = $@"【第一銀行 第e理財網】 信託商品已達您設定的跌幅囉！";
                     if (sb.Length != 0)
                     {
                         sb.Insert(0, "<p>親愛的客戶您好：</p><p>第一銀行提醒您，</p>");
                         sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
-                        Mail.Content = sb.ToString();
-                        Mails.Add(Mail);
+                        mailSchema.Content = sb.ToString();
+                        mails.Add(mailSchema);
                     }
                 }
 
-                if (Mails.Any())
+                if (mails.Any())
                 {
                     using (var client = mailServerOption.ToSMTPClient())
                     {
-                        foreach (var item in Mails)
+                        foreach (var item in mails)
                         {
 
                             var encoding = Encoding.UTF8;

@@ -19,6 +19,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
     {
         private readonly MailServerOption mailServerOption = new MailServerOption();
         private readonly ILoggerService _logger;
+        private readonly ID titleField = new ID("{42526CEA-3641-467D-B0FE-222ADF528CE8}");
+        private readonly ID linkField = new ID("{BEB152FF-A1C5-465D-ABB1-4B944171AE05}");
         public DiscountActivityRespository(ILoggerService logger)
         {
             this._logger = logger;
@@ -31,25 +33,20 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             DiscountItems = DbManager.Custom.ExecuteIList<MemberRecordItemModel>(sql, para, commandType: CommandType.Text)?.ToList();
             if (DiscountItems.Any() && !string.IsNullOrEmpty(DiscountItems.FirstOrDefault()?.ItemId))
             {
-                var cdHostName = Settings.GetSetting("CDHostName");
                 using (new LanguageSwitcher("zh-TW"))
                 {
                     Database db = Database.GetDatabase("web");
                     foreach (var item in DiscountItems)
                     {
                         var targetItem = db.GetItem(item.ItemId);
-                        if (targetItem != null)
+                        if (targetItem != null && !string.IsNullOrEmpty(ItemUtils.GetFieldValue(targetItem, titleField)))
                         {
-
-                            item.Title = ItemUtils.GetFieldValue(targetItem, "Main Title");
-                            item.Url = ItemUtils.GeneralLink(targetItem, "Card Button Link").Url;
+                            item.Title = ItemUtils.GetFieldValue(targetItem, titleField);
+                            item.Url = ItemUtils.GeneralLink(targetItem, linkField).Url;
                             if (!string.IsNullOrEmpty(item.Url))
                             {
-                                Uri originalUri = new Uri(item.Url);
-                                UriBuilder uriBuilder = new UriBuilder(originalUri);
-                                uriBuilder.Host = cdHostName;
-                                uriBuilder.Port = -1;
-                                item.Url = uriBuilder.ToString();
+                                Uri originalUri = new Uri(item.Url);                               
+                                item.Url = originalUri.AbsolutePath.ToString();
                             }
                         }
                     }
@@ -79,15 +76,25 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
             var GroupByMember = infos.GroupBy(x => x.PlatFormId);
             List<MailSchema> Mails = new List<MailSchema>();
-
+            var homeUrl = $"https://";
+            var cdHostName = Settings.GetSetting("CDHostName");
+            homeUrl += cdHostName;
             foreach (var group in GroupByMember)
             {
+                if (string.IsNullOrEmpty(group.First().MemberEmail) || string.IsNullOrEmpty(group.First().Title))
+                {
+                    continue;
+                }
                 List<MailRecord> mailRecords = new List<MailRecord>();
                 Mails.Clear();
                 foreach (var item in group)
                 {
                     var mail = new MailSchema();
-                    mail.Content = item.Title;
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("<p>親愛的客戶您好：</p>");
+                    sb.Append(string.Format("<p>第一銀行提醒您，您有新的專屬優惠「 <span style='color:red;'>{0}</span> 」，詳情請於第e理財網查看，感謝您的配合，謝謝。</p>", item.Title));
+                    sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
+                    mail.Content = sb.ToString();
                     mail.MailTo = item.MemberEmail;
                     mail.Topic = item.Title;
                     Mails.Add(mail);
@@ -129,7 +136,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logger.Error($"專屬優惠通知Mail發送失敗:{ex.ToString()}");
+                                    _logger.Error($"專屬優惠通知Mail發送To:{item.MailTo}失敗:{ex.ToString()}");
                                 }
                             }
                         }
