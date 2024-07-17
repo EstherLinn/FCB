@@ -2107,10 +2107,10 @@
                                 }
                                 fjsRendering('baseTable', 'baseDataTable', array, isInit);
                                 if (isInit) {
-                                    $('[eh-focus]').trigger('exec');
-                                    $('[eh-subscription-type]').trigger('exec');
                                     $('[data-popup]').magnificPopup();
                                 }
+                                $('[eh-focus]').trigger('exec');
+                                $('[eh-subscription-type]').trigger('exec');
                             }
 
                             if (data.mapData.length > 0) {
