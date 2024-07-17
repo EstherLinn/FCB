@@ -1739,7 +1739,7 @@
                         $(".tab4Btn").addClass("u-hidden");
 
                         tab1Results = totalA;
-                        tab2Results = tab2Compute(years, totalB, expectedRoi);
+                        tab2Results = tab2Compute(years, totalB, expectedRoi, monthlyInvestment);
                         tab3Results = tab3Compute(years, monthlyInvestment, amountPrepared, targetAmount, pension);
 
                         renderResultTab1(tab1Results, totalB, targetAmount, years, pension, amountPrepared, monthlyInvestment, expectedRoi);
@@ -1835,7 +1835,7 @@
                         $(".tab4Btn").addClass("u-hidden");
 
                         tab1Results = totalA;
-                        tab2Results = tab2Compute(years, totalB, expectedRoi);
+                        tab2Results = tab2Compute(years, totalB, expectedRoi, monthlyInvestment);
                         tab3Results = tab3Compute(years, monthlyInvestment, amountPrepared, targetAmount, pension);
 
                         renderResultTab1(tab1Results, totalB, targetAmount, years, pension, amountPrepared, monthlyInvestment, expectedRoi);
@@ -2261,14 +2261,20 @@
             //#endregion
 
             //#region 推薦方案1-試算方法
-            function tab2Compute(years, totalB, expectedRoi) {
+            function tab2Compute(years, totalB, expectedRoi, monthlyInvestment) {
                 // 年期
                 let yearsVal = parseFloat(years) * 12;
 
                 // 預期投資報酬率
                 let expectedRoiVal = parseFloat(expectedRoi) / 12 / 100;
 
-                return formulajs.ROUNDUP(formulajs.PMT(expectedRoiVal, yearsVal, totalB), -3);
+                // 每月還需投入
+                let rmi = formulajs.ROUNDUP(formulajs.PMT(expectedRoiVal, yearsVal, totalB), -3);
+
+                // 每月總投入
+                let result = rmi + parseFloat(monthlyInvestment) * 10000;
+
+                return result;
             };
             //#endregion
 
@@ -2416,13 +2422,6 @@
                 let currentYear = new Date().getFullYear() + years - 1;
                 let total = totalACompute(years, amountPrepared, (result / 10000), expectedRoi, pension);
                 let totalFormatVal = total.toLocaleString();
-                let gap = targetAmount - total;
-
-                if (targetAmount > total) {
-                    gap = targetAmount - total;
-                } else {
-                    gap = 0;
-                }
 
                 let invest = result * parseFloat(years) * 12;
                 let retire = parseFloat(pension) * 10000;
@@ -2444,7 +2443,7 @@
                 // tab2圓餅圖資料
                 chartsRevenues.push({
                     id: 'chartsRevenue-02',
-                    gap: gap,
+                    gap: 0,
                     revenue: total - invest - prepared - retire,
                     invest: invest,
                     retire: retire,
@@ -2455,7 +2454,7 @@
                 chartsRewards.push({
                     id: 'chartsReward-02',
                     target: targetAmount,
-                    gap: getRewardsGapData(gap, years),
+                    gap: getRewardsGapData(0, years),
                     revenue: getRewardsRevenueData((result / 10000), amountPrepared, years, expectedRoi, pension),
                     invest: getRewardsInvestData((result / 10000), years),
                     retire: getReservedFundsOrPensionsData(pension, years),
