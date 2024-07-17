@@ -35,13 +35,13 @@ namespace Feature.Wealth.Account.Repositories
             string strSql = string.Empty;
             if (platForm == PlatFormEunm.WebBank)
             {
-                strSql = @$" Declare @@platForm nvarchar(10) = @platForm, @@id varchar(11) = @id
+                strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(33) = @id
                     SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
                  and PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id )) THEN 1 ELSE 0 END as BIT)";
             }
             else
             {
-                strSql = @$" Declare @@platForm nvarchar(10) = @platForm, @@id varchar(100) = @id
+                strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
                 SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
                  and PlatFormId = @@id ) THEN 1 ELSE 0 END as BIT)";
             }
@@ -71,7 +71,7 @@ namespace Feature.Wealth.Account.Repositories
         public bool CheckAppUserExists(PlatFormEunm platForm, string promotionCode)
         {
             bool exists = false;
-            string strSql = @$" Declare @@platForm nvarchar(10) = @platForm, @@promotionCode varchar(6) = @promotionCode
+            string strSql = @$" Declare @@platForm varchar(10) = @platForm, @@promotionCode varchar(100) = @promotionCode
                  SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
                  and PlatFormId = @@promotionCode) THEN 1 ELSE 0 END as BIT)";
             var para = new { platForm = platForm.ToString(), promotionCode };
@@ -145,8 +145,8 @@ namespace Feature.Wealth.Account.Repositories
             bool success = false;
             try
             {
-                string strSql = $@" Declare @@WebBankId varchar(6) = @WebBankId,
-                                            @@Time varchar(11) = @Time,
+                string strSql = $@" Declare @@WebBankId varchar(33) = @WebBankId,
+                                            @@Time datetime = @Time,
                                             @@platForm varchar(10) = @platForm,
                                             @@platFormId varchar(100) = @platFormId
                                     UPDATE [FCB_Member] Set WebBankId=(Select PROMOTION_CODE From CFMBSEL WHERE CUST_ID = @@WebBankId),
@@ -174,7 +174,7 @@ namespace Feature.Wealth.Account.Repositories
         public CIFMember GetWebBankUserInfo(string id)
         {
             CIFMember member = null;
-            var strSql = @$" Declare @@id varchar(11) = @id
+            var strSql = @$" Declare @@id varchar(33) = @id
                             Select
                             a.CIF_CUST_NAME,
                             a.CIF_E_MAIL_ADDRESS,
@@ -216,7 +216,7 @@ namespace Feature.Wealth.Account.Repositories
         public CIFMember GetAppUserInfo(string promotionCode)
         {
             CIFMember member = null;
-            var strSql = @$" Declare @@promotionCode varchar(6) = @promotionCode
+            var strSql = @$" Declare @@promotionCode varchar(24) = @promotionCode
                             Select
                             a.CIF_CUST_NAME,
                             a.CIF_E_MAIL_ADDRESS,
@@ -259,7 +259,7 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetMemberInfo(PlatFormEunm platFormEunm, string id)
         {
             FcbMemberModel fcbMemberModel = null;
-            var strSql = @$" Declare @@platForm nvarchar(10) = @platForm, @@id varchar(100) = @id
+            var strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
                             Select
                             A.*,
                             SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
@@ -295,7 +295,7 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetRefreshMemberInfo(PlatFormEunm platFormEunm, string id)
         {
             FcbMemberModel fcbMemberModel = null;
-            var strSql = @$" Declare @@platForm nvarchar(10) = @platForm, @@id varchar(100) = @id
+            var strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
                             Select
                             A.*,
                             SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
@@ -307,7 +307,7 @@ namespace Feature.Wealth.Account.Repositories
                             left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
                             WHERE PlatForm = @@Platform and PlatFormId = @@id";
 
-            var para = new { Platform = platFormEunm.ToString(), id = id };
+            var para = new { Platform = platFormEunm.ToString(),  id };
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
 
             return fcbMemberModel;
@@ -322,7 +322,7 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetAppMemberInfo(PlatFormEunm platFormEunm, string promotionCode)
         {
             FcbMemberModel fcbMemberModel = null;
-            var strSql = @$" Declare @@platForm varchar(10) = @platForm, @@promotionCode varchar(6) = @promotionCode
+            var strSql = @$" Declare @@platForm varchar(10) = @platForm, @@promotionCode varchar(100) = @promotionCode
                             Select
                             A.*,
                             SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
