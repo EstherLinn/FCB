@@ -160,16 +160,12 @@ namespace Feature.Wealth.Account.Controllers
                                     Session["LoginStatus"] = false;
                                     return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                                 }
-                                var isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), id);
+                                var isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), cifMember.CIF_PROMO_CODE);
                                 if (isBind)
                                 {
                                     step = "Step4 第三方登入綁定網銀 SetWebBankId";
                                     //成功綁定
-                                    var member = _memberRepository.GetMemberInfo(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId());
-                                    User user = Sitecore.Context.User;
-                                    string objToJson = JsonConvert.SerializeObject(member);
-                                    user.Profile.SetCustomProperty("MemberInfo", objToJson);
-                                    user.Profile.Save();
+                                    RefreshMemberInfo();
                                 }
                                 else
                                 {
@@ -196,7 +192,7 @@ namespace Feature.Wealth.Account.Controllers
                                     step = "Step4 第e個網登入 創建會員並登入";
                                     FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
                                         cifMember.CIF_E_MAIL_ADDRESS, cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
-                                        true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE);
+                                        true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,cifMember.CIF_ESTABL_BIRTH_DATE);
                                     _memberRepository.CreateNewMember(member);
                                     User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
                                     SetCustomPropertyAndLogin(member, user);
@@ -282,7 +278,7 @@ namespace Feature.Wealth.Account.Controllers
                         step = $"Step4 App登入 已取得CIF資料,理財網創建會員並登入";
                         FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
                             cifMember.CIF_E_MAIL_ADDRESS, cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
-                            true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE);
+                            true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE, cifMember.CIF_ESTABL_BIRTH_DATE);
 
                         _memberRepository.CreateNewMember(member);
                         SetCustomPropertyAndLogin(member, user);
