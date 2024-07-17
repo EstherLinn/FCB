@@ -1,14 +1,11 @@
 ﻿using Feature.Wealth.Component.Models.ETF;
-using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.NewArrivalETF;
-using Feature.Wealth.Component.Models.NewFund;
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using static Feature.Wealth.Component.Models.NewArrivalETF.NewArrivalEtfModel;
 
@@ -16,7 +13,14 @@ namespace Feature.Wealth.Component.Controllers
 {
     public class NewArrivalEtfController : Controller
     {
-        private NewArrivalEtfRepository _repository = new NewArrivalEtfRepository();
+        private readonly NewArrivalEtfRepository _repository;
+        /// <summary>
+        /// 建構子
+        /// </summary>
+        public NewArrivalEtfController()
+        {
+            _repository = new NewArrivalEtfRepository();
+        }
 
         public ActionResult Index()
         {
@@ -53,28 +57,28 @@ namespace Feature.Wealth.Component.Controllers
             bool isDesc = desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase);
 
             etfs = isDesc
-                 ? etfs.OrderByDescending(f => property.GetValue(f, null)).ToList()
-                 : etfs.OrderBy(f => property.GetValue(f, null)).ToList();
+                 ? etfs.OrderByDescending(f => property.GetValue(f, null))
+                 : etfs.OrderBy(f => property.GetValue(f, null));
 
 
             var totalRecords = etfs.Count();
             int totalPages = 1;
-            List<ETFs> renderDatas = new List<ETFs>();
             int pageSizeInt = 0;
             int pageInt = 1;
 
             if (pageSize.Equals("all", StringComparison.OrdinalIgnoreCase))
             {
                 totalPages = 1;
-                renderDatas = etfs?.ToList();
             }
             else if (int.TryParse(pageSize, out pageSizeInt) && int.TryParse(page, out pageInt))
             {
                 totalPages = (int)Math.Ceiling((double)totalRecords / pageSizeInt);
-                renderDatas = etfs?
-                    .Skip((pageInt - 1) * pageSizeInt)
-                    .Take(pageSizeInt)
-                    .ToList();
+                etfs = etfs.Skip((pageInt - 1) * pageSizeInt)
+                    .Take(pageSizeInt);
+            }
+            else
+            {
+                throw new HttpException(404, $"BadRequest error: {(pageSizeInt > 0 ? string.Empty : "pageSizeInt")} {(pageInt > 0 ? string.Empty : "pageSizeInt")}");
             }
 
             var model = new NewArrivalEtfModel()
@@ -82,7 +86,7 @@ namespace Feature.Wealth.Component.Controllers
                 TotalPages = totalPages,
                 CurrentPage = pageInt.ToString(),
                 PageSize = pageSize,
-                NewETFs = renderDatas,
+                NewETFs = etfs.ToList(),
                 DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
             };
 
