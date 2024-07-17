@@ -1,5 +1,6 @@
 ﻿
 
+using System;
 using System.Collections.Generic;
 
 namespace Feature.Wealth.Account.Models.OAuth
@@ -10,7 +11,7 @@ namespace Feature.Wealth.Account.Models.OAuth
         public string MemberName { get; set; }
         public string MemberEmail { get; set; }
 
-        public string Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
         public string Risk { get; set; }
         public string Advisror { get; set; }
         public string AdvisrorID { get; set; }
@@ -43,7 +44,7 @@ namespace Feature.Wealth.Account.Models.OAuth
 
         public FcbMemberModel(string webBankId, string memberName, string memberEmail,
             string risk, string advisror, string advisrorID, bool videoInfoOpen,
-            bool arrivedInfoOpen, QuoteChangeEunm stockShowColor, PlatFormEunm platForm, string platFormId)
+            bool arrivedInfoOpen, QuoteChangeEunm stockShowColor, PlatFormEunm platForm, string platFormId,DateTime? birthday)
         {
             this.WebBankId = webBankId;
             this.MemberName = memberName;
@@ -56,6 +57,7 @@ namespace Feature.Wealth.Account.Models.OAuth
             this.StockShowColor = stockShowColor;
             this.PlatForm = platForm;
             this.PlatFormId = platFormId;
+            this.Birthday = birthday;
         }
 
     }
