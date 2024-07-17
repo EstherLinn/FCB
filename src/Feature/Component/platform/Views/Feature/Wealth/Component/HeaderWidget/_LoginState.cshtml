@@ -125,7 +125,7 @@
                                                     <span class="o-hangTag" data-mailType>${data[i].MailInfoType}</span>
                                                 </div>
                                                 <div class="c-itemNotify__link">
-                                                    <a href="${data[i].InfoLink}" class="o-itemLink">
+                                                        <a href="${data[i].InfoLink}" target="_blank" class="o-itemLink">
                                                         <span class="o-itemLink__title">${data[i].InfoContent}</span>
                                                         <img src="/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
                                                     </a>
@@ -133,7 +133,7 @@
                                             </div>
                                         </li>`
                         }
-                        $('#topInfoList').html(DOMPurify.sanitize(html));
+                        $('#topInfoList').html(DOMPurify.sanitize(html, { ADD_ATTR: ['target'] }));
                         if ($('[data-haveread=true]', $('[data-popover="#popoverNotify"]')).length > 0) {
                             $('[data-popover="#popoverNotify"]').addClass('is-notify');
                         }

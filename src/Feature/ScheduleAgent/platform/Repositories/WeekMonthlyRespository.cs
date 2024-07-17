@@ -10,7 +10,6 @@ using System.Data;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
-using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -20,6 +19,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
     {
         private readonly MailServerOption mailServerOption = new MailServerOption();
         private readonly ILoggerService _logger;
+        private readonly ID titleField = new ID("{D5501C04-3956-4A2F-AE0D-00DEB77FA4B5}");
+        private readonly ID linkField = new ID("{C2E751CD-1E7D-4EA7-889B-344117133A09}");
+
         public WeekMonthlyRespository(ILoggerService logger)
         {
             this._logger = logger;
@@ -32,23 +34,16 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             WeekMonthlyReportsItems = DbManager.Custom.ExecuteIList<MemberRecordItemModel>(sql, para, commandType: CommandType.Text)?.ToList();
             if (WeekMonthlyReportsItems.Any() && !string.IsNullOrEmpty(WeekMonthlyReportsItems.FirstOrDefault()?.ItemId))
             {
-                var homeUrl = $"https://";
-                var cdHostName = Settings.GetSetting("CDHostName");
                 using (new LanguageSwitcher("zh-TW"))
                 {
                     Database db = Database.GetDatabase("web");
                     foreach (var item in WeekMonthlyReportsItems)
                     {
                         var targetItem = db.GetItem(item.ItemId);
-                        if (targetItem != null)
+                        if (targetItem != null && !string.IsNullOrEmpty(ItemUtils.GetFieldValue(targetItem, titleField)))
                         {
-
-                            item.Title = ItemUtils.GetFieldValue(targetItem,"Title");
-                            item.Url = ItemUtils.GeneralLink(targetItem, "Link").Url;
-                            if (!string.IsNullOrEmpty(item.Url))
-                            {
-                                item.Url = homeUrl + cdHostName + item.Url;
-                            }
+                            item.Title = ItemUtils.GetFieldValue(targetItem, titleField);
+                            item.Url = ItemUtils.GeneralLink(targetItem, linkField).Url;
                         }
                     }
                 }
@@ -77,17 +72,27 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
             var GroupByMember = infos.GroupBy(x => x.PlatFormId);
             List<MailSchema> Mails = new List<MailSchema>();
-
+            var homeUrl = $"https://";
+            var cdHostName = Settings.GetSetting("CDHostName");
+            homeUrl += cdHostName;
             foreach (var group in GroupByMember)
             {
+                if (string.IsNullOrEmpty(group.First().MemberEmail) || string.IsNullOrEmpty(group.First().Title))
+                {
+                    continue;
+                }
                 List<MailRecord> mailRecords = new List<MailRecord>();
                 Mails.Clear();
                 foreach (var item in group)
                 {
                     var mail = new MailSchema();
-                    mail.Content = item.Title;
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("<p>親愛的客戶您好：</p>");
+                    sb.Append(string.Format("<p>第一銀行提醒您，「 <span style='color:red;'>{0}</span> 」來囉，詳情請於第e理財網查看，感謝您的配合，謝謝。</p>", item.Title));
+                    sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
+                    mail.Content = sb.ToString();
                     mail.MailTo = item.MemberEmail;
-                    mail.Topic = item.Title;
+                    mail.Topic = string.Format($"「第一銀行第e理財網」{0}", item.Title);
                     Mails.Add(mail);
                     mailRecords.Add(new MailRecord
                     {
@@ -127,7 +132,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logger.Error($"週月報通知Mail發送失敗:{ex.ToString()}");
+                                    _logger.Error($"週月報通知Mail發送To{item.MailTo}失敗:{ex.ToString()}");
                                 }
                             }
                         }
