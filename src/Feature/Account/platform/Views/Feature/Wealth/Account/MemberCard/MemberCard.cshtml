@@ -84,7 +84,7 @@
                                         <span>您的理專</span>
                                     </div>
                                     <div class="c-member__value">
-                                        <b>@member.Advisror</b>
+                                        <b>@(string.IsNullOrEmpty(member.Advisror) ? "-" : member.Advisror)</b>
                                     </div>
                                 </div>
                             }

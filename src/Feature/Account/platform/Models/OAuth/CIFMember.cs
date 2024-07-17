@@ -10,6 +10,7 @@ namespace Feature.Wealth.Account.Models.OAuth
     {
         public string CIF_CUST_NAME { get; set; }
         public string CIF_E_MAIL_ADDRESS { get; set; }
+        public DateTime? CIF_ESTABL_BIRTH_DATE { get; set; }
         public string CIF_PROMO_CODE { get; set; }
         public string CIF_ID { get; set; }
         public string CIF_EMP_RISK { get; set; }
