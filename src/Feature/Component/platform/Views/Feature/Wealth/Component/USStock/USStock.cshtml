@@ -727,23 +727,22 @@
                 }, 300);
             });
 
-            let keywordObject = {};
+            var urlParams = new URLSearchParams(window.location.search);
+            var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('keyword')));
+            var hotkeyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('HotKeyWord')));
+            var hotproduct = DOMPurify.sanitize(decodeURIComponent(urlParams.get('HotProduct')));
 
-            let urlParams = new URLSearchParams(window.location.search);
-
-            for (const [key, value] of urlParams) {
-                keywordObject[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
+            if (keyword && keyword != "null") {
+                $('#keyword').val(keyword);
+                setTimeout(() => {
+                    $('[data-keyword-submit]').trigger('click');
+                }, 300);
             }
-
-            if (keywordObject['keyword']) {
-                $('#keyword').val(keywordObject['keyword']);
-                $('[data-keyword-submit]').trigger('click');
+            else if (hotkeyword && hotkeyword != "null") {
+                $("#hotkeyword-" + hotkeyword).trigger('click');
             }
-            else if (keywordObject['hotkeyword']) {
-                $("#hotkeyword-" + keywordObject['hotkeyword']).trigger('click');
-            }
-            else if (keywordObject['hotproduct']) {
-                $("#hotproduct-" + keywordObject['hotproduct']).trigger('click');
+            else if (hotproduct && hotproduct != "null") {
+                $("#hotproduct-" + hotproduct).trigger('click');
             }
         });
     })(jQuery, window, document);

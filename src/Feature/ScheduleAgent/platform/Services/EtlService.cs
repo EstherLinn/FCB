@@ -259,7 +259,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
 
                         //建立本機檔案目錄路徑
                         string localFiledonePath = "";
-                        if (fileName.Equals("Fundlist") || fileName.ToLower().Contains("bond"))
+                        if (fileName.Equals("fundlist") || fileName.ToLower().Contains("bond"))
                         {
                             localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.csv");
                             fileName = Path.ChangeExtension(fileName, "csv");

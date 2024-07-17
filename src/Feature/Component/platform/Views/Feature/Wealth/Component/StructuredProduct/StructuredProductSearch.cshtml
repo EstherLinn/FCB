@@ -496,23 +496,20 @@
                         initFilter(data);
                         initAutocomplete(data);
 
-                        let keywordObject = {};
+                        var urlParams = new URLSearchParams(window.location.search);
+                        var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('keyword')));
+                        var hotkeyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('HotKeyWord')));
+                        var hotproduct = DOMPurify.sanitize(decodeURIComponent(urlParams.get('HotProduct')));
 
-                        let urlParams = new URLSearchParams(window.location.search);
-
-                        for (const [key, value] of urlParams) {
-                            keywordObject[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
-                        }
-
-                        if (keywordObject['keyword']) {
-                            $('[data-keyword-input]').val(keywordObject['keyword']);
+                        if (keyword && keyword != "null") {
+                            $('[data-keyword-input]').val(keyword);
                             $('[data-keyword-submit]').trigger('click');
                         }
-                        else if (keywordObject['hotproduct']) {
-                            $("input[value='" + keywordObject['hotproduct'] + "']").trigger('click');
+                        else if (hotkeyword && hotkeyword != "null") {
+                            $("input[value='" + hotkeyword + "']").trigger('click');
                         }
-                        else if (keywordObject['hotkeyword']) {
-                            $("input[value='" + keywordObject['hotkeyword'] + "']").trigger('click');
+                        else if (hotproduct && hotproduct != "null") {
+                            $("input[value='" + hotproduct + "']").trigger('click');
                         }
                     }
                     else {

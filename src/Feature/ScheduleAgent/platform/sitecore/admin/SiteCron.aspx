@@ -95,17 +95,7 @@
     </div>
 
     <script type="text/javascript">
-        function getQueryString() {
-            var result = {};
 
-            let urlParams = new URLSearchParams(window.location.search);
-
-            for (const [key, value] of urlParams) {
-                result[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
-            }
-
-            return result;
-        }
     </script>
 </body>
 </html>

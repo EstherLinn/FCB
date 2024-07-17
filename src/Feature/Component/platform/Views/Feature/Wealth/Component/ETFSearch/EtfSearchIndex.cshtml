@@ -86,24 +86,21 @@
             }
 
             function checkKeywordQueryString() {
-                let keywordObject = {};
-
-                let urlParams = new URLSearchParams(window.location.search);
-
-                for (const [key, value] of urlParams) {
-                    keywordObject[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
-                }
+                var urlParams = new URLSearchParams(window.location.search);
+                var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('keyword')));
+                var hotkeyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('HotKeyWord')));
+                var hotproduct = DOMPurify.sanitize(decodeURIComponent(urlParams.get('HotProduct')));
 
                 function queryKeyword(key) {
-                    if (keywordObject[key]) {
-                        $('[data-keyword-input]').val(keywordObject[key]);
+                    if (key && key != "null") {
+                        $('[data-keyword-input]').val(key);
                         $('[data-keyword-submit]').trigger('click');
                     }
                 }
 
                 function queryAdvanced(key, selector) {
-                    if (keywordObject[key]) {
-                        let paramVal = keywordObject[key];
+                    if (key && key != "null") {
+                        let paramVal = key;
                         let values = paramVal.split(',');
 
                         $(selector).each(function(i, item) {
@@ -122,11 +119,11 @@
                 }
 
                 // 關鍵字
-                queryKeyword('keyword');
+                queryKeyword(keyword);
                 // 熱門關鍵字
-                queryAdvanced('hotkeyword', '#uid-criteria-keywordsTags :checkbox');
+                queryAdvanced(hotkeyword, '#uid-criteria-keywordsTags :checkbox');
                 // 熱門主題
-                queryAdvanced('hotproduct', '#uid-criteria-categoryTags :checkbox');
+                queryAdvanced(hotproduct, '#uid-criteria-categoryTags :checkbox');
             }
 
             const propertyResetObj = [
