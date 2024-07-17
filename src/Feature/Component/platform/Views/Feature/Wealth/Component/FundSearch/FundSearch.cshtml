@@ -1772,40 +1772,33 @@
         }
 
         function QueryStringSearch() {
-            let keywordObject = {};
+            var urlParams = new URLSearchParams(window.location.search);
+            var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('keyword')));
+            var hotkeyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('HotKeyWord')));
+            var hotproduct = DOMPurify.sanitize(decodeURIComponent(urlParams.get('HotProduct')));
 
-            let urlParams = new URLSearchParams(window.location.search);
-
-            let keys = ['keyword', 'hotkeyword', 'hotproduct'];
-
-            for (const [key, value] of urlParams) {
-                if (keys.includes(key.toLowerCase())) {
-                    keywordObject[key.toLowerCase()] = DOMPurify.sanitize(decodeURIComponent(value));
-                }
-            }
-
-            if (keywordObject['hotkeyword']) {
+            if (hotkeyword && hotkeyword != "null") {
                 $("#hotkey_criteria input[type='checkbox']").each(function () {
                     var checkboxValue = $(this).val();
 
-                    if (keywordObject['hotkeyword'] === checkboxValue) {
+                    if (hotkeyword === checkboxValue) {
                         $(this).trigger('click');
                         return false;
                     }
                 });
             }
-            else if (keywordObject['hotproduct']) {
+            else if (hotproduct && hotproduct != "null") {
                 $("#hotproducts_criteria input[type='checkbox']").each(function () {
                     var checkboxValue = $(this).val();
 
-                    if (keywordObject['hotproduct'] === checkboxValue) {
+                    if (hotproduct === checkboxValue) {
                         $(this).trigger('click');
                         return false;
                     }
                 });
             }
-            else if (keywordObject['keyword']) {
-                $('[data-keyword-input]').val(keywordObject['keyword']);
+            else if (keyword && keyword != "null") {
+                $('[data-keyword-input]').val(keyword);
                 $("[data-keyword-submit]").trigger('click');
             }
         }
@@ -2007,10 +2000,10 @@
                 url: '@ClientRoute.GenerateUrl(this, "FundSearch", "GetAllFunds")',
                 type: 'POST',
                 data: { __RequestVerificationToken: token },
-            }).done(function (data, textStatus, jqXHR) {
-                QueryStringSearch();
+            }).done(function (data, textStatus, jqXHR) {                
                 initFilter(data);
                 initAutocomplete(data);
+                QueryStringSearch();
 
                 $('[data-tab] [data-tab-target]').first().trigger('switch');
                 $('[data-filter-switch="#uid-template"]').trigger('change');
