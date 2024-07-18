@@ -9,6 +9,7 @@
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Dapper" />
     <PackageReference Include="Flurl" />
     <PackageReference Include="Flurl.Http" />
   </ItemGroup>
