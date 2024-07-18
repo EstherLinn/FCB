@@ -211,7 +211,7 @@ namespace Feature.Wealth.Account.Repositories
 
             var para = new
             {
-                id = new DbString() { Value = id.PadRight(33), IsAnsi = true, Length = 33 },
+                id = new DbString() { Value = id, IsAnsi = true, Length = 33 },
             };
             try
             {
@@ -255,7 +255,7 @@ namespace Feature.Wealth.Account.Repositories
 
             var para = new
             {
-                promotionCode = new DbString() { Value = promotionCode.PadRight(24), Length = 24 },
+                promotionCode = new DbString() { Value = promotionCode, Length = 24 },
             };
 
             try
