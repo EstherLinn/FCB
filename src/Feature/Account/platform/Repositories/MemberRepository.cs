@@ -37,14 +37,14 @@ namespace Feature.Wealth.Account.Repositories
             int idLength = 100;
             if (platForm == PlatFormEunm.WebBank)
             {
-                strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(@idLength) = @id
+                strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(33) = @id
                     SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
                  and PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id )) THEN 1 ELSE 0 END as BIT)";
                 idLength = 33;
             }
             else
             {
-                strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(@idLength) = @id
+                strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
                 SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
                  and PlatFormId = @@id ) THEN 1 ELSE 0 END as BIT)
                 ";
@@ -52,9 +52,8 @@ namespace Feature.Wealth.Account.Repositories
             }
             var para = new
             {
-                idLength,
                 platForm = new DbString() { Value = platForm.ToString(), Length = 10 },
-                id = new DbString() { Value = id, IsAnsi = true, Length = idLength }
+                id = new DbString() { Value = id.PadRight(idLength == 33 ? 33 : 0), IsAnsi = true, Length = idLength }
             };
 
             try
@@ -168,7 +167,7 @@ namespace Feature.Wealth.Account.Repositories
 
                 var para = new
                 {
-                    WebBankId = new DbString() { Value = id, IsAnsi = true, Length = 33 },
+                    WebBankId = new DbString() { Value = id.PadRight(33), IsAnsi = true, Length = 33 },
                     Time = new DbString() { Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Length = 30 },
                     PlatForm = new DbString() { Value = platForm.ToString(), Length = 10 },
                     platFormId = new DbString() { Value = platFormId, Length = 100 }
@@ -212,7 +211,7 @@ namespace Feature.Wealth.Account.Repositories
 
             var para = new
             {
-                id = new DbString() { Value = id, IsAnsi = true, Length = 33 },
+                id = new DbString() { Value = id.PadRight(33), IsAnsi = true, Length = 33 },
             };
             try
             {
@@ -256,7 +255,7 @@ namespace Feature.Wealth.Account.Repositories
 
             var para = new
             {
-                promotionCode = new DbString() { Value = promotionCode, Length = 24 },
+                promotionCode = new DbString() { Value = promotionCode.PadRight(24), Length = 24 },
             };
 
             try
@@ -286,7 +285,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             FcbMemberModel fcbMemberModel = null;
             int idLength = 100;
-            var strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(@idLength) = @id
+            var strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
                             Select
                             A.*,
                             SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
@@ -302,6 +301,8 @@ namespace Feature.Wealth.Account.Repositories
             {
                 idLength = 33;
                 strSql += "PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id)";
+                strSql.Replace("varchar(100)", "varchar(33)");
+                id = id.PadRight(idLength);
             }
             else
             {
@@ -309,7 +310,6 @@ namespace Feature.Wealth.Account.Repositories
             }
             var para = new
             {
-                idLength,
                 Platform = new DbString() { Value = platFormEunm.ToString(), Length = 10 },
                 id = new DbString() { Value = id, IsAnsi = true, Length = idLength },
             };
