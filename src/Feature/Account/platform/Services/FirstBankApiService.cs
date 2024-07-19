@@ -68,7 +68,7 @@ namespace Feature.Wealth.Account.Services
         /// <param name="promotionCode"></param>
         /// <param name="productId"></param>
         /// <returns></returns>
-        public async Task SyncTrackListToIleo(string promotionCode, string productId , string productType)
+        public async Task SyncTrackListToIleo(string promotionCode, string productId, string productType)
         {
             if (string.IsNullOrEmpty(_route))
             {
@@ -99,7 +99,7 @@ namespace Feature.Wealth.Account.Services
                    .AppendQueryParam("fundCode", productId)
                    .AppendQueryParam("fundType", type);
 
-                var reqObj = new { promotionCode = promotionCode, channel = "wms", fundCode = productId , fundType  = type};
+                var reqObj = new { promotionCode = promotionCode, channel = "wms", fundCode = productId, fundType = type };
                 Logger.Api.Info($"關注清單API Function開始 理財網同步回ileo,取得promotionCode ={promotionCode},api route ={routeWithParams},帶入參數promotionCode={promotionCode},channel=wms,fundCode={productId}");
                 var request = await routeWithParams.
                     AllowAnyHttpStatus().
@@ -163,7 +163,7 @@ namespace Feature.Wealth.Account.Services
                 }
                 else
                 {
-                    var tmpData = originData;
+                    var tmpData = new List<TrackListModel>(originData);
                     //清除ileo已取消關注資料
                     foreach (var item in originData)
                     {
