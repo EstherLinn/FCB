@@ -25,8 +25,9 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsv<Hris>(filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[HRIS]", filename);
+                        var basic = (IList<Hris>)await etlService.ParseCsv<Hris>(filename);
+                        _repository.TrancateTable("[HRIS]");
+                        _repository.BulkInsertToEncryptedDatabase(basic, "[HRIS]", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
