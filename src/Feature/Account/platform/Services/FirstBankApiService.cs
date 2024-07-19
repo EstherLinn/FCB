@@ -163,6 +163,7 @@ namespace Feature.Wealth.Account.Services
                 }
                 else
                 {
+                    var tmpData = originData;
                     //清除ileo已取消關注資料
                     foreach (var item in originData)
                     {
@@ -171,10 +172,11 @@ namespace Feature.Wealth.Account.Services
                             //不存在ileo但理財網還在，刪除
                             if (!focusListResp.TrackList.Exists(x => x.fundCode == item.Id))
                             {
-                                originData.RemoveAll(x => x.Id == item.Id);
+                                tmpData.RemoveAll(x => x.Id == item.Id);
                             }
                         }
                     }
+                    originData = tmpData;
                     //加入新的ileo資料
                     foreach (var item in focusListResp.TrackList)
                     {
