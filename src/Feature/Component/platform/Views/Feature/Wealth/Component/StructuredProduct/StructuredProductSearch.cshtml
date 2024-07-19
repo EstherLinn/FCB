@@ -497,9 +497,9 @@
                         initAutocomplete(data);
 
                         var urlParams = new URLSearchParams(window.location.search);
-                        var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('keyword')));
-                        var hotkeyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('HotKeyWord')));
-                        var hotproduct = DOMPurify.sanitize(decodeURIComponent(urlParams.get('HotProduct')));
+                        var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('word')));
+                        var hotkeyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('hotword')));
+                        var hotproduct = DOMPurify.sanitize(decodeURIComponent(urlParams.get('hotproduct')));
 
                         if (keyword && keyword != "null") {
                             $('[data-keyword-input]').val(keyword);
