@@ -4938,12 +4938,16 @@ select {
   flex: 1 1 50%;
 }
 .l-ageForm--popup {
-  flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 .l-ageForm--popup .l-ageForm__items {
-  justify-content: space-between;
+  flex: 0 0 auto;
+  justify-content: flex-start;
   gap: 16px;
+}
+.l-ageForm--popup .l-ageForm__box {
+  flex: 0 0 auto;
+  width: 93px;
 }
 
 @media only screen and (max-width: 1199px) {
@@ -4951,11 +4955,18 @@ select {
     flex-direction: column;
     gap: 20px;
   }
+  .l-ageForm--popup {
+    flex-direction: row;
+    gap: 12px 16px;
+  }
 }
 @media only screen and (max-width: 767px) {
   .l-ageForm__items {
     justify-content: space-between;
     gap: 4px;
+  }
+  .l-ageForm--popup {
+    flex-wrap: wrap;
   }
 }
 
