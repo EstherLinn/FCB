@@ -63,7 +63,7 @@
                             @foreach (var tag in source.GetMultiListValueItems(template.ID))
                             {
                                 var name = tag.GetFieldValue("Tag Name");
-                                var url = link + "?hashtag=" + name;
+                                var url = link + "?hotword=" + name;
                                 <li class="l-tag__item">
                                     <a href="@url" class="o-capsule">@name</a>
                                 </li>
