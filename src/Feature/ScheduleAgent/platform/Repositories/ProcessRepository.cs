@@ -73,6 +73,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
         public void BulkInsertToNewDatabase<T>(IEnumerable<T> data, string tableName, string filePath)
         {
+            string selectQuery = $@"SELECT * FROM {tableName}";
+            var results = DbManager.Custom.ExecuteIList<T>(selectQuery, null, CommandType.Text);
+
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
             string parameters = string.Join(",", properties.Select(p => "@" + p.Name));
@@ -85,16 +88,66 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             string truncateQuery = storedProcedureName;
             ExecuteNonQuery(truncateQuery, spparameters, CommandType.StoredProcedure, true);
 
-
             string insertQuery = $@"
             INSERT INTO {tableName} ({columns})
             VALUES ({parameters});
             ";
 
             int line = ExecuteNonQuery(insertQuery, data, CommandType.Text, true);
+
+            if (line == 0)
+            {
+                line = ExecuteNonQuery(insertQuery, results, CommandType.Text, true);
+            }
+
+
             LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, line);
             _logger.Info($"{filePath} 最新資料 {tableName} {line}");
         }
+
+        ///加密的資料
+        public void BulkInsertToEncryptedDatabase<T>(IList<T> data, string tableName, string filePath)
+        {
+            var properties = typeof(T).GetProperties();
+
+            string connString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
+
+            using (SqlConnection connection = new SqlConnection(connString))
+            {
+                connection.Open();
+
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                {
+                    bulkCopy.DestinationTableName = tableName;
+
+                    for (int i = 0; i < properties.Length; i++)
+                    {
+                        var property = properties[i];
+                        bulkCopy.ColumnMappings.Add(property.Name, property.Name);
+                    }
+
+                    try
+                    {
+                        DataTable dataTable = ConvertToDataTable<T>(data, properties);
+                        bulkCopy.WriteToServer(dataTable);
+
+                        int rowsAffected = dataTable.Rows.Count;
+                        LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, rowsAffected);
+                        _logger.Info($"{filePath} 最新資料 {tableName} {rowsAffected} 行");
+                    }
+                    catch (Exception ex)
+                    {
+                        this._logger.Error(ex.Message, ex);
+                    }
+                }
+            }
+
+        }
+
+
+
+
+
 
         /// <summary>
         /// 將資料直接插入最新的資料表中

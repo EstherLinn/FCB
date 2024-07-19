@@ -16,6 +16,7 @@ using Sitecore.ContentSearch.Utilities;
 using Sitecore.Data;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using Dapper;
 
 namespace Feature.Wealth.Account.Repositories
 {
@@ -33,20 +34,28 @@ namespace Feature.Wealth.Account.Repositories
         {
             bool exists = false;
             string strSql = string.Empty;
+            int idLength = 100;
             if (platForm == PlatFormEunm.WebBank)
             {
                 strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(33) = @id
                     SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
                  and PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id )) THEN 1 ELSE 0 END as BIT)";
+                idLength = 33;
             }
             else
             {
                 strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
                 SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
-                 and PlatFormId = @@id ) THEN 1 ELSE 0 END as BIT)";
-            }
+                 and PlatFormId = @@id ) THEN 1 ELSE 0 END as BIT)
+                ";
 
-            var para = new { platForm = platForm.ToString(), id = id };
+            }
+            var para = new
+            {
+                platForm = new DbString() { Value = platForm.ToString(), Length = 10 },
+                id = new DbString() { Value = id.PadRight(idLength == 33 ? 33 : 0), IsAnsi = true, Length = idLength }
+            };
+
             try
             {
                 exists = DbManager.Custom.Execute<bool>(strSql, para, commandType: System.Data.CommandType.Text);
@@ -74,7 +83,11 @@ namespace Feature.Wealth.Account.Repositories
             string strSql = @$" Declare @@platForm varchar(10) = @platForm, @@promotionCode varchar(100) = @promotionCode
                  SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
                  and PlatFormId = @@promotionCode) THEN 1 ELSE 0 END as BIT)";
-            var para = new { platForm = platForm.ToString(), promotionCode };
+            var para = new
+            {
+                platForm = new DbString() { Value = platForm.ToString(), Length = 10 },
+                promotionCode = new DbString() { Value = promotionCode, Length = 100 }
+            };
             try
             {
                 exists = DbManager.Custom.Execute<bool>(strSql, para, commandType: System.Data.CommandType.Text);
@@ -151,7 +164,14 @@ namespace Feature.Wealth.Account.Repositories
                                             @@platFormId varchar(100) = @platFormId
                                     UPDATE [FCB_Member] Set WebBankId=(Select PROMOTION_CODE From CFMBSEL WHERE CUST_ID = @@WebBankId),
                                     UpdateTime=@@Time WHERE [PlatForm]=@@PlatForm and PlatFormId = @@platFormId";
-                var para = new { WebBankId = id, Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), PlatForm = platForm.ToString(), platFormId };
+
+                var para = new
+                {
+                    WebBankId = new DbString() { Value = id.PadRight(33), IsAnsi = true, Length = 33 },
+                    Time = new DbString() { Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Length = 30 },
+                    PlatForm = new DbString() { Value = platForm.ToString(), Length = 10 },
+                    platFormId = new DbString() { Value = platFormId, Length = 100 }
+                };
                 var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
             }
@@ -189,8 +209,10 @@ namespace Feature.Wealth.Account.Repositories
                             left join [CFMBSEL] as c on CIF_ID = CUST_ID
                             WHERE CIF_ID = @@id ";
 
-            var para = new { id };
-
+            var para = new
+            {
+                id = new DbString() { Value = id, IsAnsi = true, Length = 33 },
+            };
             try
             {
                 member = DbManager.Custom.Execute<CIFMember>(strSql, para, commandType: System.Data.CommandType.Text);
@@ -231,7 +253,10 @@ namespace Feature.Wealth.Account.Repositories
                             left join [CFMBSEL] as C on CIF_ID = CUST_ID
                             WHERE C.PROMOTION_CODE = @@promotionCode ";
 
-            var para = new { promotionCode };
+            var para = new
+            {
+                promotionCode = new DbString() { Value = promotionCode, Length = 24 },
+            };
 
             try
             {
@@ -259,6 +284,7 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetMemberInfo(PlatFormEunm platFormEunm, string id)
         {
             FcbMemberModel fcbMemberModel = null;
+            int idLength = 100;
             var strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
                             Select
                             A.*,
@@ -273,14 +299,20 @@ namespace Feature.Wealth.Account.Repositories
 
             if (platFormEunm == PlatFormEunm.WebBank)
             {
+                idLength = 33;
                 strSql += "PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id)";
+                strSql.Replace("varchar(100)", "varchar(33)");
+                id = id.PadRight(idLength);
             }
             else
             {
                 strSql += "PlatFormId = @@id";
             }
-
-            var para = new { Platform = platFormEunm.ToString(), id };
+            var para = new
+            {
+                Platform = new DbString() { Value = platFormEunm.ToString(), Length = 10 },
+                id = new DbString() { Value = id, IsAnsi = true, Length = idLength },
+            };
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
 
             return fcbMemberModel;
@@ -307,7 +339,11 @@ namespace Feature.Wealth.Account.Repositories
                             left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
                             WHERE PlatForm = @@Platform and PlatFormId = @@id";
 
-            var para = new { Platform = platFormEunm.ToString(),  id };
+            var para = new
+            {
+                Platform = new DbString() { Value = platFormEunm.ToString(), Length = 10 },
+                id = new DbString() { Value = id, IsAnsi = true, Length = 100 },
+            };
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
 
             return fcbMemberModel;
@@ -334,7 +370,11 @@ namespace Feature.Wealth.Account.Repositories
                             left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
                             WHERE PlatForm = @@Platform and PlatFormId = @@promotionCode";
 
-            var para = new { Platform = platFormEunm.ToString(), promotionCode };
+            var para = new
+            {
+                Platform = new DbString() { Value = platFormEunm.ToString(), Length = 10 },
+                promotionCode = new DbString() { Value = promotionCode, IsAnsi = true, Length = 100 },
+            };
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
 
             return fcbMemberModel;
