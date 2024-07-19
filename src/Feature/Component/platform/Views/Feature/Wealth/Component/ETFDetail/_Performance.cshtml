@@ -643,7 +643,7 @@
                                         <td>差額</td>
                                         @foreach (var item in Model.ETFNetWorthAnnunalReturn)
                                         {
-                                            <td><span>@item.Difference</span></td>
+                                            <td @item.DifferenceStyle><span>@item.Difference</span></td>
                                         }
                                     </tr>
                                 </tbody>
