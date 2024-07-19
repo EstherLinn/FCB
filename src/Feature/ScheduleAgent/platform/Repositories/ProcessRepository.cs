@@ -129,6 +129,12 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     try
                     {
                         DataTable dataTable = ConvertToDataTable<T>(data, properties);
+
+                        if (dataTable.Rows.Count > 0)
+                        {
+                            TrancateTable(tableName);
+                        }
+
                         bulkCopy.WriteToServer(dataTable);
 
                         int rowsAffected = dataTable.Rows.Count;
@@ -143,11 +149,6 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
 
         }
-
-
-
-
-
 
         /// <summary>
         /// 將資料直接插入最新的資料表中

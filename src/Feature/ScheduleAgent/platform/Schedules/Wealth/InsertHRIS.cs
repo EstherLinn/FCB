@@ -26,7 +26,6 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     try
                     {
                         var basic = (IList<Hris>)await etlService.ParseCsv<Hris>(filename);
-                        _repository.TrancateTable("[HRIS]");
                         _repository.BulkInsertToEncryptedDatabase(basic, "[HRIS]", filename);
                         etlService.FinishJob(filename);
                     }
