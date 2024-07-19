@@ -27,14 +27,22 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
             List<Cfmbsel> batch = new List<Cfmbsel>();
             int batchSize = 1000;
+            var isTrancate = false;
 
             try
             {
-                _repository.TrancateTable("[CFMBSEL]");
-
                 foreach (var result in _repository.Enumerate<Cfmbsel>(sql))
                 {
                     batch.Add(result);
+
+                    if (isTrancate == false)
+                    {
+                        if (batch.Count > 0)
+                        {
+                            _repository.TrancateTable("[CFMBSEL]");
+                            isTrancate = true;
+                        }
+                    }
 
                     if (batch.Count >= batchSize)
                     {
