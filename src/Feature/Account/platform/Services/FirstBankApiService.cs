@@ -83,7 +83,7 @@ namespace Feature.Wealth.Account.Services
                    .AppendQueryParam("channel", "wms")
                    .AppendQueryParam("fundCode", productId);
 
-                var reqObj = new {  promotionCode, channel = "wms", fundCode = productId };
+                var reqObj = new { promotionCode, channel = "wms", fundCode = productId };
                 Logger.Api.Info($"關注清單API Function開始 理財網同步回ileo,取得promotionCode ={promotionCode},api route ={routeWithParams},帶入參數promotionCode={promotionCode},channel=wms,fundCode={productId}");
                 var request = await routeWithParams.
                     AllowAnyHttpStatus().
@@ -124,81 +124,12 @@ namespace Feature.Wealth.Account.Services
                     {
                         foreach (var item in focusListResp.TrackList)
                         {
-<<<<<<< HEAD
-                            case "F":
-                                type = "Fund";
-                                break;
-                            case "E":
-                                type = "ETF";
-                                break;
-                            case "G":
-                                type = "ForeignStocks";
-                                break;
-                            case "X":
-                                type = "ForeignBonds";
-                                break;
-                        }
-                        originData.Add(new TrackListModel()
-                        {
-                            Id = item.fundCode,
-                            Type = type
-                        });
-                    }
-                }
-                else
-                {
-                    //清除ileo已取消關注資料
-                    foreach (var item in originData)
-                    {
-                        if (string.IsNullOrEmpty(item.TrackDate))
-                        {
-                            //不存在ileo但理財網還在，刪除
-                            if (!focusListResp.TrackList.Exists(x => x.fundCode == item.Id))
-                            {
-                                originData.RemoveAll(x => x.Id == item.Id);
-                            }
-                        }
-                    }
-                    //加入新的ileo資料
-                    foreach (var item in focusListResp.TrackList)
-                    {
-                        if (!originData.Exists(x => x.Id == item.fundCode))
-                        {
-                            var type = string.Empty;
-                            foreach (var item2 in focusListResp.TrackList)
-                            {
-                                switch (item.fundType)
-                                {
-                                    case "F":
-                                        type = "Fund";
-                                        break;
-                                    case "E":
-                                        type = "ETF";
-                                        break;
-                                    case "G":
-                                        type = "ForeignStocks";
-                                        break;
-                                    case "X":
-                                        type = "ForeignBonds";
-                                        break;
-                                }
-                                originData.Add(new TrackListModel()
-                                {
-                                    Id = item.fundCode,
-                                    Type = type
-                                });
-                            }
-=======
->>>>>>> developer
                             originData.Add(new TrackListModel()
                             {
                                 Id = item.fundCode,
                             });
                         }
                     }
-<<<<<<< HEAD
-
-=======
                     else
                     {
                         var tmpData = new List<TrackListModel>(originData);
@@ -233,7 +164,6 @@ namespace Feature.Wealth.Account.Services
                 catch (Exception ex)
                 {
                     Logger.Api.Info($"ileo關注清單 ileo同步關注清單回理財網,Error Message :{ex.ToString()}");
->>>>>>> developer
                 }
             }
         }
