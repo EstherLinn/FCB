@@ -1676,6 +1676,8 @@
                 $('#panel-fund-' + prod).removeClass('is-active');
                 $('#panel-etf-' + prod).removeClass('is-active');
                 $('#panel-etf-' + prod).addClass('is-active');
+
+                $('#empty-' + prod).hide();
             }
             else if (etflength == 0) {
                 // 不顯示基金/ETF切換塊
@@ -1689,6 +1691,8 @@
                 $('#panel-fund-' + prod).removeClass('is-active');
                 $('#panel-etf-' + prod).removeClass('is-active');
                 $('#panel-fund-' + prod).addClass('is-active');
+
+                $('#empty-' + prod).hide();
             }
             else {
                 $('#header-' + prod).show();
@@ -1779,6 +1783,10 @@
         });
 
         function initFilterJS(data, tbody, template, select, pagination, perPage, radio) {
+            if(data.length == 0){
+                return;
+            }
+
             var fjs = FilterJS(data, tbody, {
                 template: template,
                 callbacks: {

@@ -53,7 +53,7 @@ namespace Feature.Wealth.Account.Repositories
             var para = new
             {
                 platForm = new DbString() { Value = platForm.ToString(), Length = 10 },
-                id = new DbString() { Value = id.PadRight(idLength == 33 ? 33 : 0), IsAnsi = true, Length = idLength }
+                id = new DbString() { Value = id, IsAnsi = true, Length = idLength }
             };
 
             try
@@ -167,7 +167,7 @@ namespace Feature.Wealth.Account.Repositories
 
                 var para = new
                 {
-                    WebBankId = new DbString() { Value = id.PadRight(33), IsAnsi = true, Length = 33 },
+                    WebBankId = new DbString() { Value = id, IsAnsi = true, Length = 33 },
                     Time = new DbString() { Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Length = 30 },
                     PlatForm = new DbString() { Value = platForm.ToString(), Length = 10 },
                     platFormId = new DbString() { Value = platFormId, Length = 100 }
@@ -302,7 +302,6 @@ namespace Feature.Wealth.Account.Repositories
                 idLength = 33;
                 strSql += "PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id)";
                 strSql.Replace("varchar(100)", "varchar(33)");
-                id = id.PadRight(idLength);
             }
             else
             {

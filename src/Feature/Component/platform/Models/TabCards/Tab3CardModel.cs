@@ -31,14 +31,17 @@ namespace Feature.Wealth.Component.Models.TabCards
             }
 
             this.CardImageUrl1 = ItemUtils.ImageUrl(item, Tab3CardDatasource.Fields.Image1);
-            this.ArticleLink1 = ItemUtils.GeneralLink(item, Tab3CardDatasource.Fields.ArticleLink1)?.Url;
-            this.ArticleTarget1 = ItemUtils.GeneralLink(item, Tab3CardDatasource.Fields.ArticleLink1)?.Target;
-            this.ArticleTitle1 = ItemUtils.GeneralLink(item, Tab3CardDatasource.Fields.ArticleLink1)?.Title;
-
             this.CardImageUrl2 = ItemUtils.ImageUrl(item, Tab3CardDatasource.Fields.Image2);
-            this.ArticleLink2 = ItemUtils.GeneralLink(item, Tab3CardDatasource.Fields.ArticleLink2)?.Url;
-            this.ArticleTarget2 = ItemUtils.GeneralLink(item, Tab3CardDatasource.Fields.ArticleLink2)?.Target;
-            this.ArticleTitle2 = ItemUtils.GeneralLink(item, Tab3CardDatasource.Fields.ArticleLink2)?.Title;
+
+            var link1 = ItemUtils.GeneralLink(item, Tab3CardDatasource.Fields.ArticleLink1);
+            this.ArticleLink1 = link1?.Url;
+            this.ArticleTarget1 = link1?.Target;
+            this.ArticleTitle1 = link1?.Title;
+
+            var link2 = ItemUtils.GeneralLink(item, Tab3CardDatasource.Fields.ArticleLink2);
+            this.ArticleLink2 = link2?.Url;
+            this.ArticleTarget2 = link2?.Target;
+            this.ArticleTitle2 = link2?.Title;
         }
     }
 }

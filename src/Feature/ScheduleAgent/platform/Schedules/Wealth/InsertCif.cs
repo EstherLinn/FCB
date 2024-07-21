@@ -28,14 +28,22 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
             List<Cif> batch = new List<Cif>();
             int batchSize = 1000;
+            var isTrancate = false;
 
             try
             {
-                _repository.TrancateTable("[CIF]");
-
                 foreach (var result in _repository.Enumerate<Cif>(sql))
                 {
                     batch.Add(result);
+
+                    if (isTrancate == false)
+                    {
+                        if (batch.Count > 0)
+                        {
+                            _repository.TrancateTable("[CIF]");
+                            isTrancate = true;
+                        }
+                    }
 
                     if (batch.Count >= batchSize)
                     {
