@@ -2106,9 +2106,7 @@
                                     }
                                 }
                                 fjsRendering('baseTable', 'baseDataTable', array, isInit);
-                                if (isInit) {
-                                    $('[data-popup]').magnificPopup();
-                                }
+                                $('[data-popup]').magnificPopup();
                                 $('[eh-focus]').trigger('exec');
                                 $('[eh-subscription-type]').trigger('exec');
                             }
@@ -2358,7 +2356,7 @@
                                         break;
                                 }
                             }
-                        },
+                        }
                     },
                     search: {},
                     order: {
@@ -2411,6 +2409,8 @@
                 var sortingColumn = $(this).data('sorting-column');
                 $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
                 $sortingbox.trigger('change');
+
+                $('[data-popup]').magnificPopup();
             });
 
             // 績效表現table 排序顯示切換
