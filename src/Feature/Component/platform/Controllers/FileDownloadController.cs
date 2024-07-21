@@ -18,11 +18,12 @@ namespace Feature.Wealth.Component.Controllers
 
             foreach (var childItem in childItems)
             {
-                var link = ItemUtils.GeneralLink(childItem, Templates.FileDownload.Fields.Link).Url;
+                var link = ItemUtils.GeneralLink(childItem, Templates.FileDownload.Fields.Link);
 
                 items.Add(new FileDownloadModel.File(childItem)
                 {
-                    LinkUrl = link,
+                    LinkUrl = link.Url,
+                    LinkTarget = link.Target
                 });
             }
 
