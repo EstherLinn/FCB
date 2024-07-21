@@ -371,7 +371,7 @@ namespace Feature.Wealth.Account.Controllers
             if (FcbMemberHelper.GetMemberPlatForm() == PlatFormEunm.WebBank)
             {
                 FirstBankApiService firstBankApiService = new();
-                await firstBankApiService.SyncTrackListToIleo(FcbMemberHelper.GetMemberPlatFormId(), productId, productType);
+                await firstBankApiService.SyncTrackListToIleo(FcbMemberHelper.GetMemberPlatFormId(), productId);
             }
             return new JsonNetResult(objReturn);
         }

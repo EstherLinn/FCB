@@ -676,21 +676,12 @@
                 $.ajax({
                     type: "post",
                     url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
-                    data: { "trackList": store.get("focus") || [], "productId": cancelId, productType: cancelType },
+                    data: { "trackList": store.get("focus") || [], "productId": cancelId},
                     beforeSend: function () { $('.c-loading').loading('show'); },
                     success: function (msg) {
-                        switch (cancelType.toLowerCase()) {
-                            case "fund":
                                 resetTable();
-                                break;
-                            case "etf":
                                 resetTable2();
-                                break;
-                            case "foreignstocks":
-                                resetTable3();
-                                break;
-                        }
-
+                                resetTable3();                      
                     },
                     error: function (msg) {
                         //設置成功

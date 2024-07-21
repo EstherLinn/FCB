@@ -16,6 +16,7 @@ namespace Feature.Wealth.Component.Models.FileDownload
             }
             public Item Item { get; set; }
             public string LinkUrl { get; set; }
+            public string LinkTarget { get; set; }
         }
     }
 

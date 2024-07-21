@@ -15,7 +15,7 @@
                 {
                     <div class="l-linkBox__item">
                         <div class="c-box c-box--link u-shadow-animation">
-                            <a href="@item.LinkUrl" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold" target=""><span>@Html.Sitecore().Field(Templates.FileDownload.Fields.LinkText.ToString(), item.Item)</span></a>
+                            <a href="@item.LinkUrl" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold" target="@item.LinkTarget"><span>@Html.Sitecore().Field(Templates.FileDownload.Fields.LinkText.ToString(), item.Item)</span></a>
                         </div>
                     </div>
                 }

@@ -63,7 +63,7 @@
                             @foreach (var tag in source.GetMultiListValueItems(template.ID))
                             {
                                 var name = tag.GetFieldValue("Tag Name");
-                                var url = link + "?HotKeyWord=" + name;
+                                var url = link + "?hotword=" + name;
                                 <li class="l-tag__item">
                                     <a href="@url" class="o-capsule">@name</a>
                                 </li>
@@ -128,7 +128,7 @@
                 insertKeywords();
 
                 let option = SC_DATA.KeywordSearch_Option;
-                redirect(option.data('advance-url') + '?keyword=' + DOMPurify.sanitize(input.value));
+                redirect(option.data('advance-url') + '?word=' + DOMPurify.sanitize(input.value));
             }
 
             function redirect(url) {

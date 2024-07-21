@@ -45,13 +45,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 return new JsonNetResult();
             }
-            var fundFocusList = trackLists.Where(x => x.Type.Equals(InvestTypeEnum.Fund.ToString(),System.StringComparison.OrdinalIgnoreCase))
-                ?.Select(y => y.Id).ToList();
-            if (fundFocusList == null)
-            {
-                return new JsonNetResult();
-            }
-            return new JsonNetResult(this.GetFocusList(fundFocusList));
+            return new JsonNetResult(this.GetFocusList(trackLists.Select(y => y.Id).ToList()));
         }
 
         [HttpPost]
@@ -66,13 +60,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 return new JsonNetResult();
             }
-            var etfFocusList = trackLists.Where(x => x.Type.Equals(InvestTypeEnum.ETF.ToString(), System.StringComparison.OrdinalIgnoreCase))
-                ?.Select(y => y.Id).ToList();
-            if (etfFocusList == null)
-            {
-                return new JsonNetResult();
-            }
-            return new JsonNetResult(this.GetEtfList(etfFocusList));
+            return new JsonNetResult(this.GetEtfList(trackLists.Select(y => y.Id).ToList()));
         }
 
         [HttpPost]
@@ -87,13 +75,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 return new JsonNetResult();
             }
-            var foreignStockFocusList = trackLists.Where(x => x.Type.Equals(InvestTypeEnum.ForeignStocks.ToString(), System.StringComparison.OrdinalIgnoreCase))
-                ?.Select(y => y.Id).ToList();
-            if (foreignStockFocusList == null)
-            {
-                return new JsonNetResult();
-            }
-            return new JsonNetResult(this.GetForeignStockList(foreignStockFocusList));
+            return new JsonNetResult(this.GetForeignStockList(trackLists.Select(y => y.Id).ToList()));
         }
 
         [HttpPost]

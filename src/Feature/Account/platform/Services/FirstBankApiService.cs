@@ -68,7 +68,7 @@ namespace Feature.Wealth.Account.Services
         /// <param name="promotionCode"></param>
         /// <param name="productId"></param>
         /// <returns></returns>
-        public async Task SyncTrackListToIleo(string promotionCode, string productId , string productType)
+        public async Task SyncTrackListToIleo(string promotionCode, string productId)
         {
             if (string.IsNullOrEmpty(_route))
             {
@@ -77,29 +77,13 @@ namespace Feature.Wealth.Account.Services
             }
             try
             {
-                var type = string.Empty;
-                switch (productType.ToLower())
-                {
-                    case "fund":
-                        type = "F";
-                        break;
-                    case "etf":
-                        type = "E";
-                        break;
-                    case "foreignstocks":
-                        type = "G";
-                        break;
-                    case "foreignbonds":
-                        type = "X";
-                        break;
-                }
+
                 var routeWithParams = _route.
                     AppendQueryParam("promotionCode", promotionCode)
                    .AppendQueryParam("channel", "wms")
-                   .AppendQueryParam("fundCode", productId)
-                   .AppendQueryParam("fundType", type);
+                   .AppendQueryParam("fundCode", productId);
 
-                var reqObj = new { promotionCode = promotionCode, channel = "wms", fundCode = productId , fundType  = type};
+                var reqObj = new {  promotionCode, channel = "wms", fundCode = productId };
                 Logger.Api.Info($"關注清單API Function開始 理財網同步回ileo,取得promotionCode ={promotionCode},api route ={routeWithParams},帶入參數promotionCode={promotionCode},channel=wms,fundCode={productId}");
                 var request = await routeWithParams.
                     AllowAnyHttpStatus().
@@ -132,15 +116,15 @@ namespace Feature.Wealth.Account.Services
         {
             if (focusListResp.rt == "0000" && focusListResp.TrackList != null)
             {
-                MemberRepository _memberRepository = new MemberRepository();
-                var originData = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
-                if (!originData.Any())
+                try
                 {
-                    var type = string.Empty;
-                    foreach (var item in focusListResp.TrackList)
+                    MemberRepository _memberRepository = new MemberRepository();
+                    var originData = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
+                    if (!originData.Any())
                     {
-                        switch (item.fundType)
+                        foreach (var item in focusListResp.TrackList)
                         {
+<<<<<<< HEAD
                             case "F":
                                 type = "Fund";
                                 break;
@@ -204,16 +188,53 @@ namespace Feature.Wealth.Account.Services
                                     Type = type
                                 });
                             }
+=======
+>>>>>>> developer
                             originData.Add(new TrackListModel()
                             {
                                 Id = item.fundCode,
-                                Type = type
                             });
                         }
                     }
+<<<<<<< HEAD
 
+=======
+                    else
+                    {
+                        var tmpData = new List<TrackListModel>(originData);
+                        //清除ileo已取消關注資料
+                        foreach (var item in originData)
+                        {
+                            if (string.IsNullOrEmpty(item.TrackDate))
+                            {
+                                //不存在ileo但理財網還在，刪除
+                                if (!focusListResp.TrackList.Exists(x => x.fundCode == item.Id))
+                                {
+                                    tmpData.RemoveAll(x => x.Id == item.Id);
+                                }
+                            }
+                        }
+                        originData = tmpData;
+                        //加入新的ileo資料
+                        foreach (var item in focusListResp.TrackList)
+                        {
+                            if (!originData.Exists(x => x.Id == item.fundCode))
+                            {
+                                originData.Add(new TrackListModel()
+                                {
+                                    Id = item.fundCode,
+                                });
+                            }
+                        }
+
+                    }
+                    _memberRepository.InSertTrackList(originData);
                 }
-                _memberRepository.InSertTrackList(originData);
+                catch (Exception ex)
+                {
+                    Logger.Api.Info($"ileo關注清單 ileo同步關注清單回理財網,Error Message :{ex.ToString()}");
+>>>>>>> developer
+                }
             }
         }
     }
