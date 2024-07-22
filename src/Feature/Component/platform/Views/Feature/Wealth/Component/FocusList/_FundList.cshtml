@@ -96,7 +96,7 @@
                                 <a href="#" class="o-sorting" data-sorting-column="OneYearReturnOriginalCurrency"></a>
                             </div>
                         </th>
-                        <th data-fcblevel>
+                        <th>
                             <div class="c-table__title">
                                 <span>淨值/<br>漲跌幅通知</span>
                             </div>
@@ -206,9 +206,9 @@
                             <% } %>
                         </div>
                     </td>
-                    <td class="c-cardTable__body c-cardTable__body--line" data-card-table-width="1/1" data-fcblevel>
+                    <td class="c-cardTable__body c-cardTable__body--line" data-card-table-width="1/1">
                         <div class="c-cardTable__title" data-length="5">淨值/<br>漲跌幅通知</div>
-                        <div class="c-cardTable__content" data-infostatus="<% if (Info != null){%><%= 'true' %><% } else {%><%= 'false' %> <%}%>">
+                                    <div class="c-cardTable__content" data-infostatus="<% if (Info != null && Info.ReachValueOpen || Info != null && Info.QuoteChangeOpen){%><%= 'true' %><% } else {%><%= 'false' %> <%}%>">
                             <% if (Info  == null ) { %>
                             <div class="t-tip--lt">點鈴鐺設定到價通知</div>
                             <% } else {%>
@@ -238,7 +238,7 @@
                     <td class="c-cardTable__footer" data-card-table-width="<% if (AvailabilityStatus == 'Y' && OnlineSubscriptionAvailability != 'N'){%><%= '3/4' %><% } else {%><%= '1/1' %> <%}%>">
                         <div class="c-cardTable__content">
                             <ul class="l-collect l-collect--divider@lt">
-                                <li class="l-collect__item" data-fcblevel>
+                                <li class="l-collect__item">
                                     <%= Button.InfoButtonHtml %>
                                 </li>
                                 <li class="l-collect__item">

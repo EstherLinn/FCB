@@ -187,6 +187,7 @@ namespace Feature.Wealth.Component.Repositories
                                     PriceValue = item.PriceValue,
                                     InvestId = item.InvestId,
                                     ReachValue = item.ReachValue,
+                                    ReachValueOpen = item.OpenInfo
                                 };
                                 break;
                             case (int)InfoTypeEnum.QuoteChange:
@@ -198,6 +199,7 @@ namespace Feature.Wealth.Component.Repositories
                                     RisePercent = item.RisePercent,
                                     FallValue = item.FallValue,
                                     FallPercent = item.FallPercent,
+                                    QuoteChangeOpen = item.OpenInfo
                                 };
                                 break;
                         }
@@ -210,6 +212,7 @@ namespace Feature.Wealth.Component.Repositories
                             case (int)InfoTypeEnum.ReachValue:
                                 item2.Info.PriceValue = item.PriceValue;
                                 item2.Info.ReachValue = item.ReachValue;
+                                item2.Info.ReachValueOpen = item.OpenInfo;
                                 break;
                             case (int)InfoTypeEnum.QuoteChange:
                                 item2.Info.RiseFallPriceValue = item.PriceValue;
@@ -217,6 +220,7 @@ namespace Feature.Wealth.Component.Repositories
                                 item2.Info.RisePercent = item.RisePercent;
                                 item2.Info.FallValue = item.FallValue;
                                 item2.Info.FallPercent = item.FallPercent;
+                                item2.Info.QuoteChangeOpen = item.OpenInfo;
                                 break;
                         }
                     }
