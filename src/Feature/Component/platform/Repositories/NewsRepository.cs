@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.News;
 using Feature.Wealth.Component.Models.News.NewsList;
+using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
 using Mapster;
 using Newtonsoft.Json.Linq;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
@@ -84,12 +86,15 @@ namespace Feature.Wealth.Component.Repositories
         {
             NewsListModel model = new NewsListModel();
             model.Initialize(item);
+            model.NewsItems = model.NewsItems.OrderByDescending(i => i.Date);
+
             var config = new TypeAdapterConfig();
             config.ForType<Data, NewsListResult>()
                 .AfterMapping((src, dest) =>
                 {
+                    var timeOffset = new DateTimeOffset(src.Date.Value);
                     dest.PageTitlePair = new KeyValuePair<string, string>(src.PageTitle, string.IsNullOrEmpty(src.PageTitle) ? "-" : src.PageTitle);
-                    dest.DatePair = new KeyValuePair<string, string>(src.Date, string.IsNullOrEmpty(src.Date) ? "-" : src.Date);
+                    dest.DatePair = new KeyValuePair<long, string>(timeOffset.ToUnixTimeMilliseconds(), src.Date.HasValue ? DateTimeExtensions.FormatDate(src.Date) : "-");
                     dest.CategoryPair = new KeyValuePair<string, string>(src.Category, string.IsNullOrEmpty(src.Category) ? string.Empty : src.Category);
                     dest.FocusPair = new KeyValuePair<int, bool>(Convert.ToInt32(src.IsFocus), src.IsFocus);
                 });

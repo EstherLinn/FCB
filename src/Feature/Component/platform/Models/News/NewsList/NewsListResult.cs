@@ -14,7 +14,7 @@ namespace Feature.Wealth.Component.Models.News.NewsList
         /// <summary>
         /// 日期
         /// </summary>
-        public KeyValuePair<string, string> DatePair { get; set; }
+        public KeyValuePair<long, string> DatePair { get; set; }
 
         /// <summary>
         /// 分類
