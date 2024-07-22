@@ -17,7 +17,6 @@
     var WebEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("WebEntrust"));
     var MobileEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("MobileEntrust"));
     var IleoEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("IleoEntrust"));
-    var fcbLevel = Settings.GetSetting("FcbLevel");
 }
 <div id="popupLogin" class="c-modal mfp-hide">
     <div class="c-modal__wrap">
@@ -37,8 +36,6 @@
                             <a href="#" class="o-btn o-btn--primary o-btn--sm o-btn--flat" data-eh="fcbapplogin-init,fcbapplogin-click" eh-login-type="ileo">iLEO APP</a>
                         </div>
                     </div>
-                    @if (fcbLevel == "2")
-                    {
                     <div class="c-loginBox__social">
                         <div class="c-socialBox">
                             <div class="c-socialBox__title">社群登入</div>
@@ -52,7 +49,6 @@
                             </ul>
                         </div>
                     </div>
-                    }
                 </div>
             </div>
             <div class="c-loginModal__item">
@@ -524,15 +520,7 @@
             $(`[data-alert="${alertId}"]`).removeClass('is-active').trigger('update.tooltip');
         }
     });
-    $('input[name="price"],input[name="quoteChange"]').on('click', function (e) {
-        let $this = $(this);
-        if ($this.prop("checked")) {
-            $('[data-set-alert]').removeClass('is-disabled');
-        } else {
-            $('[data-set-alert]').addClass('is-disabled');
-        }
-    });
-
+ 
     // 示意取消關注
     $('[data-focus]').off('click.interactive');
     $('[data-set-cancel-focus]').on('click.cancelFocus', function () {
@@ -564,6 +552,7 @@
         triggerType = 'click';
         percent = Number(percent) + $(this).attr('data-count-btn') * 1;
         if (percent <= -100) { percent = -100 }
+        if (percent >= 1000) { percent = 1000 }
         $('[data-count-input]').val(percent).trigger('change.count');
     });
     // 更新%數顯示
@@ -590,6 +579,12 @@
         triggerType = 'input';
         var newPercent = (Number(priceValue) - latestNetWorth) / latestNetWorth * 100;
         percent = newPercent.toFixed(2) < -100 ? -100 : newPercent.toFixed(2);
+        percent = newPercent.toFixed(2) > 1000 ? 1000 : newPercent.toFixed(2);
+        if (percent == 1000)
+        {
+            var val = latestNetWorth + latestNetWorth * 1000 * 0.01;
+            $('[data-alert-price]').val(val.toFixed(4)).trigger('change');
+        }
         $('[data-count-input]').val(percent).trigger('change.count');
     });
     //申購deeplink init

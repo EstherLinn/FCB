@@ -605,10 +605,9 @@
                             let endDate = '';
                             switch (item.infoType) {
                                 case "1":
-                                    if (item.openInfo) {
-                                        $('input[name="price"]').prop("checked")
-                                    }
-                                    $("#popupAlert").find('[data-alert-price]').val(item.reachValue).trigger('change.count');
+                                    $('input[name="price"]').prop("checked", item.openInfo)
+                                    $("#popupAlert").find('[data-alert-price]').val(item.reachValue)
+                                    $('[data-count-input]').trigger('change.count');
                                     startDate = item.infoStartDate.split('T')[0].replaceAll('-', '/');
                                     endDate = item.infoEndDate.split('T')[0].replaceAll('-', '/');
                                     $('[data-infostart]').val(startDate);
@@ -617,9 +616,7 @@
                                     $('[data-infoend]').datepicker('setDate', endDate);
                                     break;
                                 case "2":
-                                    if (item.openInfo) {
-                                        $('input[name="quoteChange"]').prop("checked")
-                                    }
+                                    $('input[name="quoteChange"]').prop("checked", item.openInfo)                                 
                                     startDate = item.infoStartDate.split('T')[0].replaceAll('-', '/');
                                     endDate = item.infoEndDate.split('T')[0].replaceAll('-', '/');
                                     $("#popupAlert").find('[data-alert-rise]').val(item.risePercent);
