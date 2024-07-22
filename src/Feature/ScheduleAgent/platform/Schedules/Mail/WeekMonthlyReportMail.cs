@@ -21,8 +21,9 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Mail
         {
             return Task.Run(() =>
             {
+                var jobItem = this.JobItems.FirstOrDefault();
                 var data = _weekMonthlyRepository.GetWeekMonthlyReports();
-                _weekMonthlyRepository.SendMail(data);
+                _weekMonthlyRepository.SendMail(data, jobItem);
             });
         }
     }

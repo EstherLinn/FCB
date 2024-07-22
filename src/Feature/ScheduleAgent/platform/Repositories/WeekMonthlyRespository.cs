@@ -12,12 +12,12 @@ using System.Net.Mail;
 using System.Text;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using Sitecore.Data.Items;
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
 {
     internal class WeekMonthlyRespository : IMailInfo<MemberRecordItemModel>, IMailRecord<MailRecord>
     {
-        private readonly MailServerOption mailServerOption = new MailServerOption();
         private readonly ILoggerService _logger;
         private readonly ID titleField = new ID("{D5501C04-3956-4A2F-AE0D-00DEB77FA4B5}");
         private readonly ID linkField = new ID("{C2E751CD-1E7D-4EA7-889B-344117133A09}");
@@ -63,11 +63,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             DbManager.Custom.ExecuteNonQuery(sql, infos, CommandType.Text);
         }
 
-        public void SendMail(IEnumerable<MemberRecordItemModel> infos)
+        public void SendMail(IEnumerable<MemberRecordItemModel> infos, Item settings)
         {
             if (infos == null || !infos.Any())
             {
-                _logger.Info("empty");
+                _logger.Info("無新的周月報");
                 return;
             }
             var GroupByMember = infos.GroupBy(x => x.PlatFormId);
@@ -92,7 +92,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
                     mail.Content = sb.ToString();
                     mail.MailTo = item.MemberEmail;
-                    mail.Topic = string.Format($"「第一銀行第e理財網」{0}", item.Title);
+                    mail.Topic = string.Format("「第一銀行第e理財網」{0}", item.Title);
                     Mails.Add(mail);
                     mailRecords.Add(new MailRecord
                     {
@@ -106,6 +106,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 }
                 if (Mails.Any())
                 {
+                    MailServerOption mailServerOption = new MailServerOption(settings);
                     using (var client = mailServerOption.ToSMTPClient())
                     {
                         foreach (var item in Mails)
@@ -113,7 +114,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             var encoding = Encoding.UTF8;
                             using (MailMessage message = new MailMessage()
                             {
-                                From = new MailAddress(mailServerOption.UserName, "第一理財網"),
+                                From = new MailAddress(mailServerOption.User, string.IsNullOrEmpty(mailServerOption.UserName) ? "第e理財網" : mailServerOption.UserName),
                                 IsBodyHtml = true,
                                 HeadersEncoding = encoding,
                                 BodyEncoding = encoding,

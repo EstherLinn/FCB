@@ -20,8 +20,9 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Mail
         {
             return Task.Run(() =>
             {
+                var jobItem = this.JobItems.FirstOrDefault();
                 var data = mailRepository.GetAllMemebrReachInfos();
-                mailRepository.SendMail(data);
+                mailRepository.SendMail(data, jobItem);
             });
         }
     }
