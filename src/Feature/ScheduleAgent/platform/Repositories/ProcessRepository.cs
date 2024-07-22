@@ -110,9 +110,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         {
             var properties = typeof(T).GetProperties();
 
-            string connString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
-
-            using (SqlConnection connection = new SqlConnection(connString))
+            using (SqlConnection connection = (SqlConnection)DbManager.Custom.DbConnection())
             {
                 connection.Open();
 
@@ -204,9 +202,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         {
             var properties = typeof(T).GetProperties();
 
-            string connString = ConfigurationManager.ConnectionStrings["custom"].ConnectionString;
-
-            using (SqlConnection connection = new SqlConnection(connString))
+            using (SqlConnection connection = (SqlConnection)DbManager.Custom.DbConnection())
             {
                 await connection.OpenAsync();
 
