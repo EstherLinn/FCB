@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sitecore.Data.Items;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Mail
 {
     interface IMailInfo<T>
     {
-        public void SendMail(IEnumerable<T> infos);
+        public void SendMail(IEnumerable<T> infos,Item item);
     }
 }

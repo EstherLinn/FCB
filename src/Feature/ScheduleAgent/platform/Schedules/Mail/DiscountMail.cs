@@ -21,8 +21,9 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Mail
         {
             return Task.Run(() =>
             {
+                var jobItem = this.JobItems.FirstOrDefault();
                 var data = _discountActivityRespository.GetDiscounts();
-                _discountActivityRespository.SendMail(data);
+                _discountActivityRespository.SendMail(data, jobItem);
             });
         }
     }

@@ -12,12 +12,12 @@ using Sitecore.Configuration;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Sitecore.Data;
 using Sitecore.Globalization;
+using Sitecore.Data.Items;
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
 {
     public class MailRepository : IMailInfo<MemebrReachInfo>, IMailRecord<MailRecord>
     {
-        private readonly MailServerOption mailServerOption = new MailServerOption();
         private readonly ILoggerService _logger;
         private readonly ID fundRelatedRoot = new ID("{0FC0B4B7-AB28-4C66-91A5-C9A7A45A5499}");
         private readonly ID fundDetailsLinkField = new ID("{E9D1628F-C48D-4353-8526-FEDAB06A8050}");
@@ -44,11 +44,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             DbManager.Custom.ExecuteNonQuery(sql, mailRecords, CommandType.Text);
         }
 
-        public void SendMail(IEnumerable<MemebrReachInfo> memebrReachInfos)
+        public void SendMail(IEnumerable<MemebrReachInfo> memebrReachInfos,Item settings)
         {
             if (memebrReachInfos == null || !memebrReachInfos.Any())
             {
-                _logger.Info("empty");
+                _logger.Info("無新的到價通知");
                 return;
             }
             var groupByMember = memebrReachInfos.GroupBy(x => x.PlatFormId);
@@ -246,6 +246,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
                 if (mails.Any())
                 {
+                    MailServerOption mailServerOption = new MailServerOption(settings);
                     using (var client = mailServerOption.ToSMTPClient())
                     {
                         foreach (var item in mails)
@@ -254,7 +255,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             var encoding = Encoding.UTF8;
                             using (MailMessage message = new MailMessage()
                             {
-                                From = new MailAddress(mailServerOption.UserName, "第一理財網"),
+                                From = new MailAddress(mailServerOption.User, string.IsNullOrEmpty(mailServerOption.UserName) ? "第e理財網" : mailServerOption.UserName),
                                 IsBodyHtml = true,
                                 HeadersEncoding = encoding,
                                 BodyEncoding = encoding,
