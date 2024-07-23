@@ -65,79 +65,27 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
         public void SendMail(IEnumerable<MemberRecordItemModel> infos, Item settings)
         {
+            //周月報無需mail 但記錄通知
             if (infos == null || !infos.Any())
             {
                 _logger.Info("無新的周月報");
                 return;
             }
             var GroupByMember = infos.GroupBy(x => x.PlatFormId);
-            List<MailSchema> Mails = new List<MailSchema>();
-            var homeUrl = $"https://";
-            var cdHostName = Settings.GetSetting("CDHostName");
-            homeUrl += cdHostName;
             foreach (var group in GroupByMember)
             {
-                if (string.IsNullOrEmpty(group.First().MemberEmail) || string.IsNullOrEmpty(group.First().Title))
-                {
-                    continue;
-                }
                 List<MailRecord> mailRecords = new List<MailRecord>();
-                Mails.Clear();
                 foreach (var item in group)
                 {
-                    var mail = new MailSchema();
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("<p>親愛的客戶您好：</p>");
-                    sb.Append(string.Format("<p>第一銀行提醒您，「 <span style='color:red;'>{0}</span> 」來囉，詳情請於第e理財網查看，感謝您的配合，謝謝。</p>", item.Title));
-                    sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
-                    mail.Content = sb.ToString();
-                    mail.MailTo = item.MemberEmail;
-                    mail.Topic = string.Format("「第一銀行第e理財網」{0}", item.Title);
-                    Mails.Add(mail);
                     mailRecords.Add(new MailRecord
                     {
                         PlatFormId = item.PlatFormId,
                         InfoDateTime = DateTime.Now,
-                        InfoContent = string.Format("{0}", item.Title),
+                        InfoContent = item.Title,
                         InfoLink = item.Url,
                         MailInfoType = MailInfoTypeEnum.週月報.ToString(),
                         HaveRead = false
                     });
-                }
-                if (Mails.Any())
-                {
-                    MailServerOption mailServerOption = new MailServerOption(settings);
-                    using (var client = mailServerOption.ToSMTPClient())
-                    {
-                        foreach (var item in Mails)
-                        {
-                            var encoding = Encoding.UTF8;
-                            using (MailMessage message = new MailMessage()
-                            {
-                                From = new MailAddress(mailServerOption.User, string.IsNullOrEmpty(mailServerOption.UserName) ? "第e理財網" : mailServerOption.UserName),
-                                IsBodyHtml = true,
-                                HeadersEncoding = encoding,
-                                BodyEncoding = encoding,
-                                SubjectEncoding = encoding
-                            })
-                            {
-                                try
-                                {
-                                    message.To.Add(item.MailTo);
-                                    message.Subject = item.Topic;
-                                    message.Body = item.Content;
-                                    //add EnableSsl
-                                    client.EnableSsl = Sitecore.MainUtil.GetBool(Settings.GetSetting("MailServerUseSsl"), true);
-                                    client.Send(message);
-                                    _logger.Info($"週月報通知Mail發送To:{item.MailTo}");
-                                }
-                                catch (Exception ex)
-                                {
-                                    _logger.Error($"週月報通知Mail發送To{item.MailTo}失敗:{ex.ToString()}");
-                                }
-                            }
-                        }
-                    }
                 }
                 if (mailRecords.Any())
                 {
