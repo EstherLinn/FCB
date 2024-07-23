@@ -7,7 +7,7 @@
     return;
 }
 
-<div class="c-section" style="display:none;">
+<div class="c-section">
     <div class="l-mainstage">
         <div class="l-mainstage__wrap">
             <div class="l-mainstage__content">
@@ -132,6 +132,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <input type="text" class="o-sliderBar__input" id="uid-criteria-date" data-filter-input data-filter-criteria-field="DateTS" style="display: none;">
                                                 </div>
                                             </div>
                                         </div>
@@ -310,7 +311,7 @@
 </template>
 
 <script id="uid-template-newslist" type="text/html">
-    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only" data-item-id="<%= Id %>">
+    <tr class="c-cardTable__item u-center@dt-only" data-item-id="<%= Id %>">
         @*<td class="c-cardTable__top"></td>*@
         <td class="c-cardTable__space"></td>
         @*【焦點消息】*@
@@ -339,7 +340,7 @@
             </div>
         </td>
         @*【標題】*@
-        <td class="c-cardTable__body u-left@dt-only">
+        <td class="c-cardTable__body u-left@dt-only" data-card-table-width="1/1">
             <div class="c-cardTable__content u-line-2@lt-only">
                 <a href="<%= Url %>" target="<%= Target %>" class="o-contentLink t-bold u-ellipsis-1@dt-only u-ellipsis-2@lt"><%= PageTitlePair.Value %></a>
             </div>
@@ -356,62 +357,17 @@
             }
 
             function loading() {
-                // 開啟loading方式:
                 window.loading('show');
                 setTimeout(() => {
-                    // 載入完成需將loading關閉
-                    // 關閉loading方式:
                     window.loading('hide');
                 }, 300);
             }
 
-            const keywordSearchSampleDate = [{
-                value: '鋒裕匯理美元綜合債券基金等共計6檔基金變更英文名稱及部分基金變更永續投資最低比例、投資政策、目標及管理流程通知',
-                data: {
-                    isLogin: JSON.parse('true'),
-                    isLike: JSON.parse('true'),
-                    isNews: true,
-                    detailUrl: './../insight/news_detail.html'
-                }
-            }, {
-                value: '境外結構型商品配息暨自動提前出場通知---【商品代號：PC31】',
-                data: {
-                    isLogin: JSON.parse('true'),
-                    isLike: false,
-                    isNews: true,
-                    detailUrl: './../insight/news_detail.html'
-                }
-            }, {
-                value: '2024年3月份基金休市日公告',
-                data: {
-                    isLogin: JSON.parse('true'),
-                    isLike: false,
-                    isNews: true,
-                    detailUrl: './../insight/news_detail.html'
-                }
-            }, {
-                value: '境外結構型商品配息暨自動提前出場通知---【商品代號：PC27】',
-                data: {
-                    isLogin: JSON.parse('true'),
-                    isLike: false,
-                    isNews: true,
-                    detailUrl: './../insight/news_detail.html'
-                }
-            }, {
-                value: '「柏瑞巨人基金」等13檔基金修訂公開說明書通知',
-                data: {
-                    isLogin: JSON.parse('true'),
-                    isLike: false,
-                    isNews: true,
-                    detailUrl: './../insight/news_detail.html'
-                }
-            }];
-
-            function generateSearchKeywordList() {
+            function generateSearchKeywordList(data) {
                 let list = [];
                 $.each(data, function (i, item) {
                     let obj = {
-                        value: item.PageTitle,
+                        value: item.PageTitlePair.Key,
                         data: {
                             type: 'NewsList',
                             detailUrl: item.Url
@@ -423,8 +379,40 @@
                 return list;
             }
 
+            function dateFormat(time) {
+                let date = new Date(time);
+                let formattedDate = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2);
+                return formattedDate;
+            }
+
+            function checkDate(start, end) {
+                if (!start || !end) {
+                    return false
+                }
+
+                let mStart = moment(start);
+                let mEnd = moment(end);
+                return mStart.isSameOrBefore(mEnd);
+            }
+
+            function updateDate() {
+                var range = [];
+
+                $('[data-filter-part="range"] input').each(function (idx, item) {
+                    range[idx] = $(item).val().replaceAll('/', '-');
+                });
+
+                const hasValue = range.every(item => !!item);
+                const dateValid = hasValue && checkDate(range[0], range[1]);
+
+                if (dateValid) {
+                    $('#uid-criteria-date').val(new Date(dateFormat(range[0])).getTime() + ',' + new Date(dateFormat(range[1])).getTime());
+                    $('#uid-criteria-date').trigger('change');
+                }
+            }
+
             function initAutocomplete(data) {
-                let searchKeywords = generateSearchKeywordList(data);; //keywordSearchSampleDate
+                let searchKeywords = generateSearchKeywordList(data);
 
                 // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
                 $('#uid-searchbox').autocomplete({
@@ -466,15 +454,6 @@
                             });
                             autocomplete.isRegisteGlobalEvent = true;
                         }
-
-                        // 停止 like icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
-                        $(container).find('.o-statusBtn').off('click.autocomplete').on('click.autocomplete', function (e) {
-                            e.stopPropagation();
-                        });
-                        // 綁定 like icon 的互動功能
-                        $(container).find('[data-ia]').interactive();
-                        // 綁定 like icon 的彈跳登入畫面
-                        $(container).find('[data-popup]').magnificPopup();
                     },
                     formatResult: function (suggestion, currentValue) {
                         let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
@@ -518,11 +497,13 @@
                 $('[data-filter-part="range"] input').eq(0).on('change.default', function () {
                     if (!$(this).val()) {
                         $(this).val(moment().add(-6, 'M').format('YYYY/MM/DD')).datepicker('update');
+                        updateDate();
                     }
                 }).trigger('change.default');
                 $('[data-filter-part="range"] input').eq(1).on('change.default', function () {
                     if (!$(this).val()) {
                         $(this).val(moment().format('YYYY/MM/DD')).datepicker('update');
+                        updateDate();
                     }
                 }).trigger('change.default');
             }
@@ -533,12 +514,12 @@
                 let opts = {
                     template: '#uid-template-newslist',
                     criterias: [
-                        //{ field: 'CategoryPair.Value', ele: '#uid-criteria-category :checkbox' },
-                        //{ field: 'CategoryPair.Value', ele: '#uid-criteria-category :checkbox', all: 'all', selector: ':not(:checked)' },
-                        //{ field: 'SharpeRatioMarketPriceRisk.Value', ele: '[data-slider-val="sharpe"]', type: 'range', delimiter: ',' },
+                        { field: 'CategoryPair.Value', ele: '#uid-criteria-category :checkbox' },
+                        { field: 'CategoryPair.Value', ele: '#uid-criteria-category :checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'DatePair.Key', ele: '#uid-criteria-date', type: 'range', delimiter: ',' }
                     ],
                     search: {
-                        ele: '#uid-searchbox', fields: ['PageTitle'], start_length: 2, bindEvent: false, multi: function () {
+                        ele: '#uid-searchbox', fields: ['PageTitlePair.Key'], start_length: 2, bindEvent: false, multi: function () {
                             let texts = [];
                             $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
                                 let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
@@ -559,18 +540,8 @@
                         }
                     },
                     callbacks: {
-                        onFilterSelect: function (obj) {
-                            //if (obj.criteria.type === 'range') {
-                            //    if (obj.values[0] !== obj.values[0]) {
-                            //        obj.values[0] = -9999999999;
-                            //    }
-                            //    if (obj.values[1] !== obj.values[1]) {
-                            //        obj.values[1] = 9999999999;
-                            //    }
-                            //}
-                        },
                         beforeRecordRender: function (record) {
-                            record.DatePair.Key = new Date(record.DatePair.Key).getTime();
+                            record.DatePair.Key = new Date(record.DatePair.Value).getTime();
                         },
                         afterFilter: function (result) {
                             $('[data-uid-total]').text(result.length);
@@ -625,23 +596,9 @@
                     }
                 });
 
-                //TODO: 日期篩選
-                //$('[data-return-rate-money]').on('change.select2', function (e) {
-                //    let $currency = $('[data-currency]');
-                //    let $rateDate = $('[data-return-rate-date]');
-                //    $currency.each(function (i) {
-                //        let currencyData = $(this).data('filter-criteria-field');
-                //        let isCheck = this.checked;
-                //        $rateDate.each(function (ix) {
-                //            let rateDateData = $(this).data('filter-criteria-field').split('|');
-                //            let criteriaField = rateDateData[currencyData];
-                //            fjs.removeCriteria(criteriaField)
-                //            if (isCheck && this.checked) {
-                //                fjs.addCriteria({ field: criteriaField, ele: '[data-return-rate-money]', type: 'range', delimiter: ',' })
-                //            }
-                //        });
-                //    });
-                //});
+                $('[data-filter-part="range"] input').on('change', function (e) {
+                    updateDate();
+                });
 
                 function fnScrollUp() {
                     loading();
@@ -690,10 +647,9 @@
                         type: 'POST',
                         data: reqSearch,
                     }).done(function (data, textStatus, jqXHR) {
-                        console.log(data);
                         var fjs = initFilter(data);
                         window.NewsList.FJS = fjs;
-                        //initAutocomplete(data);
+                        initAutocomplete(data);
 
                         $('[data-tab] [data-tab-target]').first().trigger('switch');
                         $('[data-filter-switch="#uid-template"]').trigger('change');

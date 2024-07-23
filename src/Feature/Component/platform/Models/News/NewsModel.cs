@@ -1,6 +1,7 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using System;
 using System.Collections.Generic;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -39,7 +40,8 @@ namespace Feature.Wealth.Component.Models.News
         public int Count { get; set; }
         public string Json { get; set; }
 
-        public NewsListModel() { }
+        public NewsListModel()
+        { }
 
         //public NewsListModel(string datasourceId)
         //{
@@ -96,7 +98,7 @@ namespace Feature.Wealth.Component.Models.News
                     PageTitle = item.GetFieldValue(Templates.NewsDetails.Fields.PageTitle),
                     Target = link?.Target,
                     Url = string.IsNullOrEmpty(link?.Url) ? item.Url() : link.Url,
-                    Date = ((DateField)item?.Fields[Templates.NewsDetails.Fields.Date])?.GetLocalDateFieldValue()?.ToString(DateFormat),
+                    Date = item.GetLocalDateFieldValue(Templates.NewsDetails.Fields.Date),
                     Category = item.TargetItem(Templates.NewsDetails.Fields.Category)?.GetFieldValue(Templates.NewsListCategory.Fields.CategoryName),
                     IsFocus = item.IsChecked(Templates.NewsDetails.Fields.IsFocus)
                 };
@@ -110,7 +112,7 @@ namespace Feature.Wealth.Component.Models.News
         public string PageTitle { get; set; }
         public string Target { get; set; }
         public string Url { get; set; }
-        public string Date { get; set; }
+        public DateTime? Date { get; set; }
         public string Category { get; set; }
         public bool IsFocus { get; set; }
     }
