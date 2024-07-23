@@ -5,7 +5,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Mail
     {
         到價通知 = 1,
         理顧預約 = 2,
-        專屬優惠 = 3,
+        優惠活動 = 3,
         週月報 = 4
     }
 }
