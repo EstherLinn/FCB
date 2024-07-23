@@ -1,5 +1,4 @@
-﻿
-@using Foundation.Wealth.Helper
+﻿@using Foundation.Wealth.Helper
 @using Feature.Wealth.Component.Models.Invest
 @using Sitecore.Configuration
 <script>
@@ -17,7 +16,7 @@
             }
             // #region 基金
 
-            function resetTable() {
+            window.resetTable = function () {
                 let fjs;
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "FocusList", "GetTrackFunds")',
@@ -213,7 +212,7 @@
                     }
                 }
             });
-            resetTable();
+            window.resetTable();
             // #endregion 基金
 
             // #region ETF
@@ -665,7 +664,7 @@
                     success: function (msg) {
                         switch (cancelType.toLowerCase()) {
                             case "fund":
-                                resetTable();
+                                window.resetTable();
                                 break;
                             case "etf":
                                 resetTable2();
@@ -821,7 +820,7 @@
                         });
                         switch (productType.toLowerCase()) {
                             case "fund":
-                                resetTable();
+                                window.resetTable();
                                 break;
                             case "etf":
                                 resetTable2();

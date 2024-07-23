@@ -1,0 +1,348 @@
+﻿@using Foundation.Wealth.Extensions
+@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.Invest
+@using Feature.Wealth.Component.Models.ExclusiveRecommendation
+@using Xcms.Sitecore.Foundation.Basic.Extensions
+@using Feature.Wealth.Component.Models.FundDetail
+@using Feature.Wealth.Account.Helpers
+@model Feature.Wealth.Component.Models.ExclusiveRecommendation.ExclusiveRecommendationModel
+@{
+    var detailsUrl = FundRelatedSettingModel.GetFundDetailsUrl();
+}
+@if (!string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
+{
+    if (!string.IsNullOrEmpty(FcbMemberHelper.GetMemberRisk()))
+    {
+        <div class="c-section" data-exclusive>
+            <div class="c-section__content">
+                <div class="l-headlines l-headlines--recommend">
+                    <div class="l-headlines__focus">
+                        <div class="c-feature c-feature--personalize c-feature--card">
+                            <div class="c-feature__content">
+                                <h3 class="c-feature__title">@Model.MainTitle</h3>
+                                <p class="c-feature__desc">@Model.SubTitle</p>
+                            </div>
+                            <div class="c-feature__plate">
+                                <img class="u-hidden@lt" src="@Model.ImagePCUrl" srcset="@(Model.ImagePC3xUrl + " 3x")" alt="第一銀行 投資週/月報">
+                                <img class="u-hidden@dt-only" src="@Model.ImageMobileUrl" srcset="@(Model.ImageMobile3xUrl + " 3x")" alt="第一銀行 投資週/月報">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="l-headlines__list">
+                        <div class="u-hidden@lt">
+                            <div class="l-table">
+                                <table class="c-table c-table--short">
+                                    <thead class="u-nowrap">
+                                        <tr>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>基金名稱</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>月報酬率</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>關注/比較</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>申購</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="t-bold">
+                                        @foreach (var item in Model.FundTopList)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a href="@(detailsUrl + "?id=" + item.ProductCode)" target="_blank" class="o-contentLink t-bold u-ellipsis-1">@item.ProductCode @item.FundName</a>
+                                                </td>
+                                                <td>
+                                                    <div class="c-cardFund c-cardFund--inTable">
+                                                        <div class="c-cardFund__trend">
+                                                            <div class="c-cardFund__rate">
+                                                                <span class="t-small u-nowrap">
+                                                                    <span class="t-rise">月報酬率</span>
+                                                                    <span class="@item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle()">@item.OneMonthReturnOriginalCurrency.FormatDecimalNumber()</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="c-cardFund__charts">
+                                                                @{
+                                                                    var chartClass = item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() == "o-rise" ? "o-charts--rise" : "o-charts--fall";
+                                                                    <div class="o-charts @chartClass" data-chart="mini" data-chartid="@item.ProductCode"></div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <ul class="l-collect">
+                                                        <li class="l-collect__item">
+                                                            @PublicHelpers.FocusButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
+                                                        </li>
+                                                        <li class="l-collect__item">
+                                                            @PublicHelpers.CompareButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    @if (item.AvailabilityStatus.ToBoolean() && (string.IsNullOrEmpty(item.OnlineSubscriptionAvailability) || item.OnlineSubscriptionAvailability.ToBoolean()))
+                                                    {
+                                                        @PublicHelpers.SubscriptionButton(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, true)
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="u-hidden@dt-only">
+                            <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{ "slidesPerGroup": 1, "slidesPerView": 1, "spaceBetween": 20, "autoplay": false, "breakpoints": { "1200": { "slidesPerGroup": 3, "slidesPerView": 3 }}}'>
+                                <div class="swiper-wrapper c-swiper__wrapper">
+                                    @foreach (var item in Model.FundTopList)
+                                    {
+                                        <div class="swiper-slide c-swiper__slide">
+                                            <!-- .u-shadow-animation: hover時陰影特效 -->
+                                            <div class="c-box c-box--goods">
+                                                <div class="c-box__main">
+                                                    <div class="c-cardFund">
+                                                        <a href="@(detailsUrl + "?id=" + item.ProductCode)" target="_blank" class="c-cardFund__name u-ellipsis-2">
+                                                            @item.ProductCode @item.FundName
+                                                        </a>
+                                                        <div class="c-cardFund__trend">
+                                                            <div class="c-cardFund__rate">
+                                                                <span class="t-small u-nowrap@dt-only">
+                                                                    <span class="t-rise">月報酬率</span>
+                                                                    <span class="@item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() @(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() + "--sm")">@item.OneMonthReturnOriginalCurrency.FormatDecimalNumber()</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="c-cardFund__charts">
+                                                                @{
+                                                                    var chartClass = item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() == "o-rise" ? "o-charts--rise" : "o-charts--fall";
+                                                                    <div class="o-charts @chartClass" data-chart="mini" data-chartid="@item.ProductCode"></div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="c-box__actions">
+                                                    <ul class="l-collect l-collect--divider">
+                                                        <li class="l-collect__item">
+                                                            @PublicHelpers.FocusButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, false)
+                                                        </li>
+                                                        <li class="l-collect__item">
+                                                            @PublicHelpers.CompareButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, false)
+                                                        </li>
+                                                        @if (item.AvailabilityStatus.ToBoolean() && (string.IsNullOrEmpty(item.OnlineSubscriptionAvailability) || item.OnlineSubscriptionAvailability.ToBoolean()))
+                                                        {
+                                                            <li class="l-collect__item l-collect__item--btn">
+                                                                @PublicHelpers.SubscriptionButtonForCard(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund)
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="swiper-button-next c-swiper__next"></div>
+                                <div class="swiper-button-prev c-swiper__prev"></div>
+                                <div class="swiper-pagination c-swiper__pagination"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="c-section" data-exclusive>
+        <div class="c-section__title u-left">同年齡層投資人的偏好基金</div>
+        <div class="c-section__content">
+            <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{ "slidesPerGroup": 1, "slidesPerView": 1, "spaceBetween": 20, "autoplay": false, "breakpoints": { "1200": { "slidesPerGroup": 3, "slidesPerView": 3 }}}'>
+                <div class="swiper-wrapper c-swiper__wrapper">
+                    @foreach (var item in Model.FundSameAgeCard)
+                    {
+                        <div class="swiper-slide c-swiper__slide">
+                            <!-- .u-shadow-animation: hover時陰影特效 -->
+                            <div class="c-box c-box--goods">
+                                <div class="c-box__main">
+                                    <div class="c-cardFund">
+                                        <a href="@(detailsUrl + "?id=" + item.ProductCode)" target="_blank" class="c-cardFund__name u-ellipsis-2">
+                                            @item.ProductCode @item.FundName
+                                        </a>
+                                        <div class="c-cardFund__trend">
+                                            <div class="c-cardFund__rate">
+                                                <span class="t-small u-nowrap@dt-only">
+                                                    <span class="t-rise">月報酬率</span>
+                                                    <span class="@item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() @(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() + "--sm")">@item.OneMonthReturnOriginalCurrency.FormatDecimalNumber()</span>
+                                                </span>
+                                            </div>
+                                            <div class="c-cardFund__charts">
+                                                @{
+                                                    var chartClass = item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() == "o-rise" ? "o-charts--rise" : "o-charts--fall";
+                                                    <div class="o-charts @chartClass" data-chart="mini" data-chartid="@item.ProductCode"></div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="c-box__actions">
+                                    <ul class="l-collect l-collect--divider">
+                                        <li class="l-collect__item">
+                                            @PublicHelpers.FocusButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, false)
+                                        </li>
+                                        <li class="l-collect__item">
+                                            @PublicHelpers.CompareButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, false)
+                                        </li>
+                                        @if (item.AvailabilityStatus.ToBoolean() && (string.IsNullOrEmpty(item.OnlineSubscriptionAvailability) || item.OnlineSubscriptionAvailability.ToBoolean()))
+                                        {
+                                            <li class="l-collect__item l-collect__item--btn">
+                                                @PublicHelpers.SubscriptionButtonForCard(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund)
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="swiper-button-next c-swiper__next u-hidden@dt-only"></div>
+                <div class="swiper-button-prev c-swiper__prev u-hidden@dt-only"></div>
+                <div class="swiper-pagination c-swiper__pagination"></div>
+            </div>
+        </div>
+    </div>
+    <div class="c-section" data-exclusive>
+        <div class="c-section__title u-left">同星座投資人的偏好基金</div>
+        <div class="c-section__content">
+            <div class="swiper c-swiper c-swiper--minor" data-carousel="true" data-swiper='{ "slidesPerGroup": 1, "slidesPerView": 1, "spaceBetween": 20, "autoplay": false, "breakpoints": { "1200": { "slidesPerGroup": 3, "slidesPerView": 3 }}}'>
+                <div class="swiper-wrapper c-swiper__wrapper">
+                    @foreach (var item in Model.FundSameZodiacCard)
+                    {
+                        <div class="swiper-slide c-swiper__slide">
+                            <!-- .u-shadow-animation: hover時陰影特效 -->
+                            <div class="c-box c-box--goods">
+                                <div class="c-box__main">
+                                    <div class="c-cardFund">
+                                        <a href="@(detailsUrl + "?id=" + item.ProductCode)" target="_blank" class="c-cardFund__name u-ellipsis-2">
+                                            @item.ProductCode @item.FundName
+                                        </a>
+                                        <div class="c-cardFund__trend">
+                                            <div class="c-cardFund__rate">
+                                                <span class="t-small u-nowrap@dt-only">
+                                                    <span class="t-rise">月報酬率</span>
+                                                    <span class="@item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() @(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() + "--sm")">@item.OneMonthReturnOriginalCurrency.FormatDecimalNumber()</span>
+                                                </span>
+                                            </div>
+                                            <div class="c-cardFund__charts">
+                                                @{
+                                                    var chartClass = item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() == "o-rise" ? "o-charts--rise" : "o-charts--fall";
+                                                    <div class="o-charts @chartClass" data-chart="mini" data-chartid="@item.ProductCode"></div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="c-box__actions">
+                                    <ul class="l-collect l-collect--divider">
+                                        <li class="l-collect__item">
+                                            @PublicHelpers.FocusButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, false)
+                                        </li>
+                                        <li class="l-collect__item">
+                                            @PublicHelpers.CompareButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, false)
+                                        </li>
+                                        @if (item.AvailabilityStatus.ToBoolean() && (string.IsNullOrEmpty(item.OnlineSubscriptionAvailability) || item.OnlineSubscriptionAvailability.ToBoolean()))
+                                        {
+                                            <li class="l-collect__item l-collect__item--btn">
+                                                @PublicHelpers.SubscriptionButtonForCard(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund)
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="swiper-button-next c-swiper__next u-hidden@dt-only"></div>
+                <div class="swiper-button-prev c-swiper__prev u-hidden@dt-only"></div>
+                <div class="swiper-pagination c-swiper__pagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function ($, window, document, undefined) {
+            document.addEventListener('DOMContentLoaded', function () {
+                if (!jQuery) {
+                    return;
+                }
+                let chartDatas = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundFullChart)));
+                let groupChartDatas = _.groupBy(chartDatas, "ProductCode");
+                // highchart
+                $('[data-chart="mini"]').each(function (i, el) {
+                    let chartId = $(el).data('chartid');
+                    if (groupChartDatas.hasOwnProperty(chartId)) {
+                        $(el).highcharts({
+                            chart: {
+                                type: 'area',
+                                margin: [0, 0, 0, 0],
+                                backgroundColor: 'transparent'
+                            },
+                            title: {
+                                text: undefined
+                            },
+                            legend: {
+                                enabled: false
+                            },
+                            plotOptions: {
+                                series: {
+                                    enableMouseTracking: false,
+                                    marker: {
+                                        enabled: false
+                                    }
+                                }
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            xAxis: {
+                                visible: false
+                            },
+                            yAxis: {
+                                visible: false
+                            },
+                            series: [{
+                                //lineColor: '#FF0000',
+                                //color: '#FF0000',
+                                fillOpacity: 0.06,
+                                data: groupChartDatas[chartId].reverse().map(x => x.NetAssetValue)
+                            }]
+                        });
+                    }
+                });
+                // 關注清單基金重整
+                $('[eh-focus]', '[data-exclusive]').on('click', function () {
+                    setTimeout(function () {
+                        window.resetTable();
+                    }, 1000);
+                });
+            });
+        })(jQuery, window, document);
+    </script>
+}
+else
+{
+    @* 第三方登入隱藏tab *@
+    <div class="c-section" data-exclusive></div>
+    <script>
+        let panelId = $('[data-exclusive]').parent().attr('data-tab-panel-id');
+        $('.c-tab__navs').find('[data-tab-target=' + panelId + ']').parent().remove();
+    </script>
+}

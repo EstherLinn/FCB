@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Account.Models.OAuth;
 using Newtonsoft.Json;
+using System;
 
 namespace Feature.Wealth.Account.Helpers
 {
@@ -34,6 +35,15 @@ namespace Feature.Wealth.Account.Helpers
         public static string GetMemberWebBankId()
         {
             return fcbMemberModel.WebBankId;
+        }
+
+        public static DateTime? GetMemberBirthDay()
+        {
+            return fcbMemberModel.Birthday;
+        }
+        public static string GetMemberRisk()
+        {
+            return fcbMemberModel.Risk;
         }
     }
 }

@@ -200,6 +200,32 @@ namespace Foundation.Wealth.Helper
         }
 
         /// <summary>
+        /// 申購按鈕 card使用
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="attributes">自訂屬性</param>
+        /// <param name="id">投資種類代號</param>
+        /// <param name="investType">投資種類</param>
+        /// <returns>MvcHtmlString</returns>
+        public static MvcHtmlString SubscriptionButtonForCard(this HtmlHelper helper, object attributes, string id, object investType)
+        {
+            var builder = new TagBuilder("a");
+            builder.MergeAttribute("href", "#");
+            builder.MergeAttribute("eh-subscription", string.Empty);
+            builder.MergeAttribute("eh-subscription-type", investType.ToString());
+            builder.MergeAttribute("eh-subscription-id", id);
+            builder.MergeAttribute("data-eh", "subscription-init,subscription-click");
+            builder.MergeAttribute("data-popup", "true");
+            builder.AddCssClass("o-tableBtn o-tableBtn--card");
+            builder.SetInnerText("申購");
+            if (attributes != null)
+            {
+                builder.MergeAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(attributes));
+            }
+            return MvcHtmlString.Create(builder.ToString(TagRenderMode.Normal));
+        }
+
+        /// <summary>
         /// 申購按鈕attributes
         /// </summary>
         /// <param name="helper"></param>
