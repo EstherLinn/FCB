@@ -1,0 +1,861 @@
+﻿@model MemberCalculationListModel
+@using Feature.Wealth.Component.Models.MemberCalculationList
+@using Foundation.Wealth.Helper;
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="c-section">
+    <div class="c-section__content">
+        <div class="l-table">
+            <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
+                <colgroup>
+                    <col style="width: auto;">
+                    <col style="width: auto;">
+                    <col style="width: 1%;">
+                </colgroup>
+                <thead>
+                    <tr class="u-nowrap">
+                        <th>
+                            <div class="c-table__title">
+                                <span>日期/時間</span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>試算項目</span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.SavingList != null)
+                    {
+                        <tr class="c-cardTable__item u-center@dt-only">
+                            <td class="c-cardTable__space"></td>
+                            <td class="c-cardTable__body" data-card-table-width="1/1">
+                                <div class="c-cardTable__title" data-length="5">日期/時間</div>
+                                <div class="c-cardTable__content">@Model.SavingList.DateTime</div>
+                            </td>
+                            <td class="c-cardTable__body" data-card-table-width="1/1">
+                                <div class="c-cardTable__title" data-length="5">試算項目</div>
+                                <div class="c-cardTable__content">@Model.SavingList.Name</div>
+                            </td>
+                            <td class="c-cardTable__space"></td>
+                            <td class="c-cardTable__footer" data-card-table-width="1/1">
+                                <div class="c-cardTable__content">
+                                    <a href="#" class="o-tableBtn o-tableBtn--card@lt commonResultBtn" target="_blank" calculation-type="SavingList">查看結果</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (Model.EducationFundList != null)
+                    {
+                        <tr class="c-cardTable__item u-center@dt-only">
+                            <td class="c-cardTable__space"></td>
+                            <td class="c-cardTable__body" data-card-table-width="1/1">
+                                <div class="c-cardTable__title" data-length="5">日期/時間</div>
+                                <div class="c-cardTable__content">@Model.EducationFundList.DateTime</div>
+                            </td>
+                            <td class="c-cardTable__body" data-card-table-width="1/1">
+                                <div class="c-cardTable__title" data-length="5">試算項目</div>
+                                <div class="c-cardTable__content">@Model.EducationFundList.Name</div>
+                            </td>
+                            <td class="c-cardTable__space"></td>
+                            <td class="c-cardTable__footer" data-card-table-width="1/1">
+                                <div class="c-cardTable__content">
+                                    <a href="#" class="o-tableBtn o-tableBtn--card@lt commonResultBtn" target="_blank" calculation-type="EducationFundList">查看結果</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (Model.BuyHouseList != null)
+                    {
+                        <tr class="c-cardTable__item u-center@dt-only">
+                            <td class="c-cardTable__space"></td>
+                            <td class="c-cardTable__body" data-card-table-width="1/1">
+                                <div class="c-cardTable__title" data-length="5">日期/時間</div>
+                                <div class="c-cardTable__content">@Model.BuyHouseList.DateTime</div>
+                            </td>
+                            <td class="c-cardTable__body" data-card-table-width="1/1">
+                                <div class="c-cardTable__title" data-length="5">試算項目</div>
+                                <div class="c-cardTable__content">@Model.BuyHouseList.Name</div>
+                            </td>
+                            <td class="c-cardTable__space"></td>
+                            <td class="c-cardTable__footer" data-card-table-width="1/1">
+                                <div class="c-cardTable__content">
+                                    <a href="#" class="o-tableBtn o-tableBtn--card@lt commonResultBtn" target="_blank" calculation-type="BuyHouseList">查看結果</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (Model.RetirementPreparationList != null)
+                    {
+                        <tr class="c-cardTable__item u-center@dt-only">
+                            <td class="c-cardTable__space"></td>
+                            <td class="c-cardTable__body" data-card-table-width="1/1">
+                                <div class="c-cardTable__title" data-length="5">日期/時間</div>
+                                <div class="c-cardTable__content">@Model.RetirementPreparationList.DateTime</div>
+                            </td>
+                            <td class="c-cardTable__body" data-card-table-width="1/1">
+                                <div class="c-cardTable__title" data-length="5">試算項目</div>
+                                <div class="c-cardTable__content">@Model.RetirementPreparationList.Name</div>
+                            </td>
+                            <td class="c-cardTable__space"></td>
+                            <td class="c-cardTable__footer" data-card-table-width="1/1">
+                                <div class="c-cardTable__content">
+                                    <a href="#" class="o-tableBtn o-tableBtn--card@lt commonResultBtn" target="_blank" calculation-type="RetirementPreparationList">查看結果</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="downloadPdf" style="visibility:hidden"></div>
+
+<script>
+    (function ($, window, document, undefined) {
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var _data = @(new HtmlString(JsonHelper.SerializeObject(Model)));
+
+            //#region 查看結果按鈕綁定事件
+            $('.commonResultBtn').on('click', function (e) {
+                e.preventDefault();
+
+                var type = $(this).attr('calculation-type');
+
+                switch (type) {
+                        case "SavingList":
+                        data = _data.SavingList;
+                            break;
+                        case "EducationFundList":
+                        data = _data.EducationFundList;
+                            break;
+                        case "BuyHouseList":
+                        data = _data.BuyHouseList;
+                            break;
+                        case "RetirementPreparationList":
+                        data = _data.RetirementPreparationList;
+                            break;
+                }
+
+                if (data != null && data != "") {
+                    window.loading('show');
+
+                    $('#downloadPdf').append(data.Description);
+                    $('#downloadPdf').append('<section class="c-section"><div class= "l-wrap" id="downloadPdf_Wrap"></div></section>');
+
+                    for (var i = 0; i < data.EarningsChart.length; i++) {
+                        $('#downloadPdf_Wrap').append('<div>' + data.EarningsChart[i] + '</div>');
+                        if (i < data.EarningsChart.length - 1) {
+                            $('#downloadPdf_Wrap').append('<p style="page-break-after: always"></p>');
+                        }
+                    }
+
+                    $('.earningsChartTitle').removeClass('u-hidden');
+                    $('.c-calcLecture__actions').remove();
+                    $('.l-pipeList__actions').remove();
+                    $('.l-revenueResult__actions').remove();
+
+                    renderReadingbar(data.Readingbar);
+
+                    if (type != 'RetirementPreparationList') {
+                        commonChartsRevenues(data.ChartsRevenues);
+                        commonChartsRewards(data.ChartsRewards, data.ChartsRewardsCategories);
+                    }
+                    else {
+                        retireChartsRevenues(data.ChartsRevenues);
+                        retireChartsRewards(data.ChartsRewards, data.ChartsRewardsCategories);
+                    }
+
+                    setTimeout(() => {
+                        $('#downloadPdf').removeAttr('style');
+                        generatePDF(type);
+                        $('#downloadPdf').css('visibility', 'hidden');
+                        $('#downloadPdf').empty();
+                        window.loading('hide');
+                    }, 2500);
+                }
+            });
+            //#endregion
+
+            //#region 將圖片轉換為 base64 編碼
+            function getBase64Image(imgUrl, callback) {
+                var img = new Image();
+                img.setAttribute('crossOrigin', 'anonymous');
+                img.onload = function () {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    var dataURL = canvas.toDataURL('image/png');
+                    callback(dataURL);
+                };
+                img.src = imgUrl;
+            }
+             //#endregion
+
+            //#region 試算結果讀條顯示
+            function renderReadingbar(data) {
+                getBase64Image('/themes/images/background/slash-column.svg', function (base64Image) {
+                    Highcharts.chart('chartsGap', {
+                        chart: {
+                            type: 'bar',
+                            height: '81px',
+                            spacing: [16, 0, 0, 0],
+                            backgroundColor: 'transparent',
+                            style: {
+                                fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                fontSize: '16px'
+                            }
+                        },
+                        title: {
+                            text: undefined
+                        },
+                        xAxis: {
+                            visible: false
+                        },
+                        yAxis: {
+                            tickAmount: 2,
+                            tickInterval: 0,
+                            reversedStacks: false,
+                            title: {
+                                enabled: false
+                            },
+                            labels: {
+                                format: '{value:,f} 元',
+                                padding: 0,
+                                y: 16,
+                                style: {
+                                    color: '#9C9C9C',
+                                    fontSize: '14px'
+                                }
+                            },
+                            max: data.target // 最大值
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            series: {
+                                pointWidth: 40,
+                                stacking: 'normal'
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: undefined,
+                            format: '<div class="o-chartsTooltips">{y:,.f} 元</div>',
+                            useHTML: true,
+                            padding: 0,
+                            backgroundColor: 'transparent',
+                            style: {
+                                fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                fontSize: '16px'
+                            },
+                            outside: true,
+                            positioner(w, h, point) {
+                                const tooltips = $(this.container).find('.o-chartsTooltips').removeClass('o-chartsTooltips--left o-chartsTooltips--right');
+                                let x = point.plotX - point.h / 2 - w / 2,
+                                    y = 0;
+                                if (x < 0) {
+                                    x = point.plotX + 8;
+                                    y = 24;
+                                    tooltips.addClass('o-chartsTooltips--right');
+                                }
+                                if (x + w > this.chart.plotWidth) {
+                                    x = point.plotX - point.h - w - 8;
+                                    y = 24;
+                                    tooltips.addClass('o-chartsTooltips--left');
+                                }
+                                return {
+                                    x: x,
+                                    y: y
+                                };
+                            }
+                        },
+                        series: [{
+                            name: '已準備金額',
+                            data: [data.current],
+                            color: '#FDCE5E'
+                        }, {
+                            name: '缺口',
+                            data: [data.gap],
+                            color: {
+                                pattern: {
+                                    image: base64Image,
+                                    width: 8,
+                                    height: 8
+                                }
+                            }
+                        }]
+                    });
+                });
+            }
+            //#endregion
+
+            //#region 預期收益圓餅圖顯示 (共用)
+            function commonChartsRevenues(chartsRevenues) {
+                getBase64Image('/themes/images/background/slash-pie.svg', function (base64Image) {
+                    chartsRevenues.forEach(item => {
+                        Highcharts.chart(item.id, {
+                            chart: {
+                                type: 'pie'
+                            },
+                            title: {
+                                text: undefined
+                            },
+                            tooltip: {
+                                pointFormat: '{point.name}：{point.y}',
+                                headerFormat: undefined,
+                                style: {
+                                    fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    fontSize: '16px'
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            legend: {
+                                layout: 'vertical',
+                                labelFormat: '{name}：{y:,.0f}元',
+                                align: 'center',
+                                verticalAlign: 'bottom',
+                                itemMarginTop: 8,
+                                itemStyle: {
+                                    font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    cursor: 'default'
+                                }
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            plotOptions: {
+                                pie: {
+                                    showInLegend: true,
+                                    dataLabels: false,
+                                    height: 246,
+                                    point: {
+                                        events: {
+                                            legendItemClick: function (e) {
+                                                e.preventDefault();
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            series: [{
+                                name: '2028年預期收益',
+                                colorByPoint: true,
+                                data: [{
+                                    name: '缺口',
+                                    y: item.gap,
+                                    color: {
+                                        pattern: {
+                                            image: base64Image,
+                                            width: 8,
+                                            height: 8
+                                        }
+                                    },
+                                    sliced: true
+                                }, {
+                                    name: '報酬',
+                                    y: item.revenue,
+                                    color: '#ABA1E4'
+                                }, {
+                                    name: '累積每月投入',
+                                    y: item.invest,
+                                    color: '#86BDDD'
+                                }, {
+                                    name: '已準備金',
+                                    y: item.prepared,
+                                    color: '#FFAD04'
+                                }]
+                            }]
+                        });
+                    });
+                });
+            }
+            //#endregion
+
+            //#region 預期收益圓餅圖顯示 (退休試算用)
+            function retireChartsRevenues(chartsRevenues) {
+                getBase64Image('/themes/images/background/slash-pie.svg', function (base64Image) {
+                    chartsRevenues.forEach(item => {
+                        Highcharts.chart(item.id, {
+                            chart: {
+                                type: 'pie'
+                            },
+                            title: {
+                                text: undefined
+                            },
+                            tooltip: {
+                                pointFormat: '{point.name}：{point.y}',
+                                headerFormat: undefined,
+                                style: {
+                                    fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    fontSize: '16px'
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            legend: {
+                                layout: 'vertical',
+                                labelFormat: '{name}：{y:,.0f}元',
+                                align: 'center',
+                                verticalAlign: 'bottom',
+                                itemMarginTop: 8,
+                                itemStyle: {
+                                    font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    cursor: 'default'
+                                }
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            plotOptions: {
+                                pie: {
+                                    showInLegend: true,
+                                    dataLabels: false,
+                                    height: 246,
+                                    point: {
+                                        events: {
+                                            legendItemClick: function (e) {
+                                                e.preventDefault();
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            series: [{
+                                name: '2048年預期收益',
+                                colorByPoint: true,
+                                data: [{
+                                    name: '缺口',
+                                    y: item.gap,
+                                    color: {
+                                        pattern: {
+                                            image: base64Image,
+                                            width: 8,
+                                            height: 8
+                                        }
+                                    },
+                                    sliced: true
+                                }, {
+                                    name: '報酬',
+                                    y: item.revenue,
+                                    color: '#ABA1E4'
+                                }, {
+                                    name: '累積每月投入',
+                                    y: item.invest,
+                                    color: '#86BDDD'
+                                }, {
+                                    name: '預估法定退休金',
+                                    y: item.retire,
+                                    color: '#238C6C'
+                                }, {
+                                    name: '已準備金',
+                                    y: item.prepared,
+                                    color: '#FFAD04'
+                                }]
+                            }]
+                        });
+                    });
+                });
+            }
+            //#endregion
+
+            //#region 投資報酬長條圖顯示 (共用)
+            function commonChartsRewards(chartsRewards, chartsRewardsCategories) {
+                getBase64Image('/themes/images/background/slash-column.svg', function (base64Image) {
+                    chartsRewards.forEach(item => {
+                        Highcharts.chart(item.id, {
+                            chart: {
+                                maxWidth: '100%',
+                                height: 400,
+                                type: 'column',
+                                //spacing: [24, 0, 0, 0],
+                                style: {
+                                    fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    fontSize: '16px'
+                                }
+                            },
+                            title: {
+                                text: undefined
+                            },
+                            xAxis: {
+                                categories: chartsRewardsCategories
+                            },
+                            yAxis: {
+                                allowDecimals: false,
+                                min: 0,
+                                //max: item.target,
+                                title: {
+                                    text: undefined
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        const dividend = 10000,
+                                            units = ['元', '萬', '億', '萬億'];
+                                        let result = {};
+                                        if (this.value < dividend) {
+                                            result.value = Number(this.value);
+                                            result.unit = units[0];
+                                        } else {
+                                            let index = Math.floor(Math.log(this.value) / Math.log(dividend));
+                                            result.value = Number(this.value / Math.pow(dividend, index));
+                                            result.unit = units[index];
+                                        }
+                                        return result.value + result.unit;
+                                    }
+                                },
+                                plotLines: [{
+                                    color: '#F58220',
+                                    width: 3,
+                                    value: item.target,
+                                    // 目標金額值
+                                    zIndex: 4,
+                                    label: {
+                                        text: '目標金額',
+                                        align: 'left',
+                                        x: 0,
+                                        y: -8,
+                                        style: {
+                                            color: '#F58220',
+                                            fontSize: '16px',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }]
+                            },
+                            tooltip: {
+                                enabled: true,
+                                shared: true,
+                                useHTML: true,
+                                formatter: function () {
+                                    let tooltip = '';
+                                    this.points.forEach(function (point) {
+                                        let bg = `background-color: ${point.color};`;
+                                        if (point.color.pattern && point.color.pattern.image) {
+                                            bg = `background: url(${point.color.pattern.image}) repeat left top / 6px;`;
+                                        }
+                                        tooltip += `<div style="display: flex; align-items: center; gap: 4px; margin: 8px 0;">
+                                <span style="display: block; width: 12px; height: 12px; border-radius: 50%; ${bg}"></span>
+                                <span>${point.series.name}：${Highcharts.numberFormat(point.y, 0)}</span>
+                            </div>`;
+                                    });
+                                    const index = this.points.findIndex(x => x.series.userOptions.name === '缺口');
+                                    if (index > -1) {
+                                        this.total -= this.points[index].y;
+                                    }
+                                    tooltip += `<div style="margin: 8px 0;">預期收益：${Highcharts.numberFormat(this.total, 0)}</div>`;
+                                    return tooltip;
+                                },
+                                style: {
+                                    fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    fontSize: '16px'
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            legend: {
+                                align: 'left',
+                                itemStyle: {
+                                    font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    cursor: 'default'
+                                }
+                            },
+                            plotOptions: {
+                                column: {
+                                    stacking: 'normal',
+                                    groupPadding: 0.1,
+                                    maxPointWidth: 80,
+                                    events: {
+                                        legendItemClick: function () {
+                                            return false;
+                                        }
+                                    }
+                                },
+                                series: {
+                                    states: {
+                                        inactive: {
+                                            opacity: 1
+                                        }
+                                    }
+                                }
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            series: [{
+                                name: "缺口",
+                                data: item.gap,
+                                color: {
+                                    pattern: {
+                                        image: base64Image,
+                                        width: 8,
+                                        height: 8
+                                    }
+                                },
+                                borderWidth: 2,
+                                borderColor: '#FF0000',
+                                dashStyle: 'Dot'
+                            }, {
+                                name: "報酬",
+                                data: item.revenue,
+                                color: '#ABA1E4'
+                            }, {
+                                name: "累積每月投入",
+                                data: item.invest,
+                                color: '#86BDDD'
+                            }, {
+                                name: "已準備金",
+                                data: item.prepared,
+                                color: '#FFAD04'
+                            }]
+                        });
+                    });
+                });
+            }
+            //#endregion
+
+            //#region 投資報酬長條圖顯示 (退休試算用)
+            function retireChartsRewards(chartsRewards, chartsRewardsCategories) {
+                getBase64Image('/themes/images/background/slash-column.svg', function (base64Image) {
+                    chartsRewards.forEach(item => {
+                        Highcharts.chart(item.id, {
+                            chart: {
+                                maxWidth: '100%',
+                                height: 400,
+                                type: 'column',
+                                style: {
+                                    fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    fontSize: '16px'
+                                }
+                            },
+                            title: {
+                                text: undefined
+                            },
+                            xAxis: {
+                                categories: chartsRewardsCategories
+                            },
+                            yAxis: {
+                                allowDecimals: false,
+                                min: 0,
+                                title: {
+                                    text: undefined
+                                },
+                                labels: {
+                                    formatter: function () {
+                                        const dividend = 10000,
+                                            units = ['元', '萬', '億', '萬億'];
+                                        let result = {};
+                                        if (this.value < dividend) {
+                                            result.value = Number(this.value);
+                                            result.unit = units[0];
+                                        } else {
+                                            let index = Math.floor(Math.log(this.value) / Math.log(dividend));
+                                            result.value = Number(this.value / Math.pow(dividend, index));
+                                            result.unit = units[index];
+                                        }
+                                        return result.value + result.unit;
+                                    }
+                                },
+                                plotLines: [{
+                                    color: '#F58220',
+                                    width: 3,
+                                    value: item.target,
+                                    zIndex: 4,
+                                    label: {
+                                        text: '目標金額',
+                                        align: 'left',
+                                        x: 0,
+                                        y: -8,
+                                        style: {
+                                            color: '#F58220',
+                                            fontSize: '16px',
+                                            fontWeight: 'bold'
+                                        }
+                                    }
+                                }]
+                            },
+                            tooltip: {
+                                enabled: true,
+                                shared: true,
+                                useHTML: true,
+                                formatter: function () {
+                                    let tooltip = '';
+                                    this.points.forEach(function (point) {
+                                        let bg = `background-color: ${point.color};`;
+                                        if (point.color.pattern && point.color.pattern.image) {
+                                            bg = `background: url(${point.color.pattern.image}) repeat left top / 6px;`;
+                                        }
+                                        tooltip += `<div style="display: flex; align-items: center; gap: 4px; margin: 8px 0;">
+                                <span style="display: block; width: 12px; height: 12px; border-radius: 50%; ${bg}"></span>
+                                <span>${point.series.name}：${Highcharts.numberFormat(point.y, 0)}</span>
+                            </div>`;
+                                    });
+                                    const index = this.points.findIndex(x => x.series.userOptions.name === '缺口');
+                                    if (index > -1) {
+                                        this.total -= this.points[index].y;
+                                    }
+                                    tooltip += `<div style="margin: 8px 0;">預期收益：${Highcharts.numberFormat(this.total, 0)}</div>`;
+                                    return tooltip;
+                                },
+                                style: {
+                                    fontFamily: 'Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    fontSize: '16px'
+                                },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            legend: {
+                                align: 'left',
+                                itemStyle: {
+                                    font: '1em Microsoft JhengHei, Arial, Helvetica, sans-serif',
+                                    cursor: 'default'
+                                }
+                            },
+                            plotOptions: {
+                                column: {
+                                    stacking: 'normal',
+                                    groupPadding: 0.1,
+                                    maxPointWidth: 80,
+                                    events: {
+                                        legendItemClick: function () {
+                                            return false;
+                                        }
+                                    }
+                                },
+                                series: {
+                                    states: {
+                                        inactive: {
+                                            opacity: 1
+                                        }
+                                    }
+                                }
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            series: [{
+                                name: "缺口",
+                                data: item.gap,
+                                color: {
+                                    pattern: {
+                                        image: base64Image,
+                                        width: 8,
+                                        height: 8
+                                    }
+                                },
+                                borderWidth: 2,
+                                borderColor: '#FF0000',
+                                dashStyle: 'Dot'
+                            }, {
+                                name: "報酬",
+                                data: item.revenue,
+                                color: '#ABA1E4'
+                            }, {
+                                name: "累積每月投入",
+                                data: item.invest,
+                                color: '#86BDDD'
+                            }, {
+                                name: "預估法定退休金",
+                                data: item.retire,
+                                color: '#238C6C'
+                            }, {
+                                name: "已準備金",
+                                data: item.prepared,
+                                color: '#FFAD04'
+                            }]
+                        });
+                    });
+                });
+            }
+            //#endregion
+
+            //#region 試算結果生成PDF
+            async function generatePDF(type) {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF();
+                const container = document.getElementById('downloadPdf');
+
+                // 使用 html2canvas 將容器內容轉換為圖片
+                await html2canvas(container).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                    let firstPageHeight;
+                    let subsequentPageHeight;
+
+                    if (type != "RetirementPreparationList") {
+                        firstPageHeight = 1054;
+                        subsequentPageHeight = 850;
+                    }
+                    else {
+                        firstPageHeight = 1110;
+                        subsequentPageHeight = 850;
+                    }
+
+                    // 計算第一張頁面後所需的頁數
+                    const remainingHeight = imgProps.height - firstPageHeight;
+                    const totalPages = Math.ceil(remainingHeight / subsequentPageHeight) + 1;
+
+                    for (let i = 0; i < totalPages; i++) {
+                        if (i > 0) {
+                            pdf.addPage();
+                        }
+                        let srcY, sHeight, canvasHeight;
+
+                        if (i === 0) {
+                            // 第一張頁面的高度
+                            srcY = 0;
+                            sHeight = firstPageHeight;
+                            canvasHeight = (sHeight * pdfWidth) / imgProps.width;
+                        } else {
+                            // 其餘頁面的高度
+                            srcY = firstPageHeight + (i - 1) * subsequentPageHeight;
+                            sHeight = Math.min(subsequentPageHeight, imgProps.height - srcY);
+                            canvasHeight = (sHeight * pdfWidth) / imgProps.width;
+                        }
+
+                        const tempCanvas = document.createElement('canvas');
+                        tempCanvas.width = imgProps.width;
+                        tempCanvas.height = sHeight;
+                        const ctx = tempCanvas.getContext('2d');
+
+                        ctx.drawImage(canvas, 0, srcY, imgProps.width, sHeight, 0, 0, imgProps.width, sHeight);
+                        const partialImgData = tempCanvas.toDataURL('image/png');
+                        pdf.addImage(partialImgData, 'PNG', 0, 0, pdfWidth, canvasHeight);
+                    }
+                });
+
+                // 下載生成的PDF
+                pdf.save('MemberCalculationList.pdf');
+            }
+            //#endregion
+
+        });
+    })(jQuery, window, document);
+</script>

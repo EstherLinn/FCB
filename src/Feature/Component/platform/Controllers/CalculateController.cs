@@ -1,5 +1,7 @@
 ﻿using Feature.Wealth.Component.Repositories;
 using System.Web.Mvc;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Feature.Wealth.Component.Models.Calculate;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -45,6 +47,20 @@ namespace Feature.Wealth.Component.Controllers
             var model = _calculateRepository.GetCalculateModel();
 
             return View("/Views/Feature/Wealth/Component/Calculate/RetirementPreparation.cshtml", model);
+        }
+
+        /// <summary>
+        /// 儲存試算結果
+        /// </summary>
+        [HttpPost]
+        public ActionResult SaveCalculationResults(CalculationResultData data)
+        {
+            object objReturn = new
+            {
+                success = _calculateRepository.UpdateCalculationResults(data)
+            };
+
+            return new JsonNetResult(objReturn);
         }
     }
 }

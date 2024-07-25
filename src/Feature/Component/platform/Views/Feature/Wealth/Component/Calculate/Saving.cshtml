@@ -1,21 +1,27 @@
 ﻿@model Feature.Wealth.Component.Models.Calculate.CalculateModel
 @using Feature.Wealth.Component.Models.Calculate;
 @using Feature.Wealth.Account.Helpers;
+@using Foundation.Wealth.Helper;
 @using Sitecore.Configuration;
-@{
-    var isLogin = FcbMemberHelper.CheckMemberLogin();
-    var member = FcbMemberHelper.fcbMemberModel;
-}
-@if (isLogin)
-{
-    <script>
-        @* addObjectValue(SC_DATA, 'Risk', @member.Risk); *@
-            addObjectValue(SC_DATA, 'Risk','保守型');
-    </script>
-}
+
 @if (Model == null)
 {
     return;
+}
+
+@{
+    var isLogin = FcbMemberHelper.CheckMemberLogin();
+    var member = FcbMemberHelper.fcbMemberModel;
+    var WebKycLink = Settings.GetSetting("WebKYC");
+    var FirsteKycLink = Settings.GetSetting("FirsteKYC");
+    var IleoKycLink = Settings.GetSetting("IleoKYC");
+}
+
+@if (isLogin)
+{
+    <script>
+        addObjectValue(SC_DATA, 'Risk', @member.Risk);
+    </script>
 }
 
 <!--存一桶金試算頁-上半 -->
@@ -326,7 +332,7 @@
 </div>
 
 <!--存一桶金結果頁-上半 -->
-<div class="l-mainstage u-hidden" id="ResultDescription">
+<div class="l-mainstage u-hidden" id="resultDescription">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
             <h1 class="t-title">存一桶金試算結果</h1>
@@ -399,8 +405,9 @@
                 </div>
             </div>
             <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
-                <div class="c-section">
+                <div class="c-section" id="tab1_earningsChart">
                     <div class="c-section">
+                        <div class="c-section__title u-hidden earningsChartTitle">您的規劃</div>
                         <div class="c-section__content">
                             <div class="l-calcCard">
                                 <div class="l-calcCard__head t-bold">
@@ -475,9 +482,13 @@
                                     @Model.ExpectedReturnRemarks
                                 </div>
                             }
-                            <div class="l-revenueResult__actions u-hidden">
-                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
-                            </div>
+
+                            @if (isLogin)
+                            {
+                                <div class="l-revenueResult__actions">
+                                    <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -501,7 +512,7 @@
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
                                                     <div class="l-riskCard__actions">
-                                                        <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--auto">進行風險屬性評估</a>
+                                                        <a href="@WebKycLink" target="_blank" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GoKYC">進行風險屬性評估</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -574,8 +585,9 @@
 
             </div>
             <div class="c-tab__panel" data-tab-panel-id="tab-2">
-                <div class="c-section">
+                <div class="c-section" id="tab2_earningsChart">
                     <div class="c-section">
+                        <div class="c-section__title u-hidden earningsChartTitle">推薦方案1</div>
                         <div class="c-section__content">
                             <div class="l-calcCard">
                                 <div class="l-calcCard__head t-bold">
@@ -650,14 +662,20 @@
                                     @Model.ExpectedReturnRemarks
                                 </div>
                             }
-                            <div class="l-revenueResult__actions u-hidden">
-                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
-                            </div>
+
+                            @if (isLogin)
+                            {
+                                <div class="l-revenueResult__actions">
+                                    <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
+
                 <!-- 遮罩 -->
                 <section class="c-section Locker"></section>
+
                 <!-- 風險屬性 & 資產配置 -->
                 <div class="c-section">
                     <div class="c-section">
@@ -675,7 +693,7 @@
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
                                                     <div class="l-riskCard__actions">
-                                                        <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--auto">進行風險屬性評估</a>
+                                                        <a href="@WebKycLink" target="_blank" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GoKYC">進行風險屬性評估</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -719,6 +737,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- 推薦ETF -->
                 <div class="c-section">
                     <div class="c-section__title">推薦ETF</div>
@@ -749,8 +768,9 @@
 
             </div>
             <div class="c-tab__panel" data-tab-panel-id="tab-3">
-                <div class="c-section">
+                <div class="c-section" id="tab3_earningsChart">
                     <div class="c-section">
+                        <div class="c-section__title u-hidden earningsChartTitle">推薦方案2</div>
                         <div class="c-section__content">
                             <div class="l-calcCard">
                                 <div class="l-calcCard__head t-bold">
@@ -826,10 +846,13 @@
                                     @Model.ExpectedReturnRemarks
                                 </div>
                             }
-                            <div class="l-revenueResult__actions u-hidden">
-                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
-                            </div>
 
+                            @if (isLogin)
+                            {
+                                <div class="l-revenueResult__actions">
+                                    <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -854,7 +877,7 @@
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
                                                     <div class="l-riskCard__actions">
-                                                        <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--auto">進行風險屬性評估</a>
+                                                        <a href="@WebKycLink" target="_blank" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GoKYC">進行風險屬性評估</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -929,8 +952,9 @@
 
             </div>
             <div class="c-tab__panel" data-tab-panel-id="tab-4">
-                <div class="c-section">
+                <div class="c-section" id="tab4_earningsChart">
                     <div class="c-section">
+                        <div class="c-section__title u-hidden earningsChartTitle">推薦方案3</div>
                         <div class="c-section__content">
                             <div class="l-calcCard">
                                 <div class="l-calcCard__head t-bold">
@@ -1007,9 +1031,12 @@
                                 </div>
                             }
 
-                            <div class="l-revenueResult__actions u-hidden">
-                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
-                            </div>
+                            @if (isLogin)
+                            {
+                                <div class="l-revenueResult__actions">
+                                    <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -1034,7 +1061,7 @@
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
                                                     <div class="l-riskCard__actions">
-                                                        <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--auto">進行風險屬性評估</a>
+                                                        <a href="@WebKycLink" target="_blank" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GoKYC">進行風險屬性評估</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1111,8 +1138,9 @@
 
             <!-- 試算結果無缺口推薦方案1內容 -->
             <div class="c-tab__panel" data-tab-panel-id="tab-5">
-                <div class="c-section">
+                <div class="c-section" id="tab5_earningsChart">
                     <div class="c-section">
+                        <div class="c-section__title u-hidden earningsChartTitle">推薦方案1</div>
                         <div class="c-section__content">
                             <div class="l-calcCard">
                                 <div class="l-calcCard__head t-bold">
@@ -1189,10 +1217,12 @@
                                 </div>
                             }
 
-                            <div class="l-revenueResult__actions u-hidden">
-                                <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
-                            </div>
-
+                            @if (isLogin)
+                            {
+                                <div class="l-revenueResult__actions">
+                                    <a href="#" class="o-btn o-btn--primary o-btn--lg" data-save="true">儲存試算結果</a>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -1217,7 +1247,7 @@
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
                                                     <div class="l-riskCard__actions">
-                                                        <a href="#" class="o-btn o-btn--secondary o-btn--thin o-btn--auto">進行風險屬性評估</a>
+                                                        <a href="@WebKycLink" target="_blank" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GoKYC">進行風險屬性評估</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1341,54 +1371,7 @@
     </div>
 </section>
 
-<div class="l-sharebar">
-    <div class="l-sharebar__wrap">
-        <div class="l-sharebar__content">
-            <div class="l-flex l-flex--inline u-flex-gap-sm">
-                <div class="l-flex__item">
-                    <!-- [data-popover]: 彈跳視窗功能，值為彈跳視窗的 selector -->
-                    <a href="#" class="o-btn o-btn--primary o-btn--icon" data-popover="#popoverDepositShare02">
-                        <img src="~/themes/images/icons/white/share.svg" alt="分享">分享
-                    </a>
-                    <div id="popoverDepositShare02" class="c-popover c-popover--auto u-left">
-                        <div class="c-popover__wrap">
-                            <nav class="c-popover__main">
-                                <ul class="l-flex u-flex-col u-flex-gap-md s4">
-                                    <li class="l-flex__item">
-                                        <a href="https://www.facebook.com/sharer/sharer.php?u=" class="o-social o-social--sm o-social--fb" target="_blank" data-share>
-                                            <span class="u-hidden@mb-only">Facebook</span>
-                                        </a>
-                                    </li>
-                                    <li class="l-flex__item">
-                                        <a href="https://social-plugins.line.me/lineit/share?url=" class="o-social o-social--sm o-social--line" target="_blank" data-share>
-                                            <span class="u-hidden@mb-only">LINE</span>
-                                        </a>
-                                    </li>
-                                    <li class="l-flex__item">
-                                        <div class="l-copy" data-copy>
-                                            <div class="l-copy__action">
-                                                <a href="#" class="o-social o-social--sm o-social--copy" data-copy-action>
-                                                    <span class="u-hidden@mb-only">複製網址</span>
-                                                </a>
-                                            </div>
-                                            <div class="l-copy__msg">
-                                                <div class="o-tooltip o-tooltip--relative o-tooltip--top" data-copy-msg>
-                                                    <div class="o-tooltip__content u-nowrap">已複製</div>
-                                                    <div class="o-tooltip__arrow"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+<!-- 解鎖專屬推薦彈窗 -->
 <div id="popupRisk" class="c-modal c-modal--sm mfp-hide">
     <div class="c-modal__wrap">
         <header class="c-modal__header">
@@ -1413,6 +1396,7 @@
     </div>
 </div>
 
+<!-- 尚未進行風險屬性評估彈窗 -->
 <div id="popupRiskInvalid" class="c-modal c-modal--sm mfp-hide">
     <div class="c-modal__wrap">
         <header class="c-modal__header">
@@ -1427,7 +1411,7 @@
                     <div class="c-calcLocker__desc ">您尚未完成風險評估，可至網銀進行風險屬性評估</div>
                     <div class="c-calcLocker__actions">
                         <div class="c-calcLocker__btn">
-                            <button type="button" class="o-btn o-btn--primary o-btn--lg">風險屬性評估</button>
+                            <button type="button" id="GOKYC1" class="o-btn o-btn--primary o-btn--lg">風險屬性評估</button>
                         </div>
                     </div>
                 </div>
@@ -1436,13 +1420,14 @@
     </div>
 </div>
 
-
-
 <script>
     (function ($, window, document, undefined) {
         document.addEventListener("DOMContentLoaded", function () {
             var resultHasGap;
-            var chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [], chartsAssets = [];
+            var description, readingbar = [], earningsChart = [], chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [], chartsAssets = [];
+            let RiskImg;
+            let isUnlocked = false;
+            let LockImg = "/themes/images/icons/others/lock.svg"
             var defaultRiskAttributes = '@Model.DefaultRiskAttributes';
             var assetsData = {
                 stock: {
@@ -1462,7 +1447,45 @@
                 }
             };
 
-            let LockImagePath = "/themes/images/icons/others/lock.svg";
+            //#region 登入遮罩判斷&依照客戶風險屬性給值
+            if (SC_DATA.IsLoggedIn) {
+                if (SC_DATA.WebBankId !== "") {
+                    if (SC_DATA.Risk !== undefined) {
+                        const riskSettings = {
+                            "1": {
+                                img: "/themes/images/charts/rr2.svg",
+                                attributes: 2,
+                                message: '注意：由於您的風險屬性為 保守型，部分風險等級高的推薦標的無法做申購，請您留意！'
+                            },
+                            "2": {
+                                img: "/themes/images/charts/rr4.svg",
+                                attributes: 5,
+                                message: '注意：由於您的風險屬性為 積極型，部分風險等級高的推薦標的無法做申購，請您留意！'
+                            },
+                            "3": {
+                                img: "/themes/images/charts/rr5.svg",
+                                attributes: 7,
+                                message: '注意：由於您的風險屬性為 積極型，部分風險等級高的推薦標的無法做申購，請您留意！'
+                            }
+                        };
+
+                        const risk = riskSettings[SC_DATA.Risk];
+                        if (risk) {
+                            RiskImg = risk.img;
+                            defaultRiskAttributes = risk.attributes;
+                            $('.l-riskCard__charts img').attr('src', RiskImg);
+                            $('.c-warning').text(risk.message);
+                        }
+                    } else {
+                        renderNotRisk();
+                    }
+                } else {
+                    renderTPPLogin();
+                }
+            } else {
+                renderNotLogin();
+            }
+            //#endregion
 
             //#region 預計幾年後達成目標綁定事件
             let $sliderYear = $('[data-slider-id="year"]').get(0),
@@ -1645,7 +1668,7 @@
                     clearChartDatas();
 
                     // 顯示試算結果 - 描述區塊
-                    $("#ResultDescription").removeClass("u-hidden");
+                    $("#resultDescription").removeClass("u-hidden");
                     renderResultDescription(planningResults, Target, Years);
 
                     // 顯示試算結果 - tab區塊
@@ -1735,7 +1758,7 @@
                     let planningResults = planningCompute(Years, Prepared, Monthly, ExpectedRoi);
 
                     // 顯示試算結果 - 描述區塊
-                    $("#ResultDescription").removeClass("u-hidden");
+                    $("#resultDescription").removeClass("u-hidden");
                     renderResultDescription(planningResults, Target, Years);
 
                     // 顯示試算結果 - tab區塊
@@ -2025,6 +2048,23 @@
             }
             //#endregion
 
+            //#region Div移除屬性
+            function divRemoveAttributes($div) {
+                // 确保传入的是 jQuery 对象且包含 DOM 元素
+                if (!$div || !$div.jquery || $div.length === 0) {
+                    return;
+                }
+
+                // 获取除 'id' 之外的所有属性名
+                var attributes = $.map($div[0].attributes, function (attr) {
+                    return attr.name !== 'id' ? attr.name : null;
+                });
+
+                // 移除所有非 'id' 属性
+                $div.removeAttr(attributes.join(' '));
+            }
+             //#endregion
+
             //#region 您的規劃-試算方法
             function planningCompute(Years, Prepared, Monthly, ExpectedRoi) {
 
@@ -2100,6 +2140,9 @@
 
             //#region 圖表資料清除
             function clearChartDatas() {
+                description = "";
+                readingbar.length = 0
+                earningsChart.length = 0
                 chartsRevenues.length = 0;
                 chartsRewards.length = 0;
                 chartsRewardsCategories.length = 0;
@@ -2124,7 +2167,10 @@
                     resultHasGap = true;
                 }
 
-                $("#resultContent").html(`我目標存一桶金 ${TargetFormatVal} 元，投資 ${Years} 年後尚不足<span class='t1 t-warning u-nowrap'> ${InsufficientAmountFormatVal} 元</span>`);
+                let htmlString = `我目標存一桶金 ${TargetFormatVal} 元，投資 ${Years} 年後尚不足<span class='t1 t-warning u-nowrap'> ${InsufficientAmountFormatVal} 元</span>`;
+                description = htmlString;
+
+                $("#resultContent").html(htmlString);
 
                 if (resultHasGap) {
                     $("#resultSuccessMain").addClass("u-hidden");
@@ -2135,6 +2181,11 @@
                     $("#resultUnsuccessfulMain").addClass("u-hidden");
                     current = TargetVal;
                 }
+
+                divRemoveAttributes($('#chartsGap'));
+                $('#chartsGap').empty();
+
+                description = $('#resultDescription').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
 
                 // 試算結果讀條顯示
                 renderReadingbar('chartsGap', TargetVal, current, InsufficientAmountVal);
@@ -2170,6 +2221,16 @@
                 $("#tab1_Years").text(Years + " 年");
                 // 預期收益標題
                 $("#tab1_ExpectedReturnTitle").text(currentYear + "年預期收益");
+
+                divRemoveAttributes($('#chartsRevenue-01'));
+                $('#chartsRevenue-01').empty();
+
+                divRemoveAttributes($('#chartsReward-01'));
+                $('#chartsReward-01').empty();
+
+                let tab1_earningsChart = $('#tab1_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
+
+                earningsChart.push(tab1_earningsChart);
 
                 // tab1圓餅圖資料
                 chartsRevenues.push({
@@ -2222,6 +2283,16 @@
                 $("#tab2_Years").text(Years + " 年");
                 // 預期收益標題
                 $("#tab2_ExpectedReturnTitle").text(currentYear + "年預期收益");
+
+                divRemoveAttributes($('#chartsRevenue-02'));
+                $('#chartsRevenue-02').empty();
+
+                divRemoveAttributes($('#chartsReward-02'));
+                $('#chartsReward-02').empty();
+
+                let tab2_earningsChart = $('#tab2_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
+
+                earningsChart.push(tab2_earningsChart);
 
                 // tab2圓餅圖資料
                 chartsRevenues.push({
@@ -2280,6 +2351,16 @@
                 // 預期收益標題
                 $("#tab3_ExpectedReturnTitle").text(currentYear + "年預期收益");
 
+                divRemoveAttributes($('#chartsRevenue-03'));
+                $('#chartsRevenue-03').empty();
+
+                divRemoveAttributes($('#chartsReward-03'));
+                $('#chartsReward-03').empty();
+
+                let tab3_earningsChart = $('#tab3_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
+
+                earningsChart.push(tab3_earningsChart);
+
                 // tab3圓餅圖資料
                 chartsRevenues.push({
                     id: 'chartsRevenue-03',
@@ -2330,6 +2411,16 @@
                 $("#tab4_Years").text(result + " 年");
                 // 預期收益標題
                 $("#tab4_ExpectedReturnTitle").text(currentYear + "年預期收益");
+
+                divRemoveAttributes($('#chartsRevenue-04'));
+                $('#chartsRevenue-04').empty();
+
+                divRemoveAttributes($('#chartsReward-04'));
+                $('#chartsReward-04').empty();
+
+                let tab4_earningsChart = $('#tab4_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
+
+                earningsChart.push(tab4_earningsChart);
 
                 // tab4圓餅圖資料
                 chartsRevenues.push({
@@ -2382,6 +2473,16 @@
                 // 預期收益標題
                 $("#tab5_ExpectedReturnTitle").text(currentYear + "年預期收益");
 
+                divRemoveAttributes($('#chartsRevenue-05'));
+                $('#chartsRevenue-05').empty();
+
+                divRemoveAttributes($('#chartsReward-05'));
+                $('#chartsReward-05').empty();
+
+                let tab5_earningsChart = $('#tab5_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
+
+                earningsChart.push(tab5_earningsChart);
+
                 // tab5圓餅圖資料
                 chartsRevenues.push({
                     id: 'chartsRevenue-05',
@@ -2420,6 +2521,8 @@
                     // 已準備金額
                     gap: Number(gap) // 缺口
                 };
+
+                readingbar = data;
 
                 Highcharts.chart(containerId, {
                     chart: {
@@ -2830,7 +2933,31 @@
             //#region 儲存試算結果按鈕綁定事件
             $('[data-save]').on('click', function (e) {
                 e.preventDefault();
-                window.toast('已儲存');
+
+                const calculationData = {
+                    Type: "SavingList",
+                    Name: "存一桶金試算",
+                    DateTime: moment().format('YYYY/MM/DD HH:mm'),
+                    ResultHasGap: resultHasGap,
+                    Description: description,
+                    Readingbar: readingbar,
+                    EarningsChart: earningsChart,
+                    ChartsRevenues: chartsRevenues,
+                    ChartsRewards: chartsRewards,
+                    ChartsRewardsCategories: chartsRewardsCategories
+                };
+
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "Calculate", "SaveCalculationResults")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(calculationData),
+                }).done(function (data, textStatus, jqXHR) {
+                    window.toast('已儲存');
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }).always(function () {
+                });
             });
             //#endregion
 
@@ -2919,36 +3046,13 @@
             }
             //#endregion
 
-            if (SC_DATA.IsLoggedIn) {
-                if (SC_DATA.WebBankId == "") {
-                    if (SC_DATA.Risk == "undefined") {
-                        renderHaveRisk();
-                    }else {
-
-                        if (SC_DATA.Risk == "保守型") {
-                            $('.l-riskCard__charts img').attr('src', '/themes/images/charts/rr1.svg');
-                        } else if (SC_DATA.Risk == "穩健型") {
-                            $('.l-riskCard__charts img').attr('src', '/themes/images/charts/rr4.svg');
-                        } else if (SC_DATA.Risk == "積極型") {
-                            $('.l-riskCard__charts img').attr('src', '/themes/images/charts/rr5.svg');
-                        }
-
-
-                    };
-                } else {
-                    renderTPPLogin();
-                };
-            } else {
-                renderNotLogin();
-            };
-
             //#region 判斷登入遮罩顯示
             function renderNotLogin() {
                 const NotLoginHTML = `
                             <div class="c-calcLocker">
                                 <div class="l-wrap">
                                     <div class="c-calcLocker__icon">
-                                            <img src="${LockImagePath}" alt="">
+                                                    <img src="${LockImg}" alt="">
                                     </div>
                                     <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
                                     <div class="c-calcLocker__actions">
@@ -2963,7 +3067,6 @@
                     type: 'inline',
                     midClick: true
                 });
-
             }
             //#endregion
 
@@ -2973,12 +3076,12 @@
                                     <div class="c-calcLocker">
                                         <div class="l-wrap">
                                             <div class="c-calcLocker__icon">
-                                                    <img src="${LockImagePath}" alt="">
+                                                            <img src="${LockImg}" alt="">
                                             </div>
                                             <div class="c-calcLocker__desc t2 t-bold">綁定一銀帳戶查看專屬推薦</div>
                                             <div class="c-calcLocker__actions">
                                                 <div class="c-calcLocker__btn"><a href="https://ibank.firstbank.com.tw/NetBank/DigAMA/LandingPage/index.html" target="_blank" class="o-btn o-btn--secondary o-btn--lg" rel="noreferrer noopener">立即開戶</a></div>
-                                                <div class="c-calcLocker__btn"><a href="#" target="_self" class="o-btn o-btn--primary o-btn--lg" rel="">立即綁定</a></div>
+                                                            <div class="c-calcLocker__btn"><a href="#" target="_self" class="o-btn o-btn--primary o-btn--lg" data-eh="fcblogin-click">立即綁定</a></div>
                                             </div>
                                         </div>
                                     </div>
@@ -2989,32 +3092,30 @@
             //#endregion
 
             //#region 判斷有無風險屬性遮罩顯示
-            function renderHaveRisk() {
-                const HaveRiskHTML = `
+            function renderNotRisk() {
+                const NotRiskHTML = `
                                             <div class="c-calcLocker">
                                         <div class="l-wrap">
                                             <div class="c-calcLocker__icon">
-                                                    <img src="${LockImagePath}" alt="">
+                                                            <img src="${LockImg}" alt="">
                                             </div>
                                             <div class="c-calcLocker__desc t2 t-bold">進行風險屬性評估後即可獲得專屬推薦</div>
                                             <div class="c-calcLocker__actions">
-                                                <div class="c-calcLocker__btn"><a href="#popupRisk" class="o-btn o-btn--primary o-btn--lg" data-popup="true">風險屬性評估</a></div>
+                                                                <div class="c-calcLocker__btn"><a id="GOKYC2" href="#popupRisk" class="o-btn o-btn--primary o-btn--lg" data-popup="true">風險屬性評估</a></div>
                                             </div>
                                         </div>
                                     </div>
                                 `;
-                $('.Locker').append(HaveRiskHTML);
+                $('.Locker').append(NotRiskHTML);
                 $('.Locker').addClass("c-section--locker");
             }
             //#endregion
 
-            //#region
-            $(function () {
-                // 解鎖專屬推薦
-                $('#btnUnlock').on('click', function (e) {
-                    e.preventDefault();
-                    if (SC_DATA.Risk != "undefined" ) {
-                        // 因套件有 animation 的 delay 時間差，故必需要遞延再執行
+            //#region 解鎖專屬推薦
+            $('#btnUnlock').on('click', function (e) {
+                e.preventDefault();
+                if (!isUnlocked) {
+                    if (SC_DATA.Risk == undefined) {
                         setTimeout(function (e) {
                             $.magnificPopup.open({
                                 items: {
@@ -3022,11 +3123,39 @@
                                 },
                                 type: 'inline'
                             });
-                            // 移除 history ，避免關閉後開啟上一個彈跳視窗
                             $.magnificPopup.instance.history.splice(0, $.magnificPopup.instance.history.length - 1);
                         }, 100);
+                    } else {
+                        $('#popupRisk img').attr('src', '/themes/images/icons/others/unlock.svg');
+                        $('#popupRisk .c-calcLocker__desc').text('我已完成風險評估 ! 立即解鎖專屬推薦');
+                        isUnlocked = true;
                     }
-                });
+                } else {
+                    if (SC_DATA.Risk == "1") {
+                        RiskImg = "/themes/images/charts/rr2.svg";
+                        defaultRiskAttributes = 2;
+                    } else if (SC_DATA.Risk == "2") {
+                        RiskImg = "/themes/images/charts/rr4.svg";
+                        defaultRiskAttributes = 5;
+                    } else if (SC_DATA.Risk == "3") {
+                        RiskImg = "/themes/images/charts/rr5.svg";
+                        defaultRiskAttributes = 7;
+                    }
+
+                    $('.l-riskCard__charts img').attr('src', RiskImg);
+                    $('.Locker').removeClass('c-section--locker');
+                    $('.Locker').addClass('u-hidden');
+                    $.magnificPopup.close();
+                }
+            });
+            //#endregion
+
+            //#region 連結風險屬性測驗網站
+            $('#GOKYC1,#GOKYC2').on('click', function (event) {
+                event.preventDefault();
+                var webKycLink = '@WebKycLink';
+
+                window.open(webKycLink, '_blank');
             });
             //#endregion
 
@@ -3084,7 +3213,7 @@
                                 <div class="c-box__main">
                                     <div class="c-cardFund">
                                         <a href="#" class="c-cardFund__name u-ellipsis-2">
-                                            推薦ETF ${i}
+                                                推薦ETF ${i}
                                         </a>
                                         <div class="c-cardFund__trend">
                                             <div class="c-cardFund__rate">
@@ -3170,6 +3299,7 @@
                     rows: 1
                 },
                 spaceBetween: 20,
+                lazy: true,
                 breakpoints: {
                     1200: {
                         slidesPerGroup: 3,
@@ -3179,6 +3309,11 @@
                         }
                     }
                 },
+                autoplay: {
+                    delay: 6000,
+                    disableOnInteraction: false
+                },
+                speed: 1000,
                 pagination: {
                     el: '.swiper-pagination',
                     clickable: true
@@ -3195,11 +3330,17 @@
             window.mySwiper = new Swiper('.recommendedETF', {
                 slidesPerView: 1,
                 spaceBetween: 20,
+                lazy: true,
                 breakpoints: {
                     1200: {
                         slidesPerView: 3
                     }
                 },
+                autoplay: {
+                    delay: 6000,
+                    disableOnInteraction: false
+                },
+                speed: 1000,
                 pagination: {
                     el: '.swiper-pagination',
                     clickable: true
@@ -3216,11 +3357,17 @@
             window.mySwiper = new Swiper('.recommendedStock', {
                 slidesPerView: 1,
                 spaceBetween: 20,
+                lazy: true,
                 breakpoints: {
                     1200: {
                         slidesPerView: 3
                     }
                 },
+                autoplay: {
+                    delay: 6000,
+                    disableOnInteraction: false
+                },
+                speed: 1000,
                 pagination: {
                     el: '.swiper-pagination',
                     clickable: true
@@ -3284,6 +3431,23 @@
                 }, 300);
             }
             //#endregion
+
+            //#region 行動裝置判斷
+            if ($(window).width() < 1199) {
+                let MobilePlatform = store.get("MobilePlatform") || "firste";
+                let url;
+
+                if (MobilePlatform == "firste") {
+                    url = "@FirsteKycLink";
+                } else {
+                    url = "@IleoKycLink";
+                }
+
+                url.replaceAll('&amp;', '&');
+                $(".GoKYC").attr('href', url);
+            }
+            //#endregion
+
         });
     })(jQuery, window, document);
 </script>

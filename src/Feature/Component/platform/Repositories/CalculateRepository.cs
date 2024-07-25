@@ -1,5 +1,12 @@
-﻿using Feature.Wealth.Component.Models.Calculate;
+﻿using Feature.Wealth.Account.Helpers;
+using Feature.Wealth.Component.Models.Calculate;
+using Foundation.Wealth.Manager;
+using log4net;
+using Newtonsoft.Json;
 using Sitecore.Mvc.Presentation;
+using System;
+using System.Data.SqlClient;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Templates = Feature.Wealth.Component.Models.Calculate.Template;
 
@@ -7,6 +14,12 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class CalculateRepository
     {
+        private ILog Log { get; } = Logger.Account;
+
+        /// <summary>
+        /// 取得試算Model
+        /// </summary>
+        /// <returns>試算Model</returns>
         public CalculateModel GetCalculateModel()
         {
             var dataSource = RenderingContext.CurrentOrNull?.ContextItem;
@@ -58,6 +71,89 @@ namespace Feature.Wealth.Component.Repositories
             model.RemoteConsultationImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.RemoteConsultationImage);
 
             return model;
+        }
+
+        /// <summary>
+        /// 更新試算資料
+        /// </summary>
+        /// <param name="data">試算資料</param>
+        /// <returns>更新是否成功</returns>
+        public bool UpdateCalculationResults(CalculationResultData data)
+        {
+            var success = false;
+
+            if (data == null)
+            {
+                return success;
+            }
+
+            try
+            {
+                var jsonStr = JsonConvert.SerializeObject(new
+                {
+                    Name = data.Name,
+                    DateTime = data.DateTime,
+                    ResultHasGap = data.ResultHasGap,
+                    Description = data.Description,
+                    EarningsChart = data.EarningsChart,
+                    Readingbar = data.Readingbar,
+                    ChartsRevenues = data.ChartsRevenues,
+                    ChartsRewards = data.ChartsRewards,
+                    ChartsRewardsCategories = data.ChartsRewardsCategories
+                });
+
+                if (!Enum.TryParse(data.Type, out CalculateTypeEnum calculateType))
+                {
+                    return success;
+                }
+
+                string columnName;
+                switch (calculateType)
+                {
+                    case CalculateTypeEnum.EducationFundList:
+                        columnName = "EducationFundList";
+                        break;
+                    case CalculateTypeEnum.SavingList:
+                        columnName = "SavingList";
+                        break;
+                    case CalculateTypeEnum.BuyHouseList:
+                        columnName = "BuyHouseList";
+                        break;
+                    case CalculateTypeEnum.RetirementPreparationList:
+                        columnName = "RetirementPreparationList";
+                        break;
+                    default:
+                        return success;
+                }
+
+                var strSql = @$"
+                    MERGE MemberCalculationList AS target
+                    USING (SELECT @id AS PlatFormId) AS source
+                    ON (target.PlatFormId = source.PlatFormId)
+                    WHEN MATCHED THEN 
+                        UPDATE SET {columnName} = @jsonStr 
+                    WHEN NOT MATCHED BY TARGET THEN 
+                        INSERT (PlatFormId, {columnName}) VALUES (@id, @jsonStr);";
+
+                var para = new
+                {
+                    id = FcbMemberHelper.GetMemberPlatFormId(),
+                    jsonStr
+                };
+
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
+                success = affectedRows != 0;
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+
+            return success;
         }
     }
 }

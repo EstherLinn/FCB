@@ -1,4 +1,5 @@
 ﻿using Sitecore.Data.Items;
+using System.Collections.Generic;
 
 namespace Feature.Wealth.Component.Models.Calculate
 {
@@ -37,5 +38,48 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string RemoteConsultationButtonText { get; set; }
         public string RemoteConsultationButtonLink { get; set; }
         public string RemoteConsultationImage { get; set; }
+    }
+
+    public class CalculationResultData
+    {
+        public string PlatFormId { get; set; }
+        public string Type { get; set; }
+        public string Name { get; set; }
+        public string DateTime { get; set; }
+        public bool ResultHasGap { get; set; }
+        public string Description { get; set; }
+        public List<string> EarningsChart { get; set; }
+        public ReadingbarData Readingbar { get; set; }
+        public List<ChartsRevenuesData> ChartsRevenues { get; set; }
+        public List<ChartsRewardsData> ChartsRewards { get; set; }
+        public List<string> ChartsRewardsCategories { get; set; }
+    }
+
+    public class ReadingbarData
+    {
+        public int target { get; set; }
+        public int current { get; set; }
+        public int gap { get; set; }
+    }
+
+    public class ChartsRevenuesData
+    {
+        public string id { get; set; }
+        public int gap { get; set; }
+        public int revenue { get; set; }
+        public int invest { get; set; }
+        public int prepared { get; set; }
+        public int retire { get; set; }
+    }
+
+    public class ChartsRewardsData
+    {
+        public string id { get; set; }
+        public int target { get; set; }
+        public List<int?> gap { get; set; }
+        public List<int> revenue { get; set; }
+        public List<int> invest { get; set; }
+        public List<int> prepared { get; set; }
+        public List<int> retire { get; set; }
     }
 }
