@@ -1,11 +1,15 @@
 ﻿using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Models.Calculate;
+using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
 using log4net;
 using Newtonsoft.Json;
 using Sitecore.Mvc.Presentation;
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Templates = Feature.Wealth.Component.Models.Calculate.Template;
@@ -154,6 +158,40 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             return success;
+        }
+
+        /// <summary>
+        /// 取得基金資料
+        /// </summary>
+        /// <returns>基金資料</returns>
+        public List<FundModel> GetFundData()
+        {
+            string top9Sql = @$"
+                 SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency]
+                 FROM [dbo].[vw_BasicFund]
+                 ORDER BY OneYearReturnOriginalCurrency DESC, ProductCode";
+
+            var top9Results = DbManager.Custom.ExecuteIList<FundModel>(top9Sql, null, CommandType.Text);
+
+            if (top9Results == null || !top9Results.Any())
+            {
+                return new List<FundModel>();
+            }
+
+            foreach (var item in top9Results)
+            {
+                item.DisplayOneMonthReturnOriginalCurrency = item.OneMonthReturnOriginalCurrency.FormatDecimalNumber(2);
+
+                string sql = @$"
+                 SELECT [NetAssetValue]
+                 FROM [dbo].[Sysjust_Nav_Fund]
+                 WHERE [FirstBankCode] = '{item.ProductCode}'
+                 ORDER BY [NetAssetValueDate] ASC;";
+
+                item.SysjustNavFundData = (List<decimal>)DbManager.Custom.ExecuteIList<decimal>(sql, null, CommandType.Text);
+            }
+
+            return (List<FundModel>)top9Results;
         }
     }
 }

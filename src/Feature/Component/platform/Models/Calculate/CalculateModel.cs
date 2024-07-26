@@ -1,4 +1,5 @@
 ﻿using Sitecore.Data.Items;
+using System;
 using System.Collections.Generic;
 
 namespace Feature.Wealth.Component.Models.Calculate
@@ -81,5 +82,23 @@ namespace Feature.Wealth.Component.Models.Calculate
         public List<int> invest { get; set; }
         public List<int> prepared { get; set; }
         public List<int> retire { get; set; }
+    }
+
+    public class RecommendedProducts
+    {
+        public List<FundModel> FundData { get; set; }
+    }
+
+    public class FundModel
+    {
+        public string ProductCode { get; set; }
+
+        public string FundName { get; set; }
+
+        public decimal? OneMonthReturnOriginalCurrency { get; set; }
+
+        public string DisplayOneMonthReturnOriginalCurrency { get; set; }
+
+        public List<decimal> SysjustNavFundData { get; set; }
     }
 }

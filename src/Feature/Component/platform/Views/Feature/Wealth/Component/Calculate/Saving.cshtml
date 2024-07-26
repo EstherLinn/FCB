@@ -1723,7 +1723,7 @@
                     renderChartsAssets(chartsAssets);
 
                     // 顯示推薦商品
-                    renderRecommendedFunds(9);
+
                     renderRecommendedETFs(3);
                     renderRecommendedStocks(3);
 
@@ -2258,6 +2258,16 @@
                     bond: assetsData.bond.number,
                     stock: assetsData.stock.number
                 });
+
+                if (SC_DATA.Risk !== undefined) {
+                    let event = $('[data-tab-panel-id="tab-1"] .recommendedFunds .swiper-wrapper');
+                    let eventString = '[data-tab-panel-id="tab-1"] .recommendedFunds';
+                    let tab = "tab1";
+
+                    getFundData(tab, event, eventString);
+                } else {
+                    renderRecommendedFunds(9);
+                }
             }
             //#endregion
 
@@ -3159,7 +3169,24 @@
             });
             //#endregion
 
-            //#region  推薦基金商品顯示
+            function getFundData(tab, event, eventString) {
+                $.ajax({
+                    url: '@Url.Action("GetFundData", "Calculate")',
+                    method: 'POST',
+                    success: function (data) {
+
+                        console.log(data);
+
+                        RealrenderRecommendedFunds(tab, event, data);
+                        FundinitializeSwiper(eventString);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching fund data:', error);
+                    }
+                });
+            }
+
+            //#region  預設推薦基金商品顯示
             function renderRecommendedFunds(count) {
                 for (let i = 1; i <= count; i++) {
                     const fundHTML = `
@@ -3201,6 +3228,70 @@
                     `;
                     $('.recommendedFunds .swiper-wrapper').append(fundHTML);
                 }
+                FundinitializeSwiper();
+            }
+            //#endregion
+
+            //#region  真實推薦基金商品顯示
+            function RealrenderRecommendedFunds(tab, event, fundData) {
+                const $swiperWrapper = event;
+                $swiperWrapper.empty();
+
+                let fundHTML = '';
+                let style1, style2, style3;
+
+                fundData.forEach((fund, index) => {
+                    if (fund.OneMonthReturnOriginalCurrency > 0) {
+                        style1 = "t-rise";
+                        style2 = "o-rise o-rise--sm";
+                        style3 = "o-charts--rise";
+                    }
+                    else {
+                        style1 = "t-fall";
+                        style2 = "o-fall o-fall--sm";
+                        style3 = "o-charts--fall";
+                    }
+
+                    fundHTML += `
+                    <div class="swiper-slide c-swiper__slide">
+                        <div class="c-box c-box--goods">
+                            <div class="c-box__main">
+                                <div class="c-cardFund">
+                                    <a href="#" class="c-cardFund__name u-ellipsis-2">
+                                                ${fund.ProductCode}${fund.FundName}
+                                    </a>
+                                    <div class="c-cardFund__trend">
+                                        <div class="c-cardFund__rate">
+                                            <span class="t-small">
+                                                <span class="${style1}">月報酬率</span>
+                                                       <span class="${style2}">${fund.DisplayOneMonthReturnOriginalCurrency}</span>
+                                            </span>
+                                        </div>
+                                        <div class="c-cardFund__charts">
+                                            <div class="o-charts ${style3}" data-chart="${tab}mini"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c-box__actions">
+                                <ul class="l-collect l-collect--divider">
+                                    <li class="l-collect__item">
+                                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                    </li>
+                                    <li class="l-collect__item">
+                                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                    </li>
+                                    <li class="l-collect__item l-collect__item--btn">
+                                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div> `;
+                });
+                $swiperWrapper.append(fundHTML);
+
+                RealrenderFundChart(tab, fundData);
             }
             //#endregion
 
@@ -3246,6 +3337,7 @@
                     `;
                     $('.recommendedETF .swiper-wrapper').append(etfHTML);
                 }
+                ETFinitializeSwiper();
             }
             //#endregion
 
@@ -3288,99 +3380,106 @@
                     `;
                     $('.recommendedStock .swiper-wrapper').append(stockHTML);
                 }
+                StockinitializeSwiper();
             }
             //#endregion
 
             //#region 所有推薦基金初始化設定
-            window.mySwiper = new Swiper('.recommendedFunds', {
-                slidesPerGroup: 1,
-                slidesPerView: 1,
-                grid: {
-                    rows: 1
-                },
-                spaceBetween: 20,
-                lazy: true,
-                breakpoints: {
-                    1200: {
-                        slidesPerGroup: 3,
-                        slidesPerView: 3,
-                        grid: {
-                            rows: 3
+            function FundinitializeSwiper(eventString) {
+                window.mySwiper = new Swiper(eventString, {
+                    slidesPerGroup: 1,
+                    slidesPerView: 1,
+                    grid: {
+                        rows: 1
+                    },
+                    spaceBetween: 20,
+                    lazy: true,
+                    breakpoints: {
+                        1200: {
+                            slidesPerGroup: 3,
+                            slidesPerView: 3,
+                            grid: {
+                                rows: 3
+                            }
                         }
+                    },
+                    autoplay: {
+                        delay: 6000,
+                        disableOnInteraction: false
+                    },
+                    speed: 1000,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                        disabledClass: 'swiper-button-disabled'
                     }
-                },
-                autoplay: {
-                    delay: 6000,
-                    disableOnInteraction: false
-                },
-                speed: 1000,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                    disabledClass: 'swiper-button-disabled'
-                }
-            });
+                });
+            }
             //#endregion
 
             //#region 所有推薦ETF初始化設定
-            window.mySwiper = new Swiper('.recommendedETF', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                lazy: true,
-                breakpoints: {
-                    1200: {
-                        slidesPerView: 3
+            function ETFinitializeSwiper() {
+                window.mySwiper = new Swiper('.recommendedETF', {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                    lazy: true,
+                    breakpoints: {
+                        1200: {
+                            slidesPerView: 3
+                        }
+                    },
+                    autoplay: {
+                        delay: 6000,
+                        disableOnInteraction: false
+                    },
+                    speed: 1000,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                        disabledClass: 'swiper-button-disabled'
                     }
-                },
-                autoplay: {
-                    delay: 6000,
-                    disableOnInteraction: false
-                },
-                speed: 1000,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                    disabledClass: 'swiper-button-disabled'
-                }
-            });
+                });
+            }
             //#endregion
 
             //#region 所有推薦國外股票初始化設定
-            window.mySwiper = new Swiper('.recommendedStock', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                lazy: true,
-                breakpoints: {
-                    1200: {
-                        slidesPerView: 3
+            function StockinitializeSwiper() {
+                window.mySwiper = new Swiper('.recommendedStock', {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                    lazy: true,
+                    breakpoints: {
+                        1200: {
+                            slidesPerView: 3
+                        }
+                    },
+                    autoplay: {
+                        delay: 6000,
+                        disableOnInteraction: false
+                    },
+                    speed: 1000,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                        disabledClass: 'swiper-button-disabled'
                     }
-                },
-                autoplay: {
-                    delay: 6000,
-                    disableOnInteraction: false
-                },
-                speed: 1000,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                    disabledClass: 'swiper-button-disabled'
-                }
-            });
+                });
+            }
             //#endregion
 
-            //#region 推薦基金、推薦ETF、推薦國外股票走勢圖顯示
+            //#region 預設推薦基金、推薦ETF、推薦國外股票走勢圖顯示
             function renderRecommendedProductChart() {
                 $('[data-chart="mini"]').each(function (i, el) {
                     $(el).highcharts({
@@ -3413,10 +3512,50 @@
                             visible: false
                         },
                         series: [{
-                            //lineColor: '#FF0000',
-                            //color: '#FF0000',
                             fillOpacity: 0.06,
                             data: [13.833, 12.524, 11.441, 10.651, 9.961, 4.566, 4.617, 4.728, 4.823, 4.844, 4.856, 4.87, 4.702, 4.679, 4.674, 4.641, 4.47, 4.688, 4.798, 2.015, 1.971, 1.894, 1.848, 1.835, 1.85, 2.036, 1.827, 1.904, 1.803, 1.852, 1.866, 1.906, 1.956, 1.954, 1.734, 1.904, 2.702, 2.893, 3.016, 3.073, 3.126, 3.283, 3.361, 3.33, 3.465, 3.916, 4.49, 5.074, 5.717, 6.523, 7.012, 6.726, 7.095, 7.471, 7.824, 7.802, 4.441, 4.625, 4.934, 4.952, 4.742, 4.666, 4.525, 4.126, 4.228, 4.334, 4.383, 5.287, 5.088, 5.28, 5.274, 5.251, 5.413, 5.365, 5.372, 5.512, 4.839, 5.099, 5.196, 5.219, 5.094, 5.582, 5.91, 5.952, 6.012, 5.854, 5.789, 5.465, 5.525, 5.659, 5.67, 5.173, 5.033, 5.318, 5.289, 5.226, 5.15, 5.106, 4.989, 5.103, 5.288, 5.428, 5.363, 5.026, 5, 4.941, 4.872, 4.751, 4.408, 4.425, 4.301, 4.134, 4.171, 4.272, 4.34, 4.543, 4.826, 5.381, 5.374, 5.433, 5.483, 5.539, 5.869, 6.956, 7.443, 7.654, 8.005, 8.181, 8.386, 9.202, 9.51, 9.66, 9.141, 8.79, 8.747, 8.949, 9.188, 9.625, 10.154, 10.173, 10.361, 11.186, 11.226, 11.091, 10.899, 10.945, 10.892, 9.618, 9.092, 8.465, 7.864, 7.396, 7.076, 7.053, 6.772, 6.958, 7.202]
+                        }]
+                    });
+                });
+            }
+            //#endregion
+
+            //#region 真實推薦基金走勢圖顯示
+            function RealrenderFundChart(tab, data) {
+                $(`[data-chart="${tab}mini"]`).each(function (i, el) {
+                    // 使用 data 数组中的相应数据来渲染每个图表
+                    $(el).highcharts({
+                        chart: {
+                            type: 'area',
+                            margin: [0, 0, 0, 0],
+                            backgroundColor: 'transparent'
+                        },
+                        title: {
+                            text: undefined
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            series: {
+                                enableMouseTracking: false,
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        xAxis: {
+                            visible: false
+                        },
+                        yAxis: {
+                            visible: false
+                        },
+                        series: [{
+                            fillOpacity: 0.06,
+                            data: data[i].SysjustNavFundData
                         }]
                     });
                 });

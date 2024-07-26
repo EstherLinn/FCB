@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.Calculate;
+using System.Collections.Generic;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -61,6 +62,19 @@ namespace Feature.Wealth.Component.Controllers
             };
 
             return new JsonNetResult(objReturn);
+        }
+
+        /// <summary>
+        /// 獲取基金資料
+        /// </summary>
+        [HttpPost]
+        public ActionResult GetFundData()
+        {
+            List<FundModel> datas;
+
+            datas = _calculateRepository.GetFundData();
+
+            return new JsonNetResult(datas);
         }
     }
 }
