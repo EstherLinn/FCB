@@ -20,43 +20,37 @@ namespace Feature.Wealth.Component.Controllers
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
 
-            var etfs = _repository.GetFundData();
             var viewModel = new DiscountPremiumModel
             {
-                Item = dataSourceItem,
-                DiscountPremiums = etfs,
-                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
+                Item = dataSourceItem
             };
 
             return View("/Views/Feature/Wealth/Component/DiscountPremium/DiscountPremium.cshtml", viewModel);
         }
 
 
+        /// <summary>
+        /// 搜尋回傳值
+        /// </summary>
         [HttpPost]
-        public ActionResult GetSortedDiscountPremium(string orderby, string desc)
+        [ValidateAntiForgeryToken]
+        public ActionResult GetAllEtfs()
         {
-            if (orderby.IsNullOrEmpty()) { orderby = "DiscountPremium"; }
-            if (desc.IsNullOrEmpty()) { desc = "is-desc"; }
+            var items = _repository.GetETFData();
+            var etfs = _repository.GetFundRenderData(items);
+            return new JsonNetResult(etfs);
+        }
 
-            var etfs = _repository.GetFundData();
-
-            var property = typeof(ETFs).GetProperty(orderby);
-            if (desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase))
-            {
-                etfs = etfs.OrderByDescending(f => property.GetValue(f, null)).ToList();
-            }
-            else
-            {
-                etfs = etfs.OrderBy(f => property.GetValue(f, null)).ToList();
-            }
-
-            var viewModel = new DiscountPremiumModel
-            {
-                DiscountPremiums = etfs,
-                DetailLink = EtfRelatedLinkSetting.GetETFDetailUrl()
-            };
-
-            return View("/Views/Feature/Wealth/Component/DiscountPremium/DiscountPremiumReturnView.cshtml", viewModel);
+        /// <summary>
+        /// 搜尋回傳值
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GetAllEtfs2()
+        {
+            var items = _repository.GetETFData2();
+            var etfs = _repository.GetFundRenderData(items);
+            return new JsonNetResult(etfs);
         }
     }
 }
