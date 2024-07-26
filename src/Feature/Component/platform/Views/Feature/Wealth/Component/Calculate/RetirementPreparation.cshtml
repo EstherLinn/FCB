@@ -2193,9 +2193,16 @@
                         if (val == "" || isNaN(val)) {
                             errorMessage = "此欄位為必填";
 
+                            $(yearId + "Form").removeClass('is-error');
                             $(payExpensesId).addClass('u-hidden');
                             checkFlag = false;
-                        } else if (parseFloat(val) <= yearBeginVal || parseFloat(val) <= yearEndVal) {
+                        } else if (parseFloat(val) > yearBeginVal && parseFloat(val) <= yearEndVal) {
+                            errorMessage = "預期壽命應大於現在年紀及預計退休年齡";
+
+                            $(yearId + "Form").removeClass('is-error');
+                            $(payExpensesId).addClass('u-hidden');
+                            checkFlag = false;
+                        } else if (parseFloat(val) <= yearBeginVal) {
                             yearErrorMessage = "現在年紀應小於預計退休年齡及預期壽命";
                             errorMessage = "預期壽命應大於現在年紀及預計退休年齡";
 
