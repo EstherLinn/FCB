@@ -94,7 +94,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.DiscountPremium = CreateDictionary(f.DiscountPremium);
 
                 vm.LatestVolumeTradingVolume = new KeyValuePair<string, decimal?>(f.LatestVolumeTradingVolumeFormat,f.LatestVolumeTradingVolume);
-                vm.TenDayAverageVolume = new KeyValuePair<string, decimal?>(f.TenDayAverageVolumeFormat, f.TenDayAverageVolume);
+                vm.LatestVolumeTradingVolumeTenDayAverageVolume = new KeyValuePair<string, decimal?>(f.LatestVolumeTradingVolumeTenDayAverageVolumeFormat, f.LatestVolumeTradingVolumeTenDayAverageVolume);
 
                 vm.IsOnlineSubscriptionAvailability = f.AvailabilityStatus == "Y" &&
                                   (f.OnlineSubscriptionAvailability == "Y" ||
