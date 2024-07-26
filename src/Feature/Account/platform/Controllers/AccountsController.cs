@@ -206,10 +206,7 @@ namespace Feature.Wealth.Account.Controllers
                                     //登入
                                     FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, id);
                                     User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
-                                    SetCustomPropertyAndLogin(member, user);
-                                    step = "Step5 第e個網登入 同步ileo關注清單";
-                                    FirstBankApiService firstBankApiService = new();
-                                    firstBankApiService.SyncTrackListFormIleo(await firstBankApiService.GetTrackListFromIleo(member.WebBankId));
+                                    SetCustomPropertyAndLogin(member, user);                    
                                 }
                             }
                         }
@@ -289,9 +286,6 @@ namespace Feature.Wealth.Account.Controllers
                         FcbMemberModel member = _memberRepository.GetAppMemberInfo(PlatFormEunm.WebBank, code);
                         SetCustomPropertyAndLogin(member, user);
                     }
-                    step = $"Step4 理財網會員登入完成 同步iLeo關注清單";
-                    FirstBankApiService firstBankApiService = new();
-                    firstBankApiService.SyncTrackListFormIleo(await firstBankApiService.GetTrackListFromIleo(code));
                 }
             }
             catch (Exception ex)
@@ -377,14 +371,20 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetTrackList()
+        public async Task<ActionResult> GetTrackList()
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
                 return new EmptyResult();
             }
+            if (FcbMemberHelper.GetMemberPlatForm() == PlatFormEunm.WebBank)
+            {
+                FirstBankApiService firstBankApiService = new();
+                firstBankApiService.SyncTrackListFormIleo(await firstBankApiService.GetTrackListFromIleo(FcbMemberHelper.GetMemberWebBankId()));
+            }
             return new JsonNetResult(_memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId()));
         }
+
 
         [HttpPost]
         public ActionResult SetUrlCookie(string url)
