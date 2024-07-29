@@ -57,8 +57,8 @@ namespace Feature.Wealth.Component.Models.DiscountPremium
             /// <summary>
             /// 最新量-十日均價
             /// </summary>
-            public decimal? TenDayAverageVolume { get; set; }
-            public string TenDayAverageVolumeFormat => NumberExtensions.FormatNumber(TenDayAverageVolume);
+            public decimal? LatestVolumeTradingVolumeTenDayAverageVolume { get; set; }
+            public string LatestVolumeTradingVolumeTenDayAverageVolumeFormat => NumberExtensions.FormatNumber(LatestVolumeTradingVolumeTenDayAverageVolume);
 
             /// <summary>
             /// 可否申購
@@ -89,7 +89,7 @@ namespace Feature.Wealth.Component.Models.DiscountPremium
 
             public KeyValuePair<string, decimal?> LatestVolumeTradingVolume { get; set; }
 
-            public KeyValuePair<string, decimal?> TenDayAverageVolume { get; set; }
+            public KeyValuePair<string, decimal?> LatestVolumeTradingVolumeTenDayAverageVolume { get; set; }
 
             public bool IsOnlineSubscriptionAvailability { get; set; }
 

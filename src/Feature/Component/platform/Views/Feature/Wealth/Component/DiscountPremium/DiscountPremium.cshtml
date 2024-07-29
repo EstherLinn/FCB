@@ -62,8 +62,8 @@
 											<option value="折溢價低至高" data-sorting-column="DiscountPremium.Value" data-sorting-class="is-asc">折溢價低至高</option>
 											<option value="最新量高至低" data-sorting-column="LatestVolumeTradingVolume.Value" data-sorting-class="is-desc">最新量高至低</option>
 											<option value="最新量低至高" data-sorting-column="LatestVolumeTradingVolume.Value" data-sorting-class="is-asc">最新量低至高</option>
-											<option value="最新量-10日量高至低" data-sorting-column="TenDayAverageVolume.Value" data-sorting-class="is-desc">最新量-10日量高至低</option>
-											<option value="最新量-10日量低至高" data-sorting-column="TenDayAverageVolume.Value" data-sorting-class="is-asc">最新量-10日量低至高</option>
+											<option value="最新量-10日量高至低" data-sorting-column="LatestVolumeTradingVolumeTenDayAverageVolume.Value" data-sorting-class="is-desc">最新量-10日量高至低</option>
+											<option value="最新量-10日量低至高" data-sorting-column="LatestVolumeTradingVolumeTenDayAverageVolume.Value" data-sorting-class="is-asc">最新量-10日量低至高</option>
 										</select>
 									</div>
 								</div>
@@ -119,7 +119,7 @@
 											<th>
 												<div class="c-table__title">
 													<span>最新量-10日量</span>
-													<a href="#" class="o-sorting" data-sorting-column="TenDayAverageVolume.Value"></a>
+													<a href="#" class="o-sorting" data-sorting-column="LatestVolumeTradingVolumeTenDayAverageVolume.Value"></a>
 												</div>
 											</th>
 											<th>
@@ -176,8 +176,8 @@
 											<option value="折溢價低至高" data-sorting-column="DiscountPremium.Value" data-sorting-class="is-asc">折溢價低至高</option>
 											<option value="最新量高至低" data-sorting-column="LatestVolumeTradingVolume.Value" data-sorting-class="is-desc">最新量高至低</option>
 											<option value="最新量低至高" data-sorting-column="LatestVolumeTradingVolume.Value" data-sorting-class="is-asc">最新量低至高</option>
-											<option value="最新量-10日量高至低" data-sorting-column="TenDayAverageVolume.Value" data-sorting-class="is-desc">最新量-10日量高至低</option>
-											<option value="最新量-10日量低至高" data-sorting-column="TenDayAverageVolume.Value" data-sorting-class="is-asc">最新量-10日量低至高</option>
+											<option value="最新量-10日量高至低" data-sorting-column="LatestVolumeTradingVolumeTenDayAverageVolume.Value" data-sorting-class="is-desc">最新量-10日量高至低</option>
+											<option value="最新量-10日量低至高" data-sorting-column="LatestVolumeTradingVolumeTenDayAverageVolume.Value" data-sorting-class="is-asc">最新量-10日量低至高</option>
 										</select>
 									</div>
 								</div>
@@ -233,7 +233,7 @@
 											<th>
 												<div class="c-table__title">
 													<span>最新量-10日量</span>
-													<a href="#" class="o-sorting" data-sorting-column="TenDayAverageVolume.Value"></a>
+													<a href="#" class="o-sorting" data-sorting-column="LatestVolumeTradingVolumeTenDayAverageVolume.Value"></a>
 												</div>
 											</th>
 											<th>
@@ -339,8 +339,8 @@
 			</td>
 			<td class="c-cardTable__body" data-card-table-width="1/2">
 				<div class="c-cardTable__title" data-length="5">最新量-10日量</div>
-				<% if (TenDayAverageVolume.Key != null) { %>
-				<div class="c-cardTable__content"><%= TenDayAverageVolume.Key %></div>
+				<% if (LatestVolumeTradingVolumeTenDayAverageVolume.Key != null) { %>
+				<div class="c-cardTable__content"><%= LatestVolumeTradingVolumeTenDayAverageVolume.Key %></div>
 				<% } else {%>
 				<span>-</span>
 				<% } %>
