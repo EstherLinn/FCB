@@ -45,5 +45,9 @@ namespace Feature.Wealth.Account.Helpers
         {
             return fcbMemberModel.Risk;
         }
+        public static string GetMemberGender()
+        {
+            return fcbMemberModel.Gender;
+        }
     }
 }

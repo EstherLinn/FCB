@@ -40,8 +40,6 @@
                 type: "post",
                 url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackList")",
                 success: function (msg) {
-                    console.log("TrackList");
-                    console.log(msg);
                     store.set('focus', msg);
                     $('[eh-focus]').trigger('exec');
                 },

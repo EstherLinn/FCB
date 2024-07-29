@@ -192,7 +192,7 @@ namespace Feature.Wealth.Account.Controllers
                                     step = "Step4 第e個網登入 創建會員並登入";
                                     FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
                                         cifMember.CIF_E_MAIL_ADDRESS, cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
-                                        true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,cifMember.CIF_ESTABL_BIRTH_DATE);
+                                        true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE, cifMember.CIF_ESTABL_BIRTH_DATE,cifMember.CIF_CUST_ATTR,cifMember.CIF_SAL_FLAG);
                                     _memberRepository.CreateNewMember(member);
                                     User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
                                     SetCustomPropertyAndLogin(member, user);
@@ -278,7 +278,7 @@ namespace Feature.Wealth.Account.Controllers
                         step = $"Step4 App登入 已取得CIF資料,理財網創建會員並登入";
                         FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
                             cifMember.CIF_E_MAIL_ADDRESS, cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
-                            true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE, cifMember.CIF_ESTABL_BIRTH_DATE);
+                            true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE, cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG);
 
                         _memberRepository.CreateNewMember(member);
                         SetCustomPropertyAndLogin(member, user);
@@ -524,6 +524,27 @@ namespace Feature.Wealth.Account.Controllers
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
             user.Profile.Save();
             Authentication.LoginVirtualUser(user);
+        }
+        [HttpPost]
+        public ActionResult GetCifMemberRisk()
+        {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
+            var canReadOracle = _memberRepository.CheckEDHStatus();
+            if (!canReadOracle)
+            {
+                return new JsonNetResult(new { success = false });
+            }
+            var resp = _memberRepository.UpdateCifRiskToSql(_memberRepository.GetCifRiskFormOracle());
+            if (resp.Item1)
+            {
+                var returnResp = new { success = resp.Item1, risk = resp.Item2.Trim().Split(' ')[0] };
+                RefreshMemberInfo();
+                return new JsonNetResult(returnResp);
+            }
+            return new JsonNetResult(new { success = false });
         }
 
         [HttpPost]
