@@ -24,7 +24,7 @@ namespace Feature.Wealth.Account.Controllers
         {
             var id = Settings.GetSetting("StressTestId");
             FcbMemberModel member = new FcbMemberModel(id, "一銀測試", "fcb@fcb.com", "1", "xxx", "ooo", true, true,
-                QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, id, new DateTime(1990,7,20));
+                QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, id, new DateTime(1990,7,20),"1", "Y");
             User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
             user.Profile.Name = member.MemberName;
             user.Profile.Email = member.MemberEmail;

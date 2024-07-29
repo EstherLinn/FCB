@@ -1,29 +1,69 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Feature.Wealth.Account.Models.OAuth
 {
     public class FcbMemberModel
     {
+        /// <summary>
+        /// 網銀識別碼
+        /// </summary>
         public string WebBankId { get; set; }
+        /// <summary>
+        /// 姓名
+        /// </summary>
         public string MemberName { get; set; }
+        /// <summary>
+        /// Email
+        /// </summary>
         public string MemberEmail { get; set; }
-
+        /// <summary>
+        /// 生日 from cif
+        /// </summary>
         public DateTime? Birthday { get; set; }
+        /// <summary>
+        /// 風險屬性 from cif
+        /// </summary>
         public string Risk { get; set; }
+        /// <summary>
+        /// 性別 from cif
+        /// </summary>
+        public string Gender { get; set; }
+        /// <summary>
+        /// 薪轉戶註記 from cif
+        /// </summary>
+        public string SalFlag { get; set; }
+        /// <summary>
+        /// 理專姓名 from hris
+        /// </summary>
         public string Advisror { get; set; }
+        /// <summary>
+        /// 理專代號 From cif
+        /// </summary>
         public string AdvisrorID { get; set; }
-
+        /// <summary>
+        /// 視訊通知
+        /// </summary>
         public bool VideoInfoOpen { get; set; }
+        /// <summary>
+        /// 到價通知
+        /// </summary>
         public bool ArrivedInfoOpen { get; set; }
-
+        /// <summary>
+        /// 常用功能
+        /// </summary>
         public string CommonFunctions { get; set; }
-
+        /// <summary>
+        /// 漲跌顏色
+        /// </summary>
         public QuoteChangeEunm StockShowColor { get; set; }
-
+        /// <summary>
+        /// 登入平台 Line、FB、WebBank(個網、APP)
+        /// </summary>
         public PlatFormEunm PlatForm { get; set; }
+        /// <summary>
+        /// 平台ID
+        /// </summary>
         public string PlatFormId { get; set; }
 
         public FcbMemberModel()
@@ -44,7 +84,7 @@ namespace Feature.Wealth.Account.Models.OAuth
 
         public FcbMemberModel(string webBankId, string memberName, string memberEmail,
             string risk, string advisror, string advisrorID, bool videoInfoOpen,
-            bool arrivedInfoOpen, QuoteChangeEunm stockShowColor, PlatFormEunm platForm, string platFormId,DateTime? birthday)
+            bool arrivedInfoOpen, QuoteChangeEunm stockShowColor, PlatFormEunm platForm, string platFormId,DateTime? birthday,string gender,string salFlag)
         {
             this.WebBankId = webBankId;
             this.MemberName = memberName;
@@ -58,6 +98,8 @@ namespace Feature.Wealth.Account.Models.OAuth
             this.PlatForm = platForm;
             this.PlatFormId = platFormId;
             this.Birthday = birthday;
+            this.Gender = gender;
+            this.SalFlag = salFlag;
         }
 
     }

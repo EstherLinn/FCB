@@ -197,8 +197,10 @@ namespace Feature.Wealth.Account.Repositories
             var strSql = @$" Declare @@id varchar(33) = @id
                             Select
                             a.CIF_CUST_NAME,
+                            a.CIF_CUST_ATTR,
                             a.CIF_E_MAIL_ADDRESS,
                             a.CIF_ESTABL_BIRTH_DATE,
+                            a.CIF_SAL_FLAG,
                             SUBSTRING(a.CIF_EMP_RISK,1,1) as CIF_EMP_RISK,
                             a.CIF_AO_EMPNO,
                             b.EmployeeName as CIF_AO_EMPName,
@@ -241,9 +243,11 @@ namespace Feature.Wealth.Account.Repositories
             var strSql = @$" Declare @@promotionCode varchar(24) = @promotionCode
                             Select
                             a.CIF_CUST_NAME,
+                            a.CIF_CUST_ATTR,
                             a.CIF_E_MAIL_ADDRESS,
                             a.CIF_ESTABL_BIRTH_DATE,
                             SUBSTRING(a.CIF_EMP_RISK,1,1) as CIF_EMP_RISK,
+                            a.CIF_SAL_FLAG,
                             a.CIF_AO_EMPNO,
                             b.EmployeeName as CIF_AO_EMPName,
                             b.EmployeeCode as HRIS_EmployeeCode,
@@ -290,6 +294,8 @@ namespace Feature.Wealth.Account.Repositories
                             A.*,
                             SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
                             B.CIF_ESTABL_BIRTH_DATE as Birthday,
+                            B.CIF_CUST_ATTR as Gender,
+                            B.CIF_SAL_FLAG,
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
                             FROM [FCB_Member] as A
@@ -331,6 +337,8 @@ namespace Feature.Wealth.Account.Repositories
                             A.*,
                             SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
                             B.CIF_ESTABL_BIRTH_DATE as Birthday,
+                            B.CIF_CUST_ATTR as Gender,
+                            B.CIF_SAL_FLAG,
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
                             FROM [FCB_Member] as A
@@ -362,6 +370,8 @@ namespace Feature.Wealth.Account.Repositories
                             A.*,
                             SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
                             B.CIF_ESTABL_BIRTH_DATE as Birthday,
+                            B.CIF_CUST_ATTR as Gender,
+                            B.CIF_SAL_FLAG,
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
                             FROM [FCB_Member] as A
@@ -730,5 +740,123 @@ namespace Feature.Wealth.Account.Repositories
             }
         }
 
+        private string GetMemberId()
+        {
+            string id = string.Empty;
+            var strSql = @$" Declare @@promotionCode varchar(24) = @promotionCode
+                             SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = @promotionCode";
+
+            var para = new
+            {
+                promotionCode = new DbString() { Value = FcbMemberHelper.GetMemberWebBankId(), IsAnsi = true, Length = 24 },
+            };
+            id = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
+
+            return id;
+        }
+
+        /// <summary>
+        /// 檢查紅綠燈　綠燈:table可以讀取
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckEDHStatus()
+        {
+            string sql = "SELECT Status_code FROM EDHStatus where Status_item='CDC'";
+            bool status = false;
+            Log.Info("Oracle　檢查紅綠燈　table : EDHStatus,connection start");
+            try
+            {
+                using (var connection = (OdbcConnection)DbManager.Cif.DbConnection())
+                {
+                    connection.Open();
+                    Log.Info("Oracle 檢查紅綠燈　table : EDHStatus,command start");
+                    using (OdbcCommand command = new OdbcCommand(sql, connection))
+                    {
+                        Log.Info("Oracle 檢查紅綠燈　table : EDHStatus,command ExecuteScalar start");
+                        object result = command.ExecuteScalar();
+                        if (result != null)
+                        {
+                            string value = result.ToString();
+                            status = value == "G";
+                        }
+                        Log.Info($"Oracle 檢查紅綠燈　table : EDHStatus,command ExecuteScalar end status={status}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Info("Oracle開始 檢查紅綠燈 table : EDHStatus, exception message:" + ex.ToString());
+            }
+            return status;
+        }
+        /// <summary>
+        /// 取得即時cif之風險屬性
+        /// </summary>
+        /// <returns></returns>
+        public string GetCifRiskFormOracle()
+        {
+            string risk = string.Empty;
+            Log.Info("取得CIF即時資料開始: WEA_ODS_CIF_VIEW,OdbcConnection start");
+            try
+            {
+                using (var odbcConn = (OdbcConnection)DbManager.Cif.DbConnection())
+                {
+                    odbcConn.Open();
+                    string query = "SELECT CIF_EMP_RISK FROM WEA_ODS_CIF_VIEW WHERE CIF_ID = ?";
+                    Log.Info("取得CIF即時資料開始: WEA_ODS_CIF_VIEW,OdbcCommand start");
+                    using (OdbcCommand command = new OdbcCommand(query, odbcConn))
+                    {
+                        command.Parameters.AddWithValue("param", GetMemberId());
+                        using (OdbcDataReader reader = command.ExecuteReader())
+                        {
+                            Log.Info("取得CIF即時資料: WEA_ODS_CIF_VIEW,OdbcDataReader start");
+                            while (reader.Read())
+                            {
+                                risk = reader["CIF_EMP_RISK"].ToString();
+                            }
+                            reader.Close();
+                        }
+                        Log.Info($"取得CIF即時資料結束: WEA_ODS_CIF_VIEW,OdbcDataReader end,取得CIF_EMP_RISK = {risk}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Info("取得CIF即時資料 table : WEA_ODS_CIF_VIEW , exception message:" + ex.ToString());
+            }
+            return risk;
+        }
+
+        /// <summary>
+        /// 更新SQL CIF風險屬性欄位
+        /// </summary>
+        /// <param name="getRisk"></param>
+        /// <returns></returns>
+        public (bool,string) UpdateCifRiskToSql(string getRisk)
+        {
+            var success = false;
+            var id = GetMemberId();
+            if (string.IsNullOrEmpty(getRisk) || string.IsNullOrEmpty(id))
+            {
+                return (success,string.Empty);
+            }
+            try
+            {
+                string sqlStr = @$"declare @@id VARCHAR(33) =@id,@@risk varchar(30) = @risk
+                                   update [CIF] set CIF_AO_EMPNO =@risk where [CIF_ID] = @id ";
+                var para = new
+                {
+                    id = new DbString() { Value = id, Length = 33 },
+                    risk = new DbString() { Value = getRisk, Length = 20 }
+                };
+                var affectedRows = DbManager.Custom.ExecuteNonQuery(sqlStr, para, commandType: System.Data.CommandType.Text);
+                success = affectedRows != 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Info("更新CIF即時資料 TO SQL table : CIF , exception message:" + ex.ToString());
+            }
+           return (success, getRisk);
+        }
     }
 }
