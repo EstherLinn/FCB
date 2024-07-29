@@ -2419,7 +2419,7 @@
                 // 缺口 (退休至臨終所需花費 - 法定退休金)
                 let gap = targetAmount - pensionVal;
 
-                return formulajs.ROUNDUP(formulajs.RATE(yearsVal, -monthlyInvestmentVal, -amountPreparedVal, gap) * 12, 4);
+                return formulajs.ROUNDUP(formulajs.RATE(yearsVal, -monthlyInvestmentVal, -amountPreparedVal, gap, 0, 0.1) * 12, 4);
             };
             //#endregion
 

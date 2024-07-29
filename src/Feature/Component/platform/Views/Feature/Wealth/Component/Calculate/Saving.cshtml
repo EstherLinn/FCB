@@ -1,5 +1,7 @@
 ﻿@model Feature.Wealth.Component.Models.Calculate.CalculateModel
 @using Feature.Wealth.Component.Models.Calculate;
+@using Feature.Wealth.Component.Models.FundDetail;
+@using Feature.Wealth.Component.Models.ETF;
 @using Feature.Wealth.Account.Helpers;
 @using Foundation.Wealth.Helper;
 @using Sitecore.Configuration;
@@ -37,7 +39,7 @@
 
                     @if (!string.IsNullOrEmpty(Model.MainContent))
                     {
-                        @Html.Sitecore().Field(Template.Calculate.Fields.MainContent.ToString(), Model.Datasource)
+                        @Html.Sitecore().Field(Feature.Wealth.Component.Models.Calculate.Template.Calculate.Fields.MainContent.ToString(), Model.Datasource)
                     }
                 </div>
             </div>
@@ -356,7 +358,7 @@
 
                         @if (!string.IsNullOrEmpty(Model.SuccessContent))
                         {
-                            @Html.Sitecore().Field(Template.Calculate.Fields.SuccessContent.ToString(), Model.Datasource)
+                            @Html.Sitecore().Field(Feature.Wealth.Component.Models.Calculate.Template.Calculate.Fields.SuccessContent.ToString(), Model.Datasource)
                         }
 
                     </div>
@@ -372,7 +374,7 @@
 
                         @if (!string.IsNullOrEmpty(Model.UnsuccessfulContent))
                         {
-                            @Html.Sitecore().Field(Template.Calculate.Fields.UnsuccessfulContent.ToString(), Model.Datasource)
+                            @Html.Sitecore().Field(Feature.Wealth.Component.Models.Calculate.Template.Calculate.Fields.UnsuccessfulContent.ToString(), Model.Datasource)
                         }
                     </div>
                 </div>
@@ -570,7 +572,7 @@
                 </div>
 
                 <!-- 推薦國外股票 -->
-                <div class="c-section">
+                <div class="c-section u-hidden">
                     <div class="c-section__title">推薦國外股票</div>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--minor recommendedStock">
@@ -753,7 +755,7 @@
                 </div>
 
                 <!-- 推薦國外股票 -->
-                <div class="c-section">
+                <div class="c-section u-hidden">
                     <div class="c-section__title">推薦國外股票</div>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--minor recommendedStock">
@@ -937,7 +939,7 @@
                 </div>
 
                 <!-- 推薦國外股票 -->
-                <div class="c-section">
+                <div class="c-section u-hidden">
                     <div class="c-section__title">推薦國外股票</div>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--minor recommendedStock">
@@ -1121,7 +1123,7 @@
                 </div>
 
                 <!-- 推薦國外股票 -->
-                <div class="c-section">
+                <div class="c-section u-hidden">
                     <div class="c-section__title">推薦國外股票</div>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--minor recommendedStock">
@@ -1307,7 +1309,7 @@
                 </div>
 
                 <!-- 推薦國外股票 -->
-                <div class="c-section">
+                <div class="c-section u-hidden">
                     <div class="c-section__title">推薦國外股票</div>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--minor recommendedStock">
@@ -1349,8 +1351,8 @@
                                 @if (!string.IsNullOrEmpty(Model.RemoteConsultationButtonText) || !string.IsNullOrEmpty(Model.RemoteConsultationButtonLink))
                                 {
                                     <div class="c-feature__actions">
-                                        @Html.Sitecore().BeginField(Template.Calculate.Fields.RemoteConsultationButtonLink.ToString(), Model.Datasource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--flat o-btn--sm" })
-                                        @Html.Sitecore().Field(Template.Calculate.Fields.RemoteConsultationButtonText.ToString(), Model.Datasource)
+                                        @Html.Sitecore().BeginField(Feature.Wealth.Component.Models.Calculate.Template.Calculate.Fields.RemoteConsultationButtonLink.ToString(), Model.Datasource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--flat o-btn--sm" })
+                                        @Html.Sitecore().Field(Feature.Wealth.Component.Models.Calculate.Template.Calculate.Fields.RemoteConsultationButtonText.ToString(), Model.Datasource)
                                         @Html.Sitecore().EndField()
                                     </div>
                                 }
@@ -1640,7 +1642,7 @@
             //#region 開始試算按鈕綁定事件
             $("#Calculate").click(function () {
                 if (clickCheck()) {
-                    loading();
+                    window.loading('show');
 
                     // 隱藏試算 HTML
                     $("#CalculateDescription").addClass("u-hidden");
@@ -1690,7 +1692,7 @@
                         renderResultTab1(tab1Results, Target, Years, Prepared, Monthly, ExpectedRoi);
                         renderResultTab2(tab2Results, Target, Years, Prepared, ExpectedRoi);
                         renderResultTab3(tab3Results, Target, Years, Prepared, Monthly);
-                        renderResultTab4(tab4Results, Target, Prepared, Monthly, ExpectedRoi);
+                        renderResultTab4(tab4Results, Target, Years, Prepared, Monthly, ExpectedRoi);
 
                         currentYear = new Date().getFullYear() + tab4Results - 1;
                     }
@@ -1723,8 +1725,6 @@
                     renderChartsAssets(chartsAssets);
 
                     // 顯示推薦商品
-
-                    renderRecommendedETFs(3);
                     renderRecommendedStocks(3);
 
                     // 顯示推薦商品走勢圖
@@ -1780,7 +1780,7 @@
                         renderResultTab1(tab1Results, Target, Years, Prepared, Monthly, ExpectedRoi);
                         renderResultTab2(tab2Results, Target, Years, Prepared, ExpectedRoi);
                         renderResultTab3(tab3Results, Target, Years, Prepared, Monthly);
-                        renderResultTab4(tab4Results, Target, Prepared, Monthly, ExpectedRoi);
+                        renderResultTab4(tab4Results, Target, Years, Prepared, Monthly, ExpectedRoi);
 
                         currentYear = new Date().getFullYear() + tab4Results - 1;
 
@@ -2063,7 +2063,7 @@
                 // 移除所有非 'id' 属性
                 $div.removeAttr(attributes.join(' '));
             }
-             //#endregion
+            //#endregion
 
             //#region 您的規劃-試算方法
             function planningCompute(Years, Prepared, Monthly, ExpectedRoi) {
@@ -2116,7 +2116,7 @@
                 // 每月投入金額
                 let MonthlyVal = parseFloat(Monthly) * 10000;
 
-                return formulajs.ROUNDUP(formulajs.RATE(YearsVal, -MonthlyVal, -PreparedVal, TargetVal) * 12, 4);
+                return formulajs.ROUNDUP(formulajs.RATE(YearsVal, -MonthlyVal, -PreparedVal, TargetVal, 0, 0.1) * 12, 4);
             };
             //#endregion
 
@@ -2148,7 +2148,7 @@
                 chartsRewardsCategories.length = 0;
                 chartsAssets.length = 0;
             }
-             //#endregion
+            //#endregion
 
             //#region 顯示試算結果 - 描述區塊
             function renderResultDescription(result, Target, Years) {
@@ -2260,14 +2260,19 @@
                 });
 
                 if (SC_DATA.Risk !== undefined) {
+                    let tab = "tab1";
                     let event = $('[data-tab-panel-id="tab-1"] .recommendedFunds .swiper-wrapper');
                     let eventString = '[data-tab-panel-id="tab-1"] .recommendedFunds';
-                    let tab = "tab1";
+                    getFundData(tab, event, eventString, Target, Years, Prepared, Monthly, ExpectedRoi);
 
-                    getFundData(tab, event, eventString);
+                    let eventEtf = $('[data-tab-panel-id="tab-1"] .recommendedETF .swiper-wrapper');
+                    let eventStringEtf = '[data-tab-panel-id="tab-1"] .recommendedETF';
+                    getEtfData(tab, eventEtf, eventStringEtf, Target, Years, Prepared, Monthly, ExpectedRoi);
                 } else {
                     renderRecommendedFunds(9);
+                    renderRecommendedETFs(3);
                 }
+
             }
             //#endregion
 
@@ -2335,6 +2340,18 @@
                     bond: assetsData.bond.number,
                     stock: assetsData.stock.number
                 });
+
+                if (SC_DATA.Risk !== undefined) {
+                    let tab = "tab2";
+
+                    let event = $('[data-tab-panel-id="tab-2"] .recommendedFunds .swiper-wrapper');
+                    let eventString = '[data-tab-panel-id="tab-2"] .recommendedFunds';
+                    getFundData(tab, event, eventString, Target, Years, Prepared, Monthly, ExpectedRoi);
+
+                    let eventEtf = $('[data-tab-panel-id="tab-2"] .recommendedETF .swiper-wrapper');
+                    let eventStringEtf = '[data-tab-panel-id="tab-2"] .recommendedETF';
+                    getEtfData(tab, eventEtf, eventStringEtf, Target, Years, Prepared, Monthly, ExpectedRoi);
+                }
             }
             //#endregion
 
@@ -2397,11 +2414,23 @@
                     bond: assetsData.bond.number,
                     stock: assetsData.stock.number
                 });
+
+                if (SC_DATA.Risk !== undefined) {
+                    let tab = "tab3";
+
+                    let event = $('[data-tab-panel-id="tab-3"] .recommendedFunds .swiper-wrapper');
+                    let eventString = '[data-tab-panel-id="tab-3"] .recommendedFunds';
+                    getFundData(tab, event, eventString, Target, Years, Prepared, Monthly, ExpectedRoi);
+
+                    let eventEtf = $('[data-tab-panel-id="tab-3"] .recommendedETF .swiper-wrapper');
+                    let eventStringEtf = '[data-tab-panel-id="tab-3"] .recommendedETF';
+                    getEtfData(tab, eventEtf, eventStringEtf, Target, Years, Prepared, Monthly, ExpectedRoi);
+                }
             }
             //#endregion
 
             //#region 顯示試算結果 - tab4區塊
-            function renderResultTab4(result, Target, Prepared, Monthly, ExpectedRoi) {
+            function renderResultTab4(result, Target, Years, Prepared, Monthly, ExpectedRoi) {
                 let currentYear = new Date().getFullYear() + result - 1;
                 let total = planningCompute(result, Prepared, Monthly, ExpectedRoi);
                 let totalFormatVal = total.toLocaleString();
@@ -2458,6 +2487,18 @@
                     bond: assetsData.bond.number,
                     stock: assetsData.stock.number
                 });
+
+                if (SC_DATA.Risk !== undefined) {
+                    let tab = "tab4";
+
+                    let event = $('[data-tab-panel-id="tab-4"] .recommendedFunds .swiper-wrapper');
+                    let eventString = '[data-tab-panel-id="tab-4"] .recommendedFunds';
+                    getFundData(tab, event, eventString, Target, Years, Prepared, Monthly, ExpectedRoi);
+
+                    let eventEtf = $('[data-tab-panel-id="tab-4"] .recommendedETF .swiper-wrapper');
+                    let eventStringEtf = '[data-tab-panel-id="tab-4"] .recommendedETF';
+                    getEtfData(tab, eventEtf, eventStringEtf, Target, Years, Prepared, Monthly, ExpectedRoi);
+                }
             }
             //#endregion
 
@@ -2519,6 +2560,18 @@
                     bond: assetsData.bond.number,
                     stock: assetsData.stock.number
                 });
+
+                if (SC_DATA.Risk !== undefined) {
+                    let tab = "tab5";
+
+                    let event = $('[data-tab-panel-id="tab-5"] .recommendedFunds .swiper-wrapper');
+                    let eventString = '[data-tab-panel-id="tab-5"] .recommendedFunds';
+                    getFundData(tab, event, eventString, Target, Years, Prepared, Monthly, ExpectedRoi);
+
+                    let eventEtf = $('[data-tab-panel-id="tab-5"] .recommendedETF .swiper-wrapper');
+                    let eventStringEtf = '[data-tab-panel-id="tab-5"] .recommendedETF';
+                    getEtfData(tab, eventEtf, eventStringEtf, Target, Years, Prepared, Monthly, ExpectedRoi);
+                }
             }
             //#endregion
 
@@ -2850,9 +2903,9 @@
                                         bg = `background: url(${point.color.pattern.image}) repeat left top / 6px;`;
                                     }
                                     tooltip += `<div style="display: flex; align-items: center; gap: 4px; margin: 8px 0;">
-                                        <span style="display: block; width: 12px; height: 12px; border-radius: 50%; ${bg}"></span>
-                                        <span>${point.series.name}：${Highcharts.numberFormat(point.y, 0)}</span>
-                                    </div>`;
+                                                    <span style="display: block; width: 12px; height: 12px; border-radius: 50%; ${bg}"></span>
+                                                    <span>${point.series.name}：${Highcharts.numberFormat(point.y, 0)}</span>
+                                                </div>`;
                                 });
                                 const index = this.points.findIndex(x => x.series.userOptions.name === '缺口');
                                 if (index > -1) {
@@ -3059,18 +3112,18 @@
             //#region 判斷登入遮罩顯示
             function renderNotLogin() {
                 const NotLoginHTML = `
-                            <div class="c-calcLocker">
-                                <div class="l-wrap">
-                                    <div class="c-calcLocker__icon">
-                                                    <img src="${LockImg}" alt="">
-                                    </div>
-                                    <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
-                                    <div class="c-calcLocker__actions">
-                                        <div class="c-calcLocker__btn"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--lg" data-popup="true">立即登入</a></div>
-                                    </div>
-                                </div>
-                                </div>
-                        `;
+                                        <div class="c-calcLocker">
+                                            <div class="l-wrap">
+                                                <div class="c-calcLocker__icon">
+                                                                <img src="${LockImg}" alt="">
+                                                </div>
+                                                <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
+                                                <div class="c-calcLocker__actions">
+                                                    <div class="c-calcLocker__btn"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--lg" data-popup="true">立即登入</a></div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                    `;
                 $('.Locker').append(NotLoginHTML);
                 $('.Locker').addClass("c-section--locker");
                 $('[data-popup="true"]').magnificPopup({
@@ -3083,19 +3136,19 @@
             //#region 判斷登入平台遮罩顯示
             function renderTPPLogin() {
                 const TPPLoginHTML = `
-                                    <div class="c-calcLocker">
-                                        <div class="l-wrap">
-                                            <div class="c-calcLocker__icon">
-                                                            <img src="${LockImg}" alt="">
-                                            </div>
-                                            <div class="c-calcLocker__desc t2 t-bold">綁定一銀帳戶查看專屬推薦</div>
-                                            <div class="c-calcLocker__actions">
-                                                <div class="c-calcLocker__btn"><a href="https://ibank.firstbank.com.tw/NetBank/DigAMA/LandingPage/index.html" target="_blank" class="o-btn o-btn--secondary o-btn--lg" rel="noreferrer noopener">立即開戶</a></div>
-                                                            <div class="c-calcLocker__btn"><a href="#" target="_self" class="o-btn o-btn--primary o-btn--lg" data-eh="fcblogin-click">立即綁定</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                            `;
+                                                <div class="c-calcLocker">
+                                                    <div class="l-wrap">
+                                                        <div class="c-calcLocker__icon">
+                                                                        <img src="${LockImg}" alt="">
+                                                        </div>
+                                                        <div class="c-calcLocker__desc t2 t-bold">綁定一銀帳戶查看專屬推薦</div>
+                                                        <div class="c-calcLocker__actions">
+                                                            <div class="c-calcLocker__btn"><a href="https://ibank.firstbank.com.tw/NetBank/DigAMA/LandingPage/index.html" target="_blank" class="o-btn o-btn--secondary o-btn--lg" rel="noreferrer noopener">立即開戶</a></div>
+                                                                        <div class="c-calcLocker__btn"><a href="#" target="_self" class="o-btn o-btn--primary o-btn--lg" data-eh="fcblogin-click">立即綁定</a></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        `;
                 $('.Locker').append(TPPLoginHTML);
                 $('.Locker').addClass("c-section--locker");
             }
@@ -3104,18 +3157,18 @@
             //#region 判斷有無風險屬性遮罩顯示
             function renderNotRisk() {
                 const NotRiskHTML = `
-                                            <div class="c-calcLocker">
-                                        <div class="l-wrap">
-                                            <div class="c-calcLocker__icon">
-                                                            <img src="${LockImg}" alt="">
-                                            </div>
-                                            <div class="c-calcLocker__desc t2 t-bold">進行風險屬性評估後即可獲得專屬推薦</div>
-                                            <div class="c-calcLocker__actions">
-                                                                <div class="c-calcLocker__btn"><a id="GOKYC2" href="#popupRisk" class="o-btn o-btn--primary o-btn--lg" data-popup="true">風險屬性評估</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
+                                                        <div class="c-calcLocker">
+                                                    <div class="l-wrap">
+                                                        <div class="c-calcLocker__icon">
+                                                                        <img src="${LockImg}" alt="">
+                                                        </div>
+                                                        <div class="c-calcLocker__desc t2 t-bold">進行風險屬性評估後即可獲得專屬推薦</div>
+                                                        <div class="c-calcLocker__actions">
+                                                                            <div class="c-calcLocker__btn"><a id="GOKYC2" href="#popupRisk" class="o-btn o-btn--primary o-btn--lg" data-popup="true">風險屬性評估</a></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
                 $('.Locker').append(NotRiskHTML);
                 $('.Locker').addClass("c-section--locker");
             }
@@ -3169,10 +3222,31 @@
             });
             //#endregion
 
-            function getFundData(tab, event, eventString) {
+            //#region 取得基金資料
+            function getFundData(tab, event, eventString, Target, Years, Prepared, Monthly, ExpectedRoi) {
+                var resultTab3Roi = tab3Compute(Target, Years, Prepared, Monthly);
+                var returnValue;
+                if (tab == 'tab1') {
+                    returnValue = '';
+                } else if (tab == 'tab3') {
+                    returnValue = resultTab3Roi * 100;
+                } else if (tab == 'tab5') {
+                    if (SC_DATA.Risk == "1") {
+                        defaultRiskAttributes = parseFloat(2);
+                    } else if (SC_DATA.Risk == "2") {
+                        defaultRiskAttributes = parseFloat(5);
+                    } else if (SC_DATA.Risk == "3") {
+                        defaultRiskAttributes = parseFloat(7);
+                    }
+                    returnValue = defaultRiskAttributes + parseFloat(ExpectedRoi);
+
+                } else {
+                    returnValue = ExpectedRoi;
+                }
                 $.ajax({
                     url: '@Url.Action("GetFundData", "Calculate")',
                     method: 'POST',
+                    data: { ReturnValue: returnValue },
                     success: function (data) {
 
                         console.log(data);
@@ -3185,50 +3259,101 @@
                     }
                 });
             }
+            //#endregion
+
+            //#region 取得ETF資料
+            function getEtfData(tab, eventEtf, eventStringEtf, Target, Years, Prepared, Monthly, ExpectedRoi) {
+                var riskLevel;
+                var resultTab3Roi = tab3Compute(Target, Years, Prepared, Monthly);
+                var returnValue;
+
+                if (tab === 'tab1') {
+                    returnValue = '';
+                } else if (tab === 'tab3') {
+                    returnValue = resultTab3Roi * 100;
+                } else if (tab === 'tab5') {
+                    if (SC_DATA.Risk === "1") {
+                        defaultRiskAttributes = parseFloat(2);
+                    } else if (SC_DATA.Risk === "2") {
+                        defaultRiskAttributes = parseFloat(5);
+                    } else if (SC_DATA.Risk === "3") {
+                        defaultRiskAttributes = parseFloat(7);
+                    }
+
+                    returnValue = defaultRiskAttributes + parseFloat(ExpectedRoi);
+                } else {
+                    returnValue = ExpectedRoi;
+                }
+                if (SC_DATA.Risk == '1') {
+                    riskLevel = "'RR1','RR2'";
+                } else if (SC_DATA.Risk == '2') {
+                    riskLevel = "'RR1','RR2','RR3','RR4'";
+                } else if (SC_DATA.Risk == '3') {
+                    riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
+                }
+                $.ajax({
+                    url: '@Url.Action("GetEtfData", "Calculate")',
+                    method: 'POST',
+                    data: {
+                        ReturnValue: returnValue,
+                        RiskLevel: riskLevel
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        RealrenderRecommendedETFs(tab, eventEtf, data);
+                        ETFinitializeSwiper(eventStringEtf);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching fund data:', error);
+                    }
+                });
+            }
+            //#endregion
 
             //#region  預設推薦基金商品顯示
             function renderRecommendedFunds(count) {
                 for (let i = 1; i <= count; i++) {
                     const fundHTML = `
-                        <div class="swiper-slide c-swiper__slide">
-                            <div class="c-box c-box--goods">
-                                <div class="c-box__main">
-                                    <div class="c-cardFund">
-                                        <a href="#" class="c-cardFund__name u-ellipsis-2">
-                                            推薦基金 ${i}
-                                        </a>
-                                        <div class="c-cardFund__trend">
-                                            <div class="c-cardFund__rate">
-                                                <span class="t-small">
-                                                    <span class="t-fall">月報酬率</span>
-                                                    <span class="o-fall o-fall--sm">0%</span>
-                                                </span>
+                                    <div class="swiper-slide c-swiper__slide">
+                                        <div class="c-box c-box--goods">
+                                            <div class="c-box__main">
+                                                <div class="c-cardFund">
+                                                    <a href="#" class="c-cardFund__name u-ellipsis-2">
+                                                        推薦基金 ${i}
+                                                    </a>
+                                                    <div class="c-cardFund__trend">
+                                                        <div class="c-cardFund__rate">
+                                                            <span class="t-small">
+                                                                <span class="t-fall">月報酬率</span>
+                                                                <span class="o-fall o-fall--sm">0%</span>
+                                                            </span>
+                                                        </div>
+                                                        <div class="c-cardFund__charts">
+                                                            <div class="o-charts o-charts--fall" data-chart="mini"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="c-cardFund__charts">
-                                                <div class="o-charts o-charts--fall" data-chart="mini"></div>
+                                            <div class="c-box__actions">
+                                                <ul class="l-collect l-collect--divider">
+                                                    <li class="l-collect__item">
+                                                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                                    </li>
+                                                    <li class="l-collect__item">
+                                                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                                    </li>
+                                                    <li class="l-collect__item l-collect__item--btn">
+                                                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="c-box__actions">
-                                    <ul class="l-collect l-collect--divider">
-                                        <li class="l-collect__item">
-                                            <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
-                                        </li>
-                                        <li class="l-collect__item">
-                                            <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
-                                        </li>
-                                        <li class="l-collect__item l-collect__item--btn">
-                                            <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                                `;
                     $('.recommendedFunds .swiper-wrapper').append(fundHTML);
                 }
-                FundinitializeSwiper();
+                let eventString = '.recommendedFunds';
+                FundinitializeSwiper(eventString);
             }
             //#endregion
 
@@ -3236,8 +3361,8 @@
             function RealrenderRecommendedFunds(tab, event, fundData) {
                 const $swiperWrapper = event;
                 $swiperWrapper.empty();
-
                 let fundHTML = '';
+                let SubscribeButtonHtml = '';
                 let style1, style2, style3;
 
                 fundData.forEach((fund, index) => {
@@ -3252,92 +3377,177 @@
                         style3 = "o-charts--fall";
                     }
 
+                    if (fund.SubscribeButtonHtml != null && fund.SubscribeButtonHtml != "") {
+                        SubscribeButtonHtml = `<li class="l-collect__item l-collect__item--btn">${fund.SubscribeButtonHtml}</li>`;
+                    }
+
                     fundHTML += `
-                    <div class="swiper-slide c-swiper__slide">
-                        <div class="c-box c-box--goods">
-                            <div class="c-box__main">
-                                <div class="c-cardFund">
-                                    <a href="#" class="c-cardFund__name u-ellipsis-2">
-                                                ${fund.ProductCode}${fund.FundName}
-                                    </a>
-                                    <div class="c-cardFund__trend">
-                                        <div class="c-cardFund__rate">
-                                            <span class="t-small">
-                                                <span class="${style1}">月報酬率</span>
-                                                       <span class="${style2}">${fund.DisplayOneMonthReturnOriginalCurrency}</span>
-                                            </span>
+                                <div class="swiper-slide c-swiper__slide">
+                                    <div class="c-box c-box--goods">
+                                        <div class="c-box__main">
+                                            <div class="c-cardFund">
+                                                            <a href="${fund.FundDetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                                            ${fund.ProductCode} ${fund.FundName}
+                                                </a>
+                                                <div class="c-cardFund__trend">
+                                                    <div class="c-cardFund__rate">
+                                                        <span class="t-small">
+                                                            <span class="${style1}">月報酬率</span>
+                                                                   <span class="${style2}">${fund.DisplayOneMonthReturnOriginalCurrency}%</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="c-cardFund__charts">
+                                                        <div class="o-charts ${style3}" data-chart="${tab}miniFund"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="c-cardFund__charts">
-                                            <div class="o-charts ${style3}" data-chart="${tab}mini"></div>
+                                        <div class="c-box__actions">
+                                            <ul class="l-collect l-collect--divider">
+
+                                                <li class="l-collect__item">
+                                                    ${fund.FocusButtonHtml}
+                                                </li>
+                                                <li class="l-collect__item">
+                                                    ${fund.CompareButtonHtml}
+                                                </li>
+                                                ${SubscribeButtonHtml}
+                                            </ul>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="c-box__actions">
-                                <ul class="l-collect l-collect--divider">
-                                    <li class="l-collect__item">
-                                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
-                                    </li>
-                                    <li class="l-collect__item">
-                                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
-                                    </li>
-                                    <li class="l-collect__item l-collect__item--btn">
-                                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div> `;
+                                </div> `;
                 });
                 $swiperWrapper.append(fundHTML);
+
+                // 綁定 關注/比較 icon 的互動功能
+                $swiperWrapper.find('[data-ia]').interactive();
+                // 綁定 like icon 的彈跳登入畫面
+                $swiperWrapper.find('[data-popup]').magnificPopup();
+                $swiperWrapper.find('[eh-compare]').trigger('exec');
+                $swiperWrapper.find('[eh-focus]').trigger('exec');
+                $swiperWrapper.find('[eh-subscription-type]').trigger('exec');
 
                 RealrenderFundChart(tab, fundData);
             }
             //#endregion
 
-            //#region  推薦ETF商品顯示
+            //#region  預設推薦ETF商品顯示
             function renderRecommendedETFs(count) {
                 for (let i = 1; i <= count; i++) {
                     const etfHTML = `
-                        <div class="swiper-slide c-swiper__slide">
-                            <div class="c-box c-box--goods">
-                                <div class="c-box__main">
-                                    <div class="c-cardFund">
-                                        <a href="#" class="c-cardFund__name u-ellipsis-2">
-                                                推薦ETF ${i}
-                                        </a>
-                                        <div class="c-cardFund__trend">
-                                            <div class="c-cardFund__rate">
-                                                <span class="t-small">
-                                                    <span class="t-rise">月報酬率</span>
-                                                    <span class="o-rise o-rise--sm">0%</span>
-                                                </span>
+                                    <div class="swiper-slide c-swiper__slide">
+                                        <div class="c-box c-box--goods">
+                                            <div class="c-box__main">
+                                                <div class="c-cardFund">
+                                                    <a href="#" class="c-cardFund__name u-ellipsis-2">
+                                                            推薦ETF ${i}
+                                                    </a>
+                                                    <div class="c-cardFund__trend">
+                                                        <div class="c-cardFund__rate">
+                                                            <span class="t-small">
+                                                                <span class="t-rise">月報酬率</span>
+                                                                <span class="o-rise o-rise--sm">0%</span>
+                                                            </span>
+                                                        </div>
+                                                        <div class="c-cardFund__charts">
+                                                            <div class="o-charts o-charts--rise" data-chart="mini"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="c-cardFund__charts">
-                                                <div class="o-charts o-charts--rise" data-chart="mini"></div>
+                                            <div class="c-box__actions">
+                                                <ul class="l-collect l-collect--divider">
+                                                    <li class="l-collect__item">
+                                                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                                    </li>
+                                                    <li class="l-collect__item">
+                                                        <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                                    </li>
+                                                    <li class="l-collect__item l-collect__item--btn">
+                                                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="c-box__actions">
-                                    <ul class="l-collect l-collect--divider">
-                                        <li class="l-collect__item">
-                                            <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
-                                        </li>
-                                        <li class="l-collect__item">
-                                            <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
-                                        </li>
-                                        <li class="l-collect__item l-collect__item--btn">
-                                            <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                                `;
                     $('.recommendedETF .swiper-wrapper').append(etfHTML);
                 }
-                ETFinitializeSwiper();
+                let eventStringEtf = '.recommendedETF';
+                ETFinitializeSwiper(eventStringEtf);
+            }
+            //#endregion
+
+            //#region  真實推薦ETF商品顯示
+            function RealrenderRecommendedETFs(tab, eventEtf, EtfData) {
+                const $swiperWrapper = eventEtf;
+                $swiperWrapper.empty();
+                let EtfHTML = '';
+                let SubscribeButtonHtml = '';
+                let style1, style2, style3;
+
+                EtfData.forEach((Etf, index) => {
+                    if (Etf.MonthlyReturnNetValueOriginalCurrency > 0) {
+                        style1 = "t-rise";
+                        style2 = "o-rise o-rise--sm";
+                        style3 = "o-charts--rise";
+                    }
+                    else {
+                        style1 = "t-fall";
+                        style2 = "o-fall o-fall--sm";
+                        style3 = "o-charts--fall";
+                    }
+
+                    if (Etf.SubscribeButtonHtml != null && Etf.SubscribeButtonHtml != "") {
+                        SubscribeButtonHtml = `<li class="l-collect__item l-collect__item--btn">${Etf.SubscribeButtonHtml}</li>`;
+                    }
+
+                    EtfHTML += `
+                                    <div class="swiper-slide c-swiper__slide">
+                                        <div class="c-box c-box--goods">
+                                            <div class="c-box__main">
+                                                <div class="c-cardFund">
+                                                                        <a href="${Etf.ETFDetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                                                    ${Etf.ProductCode} ${Etf.ETFName}
+                                                    </a>
+                                                    <div class="c-cardFund__trend">
+                                                        <div class="c-cardFund__rate">
+                                                            <span class="t-small">
+                                                                <span class="${style1}">月報酬率</span>
+                                                                               <span class="${style2}">${Etf.DisplayMonthlyReturnNetValueOriginalCurrency}%</span>
+                                                            </span>
+                                                        </div>
+                                                        <div class="c-cardFund__charts">
+                                                            <div class="o-charts ${style3}" data-chart="${tab}miniETF"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="c-box__actions">
+                                                <ul class="l-collect l-collect--divider">
+                                                    <li class="l-collect__item">
+                                                        ${Etf.FocusButtonHtml}
+                                                    </li>
+                                                    <li class="l-collect__item">
+                                                        ${Etf.CompareButtonHtml}
+                                                    </li>
+                                                    ${SubscribeButtonHtml}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div> `;
+                });
+                $swiperWrapper.append(EtfHTML);
+
+                // 綁定 關注/比較 icon 的互動功能
+                $swiperWrapper.find('[data-ia]').interactive();
+                // 綁定 like icon 的彈跳登入畫面
+                $swiperWrapper.find('[data-popup]').magnificPopup();
+                $swiperWrapper.find('[eh-compare]').trigger('exec');
+                $swiperWrapper.find('[eh-focus]').trigger('exec');
+                $swiperWrapper.find('[eh-subscription-type]').trigger('exec');
+
+                RealrenderEtfChart(tab, EtfData);
             }
             //#endregion
 
@@ -3345,39 +3555,39 @@
             function renderRecommendedStocks(count) {
                 for (let i = 1; i <= count; i++) {
                     const stockHTML = `
-                        <div class="swiper-slide c-swiper__slide">
-                            <div class="c-box c-box--goods">
-                                <div class="c-box__main">
-                                    <div class="c-cardFund">
-                                        <a href="#" class="c-cardFund__name u-ellipsis-2">
-                                            推薦國外股票 ${i}
-                                        </a>
-                                        <div class="c-cardFund__trend">
-                                            <div class="c-cardFund__rate">
-                                                <span class="t-small">
-                                                    <span class="t-rise">月報酬率</span>
-                                                    <span class="o-rise o-rise--sm">0%</span>
-                                                </span>
+                                    <div class="swiper-slide c-swiper__slide">
+                                        <div class="c-box c-box--goods">
+                                            <div class="c-box__main">
+                                                <div class="c-cardFund">
+                                                    <a href="#" class="c-cardFund__name u-ellipsis-2">
+                                                        推薦國外股票 ${i}
+                                                    </a>
+                                                    <div class="c-cardFund__trend">
+                                                        <div class="c-cardFund__rate">
+                                                            <span class="t-small">
+                                                                <span class="t-rise">月報酬率</span>
+                                                                <span class="o-rise o-rise--sm">0%</span>
+                                                            </span>
+                                                        </div>
+                                                        <div class="c-cardFund__charts">
+                                                            <div class="o-charts o-charts--rise" data-chart="mini"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="c-cardFund__charts">
-                                                <div class="o-charts o-charts--rise" data-chart="mini"></div>
+                                            <div class="c-box__actions">
+                                                <ul class="l-collect l-collect--divider">
+                                                    <li class="l-collect__item">
+                                                        <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                                    </li>
+                                                    <li class="l-collect__item l-collect__item--btn">
+                                                        <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="c-box__actions">
-                                    <ul class="l-collect l-collect--divider">
-                                        <li class="l-collect__item">
-                                            <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
-                                        </li>
-                                        <li class="l-collect__item l-collect__item--btn">
-                                            <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                                `;
                     $('.recommendedStock .swiper-wrapper').append(stockHTML);
                 }
                 StockinitializeSwiper();
@@ -3422,8 +3632,8 @@
             //#endregion
 
             //#region 所有推薦ETF初始化設定
-            function ETFinitializeSwiper() {
-                window.mySwiper = new Swiper('.recommendedETF', {
+            function ETFinitializeSwiper(eventStringEtf) {
+                window.mySwiper = new Swiper(eventStringEtf, {
                     slidesPerView: 1,
                     spaceBetween: 20,
                     lazy: true,
@@ -3522,7 +3732,7 @@
 
             //#region 真實推薦基金走勢圖顯示
             function RealrenderFundChart(tab, data) {
-                $(`[data-chart="${tab}mini"]`).each(function (i, el) {
+                $(`[data-chart="${tab}miniFund"]`).each(function (i, el) {
                     // 使用 data 数组中的相应数据来渲染每个图表
                     $(el).highcharts({
                         chart: {
@@ -3562,12 +3772,54 @@
             }
             //#endregion
 
+            //#region 真實推薦ETF走勢圖顯示
+            function RealrenderEtfChart(tab, data) {
+                $(`[data-chart="${tab}miniETF"]`).each(function (i, el) {
+                    // 使用 data 数组中的相应数据来渲染每个图表
+                    $(el).highcharts({
+                        chart: {
+                            type: 'area',
+                            margin: [0, 0, 0, 0],
+                            backgroundColor: 'transparent'
+                        },
+                        title: {
+                            text: undefined
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            series: {
+                                enableMouseTracking: false,
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        xAxis: {
+                            visible: false
+                        },
+                        yAxis: {
+                            visible: false
+                        },
+                        series: [{
+                            fillOpacity: 0.06,
+                            data: data[i].SysjustNavEtfData
+                        }]
+                    });
+                });
+            }
+            //#endregion
+
             //#region loading方法
             function loading() {
                 window.loading('show');
                 setTimeout(() => {
                     window.loading('hide');
-                }, 300);
+                }, 1000);
             }
             //#endregion
 

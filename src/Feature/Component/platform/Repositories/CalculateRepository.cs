@@ -1,5 +1,7 @@
 ﻿using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Models.Calculate;
+using Feature.Wealth.Component.Models.FundDetail;
+using Feature.Wealth.Component.Models.ETF;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
 using log4net;
@@ -13,6 +15,10 @@ using System.Linq;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Templates = Feature.Wealth.Component.Models.Calculate.Template;
+using Feature.Wealth.Component.Models.FundReturn;
+using Sitecore.Data;
+using Foundation.Wealth.Helper;
+using Feature.Wealth.Component.Models.Invest;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -164,34 +170,127 @@ namespace Feature.Wealth.Component.Repositories
         /// 取得基金資料
         /// </summary>
         /// <returns>基金資料</returns>
-        public List<FundModel> GetFundData()
+        public List<FundModel> GetFundData(string ReturnValue)
         {
-            string top9Sql = @$"
+            var FundUrl = FundRelatedSettingModel.GetFundDetailsUrl();
+
+            string FundDataSql;
+            if (string.IsNullOrEmpty(ReturnValue))
+            {
+                FundDataSql = @$"
                  SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency]
                  FROM [dbo].[vw_BasicFund]
-                 ORDER BY OneYearReturnOriginalCurrency DESC, ProductCode";
+                 ORDER BY [OneYearReturnOriginalCurrency] DESC, ProductCode";
+            }
+            else
+            {
+                FundDataSql = @$"
+                 SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency]
+                 FROM [dbo].[vw_BasicFund]
+                 WHERE [OneYearReturnOriginalCurrency] >= '{ReturnValue}'
+                 ORDER BY [OneYearReturnOriginalCurrency] DESC, ProductCode";
+            }
+            var FundData = DbManager.Custom.ExecuteIList<FundModel>(FundDataSql, null, CommandType.Text);
 
-            var top9Results = DbManager.Custom.ExecuteIList<FundModel>(top9Sql, null, CommandType.Text);
-
-            if (top9Results == null || !top9Results.Any())
+            if (FundData == null || !FundData.Any())
             {
                 return new List<FundModel>();
             }
 
-            foreach (var item in top9Results)
+            foreach (var item in FundData)
             {
                 item.DisplayOneMonthReturnOriginalCurrency = item.OneMonthReturnOriginalCurrency.FormatDecimalNumber(2);
+
+                //「是否上架」= Y 且「是否可於網路申購」= Y或空白, 顯示申購鈕
+                if (item.AvailabilityStatus == "Y" &&
+                    (item.OnlineSubscriptionAvailability == "Y" ||
+                    string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
+                {
+                    item.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, item.ProductCode, InvestTypeEnum.Fund, false).ToString();
+                }
+                else
+                {
+                    item.SubscribeButtonHtml = string.Empty;
+                }
+
+                item.FocusButtonHtml = PublicHelpers.FocusButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, false).ToString();
+                item.CompareButtonHtml = PublicHelpers.CompareButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, false).ToString();
+                item.FundDetailUrl = $"{FundUrl}?id={item.ProductCode}";
 
                 string sql = @$"
                  SELECT [NetAssetValue]
                  FROM [dbo].[Sysjust_Nav_Fund]
-                 WHERE [FirstBankCode] = '{item.ProductCode}'
+                 WHERE [FirstBankCode] = '{item.ProductCode}'AND [NetAssetValue] IS NOT NULL
                  ORDER BY [NetAssetValueDate] ASC;";
 
                 item.SysjustNavFundData = (List<decimal>)DbManager.Custom.ExecuteIList<decimal>(sql, null, CommandType.Text);
             }
 
-            return (List<FundModel>)top9Results;
+            return (List<FundModel>)FundData;
+        }
+
+        /// <summary>
+        /// 取得ETF資料
+        /// </summary>
+        /// <returns>ETF資料</returns>
+        public List<EtfModel> GetEtfData(string ReturnValue, string RiskLevel)
+        {
+            var ETFUrl = EtfRelatedLinkSetting.GetETFDetailUrl();
+
+            string EtfDataSql;
+            if (string.IsNullOrEmpty(ReturnValue))
+            {
+                EtfDataSql = @$"
+                 SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency]
+                 FROM [dbo].[vw_BasicETF]
+                 WHERE [RiskLevel] IN ({RiskLevel})
+                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, ProductCode";
+            }
+            else
+            {
+                EtfDataSql = @$"
+                 SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency]
+                 FROM [dbo].[vw_BasicETF]
+                 WHERE [OneYearReturnMarketPriceOriginalCurrency] >= '{ReturnValue}' AND [RiskLevel] IN ({RiskLevel})
+                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, ProductCode";
+            }
+            var EtfData = DbManager.Custom.ExecuteIList<EtfModel>(EtfDataSql, null, CommandType.Text);
+
+            if (EtfData == null || !EtfData.Any())
+            {
+                return new List<EtfModel>();
+            }
+
+            foreach (var item in EtfData)
+            {
+                item.DisplayMonthlyReturnNetValueOriginalCurrency = item.MonthlyReturnNetValueOriginalCurrency.FormatDecimalNumber(2);
+
+                //「是否上架」= Y 且「是否可於網路申購」= Y或空白, 顯示申購鈕
+                if (item.AvailabilityStatus == "Y" &&
+                    (item.OnlineSubscriptionAvailability == "Y" ||
+                    string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
+                {
+                    item.SubscribeButtonHtml = PublicHelpers.SubscriptionButtonForCard(null, null, item.ProductCode, InvestTypeEnum.ETF).ToString();
+                }
+                else
+                {
+                    item.SubscribeButtonHtml = string.Empty;
+                }
+
+                item.FocusButtonHtml = PublicHelpers.FocusButton(null, null, item.ProductCode, item.ETFName, InvestTypeEnum.ETF, false).ToString();
+                item.CompareButtonHtml = PublicHelpers.CompareButton(null, null, item.ProductCode, item.ETFName, InvestTypeEnum.ETF, false).ToString();
+                item.ETFDetailUrl = $"{ETFUrl}?id={item.ProductCode}";
+
+                string sql = @$"
+                 SELECT [NetAssetValue]
+                 FROM [dbo].[Sysjust_Nav_ETF]
+                 WHERE [FirstBankCode] = '{item.ProductCode}'AND [NetAssetValue] IS NOT NULL
+                 ORDER BY [NetAssetValueDate] ASC;";
+
+                item.SysjustNavEtfData = (List<decimal>)DbManager.Custom.ExecuteIList<decimal>(sql, null, CommandType.Text);
+            }
+
+            return (List<EtfModel>)EtfData;
         }
     }
 }

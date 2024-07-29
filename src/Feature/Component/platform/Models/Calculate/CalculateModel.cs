@@ -87,18 +87,36 @@ namespace Feature.Wealth.Component.Models.Calculate
     public class RecommendedProducts
     {
         public List<FundModel> FundData { get; set; }
+        public List<EtfModel> ETFData { get; set; }
     }
 
     public class FundModel
     {
         public string ProductCode { get; set; }
-
         public string FundName { get; set; }
-
         public decimal? OneMonthReturnOriginalCurrency { get; set; }
-
+        public string AvailabilityStatus { get; set; }
+        public string OnlineSubscriptionAvailability { get; set; }
         public string DisplayOneMonthReturnOriginalCurrency { get; set; }
-
         public List<decimal> SysjustNavFundData { get; set; }
+        public string FundDetailUrl { get; set; }
+        public string FocusButtonHtml { get; set; }
+        public string CompareButtonHtml { get; set; }
+        public string SubscribeButtonHtml { get; set; }
+    }
+
+    public class EtfModel
+    {
+        public string ProductCode { get; set; }
+        public string ETFName { get; set; }
+        public decimal? MonthlyReturnNetValueOriginalCurrency { get; set; }
+        public string AvailabilityStatus { get; set; }
+        public string OnlineSubscriptionAvailability { get; set; }
+        public string DisplayMonthlyReturnNetValueOriginalCurrency { get; set; }
+        public List<decimal> SysjustNavEtfData { get; set; }
+        public string ETFDetailUrl { get; set; }
+        public string FocusButtonHtml { get; set; }
+        public string CompareButtonHtml { get; set; }
+        public string SubscribeButtonHtml { get; set; }
     }
 }

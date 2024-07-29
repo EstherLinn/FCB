@@ -2157,7 +2157,7 @@
                 // 每月投入金額
                 let monthlyInvestmentVal = parseFloat(monthlyInvestment) * 10000;
 
-                return formulajs.ROUNDUP(formulajs.RATE(yearsVal, -monthlyInvestmentVal, -amountPreparedVal, downPaymentVal) * 12, 4);
+                return formulajs.ROUNDUP(formulajs.RATE(yearsVal, -monthlyInvestmentVal, -amountPreparedVal, downPaymentVal, 0, 0.1) * 12, 4);
             };
             //#endregion
 
