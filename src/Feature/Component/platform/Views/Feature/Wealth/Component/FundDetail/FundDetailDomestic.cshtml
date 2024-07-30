@@ -2273,10 +2273,10 @@
                                                     <div class="c-table__title"><span>@Model.FundYearRateOfReturn[i].Date.ToString("yyyy")</span></div>
                                                 </th>
                                             }
-                                            @for (int i = 0; i < 5 - yearCount; i++)
+                                            @for (int i = 1; i <= 5 - yearCount; i++)
                                             {
                                                 <th>
-                                                    <div class="c-table__title"><span>@Model.FundYearRateOfReturn.Last().Date.AddYears(i + 1).ToString("yyyy")</span></div>
+                                                    <div class="c-table__title"><span>@Model.FundYearRateOfReturn.Last().Date.AddYears(-i).ToString("yyyy")</span></div>
                                                 </th>
                                             }
                                         </tr>
@@ -2688,12 +2688,12 @@
                     });
                     for (let i = 0; i < yearData.length; i++) {
                         dividendTableHtml += `<tr>
-                                               <td>${emptyValueToDash(yearData[i].BaseDate)}</td>
-                                               <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
-                                               <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
-                                               <td>配息</td>
-                                               <td>${yearData[i].Dividend}</td>
-                                                     </tr>`
+                                                   <td>${emptyValueToDash(yearData[i].BaseDate)}</td>
+                                                   <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
+                                                   <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
+                                                   <td>配息</td>
+                                                   <td>${yearData[i].Dividend}</td>
+                                                         </tr>`
                     }
                     $('#dividendTable').html(dividendTableHtml);
 
@@ -2978,13 +2978,13 @@
                                                 color: '#6e6e6e'
                                             }
                                         },
-                                            crosshair: {
-                                                width: 1,
-                                                color: '#c3c3c3'
-                                            },
-                                            lineColor: '#ebebeb',
-                                            tickColor: '#ebebeb'
-                                        
+                                        crosshair: {
+                                            width: 1,
+                                            color: '#c3c3c3'
+                                        },
+                                        lineColor: '#ebebeb',
+                                        tickColor: '#ebebeb'
+
                                     },
                                     tooltip: {
                                         split: false,
@@ -3093,7 +3093,7 @@
                                         color: '#6e6e6e'
                                     }
                                 },
-                               crosshair: {
+                                crosshair: {
                                     width: 1,
                                     color: '#c3c3c3'
                                 },
@@ -3291,14 +3291,12 @@
             function roundToTwo(num) {
                 return +(Math.round(num + 'e+2') + 'e-2');
             }
-            function CheckSameYear(d1,d2)
-            {
+            function CheckSameYear(d1, d2) {
                 let d1Year = new Date(d1).getFullYear();
                 let d2Year = new Date(d2).getFullYear();
                 return d1Year == d2Year
             }
-              function CheckSameYearAndMonth(d1,d2)
-            {
+            function CheckSameYearAndMonth(d1, d2) {
                 let d1Year = new Date(d1).getFullYear();
                 let d2Year = new Date(d2).getFullYear();
                 let d1Month = new Date(d1).getMonth() + 1;
@@ -3425,18 +3423,17 @@
                                     tickPosition: 'inside',
                                     tickWidth: 0.5,
                                     tickLength: 7,
-                                    tickInterval: (24*3600*1000) * 7,
+                                    tickInterval: (24 * 3600 * 1000) * 7,
                                     labels: {
                                         formatter: function () {
-                                            let format = CheckSameYear(obj.startdate, obj.enddate)? '%m/%d' : '%Y/%m';
+                                            let format = CheckSameYear(obj.startdate, obj.enddate) ? '%m/%d' : '%Y/%m';
                                             let output = null;
-                                            if(!this.isFirst && format=='%Y/%m'){
-                                                if(!CheckSameYearAndMonth(prevVal,this.value))
-                                                {
-                                                        output = Highcharts.dateFormat(format, this.value);
+                                            if (!this.isFirst && format == '%Y/%m') {
+                                                if (!CheckSameYearAndMonth(prevVal, this.value)) {
+                                                    output = Highcharts.dateFormat(format, this.value);
                                                 }
-                                                 prevVal = this.value;
-                                            }else {
+                                                prevVal = this.value;
+                                            } else {
                                                 output = Highcharts.dateFormat(format, this.value);
                                                 prevVal = this.value;
                                             }
@@ -3764,7 +3761,7 @@
                     const params = {
                         fundId: fundId,
                         selectType: 'Type',
-                        indicator : 'D'
+                        indicator: 'D'
                     };
                     if (chart) {
                         chart.showLoading();
@@ -4087,49 +4084,49 @@
                                 if (i === 0 || i === 6) {
                                     let hiddenHeadClass = i === 6 ? "u-hidden@lt" : "";
                                     tbHtml += `<div class="l-flex__item">
-                                                            <div class="l-table">
-                                                                <table class="c-table u-center">
-                                                                    <colgroup>
-                                                                        <col style="width: 33.33%;">
-                                                                        <col style="width: 33.33%;">
-                                                                        <col style="width: 33.33%;">
-                                                                    </colgroup>
-                                                                    <thead class="${hiddenHeadClass}">
-                                                                        <tr>
-                                                                            <th>
-                                                                                <div class="c-table__title">
-                                                                                    <span>規模日期</span>
-                                                                                </div>
-                                                                            </th>
-                                                                            <th>
-                                                                                <div class="c-table__title">
-                                                                                    <span>規模(百萬)</span>
-                                                                                </div>
-                                                                            </th>
-                                                                            <th>
-                                                                                <div class="c-table__title">
-                                                                                    <span>幣別</span>
-                                                                                </div>
-                                                                            </th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>`;
+                                                                <div class="l-table">
+                                                                    <table class="c-table u-center">
+                                                                        <colgroup>
+                                                                            <col style="width: 33.33%;">
+                                                                            <col style="width: 33.33%;">
+                                                                            <col style="width: 33.33%;">
+                                                                        </colgroup>
+                                                                        <thead class="${hiddenHeadClass}">
+                                                                            <tr>
+                                                                                <th>
+                                                                                    <div class="c-table__title">
+                                                                                        <span>規模日期</span>
+                                                                                    </div>
+                                                                                </th>
+                                                                                <th>
+                                                                                    <div class="c-table__title">
+                                                                                        <span>規模(百萬)</span>
+                                                                                    </div>
+                                                                                </th>
+                                                                                <th>
+                                                                                    <div class="c-table__title">
+                                                                                        <span>幣別</span>
+                                                                                    </div>
+                                                                                </th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>`;
                                 }
                                 tbHtml += ` <tr>
-                                                              <td>
-                                                                   ${rangeData[i].ScaleDate}
-                                                                            </td>
-                                                                            <td>
-                                                                                 ${numberComma(Math.round(rangeData[i].Scale, 3))}
-                                                                            </td>
-                                                                            <td>
-                                                                                 ${rangeData[i].Currency}
-                                                                            </td>
-                                                                        </tr>`;
+                                                                  <td>
+                                                                       ${rangeData[i].ScaleDate}
+                                                                                </td>
+                                                                                <td>
+                                                                                     ${numberComma(Math.round(rangeData[i].Scale, 3))}
+                                                                                </td>
+                                                                                <td>
+                                                                                     ${rangeData[i].Currency}
+                                                                                </td>
+                                                                            </tr>`;
                                 if (i === 5 || i === rangeData - 1) {
                                     tbHtml += `   </tbody>
-                                                                </table>
-                                                            </div> </div>`;
+                                                                    </table>
+                                                                </div> </div>`;
                                 }
 
 
