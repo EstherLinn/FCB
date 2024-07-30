@@ -213,7 +213,6 @@
                     }
                 }
             });
-            resetTable();
             // #endregion 基金
 
             // #region ETF
@@ -409,7 +408,6 @@
                     }
                 }
             });
-            resetTable2();
 
             // #endregion ETF
             // #region 國外股票
@@ -599,10 +597,19 @@
                     }
                 }
             });
-            resetTable3();
 
             // #endregion 國外股票
             // #region 共用
+            // init
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackList")",
+                success: function (msg) {
+                    resetTable(msg);
+                    resetTable2(msg);
+                    resetTable3(msg);
+                },
+            })
 
             function dateRange($element, $element2) {
                 let dateRangeMsg = '起訖日期區間錯誤';
@@ -664,9 +671,17 @@
                     data: { "trackList": store.get("focus") || [], "productId": cancelId},
                     beforeSend: function () { $('.c-loading').loading('show'); },
                     success: function (msg) {
+                        switch (cancelType.toLowerCase()) {
+                            case "fund":
                                 resetTable();
+                                break;
+                            case "etf":
                                 resetTable2();
-                                resetTable3();                      
+                                break;
+                            case "foreignstocks":
+                                resetTable3();
+                                break;
+                        }
                     },
                     error: function (msg) {
                         //設置成功
