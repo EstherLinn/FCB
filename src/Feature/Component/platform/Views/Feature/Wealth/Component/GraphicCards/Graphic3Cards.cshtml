@@ -28,7 +28,7 @@
 										@Html.Sitecore().EndField()
 									</div>
 								}
-								else if (!Model.IsLogin)
+								else if (!Model.IsLogin && (!string.IsNullOrEmpty(Model.ButtonLink1) || !string.IsNullOrEmpty(Model.ButtonText1)))
 								{
 									<div class="c-feature__actions">
 										<a href="#popupLogin" class="o-btn o-btn--primary o-btn--thin o-btn--auto" data-popup="true">@Html.Sitecore().Field(Templates.GraphicCards.Fields.ButtonText1.ToString(), Model.Item)</a>
@@ -53,7 +53,7 @@
 										@Html.Sitecore().EndField()
 									</div>
 								}
-								else if (!Model.IsLogin)
+								else if (!Model.IsLogin && (!string.IsNullOrEmpty(Model.ButtonLink2) || !string.IsNullOrEmpty(Model.ButtonText2)))
 								{
 									<div class="c-feature__actions">
 										<a href="#popupLogin" class="o-btn o-btn--primary o-btn--thin o-btn--auto" data-popup="true">@Html.Sitecore().Field(Templates.GraphicCards.Fields.ButtonText2.ToString(), Model.Item)</a>
@@ -80,7 +80,7 @@
 										@Html.Sitecore().EndField()
 									</div>
 								}
-								else if (!Model.IsLogin)
+								else if (!Model.IsLogin && (!string.IsNullOrEmpty(Model.ButtonLink3) || !string.IsNullOrEmpty(Model.ButtonText3)))
 								{
 									<div class="c-feature__actions">
 										<a href="#popupLogin" class="o-btn o-btn--primary o-btn--thin o-btn--auto" data-popup="true">@Html.Sitecore().Field(Templates.GraphicCards.Fields.ButtonText3.ToString(), Model.Item)</a>
