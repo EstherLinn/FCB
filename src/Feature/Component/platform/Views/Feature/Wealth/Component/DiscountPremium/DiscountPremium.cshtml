@@ -106,7 +106,7 @@
 											</th>
 											<th>
 												<div class="c-table__title">
-													<span>折溢價(%)</span>
+													<span>折溢價</span>
 													<a href="#" class="o-sorting" data-sorting-column="DiscountPremium.Value"></a>
 												</div>
 											</th>
@@ -220,7 +220,7 @@
 											</th>
 											<th>
 												<div class="c-table__title">
-													<span>折溢價(%)</span>
+													<span>折溢價</span>
 													<a href="#" class="o-sorting" data-sorting-column="DiscountPremium.Value"></a>
 												</div>
 											</th>
@@ -316,7 +316,7 @@
 				<% } %>
 			</td>
 			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">折溢價(%)</div>
+				<div class="c-cardTable__title" data-length="5">折溢價</div>
 				<div class="c-cardTable__content">
 					<% if (DiscountPremium.Value!=null) { %>
 					<% if (DiscountPremium.Key) { %>
@@ -412,7 +412,7 @@
 					template: '#template',
 					callbacks: {
 						beforeRecordRender: function (record) {
-							const dot2 = 4;
+							const dot2 = 2;
 							record.DiscountPremium.Text = Math.abs(record.DiscountPremium.Value).toFixed(dot2);
 						},
 						afterFilter: function (result) {
