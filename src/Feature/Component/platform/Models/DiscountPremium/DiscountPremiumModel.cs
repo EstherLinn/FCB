@@ -35,30 +35,30 @@ namespace Feature.Wealth.Component.Models.DiscountPremium
             /// <summary>
             /// 淨值日期
             /// </summary>
-            public DateTime NetAssetValueDate { get; set; }
-            public string NetAssetValueDateFormat => NetAssetValueDate.ToString("yyyy/MM/dd");
+            public DateTime? NetAssetValueDate { get; set; }
+            public string NetAssetValueDateFormat => NetAssetValueDate?.ToString("yyyy/MM/dd");
 
             /// <summary>
             /// 價格(市價)
             /// </summary>
-            public decimal MarketPrice { get; set; }
+            public decimal? MarketPrice { get; set; }
 
             /// <summary>
             /// 折溢價
             /// </summary>
-            public decimal DiscountPremium { get; set; }
+            public decimal? DiscountPremium { get; set; }
 
             /// <summary>
             /// 最新量
             /// </summary>
-            public decimal LatestVolumeTradingVolume { get; set; }
+            public decimal? LatestVolumeTradingVolume { get; set; }
             public string LatestVolumeTradingVolumeFormat => NumberExtensions.FormatNumber(LatestVolumeTradingVolume);
 
             /// <summary>
             /// 最新量-十日均價
             /// </summary>
-            public decimal TenDayAverageVolume { get; set; }
-            public string TenDayAverageVolumeFormat => NumberExtensions.FormatNumber(TenDayAverageVolume);
+            public decimal? LatestVolumeTradingVolumeTenDayAverageVolume { get; set; }
+            public string LatestVolumeTradingVolumeTenDayAverageVolumeFormat => NumberExtensions.FormatNumber(LatestVolumeTradingVolumeTenDayAverageVolume);
 
             /// <summary>
             /// 可否申購
@@ -71,6 +71,37 @@ namespace Feature.Wealth.Component.Models.DiscountPremium
             public string AvailabilityStatus { get; set; }
 
             public string[] ETFDiscountTags { get; set; }
+        }
+
+        public class RenderETFs
+        {
+            public string ProductCode { get; set; }
+
+            public string ProductName { get; set; }
+
+            public string ExchangeCode { get; set; }
+
+            public string NetAssetValueDate { get; set; }
+
+            public decimal? MarketPrice { get; set; }
+
+            public KeyValuePair<bool, decimal?> DiscountPremium { get; set; }
+
+            public KeyValuePair<string, decimal?> LatestVolumeTradingVolume { get; set; }
+
+            public KeyValuePair<string, decimal?> LatestVolumeTradingVolumeTenDayAverageVolume { get; set; }
+
+            public bool IsOnlineSubscriptionAvailability { get; set; }
+
+            public string[] ETFDiscountTags { get; set; }
+
+            public string FocusTag { get; set; }
+
+            public string SubscriptionTag { get; set; }
+
+            public string CompareTag { get; set; }
+
+            public string DetailUrl { get; set; }
         }
     }
 
