@@ -830,7 +830,7 @@
         <td>
             <% if (threeMonth) { %>
             <% if (threeMonthStyle) { %>
-            <span class="<%= oneMonthStyle %>"><%= threeMonth %></span>
+            <span class="<%= threeMonthStyle %>"><%= threeMonth %></span>
             <% } else { %>
             <span class="<%= threeMonth < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(threeMonth) %>%</span>
             <% } %>
@@ -2345,6 +2345,7 @@
                     template: '#template-' + template,
                     callbacks: {
                         afterFilter: function (result) {
+                            $('[data-popup]').magnificPopup();
                         },
                         afterAddRecords: function () {
                             if (isInit) {
