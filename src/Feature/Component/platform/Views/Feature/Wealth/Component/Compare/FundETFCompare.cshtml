@@ -1683,7 +1683,7 @@
                                             data: data.respNetAssetValue[key].resultSet.result.map((item, i) => {
                                                 return {
                                                     upDown: Number(item.v2) < 0 ? 'down' : 'up',
-                                                    x: new Date(item.v1).getTime(),
+                                                    x: new Date(item.v1.replaceAll('/', '-')).getTime(),
                                                     y: roundTo(item.v2, 2)
                                                 };
                                             }).reverse()
@@ -1709,7 +1709,7 @@
                                             data: navDate.map((date, i) => {
                                                 lastData = {
                                                     upDown: Number(nav[i]) < 0 ? 'down' : 'up',
-                                                    x: new Date(date).getTime(),
+                                                    x: new Date(date.replaceAll('/', '-')).getTime(),
                                                     y: roundTo(nav[i], 2)
                                                 };
                                                 return lastData;
@@ -1741,7 +1741,7 @@
                                                 let extent = current - startPoint;
                                                 lastData = {
                                                     upDown: extent < 0 ? 'down' : 'up',
-                                                    x: new Date(date).getTime(),
+                                                    x: new Date(date.replaceAll('/', '-')).getTime(),
                                                     y: roundTo(extent / startPoint * 100, 2)
                                                 };
                                                 return lastData;
