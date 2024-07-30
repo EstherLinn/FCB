@@ -21,7 +21,7 @@
     {
         <div class="c-article">
             <div class="c-article__head" id="newsHead">
-                @if (string.IsNullOrEmpty(Model.MarketNewsDetailData.NewsTitle))
+                @if (!string.IsNullOrEmpty(Model.MarketNewsDetailData.NewsTitle))
                 {
                     <div class="c-article__title">@Model.MarketNewsDetailData.NewsTitle</div>
                 }
