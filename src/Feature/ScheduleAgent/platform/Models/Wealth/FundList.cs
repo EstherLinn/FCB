@@ -31,7 +31,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         /// </summary>
         [Index(2)]
         [NullValues("", "NULL", null)]
-        public int? TopicNumber { get; set; }
+        public string TopicNumber { get; set; }
 
         /// <summary>
         /// 主題中文名稱
@@ -43,7 +43,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         /// <summary>
         /// CSV更新日期
         /// </summary>
-        [Index(4)]
+        [Index(6)]
         [NullValues("", "NULL", null)]
         public string CsvUpdateDate { get; set; }
     }
