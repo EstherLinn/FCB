@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Component.Models.BigAndSmallCards;
+﻿using Feature.Wealth.Account.Helpers;
+using Feature.Wealth.Component.Models.BigAndSmallCards;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,8 @@ namespace Feature.Wealth.Component.Controllers
             var bigButtonText2 = ItemUtils.GetFieldValue(item, Templates.BigAndSmallCards.Fields.BigButtonText2);
             var bigButtonLink1 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.BigButtonLink1)?.Url;
             var bigButtonLink2 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.BigButtonLink2)?.Url;
+            var isOpenLoginLightBox1 = ItemUtils.IsChecked(item, Templates.BigAndSmallCards.Fields.OpenLoginLightBox1);
+            var isOpenLoginLightBox2 = ItemUtils.IsChecked(item, Templates.BigAndSmallCards.Fields.OpenLoginLightBox2);
 
             var model = new BigAndSmallCardsModel()
             {
@@ -42,6 +45,9 @@ namespace Feature.Wealth.Component.Controllers
                 BigButtonText2 = bigButtonText2,
                 BigButtonLink1 = bigButtonLink1,
                 BigButtonLink2 = bigButtonLink2,
+                IsOpenLoginLightBox1 = isOpenLoginLightBox1,
+                IsOpenLoginLightBox2 = isOpenLoginLightBox2,
+                IsLogin = FcbMemberHelper.CheckMemberLogin()
             };
 
             return View("/Views/Feature/Wealth/Component/BigAndSmallCards/BigAndSmallCards.cshtml", model);
