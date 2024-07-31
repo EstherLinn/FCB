@@ -3,78 +3,92 @@
 
 @if (Model == null)
 {
-    return;
+	return;
 }
 
 <section class="c-section" data-aos="fade-up" data-aos-once="true">
-    <div class="l-wrap">
-        <div class="c-section__title u-left">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.MainTitle.ToString(), Model.Item)</div>
-        <div class="c-section__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Description.ToString(), Model.Item)</div>
-        <div class="c-section__content">
-            <div class="l-feature l-feature--sm">
-                <ul class="l-feature__list">
-                    <li class="l-feature__item">
-                        <div class="c-feature c-feature--calc c-feature--personalize">
-                            <div class="c-feature__content">
-                                <h3 class="c-feature__title">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Title1.ToString(), Model.Item)</h3>
-                                <p class="c-feature__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Subtitle1.ToString(), Model.Item)</p>
-                            </div>
-                            <div class="c-feature__plate">
-                                <img src="@Model.ImageUrl1" srcset="" alt="" class="c-feature__img">
-                            </div>
-                        </div>
-                    </li>
-                    <li class="l-feature__item">
-                        <div class="c-feature c-feature--calc c-feature--follow">
-                            <div class="c-feature__content">
-                                <h3 class="c-feature__title">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Title2.ToString(), Model.Item)</h3>
-                                <p class="c-feature__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Subtitle2.ToString(), Model.Item)</p>
-                            </div>
-                            <div class="c-feature__plate">
-                                <img src="@Model.ImageUrl2" srcset="" alt="" class="c-feature__img">
-                            </div>
-                        </div>
-                    </li>
-                    <li class="l-feature__item">
-                        <div class="c-feature c-feature--calc c-feature--remote">
-                            <div class="c-feature__content">
-                                <h3 class="c-feature__title">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Title3.ToString(), Model.Item)</h3>
-                                <p class="c-feature__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Subtitle3.ToString(), Model.Item)</p>
-                            </div>
-                            <div class="c-feature__plate">
-                                <img src="@Model.ImageUrl3" srcset="" alt="" class="c-feature__img">
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-                <ul class="l-feature__list">
-                    <li class="l-feature__item">
-                        <div class="c-feature c-feature--join c-feature--personalize">
-                            <div class="c-feature__content u-center">
-                                <h3 class="c-feature__title">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigTitle.ToString(), Model.Item)</h3>
-                                <p class="c-feature__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigSubtitle.ToString(), Model.Item)</p>
-                                <div class="c-feature__actions">
-                                    @if (!string.IsNullOrEmpty(Model.BigButtonText1) || !string.IsNullOrEmpty(Model.BigButtonLink1))
-                                    {
-                                        @Html.Sitecore().BeginField(Templates.BigAndSmallCards.Fields.BigButtonLink1.ToString(), Model.Item, new { haschildren = true, @class = "o-btn o-btn--secondary o-btn--flat o-btn--sm" })
-                                        @Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigButtonText1.ToString(), Model.Item)
-                                        @Html.Sitecore().EndField()
-                                    }
-                                    @if (!string.IsNullOrEmpty(Model.BigButtonText2) || !string.IsNullOrEmpty(Model.BigButtonLink2))
-                                    {
-                                        @Html.Sitecore().BeginField(Templates.BigAndSmallCards.Fields.BigButtonLink2.ToString(), Model.Item, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--flat o-btn--sm" })
-                                        @Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigButtonText2.ToString(), Model.Item)
-                                        @Html.Sitecore().EndField()
-                                    }
-                                </div>
-                            </div>
-                            <div class="c-feature__plate">
-                                <img src="@Model.BigImageUrl" srcset="" alt="" class="c-feature__img">
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+	<div class="l-wrap">
+		<div class="c-section__title u-left">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.MainTitle.ToString(), Model.Item)</div>
+		<div class="c-section__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Description.ToString(), Model.Item)</div>
+		<div class="c-section__content">
+			<div class="l-feature l-feature--sm">
+				<ul class="l-feature__list">
+					<li class="l-feature__item">
+						<div class="c-feature c-feature--calc c-feature--personalize">
+							<div class="c-feature__content">
+								<h3 class="c-feature__title">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Title1.ToString(), Model.Item)</h3>
+								<p class="c-feature__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Subtitle1.ToString(), Model.Item)</p>
+							</div>
+							<div class="c-feature__plate">
+								<img src="@Model.ImageUrl1" srcset="" alt="" class="c-feature__img">
+							</div>
+						</div>
+					</li>
+					<li class="l-feature__item">
+						<div class="c-feature c-feature--calc c-feature--follow">
+							<div class="c-feature__content">
+								<h3 class="c-feature__title">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Title2.ToString(), Model.Item)</h3>
+								<p class="c-feature__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Subtitle2.ToString(), Model.Item)</p>
+							</div>
+							<div class="c-feature__plate">
+								<img src="@Model.ImageUrl2" srcset="" alt="" class="c-feature__img">
+							</div>
+						</div>
+					</li>
+					<li class="l-feature__item">
+						<div class="c-feature c-feature--calc c-feature--remote">
+							<div class="c-feature__content">
+								<h3 class="c-feature__title">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Title3.ToString(), Model.Item)</h3>
+								<p class="c-feature__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.Subtitle3.ToString(), Model.Item)</p>
+							</div>
+							<div class="c-feature__plate">
+								<img src="@Model.ImageUrl3" srcset="" alt="" class="c-feature__img">
+							</div>
+						</div>
+					</li>
+				</ul>
+				<ul class="l-feature__list">
+					<li class="l-feature__item">
+						<div class="c-feature c-feature--join c-feature--personalize">
+							<div class="c-feature__content u-center">
+								<h3 class="c-feature__title">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigTitle.ToString(), Model.Item)</h3>
+								<p class="c-feature__desc">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigSubtitle.ToString(), Model.Item)</p>
+								@if (!Model.IsOpenLoginLightBox1 && (!string.IsNullOrEmpty(Model.BigButtonText1) || !string.IsNullOrEmpty(Model.BigButtonLink1)))
+								{
+									<div class="c-feature__actions">
+										@Html.Sitecore().BeginField(Templates.BigAndSmallCards.Fields.BigButtonLink1.ToString(), Model.Item, new { haschildren = true, @class = "o-btn o-btn--secondary o-btn--flat o-btn--sm" })
+										@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigButtonText1.ToString(), Model.Item)
+										@Html.Sitecore().EndField()
+									</div>
+								}
+								else if (!Model.IsLogin && (!string.IsNullOrEmpty(Model.BigButtonText1) || !string.IsNullOrEmpty(Model.BigButtonLink1)))
+								{
+									<div class="c-feature__actions">
+										<a href="#popupLogin" class="o-btn o-btn--secondary o-btn--flat o-btn--sm" data-popup="true">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigButtonText1.ToString(), Model.Item)</a>
+									</div>
+								}
+								@if (!Model.IsOpenLoginLightBox2 && (!string.IsNullOrEmpty(Model.BigButtonText2) || !string.IsNullOrEmpty(Model.BigButtonLink2)))
+								{
+									<div class="c-feature__actions">
+										@Html.Sitecore().BeginField(Templates.BigAndSmallCards.Fields.BigButtonLink2.ToString(), Model.Item, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--flat o-btn--sm" })
+										@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigButtonText2.ToString(), Model.Item)
+										@Html.Sitecore().EndField()
+									</div>
+								}
+								else if (!Model.IsLogin && (!string.IsNullOrEmpty(Model.BigButtonText2) || !string.IsNullOrEmpty(Model.BigButtonLink2)))
+								{
+									<div class="c-feature__actions">
+										<a href="#popupLogin" class="o-btn o-btn--primary o-btn--flat o-btn--sm" data-popup="true">@Html.Sitecore().Field(Templates.BigAndSmallCards.Fields.BigButtonText2.ToString(), Model.Item)</a>
+									</div>
+								}
+							</div>
+							<div class="c-feature__plate">
+								<img src="@Model.BigImageUrl" srcset="" alt="" class="c-feature__img">
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </section>
