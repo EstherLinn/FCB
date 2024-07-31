@@ -129,7 +129,7 @@ namespace Feature.Wealth.Component.Repositories
         public List<FundCloseYearNetValue> GetNetAssetValueWithCloseYear(string fundId)
         {
             string sql = @"SELECT Format([Date],'yyyy-MM-dd') NetAssetValueDate,[NetAssetValue] 
-                            FROM [Sysjust_FUNDNAV_HIS] where [FirstBankCode]=@fundId and Date >= DATEADD(year, -1, GETDATE()) ORDER BY [Date] ";
+                            FROM [Sysjust_FUNDNAV_HIS] where [FirstBankCode]=@fundId and CAST([Date] AS date) >= CAST(DATEADD(year, -1, GETDATE())AS date) ORDER BY [Date] ";
             var para = new { fundId };
             List<FundCloseYearNetValue> fundCloseYearNetValue = DbManager.Custom.ExecuteIList<FundCloseYearNetValue>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundCloseYearNetValue;
