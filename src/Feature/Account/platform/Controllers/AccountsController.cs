@@ -195,16 +195,20 @@ namespace Feature.Wealth.Account.Controllers
                                         true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,cifMember.CIF_ESTABL_BIRTH_DATE);
                                     _memberRepository.CreateNewMember(member);
                                     User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
-                                    SetCustomPropertyAndLogin(member, user);
-                                    step = "Step5 第e個網登入 同步ileo關注清單";
-                                    FirstBankApiService firstBankApiService = new();
-                                    firstBankApiService.SyncTrackListFormIleo(await firstBankApiService.GetTrackListFromIleo(cifMember.CIF_PROMO_CODE));
+                                    SetCustomPropertyAndLogin(member, user);                   
                                 }
                                 else
                                 {
                                     step = "Step3 第e個網登入 已有會員直接登入";
                                     //登入
                                     FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, id);
+                                    if (member == null)
+                                    {
+                                        step = $"Step3 理財網已有會員，直接登入，取得會員資料有誤";
+                                        Session["LoginStatus"] = false;
+                                        Session["ErrorMsg"] = "理財網取得會員資料有誤，請聯絡資訊處";
+                                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                                    }
                                     User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
                                     SetCustomPropertyAndLogin(member, user);                    
                                 }
@@ -284,6 +288,13 @@ namespace Feature.Wealth.Account.Controllers
                     {
                         step = $"Step3 理財網已有會員，直接登入";
                         FcbMemberModel member = _memberRepository.GetAppMemberInfo(PlatFormEunm.WebBank, code);
+                        if (member == null)
+                        {
+                            step = $"Step3 理財網已有會員，直接登入，取得會員資料有誤";
+                            Session["LoginStatus"] = false;
+                            Session["ErrorMsg"] = "理財網取得會員資料有誤，請聯絡資訊處";
+                            return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                        }
                         SetCustomPropertyAndLogin(member, user);
                     }
                 }
@@ -296,7 +307,7 @@ namespace Feature.Wealth.Account.Controllers
             }
             finally
             {
-                Logger.Account.Info($"網銀登入byApp {step} , promotionCode=${qs["promotionCode"]} &&rtCode=${qs["rtCode"]} ");
+                Logger.Account.Info($"網銀登入byApp {step} , promotionCode={qs["promotionCode"]} &&rtCode{qs["rtCode"]} ");
             }
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
