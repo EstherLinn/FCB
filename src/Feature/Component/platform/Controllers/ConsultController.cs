@@ -121,7 +121,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 Item = item,
                 ConsultLink = ConsultRelatedLinkSetting.GetConsultUrl(),
-                ConsultScheduleLink = ItemUtils.GeneralLink(item, Template.ConsultList.Fields.ConsultScheduleLink)?.Url,
+                ConsultScheduleLink = ConsultRelatedLinkSetting.GetConsultScheduleUrl(),
                 Notice = new HtmlString(ItemUtils.GetFieldValue(item, Template.ConsultList.Fields.Notice)),
                 ConsultSchedules = consultScheduleList,
                 ConsultSchedulesHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleList)),
@@ -169,13 +169,13 @@ namespace Feature.Wealth.Component.Controllers
             var consultModel = new ConsultModel
             {
                 Item = item,
-                ReturnLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.ReturnLink)?.Url,
+                ReturnLink = ConsultRelatedLinkSetting.GetConsultListUrl(),
                 ConsultSchedules = consultScheduleList,
                 ConsultSchedulesHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleList)),
                 EmployeeID = info.AdvisrorID,
                 EmployeeName = info.Advisror,
-                CustomerID = info.WebBankId,                
-                CustomerName = info.MemberName,                
+                CustomerID = info.WebBankId,
+                CustomerName = info.MemberName,
             };
 
             // 取得近30日假日           
@@ -299,7 +299,7 @@ namespace Feature.Wealth.Component.Controllers
             var consultScheduleModel = new ConsultScheduleModel
             {
                 Item = item,
-                ReturnLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.ReturnLink)?.Url
+                ReturnLink = ConsultRelatedLinkSetting.GetConsultListUrl()
             };
 
             return consultScheduleModel;
