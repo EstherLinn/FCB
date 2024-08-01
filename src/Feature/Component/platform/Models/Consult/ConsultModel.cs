@@ -277,7 +277,6 @@ namespace Feature.Wealth.Component.Models.Consult
 
             public readonly struct Fields
             {
-                public static readonly ID ReturnLink = new ID("{F0D15279-4ADF-4744-AE0E-A46E116D701C}");
             }
         }
 
@@ -289,7 +288,6 @@ namespace Feature.Wealth.Component.Models.Consult
             {
                 public static readonly ID QandA = new ID("{A28F1CC6-FA71-432E-A2A7-AB4A36F0165B}");
                 public static readonly ID Notice = new ID("{46EFE03B-118E-432B-A1D1-8E1D584B4476}");
-                public static readonly ID ConsultScheduleLink = new ID("{67A220ED-A10C-4B33-A5CB-1B5654871148}");
             }
         }
 
