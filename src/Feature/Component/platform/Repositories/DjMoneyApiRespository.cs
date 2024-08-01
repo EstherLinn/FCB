@@ -247,7 +247,16 @@ namespace Feature.Wealth.Component.Repositories
                         enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
                         break;
                     case "sinceyear":
-                        startdate = Convert.ToDateTime(startdate).AddDays(1).ToString("yyyy-MM-dd");
+                        var tmpDate = Convert.ToDateTime(startdate).AddDays(1);
+                        if (tmpDate.DayOfWeek == DayOfWeek.Saturday)
+                        {
+                            tmpDate = tmpDate.AddDays(2);
+                        }
+                        else if (tmpDate.DayOfWeek == DayOfWeek.Sunday)
+                        {
+                            tmpDate = tmpDate.AddDays(1);
+                        }
+                        startdate = tmpDate.ToString("yyyy-MM-dd");
                         enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
                         break;
                     case "establishment":
