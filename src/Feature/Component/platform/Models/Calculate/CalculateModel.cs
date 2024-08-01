@@ -39,6 +39,7 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string RemoteConsultationButtonText { get; set; }
         public string RemoteConsultationButtonLink { get; set; }
         public string RemoteConsultationImage { get; set; }
+        public string[] FundID { get; set; }
     }
 
     public class CalculationResultData
@@ -103,6 +104,7 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string FocusButtonHtml { get; set; }
         public string CompareButtonHtml { get; set; }
         public string SubscribeButtonHtml { get; set; }
+        public bool DataIsFormSitecore { get; set; } = false;
     }
 
     public class EtfModel

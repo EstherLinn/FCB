@@ -1,11 +1,14 @@
 ﻿using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Models.Calculate;
-using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.ETF;
+using Feature.Wealth.Component.Models.FundDetail;
+using Feature.Wealth.Component.Models.Invest;
 using Foundation.Wealth.Extensions;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using log4net;
 using Newtonsoft.Json;
+using Sitecore.Extensions;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
@@ -15,10 +18,6 @@ using System.Linq;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Templates = Feature.Wealth.Component.Models.Calculate.Template;
-using Feature.Wealth.Component.Models.FundReturn;
-using Sitecore.Data;
-using Foundation.Wealth.Helper;
-using Feature.Wealth.Component.Models.Invest;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -79,6 +78,7 @@ namespace Feature.Wealth.Component.Repositories
             model.RemoteConsultationButtonText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationButtonText);
             model.RemoteConsultationButtonLink = ItemUtils.GeneralLink(dataSource, Templates.Calculate.Fields.RemoteConsultationButtonLink).Url;
             model.RemoteConsultationImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.RemoteConsultationImage);
+            model.FundID = ItemUtils.GetMultiLineText(dataSource, Templates.Calculate.Fields.FundID);
 
             return model;
         }
@@ -169,33 +169,63 @@ namespace Feature.Wealth.Component.Repositories
         /// <summary>
         /// 取得基金資料
         /// </summary>
-        /// <returns>基金資料</returns>
-        public List<FundModel> GetFundData(string ReturnValue)
+        /// <param name="ExpectedRoi">預期投資報酬率</param>
+        /// <param name="ProductFundIDs">推薦基金商品ID</param>
+        /// <returns>9筆基金資料</returns>
+        public List<FundModel> GetFundData(string ExpectedRoi, string[] ProductFundIDs)
         {
             var FundUrl = FundRelatedSettingModel.GetFundDetailsUrl();
-
             string FundDataSql;
-            if (string.IsNullOrEmpty(ReturnValue))
+            if (string.IsNullOrEmpty(ExpectedRoi))
             {
                 FundDataSql = @$"
                  SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency]
                  FROM [dbo].[vw_BasicFund]
-                 ORDER BY [OneYearReturnOriginalCurrency] DESC, ProductCode";
+                 ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] DESC";
             }
             else
             {
                 FundDataSql = @$"
                  SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency]
                  FROM [dbo].[vw_BasicFund]
-                 WHERE [OneYearReturnOriginalCurrency] >= '{ReturnValue}'
-                 ORDER BY [OneYearReturnOriginalCurrency] DESC, ProductCode";
+                 WHERE [OneYearReturnOriginalCurrency] >= '{ExpectedRoi}'
+                 ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] DESC";
             }
             var FundData = DbManager.Custom.ExecuteIList<FundModel>(FundDataSql, null, CommandType.Text);
 
-            if (FundData == null || !FundData.Any())
+            foreach (var fund in FundData)
             {
-                return new List<FundModel>();
+                fund.DataIsFormSitecore = false;
             }
+
+            if (FundData.Count < 9)
+            {
+                var allRecommendedProductCodesSql = string.Join(", ", ProductFundIDs.Select(pc => $"'{pc}'"));
+                string allRecommendedDataSql = @$"
+                 SELECT [ProductCode], [FundName], [OneMonthReturnOriginalCurrency]
+                 FROM [dbo].[vw_BasicFund]
+                 WHERE [ProductCode] IN ({allRecommendedProductCodesSql})";
+
+                var allRecommendedData = DbManager.Custom.ExecuteIList<FundModel>(allRecommendedDataSql, null, CommandType.Text);
+
+                var existingProductCodes = FundData.Select(e => e.ProductCode).ToHashSet();
+                var neededCount = 9 - FundData.Count;
+
+                if (neededCount > 0)
+                {
+                    var additionalData = allRecommendedData
+                        .Where(r => !existingProductCodes.Contains(r.ProductCode))
+                        .OrderBy(r => Array.IndexOf(ProductFundIDs, r.ProductCode))
+                        .Take(neededCount)
+                        .ToList();
+                    foreach (var fund in additionalData)
+                    {
+                        fund.DataIsFormSitecore = true;
+                    }
+                    FundData.AddRange(additionalData);
+                }
+            }
+
 
             foreach (var item in FundData)
             {
@@ -230,35 +260,42 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 取得ETF資料
+        /// 
         /// </summary>
-        /// <returns>ETF資料</returns>
-        public List<EtfModel> GetEtfData(string ReturnValue, string RiskLevel)
+        /// <param name="ExpectedRoi">預期投資報酬率</param>
+        /// <param name="RiskLevel">風險屬性</param>
+        /// <returns>3筆ETF資料</returns>
+        public List<EtfModel> GetEtfData(string ExpectedRoi, string RiskLevel)
         {
             var ETFUrl = EtfRelatedLinkSetting.GetETFDetailUrl();
 
             string EtfDataSql;
-            if (string.IsNullOrEmpty(ReturnValue))
+            if (string.IsNullOrEmpty(ExpectedRoi))
             {
                 EtfDataSql = @$"
                  SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency]
                  FROM [dbo].[vw_BasicETF]
                  WHERE [RiskLevel] IN ({RiskLevel})
-                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, ProductCode";
+                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] DESC";
             }
             else
             {
                 EtfDataSql = @$"
                  SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency]
                  FROM [dbo].[vw_BasicETF]
-                 WHERE [OneYearReturnMarketPriceOriginalCurrency] >= '{ReturnValue}' AND [RiskLevel] IN ({RiskLevel})
-                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, ProductCode";
+                 WHERE [OneYearReturnMarketPriceOriginalCurrency] >= '{ExpectedRoi}' AND [RiskLevel] IN ({RiskLevel})
+                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] DESC";
             }
             var EtfData = DbManager.Custom.ExecuteIList<EtfModel>(EtfDataSql, null, CommandType.Text);
 
-            if (EtfData == null || !EtfData.Any())
+            if (EtfData.Count < 3)
             {
-                return new List<EtfModel>();
+                EtfDataSql = @$"
+                 SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency]
+                 FROM [dbo].[vw_BasicETF]
+                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] DESC";
+
+                EtfData = DbManager.Custom.ExecuteIList<EtfModel>(EtfDataSql, null, CommandType.Text);
             }
 
             foreach (var item in EtfData)

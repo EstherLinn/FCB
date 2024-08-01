@@ -564,8 +564,9 @@
                 </div>
 
                 <!-- 推薦基金 -->
-                <div class="c-section">
+                <div class="c-section" id="tab1Fund">
                     <div class="c-section__title">推薦基金</div>
+                    <p class="tab1FundTip"></p>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--3rows recommendedFunds">
                             <div class="swiper-wrapper c-swiper__wrapper">
@@ -594,7 +595,7 @@
                 </div>
 
                 <!-- 推薦國外股票 -->
-                <div class="c-section">
+                <div class="c-section u-hidden">
                     <div class="c-section__title">推薦國外股票</div>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--minor recommendedStock">
@@ -751,8 +752,9 @@
                 </div>
 
                 <!-- 推薦基金 -->
-                <div class="c-section">
+                <div class="c-section" id="tab2Fund">
                     <div class="c-section__title">推薦基金</div>
+                    <p class="tab2FundTip"></p>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--3rows recommendedFunds">
                             <div class="swiper-wrapper c-swiper__wrapper">
@@ -781,7 +783,7 @@
                 </div>
 
                 <!-- 推薦國外股票 -->
-                <div class="c-section">
+                <div class="c-section  u-hidden">
                     <div class="c-section__title">推薦國外股票</div>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--minor recommendedStock">
@@ -938,8 +940,9 @@
                 </div>
 
                 <!-- 推薦基金 -->
-                <div class="c-section">
+                <div class="c-section" id="tab3Fund">
                     <div class="c-section__title">推薦基金</div>
+                    <p class="tab3FundTip"></p>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--3rows recommendedFunds">
                             <div class="swiper-wrapper c-swiper__wrapper">
@@ -968,7 +971,7 @@
                 </div>
 
                 <!-- 推薦國外股票 -->
-                <div class="c-section">
+                <div class="c-section  u-hidden">
                     <div class="c-section__title">推薦國外股票</div>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--minor recommendedStock">
@@ -1125,8 +1128,9 @@
                 </div>
 
                 <!-- 推薦基金 -->
-                <div class="c-section">
+                <div class="c-section" id="tab4Fund">
                     <div class="c-section__title">推薦基金</div>
+                    <p class="tab4FundTip"></p>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--3rows recommendedFunds">
                             <div class="swiper-wrapper c-swiper__wrapper">
@@ -1155,7 +1159,7 @@
                 </div>
 
                 <!-- 推薦國外股票 -->
-                <div class="c-section">
+                <div class="c-section  u-hidden">
                     <div class="c-section__title">推薦國外股票</div>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--minor recommendedStock">
@@ -1314,8 +1318,9 @@
                 </div>
 
                 <!-- 推薦基金 -->
-                <div class="c-section">
+                <div class="c-section" id="tab5Fund">
                     <div class="c-section__title">推薦基金</div>
+                    <p class="tab5FundTip"></p>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--3rows recommendedFunds">
                             <div class="swiper-wrapper c-swiper__wrapper">
@@ -1344,7 +1349,7 @@
                 </div>
 
                 <!-- 推薦國外股票 -->
-                <div class="c-section">
+                <div class="c-section u-hidden">
                     <div class="c-section__title">推薦國外股票</div>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--minor recommendedStock">
@@ -1460,11 +1465,11 @@
 <script>
     (function ($, window, document, undefined) {
         document.addEventListener("DOMContentLoaded", function () {
-
             var resultHasGap;
             var description, readingbar = [], earningsChart = [], chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [], chartsAssets = [];
             let RiskImg;
             let isUnlocked = false;
+            let hasRenderedRecommendations = false;
             let LockImg = "/themes/images/icons/others/lock.svg"
             var defaultRiskAttributes = '@Model.DefaultRiskAttributes';
             var assetsData = {
@@ -1484,46 +1489,6 @@
                     text: '@Model.CurrencyAllocationText'
                 }
             };
-
-            //#region 登入遮罩判斷&依照客戶風險屬性給值
-            if (SC_DATA.IsLoggedIn) {
-                if (SC_DATA.WebBankId !== "") {
-                    if (SC_DATA.Risk !== undefined) {
-                        const riskSettings = {
-                            "1": {
-                                img: "/themes/images/charts/rr2.svg",
-                                attributes: 2,
-                                message: '注意：由於您的風險屬性為 保守型，部分風險等級高的推薦標的無法做申購，請您留意！'
-                            },
-                            "2": {
-                                img: "/themes/images/charts/rr4.svg",
-                                attributes: 5,
-                                message: '注意：由於您的風險屬性為 積極型，部分風險等級高的推薦標的無法做申購，請您留意！'
-                            },
-                            "3": {
-                                img: "/themes/images/charts/rr5.svg",
-                                attributes: 7,
-                                message: '注意：由於您的風險屬性為 積極型，部分風險等級高的推薦標的無法做申購，請您留意！'
-                            }
-                        };
-
-                        const risk = riskSettings[SC_DATA.Risk];
-                        if (risk) {
-                            RiskImg = risk.img;
-                            defaultRiskAttributes = risk.attributes;
-                            $('.l-riskCard__charts img').attr('src', RiskImg);
-                            $('.c-warning').text(risk.message);
-                        }
-                    } else {
-                        renderNotRisk();
-                    }
-                } else {
-                    renderTPPLogin();
-                }
-            } else {
-                renderNotLogin();
-            }
-            //#endregion
 
             //#region 預計幾年後達成目標綁定事件
             let $sliderYear = $('[data-slider-id="year"]').get(0),
@@ -1740,6 +1705,14 @@
                         $(".tab4Btn").addClass("u-hidden");
                         $(".tab5Btn").removeClass("u-hidden");
 
+                        if (SC_DATA.Risk == '1') {
+                            defaultRiskAttributes = 2;
+                        } else if (SC_DATA.Risk == '2') {
+                            defaultRiskAttributes = 5;
+                        } else if (SC_DATA.Risk == '3') {
+                            defaultRiskAttributes = 7;
+                        }
+
                         tab1Results = planningResults;
                         tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
 
@@ -1760,14 +1733,6 @@
 
                     // 顯示資產配置圓餅圖
                     renderChartsAssets(chartsAssets);
-
-                    // 顯示推薦商品
-                    renderRecommendedFunds(9);
-                    renderRecommendedETFs(3);
-                    renderRecommendedStocks(3);
-
-                    // 顯示推薦商品走勢圖
-                    renderRecommendedProductChart();
 
                     // 顯示試算結果 - 諮詢區塊
                     $("#consult").removeClass("u-hidden");
@@ -1830,6 +1795,14 @@
                         $(".tab3Btn").addClass("u-hidden");
                         $(".tab4Btn").addClass("u-hidden");
                         $(".tab5Btn").removeClass("u-hidden");
+
+                        if (SC_DATA.Risk == '1') {
+                            defaultRiskAttributes = 2;
+                        } else if (SC_DATA.Risk == '2') {
+                            defaultRiskAttributes = 5;
+                        } else if (SC_DATA.Risk == '3') {
+                            defaultRiskAttributes = 7;
+                        }
 
                         tab1Results = planningResults;
                         tab5Results = planningCompute(years, amountPrepared, monthlyInvestment, (parseFloat(expectedRoi) + parseFloat(defaultRiskAttributes)).toString());
@@ -1961,6 +1934,152 @@
 
                 // 觸發第一次點擊事件
                 $("ul.c-tab__navs a:first").trigger("click.myEvent");
+            }
+            //#endregion
+
+            //#region 查看推薦方案綁定事件
+            $('#btnSolutionsSuccess').on('click', function (e) {
+                e.preventDefault();
+                $('[data-tab-target].is-active').trigger('click');
+            });
+            $('#btnSolutionsUnsuccess').on('click', function (e) {
+                e.preventDefault();
+                $('[data-tab-target].is-active').trigger('click');
+            });
+            //#endregion
+
+            //#region 儲存試算結果按鈕綁定事件
+            $('[data-save]').on('click', function (e) {
+                e.preventDefault();
+
+                const calculationData = {
+                    Type: "BuyHouseList",
+                    Name: "買房首付試算",
+                    DateTime: moment().format('YYYY/MM/DD HH:mm'),
+                    ResultHasGap: resultHasGap,
+                    Description: description,
+                    Readingbar: readingbar,
+                    EarningsChart: earningsChart,
+                    ChartsRevenues: chartsRevenues,
+                    ChartsRewards: chartsRewards,
+                    ChartsRewardsCategories: chartsRewardsCategories
+                };
+
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "Calculate", "SaveCalculationResults")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(calculationData),
+                }).done(function (data, textStatus, jqXHR) {
+                    window.toast('已儲存');
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }).always(function () {
+                });
+            });
+            //#endregion
+
+            //#region 解鎖專屬推薦綁定事件
+            $('#btnUnlock').on('click', function (e) {
+                e.preventDefault();
+                if (!isUnlocked) {
+                    if (SC_DATA.Risk == undefined) {
+                        setTimeout(function (e) {
+                            $.magnificPopup.open({
+                                items: {
+                                    src: '#popupRiskInvalid'
+                                },
+                                type: 'inline'
+                            });
+                            $.magnificPopup.instance.history.splice(0, $.magnificPopup.instance.history.length - 1);
+                        }, 100);
+                    } else {
+                        $('#popupRisk img').attr('src', '/themes/images/icons/others/unlock.svg');
+                        $('#popupRisk .c-calcLocker__desc').text('我已完成風險評估 ! 立即解鎖專屬推薦');
+                        isUnlocked = true;
+                    }
+                } else {
+                    if (SC_DATA.Risk == "1") {
+                        RiskImg = "/themes/images/charts/rr2.svg";
+                        defaultRiskAttributes = 2;
+                    } else if (SC_DATA.Risk == "2") {
+                        RiskImg = "/themes/images/charts/rr4.svg";
+                        defaultRiskAttributes = 5;
+                    } else if (SC_DATA.Risk == "3") {
+                        RiskImg = "/themes/images/charts/rr5.svg";
+                        defaultRiskAttributes = 7;
+                    }
+
+                    $('.l-riskCard__charts img').attr('src', RiskImg);
+                    $('.Locker').removeClass('c-section--locker');
+                    $('.Locker').addClass('u-hidden');
+                    $.magnificPopup.close();
+                }
+            });
+            //#endregion
+
+            //#region 連結風險屬性驗測網站綁定事件
+            $('#GOKYC1,#GOKYC2').on('click', function (event) {
+                event.preventDefault();
+                var webKycLink = '@WebKycLink';
+
+                window.open(webKycLink, '_blank');
+            });
+            //#endregion
+
+            //#region 登入遮罩判斷&依照客戶風險屬性給值
+            if (SC_DATA.IsLoggedIn) {
+                if (SC_DATA.WebBankId !== "") {
+                    if (SC_DATA.Risk !== undefined) {
+                        const riskSettings = {
+                            "1": {
+                                img: "/themes/images/charts/rr2.svg",
+                                attributes: 2,
+                                message: '注意：由於您的風險屬性為 保守型，部分風險等級高的推薦標的無法做申購，請您留意！'
+                            },
+                            "2": {
+                                img: "/themes/images/charts/rr4.svg",
+                                attributes: 5,
+                                message: '注意：由於您的風險屬性為 積極型，部分風險等級高的推薦標的無法做申購，請您留意！'
+                            },
+                            "3": {
+                                img: "/themes/images/charts/rr5.svg",
+                                attributes: 7,
+                                message: '注意：由於您的風險屬性為 積極型，部分風險等級高的推薦標的無法做申購，請您留意！'
+                            }
+                        };
+
+                        const risk = riskSettings[SC_DATA.Risk];
+                        if (risk) {
+                            RiskImg = risk.img;
+                            defaultRiskAttributes = risk.attributes;
+                            $('.l-riskCard__charts img').attr('src', RiskImg);
+                            $('.c-warning').text(risk.message);
+                        }
+                    } else {
+                        renderNotRisk();
+                    }
+                } else {
+                    renderTPPLogin();
+                }
+            } else {
+                renderNotLogin();
+            }
+            //#endregion
+
+            //#region 行動裝置判斷
+            if ($(window).width() < 1199) {
+                let MobilePlatform = store.get("MobilePlatform") || "firste";
+                let url;
+
+                if (MobilePlatform == "firste") {
+                    url = "@FirsteKycLink";
+                } else {
+                    url = "@IleoKycLink";
+                }
+
+                url.replaceAll('&amp;', '&');
+                $(".GoKYC").attr('href', url);
             }
             //#endregion
 
@@ -2297,6 +2416,24 @@
                     bond: assetsData.bond.number,
                     stock: assetsData.stock.number
                 });
+
+                if (SC_DATA.Risk !== undefined) {
+                    let tab = "tab1";
+                    let event = $('[data-tab-panel-id="tab-1"] .recommendedFunds .swiper-wrapper');
+                    let eventString = '[data-tab-panel-id="tab-1"] .recommendedFunds';
+                    getFundData(tab, event, eventString, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
+
+                    let eventEtf = $('[data-tab-panel-id="tab-1"] .recommendedETF .swiper-wrapper');
+                    let eventStringEtf = '[data-tab-panel-id="tab-1"] .recommendedETF';
+                    getEtfData(tab, eventEtf, eventStringEtf, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
+                } else {
+                    if (!hasRenderedRecommendations) {
+                        renderRecommendedFunds(9);
+                        renderRecommendedETFs(3);
+                        renderRecommendedProductChart();
+                        hasRenderedRecommendations = true;
+                    }
+                }
             }
             //#endregion
 
@@ -2364,6 +2501,18 @@
                     bond: assetsData.bond.number,
                     stock: assetsData.stock.number
                 });
+
+                if (SC_DATA.Risk !== undefined) {
+                    let tab = "tab2";
+
+                    let event = $('[data-tab-panel-id="tab-2"] .recommendedFunds .swiper-wrapper');
+                    let eventString = '[data-tab-panel-id="tab-2"] .recommendedFunds';
+                    getFundData(tab, event, eventString, downPayment, years, amountPrepared, result, expectedRoi);
+
+                    let eventEtf = $('[data-tab-panel-id="tab-2"] .recommendedETF .swiper-wrapper');
+                    let eventStringEtf = '[data-tab-panel-id="tab-2"] .recommendedETF';
+                    getEtfData(tab, eventEtf, eventStringEtf, downPayment, years, amountPrepared, result, expectedRoi);
+                }
             }
             //#endregion
 
@@ -2426,6 +2575,18 @@
                     bond: assetsData.bond.number,
                     stock: assetsData.stock.number
                 });
+
+                if (SC_DATA.Risk !== undefined) {
+                    let tab = "tab3";
+
+                    let event = $('[data-tab-panel-id="tab-3"] .recommendedFunds .swiper-wrapper');
+                    let eventString = '[data-tab-panel-id="tab-3"] .recommendedFunds';
+                    getFundData(tab, event, eventString, downPayment, years, amountPrepared, monthlyInvestment, result);
+
+                    let eventEtf = $('[data-tab-panel-id="tab-3"] .recommendedETF .swiper-wrapper');
+                    let eventStringEtf = '[data-tab-panel-id="tab-3"] .recommendedETF';
+                    getEtfData(tab, eventEtf, eventStringEtf, downPayment, years, amountPrepared, monthlyInvestment, result);
+                }
             }
             //#endregion
 
@@ -2487,6 +2648,18 @@
                     bond: assetsData.bond.number,
                     stock: assetsData.stock.number
                 });
+
+                if (SC_DATA.Risk !== undefined) {
+                    let tab = "tab4";
+
+                    let event = $('[data-tab-panel-id="tab-4"] .recommendedFunds .swiper-wrapper');
+                    let eventString = '[data-tab-panel-id="tab-4"] .recommendedFunds';
+                    getFundData(tab, event, eventString, downPayment, result, amountPrepared, monthlyInvestment, expectedRoi);
+
+                    let eventEtf = $('[data-tab-panel-id="tab-4"] .recommendedETF .swiper-wrapper');
+                    let eventStringEtf = '[data-tab-panel-id="tab-4"] .recommendedETF';
+                    getEtfData(tab, eventEtf, eventStringEtf, downPayment, result, amountPrepared, monthlyInvestment, expectedRoi);
+                }
             }
             //#endregion
 
@@ -2548,6 +2721,18 @@
                     bond: assetsData.bond.number,
                     stock: assetsData.stock.number
                 });
+
+                if (SC_DATA.Risk !== undefined) {
+                    let tab = "tab5";
+
+                    let event = $('[data-tab-panel-id="tab-5"] .recommendedFunds .swiper-wrapper');
+                    let eventString = '[data-tab-panel-id="tab-5"] .recommendedFunds';
+                    getFundData(tab, event, eventString, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
+
+                    let eventEtf = $('[data-tab-panel-id="tab-5"] .recommendedETF .swiper-wrapper');
+                    let eventStringEtf = '[data-tab-panel-id="tab-5"] .recommendedETF';
+                    getEtfData(tab, eventEtf, eventStringEtf, downPayment, years, amountPrepared, monthlyInvestment, expectedRoi);
+                }
             }
             //#endregion
 
@@ -2958,48 +3143,6 @@
             }
             //#endregion
 
-            //#region 查看推薦方案綁定事件
-            $('#btnSolutionsSuccess').on('click', function (e) {
-                e.preventDefault();
-                $('[data-tab-target].is-active').trigger('click');
-            });
-            $('#btnSolutionsUnsuccess').on('click', function (e) {
-                e.preventDefault();
-                $('[data-tab-target].is-active').trigger('click');
-            });
-            //#endregion
-
-            //#region 儲存試算結果按鈕綁定事件
-            $('[data-save]').on('click', function (e) {
-                e.preventDefault();
-
-                const calculationData = {
-                    Type: "BuyHouseList",
-                    Name: "買房首付試算",
-                    DateTime: moment().format('YYYY/MM/DD HH:mm'),
-                    ResultHasGap: resultHasGap,
-                    Description: description,
-                    Readingbar: readingbar,
-                    EarningsChart: earningsChart,
-                    ChartsRevenues: chartsRevenues,
-                    ChartsRewards: chartsRewards,
-                    ChartsRewardsCategories: chartsRewardsCategories
-                };
-
-                $.ajax({
-                    url: '@ClientRoute.GenerateUrl(this, "Calculate", "SaveCalculationResults")',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(calculationData),
-                }).done(function (data, textStatus, jqXHR) {
-                    window.toast('已儲存');
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log(errorThrown);
-                }).always(function () {
-                });
-            });
-            //#endregion
-
             //#region 資產配置圓餅圖顯示
             function renderChartsAssets(chartsAssets) {
                 chartsAssets.forEach(item => {
@@ -3150,141 +3293,324 @@
             }
             //#endregion
 
-            //#region 解鎖專屬推薦
-            $('#btnUnlock').on('click', function (e) {
-                e.preventDefault();
-                if (!isUnlocked) {
-                    if (SC_DATA.Risk == undefined) {
-                        setTimeout(function (e) {
-                            $.magnificPopup.open({
-                                items: {
-                                    src: '#popupRiskInvalid'
-                                },
-                                type: 'inline'
-                            });
-                            $.magnificPopup.instance.history.splice(0, $.magnificPopup.instance.history.length - 1);
-                        }, 100);
-                    } else {
-                        $('#popupRisk img').attr('src', '/themes/images/icons/others/unlock.svg');
-                        $('#popupRisk .c-calcLocker__desc').text('我已完成風險評估 ! 立即解鎖專屬推薦');
-                        isUnlocked = true;
-                    }
+            //#region 取得基金資料
+            function getFundData(tab, event, eventString, Target, Years, Prepared, Monthly, ExpectedRoi) {
+                var resultTab3Roi = tab3Compute(Target, Years, Prepared, Monthly);
+                var expectedRoi;
+                if (tab == 'tab1') {
+                    expectedRoi = '';
+                } else if (tab == 'tab3') {
+                    expectedRoi = resultTab3Roi * 100;
                 } else {
-                    if (SC_DATA.Risk == "1") {
-                        RiskImg = "/themes/images/charts/rr2.svg";
-                        defaultRiskAttributes = 2;
-                    } else if (SC_DATA.Risk == "2") {
-                        RiskImg = "/themes/images/charts/rr4.svg";
-                        defaultRiskAttributes = 5;
-                    } else if (SC_DATA.Risk == "3") {
-                        RiskImg = "/themes/images/charts/rr5.svg";
-                        defaultRiskAttributes = 7;
+                    expectedRoi = ExpectedRoi;
+                }
+                var ProductFundIds = @Html.Raw(Json.Encode(Model.FundID));
+                $.ajax({
+                    url: '@Url.Action("GetFundData", "Calculate")',
+                    method: 'POST',
+                    data: {
+                        ExpectedRoi: expectedRoi,
+                        ProductFundIDs: ProductFundIds
+                    },
+                    success: function (data) {
+
+                        RealrenderRecommendedFunds(tab, event, data);
+                        FundinitializeSwiper(eventString);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching fund data:', error);
                     }
-
-                    $('.l-riskCard__charts img').attr('src', RiskImg);
-                    $('.Locker').removeClass('c-section--locker');
-                    $('.Locker').addClass('u-hidden');
-                    $.magnificPopup.close();
-                }
-            });
-            //#endregion
-
-            //#region 連結風險屬性測驗網站
-            $('#GOKYC1,#GOKYC2').on('click', function (event) {
-                event.preventDefault();
-                var webKycLink = '@WebKycLink';
-
-                window.open(webKycLink, '_blank');
-            });
-            //#endregion
-
-            //#region  推薦基金商品顯示
-            function renderRecommendedFunds(count) {
-                for (let i = 1; i <= count; i++) {
-                    const fundHTML = `
-                <div class="swiper-slide c-swiper__slide">
-                    <div class="c-box c-box--goods">
-                        <div class="c-box__main">
-                            <div class="c-cardFund">
-                                <a href="#" class="c-cardFund__name u-ellipsis-2">
-                                    推薦基金 ${i}
-                                </a>
-                                <div class="c-cardFund__trend">
-                                    <div class="c-cardFund__rate">
-                                        <span class="t-small">
-                                            <span class="t-fall">月報酬率</span>
-                                            <span class="o-fall o-fall--sm">0%</span>
-                                        </span>
-                                    </div>
-                                    <div class="c-cardFund__charts">
-                                        <div class="o-charts o-charts--fall" data-chart="mini"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="c-box__actions">
-                            <ul class="l-collect l-collect--divider">
-                                <li class="l-collect__item">
-                                    <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
-                                </li>
-                                <li class="l-collect__item">
-                                    <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
-                                </li>
-                                <li class="l-collect__item l-collect__item--btn">
-                                    <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            `;
-                    $('.recommendedFunds .swiper-wrapper').append(fundHTML);
-                }
+                });
             }
             //#endregion
 
-            //#region  推薦ETF商品顯示
+            //#region 取得ETF資料
+            function getEtfData(tab, eventEtf, eventStringEtf, Target, Years, Prepared, Monthly, ExpectedRoi) {
+                var riskLevel;
+                var resultTab3Roi = tab3Compute(Target, Years, Prepared, Monthly);
+                var expectedRoi;
+
+                if (tab === 'tab1') {
+                    expectedRoi = '';
+                } else if (tab === 'tab3') {
+                    expectedRoi = resultTab3Roi * 100;
+                } else {
+                    expectedRoi = ExpectedRoi;
+                }
+                if (SC_DATA.Risk == '1') {
+                    riskLevel = "'RR1','RR2'";
+                } else if (SC_DATA.Risk == '2') {
+                    riskLevel = "'RR1','RR2','RR3','RR4'";
+                } else if (SC_DATA.Risk == '3') {
+                    riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
+                }
+                $.ajax({
+                    url: '@Url.Action("GetEtfData", "Calculate")',
+                    method: 'POST',
+                    data: {
+                        ExpectedRoi: expectedRoi,
+                        RiskLevel: riskLevel,
+                    },
+                    success: function (data) {
+
+                        RealrenderRecommendedETFs(tab, eventEtf, data);
+                        ETFinitializeSwiper(eventStringEtf);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching fund data:', error);
+                    }
+                });
+            }
+            //#endregion
+
+            //#region  預設推薦基金商品顯示
+            function renderRecommendedFunds(count) {
+                for (let i = 1; i <= count; i++) {
+                    const fundHTML = `
+                                        <div class="swiper-slide c-swiper__slide">
+                                            <div class="c-box c-box--goods">
+                                                <div class="c-box__main">
+                                                    <div class="c-cardFund">
+                                                        <a href="#" class="c-cardFund__name u-ellipsis-2">
+                                                            推薦基金 ${i}
+                                                        </a>
+                                                        <div class="c-cardFund__trend">
+                                                            <div class="c-cardFund__rate">
+                                                                <span class="t-small">
+                                                                    <span class="t-fall">月報酬率</span>
+                                                                    <span class="o-fall o-fall--sm">0%</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="c-cardFund__charts">
+                                                                <div class="o-charts o-charts--fall" data-chart="mini"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="c-box__actions">
+                                                    <ul class="l-collect l-collect--divider">
+                                                        <li class="l-collect__item">
+                                                            <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                                        </li>
+                                                        <li class="l-collect__item">
+                                                            <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                                        </li>
+                                                        <li class="l-collect__item l-collect__item--btn">
+                                                            <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                    $('.recommendedFunds .swiper-wrapper').append(fundHTML);
+                }
+                let eventString = '.recommendedFunds';
+                FundinitializeSwiper(eventString);
+            }
+            //#endregion
+
+            //#region  真實推薦基金商品顯示
+            function RealrenderRecommendedFunds(tab, event, fundData) {
+                if (!fundData || fundData.length === 0) {
+                    $(`#${tab}Fund`).addClass('u-hidden');
+                } else {
+                    $(`#${tab}Fund`).removeClass('u-hidden');
+                }
+
+                var dataIsFormSitecore = fundData.some(item => item.DataIsFormSitecore);
+
+                $(`.${tab}FundTip`).text(dataIsFormSitecore ? '目前依績效評估，暫時無符合您需求之推薦標的，建議可參考下列本行推薦基金標的。' : '');
+
+                const $swiperWrapper = event;
+                $swiperWrapper.empty();
+                let fundHTML = '';
+                let SubscribeButtonHtml = '';
+                let style1, style2, style3;
+
+                fundData.forEach((fund, index) => {
+                    if (fund.OneMonthReturnOriginalCurrency > 0) {
+                        style1 = "t-rise";
+                        style2 = "o-rise o-rise--sm";
+                        style3 = "o-charts--rise";
+                    }
+                    else {
+                        style1 = "t-fall";
+                        style2 = "o-fall o-fall--sm";
+                        style3 = "o-charts--fall";
+                    }
+
+                    if (fund.SubscribeButtonHtml != null && fund.SubscribeButtonHtml != "") {
+                        SubscribeButtonHtml = `<li class="l-collect__item l-collect__item--btn">${fund.SubscribeButtonHtml}</li>`;
+                    }
+
+                    fundHTML += `
+                                    <div class="swiper-slide c-swiper__slide">
+                                        <div class="c-box c-box--goods">
+                                            <div class="c-box__main">
+                                                <div class="c-cardFund">
+                                                                <a href="${fund.FundDetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                                                ${fund.ProductCode} ${fund.FundName}
+                                                    </a>
+                                                    <div class="c-cardFund__trend">
+                                                        <div class="c-cardFund__rate">
+                                                            <span class="t-small">
+                                                                <span class="${style1}">月報酬率</span>
+                                                                       <span class="${style2}">${fund.DisplayOneMonthReturnOriginalCurrency}%</span>
+                                                            </span>
+                                                        </div>
+                                                        <div class="c-cardFund__charts">
+                                                            <div class="o-charts ${style3}" data-chart="${tab}miniFund"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="c-box__actions">
+                                                <ul class="l-collect l-collect--divider">
+
+                                                    <li class="l-collect__item">
+                                                        ${fund.FocusButtonHtml}
+                                                    </li>
+                                                    <li class="l-collect__item">
+                                                        ${fund.CompareButtonHtml}
+                                                    </li>
+                                                    ${SubscribeButtonHtml}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div> `;
+                });
+                $swiperWrapper.append(fundHTML);
+
+                // 綁定 關注/比較 icon 的互動功能
+                $swiperWrapper.find('[data-ia]').interactive();
+                // 綁定 like icon 的彈跳登入畫面
+                $swiperWrapper.find('[data-popup]').magnificPopup();
+                $swiperWrapper.find('[eh-compare]').trigger('exec');
+                $swiperWrapper.find('[eh-focus]').trigger('exec');
+                $swiperWrapper.find('[eh-subscription-type]').trigger('exec');
+
+                RealrenderFundChart(tab, fundData);
+            }
+            //#endregion
+
+            //#region  預設推薦ETF商品顯示
             function renderRecommendedETFs(count) {
                 for (let i = 1; i <= count; i++) {
                     const etfHTML = `
-                <div class="swiper-slide c-swiper__slide">
-                    <div class="c-box c-box--goods">
-                        <div class="c-box__main">
-                            <div class="c-cardFund">
-                                <a href="#" class="c-cardFund__name u-ellipsis-2">
-                                    推薦ETF ${i}
-                                </a>
-                                <div class="c-cardFund__trend">
-                                    <div class="c-cardFund__rate">
-                                        <span class="t-small">
-                                            <span class="t-rise">月報酬率</span>
-                                            <span class="o-rise o-rise--sm">0%</span>
-                                        </span>
-                                    </div>
-                                    <div class="c-cardFund__charts">
-                                        <div class="o-charts o-charts--rise" data-chart="mini"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="c-box__actions">
-                            <ul class="l-collect l-collect--divider">
-                                <li class="l-collect__item">
-                                    <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
-                                </li>
-                                <li class="l-collect__item">
-                                    <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
-                                </li>
-                                <li class="l-collect__item l-collect__item--btn">
-                                    <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            `;
+                                        <div class="swiper-slide c-swiper__slide">
+                                            <div class="c-box c-box--goods">
+                                                <div class="c-box__main">
+                                                    <div class="c-cardFund">
+                                                        <a href="#" class="c-cardFund__name u-ellipsis-2">
+                                                                推薦ETF ${i}
+                                                        </a>
+                                                        <div class="c-cardFund__trend">
+                                                            <div class="c-cardFund__rate">
+                                                                <span class="t-small">
+                                                                    <span class="t-rise">月報酬率</span>
+                                                                    <span class="o-rise o-rise--sm">0%</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="c-cardFund__charts">
+                                                                <div class="o-charts o-charts--rise" data-chart="mini"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="c-box__actions">
+                                                    <ul class="l-collect l-collect--divider">
+                                                        <li class="l-collect__item">
+                                                            <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                                        </li>
+                                                        <li class="l-collect__item">
+                                                            <a href="#" class="o-statusBtn o-statusBtn--compare" data-after="比較" data-after-lt="比較" data-msg="加入比較|取消比較" data-ia="true"></a>
+                                                        </li>
+                                                        <li class="l-collect__item l-collect__item--btn">
+                                                            <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
                     $('.recommendedETF .swiper-wrapper').append(etfHTML);
                 }
+                let eventStringEtf = '.recommendedETF';
+                ETFinitializeSwiper(eventStringEtf);
+            }
+            //#endregion
+
+            //#region  真實推薦ETF商品顯示
+            function RealrenderRecommendedETFs(tab, eventEtf, EtfData) {
+                const $swiperWrapper = eventEtf;
+                $swiperWrapper.empty();
+                let EtfHTML = '';
+                let SubscribeButtonHtml = '';
+                let style1, style2, style3;
+
+                EtfData.forEach((Etf, index) => {
+                    if (Etf.MonthlyReturnNetValueOriginalCurrency > 0) {
+                        style1 = "t-rise";
+                        style2 = "o-rise o-rise--sm";
+                        style3 = "o-charts--rise";
+                    }
+                    else {
+                        style1 = "t-fall";
+                        style2 = "o-fall o-fall--sm";
+                        style3 = "o-charts--fall";
+                    }
+
+                    if (Etf.SubscribeButtonHtml != null && Etf.SubscribeButtonHtml != "") {
+                        SubscribeButtonHtml = `<li class="l-collect__item l-collect__item--btn">${Etf.SubscribeButtonHtml}</li>`;
+                    }
+
+                    EtfHTML += `
+                                        <div class="swiper-slide c-swiper__slide">
+                                            <div class="c-box c-box--goods">
+                                                <div class="c-box__main">
+                                                    <div class="c-cardFund">
+                                                                            <a href="${Etf.ETFDetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                                                        ${Etf.ProductCode} ${Etf.ETFName}
+                                                        </a>
+                                                        <div class="c-cardFund__trend">
+                                                            <div class="c-cardFund__rate">
+                                                                <span class="t-small">
+                                                                    <span class="${style1}">月報酬率</span>
+                                                                                   <span class="${style2}">${Etf.DisplayMonthlyReturnNetValueOriginalCurrency}%</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="c-cardFund__charts">
+                                                                <div class="o-charts ${style3}" data-chart="${tab}miniETF"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="c-box__actions">
+                                                    <ul class="l-collect l-collect--divider">
+                                                        <li class="l-collect__item">
+                                                            ${Etf.FocusButtonHtml}
+                                                        </li>
+                                                        <li class="l-collect__item">
+                                                            ${Etf.CompareButtonHtml}
+                                                        </li>
+                                                        ${SubscribeButtonHtml}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div> `;
+                });
+                $swiperWrapper.append(EtfHTML);
+
+                // 綁定 關注/比較 icon 的互動功能
+                $swiperWrapper.find('[data-ia]').interactive();
+                // 綁定 like icon 的彈跳登入畫面
+                $swiperWrapper.find('[data-popup]').magnificPopup();
+                $swiperWrapper.find('[eh-compare]').trigger('exec');
+                $swiperWrapper.find('[eh-focus]').trigger('exec');
+                $swiperWrapper.find('[eh-subscription-type]').trigger('exec');
+
+                RealrenderEtfChart(tab, EtfData);
             }
             //#endregion
 
@@ -3292,134 +3618,144 @@
             function renderRecommendedStocks(count) {
                 for (let i = 1; i <= count; i++) {
                     const stockHTML = `
-                <div class="swiper-slide c-swiper__slide">
-                    <div class="c-box c-box--goods">
-                        <div class="c-box__main">
-                            <div class="c-cardFund">
-                                <a href="#" class="c-cardFund__name u-ellipsis-2">
-                                    推薦國外股票 ${i}
-                                </a>
-                                <div class="c-cardFund__trend">
-                                    <div class="c-cardFund__rate">
-                                        <span class="t-small">
-                                            <span class="t-rise">月報酬率</span>
-                                            <span class="o-rise o-rise--sm">0%</span>
-                                        </span>
-                                    </div>
-                                    <div class="c-cardFund__charts">
-                                        <div class="o-charts o-charts--rise" data-chart="mini"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="c-box__actions">
-                            <ul class="l-collect l-collect--divider">
-                                <li class="l-collect__item">
-                                    <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
-                                </li>
-                                <li class="l-collect__item l-collect__item--btn">
-                                    <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            `;
+                                        <div class="swiper-slide c-swiper__slide">
+                                            <div class="c-box c-box--goods">
+                                                <div class="c-box__main">
+                                                    <div class="c-cardFund">
+                                                        <a href="#" class="c-cardFund__name u-ellipsis-2">
+                                                            推薦國外股票 ${i}
+                                                        </a>
+                                                        <div class="c-cardFund__trend">
+                                                            <div class="c-cardFund__rate">
+                                                                <span class="t-small">
+                                                                    <span class="t-rise">月報酬率</span>
+                                                                    <span class="o-rise o-rise--sm">0%</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="c-cardFund__charts">
+                                                                <div class="o-charts o-charts--rise" data-chart="mini"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="c-box__actions">
+                                                    <ul class="l-collect l-collect--divider">
+                                                        <li class="l-collect__item">
+                                                            <a href="#" class="o-statusBtn o-statusBtn--like" data-after="關注" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
+                                                        </li>
+                                                        <li class="l-collect__item l-collect__item--btn">
+                                                            <a href="#popupPurchase" class="o-tableBtn o-tableBtn--card" data-popup="true">申購</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
                     $('.recommendedStock .swiper-wrapper').append(stockHTML);
                 }
+                StockinitializeSwiper();
             }
             //#endregion
 
             //#region 所有推薦基金初始化設定
-            window.mySwiper = new Swiper('.recommendedFunds', {
-                slidesPerGroup: 1,
-                slidesPerView: 1,
-                grid: {
-                    rows: 1
-                },
-                spaceBetween: 20,
-                lazy: true,
-                breakpoints: {
-                    1200: {
-                        slidesPerGroup: 3,
-                        slidesPerView: 3,
-                        grid: {
-                            rows: 3
+            function FundinitializeSwiper(eventString) {
+                window.mySwiper = new Swiper(eventString, {
+                    slidesPerGroup: 1,
+                    slidesPerView: 1,
+                    grid: {
+                        rows: 1
+                    },
+                    spaceBetween: 20,
+                    lazy: true,
+                    loop: true,
+                    breakpoints: {
+                        1200: {
+                            slidesPerGroup: 3,
+                            slidesPerView: 3,
+                            grid: {
+                                rows: 3
+                            }
                         }
+                    },
+                    autoplay: {
+                        delay: 6000,
+                        disableOnInteraction: false
+                    },
+                    speed: 1000,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                        disabledClass: 'swiper-button-disabled'
                     }
-                },
-                autoplay: {
-                    delay: 6000,
-                    disableOnInteraction: false
-                },
-                speed: 1000,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                    disabledClass: 'swiper-button-disabled'
-                }
-            });
+                });
+            }
             //#endregion
 
             //#region 所有推薦ETF初始化設定
-            window.mySwiper = new Swiper('.recommendedETF', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                lazy: true,
-                breakpoints: {
-                    1200: {
-                        slidesPerView: 3
+            function ETFinitializeSwiper(eventStringEtf) {
+                window.mySwiper = new Swiper(eventStringEtf, {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                    lazy: true,
+                    loop: true,
+                    breakpoints: {
+                        1200: {
+                            slidesPerView: 3
+                        }
+                    },
+                    autoplay: {
+                        delay: 6000,
+                        disableOnInteraction: false
+                    },
+                    speed: 1000,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                        disabledClass: 'swiper-button-disabled'
                     }
-                },
-                autoplay: {
-                    delay: 6000,
-                    disableOnInteraction: false
-                },
-                speed: 1000,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                    disabledClass: 'swiper-button-disabled'
-                }
-            });
+                });
+            }
             //#endregion
 
             //#region 所有推薦國外股票初始化設定
-            window.mySwiper = new Swiper('.recommendedStock', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                lazy: true,
-                breakpoints: {
-                    1200: {
-                        slidesPerView: 3
+            function StockinitializeSwiper() {
+                window.mySwiper = new Swiper('.recommendedStock', {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                    lazy: true,
+                    loop: true,
+                    breakpoints: {
+                        1200: {
+                            slidesPerView: 3
+                        }
+                    },
+                    autoplay: {
+                        delay: 6000,
+                        disableOnInteraction: false
+                    },
+                    speed: 1000,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                        disabledClass: 'swiper-button-disabled'
                     }
-                },
-                autoplay: {
-                    delay: 6000,
-                    disableOnInteraction: false
-                },
-                speed: 1000,
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                    disabledClass: 'swiper-button-disabled'
-                }
-            });
+                });
+            }
             //#endregion
 
-            //#region 推薦基金、推薦ETF、推薦國外股票走勢圖顯示
+            //#region 預設推薦基金、推薦ETF、推薦國外股票走勢圖顯示
             function renderRecommendedProductChart() {
                 $('[data-chart="mini"]').each(function (i, el) {
                     $(el).highcharts({
@@ -3460,28 +3796,96 @@
             }
             //#endregion
 
+            //#region 真實推薦基金走勢圖顯示
+            function RealrenderFundChart(tab, data) {
+                $(`[data-chart="${tab}miniFund"]`).each(function (i, el) {
+                    // 使用 data 数组中的相应数据来渲染每个图表
+                    $(el).highcharts({
+                        chart: {
+                            type: 'area',
+                            margin: [0, 0, 0, 0],
+                            backgroundColor: 'transparent'
+                        },
+                        title: {
+                            text: undefined
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            series: {
+                                enableMouseTracking: false,
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        xAxis: {
+                            visible: false
+                        },
+                        yAxis: {
+                            visible: false
+                        },
+                        series: [{
+                            fillOpacity: 0.06,
+                            data: data[i].SysjustNavFundData
+                        }]
+                    });
+                });
+            }
+            //#endregion
+
+            //#region 真實推薦ETF走勢圖顯示
+            function RealrenderEtfChart(tab, data) {
+                $(`[data-chart="${tab}miniETF"]`).each(function (i, el) {
+                    // 使用 data 数组中的相应数据来渲染每个图表
+                    $(el).highcharts({
+                        chart: {
+                            type: 'area',
+                            margin: [0, 0, 0, 0],
+                            backgroundColor: 'transparent'
+                        },
+                        title: {
+                            text: undefined
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            series: {
+                                enableMouseTracking: false,
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        xAxis: {
+                            visible: false
+                        },
+                        yAxis: {
+                            visible: false
+                        },
+                        series: [{
+                            fillOpacity: 0.06,
+                            data: data[i].SysjustNavEtfData
+                        }]
+                    });
+                });
+            }
+            //#endregion
+
             //#region loading方法
             function loading() {
                 window.loading('show');
                 setTimeout(() => {
                     window.loading('hide');
-                }, 300);
-            }
-            //#endregion
-
-            //#region 行動裝置判斷
-            if ($(window).width() < 1199) {
-                let MobilePlatform = store.get("MobilePlatform") || "firste";
-                let url;
-
-                if (MobilePlatform == "firste") {
-                    url = "@FirsteKycLink";
-                } else {
-                    url = "@IleoKycLink";
-                }
-
-                url.replaceAll('&amp;', '&');
-                $(".GoKYC").attr('href', url);
+                }, 1000);
             }
             //#endregion
         });

@@ -68,11 +68,11 @@ namespace Feature.Wealth.Component.Controllers
         /// 獲取基金資料
         /// </summary>
         [HttpPost]
-        public ActionResult GetFundData(string ReturnValue)
+        public ActionResult GetFundData(string ExpectedRoi, string[] ProductFundIDs)
         {
             List<FundModel> datas;
 
-            datas = _calculateRepository.GetFundData(ReturnValue);
+            datas = _calculateRepository.GetFundData(ExpectedRoi, ProductFundIDs);
 
             return new JsonNetResult(datas);
         }
@@ -81,11 +81,11 @@ namespace Feature.Wealth.Component.Controllers
         /// 獲取ETF資料
         /// </summary>
         [HttpPost]
-        public ActionResult GetEtfData(string ReturnValue, string RiskLevel)
+        public ActionResult GetEtfData(string ExpectedRoi, string RiskLevel)
         {
             List<EtfModel> datas;
 
-            datas = _calculateRepository.GetEtfData(ReturnValue, RiskLevel);
+            datas = _calculateRepository.GetEtfData(ExpectedRoi, RiskLevel);
 
             return new JsonNetResult(datas);
         }

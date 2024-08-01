@@ -42,6 +42,7 @@ namespace Feature.Wealth.Component.Models.Calculate
                 public static readonly ID RemoteConsultationButtonText = new ID("{39C7F9EE-E9B2-47F1-B81F-54A262B295B8}");
                 public static readonly ID RemoteConsultationButtonLink = new ID("{57B825FF-6BBA-4384-8CC8-27661DDE841E}");
                 public static readonly ID RemoteConsultationImage = new ID("{7DA96E92-17D2-439B-927B-094232C2E3E0}");
+                public static readonly ID FundID = new ID("{48CDA75C-20FA-4074-9BDB-0A90AE89EEB6}");
             }
         }
     }
