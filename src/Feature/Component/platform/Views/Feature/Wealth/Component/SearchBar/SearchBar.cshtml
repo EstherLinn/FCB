@@ -2,6 +2,7 @@
 @using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions
 @using Feature.Wealth.Component.Models
 @using Feature.Wealth.Component.Repositories
+@using Foundation.Wealth.Helper;
 
 @model SearchBarModel
 @if (!Model.IsValid)
@@ -21,7 +22,7 @@
                             var link = item.TargetItem(Templates.HotKeyWordSourceItem.Fields.SearchLink)?.Url() ?? item.TargetItem(Templates.SourceItem.Fields.LinkItem)?.Url();
                             var isSiteProductSearch = item.IsChecked(Templates.HotKeyWordSourceItem.Fields.IsSiteProductSearch);
                             var productType = CommonRepository.GetEnumValueFromDescription<ProductTypeEnum>(val);
-                            <option value="@val"producttype="@productType" data-advance-url="@link" data-advance-hidden="@(isSiteProductSearch ? "true" : "false")">@val</option>
+                            <option value="@val" producttype="@productType" data-advance-url="@link" data-advance-hidden="@(isSiteProductSearch ? "true" : "false")">@val</option>
                         }
                     </select>
                 </div>
@@ -106,6 +107,52 @@
                     $(item).toggleClass('u-hidden', $(item).data('hot-val') != option.text());
                 });
 
+                window.ETFSearch = {
+                    SearchKeyword: new searchKeywordDataRespList(),
+                    QueryList: function () {
+                        SC_DATA.KeywordSearchDate = [];
+                        var query = apiRequest('@ClientRoute.GenerateUrl(this, "EtfSearch", "GetSearchResultData")');
+
+                        query.then((data) => {
+                            console.log(data);
+                            SC_DATA.KeywordSearchDate = data;
+                            this.GenerateSearchKeywordList();
+                            initAutocomplete();
+
+                            $('[data-tab] [data-tab-target]').first().trigger('switch');
+                            $('[data-filter-switch="#uid-template-marketPrice-original"]').trigger('change');
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+                    },
+                    GenerateSearchKeywordList: function () {
+                        this.SearchKeyword.Init();
+                        let $SearchKeyword = this.SearchKeyword;
+                        let list = [];
+                        let url = $SearchKeyword.Url;
+                        console.log(SC_DATA.KeywordSearch_Option.attr('producttype'));
+                        if (Object.keys(SC_DATA.KeywordSearchDate).length != 0) {
+                            $.each(SC_DATA.KeywordSearchDate, function (i, item) {
+                                let obj = {
+                                    value: item.FirstBankCode + ' ' + item.ETFName,
+                                    data: {
+                                        type: 'ETF',
+                                        detailUrl: url + '?' + $.param({ id: item.FirstBankCode }),
+                                        purchase: item.CanOnlineSubscription,
+                                        focusBtnHtml: item.FocusButtonAutoHtml,
+                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                    }
+                                };
+                                list.push(obj);
+                            })
+
+                            this.SearchKeyword.List = list;
+                        }
+                    }
+                };
+
+                window.ETFSearch.QueryList();
+
             }).trigger('change');
 
             // Get the input field
@@ -135,126 +182,104 @@
                 location.href = new URL(location.origin + url.replace(location.origin, ''));
             }
 
-            const keywordSearchSampleDate = [{
-                value: '統一黑馬基金',
-                data: {
-                    type: '基金',
-                    isLogin: JSON.parse('true'),
-                    isLike: JSON.parse('true'),
-                    detailUrl: './fund/detail.html',
-                    purchase: true
-                }
-            }, {
-                value: 'GLOBAL X機器人與人工智慧ETF',
-                data: {
-                    type: 'ETF',
-                    isLogin: JSON.parse('true'),
-                    isLike: false,
-                    detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=$etfweb$html$et011001.djhtm?xyz=1704969638740?|&openexternalbrowser=1&ETFID=BOT^~EF40',
-                    purchase: true
-                }
-            }, {
-                value: 'Alcoa美國鋁業公司',
-                data: {
-                    type: '國外股票',
-                    isLogin: JSON.parse('true'),
-                    isLike: false,
-                    detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=https:$$wms.firstbank.com.tw$b2brwd$page$16005$basic$0001?sym=aa&symidxq=aa.us&symidbsr=aa.us&stsst=16005&bid=eg49&openExternalBrowser=1',
-                    purchase: true
-                }
-            }, {
-                value: '澳盛銀行集團可買回人民幣配息債券',
-                data: {
-                    type: '國外債券',
-                    isLogin: JSON.parse('true'),
-                    isLike: false,
-                    purchase: true
-                }
-            }, {
-                value: '摩根士丹利12個月DRA不保本結構型商品',
-                data: {
-                    type: '結構型商品',
-                    isLogin: JSON.parse('true'),
-                    isLike: null,
-                    detailUrl: 'https://wms.firstbank.com.tw/main.asp?sUrl=$w$custom$structproductlist.djhtm?openExternalBrowser=1',
-                    purchase: false
-                }
-            }];
-
-            // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
-            $('#keyword').autocomplete({
-                noCache: true,
-                minChars: 0,
-                containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
-                maxHeight: 'auto',
-                zIndex: 5,
-                preserveInput: true,
-                showNoSuggestionNotice: true,
-                noSuggestionNotice: $('#tmplKeywordNotFound').html(),
-                lookup: function (query, done) {
-                    // Do Ajax call or lookup locally, when done,
-                    // call the callback and pass your results:
-                    //query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-                    //let result = keywordSearchSampleDate.filter(function (item) {
-                    //    return query.length == 0 || new RegExp(query, 'gi').test(item.value);
-                    //});
-                    //done({
-                    //    suggestions: result
-                    //});
-                },
-                onSearchComplete: function (query, suggestions) {
-                    var autocomplete = $(this).autocomplete();
-                    var container = autocomplete.suggestionsContainer;
-                    var $this = $(this);
-
-                    // 取消套件預設 blur 事件會關閉 suggestions container
-                    $this.off('blur.autocomplete');
-
-                    // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
-                    if (autocomplete.isRegisteGlobalEvent != true) {
-                        $(window).on('click.autocomplete', {
-                            source: this
-                        }, e => {
-                            if (e.target != e.data.source) {
-                                autocomplete.hide();
-                            }
-                        });
-                        autocomplete.isRegisteGlobalEvent = true;
-                    }
-
-                    // 停止 like icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
-                    $(container).find('.o-statusBtn').off('click.autocomplete').on('click.autocomplete', function (e) {
-                        e.stopPropagation();
+            function apiRequest(url, params) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url,
+                        type: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: params ? JSON.stringify(params) : null,
+                        success: function (data) {
+                            resolve(data);
+                        },
+                        error: function (xhr, status, errorThrown) {
+                            reject({ xhr, status, errorThrown });
+                        }
                     });
-                    // 綁定 like icon 的互動功能
-                    $(container).find('[data-ia]').interactive();
-                    // 綁定 like icon 的彈跳登入畫面
-                    $(container).find('[data-popup]').magnificPopup();
-                },
-                formatResult: function (suggestion, currentValue) {
-                    let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
-                    let className = suggestion.data.isLike ? 'is-active' : '';
+                });
+            }
 
-                    // like 按鈕
-                    let likeWord = suggestion.data.isNews ? '加入收藏|取消收藏' : '加入關注|取消關注';
-                    let $like = suggestion.data.isLike != null ? suggestion.data.isLogin == true ?
-                        // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
-                        `<a href="#" class="o-statusBtn o-statusBtn--like ${className}" data-msg="${likeWord}" data-ia="true"></a>` :
-                        // <!-- [data-popup]: 未登入開啟登入彈跳視窗 -->
-                        `<a href="#popupLogin" class="o-statusBtn o-statusBtn--like ${className}" data-popup="true"><i></i></a>` : '';
-
-                    // 申購按鈕
-                    let $purchase = suggestion.data.purchase ? suggestion.data.isLogin == true ? `<div class="c-itemKeyword__actions"><a href="#popupPurchase" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : `<div class="c-itemKeyword__actions"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--auto o-btn--thinest" data-popup="true">申購</a></div>` : '';
-                    return `<div class="c-itemKeyword">
-                        <a href="${detailUrl}" class="c-itemKeyword__content">
-                            <div class="c-itemKeyword__type">${suggestion.data.type}</div>
-                            <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                        </a>
-                        <div class="c-itemKeyword__collections">${$like}</div>
-                        ${$purchase}
-                    </div>`;
+            function searchKeywordDataRespList() {
+                this.List;
+                this.Url = '/fund-center/fund/fund-search/fund-details';
+                var $this = this;
+                this.Init = function () {
+                    $this.List = [];
                 }
-            });
+            }
+
+            function initAutocomplete() {
+                // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
+                $('#keyword').autocomplete({
+                    max: 10,
+                    noCache: true,
+                    minChars: 0,
+                    containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
+                    maxHeight: 'auto',
+                    zIndex: 5,
+                    preserveInput: true,
+                    showNoSuggestionNotice: true,
+                    noSuggestionNotice: $('#tmplKeywordNotFound').html(),
+                    lookup: function (query, done) {
+                        // Do Ajax call or lookup locally, when done,
+                        // call the callback and pass your results:
+                        query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+                        let result = SC_DATA.KeywordSearchDate.filter(function (item) {
+                            return query.length == 0 || new RegExp(query, 'gi').test(item.value);
+                        });
+                        done({
+                            suggestions: result.slice(0, 5)
+                        });
+                    },
+                    onSearchComplete: function (query, suggestions) {
+                        var autocomplete = $(this).autocomplete();
+                        var container = autocomplete.suggestionsContainer;
+                        var $this = $(this);
+
+                        // 取消套件預設 blur 事件會關閉 suggestions container
+                        $this.off('blur.autocomplete');
+
+                        // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
+                        if (autocomplete.isRegisteGlobalEvent != true) {
+                            $(window).on('click.autocomplete', {
+                                source: this
+                            }, e => {
+                                if (e.target != e.data.source) {
+                                    autocomplete.hide();
+                                }
+                            });
+                            autocomplete.isRegisteGlobalEvent = true;
+                        }
+
+                        // 綁定 like icon 的互動功能
+                        $(container).find('[data-ia]').interactive();
+                        // 綁定 like icon 的彈跳登入畫面
+                        $(container).find('[data-popup]').magnificPopup();
+                        $(container).find('[eh-compare]').trigger('exec');
+                        $(container).find('[eh-focus]').trigger('exec');
+                        $(container).find('[eh-subscription-type]').trigger('exec');
+                    },
+                    formatResult: function (suggestion, currentValue) {
+                        let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
+
+                        // like 按鈕
+                        let $like = `<a ${suggestion.data.focusBtnHtml}></a>`;
+                        // 申購按鈕
+                        let $purchase = suggestion.data.purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.data.subscribeBtnHtml}>申購</a></div>` : '';
+
+                        return `<div class="c-itemKeyword">
+                     <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                         <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                     </a>
+                     <div class="c-itemKeyword__collections">${$like}</div>
+                     ${$purchase}
+                 </div>`;
+                    }
+                });
+
+
+            }
         });
 
     })(jQuery, window, document);
