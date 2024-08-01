@@ -181,5 +181,15 @@ namespace Feature.Wealth.Component.Repositories
                 && c.StartTime == consultSchedule.StartTime
                 && c.EmployeeID == consultSchedule.EmployeeID);
         }
+
+        internal void CancelConsultSchedule(ConsultSchedule consultSchedule)
+        {
+            string sql = @"UPDATE [ConsultSchedule] SET
+                           StatusCode = '3'
+                           ,ModifiedOn = GETDATE()
+                           WHERE ScheduleID = @ScheduleID";
+
+            this._dbConnection.Execute(sql, consultSchedule);
+        }
     }
 }

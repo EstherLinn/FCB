@@ -338,8 +338,26 @@
         <header class="c-modal__header">
             <h2 class="c-modal__title">提醒</h2>
         </header>
-        <div class="c-modal__content">
+        <div class="c-modal__content" id="popupRemindText">
             因您同一日已預約超過二個時段，請重新預約其他日期，不便之處敬請見諒。
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true">確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupRemind2" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">提醒</h2>
+        </header>
+        <div class="c-modal__content" id="popupRemind2Text">
+            您已達10個工作天內預約6次之上限，請於  再進行預約。
         </div>
         <div class="c-modal__action">
             <div class="l-action l-action--inline">
@@ -578,7 +596,7 @@
             var schedules = [];
 
             // 判斷每日至多可預約2個時段
-            schedules = consultSchedules.filter(c => c.ScheduleDateString == stringDate && c.CustomerID == @Model.EmployeeID);
+            schedules = consultSchedules.filter(c => c.ScheduleDateString == stringDate && c.CustomerID == '@Model.CustomerID');
 
             if (schedules.length > 1) {
                 // 提示訊息
@@ -768,5 +786,29 @@
             });
         });
 
+        function checkConsultLimit() {
+            var schedules = consultSchedules.filter((c) => c.CustomerID == '@Model.CustomerID');
+
+            if (schedules.length > 5) {
+                var schedule = schedules[0];
+
+                $('#popupRemind2Text').text('您已達10個工作天內預約6次之上限，請於' + schedule.ScheduleDateString + '再進行預約。')
+
+                // 提示訊息
+                $.magnificPopup.open({
+                    items: {
+                        src: '#popupRemind2'
+                    },
+                    closeOnBgClick: false,
+                    callbacks: {
+                        afterClose: function () {
+                            location.href = new URL(location.origin + '@Model.ReturnLink');
+                        }
+                    }
+                }, 0);
+            }
+        }
+
+        checkConsultLimit();
     });
 </script>

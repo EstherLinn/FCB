@@ -278,7 +278,88 @@
     </div>
 </div>
 
+<div id="popupDetail" class="c-modal mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">預約明細</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-info">
+                <div class="l-info__item">
+                    <div class="l-info__title">預約日期</div>
+                    <div class="l-info__val" data-detail="ScheduleDate"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">預約時段</div>
+                    <div class="l-info__val" data-detail="ScheduleTime"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">聯絡電話</div>
+                    <div class="l-info__val" data-detail="Phone"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">電子信箱</div>
+                    <div class="l-info__val" data-detail="Mail"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">諮詢主題</div>
+                    <div class="l-info__val" data-detail="Subject"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">其他諮詢內容</div>
+                    <div class="l-info__val" data-detail="Description"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div id="popupCancel" class="c-modal mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">確認取消預約</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-info">
+                <div class="l-info__item">
+                    <div class="l-info__title">預約理專</div>
+                    <div class="l-info__val" data-detail="EmployeeName"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">預約日期</div>
+                    <div class="l-info__val" data-detail="ScheduleDate"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">預約時段</div>
+                    <div class="l-info__val" data-detail="ScheduleTime"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">聯絡電話</div>
+                    <div class="l-info__val" data-detail="Phone"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">電子信箱</div>
+                    <div class="l-info__val" data-detail="Mail"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">諮詢主題</div>
+                    <div class="l-info__val" data-detail="Subject"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">其他諮詢內容</div>
+                    <div class="l-info__val" data-detail="Description"></div>
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true" data-cancel data-id="">確定取消</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script id="template0" type="text/html">
     <tr class="c-cardTable__item u-center@dt-only">
@@ -298,7 +379,7 @@
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約明細</div>
             <div class="c-cardTable__content">
-                <a href="#popupDetail" class="o-link" data-popup="true">查看</a>
+                <a href="#popupDetail" class="o-link" data-popup="true" data-popup-name="popupDetail" data-id="<%= ScheduleID %>">查看</a>
             </div>
         </td>
         <td class="c-cardTable__space"></td>
@@ -306,7 +387,7 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <a href="#popupCancel" class="o-statusBtn o-statusBtn--cancel" data-after-lt="取消預約" data-msg="取消預約" data-ia="true" data-ia-toast="false" data-popup="true"></a>
+                        <a href="#popupCancel" class="o-statusBtn o-statusBtn--cancel" data-popup-name="popupCancel" data-after-lt="取消預約" data-msg="取消預約" data-ia="true" data-ia-toast="false" data-popup="true" data-id="<%= ScheduleID %>"></a>
                     </li>
                 </ul>
             </div>
@@ -345,7 +426,7 @@
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約明細</div>
             <div class="c-cardTable__content">
-                <a href="#popupDetail" class="o-link" data-popup="true">查看</a>
+                <a href="#popupDetail" class="o-link" data-popup="true" data-popup-name="popupDetail" data-id="<%= ScheduleID %>">查看</a>
             </div>
         </td>
         <td class="c-cardTable__space"></td>
@@ -353,7 +434,7 @@
             <div class="c-cardTable__content">
                 <ul class="l-collect l-collect--divider@lt">
                     <li class="l-collect__item">
-                        <a href="#popupCancel" class="o-statusBtn o-statusBtn--cancel" data-after-lt="取消預約" data-msg="取消預約" data-ia="true" data-ia-toast="false" data-popup="true"></a>
+                        <a href="#popupCancel" class="o-statusBtn o-statusBtn--cancel" data-popup-name="popupCancel" data-after-lt="取消預約" data-msg="取消預約" data-ia="true" data-ia-toast="false" data-popup="true" data-id="<%= ScheduleID %>"></a>
                     </li>
                 </ul>
             </div>
@@ -396,7 +477,7 @@
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約明細</div>
             <div class="c-cardTable__content">
-                <a href="#popupDetail" class="o-link" data-popup="true">查看</a>
+                <a href="#popupDetail" class="o-link" data-popup="true" data-popup-name="popupDetail" data-id="<%= ScheduleID %>">查看</a>
             </div>
         </td>
     </tr>
@@ -598,6 +679,63 @@
                 onPagination: function () {
                 }
             }
+        });
+
+        function setPopup(id) {
+            var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
+
+            $('[data-detail="EmployeeName"]').text(consultSchedule.EmployeeName);
+            $('[data-detail="ScheduleDate"]').text(consultSchedule.ScheduleDateString);
+            $('[data-detail="ScheduleTime"]').text(consultSchedule.StartTime + '~' + consultSchedule.EndTime);
+            $('[data-detail="Phone"]').text(consultSchedule.Phone);
+            $('[data-detail="Mail"]').text(consultSchedule.Mail);
+            $('[data-detail="Subject"]').text(consultSchedule.Subject);
+            $('[data-detail="Description"]').text(consultSchedule.Description);
+            $('[data-cancel]').attr('data-id', id);
+        }
+
+        $('[data-popup-name="popupDetail"]').on('click', function (e) {
+            e.preventDefault();
+
+            setPopup($(this).attr('data-id'));
+        });
+
+        $('[data-popup-name="popupCancel"]').on('click', function (e) {
+            e.preventDefault();
+
+            setPopup($(this).attr('data-id'));
+        });
+
+        $('[data-cancel]').on('click', function (e) {
+            e.preventDefault();
+            window.loading('show');
+            var id = $(this).attr('data-id')
+            var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            consultSchedule.__RequestVerificationToken = token;
+
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "Consult", "CancelConsultSchedule")',
+                type: 'POST',
+                data: consultSchedule
+            }).done(function (data, textStatus, jqXHR) {
+                $.magnificPopup.close();
+                if (data) {
+                    if (data0.length > 0) {
+                        fjs0.removeRecords({ ScheduleID: id });
+                    }
+                    if (data1.length > 0) {
+                        fjs1.removeRecords({ ScheduleID: id });
+                    }
+                }
+                else {
+
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function () {
+                window.loading('hide');
+            });
         });
     });
 </script>
