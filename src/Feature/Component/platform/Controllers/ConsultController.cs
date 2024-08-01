@@ -65,7 +65,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 foreach (var c in temps)
                 {
-                    if(c.CustomerID.ToLower() == FcbMemberHelper.GetMemberWebBankId().ToLower())
+                    if (c.CustomerID.ToLower() == FcbMemberHelper.GetMemberWebBankId().ToLower())
                     {
                         consultScheduleList.Add(c);
                     }
@@ -345,6 +345,21 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             this._consultRepository.InsertConsultSchedule(consultSchedule);
+
+            //TODO 呼叫 IMVP API
+
+            return new JsonNetResult(true);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CancelConsultSchedule(ConsultSchedule consultSchedule)
+        {
+            var info = FcbMemberHelper.GetMemberAllInfo();
+
+            //TODO 驗證使用者資訊
+
+            this._consultRepository.CancelConsultSchedule(consultSchedule);
 
             //TODO 呼叫 IMVP API
 
