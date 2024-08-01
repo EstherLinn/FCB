@@ -149,6 +149,10 @@ namespace Foundation.WorkBox.Actions.Workflows
             //必須帶有工作流程狀態
             if (state == null)
                 return;
+
+            // 設定 HTTPS 連線時，不要理會憑證的有效性問題
+            System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
             using (SmtpClient client = mailServerOption.ToSMTPClient())
             {
                 var encoding = Encoding.UTF8;
