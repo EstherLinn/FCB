@@ -14,7 +14,7 @@ namespace Feature.Wealth.Component.Repositories
             string strSql = @"
             SELECT [PlatFormId],[SavingList],[EducationFundList],[BuyHouseList],[RetirementPreparationList] 
             FROM [dbo].[MemberCalculationList] 
-            WHERE PlatFormId = @platFormId";
+            WHERE [PlatFormId] COLLATE Latin1_General_CS_AS = @platFormId";
 
             var platFormId = FcbMemberHelper.GetMemberPlatFormId();
 
