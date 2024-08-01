@@ -104,7 +104,7 @@ namespace Feature.Wealth.Component.Controllers
                     Title = ItemUtils.GetFieldValue(child, Template.MarketTrendItem.Fields.Title)
                 };
 
-                var date = ItemUtils.GetDateTimeFieldValue(child, Template.MarketTrendItem.Fields.Date);
+                var date = ItemUtils.GetLocalDateFieldValue(child, Template.MarketTrendItem.Fields.Date);
                 if (date != null && date.HasValue)
                 {
                     marketTrend.Date = date.Value.Year + "年" + date.Value.Month + "月";
