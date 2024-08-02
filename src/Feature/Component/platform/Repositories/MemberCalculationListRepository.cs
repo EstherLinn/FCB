@@ -48,6 +48,10 @@ namespace Feature.Wealth.Component.Repositories
                     lists.RetirementPreparationList = JsonConvert.DeserializeObject<CalculationListData>(record.RetirementPreparationList);
                 }
             }
+            else
+            {
+                lists = null;
+            }
 
             return lists;
         }
