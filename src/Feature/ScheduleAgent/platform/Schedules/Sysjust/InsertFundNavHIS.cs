@@ -5,6 +5,7 @@ using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using System.Collections.Generic;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
@@ -24,8 +25,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsv<SysjustFundNavHis>(filename);
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_FUNDNAV_HIS]", "FirstBankCode", "Date", filename);
+                        var basic = (IList<SysjustFundNavHis>)await etlService.ParseCsv<SysjustFundNavHis>(filename);
+                        _repository.BulkInsertToEncryptedDatabase(basic, "[Sysjust_FUNDNAV_HIS]", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
