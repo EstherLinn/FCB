@@ -1,4 +1,6 @@
 ﻿using Sitecore.Data.Items;
+using System;
+using System.Collections.Generic;
 
 namespace Feature.Wealth.Component.Models.Calculate
 {
@@ -32,10 +34,96 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string BondAllocationText { get; set; }
         public string CurrencyAllocationText { get; set; }
         public string Notice { get; set; }
-        public string RemoteConsultationTitle { get; set; }
-        public string RemoteConsultationContent { get; set; }
-        public string RemoteConsultationButtonText { get; set; }
-        public string RemoteConsultationButtonLink { get; set; }
-        public string RemoteConsultationImage { get; set; }
+        public string RemoteConsultationSuccessTitle { get; set; }
+        public string RemoteConsultationSuccessContent { get; set; }
+        public string RemoteConsultationSuccessButtonText { get; set; }
+        public string RemoteConsultationSuccessButtonLink { get; set; }
+        public string RemoteConsultationSuccessImage { get; set; }
+        public string RemoteConsultationSuccessfulTitle { get; set; }
+        public string RemoteConsultationSuccessfulContent { get; set; }
+        public string RemoteConsultationSuccessfulButtonText { get; set; }
+        public string RemoteConsultationSuccessfulButtonLink { get; set; }
+        public string RemoteConsultationSuccessfulImage { get; set; }
+        public string[] FundID { get; set; }
+    }
+
+    public class CalculationResultData
+    {
+        public string PlatFormId { get; set; }
+        public string Type { get; set; }
+        public string Name { get; set; }
+        public string DateTime { get; set; }
+        public bool ResultHasGap { get; set; }
+        public string Description { get; set; }
+        public List<string> EarningsChart { get; set; }
+        public ReadingbarData Readingbar { get; set; }
+        public List<ChartsRevenuesData> ChartsRevenues { get; set; }
+        public List<ChartsRewardsData> ChartsRewards { get; set; }
+        public List<string> ChartsRewardsCategories { get; set; }
+    }
+
+    public class ReadingbarData
+    {
+        public int target { get; set; }
+        public int current { get; set; }
+        public int gap { get; set; }
+    }
+
+    public class ChartsRevenuesData
+    {
+        public string id { get; set; }
+        public int gap { get; set; }
+        public int revenue { get; set; }
+        public int invest { get; set; }
+        public int prepared { get; set; }
+        public int retire { get; set; }
+    }
+
+    public class ChartsRewardsData
+    {
+        public string id { get; set; }
+        public int target { get; set; }
+        public List<int?> gap { get; set; }
+        public List<int> revenue { get; set; }
+        public List<int> invest { get; set; }
+        public List<int> prepared { get; set; }
+        public List<int> retire { get; set; }
+    }
+
+    public class RecommendedProducts
+    {
+        public List<FundModel> FundData { get; set; }
+        public List<EtfModel> ETFData { get; set; }
+    }
+
+    public class FundModel
+    {
+        public string ProductCode { get; set; }
+        public string FundName { get; set; }
+        public decimal? OneMonthReturnOriginalCurrency { get; set; }
+        public string AvailabilityStatus { get; set; }
+        public string OnlineSubscriptionAvailability { get; set; }
+        public string DisplayOneMonthReturnOriginalCurrency { get; set; }
+        public List<decimal> SysjustNavFundData { get; set; }
+        public string FundDetailUrl { get; set; }
+        public string FocusButtonHtml { get; set; }
+        public string CompareButtonHtml { get; set; }
+        public string SubscribeButtonHtml { get; set; }
+        public bool DataIsFormSitecore { get; set; } = false;
+    }
+
+    public class EtfModel
+    {
+        public string ProductCode { get; set; }
+        public string ETFName { get; set; }
+        public decimal? MonthlyReturnNetValueOriginalCurrency { get; set; }
+        public string AvailabilityStatus { get; set; }
+        public string OnlineSubscriptionAvailability { get; set; }
+        public string DisplayMonthlyReturnNetValueOriginalCurrency { get; set; }
+        public List<decimal> SysjustNavEtfData { get; set; }
+        public string ETFDetailUrl { get; set; }
+        public string FocusButtonHtml { get; set; }
+        public string CompareButtonHtml { get; set; }
+        public string SubscribeButtonHtml { get; set; }
     }
 }
