@@ -34,11 +34,16 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string BondAllocationText { get; set; }
         public string CurrencyAllocationText { get; set; }
         public string Notice { get; set; }
-        public string RemoteConsultationTitle { get; set; }
-        public string RemoteConsultationContent { get; set; }
-        public string RemoteConsultationButtonText { get; set; }
-        public string RemoteConsultationButtonLink { get; set; }
-        public string RemoteConsultationImage { get; set; }
+        public string RemoteConsultationSuccessTitle { get; set; }
+        public string RemoteConsultationSuccessContent { get; set; }
+        public string RemoteConsultationSuccessButtonText { get; set; }
+        public string RemoteConsultationSuccessButtonLink { get; set; }
+        public string RemoteConsultationSuccessImage { get; set; }
+        public string RemoteConsultationSuccessfulTitle { get; set; }
+        public string RemoteConsultationSuccessfulContent { get; set; }
+        public string RemoteConsultationSuccessfulButtonText { get; set; }
+        public string RemoteConsultationSuccessfulButtonLink { get; set; }
+        public string RemoteConsultationSuccessfulImage { get; set; }
         public string[] FundID { get; set; }
     }
 

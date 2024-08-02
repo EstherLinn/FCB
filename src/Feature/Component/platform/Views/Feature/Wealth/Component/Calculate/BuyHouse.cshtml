@@ -1368,8 +1368,8 @@
     </div>
 </section>
 
-<!-- 遠距諮詢 -->
-<section id="consult" class="c-section  u-hidden">
+<!-- 遠距諮詢有登入 -->
+<section id="consultsuccess" class="c-section  u-hidden">
     <div class="l-wrap">
         <div class="c-section__content">
             <div class="l-feature l-feature--sm">
@@ -1378,30 +1378,75 @@
                         <div class="c-feature c-feature--join c-feature--personalize">
                             <div class="c-feature__content u-center">
 
-                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationTitle))
+                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationSuccessTitle))
                                 {
-                                    <h3 class="c-feature__title">@Model.RemoteConsultationTitle</h3>
+                                    <h3 class="c-feature__title">@Model.RemoteConsultationSuccessTitle</h3>
                                 }
 
-                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationContent))
+                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationSuccessContent))
                                 {
-                                    <p class="c-feature__desc">@Model.RemoteConsultationContent</p>
+                                    <p class="c-feature__desc">@Model.RemoteConsultationSuccessContent</p>
                                 }
 
-                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationButtonText) || !string.IsNullOrEmpty(Model.RemoteConsultationButtonLink))
+                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationSuccessButtonText) || !string.IsNullOrEmpty(Model.RemoteConsultationSuccessButtonLink))
                                 {
                                     <div class="c-feature__actions">
-                                        @Html.Sitecore().BeginField(Template.Calculate.Fields.RemoteConsultationButtonLink.ToString(), Model.Datasource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--flat o-btn--sm" })
-                                        @Html.Sitecore().Field(Template.Calculate.Fields.RemoteConsultationButtonText.ToString(), Model.Datasource)
+                                        @Html.Sitecore().BeginField(Template.Calculate.Fields.RemoteConsultationSuccessButtonLink.ToString(), Model.Datasource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--flat o-btn--sm" })
+                                        @Html.Sitecore().Field(Template.Calculate.Fields.RemoteConsultationSuccessButtonText.ToString(), Model.Datasource)
                                         @Html.Sitecore().EndField()
                                     </div>
                                 }
                             </div>
 
-                            @if (!string.IsNullOrEmpty(Model.RemoteConsultationImage))
+                            @if (!string.IsNullOrEmpty(Model.RemoteConsultationSuccessImage))
                             {
                                 <div class="c-feature__plate">
-                                    <img src="@Model.RemoteConsultationImage" srcset="" alt="遠距諮詢 解決您的理財大小事" class="c-feature__img">
+                                    <img src="@Model.RemoteConsultationSuccessImage" srcset="" alt="遠距諮詢 解決您的理財大小事" class="c-feature__img">
+                                </div>
+                            }
+
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 遠距諮詢未登入 -->
+<section id="consultsuccessful" class="c-section  u-hidden">
+    <div class="l-wrap">
+        <div class="c-section__content">
+            <div class="l-feature l-feature--sm">
+                <ul class="l-feature__list">
+                    <li class="l-feature__item">
+                        <div class="c-feature c-feature--join c-feature--personalize">
+                            <div class="c-feature__content u-center">
+
+                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationSuccessfulTitle))
+                                {
+                                    <h3 class="c-feature__title">@Model.RemoteConsultationSuccessfulTitle</h3>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationSuccessfulContent))
+                                {
+                                    <p class="c-feature__desc">@Model.RemoteConsultationSuccessfulContent</p>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.RemoteConsultationSuccessfulButtonText) || !string.IsNullOrEmpty(Model.RemoteConsultationSuccessfulButtonLink))
+                                {
+                                    <div class="c-feature__actions">
+                                        @Html.Sitecore().BeginField(Template.Calculate.Fields.RemoteConsultationSuccessfulButtonLink.ToString(), Model.Datasource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--flat o-btn--sm" })
+                                        @Html.Sitecore().Field(Template.Calculate.Fields.RemoteConsultationSuccessfulButtonText.ToString(), Model.Datasource)
+                                        @Html.Sitecore().EndField()
+                                    </div>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.RemoteConsultationSuccessfulImage))
+                            {
+                                <div class="c-feature__plate">
+                                    <img src="@Model.RemoteConsultationSuccessfulImage" srcset="" alt="遠距諮詢 解決您的理財大小事" class="c-feature__img">
                                 </div>
                             }
 
@@ -1758,7 +1803,12 @@
                     renderChartsAssets(chartsAssets);
 
                     // 顯示試算結果 - 諮詢區塊
-                    $("#consult").removeClass("u-hidden");
+                    if (SC_DATA.IsLoggedIn && SC_DATA.WebBankId !== "") {
+                        $("#consultsuccess").removeClass("u-hidden");
+                    }
+                    else {
+                        $("#consultsuccessful").removeClass("u-hidden");
+                    }
                 }
             });
             //#endregion
@@ -1844,7 +1894,12 @@
                     renderChartsAssets(chartsAssets);
 
                     // 顯示試算結果 - 諮詢區塊
-                    $("#consult").removeClass("u-hidden");
+                    if (SC_DATA.IsLoggedIn && SC_DATA.WebBankId !== "") {
+                        $("#consultsuccess").removeClass("u-hidden");
+                    }
+                    else {
+                        $("#consultsuccessful").removeClass("u-hidden");
+                    }
                 }
             });
             //#endregion
@@ -2001,7 +2056,7 @@
                     url: '@Url.Action("GetCifMemberRisk", "Accounts")',
                     type: 'POST',
                     success: function (data) {
-                        if (data.success && data.risk != "") {
+                        if (data.success && data.risk != undefined) {
 
                             setTimeout(function (e) {
                                 $.magnificPopup.open({

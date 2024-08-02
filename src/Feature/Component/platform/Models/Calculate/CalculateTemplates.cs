@@ -37,11 +37,16 @@ namespace Feature.Wealth.Component.Models.Calculate
                 public static readonly ID BondAllocationText = new ID("{3E4130C7-C78B-4740-9ED6-A9329414D0BB}");
                 public static readonly ID CurrencyAllocationText = new ID("{6196D994-DE64-43A0-ABAB-4058268A0A4C}");
                 public static readonly ID Notice = new ID("{F6E26787-A45D-4424-8C7A-82DEF7FBBD7A}");
-                public static readonly ID RemoteConsultationTitle = new ID("{FFEE7E90-EFEC-42EE-B102-2C60766C12E1}");
-                public static readonly ID RemoteConsultationContent = new ID("{07158773-FDEB-4207-8AF3-660A0F51D9D3}");
-                public static readonly ID RemoteConsultationButtonText = new ID("{39C7F9EE-E9B2-47F1-B81F-54A262B295B8}");
-                public static readonly ID RemoteConsultationButtonLink = new ID("{57B825FF-6BBA-4384-8CC8-27661DDE841E}");
-                public static readonly ID RemoteConsultationImage = new ID("{7DA96E92-17D2-439B-927B-094232C2E3E0}");
+                public static readonly ID RemoteConsultationSuccessTitle = new ID("{FFEE7E90-EFEC-42EE-B102-2C60766C12E1}");
+                public static readonly ID RemoteConsultationSuccessContent = new ID("{07158773-FDEB-4207-8AF3-660A0F51D9D3}");
+                public static readonly ID RemoteConsultationSuccessButtonText = new ID("{39C7F9EE-E9B2-47F1-B81F-54A262B295B8}");
+                public static readonly ID RemoteConsultationSuccessButtonLink = new ID("{57B825FF-6BBA-4384-8CC8-27661DDE841E}");
+                public static readonly ID RemoteConsultationSuccessImage = new ID("{7DA96E92-17D2-439B-927B-094232C2E3E0}");
+                public static readonly ID RemoteConsultationSuccessfulTitle = new ID("{9585CB46-221E-4F00-90FE-0E44D8CBEDD0}");
+                public static readonly ID RemoteConsultationSuccessfulContent = new ID("{98A900FB-5A82-4825-84DF-74437798FAD7}");
+                public static readonly ID RemoteConsultationSuccessfulButtonText = new ID("{F9C1F3EE-FB81-4190-A443-350B86FE0844}");
+                public static readonly ID RemoteConsultationSuccessfulButtonLink = new ID("{5DBEBF93-25DE-48EA-9C22-F8AADE31D00C}");
+                public static readonly ID RemoteConsultationSuccessfulImage = new ID("{226055AC-83B9-4DC0-86FB-7B428BB791E0}");
                 public static readonly ID FundID = new ID("{48CDA75C-20FA-4074-9BDB-0A90AE89EEB6}");
             }
         }

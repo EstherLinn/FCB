@@ -73,11 +73,16 @@ namespace Feature.Wealth.Component.Repositories
             model.BondAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.BondAllocationText);
             model.CurrencyAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.CurrencyAllocationText);
             model.Notice = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.Notice);
-            model.RemoteConsultationTitle = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationTitle);
-            model.RemoteConsultationContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationContent);
-            model.RemoteConsultationButtonText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationButtonText);
-            model.RemoteConsultationButtonLink = ItemUtils.GeneralLink(dataSource, Templates.Calculate.Fields.RemoteConsultationButtonLink).Url;
-            model.RemoteConsultationImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.RemoteConsultationImage);
+            model.RemoteConsultationSuccessTitle = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessTitle);
+            model.RemoteConsultationSuccessContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessContent);
+            model.RemoteConsultationSuccessButtonText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessButtonText);
+            model.RemoteConsultationSuccessButtonLink = ItemUtils.GeneralLink(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessButtonLink).Url;
+            model.RemoteConsultationSuccessImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessImage);
+            model.RemoteConsultationSuccessfulTitle = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessfulTitle);
+            model.RemoteConsultationSuccessfulContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessfulContent);
+            model.RemoteConsultationSuccessfulButtonText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessfulButtonText);
+            model.RemoteConsultationSuccessfulButtonLink = ItemUtils.GeneralLink(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessfulButtonLink).Url;
+            model.RemoteConsultationSuccessfulImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessfulImage);
             model.FundID = ItemUtils.GetMultiLineText(dataSource, Templates.Calculate.Fields.FundID);
 
             return model;
