@@ -218,10 +218,10 @@ namespace Feature.Wealth.Component.Repositories
                     // TODO: 規模幣別值有問題
 
                     // 近一年市價 / 淨值走勢
-                    dest.HighestMarketPrice = src.HighestMarketPrice.FormatDecimalNumber(4);
-                    dest.LowestMarketPrice = src.LowestMarketPrice.FormatDecimalNumber(4);
-                    dest.HighestNetAssetValue = src.HighestNetAssetValue.FormatDecimalNumber(4);
-                    dest.LowestNetAssestValue = src.LowestNetAssestValue.FormatDecimalNumber(4);
+                    dest.HighestMarketPrice = src.HighestMarketPrice.FormatDecimalNumber(4, needAbs: false);
+                    dest.LowestMarketPrice = src.LowestMarketPrice.FormatDecimalNumber(4, needAbs: false);
+                    dest.HighestNetAssetValue = src.HighestNetAssetValue.FormatDecimalNumber(4, needAbs: false);
+                    dest.LowestNetAssestValue = src.LowestNetAssestValue.FormatDecimalNumber(4, needAbs: false);
 
                     #region 市價
 
@@ -298,7 +298,7 @@ namespace Feature.Wealth.Component.Repositories
                     dest.BankRelatedInstructions = src.BankRelatedInstructions.CheckNullOrEmptyString();
                     dest.DividendDistributionFrequency = src.DividendDistributionFrequency.CheckNullOrEmptyString();
 
-                    dest.TotalManagementFee = src.TotalManagementFee.FormatDecimalNumber(needPercent: true);
+                    dest.TotalManagementFee = src.TotalManagementFee.FormatDecimalNumber(needAbs: false, needPercent: true);
 
                     #region 上、下架時間
 
@@ -396,7 +396,7 @@ namespace Feature.Wealth.Component.Repositories
                     dest.ETFName = src.ETFName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
                     dest.SixMonthReturnMarketPriceOriginalCurrency = src.SixMonthReturnMarketPriceOriginalCurrency.FormatDecimalNumber(needPercent: true);
                     dest.SixMonthReturnMarketPriceOriginalCurrencyStyle = src.SixMonthReturnMarketPriceOriginalCurrency.DecimalNumberToStyle();
-                    dest.NetAssetValue = src.NetAssetValue.FormatDecimalNumber(4);
+                    dest.NetAssetValue = src.NetAssetValue.FormatDecimalNumber(4, needAbs: false);
                 });
 
             var result = collection.Adapt<List<EtfTypeRanking>>(config);
@@ -1204,9 +1204,9 @@ namespace Feature.Wealth.Component.Repositories
                     dest.ExDividendDate = DateTimeExtensions.FormatDate(src.ExDividendDate).CheckNullOrEmptyString();
                     dest.RecordDate = DateTimeExtensions.FormatDate(src.RecordDate).CheckNullOrEmptyString();
                     dest.PaymentDate = DateTimeExtensions.FormatDate(src.PaymentDate).CheckNullOrEmptyString();
-                    dest.TotalDividendAmount = src.TotalDividendAmount.FormatDecimalNumber(4);
-                    dest.ShortTermCapitalGains = src.ShortTermCapitalGains.FormatDecimalNumber(4);
-                    dest.LongTermCapitalGains = src.LongTermCapitalGains.FormatDecimalNumber(4);
+                    dest.TotalDividendAmount = src.TotalDividendAmount.FormatDecimalNumber(6, needAbs: false);
+                    dest.ShortTermCapitalGains = src.ShortTermCapitalGains.FormatDecimalNumber(4, needAbs: false);
+                    dest.LongTermCapitalGains = src.LongTermCapitalGains.FormatDecimalNumber(4, needAbs: false);
                 });
 
             var result = collection.Adapt<List<EtfDividendRecord>>(config)
