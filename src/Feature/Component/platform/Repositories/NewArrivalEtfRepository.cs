@@ -54,7 +54,7 @@ namespace Feature.Wealth.Component.Repositories
         private void ProcessFundFilterDatas(ETFs item)
         {
             item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
-            item.DiscountPremiumFormat = RoundingPrice(item.DiscountPremium);
+            item.DiscountPremiumFormat = RoundingPrice2(item.DiscountPremium);
             item.SixMonthReturnMarketPriceOriginalCurrencyFormat = RoundingPrice2(item.SixMonthReturnMarketPriceOriginalCurrency);
             item.MarketPriceFormat = RoundingPrice(item.MarketPrice);
 

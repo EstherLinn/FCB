@@ -36,14 +36,18 @@
             },
         })
         if (isLogin) {
-            $.ajax({
-                type: "post",
-                url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackList")",
-                success: function (msg) {
-                    store.set('focus', msg);
-                    $('[eh-focus]').trigger('exec');
-                },
-            })
+            let url = new URL(location.href);
+            let isMemberHome = url.pathname.includes('member-home');
+            if (!isMemberHome) {
+                $.ajax({
+                    type: "post",
+                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackList")",
+                    success: function (msg) {
+                        store.set('focus', msg);
+                        $('[eh-focus]').trigger('exec');
+                    },
+                })
+            }
         }
         window.CompareObj = function (id, type, name) {
             this.id = id;

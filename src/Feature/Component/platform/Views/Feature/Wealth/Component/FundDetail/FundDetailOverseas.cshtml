@@ -2328,10 +2328,10 @@
                                                     <div class="c-table__title"><span>@Model.FundYearRateOfReturn[i].Date.ToString("yyyy")</span></div>
                                                 </th>
                                             }
-                                            @for (int i = 0; i < 5 - yearCount; i++)
+                                            @for (int i = 1; i <= 5 - yearCount; i++)
                                             {
                                                 <th>
-                                                    <div class="c-table__title"><span>@Model.FundYearRateOfReturn.Last().Date.AddYears(i + 1).ToString("yyyy")</span></div>
+                                                    <div class="c-table__title"><span>@Model.FundYearRateOfReturn.Last().Date.AddYears(-i).ToString("yyyy")</span></div>
                                                 </th>
                                             }
                                         </tr>

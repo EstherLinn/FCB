@@ -28,7 +28,6 @@ namespace Feature.Wealth.Component.Controllers
             return View("/Views/Feature/Wealth/Component/DiscountPremium/DiscountPremium.cshtml", viewModel);
         }
 
-
         /// <summary>
         /// 搜尋回傳值
         /// </summary>
@@ -52,5 +51,6 @@ namespace Feature.Wealth.Component.Controllers
             var etfs = _repository.GetFundRenderData(items);
             return new JsonNetResult(etfs);
         }
+
     }
 }
