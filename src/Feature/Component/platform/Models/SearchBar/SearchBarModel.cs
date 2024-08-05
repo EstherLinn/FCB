@@ -1,4 +1,9 @@
-﻿using Sitecore.Data;
+﻿using Feature.Wealth.Component.Models.ETF;
+using Feature.Wealth.Component.Models.FundDetail;
+using Feature.Wealth.Component.Models.SiteProductSearch;
+using Feature.Wealth.Component.Models.StructuredProduct;
+using Feature.Wealth.Component.Models.USStock;
+using Sitecore.Data;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +17,7 @@ namespace Feature.Wealth.Component.Models.SearchBar
         public IEnumerable<Item> HotKeyWords { get; set; }
         public IEnumerable<ID> TemplatesID => new[] { Templates.SourceItem.Id, Templates.HotKeyWordSourceItem.Id };
         public bool IsValid { get; set; }
+        public SiteProductSearchDatasource DetailPageLink { get; set; }
 
         public SearchBarModel(Item item)
         {
@@ -26,6 +32,14 @@ namespace Feature.Wealth.Component.Models.SearchBar
                 && i.FieldHasValue(Templates.SourceItem.Fields.Datasource) && i.FieldHasValue(Templates.SourceItem.Fields.FieldTemplate));
 
             this.IsValid = item.TemplateID == Templates.SearchBar.Id;
+
+            this.DetailPageLink = new SiteProductSearchDatasource
+            {
+                EtfDetailPageLink = EtfRelatedLinkSetting.GetETFDetailUrl(),
+                FundDetailPageLink = FundRelatedSettingModel.GetFundDetailsUrl(),
+                StructuredProductDetailPageLink = StructuredProductRelatedLinkSetting.GetStructuredProductDetailUrl(),
+                ForeignStockDetailPageLink = USStockRelatedLinkSetting.GetUSStockDetailUrl()
+            };
         }
     }
 

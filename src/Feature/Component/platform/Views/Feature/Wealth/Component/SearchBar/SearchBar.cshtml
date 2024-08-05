@@ -95,7 +95,7 @@
             // 搜尋全部，隱藏進階搜尋
             $('#SearchCategory').on('change', function (e) {
                 let option = $(this).find(":selected");
-                SC_DATA.KeywordSearch_Option = option;
+                SC_DATA.S_Option = option;
                 $('.c-siteSearch__advance').toggleClass('u-hidden', option.data('advance-hidden'))
                     .off('click', advanceOnClick).on('click', advanceOnClick);
 
@@ -108,14 +108,40 @@
                 });
 
                 window.ETFSearch = {
-                    SearchKeyword: new searchKeywordDataRespList(),
+                    SearchKeyword: {
+                        List: []
+                    },
                     QueryList: function () {
-                        SC_DATA.KeywordSearchDate = [];
-                        var query = apiRequest('@ClientRoute.GenerateUrl(this, "EtfSearch", "GetSearchResultData")');
+                        SC_DATA.S_Result = [];
+                        var query = {};
+
+                        SC_DATA.S_Result = {
+                            Fund: [],
+                            ETF: [],
+                            StructuredProduct: [],
+                            ForeignStock: []
+                        };
+
+                        switch (SC_DATA.S_Option.val()) {
+                            case 'Fund':
+                                query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetFundResult")');
+                                break;
+                            case 'ETF':
+                                query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetETFResult")');
+                                break;
+                            case 'StructuredProduct':
+                                query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetStructuredProductResult")');
+                                break;
+                            case 'ForeignStock':
+                                query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetForeignStockResult")');
+                                break;
+                            default:
+                                return;
+                        }
 
                         query.then((data) => {
                             console.log(data);
-                            SC_DATA.KeywordSearchDate = data;
+                            SC_DATA.S_Result = data;
                             this.GenerateSearchKeywordList();
                             initAutocomplete();
 
@@ -126,25 +152,60 @@
                         });
                     },
                     GenerateSearchKeywordList: function () {
-                        this.SearchKeyword.Init();
-                        let $SearchKeyword = this.SearchKeyword;
                         let list = [];
-                        let url = $SearchKeyword.Url;
-                        console.log(SC_DATA.KeywordSearch_Option.attr('producttype'));
-                        if (Object.keys(SC_DATA.KeywordSearchDate).length != 0) {
-                            $.each(SC_DATA.KeywordSearchDate, function (i, item) {
+                        if (Object.keys(SC_DATA.S_Result).length != 0) {
+                            $.each(SC_DATA.S_Result, function (i, item) {
                                 let obj = {
-                                    value: item.FirstBankCode + ' ' + item.ETFName,
+                                    value: item.ProductCode + ' ' + item.ProductName,
                                     data: {
-                                        type: 'ETF',
-                                        detailUrl: url + '?' + $.param({ id: item.FirstBankCode }),
+                                        type: SC_DATA.S_Option.val(),
+                                        detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
                                         purchase: item.CanOnlineSubscription,
                                         focusBtnHtml: item.FocusButtonAutoHtml,
                                         subscribeBtnHtml: item.SubscribeButtonAutoHtml
                                     }
                                 };
                                 list.push(obj);
-                            })
+                            });
+
+                            $.each(SC_DATA.S_Result, function (i, item) {
+                                let obj = {
+                                    value: item.FirstBankCode + ' ' + item.ETFName,
+                                    data: {
+                                        type: SC_DATA.S_Option.val(),
+                                        detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                                        purchase: item.CanOnlineSubscription,
+                                        focusBtnHtml: item.FocusButtonAutoHtml,
+                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                    }
+                                };
+                                list.push(obj);
+                            });
+
+                            $.each(SC_DATA.S_Result, function (i, item) {
+                                let obj = {
+                                    value: item.ProductCode + ' ' + item.ProductName,
+                                    data: {
+                                        type: SC_DATA.S_Option.val(),
+                                        detailUrl: '@Model.DetailPageLink.StructuredProductDetailPageLink' + '?' + $.param({ id: item.ProductCode })
+                                    }
+                                };
+                                list.push(obj);
+                            });
+
+                            $.each(SC_DATA.S_Result, function (i, item) {
+                                let obj = {
+                                    value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
+                                    data: {
+                                        type: SC_DATA.S_Option.val(),
+                                        detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                                        purchase: item.CanOnlineSubscription,
+                                        focusBtnHtml: item.FocusButtonAutoHtml,
+                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                    }
+                                };
+                                list.push(obj);
+                            });
 
                             this.SearchKeyword.List = list;
                         }
@@ -174,7 +235,7 @@
             function keywordSearch() {
                 insertKeywords();
 
-                let option = SC_DATA.KeywordSearch_Option;
+                let option = SC_DATA.S_Option;
                 redirect(option.data('advance-url') + '?word=' + DOMPurify.sanitize(input.value));
             }
 
@@ -200,17 +261,9 @@
                 });
             }
 
-            function searchKeywordDataRespList() {
-                this.List;
-                this.Url = '/fund-center/fund/fund-search/fund-details';
-                var $this = this;
-                this.Init = function () {
-                    $this.List = [];
-                }
-            }
-
             function initAutocomplete() {
                 // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
+                $('#keyword').autocomplete('disable');
                 $('#keyword').autocomplete({
                     max: 10,
                     noCache: true,
@@ -225,7 +278,7 @@
                         // Do Ajax call or lookup locally, when done,
                         // call the callback and pass your results:
                         query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-                        let result = SC_DATA.KeywordSearchDate.filter(function (item) {
+                        let result = window.ETFSearch.SearchKeyword.List.filter(function (item) {
                             return query.length == 0 || new RegExp(query, 'gi').test(item.value);
                         });
                         done({
@@ -256,7 +309,7 @@
                         $(container).find('[data-ia]').interactive();
                         // 綁定 like icon 的彈跳登入畫面
                         $(container).find('[data-popup]').magnificPopup();
-                        $(container).find('[eh-compare]').trigger('exec');
+                        //$(container).find('[eh-compare]').trigger('exec');
                         $(container).find('[eh-focus]').trigger('exec');
                         $(container).find('[eh-subscription-type]').trigger('exec');
                     },
@@ -269,16 +322,15 @@
                         let $purchase = suggestion.data.purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.data.subscribeBtnHtml}>申購</a></div>` : '';
 
                         return `<div class="c-itemKeyword">
-                     <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                         <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                     </a>
-                     <div class="c-itemKeyword__collections">${$like}</div>
-                     ${$purchase}
-                 </div>`;
+                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                <div class="c-itemKeyword__type">${suggestion.data.type}</div>
+                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                            </a>
+                            <div class="c-itemKeyword__collections">${$like}</div>
+                            ${$purchase}
+                        </div>`;
                     }
                 });
-
-
             }
         });
 
