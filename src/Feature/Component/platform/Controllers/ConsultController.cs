@@ -359,7 +359,14 @@ namespace Feature.Wealth.Component.Controllers
 
             //TODO 驗證使用者資訊
 
-            this._consultRepository.CancelConsultSchedule(consultSchedule);
+            if(consultSchedule != null && Guid.TryParse(consultSchedule.ScheduleID.ToString(), out var scheduleID))
+            {
+                this._consultRepository.CancelConsultSchedule(scheduleID);
+            }
+            else
+            {
+                return new JsonNetResult(false);
+            }
 
             //TODO 呼叫 IMVP API
 

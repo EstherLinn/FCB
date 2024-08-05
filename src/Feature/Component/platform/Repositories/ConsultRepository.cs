@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Feature.Wealth.Component.Models.Consult;
 using Foundation.Wealth.Manager;
+using Sitecore.Marketing.Definitions.AutomationPlans.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -182,14 +184,15 @@ namespace Feature.Wealth.Component.Repositories
                 && c.EmployeeID == consultSchedule.EmployeeID);
         }
 
-        internal void CancelConsultSchedule(ConsultSchedule consultSchedule)
+        internal void CancelConsultSchedule(Guid scheduleID)
         {
             string sql = @"UPDATE [ConsultSchedule] SET
                            StatusCode = '3'
                            ,ModifiedOn = GETDATE()
-                           WHERE ScheduleID = @ScheduleID";
+                           WHERE ScheduleID = @ScheduleID"
+            ;
 
-            this._dbConnection.Execute(sql, consultSchedule);
+            this._dbConnection.Execute(sql, new { ScheduleID = scheduleID });
         }
     }
 }
