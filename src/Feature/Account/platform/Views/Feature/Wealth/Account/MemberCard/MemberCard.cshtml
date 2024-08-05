@@ -98,7 +98,7 @@
                         </div>
                         <div class="c-adCard__action">
                             @Html.Sitecore().BeginField(Templates.MemberCard.Fields.ButtonLink.ToString(), Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--wt o-btn--thin o-btn--auto u-noShadow" })
-                            了解更多
+                            @Html.Sitecore().Field(Templates.MemberCard.Fields.ButtonText.ToString(), Model.DataSource)
                             @Html.Sitecore().EndField()
                         </div>
                     </div>
@@ -109,6 +109,8 @@
 </div>
 <script>
     (function ($, window, document, undefined) {
+        //加入class防止麵包屑被背景蓋住
+        $('.l-navbar.l-navbar--gn').addClass('has-bg');
         //行動裝置判斷
         if ($(window).width() < 1199) {
             let MobilePlatform = store.get("MobilePlatform") || "firste";

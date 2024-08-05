@@ -15,6 +15,10 @@ namespace Feature.Wealth.Component.Models.GraphicCards
         public string ButtonText1 { get; set; }
         public string ButtonText2 { get; set; }
         public string ButtonText3 { get; set; }
+        public bool IsOpenLoginLightBox1 { get; set; }
+        public bool IsOpenLoginLightBox2 { get; set; }
+        public bool IsOpenLoginLightBox3 { get; set; }
+        public bool IsLogin { get; set; }
     }
 
     public struct Templates
@@ -56,6 +60,11 @@ namespace Feature.Wealth.Component.Models.GraphicCards
                 public static readonly ID ButtonLink1 = new ID("{FA91A6D4-0CD8-423F-AA35-77DF458FEABF}");
 
                 /// <summary>
+                /// 長牌卡按鈕登入popup
+                /// </summary>
+                public static readonly ID OpenLoginLightBox1 = new ID("{F8292608-8E4C-4E04-A58E-8BE18A1888F6}");
+
+                /// <summary>
                 /// 短牌卡圖片
                 /// </summary>
                 public static readonly ID Image2 = new ID("{26F495E6-A9EA-44C5-A9B0-DE3DA147B599}");
@@ -81,6 +90,11 @@ namespace Feature.Wealth.Component.Models.GraphicCards
                 public static readonly ID ButtonLink2 = new ID("{1D6E0EB3-8507-4288-BA2F-B7A71F085B9C}");
 
                 /// <summary>
+                /// 長牌卡按鈕登入popup
+                /// </summary>
+                public static readonly ID OpenLoginLightBox2 = new ID("{E1717AAF-8675-4D78-8C70-BEA26E0EA7BD}");
+
+                /// <summary>
                 /// 長牌卡圖片
                 /// </summary>
                 public static readonly ID Image3 = new ID("{C34F923F-A1F4-4D0D-8CA3-18A916E26D36}");
@@ -104,6 +118,11 @@ namespace Feature.Wealth.Component.Models.GraphicCards
                 /// 長牌卡按鈕連結
                 /// </summary>
                 public static readonly ID ButtonLink3 = new ID("{BC104E8A-D0F2-46F7-BAB8-F3BC3273D967}");
+
+                /// <summary>
+                /// 長牌卡按鈕登入popup
+                /// </summary>
+                public static readonly ID OpenLoginLightBox3 = new ID("{59B7EC3F-D73B-42B7-ADC3-637475DF41B5}");
             }
         }
     }

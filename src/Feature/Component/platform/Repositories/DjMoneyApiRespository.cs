@@ -67,8 +67,8 @@ namespace Feature.Wealth.Component.Repositories
                AppendPathSegments("api", "fund", fundId, "roi-duringdate").
                SetQueryParams(new
                {
-                   startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddYears(-1)).ToString("yyyy/MM/dd"),
-                   enddate = _today,
+                   startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddDays(-1).AddYears(-1)).ToString("yyyy/MM/dd"),
+                   enddate = Convert.ToDateTime(_today).AddDays(-1).ToString("yyyy/MM/dd"),
                    getTWD = 0
                }).
                WithOAuthBearerToken(_token).
@@ -234,6 +234,34 @@ namespace Feature.Wealth.Component.Repositories
                 if (range.Equals("60m", StringComparison.OrdinalIgnoreCase) || range.Equals("establishment", StringComparison.OrdinalIgnoreCase) || range.Equals("custom", StringComparison.OrdinalIgnoreCase))
                 {
                     route += "-all";
+                }
+                switch (range.ToLower())
+                {
+                    case "3m":
+                    case "6m":
+                    case "12m":
+                    case "24m":
+                    case "36m":
+                    case "60m":
+                        startdate = Convert.ToDateTime(startdate).AddDays(-1).ToString("yyyy-MM-dd");
+                        enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
+                        break;
+                    case "sinceyear":
+                        var tmpDate = Convert.ToDateTime(startdate).AddDays(1);
+                        if (tmpDate.DayOfWeek == DayOfWeek.Saturday)
+                        {
+                            tmpDate = tmpDate.AddDays(2);
+                        }
+                        else if (tmpDate.DayOfWeek == DayOfWeek.Sunday)
+                        {
+                            tmpDate = tmpDate.AddDays(1);
+                        }
+                        startdate = tmpDate.ToString("yyyy-MM-dd");
+                        enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
+                        break;
+                    case "establishment":
+                        enddate = Convert.ToDateTime(enddate).AddDays(-1).ToString("yyyy-MM-dd");
+                        break;
                 }
                 switch (trend.ToLower())
                 {

@@ -25,7 +25,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     try
                     {
                         var basic = await etlService.ParseFixedLength<FundEtf>(filename);
-                        _repository.BulkInsertToDatabase(basic, "[FUND_ETF]", "BankProductCode", "DataDate", filename);
+                        _repository.BulkInsertToDatabase(basic, "[FUND_ETF]", "BankProductCode", "PriceBaseDate", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)

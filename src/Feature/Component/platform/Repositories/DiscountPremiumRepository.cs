@@ -93,7 +93,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.NetAssetValueDate = f.NetAssetValueDateFormat;
                 vm.DiscountPremium = CreateDictionary(f.DiscountPremium);
 
-                vm.LatestVolumeTradingVolume = new KeyValuePair<string, decimal?>(f.LatestVolumeTradingVolumeFormat,f.LatestVolumeTradingVolume);
+                vm.LatestVolumeTradingVolume = new KeyValuePair<string, decimal?>(f.LatestVolumeTradingVolumeFormat, f.LatestVolumeTradingVolume);
                 vm.LatestVolumeTradingVolumeTenDayAverageVolume = new KeyValuePair<string, decimal?>(f.LatestVolumeTradingVolumeTenDayAverageVolumeFormat, f.LatestVolumeTradingVolumeTenDayAverageVolume);
 
                 vm.IsOnlineSubscriptionAvailability = f.AvailabilityStatus == "Y" &&

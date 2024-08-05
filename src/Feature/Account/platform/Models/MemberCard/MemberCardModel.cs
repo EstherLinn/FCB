@@ -36,6 +36,10 @@ namespace Feature.Wealth.Account.Models.MemberCard
                 /// 按鈕連結
                 /// </summary>
                 public static readonly ID ButtonLink = new ID("{1C970B30-C780-4ECB-AFB0-354E544844B3}");
+                /// <summary>
+                /// 按鈕文字
+                /// </summary>
+                public static readonly ID ButtonText = new ID("{0BEA5DA0-87E4-48D8-85C1-E81211EB5589}");
 
             }
         }

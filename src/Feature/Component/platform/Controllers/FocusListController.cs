@@ -34,13 +34,13 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetTrackFunds()
+        public ActionResult GetTrackFunds(List<TrackListModel> trackListModels)
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
                 return new EmptyResult();
             }
-            List<TrackListModel> trackLists = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
+            List<TrackListModel> trackLists = trackListModels ?? _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
             if (trackLists == null)
             {
                 return new JsonNetResult();
@@ -49,13 +49,13 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetTrackEtfs()
+        public ActionResult GetTrackEtfs(List<TrackListModel> trackListModels)
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
                 return new EmptyResult();
             }
-            List<TrackListModel> trackLists = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
+            List<TrackListModel> trackLists = trackListModels ?? _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
             if (trackLists == null)
             {
                 return new JsonNetResult();
@@ -64,13 +64,13 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetTrackForeignStocks()
+        public ActionResult GetTrackForeignStocks(List<TrackListModel> trackListModels)
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
                 return new EmptyResult();
             }
-            List<TrackListModel> trackLists = _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
+            List<TrackListModel> trackLists = trackListModels ?? _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
             if (trackLists == null)
             {
                 return new JsonNetResult();

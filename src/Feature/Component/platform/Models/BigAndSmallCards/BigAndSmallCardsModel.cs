@@ -17,6 +17,9 @@ namespace Feature.Wealth.Component.Models.BigAndSmallCards
         public string BigButtonText2 { get; set; }
         public string BigButtonLink1 { get; set; }
         public string BigButtonLink2 { get; set; }
+        public bool IsOpenLoginLightBox1 { get; set; }
+        public bool IsOpenLoginLightBox2 { get; set; }
+        public bool IsLogin { get; set; }
     }
 
     public struct Templates
@@ -146,6 +149,16 @@ namespace Feature.Wealth.Component.Models.BigAndSmallCards
                 /// 長牌卡按鈕連結2
                 /// </summary>
                 public static readonly ID BigButtonLink2 = new ID("{60BE7E3D-EDA8-45A8-8D82-6365B99BD1DC}");
+
+                /// <summary>
+                /// Open Login LightBox 1
+                /// </summary>
+                public static readonly ID OpenLoginLightBox1 = new ID("{1A46A177-F262-4BB4-9E27-A61C6DD4DDB7}");
+
+                /// <summary>
+                /// Open Login LightBox 2
+                /// </summary>
+                public static readonly ID OpenLoginLightBox2 = new ID("{C6019453-CD64-440B-8CC0-D6EC27C34571}");
             }
         }
     }

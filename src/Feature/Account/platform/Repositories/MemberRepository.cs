@@ -39,14 +39,14 @@ namespace Feature.Wealth.Account.Repositories
             {
                 strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(33) = @id
                     SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
-                 and PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id )) THEN 1 ELSE 0 END as BIT)";
+                 and PlatFormId COLLATE Latin1_General_CS_AS = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id )) THEN 1 ELSE 0 END as BIT)";
                 idLength = 33;
             }
             else
             {
                 strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
                 SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
-                 and PlatFormId = @@id ) THEN 1 ELSE 0 END as BIT)
+                 and PlatFormId COLLATE Latin1_General_CS_AS = @@id ) THEN 1 ELSE 0 END as BIT)
                 ";
 
             }
@@ -82,7 +82,7 @@ namespace Feature.Wealth.Account.Repositories
             bool exists = false;
             string strSql = @$" Declare @@platForm varchar(10) = @platForm, @@promotionCode varchar(100) = @promotionCode
                  SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
-                 and PlatFormId = @@promotionCode) THEN 1 ELSE 0 END as BIT)";
+                 and PlatFormId COLLATE Latin1_General_CS_AS = @@promotionCode) THEN 1 ELSE 0 END as BIT)";
             var para = new
             {
                 platForm = new DbString() { Value = platForm.ToString(), Length = 10 },
@@ -163,7 +163,7 @@ namespace Feature.Wealth.Account.Repositories
                                             @@platForm varchar(10) = @platForm,
                                             @@platFormId varchar(100) = @platFormId
                                     UPDATE [FCB_Member] Set WebBankId=(Select PROMOTION_CODE From CFMBSEL WHERE CUST_ID = @@WebBankId),
-                                    UpdateTime=@@Time WHERE [PlatForm]=@@PlatForm and PlatFormId = @@platFormId";
+                                    UpdateTime=@@Time WHERE [PlatForm]=@@PlatForm and PlatFormId  COLLATE Latin1_General_CS_AS = @@platFormId";
 
                 var para = new
                 {
@@ -255,7 +255,7 @@ namespace Feature.Wealth.Account.Repositories
                             FROM [CIF] as a
                             left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
                             left join [CFMBSEL] as C on CIF_ID = CUST_ID
-                            WHERE C.PROMOTION_CODE = @@promotionCode ";
+                            WHERE C.PROMOTION_CODE  COLLATE Latin1_General_CS_AS = @@promotionCode ";
 
             var para = new
             {
@@ -299,19 +299,19 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
                             FROM [FCB_Member] as A
-                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)
+                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE  COLLATE Latin1_General_CS_AS = A.WebBankId)
                             left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
                             WHERE PlatForm = @@Platform and ";
 
             if (platFormEunm == PlatFormEunm.WebBank)
             {
                 idLength = 33;
-                strSql += "PlatFormId = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id)";
+                strSql += "PlatFormId COLLATE Latin1_General_CS_AS = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id)";
                 strSql.Replace("varchar(100)", "varchar(33)");
             }
             else
             {
-                strSql += "PlatFormId = @@id";
+                strSql += "PlatFormId COLLATE Latin1_General_CS_AS = @@id";
             }
             var para = new
             {
@@ -342,9 +342,9 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
                             FROM [FCB_Member] as A
-                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)
+                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE  COLLATE Latin1_General_CS_AS = A.WebBankId)
                             left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
-                            WHERE PlatForm = @@Platform and PlatFormId = @@id";
+                            WHERE PlatForm = @@Platform and PlatFormId  COLLATE Latin1_General_CS_AS = @@id";
 
             var para = new
             {
@@ -375,9 +375,9 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
                             FROM [FCB_Member] as A
-                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = A.WebBankId)
+                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE  COLLATE Latin1_General_CS_AS = A.WebBankId)
                             left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
-                            WHERE PlatForm = @@Platform and PlatFormId = @@promotionCode";
+                            WHERE PlatForm = @@Platform and PlatFormId  COLLATE Latin1_General_CS_AS = @@promotionCode";
 
             var para = new
             {
@@ -398,7 +398,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             List<TrackListModel> trackLists = new List<TrackListModel>();
             var jsonStr = string.Empty;
-            var strSql = $"SELECT TrackList FROM TrackList WHERE PlatFormId= @id";
+            var strSql = $"SELECT TrackList FROM TrackList WHERE PlatFormId  COLLATE Latin1_General_CS_AS = @id";
             var para = new { id };
             jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
             if (string.IsNullOrEmpty(jsonStr))
@@ -420,7 +420,7 @@ namespace Feature.Wealth.Account.Repositories
             try
             {
                 var jsonStr = JsonConvert.SerializeObject(trackLists);
-                var strSql = @$"Merge TrackList as target  using (select @id) as source (PlatFormId) on (target.PlatFormId = source.PlatFormId)
+                var strSql = @$"Merge TrackList as target  using (select @id COLLATE Latin1_General_CS_AS) as source (PlatFormId) on (target.PlatFormId = source.PlatFormId)
                       WHEN MATCHED THEN UPDATE SET TrackList = @jsonStr 
                       WHEN NOT MATCHED BY TARGET THEN INSERT (PlatFormId , TrackList ) VALUES (@id, @jsonStr);";
                 var para = new { id = FcbMemberHelper.GetMemberPlatFormId(), jsonStr };
@@ -446,7 +446,7 @@ namespace Feature.Wealth.Account.Repositories
         public bool SetMemberEmail(string id, string email)
         {
             bool success = false;
-            string strSql = $"UPDATE [FCB_Member] Set MemberEmail=@email,UpdateTime =@time WHERE  PlatFormId = @id";
+            string strSql = $"UPDATE [FCB_Member] Set MemberEmail=@email,UpdateTime =@time WHERE PlatFormId COLLATE Latin1_General_CS_AS = @id";
             var para = new { id, email, time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
             try
             {
@@ -472,7 +472,7 @@ namespace Feature.Wealth.Account.Repositories
         public bool SetVideoInfo(string id, bool open)
         {
             bool success = false;
-            string strSql = $"UPDATE [FCB_Member] Set VideoInfoOpen=@open,UpdateTime =@time WHERE  PlatFormId = @id";
+            string strSql = $"UPDATE [FCB_Member] Set VideoInfoOpen=@open,UpdateTime =@time WHERE PlatFormId COLLATE Latin1_General_CS_AS = @id";
             var para = new { id, open, time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
             try
             {
@@ -498,7 +498,7 @@ namespace Feature.Wealth.Account.Repositories
         public bool SetArriedInfo(string id, bool open)
         {
             bool success = false;
-            string strSql = $"UPDATE [FCB_Member] Set ArrivedInfoOpen=@open,UpdateTime =@time WHERE  PlatFormId = @id";
+            string strSql = $"UPDATE [FCB_Member] Set ArrivedInfoOpen=@open,UpdateTime =@time WHERE  PlatFormId  COLLATE Latin1_General_CS_AS = @id";
             var para = new { id, open, time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
             try
             {
@@ -527,7 +527,7 @@ namespace Feature.Wealth.Account.Repositories
             try
             {
                 var type = (QuoteChangeEunm)Enum.Parse(typeof(QuoteChangeEunm), colorType);
-                string strSql = $"UPDATE [FCB_Member] Set StockShowColor=@colorType,UpdateTime =@time WHERE  PlatFormId = @id";
+                string strSql = $"UPDATE [FCB_Member] Set StockShowColor=@colorType,UpdateTime =@time WHERE  PlatFormId COLLATE Latin1_General_CS_AS = @id";
                 var para = new { id, colorType = type.ToString(), time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") };
                 var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
@@ -554,7 +554,7 @@ namespace Feature.Wealth.Account.Repositories
             try
             {
                 var jsonStr = JsonConvert.SerializeObject(commons);
-                var strSql = @$"UPDATE [FCB_Member] Set CommonFunction=@jsonStr,UpdateTime=@Time WHERE  PlatFormId = @PlatFormId ;";
+                var strSql = @$"UPDATE [FCB_Member] Set CommonFunction=@jsonStr,UpdateTime=@Time WHERE  PlatFormId COLLATE Latin1_General_CS_AS = @PlatFormId ;";
                 var para = new { jsonStr, Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), PlatFormId = id };
                 var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                 success = affectedRows != 0;
@@ -579,7 +579,7 @@ namespace Feature.Wealth.Account.Repositories
             CommonFuncrionsResp commonResp = new();
             try
             {
-                var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId=@id ";
+                var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId COLLATE Latin1_General_CS_AS =@id ";
                 var para = new { id };
                 var jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
                 if (jsonStr != null)
@@ -640,7 +640,7 @@ namespace Feature.Wealth.Account.Repositories
             CommonToolsRespResp commonResp = new();
             try
             {
-                var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId=@id";
+                var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId COLLATE Latin1_General_CS_AS =@id";
                 var para = new { id };
                 var jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
                 if (jsonStr != null)
@@ -704,7 +704,7 @@ namespace Feature.Wealth.Account.Repositories
             {
                 if (!limit)
                 {
-                    var strSql = @$"UPDATE [FCB_Member] Set CommonFunction=@jsonStr,UpdateTime=@Time WHERE  PlatFormId = @PlatFormId;";
+                    var strSql = @$"UPDATE [FCB_Member] Set CommonFunction=@jsonStr,UpdateTime=@Time WHERE  PlatFormId COLLATE Latin1_General_CS_AS = @PlatFormId;";
                     var para = new { jsonStr = JsonConvert.SerializeObject(tools), Time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), PlatFormId = id };
                     var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                     success = affectedRows != 0;
