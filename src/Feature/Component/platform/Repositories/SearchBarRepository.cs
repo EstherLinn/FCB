@@ -2,6 +2,7 @@
 using Feature.Wealth.Component.Models.ETF.Search;
 using Feature.Wealth.Component.Models.FundSearch;
 using Feature.Wealth.Component.Models.Invest;
+using Feature.Wealth.Component.Models.SiteProductSearch;
 using Feature.Wealth.Component.Models.SiteProductSearch.Product;
 using Feature.Wealth.Component.Models.StructuredProduct;
 using Feature.Wealth.Component.Models.USStock;
@@ -20,6 +21,18 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class SearchBarRepository
     {
+        public RespProduct GetResultList()
+        {
+            RespProduct resp = new RespProduct
+            {
+                ETFProducts = MapperETFResult()?.ToList(),
+                FundProducts = MapperFundResult()?.ToList(),
+                StructuredProducts = MapperStructuredProductResult()?.ToList(),
+                ForeignStocks = MapperForeignStockResult()?.ToList()
+            };
+            return resp;
+        }
+
         #region ETF
 
         public IEnumerable<EtfProductResult> MapperETFResult()

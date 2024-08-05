@@ -22,7 +22,7 @@
                             var link = item.TargetItem(Templates.HotKeyWordSourceItem.Fields.SearchLink)?.Url() ?? item.TargetItem(Templates.SourceItem.Fields.LinkItem)?.Url();
                             var isSiteProductSearch = item.IsChecked(Templates.HotKeyWordSourceItem.Fields.IsSiteProductSearch);
                             var productType = CommonRepository.GetEnumValueFromDescription<ProductTypeEnum>(val);
-                            <option value="@val" producttype="@productType" data-advance-url="@link" data-advance-hidden="@(isSiteProductSearch ? "true" : "false")">@val</option>
+                            <option value="@val" data-producttype="@productType" data-advance-url="@link" data-advance-hidden="@(isSiteProductSearch ? "true" : "false")">@val</option>
                         }
                     </select>
                 </div>
@@ -107,42 +107,44 @@
                     $(item).toggleClass('u-hidden', $(item).data('hot-val') != option.text());
                 });
 
-                window.ETFSearch = {
-                    SearchKeyword: {
-                        List: []
-                    },
+                SC_DATA.S_SearchKeyword = [];
+                SC_DATA.SearchBar = {
                     QueryList: function () {
                         SC_DATA.S_Result = [];
                         var query = {};
-
-                        SC_DATA.S_Result = {
-                            Fund: [],
-                            ETF: [],
-                            StructuredProduct: [],
-                            ForeignStock: []
-                        };
-
-                        switch (SC_DATA.S_Option.val()) {
+                        let type = SC_DATA.S_Option.data('producttype');
+                        switch (type) {
                             case 'Fund':
-                                query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetFundResult")');
+                                query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetFundResult")');
+                                this.GenerateSearchKeywordList(type);
                                 break;
                             case 'ETF':
-                                query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetETFResult")');
+                                query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetETFResult")');
+                                this.GenerateSearchKeywordList(type);
                                 break;
                             case 'StructuredProduct':
-                                query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetStructuredProductResult")');
+                                query = null; // apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetStructuredProductResult")');
+                                this.GenerateSearchKeywordList(type);
                                 break;
                             case 'ForeignStock':
-                                query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetForeignStockResult")');
+                                query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetForeignStockResult")');
+                                this.GenerateSearchKeywordList(type);
                                 break;
                             default:
+                                query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetSearchResult")');
+                                SC_DATA.S_Result = {
+                                    Fund: [],
+                                    ETF: [],
+                                    ForeignStock: [],
+                                    StructuredProduct: []
+                                }
                                 return;
                         }
 
-                        query.then((data) => {
+                        query?.then((data) => {
                             console.log(data);
                             SC_DATA.S_Result = data;
-                            this.GenerateSearchKeywordList();
+                            this.GenerateSearchKeywordList(type);
                             initAutocomplete();
 
                             $('[data-tab] [data-tab-target]').first().trigger('switch');
@@ -151,68 +153,76 @@
                             console.log(error);
                         });
                     },
-                    GenerateSearchKeywordList: function () {
+                    GenerateSearchKeywordList: function (type) {
                         let list = [];
                         if (Object.keys(SC_DATA.S_Result).length != 0) {
-                            $.each(SC_DATA.S_Result, function (i, item) {
-                                let obj = {
-                                    value: item.ProductCode + ' ' + item.ProductName,
-                                    data: {
-                                        type: SC_DATA.S_Option.val(),
-                                        detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
-                                        purchase: item.CanOnlineSubscription,
-                                        focusBtnHtml: item.FocusButtonAutoHtml,
-                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
-                                    }
-                                };
-                                list.push(obj);
-                            });
 
-                            $.each(SC_DATA.S_Result, function (i, item) {
-                                let obj = {
-                                    value: item.FirstBankCode + ' ' + item.ETFName,
-                                    data: {
-                                        type: SC_DATA.S_Option.val(),
-                                        detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
-                                        purchase: item.CanOnlineSubscription,
-                                        focusBtnHtml: item.FocusButtonAutoHtml,
-                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
-                                    }
-                                };
-                                list.push(obj);
-                            });
+                            switch (type) {
+                               case 'Fund':
+                                    $.each(SC_DATA.S_Result.Fund, function (i, item) {
+                                        let obj = {
+                                            value: item.ProductCode + ' ' + item.ProductName,
+                                            data: {
+                                                type: SC_DATA.S_Option.val(),
+                                                detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
+                                                purchase: item.CanOnlineSubscription,
+                                                focusBtnHtml: item.FocusButtonAutoHtml,
+                                                subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                            }
+                                        };
+                                        list.push(obj);
+                                    });
+                                   break;
+                               case 'ETF':
+                                    $.each(SC_DATA.S_Result.ETF, function (i, item) {
+                                        let obj = {
+                                            value: item.FirstBankCode + ' ' + item.ETFName,
+                                            data: {
+                                                type: SC_DATA.S_Option.val(),
+                                                detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                                                purchase: item.CanOnlineSubscription,
+                                                focusBtnHtml: item.FocusButtonAutoHtml,
+                                                subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                            }
+                                        };
+                                        list.push(obj);
+                                    });
+                                    break;
+                                case 'ForeignStock':
+                                    $.each(SC_DATA.S_Result.ForeignStock, function (i, item) {
+                                        let obj = {
+                                            value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
+                                            data: {
+                                                type: SC_DATA.S_Option.val(),
+                                                detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                                                purchase: item.CanOnlineSubscription,
+                                                focusBtnHtml: item.FocusButtonAutoHtml,
+                                                subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                            }
+                                        };
+                                        list.push(obj);
+                                    });
+                                   break;
+                               case 'StructuredProduct':
+                                    $.each(SC_DATA.S_Result.StructuredProduct, function (i, item) {
+                                        let obj = {
+                                            value: item.ProductCode + ' ' + item.ProductName,
+                                            data: {
+                                                type: SC_DATA.S_Option.val(),
+                                                detailUrl: '@Model.DetailPageLink.StructuredProductDetailPageLink' + '?' + $.param({ id: item.ProductCode })
+                                            }
+                                        };
+                                        list.push(obj);
+                                    });
+                                   break;
+                            }
 
-                            $.each(SC_DATA.S_Result, function (i, item) {
-                                let obj = {
-                                    value: item.ProductCode + ' ' + item.ProductName,
-                                    data: {
-                                        type: SC_DATA.S_Option.val(),
-                                        detailUrl: '@Model.DetailPageLink.StructuredProductDetailPageLink' + '?' + $.param({ id: item.ProductCode })
-                                    }
-                                };
-                                list.push(obj);
-                            });
-
-                            $.each(SC_DATA.S_Result, function (i, item) {
-                                let obj = {
-                                    value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
-                                    data: {
-                                        type: SC_DATA.S_Option.val(),
-                                        detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
-                                        purchase: item.CanOnlineSubscription,
-                                        focusBtnHtml: item.FocusButtonAutoHtml,
-                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
-                                    }
-                                };
-                                list.push(obj);
-                            });
-
-                            this.SearchKeyword.List = list;
+                            SC_DATA.S_SearchKeyword = list;
                         }
                     }
                 };
 
-                window.ETFSearch.QueryList();
+                SC_DATA.SearchBar.QueryList();
 
             }).trigger('change');
 
@@ -263,7 +273,7 @@
 
             function initAutocomplete() {
                 // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
-                $('#keyword').autocomplete('disable');
+                //$('#keyword').autocomplete('disable');
                 $('#keyword').autocomplete({
                     max: 10,
                     noCache: true,
@@ -278,7 +288,7 @@
                         // Do Ajax call or lookup locally, when done,
                         // call the callback and pass your results:
                         query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-                        let result = window.ETFSearch.SearchKeyword.List.filter(function (item) {
+                        let result = SC_DATA.S_SearchKeyword.filter(function (item) {
                             return query.length == 0 || new RegExp(query, 'gi').test(item.value);
                         });
                         done({
