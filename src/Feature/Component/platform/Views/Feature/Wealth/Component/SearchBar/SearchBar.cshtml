@@ -110,115 +110,46 @@
                 SC_DATA.S_SearchKeyword = [];
                 SC_DATA.SearchBar = {
                     QueryList: function () {
-                        SC_DATA.S_Result = [];
                         var query = {};
                         let type = SC_DATA.S_Option.data('producttype');
                         switch (type) {
                             case 'Fund':
                                 query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetFundResult")');
-                                this.GenerateSearchKeywordList(type);
+                                generateSearch(type);
                                 break;
                             case 'ETF':
                                 query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetETFResult")');
-                                this.GenerateSearchKeywordList(type);
+                                generateSearch(type);
                                 break;
                             case 'StructuredProduct':
                                 query = null; // apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetStructuredProductResult")');
-                                this.GenerateSearchKeywordList(type);
+                                generateSearch(type);
                                 break;
                             case 'ForeignStock':
                                 query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetForeignStockResult")');
-                                this.GenerateSearchKeywordList(type);
+                                generateSearch(type);
                                 break;
                             default:
                                 query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetSearchResult")');
                                 SC_DATA.S_Result = {
-                                    Fund: [],
-                                    ETF: [],
-                                    ForeignStock: [],
-                                    StructuredProduct: []
+                                    FundProducts: [],
+                                    ETFProducts: [],
+                                    ForeignStocks: [],
+                                    StructuredProducts: []
                                 }
-                                return;
+                                break;
                         }
 
                         query?.then((data) => {
                             console.log(data);
                             SC_DATA.S_Result = data;
-                            this.GenerateSearchKeywordList(type);
-                            initAutocomplete();
+                            generateSearch(type);
 
                             $('[data-tab] [data-tab-target]').first().trigger('switch');
                             $('[data-filter-switch="#uid-template-marketPrice-original"]').trigger('change');
                         }).catch((error) => {
                             console.log(error);
                         });
-                    },
-                    GenerateSearchKeywordList: function (type) {
-                        let list = [];
-                        if (Object.keys(SC_DATA.S_Result).length != 0) {
-
-                            switch (type) {
-                               case 'Fund':
-                                    $.each(SC_DATA.S_Result.Fund, function (i, item) {
-                                        let obj = {
-                                            value: item.ProductCode + ' ' + item.ProductName,
-                                            data: {
-                                                type: SC_DATA.S_Option.val(),
-                                                detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
-                                                purchase: item.CanOnlineSubscription,
-                                                focusBtnHtml: item.FocusButtonAutoHtml,
-                                                subscribeBtnHtml: item.SubscribeButtonAutoHtml
-                                            }
-                                        };
-                                        list.push(obj);
-                                    });
-                                   break;
-                               case 'ETF':
-                                    $.each(SC_DATA.S_Result.ETF, function (i, item) {
-                                        let obj = {
-                                            value: item.FirstBankCode + ' ' + item.ETFName,
-                                            data: {
-                                                type: SC_DATA.S_Option.val(),
-                                                detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
-                                                purchase: item.CanOnlineSubscription,
-                                                focusBtnHtml: item.FocusButtonAutoHtml,
-                                                subscribeBtnHtml: item.SubscribeButtonAutoHtml
-                                            }
-                                        };
-                                        list.push(obj);
-                                    });
-                                    break;
-                                case 'ForeignStock':
-                                    $.each(SC_DATA.S_Result.ForeignStock, function (i, item) {
-                                        let obj = {
-                                            value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
-                                            data: {
-                                                type: SC_DATA.S_Option.val(),
-                                                detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
-                                                purchase: item.CanOnlineSubscription,
-                                                focusBtnHtml: item.FocusButtonAutoHtml,
-                                                subscribeBtnHtml: item.SubscribeButtonAutoHtml
-                                            }
-                                        };
-                                        list.push(obj);
-                                    });
-                                   break;
-                               case 'StructuredProduct':
-                                    $.each(SC_DATA.S_Result.StructuredProduct, function (i, item) {
-                                        let obj = {
-                                            value: item.ProductCode + ' ' + item.ProductName,
-                                            data: {
-                                                type: SC_DATA.S_Option.val(),
-                                                detailUrl: '@Model.DetailPageLink.StructuredProductDetailPageLink' + '?' + $.param({ id: item.ProductCode })
-                                            }
-                                        };
-                                        list.push(obj);
-                                    });
-                                   break;
-                            }
-
-                            SC_DATA.S_SearchKeyword = list;
-                        }
                     }
                 };
 
@@ -341,6 +272,75 @@
                         </div>`;
                     }
                 });
+            }
+
+            function generateSearch(type) {
+                let list = [];
+                if (Object.keys(SC_DATA.S_Result).length != 0) {
+
+                    switch (type) {
+                        case 'Fund':
+                            $.each(SC_DATA.S_Result.FundProducts, function (i, item) {
+                                let obj = {
+                                    value: item.ProductCode + ' ' + item.ProductName,
+                                    data: {
+                                        type: SC_DATA.S_Option.val(),
+                                        detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
+                                        purchase: item.CanOnlineSubscription,
+                                        focusBtnHtml: item.FocusButtonAutoHtml,
+                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                    }
+                                };
+                                list.push(obj);
+                            });
+                            break;
+                        case 'ETF':
+                            $.each(SC_DATA.S_Result.ETFProducts, function (i, item) {
+                                let obj = {
+                                    value: item.FirstBankCode + ' ' + item.ETFName,
+                                    data: {
+                                        type: SC_DATA.S_Option.val(),
+                                        detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                                        purchase: item.CanOnlineSubscription,
+                                        focusBtnHtml: item.FocusButtonAutoHtml,
+                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                    }
+                                };
+                                list.push(obj);
+                            });
+                            break;
+                        case 'ForeignStock':
+                            $.each(SC_DATA.S_Result.ForeignStocks, function (i, item) {
+                                let obj = {
+                                    value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
+                                    data: {
+                                        type: SC_DATA.S_Option.val(),
+                                        detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                                        purchase: item.CanOnlineSubscription,
+                                        focusBtnHtml: item.FocusButtonAutoHtml,
+                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                    }
+                                };
+                                list.push(obj);
+                            });
+                            break;
+                        case 'StructuredProduct':
+                            $.each(SC_DATA.S_Result.StructuredProducts, function (i, item) {
+                                let obj = {
+                                    value: item.ProductCode + ' ' + item.ProductName,
+                                    data: {
+                                        type: SC_DATA.S_Option.val(),
+                                        detailUrl: '@Model.DetailPageLink.StructuredProductDetailPageLink' + '?' + $.param({ id: item.ProductCode })
+                                    }
+                                };
+                                list.push(obj);
+                            });
+                            break;
+                    }
+
+                    SC_DATA.S_SearchKeyword = list;
+                    initAutocomplete();
+                }
             }
         });
 
