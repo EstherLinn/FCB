@@ -3323,7 +3323,7 @@
                         method: 'post',
                         data: params,
                         success: function (data) {
-                            let mapDate = [];
+                            let mapData = [];
                             if (Object.keys(data.resultSet.result).length != 0) {
                                 mapData = data.resultSet.result.map(item => {
                                     return {
