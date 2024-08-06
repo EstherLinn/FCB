@@ -107,27 +107,29 @@
                     $(item).toggleClass('u-hidden', $(item).data('hot-val') != option.text());
                 });
 
-                SC_DATA.S_SearchKeyword = [];
+                SC_DATA.S_IsInitial = true;
+
                 SC_DATA.SearchBar = {
                     QueryList: function () {
                         var query = {};
                         let type = SC_DATA.S_Option.data('producttype');
+                        SC_DATA.S_ProductType = type;
                         switch (type) {
                             case 'Fund':
                                 query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetFundResult")');
-                                generateSearch(type);
+                                generateSearch();
                                 break;
                             case 'ETF':
                                 query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetETFResult")');
-                                generateSearch(type);
+                                generateSearch();
                                 break;
                             case 'StructuredProduct':
                                 query = null; // apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetStructuredProductResult")');
-                                generateSearch(type);
+                                generateSearch();
                                 break;
                             case 'ForeignStock':
                                 query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetForeignStockResult")');
-                                generateSearch(type);
+                                generateSearch();
                                 break;
                             default:
                                 query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetSearchResult")');
@@ -143,7 +145,7 @@
                         query?.then((data) => {
                             console.log(data);
                             SC_DATA.S_Result = data;
-                            generateSearch(type);
+                            generateSearch();
 
                             $('[data-tab] [data-tab-target]').first().trigger('switch');
                             $('[data-filter-switch="#uid-template-marketPrice-original"]').trigger('change');
@@ -204,7 +206,6 @@
 
             function initAutocomplete() {
                 // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
-                //$('#keyword').autocomplete('disable');
                 $('#keyword').autocomplete({
                     max: 10,
                     noCache: true,
@@ -274,11 +275,11 @@
                 });
             }
 
-            function generateSearch(type) {
+            function generateSearch() {
                 let list = [];
                 if (Object.keys(SC_DATA.S_Result).length != 0) {
 
-                    switch (type) {
+                    switch (SC_DATA.S_ProductType) {
                         case 'Fund':
                             $.each(SC_DATA.S_Result.FundProducts, function (i, item) {
                                 let obj = {
@@ -338,8 +339,12 @@
                             break;
                     }
 
-                    SC_DATA.S_SearchKeyword = list;
-                    initAutocomplete();
+                    if (list.length > 0) {
+                        SC_DATA.S_SearchKeyword = list;
+                        if (SC_DATA.S_IsInitial) {
+                            initAutocomplete();
+                        }
+                    }
                 }
             }
         });
