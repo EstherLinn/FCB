@@ -54,6 +54,7 @@
     <PackageReference Update="Microsoft.Net.Compilers.ToolSet" Version="4.9.2" />
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="4.9.2" />
     <PackageReference Update="SonarAnalyzer.CSharp" Version="9.25.0.90414" />
+    <PackageReference Update="Microsoft.Owin.Security.Cookies" Version="4.2.2" />
 
     <!-- === platform pin the specified version for sitecore 10.3.* === -->
     <PackageReference Update="Microsoft.AspNet.Mvc" Version="5.2.4" />

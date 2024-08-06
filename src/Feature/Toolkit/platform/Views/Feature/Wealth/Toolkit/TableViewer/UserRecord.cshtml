@@ -1,0 +1,715 @@
+﻿@using Foundation.Wealth.Helper;
+
+<script>
+
+    document.title = '@ViewBag.Title Usage log';
+
+    var method = {
+        select: {
+            api: '@ClientRoute.GenerateUrl(this, "TableViewer", "GetUserRecord")',
+            path: '@Model'
+        }
+    };
+
+    function addRuleItem() {
+        let tr = $('tr', TalbeGvQuery).last();
+        let index = tr.data('index');
+        let newtr = CT.clone();
+        initRuleItem(newtr, index);
+        TalbeGvQuery.append(newtr);
+    }
+
+    function initRuleItem(newtr, i) {
+
+        let num = i;
+        let index = 1;
+        if (num) {
+            index = ++num;
+
+            $('tr', TalbeGvQuery).each(function (i, elem) {
+                $('select', elem).prop("disabled", false).last();
+            });
+        }
+        newtr.addClass('RowStyle');
+        newtr.data('index', index);
+        let rowIdxHtml = `<span>${index}</span>`;
+        $('td', newtr).first().html(DOMPurify.sanitize(rowIdxHtml));
+
+        if (index == 1) {
+            $('.HeaderStyle, caption').show(); //顯示篩選條件表頭
+        }
+    }
+
+    function removeRuleItem(elem) {
+
+        $(elem).parent().parent().remove();
+        let index = 0;
+        let ary = [];
+
+        $('tr', TalbeGvQuery).each(function (i, elem) {
+            ary.push(elem);
+        });
+
+        let length = ary.length;
+        for (var i = 1; i <= ary.length; i++) {
+            let elem = ary[i - 1];
+            let tr = $(elem);
+            tr.data('index', i);
+            let rowIdxHtml = `<span>${i}</span>`;
+            $('td', tr).first().html(DOMPurify.sanitize(rowIdxHtml));
+            $('select', elem).last().prop('disabled', i == length);
+            index = i;
+        }
+
+        if (index > 0 && !! ary[index - 1].querySelector('[data-relation-option]')) {
+            ary[index - 1].querySelector('[data-relation-option]').value = ''
+        }
+        
+        if (index == 0) {
+            $('.HeaderStyle, caption').hide(); //隱藏篩選條件表頭
+        }
+    }
+
+    function getRuleItem() {
+        // 每次按下查詢按鈕時清空
+        $('#gridViewResult tbody').html('');
+        $('#lblQueryCount').text('(0筆)');
+        // 將成功查詢的篩選條件儲存至下載按鈕
+        var downloadBtn = $('#btnDownload');
+        downloadBtn.data('iOrderColumeName', '');
+        downloadBtn.data('iCount', '');
+        downloadBtn.data('iOrder', '');
+        downloadBtn.data('rules', '');
+        downloadBtn.data('root', '');
+
+        let arys = [];
+        $('tr', TalbeGvQuery).each(function (i, elem) {
+            let ary = [];
+            $('.w3-select,.w3-input', elem).each(function (i, elem) {
+                ary.push($(elem).val());
+            });
+            arys.push(ary);
+        });
+
+        getHistoryData(arys);
+    }
+
+    function getHistoryData(rule) {
+
+        var quaryData = {
+            iOrderColumeName: $('#ddlColumeName')[0] ? $('#ddlColumeName')[0].value : "",
+            iCount: $('#tb_TopCount')[0] ? $('#tb_TopCount')[0].value : "",
+            iOrder: $('#ddlOrder')[0] ? $('#ddlOrder')[0].value : "",
+            rules: JSON.stringify(rule) || [],
+            root: method.select.path            
+        };
+
+        if (/^[\d]+$/.test(quaryData.iOrderColumeName) &&
+            /^[\d]+$/.test(quaryData.iCount) &&
+            /(^$)|(^[\d]+$)/.test(quaryData.iOrder)) {
+        $.ajax({
+                type: 'GET',
+                url: method.select.api,
+                data: quaryData,
+                dataType: 'json',
+                beforeSend: showLoading,
+                complete: hideLoading
+
+        }).done(function (json) {
+            if($('#lblMessage')[0]){
+               $('#lblMessage')[0].innerHTML = DOMPurify.sanitize(json.Message);
+            }            
+            if (json.Message) {
+                return;
+            }
+            $('#lblQueryCount').text('(' + json.Total + '筆)');
+
+                let talbeGvQuery = $('#gridViewResult');
+                talbeGvQuery.removeClass('hide');
+                $('tbody', talbeGvQuery).html('');
+                let m_data = json.Data;
+                $.each(m_data, function (n, p) {
+                    let tr = $('<tr></tr>');
+                    let td = '';
+                    for (var key in p) {
+                        switch (key) {
+                            default:
+                                td = '<td>' + p[key] + '</span></td>';
+                                break;
+                        }
+                        tr.append(td);
+                    }
+                    talbeGvQuery.append(tr);
+                });
+
+                // 將成功查詢的篩選條件儲存至下載按鈕
+                var downloadBtn = $('#btnDownload');
+                downloadBtn.data('iOrderColumeName', $('#ddlColumeName')[0].value);
+                downloadBtn.data('iCount', $('#tb_TopCount')[0].value);
+                downloadBtn.data('iOrder', $('#ddlOrder')[0].value);
+                downloadBtn.data('rules', JSON.stringify(rule) || []);
+                downloadBtn.data('root', method.select.path);
+            });
+        } else {
+            $('#lblMessage').text('輸入有誤');
+        }
+    }
+
+    function getCurrentDateTime() {
+        var currentDateTime = new Date();
+        var year = currentDateTime.getFullYear();
+        var month = padZero(currentDateTime.getMonth() + 1); // Month 0 開始
+        var day = padZero(currentDateTime.getDate());
+        var hours = padZero(currentDateTime.getHours());
+        var minutes = padZero(currentDateTime.getMinutes());
+        var seconds = padZero(currentDateTime.getSeconds());
+        var milliseconds = padZero(currentDateTime.getMilliseconds());
+        var formattedDateTime = year + '' + month + '' + day + '_' + hours + '' + minutes + '' + seconds + '' + milliseconds;
+        return formattedDateTime;
+    }
+
+    function padZero(value) {
+        // 將數字補零
+        return value < 10 ? '0' + value : value;
+    }
+
+    function downloadURI(uri, name) {
+        var link = document.createElement("a");
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        delete link;
+    }
+
+    //--- Loading遮罩效果
+    function showLoading() {
+        $('#loader').css('display', '');
+    }
+
+    function hideLoading() {
+        $('#loader').css('display', 'none');
+    }
+</script>
+<div id="loader" style="display: none; z-index: 999;">
+    <img src="~/themes/feature/toolkit/media/img/loading.gif" />
+</div>
+<div class="container">
+    <div class="navbar-collapse">
+        @*<div class="navbar-content align-center">
+        TableName
+        </div>
+        <div class="navbar-content">
+        <label class="o-select select-2">
+        <select id="ddlTableName" style="width:120px" class="w3-select">
+        <option value="401436504">History</option>
+        </select>
+        </label>
+        </div>*@
+        <div class="navbar-content align-center">
+            Order BY
+        </div>
+        <div class="navbar-content">
+            <label class="o-select select-2">
+                <select id="ddlColumeName" class="w3-select">
+                    <option value="11">Created</option>
+                    <option value="1">Id</option>
+                    <option value="2">Category</option>
+                    <option value="3">Action</option>
+                    <option value="4">ItemId</option>
+                    <option value="5">ItemLanguage</option>
+                    <option value="6">ItemVersion</option>
+                    <option value="7">ItemPath</option>
+                    <option value="8">UserName</option>
+                    <option value="9">TaskStack</option>
+                    <option value="10">AdditionalInfo</option>
+                </select>
+            </label>
+            <label class="o-select select-2">
+                <select id="ddlOrder" class="w3-select">
+                    <option value="0">Desc</option>
+                    <option value="1">Asc</option>
+                </select>
+            </label>
+        </div>
+        <div class="navbar-content align-center">
+            TOP
+        </div>
+        <div class="o-form navbar-content align-center">
+            <input type="text" value="300" id="tb_TopCount" class="w3-input o-input" style="width:80%;" />
+        </div>
+    </div>
+    @*<div class="navbar-content">
+    <input type="button" value="Show Schema" id="btnShowSchema" class="w3-btn o-btn orange" />
+    </div>*@
+</div>
+@*<script>
+        $('#btnShowSchema').click(function () {
+            $('#divShowSchema').toggleClass('hide');
+        });
+    </script>*@
+<div id="updatePanel1">
+    <div class="o-form">
+        <table class="o-table table-1 w3-table w3-bordered" cellspacing="0" cellpadding="4" id="gridViewRuleItems" style="color:#333333;border-color:#94A6B5;border-width:1px;border-style:Solid;font-size:16px;width:100%;border-collapse:collapse;">
+            <caption>
+                詳細規則項目設定
+            </caption>
+            <thead>
+                <tr class="HeaderStyle">
+                    <th scope="col">&nbsp;</th>
+                    <th scope="col">(</th>
+                    <th scope="col">欄位名稱</th>
+                    <th scope="col">運算子</th>
+                    <th scope="col">值</th>
+                    <th scope="col">)</th>
+                    <th scope="col">關聯</th>
+                    <th scope="col">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width:2%;">
+                    </td>
+                    <td style="width:5%;">
+                        <label class="o-select select-2">
+                            <select class="w3-select" style="width:100%;">
+                                <option value="0"></option>
+                                <option value="1">(</option>
+                            </select>
+                        </label>
+                    </td>
+                    <td style="width:30%;">
+                        <label class="o-select select-2">
+                            <select class="w3-select" style="width:98%;">
+                                <option value="1">Id</option>
+                                <option value="2">Category</option>
+                                <option value="3">Action</option>
+                                <option value="4">ItemId</option>
+                                <option value="5">ItemLanguage</option>
+                                <option value="6">ItemVersion</option>
+                                <option value="7">ItemPath</option>
+                                <option value="8">UserName</option>
+                                <option value="9">TaskStack</option>
+                                <option value="10">AdditionalInfo</option>
+                                <option value="11">Created</option>
+                            </select>
+                        </label>
+                    </td>
+                    <td style="width:15%;">
+                        <label class="o-select select-2">
+                            <select class="w3-select" style="width:98%;">
+                                <option value="0">&gt;=</option>
+                                <option value="1">&gt;</option>
+                                <option value="2">=</option>
+                                <option value="3">&lt;=</option>
+                                <option value="4">&lt;</option>
+                                <option value="5">!=</option>
+                                <option value="6">LIKE (包含)</option>
+                                <option value="7">NOT LIKE (不包含)</option>
+                                <option value="8">START WITH (開始為)</option>
+                                <option value="9">NOT START WITH (開始不為)</option>
+                                <option value="10">END WITH (結尾為)</option>
+                                <option value="11">NOT END WITH (結尾不為)</option>
+                                <option value="12">DISTINCT (不重複)</option>
+                                <option value="13">REDUNDENT (重複)</option>
+                                <option value="14">EMPTY (空白)</option>
+                                <option value="15">NOT EMPTY (非空白)</option>
+                                <option value="16">IN (包括)</option>
+                                <option value="17">VALID ASCII (英數符號)</option>
+                                <option value="18">INVALID ASCII (非英數符號)</option>
+                            </select>
+                        </label>
+                    </td>
+                    <td style="width:30%;">
+                        <input type="text" class="w3-input o-input" style="width:95%;" />
+                    </td>
+                    <td style="width:5%;">
+                        <label class="o-select select-2">
+                            <select class="w3-select" style="width:100%;">
+                                <option value="0"></option>
+                                <option value="1">)</option>
+                            </select>
+                        </label>
+                    </td>
+                    <td style="width:8%;">
+                        <label class="o-select select-2">
+                            <select disabled="disabled" class="aspNetDisabled w3-select" style="width:98%;" data-relation-option>
+                                <option value=""></option>
+                                <option value="0">AND</option>
+                                <option value="1">OR</option>
+                            </select>
+                        </label>
+                    </td>
+                    <td align="center" style="width:8%;">
+                        <input type="button" value="移除" onclick="removeRuleItem(this)" class="w3-btn o-btn orange" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<br />
+<div>
+    <input type="button" value="新增規則項目" id="btnAddRuleItem" onclick="addRuleItem()" class="w3-btn o-btn orange" />
+    <input type="button" value="進行名單篩選" id="btnUpdateRule" onclick="getRuleItem()" class="w3-btn o-btn orange" />
+    <input type="button" value="顯示全部資料" id="btnSearchAll" onclick="getHistoryData()" class="w3-btn o-btn orange" />
+</div>
+<div>
+    <span id="lblMessage" class="error">
+    </span>
+</div>
+<script>
+    let TalbeGvQuery = $('#gridViewRuleItems > tbody');
+    let Tr = $('tr', TalbeGvQuery).first();
+    let CT = Tr.clone();
+    initRuleItem(Tr);
+
+    removeRuleItem($('input', Tr).last()); // 預設移除所有條件
+    $('#btnSearchAll').hide();  // 預設隱藏顯示全部資料
+    $('#btnUpdateRule').val('查詢').css('width', '100px').css('position', 'absolute').css('left', '10%');
+</script>
+<div>
+    <h1 class="subheading og">
+        查詢結果
+        <span id="lblQueryCount" style="padding-right: 20px;"></span>
+    </h1>
+    <div @*style="max-height: 500px; overflow-y: scroll;"*@>
+        <div>
+            <table class="o-table table-1 w3-table w3-bordered hide" cellspacing="0" rules="all" border="1" id="gridViewResult" style="border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">ItemId</th>
+                        <th scope="col">ItemLanguage</th>
+                        <th scope="col">ItemVersion</th>
+                        <th scope="col">ItemPath</th>
+                        <th scope="col">UserName</th>
+                        <th scope="col">TaskStack</th>
+                        <th scope="col">AdditionalInfo</th>
+                        <th scope="col">Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<br />
+<br />
+<br />
+<div id="divShowSchema" class="hide">
+    <h1 class="subheading og">DB Schema</h1>
+    <div style="max-height: 500px; overflow-y: scroll;">
+        <div>
+            <table class="o-table table-1 w3-table w3-bordered" cellspacing="0" rules="all" border="1" id="gridViewSchema" style="border-collapse:collapse;">
+                <tbody>
+                    <tr>
+                        @*<th scope="col">TABLE_CATALOG</th>
+                        <th scope="col">TABLE_SCHEMA</th>
+                        <th scope="col">TABLE_NAME</th>*@
+                        <th scope="col">COLUMN_NAME</th>
+                        <th scope="col">ORDINAL_POSITION</th>
+                        <th scope="col">COLUMN_DEFAULT</th>
+                        <th scope="col">IS_NULLABLE</th>
+                        <th scope="col">DATA_TYPE</th>
+                        <th scope="col">CHARACTER_MAXIMUM_LENGTH</th>
+                        <th scope="col">CHARACTER_OCTET_LENGTH</th>
+                        <th scope="col">NUMERIC_PRECISION</th>
+                        <th scope="col">NUMERIC_PRECISION_RADIX</th>
+                        <th scope="col">NUMERIC_SCALE</th>
+                        <th scope="col">DATETIME_PRECISION</th>
+                        @*<th scope="col">CHARACTER_SET_CATALOG</th>
+                        <th scope="col">CHARACTER_SET_SCHEMA</th>
+                        <th scope="col">CHARACTER_SET_NAME</th>
+                        <th scope="col">COLLATION_CATALOG</th>
+                        <th scope="col">COLLATION_SCHEMA</th>
+                        <th scope="col">COLLATION_NAME</th>
+                        <th scope="col">DOMAIN_CATALOG</th>
+                        <th scope="col">DOMAIN_SCHEMA</th>
+                        <th scope="col">DOMAIN_NAME</th>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>Id</td>
+                        <td>1</td>
+                        <td>(newid())</td>
+                        <td>NO</td>
+                        <td>uniqueidentifier</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>Category</td>
+                        <td>2</td>
+                        <td>&nbsp;</td>
+                        <td>NO</td>
+                        <td>varchar</td>
+                        <td>50</td>
+                        <td>50</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>cp950</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>Action</td>
+                        <td>3</td>
+                        <td>&nbsp;</td>
+                        <td>NO</td>
+                        <td>varchar</td>
+                        <td>50</td>
+                        <td>50</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>cp950</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>ItemId</td>
+                        <td>4</td>
+                        <td>&nbsp;</td>
+                        <td>NO</td>
+                        <td>uniqueidentifier</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>ItemLanguage</td>
+                        <td>5</td>
+                        <td>&nbsp;</td>
+                        <td>NO</td>
+                        <td>varchar</td>
+                        <td>50</td>
+                        <td>50</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>cp950</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>ItemVersion</td>
+                        <td>6</td>
+                        <td>&nbsp;</td>
+                        <td>NO</td>
+                        <td>int</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>10</td>
+                        <td>10</td>
+                        <td>0</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>ItemPath</td>
+                        <td>7</td>
+                        <td>('')</td>
+                        <td>NO</td>
+                        <td>nvarchar</td>
+                        <td>-1</td>
+                        <td>-1</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>UNICODE</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>UserName</td>
+                        <td>8</td>
+                        <td>&nbsp;</td>
+                        <td>NO</td>
+                        <td>nvarchar</td>
+                        <td>250</td>
+                        <td>500</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>UNICODE</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>TaskStack</td>
+                        <td>9</td>
+                        <td>('')</td>
+                        <td>NO</td>
+                        <td>varchar</td>
+                        <td>-1</td>
+                        <td>-1</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>cp950</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>AdditionalInfo</td>
+                        <td>10</td>
+                        <td>('')</td>
+                        <td>NO</td>
+                        <td>nvarchar</td>
+                        <td>-1</td>
+                        <td>-1</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>UNICODE</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>Sitecore_Master</td>
+                        <td>dbo</td>
+                        <td>History</td>*@
+                        <td>Created</td>
+                        <td>11</td>
+                        <td>&nbsp;</td>
+                        <td>NO</td>
+                        <td>datetime</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>3</td>
+                        @*<td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>*@
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

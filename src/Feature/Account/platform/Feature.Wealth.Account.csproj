@@ -12,6 +12,8 @@
     <PackageReference Include="Dapper" />
     <PackageReference Include="Flurl" />
     <PackageReference Include="Flurl.Http" />
+    <PackageReference Include="Sitecore.Owin.Authentication" />
+    <PackageReference Include="Microsoft.Owin.Security.Cookies" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />

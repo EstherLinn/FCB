@@ -8,4 +8,8 @@
   <ItemGroup>
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
+    <PackageReference Include="Dapper" />
+  </ItemGroup>
 </Project>
