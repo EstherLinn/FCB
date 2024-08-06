@@ -144,47 +144,47 @@ namespace Feature.Wealth.Component.Models.Consult
         /// <summary>
         /// 同 ScheduleID
         /// </summary>
-        public string Id { get; set; }
+        public string id { get; set; }
         /// <summary>
         /// 預約中、預約成功、歷史紀錄
         /// </summary>
-        public string Status { get; set; }
+        public string title { get; set; }
         /// <summary>
         /// reserving、success、history
         /// </summary>
-        public string Type { get; set; }
-        public string UserName { get; set; }
-        public string StaffName { get; set; }
+        public string type { get; set; }
+        public string userName { get; set; }
+        public string staffName { get; set; }
         /// <summary>
         /// YYYY-MM-DDTHH:MM
         /// </summary>
-        public string StartTime { get; set; }
+        public string start { get; set; }
         /// <summary>
         ///  YYYY-MM-DDTHH:MM
         /// </summary>
-        public string EndTime { get; set; }
-        public string Phone { get; set; }
-        public string Email { get; set; }
+        public string end { get; set; }
+        public string phone { get; set; }
+        public string email { get; set; }
         /// <summary>
         /// 同 Subject
         /// </summary>
-        public string Topic { get; set; }
+        public string topic { get; set; }
         /// <summary>
         /// 同 Description
         /// </summary>
-        public string Other { get; set; }
+        public string other { get; set; }
         /// <summary>
         /// #fdce5eff、#7dd4a4ff、#c3c3c3ff
         /// </summary>
-        public string CategoryColor { get; set; }
+        public string categoryColor { get; set; }
         /// <summary>
         /// #F4B00F、#56B280、#9C9C9C
         /// </summary>
-        public string PopupColor { get; set; }
+        public string popupColor { get; set; }
         /// <summary>
         /// 判斷是否可以開始視訊(已棄用)
         /// </summary>
-        public bool Release { get; set; }
+        public bool release { get; set; }
     }
 
 
