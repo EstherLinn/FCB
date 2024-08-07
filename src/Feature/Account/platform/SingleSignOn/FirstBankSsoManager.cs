@@ -42,7 +42,7 @@ namespace Feature.Wealth.Account.SingleSignOn
 
         private void SetUserProfile(FirstBankUser user, Employee member)
         {
-            user.Profile.EmployeeEmail = member.EmployeeCode.TrimStart('0') + "@firstbank.com.tw";
+            user.Profile.EmployeeEmail = "i" + member.EmployeeCode.TrimStart('0') + "@firstbank.com.tw";
             user.Profile.EmployeeName = member.EmployeeName;
         }
 
