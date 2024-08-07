@@ -29,7 +29,7 @@
                             {
                                 foreach (var item in Model.LeftLinkItems)
                                 {
-                                    var id = Html.Sitecore().Field("Icon Style", item).ToString();
+                                    var id = item.Item["Icon Style"];
                                     var iconStyle = string.Empty;
 
                                     if (!string.IsNullOrEmpty(id))
