@@ -88,7 +88,9 @@ namespace Feature.Wealth.Component.Repositories
                 //基本資料
                 vm.FundCurrency = new KeyValuePair<string, string>(f.FundCurrencyCode, f.FundCurrencyName);
                 vm.PercentageChangeInFundPrice = Percentage(f.PercentageChangeInFundPrice);
-                vm.FundSizeMillionOriginalCurrency = Round4(f.FundSizeMillionOriginalCurrency);
+
+                vm.FundSizeMillionOriginalCurrency = FundSize(f.FundSizeMillionOriginalCurrency, f.AvailabilityStatus);
+
                 vm.FundSizeMillionTWD = Round4(f.FundSizeMillionTWD);
                 vm.FundType = f.FormatFundType ?? string.Empty;
 
@@ -186,6 +188,28 @@ namespace Feature.Wealth.Component.Repositories
                 value = decimal.Round((decimal)value, 4);
             }
             return value;
+        }
+
+
+        private KeyValuePair<string, decimal?> FundSize(decimal? value, string status)
+        {
+            if (value == null || (value == 0 && status == "Y"))
+            {
+                value = 0;
+                status = "0.0000";
+            }
+            else if (value == 0 && (status == "N" || string.IsNullOrEmpty(status)))
+            {
+                value = 0;
+                status = "N/A";
+            }
+            else
+            {
+                value = decimal.Round((decimal)value, 4);
+                status = value.ToString();
+            }
+
+            return new KeyValuePair<string, decimal?>(status, value);
         }
 
         private decimal? RoundingPrice(decimal? number)
