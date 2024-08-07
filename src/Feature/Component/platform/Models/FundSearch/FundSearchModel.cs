@@ -293,7 +293,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
 
         public KeyValuePair<string, string> FundCurrency { get; set; }
 
-        public decimal? FundSizeMillionOriginalCurrency { get; set; }
+        public KeyValuePair<string, decimal?> FundSizeMillionOriginalCurrency { get; set; }
 
         public decimal? FundSizeMillionTWD { get; set; }
 
