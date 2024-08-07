@@ -212,7 +212,6 @@
                     }
                 }
             });
-            window.resetTable();
             // #endregion 基金
 
             // #region ETF
@@ -605,7 +604,7 @@
                 type: "post",
                 url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackList")",
                 success: function (msg) {
-                    resetTable(msg);
+                    window.resetTable(msg);
                     resetTable2(msg);
                     resetTable3(msg);
                 },
@@ -670,7 +669,9 @@
                     data: { "trackList": store.get("focus") || [], "productId": cancelId},
                     beforeSend: function () { $('.c-loading').loading('show'); },
                     success: function (msg) {
-                                resetTable();
+                        switch (cancelType.toLowerCase()) {
+                            case "fund":
+                                window.resetTable();
                                 break;
                             case "etf":
                                 resetTable2();
