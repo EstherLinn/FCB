@@ -67,8 +67,8 @@
                                                     <div class="c-cardFund c-cardFund--inTable">
                                                         <div class="c-cardFund__trend">
                                                             <div class="c-cardFund__rate">
-                                                                <span class="t-small u-nowrap">
-                                                                    <span class="t-rise">月報酬率</span>
+                                                                <span class="t-small u-nowrap">                                                                  
+                                                                    <span class="@(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() == "o-rise" ? "t-rise" : "t-fall")">月報酬率</span>
                                                                     <span class="@item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle()">@item.OneMonthReturnOriginalCurrency.FormatDecimalNumber()</span>
                                                                 </span>
                                                             </div>
@@ -119,7 +119,7 @@
                                                         <div class="c-cardFund__trend">
                                                             <div class="c-cardFund__rate">
                                                                 <span class="t-small u-nowrap@dt-only">
-                                                                    <span class="t-rise">月報酬率</span>
+                                                                    <span class="@(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() == "o-rise" ? "t-rise" : "t-fall")">月報酬率</span>
                                                                     <span class="@item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() @(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() + "--sm")">@item.OneMonthReturnOriginalCurrency.FormatDecimalNumber()</span>
                                                                 </span>
                                                             </div>
@@ -180,7 +180,7 @@
                                         <div class="c-cardFund__trend">
                                             <div class="c-cardFund__rate">
                                                 <span class="t-small u-nowrap@dt-only">
-                                                    <span class="t-rise">月報酬率</span>
+                                                    <span class="@(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() == "o-rise" ? "t-rise" : "t-fall")">月報酬率</span>
                                                     <span class="@item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() @(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() + "--sm")">@item.OneMonthReturnOriginalCurrency.FormatDecimalNumber()</span>
                                                 </span>
                                             </div>
@@ -237,7 +237,7 @@
                                         <div class="c-cardFund__trend">
                                             <div class="c-cardFund__rate">
                                                 <span class="t-small u-nowrap@dt-only">
-                                                    <span class="t-rise">月報酬率</span>
+                                                    <span class="@(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() == "o-rise" ? "t-rise" : "t-fall")">月報酬率</span>
                                                     <span class="@item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() @(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() + "--sm")">@item.OneMonthReturnOriginalCurrency.FormatDecimalNumber()</span>
                                                 </span>
                                             </div>
@@ -283,6 +283,7 @@
                 if (!jQuery) {
                     return;
                 }
+                $('[eh-focus]', '[data-exclusive]').trigger('exec');
                 let chartDatas = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundFullChart)));
                 let groupChartDatas = _.groupBy(chartDatas, "ProductCode");
                 // highchart
