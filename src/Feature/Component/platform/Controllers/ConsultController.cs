@@ -80,37 +80,38 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     var consultScheduleForCalendar = new ConsultScheduleForCalendar
                     {
-                        Id = consultSchedule.ScheduleID.ToString(),
-                        UserName = consultSchedule.CustomerName,
-                        StaffName = consultSchedule.EmployeeName,
-                        Phone = consultSchedule.Phone,
-                        Email = consultSchedule.Mail,
-                        Topic = consultSchedule.Subject,
-                        Other = consultSchedule.Description,
-                        StartTime = consultSchedule.ScheduleDate.ToString("yyyy-MM-dd") + "T" + consultSchedule.StartTime,
-                        EndTime = consultSchedule.ScheduleDate.ToString("yyyy-MM-dd") + "T" + consultSchedule.EndTime,
+                        id = consultSchedule.ScheduleID.ToString(),
+                        userName = consultSchedule.CustomerName,
+                        staffName = consultSchedule.EmployeeName,
+                        phone = consultSchedule.Phone,
+                        email = consultSchedule.Mail,
+                        topic = consultSchedule.Subject,
+                        other = consultSchedule.Description,
+                        start = consultSchedule.ScheduleDate.ToString("yyyy-MM-dd") + "T" + consultSchedule.StartTime,
+                        end = consultSchedule.ScheduleDate.ToString("yyyy-MM-dd") + "T" + consultSchedule.EndTime,
+                        release = consultSchedule.Start
                     };
 
                     if (consultSchedule.StatusCode == "0")
                     {
-                        consultScheduleForCalendar.Status = "預約中";
-                        consultScheduleForCalendar.Type = "reserving";
-                        consultScheduleForCalendar.CategoryColor = "#fdce5eff";
-                        consultScheduleForCalendar.PopupColor = "#F4B00F";
+                        consultScheduleForCalendar.title = "預約中";
+                        consultScheduleForCalendar.type = "reserving";
+                        consultScheduleForCalendar.categoryColor = "#fdce5eff";
+                        consultScheduleForCalendar.popupColor = "#F4B00F";
                     }
                     else if (consultSchedule.StatusCode == "1")
                     {
-                        consultScheduleForCalendar.Status = "預約成功";
-                        consultScheduleForCalendar.Type = "success";
-                        consultScheduleForCalendar.CategoryColor = "#7dd4a4ff";
-                        consultScheduleForCalendar.PopupColor = "#56B280";
+                        consultScheduleForCalendar.title = "預約成功";
+                        consultScheduleForCalendar.type = "success";
+                        consultScheduleForCalendar.categoryColor = "#7dd4a4ff";
+                        consultScheduleForCalendar.popupColor = "#56B280";
                     }
                     else
                     {
-                        consultScheduleForCalendar.Status = "歷史紀錄";
-                        consultScheduleForCalendar.Type = "history";
-                        consultScheduleForCalendar.CategoryColor = "#c3c3c3ff";
-                        consultScheduleForCalendar.PopupColor = "#9C9C9C";
+                        consultScheduleForCalendar.title = "歷史紀錄";
+                        consultScheduleForCalendar.type = "history";
+                        consultScheduleForCalendar.categoryColor = "#c3c3c3ff";
+                        consultScheduleForCalendar.popupColor = "#9C9C9C";
                     }
 
                     consultScheduleForCalendarList.Add(consultScheduleForCalendar);

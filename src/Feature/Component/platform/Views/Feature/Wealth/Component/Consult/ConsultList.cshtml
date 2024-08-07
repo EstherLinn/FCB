@@ -214,9 +214,49 @@
                 </div>
             </div>
             <div class="c-tab__panel" data-tab-panel-id="tab-icon-2">
-                <div class="c-schedule">
-                    <div class="c-schedule__main" data-schedule></div>
-                </div>
+                <template id="tmpl">
+                    <div class="c-eventPopup">
+                        <div class="c-eventPopup__header" style="background-color: ${PopupColor};">
+                            <span>預約明細</span>
+                            <a href="#" data-quick-close=""><img src="~/themes/images/icons/white/x-lg.svg" alt=""></a>
+                        </div>
+                        <div class="c-eventPopup__content">
+                            <div class="l-info">
+                                <div class="l-info__item">
+                                    <div class="l-info__title">預約狀態</div>
+                                    <div class="l-info__val">${Title}</div>
+                                </div>
+                                <div class="l-info__item">
+                                    <div class="l-info__title">預約日期</div>
+                                    <div class="l-info__val">${StartDay}</div>
+                                </div>
+                                <div class="l-info__item">
+                                    <div class="l-info__title">預約時段</div>
+                                    <div class="l-info__val">${StartTime}</div>
+                                </div>
+                                <div class="l-info__item">
+                                    <div class="l-info__title">聯絡電話</div>
+                                    <div class="l-info__val">${Phone}</div>
+                                </div>
+                                <div class="l-info__item">
+                                    <div class="l-info__title">電子信箱</div>
+                                    <div class="l-info__val">${Email}</div>
+                                </div>
+                                <div class="l-info__item">
+                                    <div class="l-info__title">諮詢主題</div>
+                                    <div class="l-info__val">${Topic}</div>
+                                </div>
+                                <div class="l-info__item">
+                                    <div class="l-info__title">其他諮詢內容</div>
+                                    <div class="l-info__val">${Other}</div>
+                                </div>
+                            </div>
+                        </div>
+                        ${footer}
+                    </div>
+                </template>
+                <div id="calendar" class="c-schedule"></div>
+                <div class="c-calendarList"></div>
             </div>
         </div>
     </div>
@@ -514,77 +554,23 @@
     </div>
 </script>
 
-<!-- 行事曆事件模板 start -->
-<script id="apptemplate" type="text/x-template">
-        <div>${Status}</div>
-    <div>${ej2TimeFormat(StartTime)}</div>
-</script>
-<!-- 行事曆事件模板 end -->
-<!-- 點擊行事曆事件跳出quick模板 start -->
-<script id="header-template" type="text/x-template">
-        <div class="e-popup-header-tmpl" style="background-color: ${PopupColor};">
-        <span>預約明細</span>
-        <a href="#" data-quick-close>
-            <img src="./../themes/images/icons/white/x-lg.svg" alt="">
-        </a>
-    </div>
-</script>
-<script id="content-template" type="text/x-template">
-        <div class="l-info">
-        <div class="l-info__item">
-            <div class="l-info__title">預約狀態</div>
-            <div class="l-info__val">${Status}</div>
-        </div>
-        <div class="l-info__item">
-            <div class="l-info__title">預約日期</div>
-            <div class="l-info__val">${moment(StartTime).format('YYYY/MM/DD (dd)')}</div>
-        </div>
-        <div class="l-info__item">
-            <div class="l-info__title">預約時段</div>
-            <div class="l-info__val">${moment(StartTime).format('AHH:mm')}~${moment(EndTime).format('HH:mm')}</div>
-        </div>
-        <div class="l-info__item">
-            <div class="l-info__title">聯絡電話</div>
-            <div class="l-info__val">${Phone}</div>
-        </div>
-        <div class="l-info__item">
-            <div class="l-info__title">電子信箱</div>
-            <div class="l-info__val">${Email}</div>
-        </div>
-        <div class="l-info__item">
-            <div class="l-info__title">諮詢主題</div>
-            <div class="l-info__val">${Topic}</div>
-        </div>
-        <div class="l-info__item">
-            <div class="l-info__title">其他諮詢內容</div>
-            <div class="l-info__val">${Other}</div>
-        </div>
-    </div>
-</script>
-<script id="footer-template" type="text/x-template">
-        <div class="l-action l-action--inline" data-footer-tmpl="success">
-        <div class="l-action__item">
-            <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-quick-close data-cancel>取消預約</a>
-        </div>
-        <div class="l-action__item">
-            <a href="#" class="o-btn o-btn--primary o-btn--sm is-disabled" data-start-btn>等待中</a>
-        </div>
-    </div>
-    <div class="l-action l-action--inline" data-footer-tmpl="reserving">
-        <div class="l-action__item">
-            <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-quick-close data-cancel>取消預約</a>
-        </div>
-    </div>
-</script>
-<!-- 點擊行事曆事件跳出quick模板 end -->
-
 <script>
     const consultSchedules = @Model.ConsultSchedulesHtmlString;
-    const consultScheduleForCalendars = @Model.ConsultScheduleForCalendarsHtmlString;
+    const dataSource = @Model.ConsultScheduleForCalendarsHtmlString;
     const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六']
 
-    $(function () {
+    let popoverElement;
+    const dateObj = new Date();
 
+    // 點擊任何地方會關閉泡泡
+    $('html').on('click', function (e) {
+        if (popoverElement && !popoverElement.is(e.target) && popoverElement.has(e.target).length === 0 && $('.c-eventPopup').has(e.target).length === 0) {
+            $('.c-eventPopup').remove();
+            $('body').css('overflow', 'initial');
+        }
+    });
+
+    $(function () {
         consultSchedules.forEach((c) => {
             if (c.ScheduleDateString) {
                 var weekday = (new Date(c.ScheduleDateString)).getDay();
@@ -725,6 +711,7 @@
                     if (data0.length > 0) {
                         fjs0.removeRecords({ ScheduleID: id });
                     }
+
                     if (data1.length > 0) {
                         fjs1.removeRecords({ ScheduleID: id });
                     }
@@ -736,6 +723,323 @@
             }).always(function () {
                 window.loading('hide');
             });
+        });
+
+        moment.locale('zh-tw', {
+            weekdaysMin: dayNamesZh,
+            meridiemParse: /凌晨|早上|上午|中午|下午|晚上/,
+            meridiemHour: function (h, meridiem) {
+                let hour = h;
+                if (hour === 12) {
+                    hour = 0;
+                }
+                if (meridiem === '凌晨' || meridiem === '早上' || meridiem === '上午') {
+                    return hour;
+                } else if (meridiem === '下午' || meridiem === '晚上') {
+                    return hour + 12;
+                } else {
+                    // '中午'
+                    return hour >= 11 ? hour : hour + 12;
+                }
+            },
+            meridiem: function (hour, minute, isLower) {
+                const hm = hour * 100 + minute;
+                if (hm < 600) {
+                    return '凌晨';
+                } else if (hm < 900) {
+                    return '早上';
+                } else if (hm < 1130) {
+                    return '上午';
+                } else if (hm < 1230) {
+                    return '中午';
+                } else if (hm < 1800) {
+                    return '下午';
+                } else {
+                    return '晚上';
+                }
+            }
+        });
+
+        let calendarEl = document.getElementById('calendar');
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            height: 'auto',
+            locale: 'zh-tw',
+            initialView: 'dayGridMonth',
+            initialDate: new Date(),
+            customButtons: {
+                datePicker: {
+                    text: 'custom'
+                }
+            },
+            headerToolbar: {
+                left: 'prev',
+                center: 'datePicker',
+                right: 'next'
+            },
+            navLinks: false,
+            editable: false,
+            eventLimit: true,
+            dayMaxEvents: 2,
+            // 點選單筆行程跳出泡泡
+            eventClick: function (info) {
+                $('.c-eventPopup').remove();
+                if (window.innerWidth > 1200) {
+                    const event = info.event;
+                    const jsEvent = info.jsEvent;
+                    const view = info.view;
+                    popoverElement = $(jsEvent.target);
+                    // info.event.extendedProps: 取得api額外參數
+                    let el = $(jsEvent.target).hasClass('fc-event') ? jsEvent.target : jsEvent.target.closest('.fc-event');
+                    let data = {
+                        title: info.event.title,
+                        start: info.event.start,
+                        ...info.event.extendedProps
+                    };
+                    if (!$('.c-eventPopup').length) {
+                        var $floatingEl = setEventPopupContent(data);
+                        $('#calendar').prepend($floatingEl);
+                        let left = moment(data.start).day() === 4 || moment(data.start).day() === 5 ? $(el).offset().left - $('.c-eventPopup').width() - 20 : $(el).offset().left + $(el).width() - 20;
+                        let top = $(el).offset().top - 20;
+                        let calendar = $('#calendar').offset().top + $('#calendar').height();
+                        let eventPopup = $('.c-eventPopup').height() + $(el).offset().top;
+                        if (calendar < eventPopup) {
+                            top = top - (eventPopup - calendar);
+                        }
+                        $('.c-eventPopup').css({
+                            '--top': top + 'px',
+                            '--left': left + 'px'
+                        });
+                    }
+                } else {
+                    return false;
+                }
+            },
+            // 小網點日期把資料append到行事曆底下列表
+            dateClick(arg) {
+                if (window.innerWidth < 1200) {
+                    const datas = dataSource.filter(item => item.start.split('T')[0] === arg.dateStr);
+                    let html = '';
+
+                    // 需下事件點選單筆行程跳出泡泡
+                    datas.forEach(item => {
+                        html += `
+                                <div data-mb-popup class="c-event" style="background-color:${item.categoryColor}">
+                                    <div class="c-event__details">
+                                        <div>${item.title}</div>
+                                        <div>${moment(item.start).format("HH:mm")}</div>
+                                    </div>
+                                </div>`;
+                    });
+                    if (datas.length == 0) {
+                        html = '無預約紀錄';
+                    }
+                    $('.c-calendarList').empty().append(html);
+                    setTimeout(() => {
+                        $('[data-mb-popup]').each(function (index) {
+                            $(this).on('click', function () {
+                                $('.c-eventPopup').remove();
+                                if (!$('.c-eventPopup').length) {
+                                    var data = datas[index];
+                                    var $floatingEl = setEventPopupContent(data);
+                                    $('#calendar').prepend($floatingEl);
+                                }
+                                $('.c-eventPopup').css({
+                                    '--top': '50%',
+                                    '--left': '50%'
+                                });
+                                $('body').css('overflow', 'hidden');
+                            });
+                        });
+                        popoverElement = $('[data-mb-popup]');
+                    });
+                }
+            },
+            // 行事曆resize事件
+            windowResize: function (arg) {
+                $('.c-eventPopup').remove();
+                $('body').css('overflow', 'initial');
+                calendar.destroy();
+                resizeSelectTableEvent();
+                // 大網清空小網點選行事曆事件渲染出的清單
+                if (window.innerWidth > 1200) {
+                    $('.c-calendarList').empty();
+                }
+                calendar.render();
+                initBindDatePicker();
+            },
+            // 行事曆星期六,日背景顏色
+            dayCellClassNames: function (info) {
+                if (info.dow === 6 || info.dow === 0) {
+                    return ['is-weekend'];
+                }
+            },
+            // 行事曆日期1-31文字format
+            dayCellContent: function (info) {
+                return new Date(info.date).getDate();
+            },
+            // 行事曆表頭星期一到日背景,文字顏色
+            dayHeaderClassNames: function (info) {
+                if (info.dow === 6 || info.dow === 0) {
+                    return ['fc-calendar-header-weekend'];
+                } else {
+                    return ['fc-calendar-header'];
+                }
+            },
+            // 行事曆表頭星期一到日文字format
+            dayHeaderContent: function (info) {
+                const weekArray = new Array('日', '一', '二', '三', '四', '五', '六');
+                return '週' + weekArray[info.dow];
+            },
+            // 切換日期同步變更日期title
+            datesSet: function (info) {
+                setDateTitle(calendar.getDate());
+            },
+            // 文字"+1 more"改成"還有x筆"
+            moreLinkContent: function (arg) {
+                return `還有${arg.num}筆`;
+            },
+            // 點選"還有x筆"
+            moreLinkClick: function (info) {
+                setTimeout(() => {
+                    // 判斷 more-popover 區塊定位及內容是否超過行事曆高度，超過需要重新定位
+                    let $popover = $('.fc-more-popover'),
+                        index = $(info.jsEvent.target).closest('tr').index() + 1;
+                    var tmpl = $popover.offset().top + $popover.outerHeight();
+                    if (tmpl > $('.fc-dayGridMonth-view').height()) {
+                        let top = $('.fc-col-header-cell').outerHeight() + index * 201 - $popover.height();
+                        $popover.css({
+                            'top': top + 'px'
+                        });
+                    }
+                }, 10);
+            },
+            // 自訂義行事曆事件html css
+            eventContent: function (info) {
+                if (window.innerWidth > 1200) {
+                    let tmpl = `
+                            <div class="c-event" style="background-color:${info.event.extendedProps.categoryColor}">
+                                <div class="c-event__details">
+                                    <div>${info.event.title}</div>
+                                    <div>${moment(info.event.start).format("HH:mm")}</div>
+                                </div>
+                            </div>`;
+                    return {
+                        html: tmpl
+                    };
+                } else {
+                    $('.fc-daygrid-event-harness').css('display', 'none');
+                    $('.fc-daygrid-day-bottom').css('display', 'none');
+                    const dateObj = new Date(info.event.start);
+                    const dateStr = `${dateObj.getUTCFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+                    $('[data-date=' + dateStr + ']').find('.fc-daygrid-day-events').html('<div class="o-eventBall"></div>');
+                }
+            },
+            // 行事曆資料
+            events: dataSource
+        });
+        setDateTitle(new Date());
+        resizeSelectTableEvent();
+        calendar.render();
+        initBindDatePicker();
+
+        // set日期到自訂義btn
+        function setDateTitle(date) {
+            const dateObj = new Date(date);
+            const customButtonsOption = calendar.getOption('customButtons');
+            calendar.setOption('customButtons', {
+                ...customButtonsOption,
+                datePicker: {
+                    ...customButtonsOption.datePicker,
+                    text: `${dateObj.getUTCFullYear()}年${dateObj.getMonth() + 1}月`
+                }
+            });
+            $('.fc-datePicker-button').addClass('btn');
+        }
+
+        // 綁定日期套件到header date title
+        function initBindDatePicker() {
+            $('.fc-datePicker-button').addClass('btn');
+            $('.fc-toolbar-chunk').eq(1).addClass('date').datepicker({
+                autoclose: true,
+                minViewMode: 'months',
+                startView: 'months',
+                format: 'yyyy-mm',
+                language: 'zh-TW',
+                orientation: 'bottom auto'
+            }).on('changeDate', e => {
+                const dateObj = new Date(e.date);
+                const dateStr = `${dateObj.getUTCFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+                setDateTitle(e.date);
+                calendar.gotoDate(dateStr);
+            });
+        }
+
+        // 調整行事曆事件
+        function resizeSelectTableEvent() {
+            if (window.innerWidth < 1200) {
+                calendar.setOption('selectable', true);
+            } else {
+                calendar.setOption('selectable', false);
+            }
+        }
+
+        // 設定單筆行程泡泡內容
+        function setEventPopupContent(data) {
+            var $floatingEl = document.getElementById('tmpl').innerHTML;
+            $floatingEl = $floatingEl.replace('${PopupColor}', data.popupColor).replace('${Title}', data.title).replace('${StartDay}', moment(data.start).format('YYYY/MM/DD (dd)')).replace('${StartTime}', `${moment(data.start).format('AHH:mm')}~${moment(data.end).format('HH:mm')}`).replace('${Phone}', data.phone).replace('${Email}', data.email).replace('${Topic}', data.topic).replace('${Other}', data.other);
+            var footerBtnSuccess = `
+                    <div class="l-action l-action--inline" data-footer-tmpl="success">
+                        <div class="l-action__item">
+                            <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-quick-close data-cancel>取消預約</a>
+                        </div>
+                        <div class="l-action__item">
+                            <a href="#" class="o-btn o-btn--primary o-btn--sm {isDisabled}" data-event-id="{id}" data-start-btn>{starBtnText}</a>
+                        </div>
+                    </div>`;
+            var footerBtnReserving = `
+                    <div class="l-action l-action--inline" data-footer-tmpl="reserving">
+                        <div class="l-action__item">
+                            <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-quick-close data-cancel>取消預約</a>
+                        </div>
+                    </div>`;
+            var $footerWrapper = `
+                    <div class="c-eventPopup__footer">
+                        {btns}
+                    </div>`;
+            switch (data.type) {
+                case 'history':
+                    $floatingEl = $floatingEl.replace('${footer}', '');
+                    break;
+                case 'success':
+                    // 只在預約時段時顯示「開始諮詢」，尚未到來皆顯示「等待中」
+                    footerBtnSuccess = footerBtnSuccess.replace('{id}', data.id).replace('{starBtnText}', data.release ? '開始諮詢' : '等待中').replace('{isDisabled}', data.release ? '' : 'is-disabled');
+                    $footerWrapper = $footerWrapper.replace('{btns}', footerBtnSuccess);
+                    $floatingEl = $floatingEl.replace('${footer}', $footerWrapper);
+                    break;
+                case 'reserving':
+                    footerBtnReserving = footerBtnReserving.replace('{id}', data.id);
+                    $footerWrapper = $footerWrapper.replace('{btns}', footerBtnReserving);
+                    $floatingEl = $floatingEl.replace('${footer}', $footerWrapper);
+                    break;
+                default:
+                    break;
+            }
+            return $floatingEl;
+        }
+
+        // 單筆行程泡泡關閉
+        $('body').on('click.quickClose', '[data-quick-close]', function (e) {
+            e.preventDefault();
+            $('.c-eventPopup').remove();
+            $('body').css('overflow', 'initial');
+        });
+
+        // 開始諮詢
+        $('body').on('click.start', '[data-start-btn]', function () {
+            e.preventDefault();
+            // 開始諮詢的該筆資料
+            let id = $(this).data('eventId');
+            let data = dataSource.find(item => item.id === id);
         });
     });
 </script>
