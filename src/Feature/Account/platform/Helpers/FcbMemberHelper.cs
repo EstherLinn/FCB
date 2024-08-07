@@ -10,7 +10,6 @@ namespace Feature.Wealth.Account.Helpers
         public static bool CheckMemberLogin()
         {
             return Sitecore.Context.IsLoggedIn && fcbMemberModel != null;
-
         }
         public static FcbMemberModel GetMemberAllInfo()
         {
@@ -48,6 +47,10 @@ namespace Feature.Wealth.Account.Helpers
         public static string GetMemberGender()
         {
             return fcbMemberModel.Gender;
+        }
+        public static string GetMemberSalFalg()
+        {
+            return fcbMemberModel.SalFlag;
         }
     }
 }

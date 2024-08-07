@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using Feature.Wealth.Account.Filter;
 using Sitecore.Mvc.Presentation;
 using Feature.Wealth.Account.Models.MemberCard;
+using Feature.Wealth.Account.Repositories;
+using Feature.Wealth.Account.Helpers;
 
 namespace Feature.Wealth.Account.Controllers
 {
@@ -15,8 +17,26 @@ namespace Feature.Wealth.Account.Controllers
         public ActionResult Index()
         {
             var model = RenderingContext.CurrentOrNull?.Rendering.Item;
+            var viewModel = new MemberCardViewModel();
+            viewModel.MemberCardModel = new MemberCardModel(model);
+            if (!string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
+            {
+                MemberRepository memberRepository = new MemberRepository();
+                viewModel.ScheduleDate = memberRepository.GetMemberScheduleDate();
+                viewModel.ScheduleSpace = CalculateDays(viewModel.ScheduleDate);
+            }
+            return View("~/Views/Feature/Wealth/Account/MemberCard/MemberCard.cshtml", viewModel);
+        }
 
-            return View("~/Views/Feature/Wealth/Account/MemberCard/MemberCard.cshtml",new MemberCardModel(model));
+        private int CalculateDays(DateTime? date)
+        {
+            if (!date.HasValue)
+            {
+                return 0;
+            }
+            DateTime td = DateTime.Today;
+            TimeSpan difference = td - date.Value;
+            return Math.Abs(difference.Days);
         }
 
     }

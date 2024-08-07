@@ -832,13 +832,13 @@ namespace Feature.Wealth.Account.Repositories
         /// </summary>
         /// <param name="getRisk"></param>
         /// <returns></returns>
-        public (bool,string) UpdateCifRiskToSql(string getRisk)
+        public (bool, string) UpdateCifRiskToSql(string getRisk)
         {
             var success = false;
             var id = GetMemberId();
             if (string.IsNullOrEmpty(getRisk) || string.IsNullOrEmpty(id))
             {
-                return (success,string.Empty);
+                return (success, string.Empty);
             }
             try
             {
@@ -856,7 +856,20 @@ namespace Feature.Wealth.Account.Repositories
             {
                 Log.Info("更新CIF即時資料 TO SQL table : CIF , exception message:" + ex.ToString());
             }
-           return (success, getRisk);
+            return (success, getRisk);
+        }
+
+        public DateTime? GetMemberScheduleDate()
+        {
+            DateTime? dt = null;
+            var strSql = @$" Select top 1 ScheduleDate From ConsultSchedule where CustomerID  COLLATE Latin1_General_CS_AS =@id and StatusCode = '1'  order by ScheduleDate ";
+
+            var para = new
+            {
+                id = FcbMemberHelper.GetMemberWebBankId()
+            };
+            dt = DbManager.Custom.Execute<DateTime?>(strSql, para, commandType: System.Data.CommandType.Text);
+            return dt;
         }
     }
 }

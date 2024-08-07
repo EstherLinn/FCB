@@ -2,12 +2,16 @@
 @using Feature.Wealth.Account.Models.OAuth;
 @using Feature.Wealth.Account.Models.MemberCard;
 @using Sitecore.Configuration;
-@model MemberCardModel
+@using Xcms.Sitecore.Foundation.Basic.Extensions;
+@model MemberCardViewModel
 @{
+    var model = Model.MemberCardModel;
     var member = FcbMemberHelper.fcbMemberModel;
     var isOauthLogin = true;
+    var salaryFlag = false;
     if (member.PlatForm == PlatFormEunm.WebBank)
     {
+        salaryFlag = member.SalFlag.ToBoolean();
         isOauthLogin = false;
     }
     var memberSettingUrl = MemberRelatedLinkHelper.GetMemberSettingUrl();
@@ -45,7 +49,6 @@
                             }
                             else
                             {
-
                                 <div class="c-member__info">
                                     <div class="c-member__title">
                                         <img src="~/themes/images/icons/member/chart.svg" alt="">
@@ -87,21 +90,73 @@
                                         <b>@(string.IsNullOrEmpty(member.Advisror) ? "-" : member.Advisror)</b>
                                     </div>
                                 </div>
+                                <div class="c-member__info">
+                                    <div class="c-member__title">
+                                        <img src="~/themes/images/icons/member/appointment.svg" alt="">
+                                        <span>理財諮詢</span>
+                                    </div>
+                                    <div class="c-member__value">
+                                        @if (Model.ScheduleDate.HasValue)
+                                        {
+                                            <b>還有 <span class="t-warning">@Model.ScheduleSpace</span> 天 </b>
+                                            <div class="t-date u-inline@lt">(@Model.ScheduleDate.Value.ToString("yyyy/MM/dd"))</div>
+                                        }
+                                        else
+                                        {
+                                            <b>-</b>
+                                        }
+                                    </div>
+                                </div>
                             }
                         </div>
                     </div>
                 </div>
                 <div class="l-member__ad">
-                    <div class="c-adCard">
-                        <div class="c-adCard__title">
-                            @Html.Sitecore().Field(Templates.MemberCard.Fields.Title.ToString(), Model.DataSource)
+                    @{
+                        var title = Templates.MemberCard.Fields.Title.ToString();
+                        var btnLink = Templates.MemberCard.Fields.ButtonLink.ToString();
+                        var btnText = Templates.MemberCard.Fields.ButtonText.ToString();
+                        switch (member.PlatForm)
+                        {
+                            case PlatFormEunm.WebBank:
+                                if (salaryFlag)
+                                {
+                                    title = Templates.MemberCard.Fields.SalaryTitle.ToString();
+                                    btnLink = Templates.MemberCard.Fields.SalaryButtonLink.ToString();
+                                    btnText = Templates.MemberCard.Fields.SalaryButtonText.ToString();
+                                }
+                                break;
+                            case PlatFormEunm.FaceBook:
+                                title = Templates.MemberCard.Fields.FacebookTitle.ToString();
+                                btnLink = Templates.MemberCard.Fields.FacebookButtonLink.ToString();
+                                btnText = Templates.MemberCard.Fields.FacebookButtonText.ToString();
+                                break;
+                            case PlatFormEunm.Line:
+                                title = Templates.MemberCard.Fields.LineTitle.ToString();
+                                btnLink = Templates.MemberCard.Fields.LineButtonLink.ToString();
+                                btnText = Templates.MemberCard.Fields.LineButtonText.ToString();
+                                break;
+                        }
+                        <div class="c-adCard">
+                            <div class="c-adCard__bg">
+                                <img class="u-hidden@lt" src="@(model.ImagePCUrl)" alt="">
+                                <img class="u-hidden@dt-only" src="@(model.ImageMBUrl)" alt="">
+                            </div>
+                            <div class="c-adCard__content">
+                                <div class="c-adCard__title">
+                                    @Html.Sitecore().Field(title, model.DataSource)
+                                </div>
+                                <div class="c-adCard__action">
+                                    @Html.Sitecore().BeginField(btnLink, model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--wt o-btn--thin o-btn--auto u-noShadow" })
+                                    @Html.Sitecore().Field(btnText, model.DataSource)
+                                    @Html.Sitecore().EndField()
+                                </div>
+                            </div>
+                            <div class="c-adCard__deco">
+                                <img src="@(model.ImageCornerUrl)" alt="">
+                            </div>
                         </div>
-                        <div class="c-adCard__action">
-                            @Html.Sitecore().BeginField(Templates.MemberCard.Fields.ButtonLink.ToString(), Model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--wt o-btn--thin o-btn--auto u-noShadow" })
-                            @Html.Sitecore().Field(Templates.MemberCard.Fields.ButtonText.ToString(), Model.DataSource)
-                            @Html.Sitecore().EndField()
-                        </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>
