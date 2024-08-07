@@ -618,7 +618,7 @@
                                     $('[data-infoend]').datepicker('setDate', endDate);
                                     break;
                                 case "2":
-                                    $('input[name="quoteChange"]').prop("checked", item.openInfo)                                 
+                                    $('input[name="quoteChange"]').prop("checked", item.openInfo)
                                     startDate = item.infoStartDate.split('T')[0].replaceAll('-', '/');
                                     endDate = item.infoEndDate.split('T')[0].replaceAll('-', '/');
                                     $("#popupAlert").find('[data-alert-rise]').val(item.risePercent);
@@ -640,6 +640,56 @@
 
         });
 
+        EventHandler.AddClick('click-update', function (e) {
+            e.preventDefault();
+
+            let self = this;
+            let params = {
+                pageId: $(self).attr('eh-click-pageid'),
+                renderingId: $(self).attr('eh-click-renderingid'),
+                datasourceId: $(self).attr('eh-click-datasourceid'),
+                linkFieldId: $(self).attr('eh-click-linkfieldid'),
+            };
+
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "ClickCount", "Update")',
+                type: 'POST',
+                data: params
+            }).done(function (data) {
+                console.log(data.Status);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            });
+
+            if ($(self).attr('target') == "_blank") {
+                window.open($(self).attr('href'), '_blank');
+            }
+            else {
+                window.location.href = $(self).attr('href');
+            }
+        });
+
+        EventHandler.AddOnExec('click-exec', function (e) {
+            let self = e.target;
+            let params = {
+                pageId: self.getAttribute('eh-click-pageid'),
+                renderingId: self.getAttribute('eh-click-renderingId'),
+                datasourceId: self.getAttribute('eh-click-datasourceId'),
+                linkFieldId: self.getAttribute('eh-click-linkFieldId'),
+            };
+
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "ClickCount", "Get")',
+                type: 'GET',
+                data: params
+            }).done(function (data) {
+                if (data.Status == "Success") {
+                    $(self).text(data.Count);
+                } else {
+                    $(self).text("0");
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            });
+        });
 
     })(jQuery, window, document);
 </script>
