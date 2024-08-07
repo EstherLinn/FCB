@@ -1,0 +1,198 @@
+﻿@model Feature.Wealth.Component.Models.RelatedArticlesLink.RelatedArticlesLinkModel
+@using Feature.Wealth.Component.Models.RelatedArticlesLink;
+@using Foundation.Wealth.Helper;
+@if (Model.Datasource == null)
+{
+    return;
+}
+<section class="c-section">
+    <div class="l-wrap">
+        <section class="c-section">
+            <div class="c-section__title">@Model.MainTitle</div>
+            <div class="c-section__content">
+                <div class="l-flex l-flex--card">
+                    @if (!string.IsNullOrEmpty(Model.ImagePc1) || !string.IsNullOrEmpty(Model.ImageMb1)
+                    || !string.IsNullOrEmpty(Model.Title1) || !string.IsNullOrEmpty(Model.Date1)
+                    || !string.IsNullOrEmpty(Model.Link1))
+                    {
+                        <div class="l-flex__item">
+                            <a href="@Model.Link1" class="c-box c-box--gapless u-shadow-animation"
+                               target="@Model.LinkTarget1" title="@Model.LinkTitle1"
+                               data-eh="click-update"
+                               eh-click-pageid="@Model.PageId"
+                               eh-click-renderingid="@Model.RenderingId"
+                               eh-click-datasourceid="@Model.DatasourceId"
+                               eh-click-linkFieldid="@Templates.RelatedArticles.Fields.Link1">
+                                <div class="c-box c-box--gapless u-shadow-animation">
+                                    <div class="c-gridview c-gridview--list@lt">
+                                        <div class="c-gridview__media c-gridview__media--sm">
+                                            <picture>
+                                                <source media="(min-width: 1200px)" srcset="@Model.ImagePc1">
+                                                <source media="(max-width: 1199px)" srcset="@Model.ImageMb1">
+                                                <img src="@Model.ImagePc1" class="c-gridview__img" alt="@Model.Title1">
+                                            </picture>
+                                        </div>
+                                        <div class="c-gridview__content">
+                                            <div class="c-gridview__main">
+                                                <div class="c-gridview__title s3@dt-only u-ellipsis-2 u-ellipsis-3@mb-only u-line-2@dt-only">@Model.Title1</div>
+                                            </div>
+                                            <div class="c-gridview__minor">
+                                                <div class="c-minorInfo s4">
+                                                    <div class="c-minorInfo__main">
+                                                        <span class="t-date">@Model.Date1</span>
+                                                    </div>
+                                                    <div class="c-minorInfo__view">
+                                                        <span class="o-views o-views--xs" data-eh="click-exec" eh-click-pageid="@Model.PageId"
+                                                              eh-click-renderingId="@Model.RenderingId"
+                                                              eh-click-datasourceId="@Model.DatasourceId"
+                                                              eh-click-linkFieldId="@Templates.RelatedArticles.Fields.Link1">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ImagePc2) || !string.IsNullOrEmpty(Model.ImageMb2)
+                    || !string.IsNullOrEmpty(Model.Title2) || !string.IsNullOrEmpty(Model.Date2)
+                    || !string.IsNullOrEmpty(Model.Link2))
+                    {
+                        <div class="l-flex__item">
+                            <a href="@Model.Link2" class="c-box c-box--gapless u-shadow-animation"
+                               target="@Model.LinkTarget2" title="@Model.LinkTitle2"
+                               data-eh="click-update"
+                               eh-click-pageid="@Model.PageId"
+                               eh-click-renderingid="@Model.RenderingId"
+                               eh-click-datasourceid="@Model.DatasourceId"
+                               eh-click-linkFieldid="@Templates.RelatedArticles.Fields.Link2">
+                                <div class="c-box c-box--gapless u-shadow-animation">
+                                    <div class="c-gridview c-gridview--list@lt">
+                                        <div class="c-gridview__media c-gridview__media--sm">
+                                            <picture>
+                                                <source media="(min-width: 1200px)" srcset="@Model.ImagePc2">
+                                                <source media="(max-width: 1199px)" srcset="@Model.ImageMb2">
+                                                <img src="@Model.ImagePc2" class="c-gridview__img" alt="@Model.Title2">
+                                            </picture>
+                                        </div>
+                                        <div class="c-gridview__content">
+                                            <div class="c-gridview__main">
+                                                <div class="c-gridview__title s3@dt-only u-ellipsis-2 u-ellipsis-3@mb-only u-line-2@dt-only">@Model.Title2</div>
+                                            </div>
+                                            <div class="c-gridview__minor">
+                                                <div class="c-minorInfo s4">
+                                                    <div class="c-minorInfo__main">
+                                                        <span class="t-date">@Model.Date2</span>
+                                                    </div>
+                                                    <div class="c-minorInfo__view">
+                                                        <span class="o-views o-views--xs" data-eh="click-exec" eh-click-pageid="@Model.PageId"
+                                                              eh-click-renderingId="@Model.RenderingId"
+                                                              eh-click-datasourceId="@Model.DatasourceId"
+                                                              eh-click-linkFieldId="@Templates.RelatedArticles.Fields.Link2">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ImagePc3) || !string.IsNullOrEmpty(Model.ImageMb3)
+                    || !string.IsNullOrEmpty(Model.Title3) || !string.IsNullOrEmpty(Model.Date3)
+                    || !string.IsNullOrEmpty(Model.Link3))
+                    {
+                        <div class="l-flex__item">
+                            <a href="@Model.Link3" class="c-box c-box--gapless u-shadow-animation"
+                               target="@Model.LinkTarget3" title="@Model.LinkTitle3"
+                               data-eh="click-update"
+                               eh-click-pageid="@Model.PageId"
+                               eh-click-renderingid="@Model.RenderingId"
+                               eh-click-datasourceid="@Model.DatasourceId"
+                               eh-click-linkFieldid="@Templates.RelatedArticles.Fields.Link3">
+                                <div class="c-box c-box--gapless u-shadow-animation">
+                                    <div class="c-gridview c-gridview--list@lt">
+                                        <div class="c-gridview__media c-gridview__media--sm">
+                                            <picture>
+                                                <source media="(min-width: 1200px)" srcset="@Model.ImagePc3">
+                                                <source media="(max-width: 1199px)" srcset="@Model.ImageMb3">
+                                                <img src="@Model.ImagePc3" class="c-gridview__img" alt="@Model.Title3">
+                                            </picture>
+                                        </div>
+                                        <div class="c-gridview__content">
+                                            <div class="c-gridview__main">
+                                                <div class="c-gridview__title s3@dt-only u-ellipsis-2 u-ellipsis-3@mb-only u-line-2@dt-only">@Model.Title3</div>
+                                            </div>
+                                            <div class="c-gridview__minor">
+                                                <div class="c-minorInfo s4">
+                                                    <div class="c-minorInfo__main">
+                                                        <span class="t-date">@Model.Date3</span>
+                                                    </div>
+                                                    <div class="c-minorInfo__view">
+                                                        <span class="o-views o-views--xs" data-eh="click-exec" eh-click-pageid="@Model.PageId"
+                                                              eh-click-renderingId="@Model.RenderingId"
+                                                              eh-click-datasourceId="@Model.DatasourceId"
+                                                              eh-click-linkFieldId="@Templates.RelatedArticles.Fields.Link3">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.ImagePc4) || !string.IsNullOrEmpty(Model.ImageMb4)
+                    || !string.IsNullOrEmpty(Model.Title4) || !string.IsNullOrEmpty(Model.Date4)
+                    || !string.IsNullOrEmpty(Model.Link4))
+                    {
+                        <div class="l-flex__item">
+                            <a href="@Model.Link4" class="c-box c-box--gapless u-shadow-animation"
+                               target="@Model.LinkTarget4" title="@Model.LinkTitle4"
+                               data-eh="click-update"
+                               eh-click-pageid="@Model.PageId"
+                               eh-click-renderingid="@Model.RenderingId"
+                               eh-click-datasourceid="@Model.DatasourceId"
+                               eh-click-linkFieldid="@Templates.RelatedArticles.Fields.Link4">
+                                <div class="c-box c-box--gapless u-shadow-animation">
+                                    <div class="c-gridview c-gridview--list@lt">
+                                        <div class="c-gridview__media c-gridview__media--sm">
+                                            <picture>
+                                                <source media="(min-width: 1200px)" srcset="@Model.ImagePc4">
+                                                <source media="(max-width: 1199px)" srcset="@Model.ImageMb4">
+                                                <img src="@Model.ImagePc4" class="c-gridview__img" alt="@Model.Title4">
+                                            </picture>
+                                        </div>
+                                        <div class="c-gridview__content">
+                                            <div class="c-gridview__main">
+                                                <div class="c-gridview__title s3@dt-only u-ellipsis-2 u-ellipsis-3@mb-only u-line-2@dt-only">@Model.Title4</div>
+                                            </div>
+                                            <div class="c-gridview__minor">
+                                                <div class="c-minorInfo s4">
+                                                    <div class="c-minorInfo__main">
+                                                        <span class="t-date">@Model.Date4</span>
+                                                    </div>
+                                                    <div class="c-minorInfo__view">
+                                                        <span class="o-views o-views--xs" data-eh="click-exec" eh-click-pageid="@Model.PageId"
+                                                              eh-click-renderingId="@Model.RenderingId"
+                                                              eh-click-datasourceId="@Model.DatasourceId"
+                                                              eh-click-linkFieldId="@Templates.RelatedArticles.Fields.Link4">
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
