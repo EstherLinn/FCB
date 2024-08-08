@@ -1984,6 +1984,8 @@
             $('[data-save]').on('click', function (e) {
                 e.preventDefault();
 
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 const calculationData = {
                     Type: "SavingList",
                     Name: "存一桶金試算",
@@ -1994,7 +1996,8 @@
                     EarningsChart: earningsChart,
                     ChartsRevenues: chartsRevenues,
                     ChartsRewards: chartsRewards,
-                    ChartsRewardsCategories: chartsRewardsCategories
+                    ChartsRewardsCategories: chartsRewardsCategories,
+                    __RequestVerificationToken: token
                 };
 
                 $.ajax({
@@ -3349,12 +3352,15 @@
                     expectedRoi = ExpectedRoi;
                 }
 
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     url: '@Url.Action("GetFundData", "Calculate")',
                     method: 'POST',
                     data: {
                         ExpectedRoi: expectedRoi,
-                        ProductFundIDs: fundIds
+                        ProductFundIDs: fundIds,
+                        __RequestVerificationToken: token
                     },
                     success: function (data) {
                         if (data != null && data.length != 0) {

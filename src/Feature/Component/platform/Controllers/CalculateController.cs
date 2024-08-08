@@ -54,6 +54,7 @@ namespace Feature.Wealth.Component.Controllers
         /// 儲存試算結果
         /// </summary>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult SaveCalculationResults(CalculationResultData data)
         {
             object objReturn = new
@@ -68,6 +69,7 @@ namespace Feature.Wealth.Component.Controllers
         /// 獲取基金資料
         /// </summary>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetFundData(string ExpectedRoi, string[] ProductFundIDs)
         {
             List<FundModel> datas;
