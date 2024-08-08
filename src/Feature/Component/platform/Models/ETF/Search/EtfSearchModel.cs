@@ -1,5 +1,4 @@
-﻿using Sitecore.Data.Items;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Feature.Wealth.Component.Models.ETF.Search
 {
@@ -43,5 +42,15 @@ namespace Feature.Wealth.Component.Models.ETF.Search
         /// </summary>
         [Description("台幣")]
         TWD
+    }
+
+    public enum DividendFrequency
+    {
+        不配息 = 0,
+        月配 = 1,
+        季配 = 2,
+        半年配 = 3,
+        年配 = 4,
+        不定期 = 5
     }
 }
