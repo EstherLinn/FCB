@@ -92,6 +92,14 @@
                 return;
             }
 
+            SC_DATA.S_IsInitial = true;
+            SC_DATA.S_Result = {
+                FundProducts: [],
+                ETFProducts: [],
+                ForeignStocks: [],
+                StructuredProducts: []
+            }
+
             // 搜尋全部，隱藏進階搜尋
             $('#SearchCategory').on('change', function (e) {
                 let option = $(this).find(":selected");
@@ -107,38 +115,26 @@
                     $(item).toggleClass('u-hidden', $(item).data('hot-val') != option.text());
                 });
 
-                SC_DATA.S_IsInitial = true;
-
                 SC_DATA.SearchBar = {
                     QueryList: function () {
-                        var query = {};
+                        var query = null;
                         let type = SC_DATA.S_Option.data('producttype');
                         SC_DATA.S_ProductType = type;
                         switch (type) {
                             case 'Fund':
-                                query = null;
                                 generateSearch();
                                 break;
                             case 'ETF':
-                                query = null;
                                 generateSearch();
                                 break;
                             case 'StructuredProduct':
-                                query = null;
                                 generateSearch();
                                 break;
                             case 'ForeignStock':
-                                query = null;
                                 generateSearch();
                                 break;
-                            default:
+                            case 'All':
                                 query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetSearchResult")');
-                                SC_DATA.S_Result = {
-                                    FundProducts: [],
-                                    ETFProducts: [],
-                                    ForeignStocks: [],
-                                    StructuredProducts: []
-                                }
                                 break;
                         }
 
@@ -251,7 +247,7 @@
                         $(container).find('[data-ia]').interactive();
                         // 綁定 like icon 的彈跳登入畫面
                         $(container).find('[data-popup]').magnificPopup();
-                        //$(container).find('[eh-compare]').trigger('exec');
+                        $(container).find('[eh-compare]').trigger('exec').attr('data-after-lt', null);
                         $(container).find('[eh-focus]').trigger('exec');
                         $(container).find('[eh-subscription-type]').trigger('exec');
                     },
@@ -260,6 +256,9 @@
 
                         // like 按鈕
                         let $like = `<a ${suggestion.data.focusBtnHtml}></a>`;
+                        // 
+                        let $compare = `<div class="c-itemKeyword__collections">${suggestion.data.compareBtnHtml}</div>`;
+                        
                         // 申購按鈕
                         let $purchase = suggestion.data.purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.data.subscribeBtnHtml}>申購</a></div>` : '';
 
@@ -269,6 +268,7 @@
                                 <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
                             </a>
                             <div class="c-itemKeyword__collections">${$like}</div>
+                            ${(suggestion.data.compareBtnHtml ? $compare : '')}
                             ${$purchase}
                         </div>`;
                     }
@@ -304,9 +304,14 @@
                         SC_DATA.S_SearchKeyword = list;
                         if (SC_DATA.S_IsInitial) {
                             initAutocomplete();
+                            SC_DATA.S_IsInitial = false;
                         }
                     }
                 }
+            }
+
+            function getType() {
+                return SC_DATA.S_Option.val() == '全部' ? null : SC_DATA.S_Option.val();
             }
 
             function getFundResult(list) {
@@ -314,10 +319,11 @@
                     let obj = {
                         value: item.ProductCode + ' ' + item.ProductName,
                         data: {
-                            type: SC_DATA.S_Option.val(),
+                            type: getType() || $('#SearchCategory option[data-producttype="Fund"]').val(),
                             detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
                             purchase: item.CanOnlineSubscription,
                             focusBtnHtml: item.FocusButtonAutoHtml,
+                            compareBtnHtml: item.CompareButtonHtml,
                             subscribeBtnHtml: item.SubscribeButtonAutoHtml
                         }
                     };
@@ -330,10 +336,11 @@
                     let obj = {
                         value: item.FirstBankCode + ' ' + item.ETFName,
                         data: {
-                            type: SC_DATA.S_Option.val(),
+                            type: getType() || $('#SearchCategory option[data-producttype="ETF"]').val(),
                             detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
                             purchase: item.CanOnlineSubscription,
                             focusBtnHtml: item.FocusButtonAutoHtml,
+                            compareBtnHtml: item.CompareButtonHtml,
                             subscribeBtnHtml: item.SubscribeButtonAutoHtml
                         }
                     };
@@ -346,7 +353,7 @@
                     let obj = {
                         value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
                         data: {
-                            type: SC_DATA.S_Option.val(),
+                            type: getType() || $('#SearchCategory option[data-producttype="ForeignStock"]').val(),
                             detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
                             purchase: item.CanOnlineSubscription,
                             focusBtnHtml: item.FocusButtonAutoHtml,
@@ -362,7 +369,7 @@
                     let obj = {
                         value: item.ProductCode + ' ' + item.ProductName,
                         data: {
-                            type: SC_DATA.S_Option.val(),
+                            type: getType() || $('#SearchCategory option[data-producttype="StructuredProduct"]').val(),
                             detailUrl: '@Model.DetailPageLink.StructuredProductDetailPageLink' + '?' + $.param({ id: item.ProductCode })
                         }
                     };
