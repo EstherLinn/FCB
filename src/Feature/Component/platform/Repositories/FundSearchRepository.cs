@@ -94,14 +94,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.FundSizeMillionTWD = Round4(f.FundSizeMillionTWD);
                 vm.FundType = f.FormatFundType ?? string.Empty;
 
-                if (f.DividendDistributionFrequency == "無")
-                {
-                    vm.DividendFrequencyName = "不配息";
-                }
-                else
-                {
-                    vm.DividendFrequencyName = f.DividendDistributionFrequency ?? string.Empty;
-                }
+                vm.DividendFrequencyName = f.DividendDistributionFrequency ?? string.Empty;
 
                 //風險指標
                 vm.RiskRewardLevel = f.RiskRewardLevel ?? string.Empty;
@@ -245,5 +238,50 @@ namespace Feature.Wealth.Component.Repositories
             }
             return sb.ToString();
         }
+
+
+
+        private static readonly Dictionary<string, int> DividendFrequencyMapping = new Dictionary<string, int>
+        {
+            { "不配息", 1 },
+            { "月配", 2 },
+            { "季配", 3 },
+            { "半年配", 4 },
+            { "年配", 5 },
+            { "不定期", 6 }
+        };
+
+
+        public static int? GetFrequency(string key)
+        {
+            if (DividendFrequencyMapping.TryGetValue(key, out var frequency))
+            {
+                return frequency;
+            }
+            return null;
+        }
+
+        public List<string> GetDividend()
+        {
+            var items = GetFundSearchData(); 
+            var dividendFrequencies = items
+                    .Select(f => f.DividendDistributionFrequency)
+                    .Distinct()
+                    .ToList();
+
+            var sortedDividendFrequencies = dividendFrequencies
+             .Select(f => new
+             {
+                 Frequency = f,
+                 Value = GetFrequency(f)
+             })
+             .OrderBy(x => x.Value.HasValue ? x.Value.Value : int.MaxValue) 
+             .Select(x => x.Frequency)
+             .ToList();
+
+            return sortedDividendFrequencies;
+        }
+
+
     }
 }

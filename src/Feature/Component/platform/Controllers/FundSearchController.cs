@@ -68,7 +68,8 @@ namespace Feature.Wealth.Component.Controllers
                 FundCompanies = items.Where(f => f.FundCompanyName != null).OrderBy(f => f.FundCompanyName).Select(f => f.FundCompanyName).Distinct().ToList(),
                 InvestmentRegions = regions,
                 InvestmentTargets = items.OrderBy(t => t.InvestmentTargetID).Select(f => f.InvestmentTargetName).Distinct().ToList(),
-                FundTypeNames = items.OrderBy(f => f.FormatFundType).Select(f => f.FormatFundType).Distinct().ToList()
+                FundTypeNames = items.OrderBy(f => f.FormatFundType).Select(f => f.FormatFundType).Distinct().ToList(),
+                DividendDistributionFrequencies = _fundsearchrepository.GetDividend()
             };
 
             var viewModel = new FundSearchViewModel
