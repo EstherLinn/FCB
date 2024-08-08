@@ -643,12 +643,15 @@
         EventHandler.AddClick('click-update', function (e) {
             e.preventDefault();
 
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
             let self = this;
             let params = {
                 pageId: $(self).attr('eh-click-pageid'),
                 renderingId: $(self).attr('eh-click-renderingid'),
                 datasourceId: $(self).attr('eh-click-datasourceid'),
                 linkFieldId: $(self).attr('eh-click-linkfieldid'),
+                __RequestVerificationToken: token
             };
 
             $.ajax({

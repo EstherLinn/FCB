@@ -2022,6 +2022,8 @@
             $('[data-save]').on('click', function (e) {
                 e.preventDefault();
 
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 const calculationData = {
                     Type: "BuyHouseList",
                     Name: "買房首付試算",
@@ -2032,9 +2034,10 @@
                     EarningsChart: earningsChart,
                     ChartsRevenues: chartsRevenues,
                     ChartsRewards: chartsRewards,
-                    ChartsRewardsCategories: chartsRewardsCategories
+                    ChartsRewardsCategories: chartsRewardsCategories,
+                    __RequestVerificationToken: token
                 };
-
+               
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "Calculate", "SaveCalculationResults")',
                     type: 'POST',
@@ -3383,12 +3386,15 @@
                     expectedRoi = ExpectedRoi;
                 }
 
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
                     url: '@Url.Action("GetFundData", "Calculate")',
                     method: 'POST',
                     data: {
                         ExpectedRoi: expectedRoi,
-                        ProductFundIDs: fundIds
+                        ProductFundIDs: fundIds,
+                        __RequestVerificationToken: token
                     },
                     success: function (data) {
 

@@ -42,6 +42,7 @@ namespace Feature.Wealth.Component.Controllers
         /// <param name="linkFieldId">連結欄位ID</param>
         /// <returns>更新是否成功，成功回傳true，失敗回傳 false</returns>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Update(Guid? pageId, Guid? renderingId, Guid? datasourceId, Guid? linkFieldId)
         {
             if (!pageId.HasValue || !renderingId.HasValue || !datasourceId.HasValue || !linkFieldId.HasValue)
