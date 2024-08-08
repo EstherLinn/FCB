@@ -247,64 +247,60 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="l-flex__item">
-                                            <div class="c-filterForm" id="uid-criteria-dividend" data-filter-group>
-                                                <div class="c-filterForm__title" data-filter-title>
-                                                    <span>是否配息</span>@*對應JSON欄位【DividendDistributionFrequency】*@
-                                                </div>
-                                                <div class="c-filterForm__value">
-                                                    <div class="l-pickGroup">
-                                                        <div class="l-pickGroup__all">
-                                                            <label class="o-btnCheckBox">
-                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
-                                                                <div class="o-btnCheckBox__text">全部</div>
-                                                            </label>
-                                                        </div>
-                                                        <div class="l-pickGroup__wrap">
-                                                            <div class="l-pickCollapse" data-overflow-hide="dividend">
-                                                                <div class="l-pickCollapse__content" data-overflow-content="dividend">
-                                                                    <div class="l-pickGroup">
-                                                                        @foreach (var frequency in Model.DividendDistributionFrequencyList)
-                                                                        {
-                                                                            string distribution = string.Empty;
-                                                                            string value = distribution;
-                                                                            string display = string.Empty;
-
-                                                                            if (frequency == null)
+                                        @if (Model.DividendDistributionFrequencyList != null && Model.DividendDistributionFrequencyList.Any())
+                                        {
+                                            <div class="l-flex__item">
+                                                <div class="c-filterForm" id="uid-criteria-dividend" data-filter-group>
+                                                    <div class="c-filterForm__title" data-filter-title>
+                                                        <span>是否配息</span>@*對應JSON欄位【DividendDistributionFrequency】*@
+                                                    </div>
+                                                    <div class="c-filterForm__value">
+                                                        <div class="l-pickGroup">
+                                                            <div class="l-pickGroup__all">
+                                                                <label class="o-btnCheckBox">
+                                                                    <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                    <div class="o-btnCheckBox__text">全部</div>
+                                                                </label>
+                                                            </div>
+                                                            <div class="l-pickGroup__wrap">
+                                                                <div class="l-pickCollapse" data-overflow-hide="dividend">
+                                                                    <div class="l-pickCollapse__content" data-overflow-content="dividend">
+                                                                        <div class="l-pickGroup">
+                                                                            @foreach (var frequency in Model.DividendDistributionFrequencyList)
                                                                             {
-                                                                                display = "display: none;";
-                                                                                value = string.Empty;
-                                                                                distribution = string.Empty;
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                value = frequency;
-                                                                                distribution = frequency == "無" ? "不配息" : frequency;
-                                                                            }
+                                                                                string value = frequency;
+                                                                                string display = string.Empty;
 
-                                                                            <div class="l-pickGroup__item" style="@display">
-                                                                                <label class="o-btnCheckBox" data-filter-checkbox>
-                                                                                    <input class="o-btnCheckBox__input" type="checkbox" value="@value">
-                                                                                    <div class="o-btnCheckBox__text" data-filter-value="@distribution"></div>
-                                                                                </label>
-                                                                            </div>
-                                                                        }
+                                                                                if (frequency == null)
+                                                                                {
+                                                                                    display = "display: none;";
+                                                                                    value = string.Empty;
+                                                                                }
+
+                                                                                <div class="l-pickGroup__item" style="@display">
+                                                                                    <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                        <input class="o-btnCheckBox__input" type="checkbox" value="@value">
+                                                                                        <div class="o-btnCheckBox__text" data-filter-value="@value"></div>
+                                                                                    </label>
+                                                                                </div>
+                                                                            }
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="l-pickCollapse__expand">
-                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
-                                                                        <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="dividend">展開</a>
+                                                                    <div class="l-pickCollapse__expand">
+                                                                        <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                            <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="dividend">展開</a>
+                                                                        </div>
+                                                                        <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                            <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="dividend"></a>
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
-                                                                        <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="dividend"></a>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="l-pickCollapse__collapse">
-                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
-                                                                        <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="dividend">收合</a>
-                                                                    </div>
-                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
-                                                                        <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="dividend"></a>
+                                                                    <div class="l-pickCollapse__collapse">
+                                                                        <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                            <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="dividend">收合</a>
+                                                                        </div>
+                                                                        <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                            <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="dividend"></a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -312,7 +308,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        }
                                     </div>
                                 </div>
                                 <!-- 大網收合區域[data-filter-hide="desktop"] -->
