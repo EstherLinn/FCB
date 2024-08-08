@@ -1,7 +1,6 @@
 ﻿@using Foundation.Wealth.Helper;
 
 <script>
-
     document.title = '@ViewBag.Title Usage log';
 
     var method = {
@@ -64,7 +63,7 @@
         if (index > 0 && !! ary[index - 1].querySelector('[data-relation-option]')) {
             ary[index - 1].querySelector('[data-relation-option]').value = ''
         }
-        
+
         if (index == 0) {
             $('.HeaderStyle, caption').hide(); //隱藏篩選條件表頭
         }
@@ -101,7 +100,7 @@
             iCount: $('#tb_TopCount')[0] ? $('#tb_TopCount')[0].value : "",
             iOrder: $('#ddlOrder')[0] ? $('#ddlOrder')[0].value : "",
             rules: JSON.stringify(rule) || [],
-            root: method.select.path            
+            root: method.select.path
         };
 
         if (/^[\d]+$/.test(quaryData.iOrderColumeName) &&
@@ -118,7 +117,7 @@
         }).done(function (json) {
             if($('#lblMessage')[0]){
                $('#lblMessage')[0].innerHTML = DOMPurify.sanitize(json.Message);
-            }            
+            }
             if (json.Message) {
                 return;
             }
@@ -152,7 +151,43 @@
             });
         } else {
             $('#lblMessage').text('輸入有誤');
+        };
+    }
+
+    function getFile() {
+        var downloadBtn = $('#btnDownload');
+
+        var param = {
+            iOrderColumeName: downloadBtn.data('iOrderColumeName'),
+            iCount: downloadBtn.data('iCount'),
+            iOrder: downloadBtn.data('iOrder'),
+            rules: downloadBtn.data('rules'),
+            root: downloadBtn.data('root')
         }
+
+        $.ajax({
+            type: 'GET',
+            url: '@ClientRoute.GenerateUrl(this, "TableViewer", "GetFile")',
+            data: param,
+            xhrFields: {
+                responseType: 'blob'
+            },
+            beforeSend: showLoading,
+            complete: hideLoading,
+            success: function (response) {
+                if (response.size <= 0) {
+                    alert('匯出失敗');
+                    return;
+                }
+
+                var fileName = 'Usage Log_' + getCurrentDateTime() + '.xlsx';
+                var blob = response;
+                downloadURI(window.URL.createObjectURL(blob), fileName);
+            },
+            error: function (response) {
+                alert('檔案匯出過程中發生錯誤!');
+            }
+        });
     }
 
     function getCurrentDateTime() {
@@ -198,15 +233,15 @@
 <div class="container">
     <div class="navbar-collapse">
         @*<div class="navbar-content align-center">
-        TableName
-        </div>
-        <div class="navbar-content">
-        <label class="o-select select-2">
-        <select id="ddlTableName" style="width:120px" class="w3-select">
-        <option value="401436504">History</option>
-        </select>
-        </label>
-        </div>*@
+            TableName
+            </div>
+            <div class="navbar-content">
+            <label class="o-select select-2">
+            <select id="ddlTableName" style="width:120px" class="w3-select">
+            <option value="401436504">History</option>
+            </select>
+            </label>
+            </div>*@
         <div class="navbar-content align-center">
             Order BY
         </div>
@@ -241,8 +276,8 @@
         </div>
     </div>
     @*<div class="navbar-content">
-    <input type="button" value="Show Schema" id="btnShowSchema" class="w3-btn o-btn orange" />
-    </div>*@
+        <input type="button" value="Show Schema" id="btnShowSchema" class="w3-btn o-btn orange" />
+        </div>*@
 </div>
 @*<script>
         $('#btnShowSchema').click(function () {
@@ -373,6 +408,7 @@
     <h1 class="subheading og">
         查詢結果
         <span id="lblQueryCount" style="padding-right: 20px;"></span>
+        <input type="button" value="下載" id="btnDownload" onclick="getFile()" class="w3-btn o-btn orange" style="width: 100px;" />
     </h1>
     <div @*style="max-height: 500px; overflow-y: scroll;"*@>
         <div>
@@ -410,8 +446,8 @@
                 <tbody>
                     <tr>
                         @*<th scope="col">TABLE_CATALOG</th>
-                        <th scope="col">TABLE_SCHEMA</th>
-                        <th scope="col">TABLE_NAME</th>*@
+                            <th scope="col">TABLE_SCHEMA</th>
+                            <th scope="col">TABLE_NAME</th>*@
                         <th scope="col">COLUMN_NAME</th>
                         <th scope="col">ORDINAL_POSITION</th>
                         <th scope="col">COLUMN_DEFAULT</th>
@@ -424,19 +460,19 @@
                         <th scope="col">NUMERIC_SCALE</th>
                         <th scope="col">DATETIME_PRECISION</th>
                         @*<th scope="col">CHARACTER_SET_CATALOG</th>
-                        <th scope="col">CHARACTER_SET_SCHEMA</th>
-                        <th scope="col">CHARACTER_SET_NAME</th>
-                        <th scope="col">COLLATION_CATALOG</th>
-                        <th scope="col">COLLATION_SCHEMA</th>
-                        <th scope="col">COLLATION_NAME</th>
-                        <th scope="col">DOMAIN_CATALOG</th>
-                        <th scope="col">DOMAIN_SCHEMA</th>
-                        <th scope="col">DOMAIN_NAME</th>*@
+                            <th scope="col">CHARACTER_SET_SCHEMA</th>
+                            <th scope="col">CHARACTER_SET_NAME</th>
+                            <th scope="col">COLLATION_CATALOG</th>
+                            <th scope="col">COLLATION_SCHEMA</th>
+                            <th scope="col">COLLATION_NAME</th>
+                            <th scope="col">DOMAIN_CATALOG</th>
+                            <th scope="col">DOMAIN_SCHEMA</th>
+                            <th scope="col">DOMAIN_NAME</th>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>Id</td>
                         <td>1</td>
                         <td>(newid())</td>
@@ -449,19 +485,19 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>Category</td>
                         <td>2</td>
                         <td>&nbsp;</td>
@@ -474,19 +510,19 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>cp950</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>cp950</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>Action</td>
                         <td>3</td>
                         <td>&nbsp;</td>
@@ -499,19 +535,19 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>cp950</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>cp950</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>ItemId</td>
                         <td>4</td>
                         <td>&nbsp;</td>
@@ -524,19 +560,19 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>ItemLanguage</td>
                         <td>5</td>
                         <td>&nbsp;</td>
@@ -549,19 +585,19 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>cp950</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>cp950</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>ItemVersion</td>
                         <td>6</td>
                         <td>&nbsp;</td>
@@ -574,19 +610,19 @@
                         <td>0</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>ItemPath</td>
                         <td>7</td>
                         <td>('')</td>
@@ -599,19 +635,19 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>UNICODE</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>UNICODE</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>UserName</td>
                         <td>8</td>
                         <td>&nbsp;</td>
@@ -624,19 +660,19 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>UNICODE</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>UNICODE</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>TaskStack</td>
                         <td>9</td>
                         <td>('')</td>
@@ -649,19 +685,19 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>cp950</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>cp950</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>AdditionalInfo</td>
                         <td>10</td>
                         <td>('')</td>
@@ -674,19 +710,19 @@
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>UNICODE</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>UNICODE</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                     <tr>
                         @*<td>Sitecore_Master</td>
-                        <td>dbo</td>
-                        <td>History</td>*@
+                            <td>dbo</td>
+                            <td>History</td>*@
                         <td>Created</td>
                         <td>11</td>
                         <td>&nbsp;</td>
@@ -699,14 +735,14 @@
                         <td>&nbsp;</td>
                         <td>3</td>
                         @*<td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>*@
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
                     </tr>
                 </tbody>
             </table>

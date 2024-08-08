@@ -29,6 +29,7 @@
     <PackageReference Update="Quartz" Version="3.9.0" />
     <PackageReference Update="Scriban" Version="5.10.0" />
     <PackageReference Update="X.PagedList" Version="8.4.7" />
+    <PackageReference Update="NPOI" Version="2.7.1" />
 
     <!-- === pin version === -->
     <PackageReference Update="CsvHelper" VersionOverride="31.0.0" />

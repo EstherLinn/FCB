@@ -11,5 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
     <PackageReference Include="Dapper" />
+    <PackageReference Include="NPOI" />
   </ItemGroup>
 </Project>

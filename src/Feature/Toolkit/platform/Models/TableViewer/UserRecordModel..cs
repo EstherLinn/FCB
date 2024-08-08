@@ -26,6 +26,80 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
             }
         }
 
+
+        public void Init()
+        {
+            InitSetting();
+        }
+
+        public void Init(string[][] rules, int iCount, int iOrder, int iOrderColumeName)
+        {
+            string str_TopCount = string.Empty, ddlOrder = string.Empty, result = string.Empty;
+
+            if (iCount > 0 && iCount < 3001)
+            {
+                str_TopCount = string.Format("Top {0}", iCount);
+            }
+
+            switch (iOrder)
+            {
+                case 0:
+                    ddlOrder = "Desc";
+                    break;
+
+                case 1:
+                    ddlOrder = "Asc";
+                    break;
+            }
+
+            string columeName = GetColumeName(iOrderColumeName);
+
+            var sqlParams = new List<SqlParameter>();
+
+            if (rules?.Length > 0)
+            {
+                string where = UpdateRule(rules, sqlParams);
+
+                if (string.IsNullOrEmpty(where))
+                {
+                    this.Message = MESSAGE;
+                }
+                else
+                {
+                    result = "WHERE " + where;
+                }
+            }
+            
+            if (!string.IsNullOrEmpty(this.Domain))
+            {
+                result = $"{result}{(string.IsNullOrEmpty(result) ? "WHERE" : " AND")} UPPER([UserName]) LIKE UPPER(@Domain)";
+                sqlParams.Add(new SqlParameter("Domain", this.Domain + "\\%"));
+            }
+            
+            string sqlOrder = !string.IsNullOrEmpty(columeName) ? $" ORDER BY {columeName} {ddlOrder}" : string.Empty;
+
+            this.Count = iCount;
+            this.Order = iOrder;
+            this.OrderColumeName = columeName;
+            this.SqlHistoryComm = $@"SELECT {str_TopCount} [Id],[Category],[Action],[ItemId],[ItemLanguage],[ItemVersion],[ItemPath],[UserName],[TaskStack],[AdditionalInfo],[Created]
+                                     FROM [dbo].[History] WITH(NOLOCK) {result} {sqlOrder}";
+            this.SqlAuthComm = $@"SELECT {str_TopCount}  [Id],
+                                        'Authentication' as [Category],
+                                        [Action] ,
+                                        CAST(0x0 AS UNIQUEIDENTIFIER) as [ItemId],
+                                        '' as [ItemLanguage],
+                                        1 as [ItemVersion],
+                                        '' as [ItemPath],
+                                        [UserName] ,
+                                        '' as [TaskStack],
+                                        '' as [AdditionalInfo],
+                                        [Created]
+                                  FROM [dbo].[AuthenticationHistory] WITH(NOLOCK) {result} {sqlOrder}";
+
+            this.Dictionary = sqlParams.ToDictionary(x => x.ParameterName, y => y.Value);
+        }
+
+
         private string GetColumeName(int input)
         {
             string columeName = string.Empty;
@@ -164,78 +238,6 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
             return @operator;
         }
 
-        public void Init()
-        {
-            InitSetting();
-        }
-
-        public void Init(string[][] rules, int iCount, int iOrder, int iOrderColumeName)
-        {
-            this.Count = iCount;
-            this.Order = iOrder;
-
-            string str_TopCount = string.Empty;
-            if (iCount > 0 && iCount < 3001)
-            {
-                str_TopCount = string.Format("Top {0}", iCount);
-            }
-
-            string ddlOrder = string.Empty;
-            switch (iOrder)
-            {
-                case 0:
-                    ddlOrder = "Desc";
-                    break;
-
-                case 1:
-                    ddlOrder = "Asc";
-                    break;
-            }
-
-            string columeName = GetColumeName(iOrderColumeName);
-            this.OrderColumeName = columeName;
-
-            var sqlParams = new List<SqlParameter>();
-            string result = string.Empty;
-            if (rules?.Length > 0)
-            {
-                string where = UpdateRule(rules, sqlParams);
-                if (string.IsNullOrEmpty(where))
-                {
-                    this.Message = MESSAGE;
-                }
-                else
-                {
-                    result = "WHERE " + where;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(this.Domain))
-            {
-                result = $"{result}{(string.IsNullOrEmpty(result) ? "WHERE" : " AND")} UPPER([UserName]) LIKE UPPER(@Domain)";
-                sqlParams.Add(new SqlParameter("Domain", this.Domain + "\\%"));
-            }
-
-            string sqlOrder = !string.IsNullOrEmpty(columeName) ? $" ORDER BY {columeName} {ddlOrder}" : string.Empty;
-
-            this.SqlHistoryComm = $@"SELECT {str_TopCount} [Id],[Category],[Action],[ItemId],[ItemLanguage],[ItemVersion],[ItemPath],[UserName],[TaskStack],[AdditionalInfo],[Created]
-                                    FROM [dbo].[History] WITH(NOLOCK) {result} {sqlOrder}";
-            this.SqlAuthComm = $@"SELECT {str_TopCount}  [Id],
-                                        'Authentication' as [Category],
-                                        [Action] ,
-                                        CAST(0x0 AS UNIQUEIDENTIFIER) as [ItemId],
-                                        '' as [ItemLanguage],
-                                        1 as [ItemVersion],
-                                        '' as [ItemPath],
-                                        [UserName] ,
-                                        '' as [TaskStack],
-                                        '' as [AdditionalInfo],
-                                        [Created]
-                                FROM [dbo].[AuthenticationHistory] WITH(NOLOCK) {result} {sqlOrder}";
-
-            this.Dictionary = sqlParams.ToDictionary(x => x.ParameterName, y => y.Value);
-        }
-
         public IEnumerable<object> GetData(CommandType commandType = CommandType.Text) => GetData(this.SqlHistoryComm, this.Dictionary, commandType);
 
         private IEnumerable<object> GetData(string sqlComm, Dictionary<string, object> dictionary, CommandType commandType)
@@ -276,7 +278,7 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
         /// <param name="sqlParams"></param>
         /// <param name="TableName"></param>
         /// <returns></returns>
-        public string UpdateRule(string[][] rules, List<SqlParameter> sqlParams, string TableName = "History")
+        private string UpdateRule(string[][] rules, List<SqlParameter> sqlParams, string TableName = "History")
         {
             string ruleQuery = string.Empty;
             bool groupCheck = false;
@@ -340,6 +342,7 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
                 string logicOperator = ddlLogicOperator;
                 string groupOpening = ddlGroupOpening;
                 string groupClosing = ddlGroupClosing;
+
                 var columnDataType = CheckColumeDataType(this.MasterSQL, ddlFieldName, TableName);
                 // Field value cannot be empty for these operations
                 if (comparisonOperator != "DISTINCT" && comparisonOperator != "REDUNDENT" && comparisonOperator != "EMPTY" && comparisonOperator != "NOT EMPTY" &&
@@ -578,7 +581,7 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
             return string.Empty;
         }
 
-        #region property
+        #region Property
 
         private Dictionary<string, object> Dictionary { get; set; }
 
@@ -605,38 +608,6 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
                                        "<br/>4. Datatime 欄位的值請輸入 '" + DISPLAYTIMEFORMAT + "'(中間為一個空格) 。" +
                                        "<br/>5. GUID 欄位的值請輸入 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'。";
 
-        private const string UNION_TABLE = @" (
-                                             SELECT
-                                              [Id],
-                                              [Category],
-                                              [Action],
-                                              [ItemId],
-                                              [ItemLanguage],
-                                              [ItemVersion],
-                                              [ItemPath],
-                                              [UserName],
-                                              [TaskStack],
-                                              [AdditionalInfo],
-                                              [Created]
-                                            FROM
-                                              [cdibh_Master].[dbo].[History]  WITH(NOLOCK)
-                                            union
-                                            SELECT
-                                              [Id],
-                                              'Authentication' as [Category],
-                                              [Action] COLLATE SQL_Latin1_General_CP1_CI_AS,
-                                              CAST(0x0 AS UNIQUEIDENTIFIER) as [ItemId],
-                                              '' as [ItemLanguage],
-                                              1 as [ItemVersion],
-                                              '' as [ItemPath],
-                                              [UserName] COLLATE SQL_Latin1_General_CP1_CI_AS,
-                                              '' as [TaskStack],
-                                              '' as [AdditionalInfo],
-                                              [Created]
-                                            FROM
-                                              [cdibh_Custom].[dbo].[AuthenticationHistory]  WITH(NOLOCK)
-                                          ) as result ";
-
         private static readonly Dictionary<string, IDictionary<string, string>> _params = new();
 
         private IDictionary<string, string> Setting
@@ -659,21 +630,6 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
 
         public string Domain => this.Setting?["Filter Options Domain"];
 
-        #endregion property
-    }
-
-    internal class History
-    {
-        public Guid Id { get; set; }
-        public string Category { get; set; }
-        public string Action { get; set; }
-        public Guid ItemId { get; set; }
-        public string ItemLanguage { get; set; }
-        public int ItemVersion { get; set; }
-        public string ItemPath { get; set; }
-        public string UserName { get; set; }
-        public string TaskStack { get; set; }
-        public string AdditionalInfo { get; set; }
-        public DateTime Created { get; set; }
+        #endregion Property
     }
 }
