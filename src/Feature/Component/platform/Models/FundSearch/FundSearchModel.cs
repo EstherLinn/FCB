@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 
@@ -382,6 +383,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// 搜尋列基金類型
         /// </summary>
         public List<string> FundTypeNames { get; set; }
+
+        /// <summary>
+        /// 搜尋列配息選項
+        /// </summary>
+        public List<string> DividendDistributionFrequencies { get; set; }
     }
 
     public class Tags

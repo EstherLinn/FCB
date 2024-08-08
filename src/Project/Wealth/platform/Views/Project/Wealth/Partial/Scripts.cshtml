@@ -49,7 +49,38 @@
                 })
             }
         }
-        window.CompareObj = function (id, type, name) {
+            const tabIdentifier = Date.now().toString();
+            const storageKey = 'openTabs';
+            //載入頁面時加一個tab戳記
+            window.addEventListener('load', () => {
+                const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                openTabs.push(tabIdentifier);
+                localStorage.setItem(storageKey, JSON.stringify(openTabs));
+            });
+            //登出Event
+            const logOutEvent = (event) => {
+                $.ajax({
+                    type: "post",
+                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "Logout")",
+                    success: function (msg) {
+                    },
+                })
+            }
+            //離開頁面後砍一個tab戳記
+            window.addEventListener('unload', function (e) {
+                const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                const updatedTabs = openTabs.filter(id => id !== tabIdentifier);
+                localStorage.setItem(storageKey, JSON.stringify(updatedTabs));
+                if (isLogin && isOnlyTabBeClose()) {
+                    logOutEvent();
+                }
+            });
+            // 檢查是否只剩下一個標籤頁被關閉
+            function isOnlyTabBeClose() {
+                const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                return openTabs.length === 0;
+            }
+            window.CompareObj = function (id, type, name) {
             this.id = id;
             this.type = type;
             this.name = name;

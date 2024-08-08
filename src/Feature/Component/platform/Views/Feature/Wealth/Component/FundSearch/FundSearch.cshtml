@@ -299,41 +299,18 @@
 																<div class="l-pickCollapse__content" data-overflow-content="dividend">
 																	<div class="l-pickGroup">
 
-
-																		<div class="l-pickGroup__item">
-																			<label class="o-btnCheckBox" data-filter-checkbox>
-																				<input class="o-btnCheckBox__input" type="checkbox" value="不配息">
-																				<div class="o-btnCheckBox__text" data-filter-value="不配息"></div>
-																			</label>
-																		</div>
-
-																		<div class="l-pickGroup__item">
-																			<label class="o-btnCheckBox" data-filter-checkbox>
-																				<input class="o-btnCheckBox__input" type="checkbox" value="月配">
-																				<div class="o-btnCheckBox__text" data-filter-value="月配"></div>
-																			</label>
-																		</div>
-
-																		<div class="l-pickGroup__item">
-																			<label class="o-btnCheckBox" data-filter-checkbox>
-																				<input class="o-btnCheckBox__input" type="checkbox" value="季配">
-																				<div class="o-btnCheckBox__text" data-filter-value="季配"></div>
-																			</label>
-																		</div>
-
-																		<div class="l-pickGroup__item">
-																			<label class="o-btnCheckBox" data-filter-checkbox>
-																				<input class="o-btnCheckBox__input" type="checkbox" value="半年配">
-																				<div class="o-btnCheckBox__text" data-filter-value="半年配"></div>
-																			</label>
-																		</div>
-
-																		<div class="l-pickGroup__item">
-																			<label class="o-btnCheckBox" data-filter-checkbox>
-																				<input class="o-btnCheckBox__input" type="checkbox" value="年配">
-																				<div class="o-btnCheckBox__text" data-filter-value="年配"></div>
-																			</label>
-																		</div>
+																		@foreach (string frequency in Model.SearchBarData.DividendDistributionFrequencies)
+																		{
+																			if (!string.IsNullOrEmpty(frequency))
+																			{
+																				<div class="l-pickGroup__item">
+																					<label class="o-btnCheckBox" data-filter-checkbox>
+																						<input class="o-btnCheckBox__input" type="checkbox" value="@frequency">
+																						<div class="o-btnCheckBox__text" data-filter-value="@frequency"></div>
+																					</label>
+																				</div>
+																			}
+																		}
 
 																		<div class="l-pickGroup__item" style="display:none;">
 																			<label class="o-btnCheckBox" data-filter-checkbox>

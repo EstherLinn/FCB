@@ -239,7 +239,7 @@ namespace Feature.Wealth.Component.Repositories
                 InvestmentRegionList = this.SearchResults.OrderBy(i => i.InvestmentRegion.Key).Select(i => i.InvestmentRegion.Value).Distinct(),
                 InvestmentStyleList = this.SearchResults.OrderBy(i => i.InvestmentStyle.Key).Select(i => i.InvestmentStyle.Value).Distinct(),
                 PublicLimitedCompanyList = this.SearchResults.OrderBy(i => i.PublicLimitedCompany.Key).Select(i => i.PublicLimitedCompany.Value).Distinct(),
-                DividendDistributionFrequencyList = this.SearchResults.OrderBy(i => i.DividendDistributionFrequency).Select(i => i.DividendDistributionFrequency).Distinct(),
+                DividendDistributionFrequencyList = OrderByDividendFrequency( this.SearchResults.Select(i => i.DividendDistributionFrequency).Distinct() ),
                 ExchangeList = this.SearchResults.Select(i => i.ExchangeID).OrderBy(i => i).Distinct()
             };
 
@@ -371,6 +371,39 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             return EnumUtil.GetEnumDescription(region);
+        }
+
+        /// <summary>
+        /// 配息頻率排序
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private IEnumerable<string> OrderByDividendFrequency(IEnumerable<string> list)
+        {
+            if (list == null || !list.Any())
+            {
+                return null;
+            }
+
+            List<DividendFrequency> dividendFrequencies = [];
+            List<string> otherList = [];
+
+            foreach (string item in list)
+            {
+                if (Enum.TryParse(item, out DividendFrequency dividendFrequency))
+                {
+                    dividendFrequencies.Add(dividendFrequency);
+                }
+                else
+                {
+                    otherList.Add(item);
+                }
+            }
+
+            List<string> result = dividendFrequencies.OrderBy(i => i).Select(x => x.ToString()).ToList();
+            result.AddRange(otherList);
+
+            return result;
         }
 
         #endregion
