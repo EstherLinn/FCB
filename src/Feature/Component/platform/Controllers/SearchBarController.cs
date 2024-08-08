@@ -1,5 +1,4 @@
 ﻿using Feature.Wealth.Component.Models.SearchBar;
-using Feature.Wealth.Component.Models.SiteProductSearch;
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Mvc.Presentation;
 using System.Web.Mvc;
@@ -17,25 +16,6 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        [OutputCache(Duration = 60, VaryByParam = "none")]
-
         public ActionResult GetSearchResult() => new JsonNetResult(_searchRepository.GetResultList());
-
-        [HttpPost]
-        [OutputCache(Duration = 60, VaryByParam = "none")]
-
-        public ActionResult GetFundResult() => new JsonNetResult(_searchRepository.MapperFundResult());
-
-        [HttpPost]
-        [OutputCache(Duration = 60, VaryByParam = "none")]
-        public ActionResult GetETFResult() => new JsonNetResult(_searchRepository.MapperETFResult());
-
-        [HttpPost]
-        [OutputCache(Duration = 60, VaryByParam = "none")]
-        public ActionResult GetForeignStockResult() => new JsonNetResult(_searchRepository.MapperForeignStockResult());
-
-        [HttpPost]
-        [OutputCache(Duration = 60, VaryByParam = "none")]
-        public ActionResult GetStructuredProductResult() => new JsonNetResult(_searchRepository.MapperStructuredProductResult());
     }
 }

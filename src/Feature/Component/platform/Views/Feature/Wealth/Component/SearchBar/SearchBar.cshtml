@@ -116,19 +116,19 @@
                         SC_DATA.S_ProductType = type;
                         switch (type) {
                             case 'Fund':
-                                query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetFundResult")');
+                                query = null;
                                 generateSearch();
                                 break;
                             case 'ETF':
-                                query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetETFResult")');
+                                query = null;
                                 generateSearch();
                                 break;
                             case 'StructuredProduct':
-                                query = null; // apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetStructuredProductResult")');
+                                query = null;
                                 generateSearch();
                                 break;
                             case 'ForeignStock':
-                                query = null; //apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetForeignStockResult")');
+                                query = null;
                                 generateSearch();
                                 break;
                             default:
@@ -281,61 +281,22 @@
 
                     switch (SC_DATA.S_ProductType) {
                         case 'Fund':
-                            $.each(SC_DATA.S_Result.FundProducts, function (i, item) {
-                                let obj = {
-                                    value: item.ProductCode + ' ' + item.ProductName,
-                                    data: {
-                                        type: SC_DATA.S_Option.val(),
-                                        detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
-                                        purchase: item.CanOnlineSubscription,
-                                        focusBtnHtml: item.FocusButtonAutoHtml,
-                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
-                                    }
-                                };
-                                list.push(obj);
-                            });
+                            getFundResult(list);
                             break;
                         case 'ETF':
-                            $.each(SC_DATA.S_Result.ETFProducts, function (i, item) {
-                                let obj = {
-                                    value: item.FirstBankCode + ' ' + item.ETFName,
-                                    data: {
-                                        type: SC_DATA.S_Option.val(),
-                                        detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
-                                        purchase: item.CanOnlineSubscription,
-                                        focusBtnHtml: item.FocusButtonAutoHtml,
-                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
-                                    }
-                                };
-                                list.push(obj);
-                            });
+                            getETFResult(list);
                             break;
                         case 'ForeignStock':
-                            $.each(SC_DATA.S_Result.ForeignStocks, function (i, item) {
-                                let obj = {
-                                    value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
-                                    data: {
-                                        type: SC_DATA.S_Option.val(),
-                                        detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
-                                        purchase: item.CanOnlineSubscription,
-                                        focusBtnHtml: item.FocusButtonAutoHtml,
-                                        subscribeBtnHtml: item.SubscribeButtonAutoHtml
-                                    }
-                                };
-                                list.push(obj);
-                            });
+                            getForeignStockResult(list);
                             break;
                         case 'StructuredProduct':
-                            $.each(SC_DATA.S_Result.StructuredProducts, function (i, item) {
-                                let obj = {
-                                    value: item.ProductCode + ' ' + item.ProductName,
-                                    data: {
-                                        type: SC_DATA.S_Option.val(),
-                                        detailUrl: '@Model.DetailPageLink.StructuredProductDetailPageLink' + '?' + $.param({ id: item.ProductCode })
-                                    }
-                                };
-                                list.push(obj);
-                            });
+                            getStructuredProductResult(list);
+                            break;
+                        case 'All':
+                            getFundResult(list);
+                            getETFResult(list);
+                            getForeignStockResult(list);
+                            getStructuredProductResult(list);
                             break;
                     }
 
@@ -346,6 +307,67 @@
                         }
                     }
                 }
+            }
+
+            function getFundResult(list) {
+                $.each(SC_DATA.S_Result.FundProducts, function (i, item) {
+                    let obj = {
+                        value: item.ProductCode + ' ' + item.ProductName,
+                        data: {
+                            type: SC_DATA.S_Option.val(),
+                            detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
+                            purchase: item.CanOnlineSubscription,
+                            focusBtnHtml: item.FocusButtonAutoHtml,
+                            subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                        }
+                    };
+                    list.push(obj);
+                });
+            }
+
+            function getETFResult(list) {
+                $.each(SC_DATA.S_Result.ETFProducts, function (i, item) {
+                    let obj = {
+                        value: item.FirstBankCode + ' ' + item.ETFName,
+                        data: {
+                            type: SC_DATA.S_Option.val(),
+                            detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                            purchase: item.CanOnlineSubscription,
+                            focusBtnHtml: item.FocusButtonAutoHtml,
+                            subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                        }
+                    };
+                    list.push(obj);
+                });
+            }
+
+            function getForeignStockResult(list) {
+                $.each(SC_DATA.S_Result.ForeignStocks, function (i, item) {
+                    let obj = {
+                        value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
+                        data: {
+                            type: SC_DATA.S_Option.val(),
+                            detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                            purchase: item.CanOnlineSubscription,
+                            focusBtnHtml: item.FocusButtonAutoHtml,
+                            subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                        }
+                    };
+                    list.push(obj);
+                });
+            }
+
+            function getStructuredProductResult(list) {
+                $.each(SC_DATA.S_Result.StructuredProducts, function (i, item) {
+                    let obj = {
+                        value: item.ProductCode + ' ' + item.ProductName,
+                        data: {
+                            type: SC_DATA.S_Option.val(),
+                            detailUrl: '@Model.DetailPageLink.StructuredProductDetailPageLink' + '?' + $.param({ id: item.ProductCode })
+                        }
+                    };
+                    list.push(obj);
+                });
             }
         });
 

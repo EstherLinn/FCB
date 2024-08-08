@@ -10,10 +10,12 @@ using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Mapster;
+using Sitecore.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Text;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 
@@ -21,17 +23,84 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class SearchBarRepository
     {
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly string SearchBarCache = $"Fcb_SearchBarCache";
+        private readonly string CacheTime = $"SearchBarCacheTime";
+
         public RespProduct GetResultList()
         {
-            RespProduct resp = new RespProduct
+            var product = _cache.Get(SearchBarCache) as RespProduct;
+
+            if (product == null)
             {
-                ETFProducts = MapperETFResult()?.ToList(),
-                FundProducts = MapperFundResult()?.ToList(),
-                StructuredProducts = MapperStructuredProductResult()?.ToList(),
-                ForeignStocks = MapperForeignStockResult()?.ToList()
-            };
-            return resp;
+                product = new RespProduct
+                {
+                    FundProducts = MapperFundResult()?.ToList(),
+                    ETFProducts = MapperETFResult()?.ToList(),
+                    ForeignStocks = MapperForeignStockResult()?.ToList(),
+                    StructuredProducts = MapperStructuredProductResult()?.ToList()
+                };
+                _cache.Set(SearchBarCache, product, new CommonRepository().GetCacheExpireTime(Settings.GetSetting(CacheTime)));
+            }
+
+            return product;
         }
+
+        #region 基金
+
+        public IEnumerable<FundProductResult> MapperFundResult()
+        {
+            var collection = new FundSearchRepository().GetFundSearchData();
+
+            var config = new TypeAdapterConfig();
+            config.ForType<FundSearchModel, FundProductResult>()
+                .AfterMapping((src, dest) =>
+                {
+                    dest.ProductName = src.FundName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
+                    dest.NetAssetValue = src.NetAssetValue.RoundingValue();
+                    dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
+                    dest.CurrencyPair = new KeyValuePair<string, string>(src.CurrencyCode, src.CurrencyName);
+
+                    #region == 報酬率 ==
+
+                    #region 報酬率 (原幣)
+
+                    dest.OneMonthReturnOriginalCurrency = ParseReturnToKeyValue(src.OneMonthReturnOriginalCurrency);
+                    dest.ThreeMonthReturnOriginalCurrency = ParseReturnToKeyValue(src.ThreeMonthReturnOriginalCurrency);
+                    dest.SixMonthReturnOriginalCurrency = ParseReturnToKeyValue(src.SixMonthReturnOriginalCurrency);
+                    dest.OneYearReturnOriginalCurrency = ParseReturnToKeyValue(src.OneYearReturnOriginalCurrency);
+
+                    #endregion 報酬率 (原幣)
+
+                    #region 報酬率 (台幣)
+
+                    dest.OneMonthReturnTWD = ParseReturnToKeyValue(src.OneMonthReturnTWD);
+                    dest.ThreeMonthReturnTWD = ParseReturnToKeyValue(src.ThreeMonthReturnTWD);
+                    dest.SixMonthReturnTWD = ParseReturnToKeyValue(src.SixMonthReturnTWD);
+                    dest.OneYearReturnTWD = ParseReturnToKeyValue(src.OneYearReturnTWD);
+
+                    #endregion 報酬率 (台幣)
+
+                    #endregion == 報酬率 ==
+
+                    bool availability = IsAvailability(src.AvailabilityStatus);
+                    bool onlinePurchaseAvailability = IsAvailability(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
+                    dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
+
+                    dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
+                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
+                    //dest.CompareButtonHtml = PublicHelpers.CompareButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
+                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.ProductCode, InvestTypeEnum.Fund, true).ToString();
+                    dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
+                    dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
+                });
+
+            var result = collection.Adapt<IEnumerable<FundProductResult>>(config);
+
+            return result;
+        }
+
+        #endregion 基金
 
         #region ETF
 
@@ -118,98 +187,6 @@ namespace Feature.Wealth.Component.Repositories
 
         #endregion ETF
 
-        #region 基金
-
-        public IEnumerable<FundProductResult> MapperFundResult()
-        {
-            var collection = new FundSearchRepository().GetFundSearchData();
-
-            var config = new TypeAdapterConfig();
-            config.ForType<FundSearchModel, FundProductResult>()
-                .AfterMapping((src, dest) =>
-                {
-                    dest.ProductName = src.FundName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
-                    dest.NetAssetValue = src.NetAssetValue.RoundingValue();
-                    dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.NetAssetValueDate);
-                    dest.CurrencyPair = new KeyValuePair<string, string>(src.CurrencyCode, src.CurrencyName);
-
-                    #region == 報酬率 ==
-
-                    #region 報酬率 (原幣)
-
-                    dest.OneMonthReturnOriginalCurrency = ParseReturnToKeyValue(src.OneMonthReturnOriginalCurrency);
-                    dest.ThreeMonthReturnOriginalCurrency = ParseReturnToKeyValue(src.ThreeMonthReturnOriginalCurrency);
-                    dest.SixMonthReturnOriginalCurrency = ParseReturnToKeyValue(src.SixMonthReturnOriginalCurrency);
-                    dest.OneYearReturnOriginalCurrency = ParseReturnToKeyValue(src.OneYearReturnOriginalCurrency);
-
-                    #endregion 報酬率 (原幣)
-
-                    #region 報酬率 (台幣)
-
-                    dest.OneMonthReturnTWD = ParseReturnToKeyValue(src.OneMonthReturnTWD);
-                    dest.ThreeMonthReturnTWD = ParseReturnToKeyValue(src.ThreeMonthReturnTWD);
-                    dest.SixMonthReturnTWD = ParseReturnToKeyValue(src.SixMonthReturnTWD);
-                    dest.OneYearReturnTWD = ParseReturnToKeyValue(src.OneYearReturnTWD);
-
-                    #endregion 報酬率 (台幣)
-
-                    #endregion == 報酬率 ==
-
-                    bool availability = IsAvailability(src.AvailabilityStatus);
-                    bool onlinePurchaseAvailability = IsAvailability(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
-                    dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
-
-                    dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
-                    //dest.CompareButtonHtml = PublicHelpers.CompareButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
-                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.ProductCode, InvestTypeEnum.Fund, true).ToString();
-                    dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
-                    dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
-                });
-
-            var result = collection.Adapt<IEnumerable<FundProductResult>>(config);
-
-            return result;
-        }
-
-        #endregion 基金
-
-        #region 結構型商品
-
-        public IList<BasicStructuredProductDto> QueryStructuredProductBasicData()
-        {
-            string sqlQuery = """
-                SELECT *
-                FROM [vw_StructProduct]
-                """;
-            var collection = DbManager.Custom.ExecuteIList<BasicStructuredProductDto>(sqlQuery, null, CommandType.Text);
-            return collection;
-        }
-
-        public IEnumerable<StructuredProductResult> MapperStructuredProductResult()
-        {
-            var collection = QueryStructuredProductBasicData();
-
-            var config = new TypeAdapterConfig();
-            config.ForType<BasicStructuredProductDto, StructuredProductResult>()
-                .AfterMapping((src, dest) =>
-                {
-                    dest.IssuingInstitutionPair = new KeyValuePair<string, string>(src.IssuingInstitution, string.IsNullOrEmpty(src.IssuingInstitution) ? "-" : src.IssuingInstitution);
-                    dest.ProductMaturityDatePair = new KeyValuePair<string, string>(src.ProductMaturityDate, string.IsNullOrEmpty(src.ProductMaturityDate) ? "-" : src.ProductMaturityDate);
-                    dest.CurrencyPair = new KeyValuePair<string, string>(src.CurrencyCode, src.CurrencyName);
-                    dest.BankSellPricePair = new KeyValuePair<string, string>(src.BankSellPrice, string.IsNullOrEmpty(src.BankSellPrice) ? "-" : src.BankSellPrice);
-                    dest.PriceBaseDatePair = new KeyValuePair<string, string>(src.PriceBaseDate, string.IsNullOrEmpty(src.PriceBaseDate) ? "-" : src.PriceBaseDate);
-
-                    dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                });
-
-            var result = collection.Adapt<IEnumerable<StructuredProductResult>>(config);
-
-            return result;
-        }
-
-        #endregion 結構型商品
-
         #region 國外股票
 
         public IList<USStockListDto> QueryForeignStockData()
@@ -234,6 +211,7 @@ namespace Feature.Wealth.Component.Repositories
                 FROM [dbo].[Sysjust_USStockList] AS [StockTable] WITH (NOLOCK)
                 LEFT JOIN [dbo].[WMS_DOC_RECM] AS [MainTable] WITH (NOLOCK)
                     ON [StockTable].[FirstBankCode] = [MainTable].[ProductCode]
+                ORDER BY [StockTable].[MonthlyReturn] DESC, [StockTable].[FirstBankCode] ASC
                 """;
             var collection = DbManager.Custom.ExecuteIList<USStockListDto>(sqlQuery, null, CommandType.Text);
             return collection;
@@ -277,6 +255,42 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         #endregion 國外股票
+
+        #region 結構型商品
+
+        public IList<BasicStructuredProductDto> QueryStructuredProductBasicData()
+        {
+            string sqlQuery = """
+                SELECT *
+                FROM [vw_StructProduct]
+                """;
+            var collection = DbManager.Custom.ExecuteIList<BasicStructuredProductDto>(sqlQuery, null, CommandType.Text);
+            return collection;
+        }
+
+        public IEnumerable<StructuredProductResult> MapperStructuredProductResult()
+        {
+            var collection = QueryStructuredProductBasicData();
+
+            var config = new TypeAdapterConfig();
+            config.ForType<BasicStructuredProductDto, StructuredProductResult>()
+                .AfterMapping((src, dest) =>
+                {
+                    dest.IssuingInstitutionPair = new KeyValuePair<string, string>(src.IssuingInstitution, string.IsNullOrEmpty(src.IssuingInstitution) ? "-" : src.IssuingInstitution);
+                    dest.ProductMaturityDatePair = new KeyValuePair<string, string>(src.ProductMaturityDate, string.IsNullOrEmpty(src.ProductMaturityDate) ? "-" : src.ProductMaturityDate);
+                    dest.CurrencyPair = new KeyValuePair<string, string>(src.CurrencyCode, src.CurrencyName);
+                    dest.BankSellPricePair = new KeyValuePair<string, string>(src.BankSellPrice, string.IsNullOrEmpty(src.BankSellPrice) ? "-" : src.BankSellPrice);
+                    dest.PriceBaseDatePair = new KeyValuePair<string, string>(src.PriceBaseDate, string.IsNullOrEmpty(src.PriceBaseDate) ? "-" : src.PriceBaseDate);
+
+                    dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
+                });
+
+            var result = collection.Adapt<IEnumerable<StructuredProductResult>>(config);
+
+            return result;
+        }
+
+        #endregion 結構型商品
 
         #region Method
 
