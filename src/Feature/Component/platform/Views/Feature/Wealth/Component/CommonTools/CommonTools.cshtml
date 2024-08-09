@@ -157,11 +157,11 @@
                                               </a>
                                           </li>`;
                                 }
-                                $('[data-compare-count]', '#compareLimit').text(result.body.length + '/7');
+                                $('[data-common-count]', '#commonFunctionLimit').text(result.body.length + '/7');
                                 if (result.body.length == 7) {
-                                    $('[data-compare-msg]', '#compareLimit').text('標的到上限嚕！');
+                                    $('[data-common-msg]', '#commonFunctionLimit').text('常用功能到上限嚕！');
                                 } else {
-                                    $('[data-compare-msg]', '#compareLimit').text('標的最多加入7檔！');
+                                    $('[data-common-msg]', '#commonFunctionLimit').text('常用功能最多7個喔！');
                                 }
                                 $('#commonList', '[data-sidebar-id="common"]').html(DOMPurify.sanitize(commonHtml));
                                 $('[data-hasValue="false"]', '[data-sidebar-id="common"]').addClass('u-hidden');
