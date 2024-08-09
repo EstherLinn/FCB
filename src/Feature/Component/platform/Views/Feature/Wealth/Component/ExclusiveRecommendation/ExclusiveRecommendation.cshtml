@@ -285,11 +285,11 @@
                 }
                 $('[eh-focus]', '[data-exclusive]').trigger('exec');
                 let chartDatas = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundFullChart)));
-                let groupChartDatas = _.groupBy(chartDatas, "ProductCode");
+                let groupChartDatas = Object.groupBy(chartDatas, "ProductCode");
                 // highchart
                 $('[data-chart="mini"]').each(function (i, el) {
                     let chartId = $(el).data('chartid');
-                    if (groupChartDatas.hasOwnProperty(chartId)) {
+                    if (groupChartDatas[chartId] !== undefined) {
                         $(el).highcharts({
                             chart: {
                                 type: 'area',
