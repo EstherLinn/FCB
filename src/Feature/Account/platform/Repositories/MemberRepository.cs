@@ -620,12 +620,15 @@ namespace Feature.Wealth.Account.Repositories
 
             foreach (var item in commonFunctions)
             {
-                CommonFunctionsModel commonFunctionsModel = new();
-                var pageItem = ItemUtils.GetItem(item);
-                commonFunctionsModel.PageName = pageItem.Fields["Navigation Title"].Value;
-                commonFunctionsModel.PageUrl = pageItem.Url();
-                commonFunctionsModel.PageGuid = item;
-                commonFunctionsModels.Add(commonFunctionsModel);
+                if (CheckCommonTools(item))
+                {
+                    CommonFunctionsModel commonFunctionsModel = new();
+                    var pageItem = ItemUtils.GetItem(item);
+                    commonFunctionsModel.PageName = pageItem.Fields["Navigation Title"].Value;
+                    commonFunctionsModel.PageUrl = pageItem.Url();
+                    commonFunctionsModel.PageGuid = item;
+                    commonFunctionsModels.Add(commonFunctionsModel);
+                }
             }
 
             return commonFunctionsModels;
