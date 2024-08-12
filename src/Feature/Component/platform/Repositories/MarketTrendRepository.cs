@@ -20,6 +20,7 @@ namespace Feature.Wealth.Component.Repositories
                            [ProductCode]
                            ,[ProductName]
                            ,[NetAssetValue]
+                           ,REPLACE(CONVERT(char(10), [NetAssetValueDate],126),'-','/') [NetAssetValueDate]
                            ,[CurrencyCode]
                            ,[CurrencyName]
                            ,CONVERT(decimal(16,2), [PercentageChangeInFundPrice]*100) [Change]
@@ -40,6 +41,7 @@ namespace Feature.Wealth.Component.Repositories
                            [ProductCode]
                            ,[ProductName]
                            ,[NetAssetValue]
+                           ,REPLACE(CONVERT(char(10), [NetAssetValueDate],126),'-','/') [NetAssetValueDate]
                            ,[CurrencyCode]
                            ,[CurrencyName]
                            ,CONVERT(decimal(16,2), [PercentageChangeInFundPrice]*100) [Change]
@@ -118,6 +120,7 @@ namespace Feature.Wealth.Component.Repositories
                 ProductName = item.ProductName,
                 Title = item.Title,
                 NetAssetValue = Round4(item.NetAssetValue),
+                NetAssetValueDate = item.NetAssetValueDate,
                 CurrencyCode = item.CurrencyCode,
                 CurrencyName = item.CurrencyName,
                 CurrencyLink = item.CurrencyLink,
