@@ -1,6 +1,5 @@
 ﻿@using Sitecore.Configuration;
 @using Foundation.Wealth.Helper;
-@using Feature.Wealth.Account.Helpers;
 @{
     var AppPayLoginUrl = WebUtility.UrlDecode(Settings.GetSetting("AppPay.CallLoginUrl"));
     var MobileFristeLogin = WebUtility.UrlDecode(Settings.GetSetting("MobileFirste"));
@@ -49,38 +48,47 @@
                 })
             }
         }
-            const tabIdentifier = Date.now().toString();
-            const storageKey = 'firstbankTabs';
-            //載入頁面時加一個tab戳記
-            window.addEventListener('load', () => {
+        const tabIdentifier = Date.now().toString();
+        const storageKey = 'tabs' + new Date().toISOString().split('T')[0];
+        //載入頁面時加一個tab戳記
+        ['DOMContentLoaded', 'load'].forEach(function (event) {
+            window.addEventListener(event, function (e) {
                 const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
                 openTabs.push(tabIdentifier);
                 localStorage.setItem(storageKey, JSON.stringify(openTabs));
             });
-            //登出Event
-            const logOutEvent = (event) => {
-                $.ajax({
-                    type: "post",
-                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "Logout")",
-                    success: function (msg) {
-                    },
-                })
-            }
-            //離開頁面後砍一個tab戳記
-            window.addEventListener('unload', function (e) {
-                const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                const updatedTabs = openTabs.filter(id => id !== tabIdentifier);
-                localStorage.setItem(storageKey, JSON.stringify(updatedTabs));
-                if (isLogin && isOnlyTabBeClose()) {
-                    logOutEvent();
+        });
+
+        //登出Event
+        const logOutEvent = (event) => {
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "Logout")",
+                success: function (msg) {
                 }
+            })
+        }
+
+        //離開頁面後砍一個tab戳記
+        ['beforeunload', 'unload'].forEach(function (event) {
+            window.addEventListener(event, function (e) {
+                 const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                 const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
+                 localStorage.setItem(storageKey, JSON.stringify(updatedTabs));
+                 if (isLogin && updatedTabs.length === 0) {
+                     isLogin = false;
+                     logOutEvent();
+                     e.preventDefault();
+                     var iframe = document.createElement('iframe');
+                     iframe.src = '@ClientRoute.GenerateUrl(this, "Accounts", "Logout")';
+                     iframe.style.display = "none";
+                     document.body.appendChild(iframe);
+                     return undefined;
+                 }
             });
-            // 檢查是否只剩下一個標籤頁被關閉
-            function isOnlyTabBeClose() {
-                const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                return openTabs.length === 0;
-            }
-            window.CompareObj = function (id, type, name) {
+        });
+
+        window.CompareObj = function (id, type, name) {
             this.id = id;
             this.type = type;
             this.name = name;
@@ -229,7 +237,6 @@
             //reload 側邊比較工具
             window.SetCompareList();
         });
-
 
         EventHandler.AddOnExec('focus-init', function (e) {
             let self = e.target;
@@ -482,6 +489,7 @@
             }).fail(function (jqXHR, textStatus, errorThrown) {
             });
         });
+
         EventHandler.AddOnExec('fcbapplogin-init', function (e) {
             let self = e.target;
             let loginType = self.getAttribute('eh-login-type');
