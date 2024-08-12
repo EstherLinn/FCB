@@ -243,6 +243,18 @@
                             autocomplete.isRegisteGlobalEvent = true;
                         }
 
+                        if (SC_DATA.IsLoggedIn) {
+                            // 停止 like/compare icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
+                            $(container).find('.o-statusBtn').off('click.autocomplete').on('click.autocomplete', function (e) {
+                                e.stopPropagation();
+                            });
+                        } else {
+                            // 停止 compare icon 冒泡，避免觸發 autocomplete 的 select 事件，導致 suggestions container 被關閉
+                            $(container).find('.o-statusBtn--compare').off('click.autocomplete').on('click.autocomplete', function (e) {
+                                e.stopPropagation();
+                            });
+                        }
+                      
                         // 綁定 like icon 的互動功能
                         $(container).find('[data-ia]').interactive();
                         // 綁定 like icon 的彈跳登入畫面
