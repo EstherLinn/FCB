@@ -59,7 +59,7 @@ namespace Foundation.WorkBox.Actions.Workflows
                 }
                 catch
                 {
-                    this.Port = 25;
+                    this.Port = 587;
                 }
 
                 this.UseSSL = useSSL;
@@ -251,8 +251,6 @@ namespace Foundation.WorkBox.Actions.Workflows
                         message.Body = sb.ToString();
                         message.Subject = subject;
 
-                        //add EnableSsl
-                        client.EnableSsl = true;
                         client.Send(message);
                     }
                     catch (Exception ex)
