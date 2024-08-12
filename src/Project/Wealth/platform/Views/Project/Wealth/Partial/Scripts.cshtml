@@ -50,7 +50,7 @@
             }
         }
             const tabIdentifier = Date.now().toString();
-            const storageKey = 'openTabs';
+            const storageKey = 'firstbankTabs';
             //載入頁面時加一個tab戳記
             window.addEventListener('load', () => {
                 const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
