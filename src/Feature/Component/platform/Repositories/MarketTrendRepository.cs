@@ -124,6 +124,7 @@ namespace Feature.Wealth.Component.Repositories
                 Change = item.Change,
                 M6Change = item.M6Change,
                 DetailLink = item.DetailLink,
+                AvailabilityStatus = item.AvailabilityStatus,
                 OnlineSubscriptionAvailability = item.OnlineSubscriptionAvailability,
                 IsLogin = item.IsLogin,
                 IsLike = item.IsLike
