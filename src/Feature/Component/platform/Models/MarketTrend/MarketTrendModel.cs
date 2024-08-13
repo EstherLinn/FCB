@@ -53,6 +53,7 @@ namespace Feature.Wealth.Component.Models.MarketTrend
         public string ProductName { get; set; }
         public string Title { get; set; }
         public decimal? NetAssetValue { get; set; }
+        public string NetAssetValueDate { get; set; }
         public string CurrencyCode { get; set; }
         public string CurrencyName { get; set; }
         public string CurrencyLink { get; set; }
