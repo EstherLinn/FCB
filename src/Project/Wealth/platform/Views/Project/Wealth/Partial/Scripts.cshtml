@@ -51,7 +51,7 @@
         const tabIdentifier = Date.now().toString();
         const storageKey = 'tabs' + new Date().toISOString().split('T')[0];
         //載入頁面時加一個tab戳記
-        ['DOMContentLoaded', 'load'].forEach(function (event) {
+        ['DOMContentLoaded'].forEach(function (event) {
             window.addEventListener(event, function (e) {
                 const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
                 openTabs.push(tabIdentifier);
@@ -70,7 +70,7 @@
         }
 
         //離開頁面後砍一個tab戳記
-        ['beforeunload', 'unload'].forEach(function (event) {
+        ['unload'].forEach(function (event) {
             window.addEventListener(event, function (e) {
                  const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
                  const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
@@ -78,12 +78,6 @@
                  if (isLogin && updatedTabs.length === 0) {
                      isLogin = false;
                      logOutEvent();
-                     e.preventDefault();
-                     var iframe = document.createElement('iframe');
-                     iframe.src = '@ClientRoute.GenerateUrl(this, "Accounts", "Logout")';
-                     iframe.style.display = "none";
-                     document.body.appendChild(iframe);
-                     return undefined;
                  }
             });
         });
