@@ -341,7 +341,7 @@
                                                 </th>
                                                 <th>
                                                     <div class="c-table__title">
-                                                        <span>最新淨值</span>
+                                                        <span>最新淨值<br>(淨值日)</span>
                                                         <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
                                                     </div>
                                                 </th>
@@ -788,7 +788,7 @@
                                                 </th>
                                                 <th>
                                                     <div class="c-table__title">
-                                                        <span>最新淨值</span>
+                                                        <span>最新淨值<br>(淨值日)</span>
                                                         <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
                                                     </div>
                                                 </th>
@@ -1235,7 +1235,7 @@
                                                 </th>
                                                 <th>
                                                     <div class="c-table__title">
-                                                        <span>最新淨值</span>
+                                                        <span>最新淨值<br>(淨值日)</span>
                                                         <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
                                                     </div>
                                                 </th>
@@ -1442,8 +1442,8 @@
         <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-            <div class="c-cardTable__title" data-length="5">最新淨值</div>
-            <div class="c-cardTable__content"><%= NetAssetValue.toFixed(4) %></div>
+            <div class="c-cardTable__title" data-length="5">最新淨值<br>(淨值日)</div>
+            <div class="c-cardTable__content"><%= NetAssetValue.toFixed(4) %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">
