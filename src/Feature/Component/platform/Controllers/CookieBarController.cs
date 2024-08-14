@@ -41,7 +41,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 if (string.IsNullOrEmpty(WebUtil.GetCookieValue("CookieConsent")))
                 {
-                    this.Response.SetSameSiteCookie("CookieConsent","1");
+                    this.Response.SetSameSiteCookie("CookieConsent", "1");
                     var objReturn = new
                     {
                         success = true

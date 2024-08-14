@@ -9,7 +9,8 @@ namespace Foundation.Wealth.Helper
         /// </summary>
         /// <param name="response"></param>
         /// <param name="cookieName"></param>
-        public static void SetSameSiteCookie(this HttpResponseBase response, string cookieName,string value)
+        /// <param name="value"></param>
+        public static void SetSameSiteCookie(this HttpResponseBase response, string cookieName, string value)
         {
             HttpCookie cookie = HttpContext.Current.Request.Cookies[cookieName];
             if (cookie == null)
