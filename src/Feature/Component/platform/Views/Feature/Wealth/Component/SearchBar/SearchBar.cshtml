@@ -134,7 +134,11 @@
                                 generateSearch();
                                 break;
                             case 'All':
-                                query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetSearchResult")');
+                                if (SC_DATA.S_IsInitial) {
+                                    query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetSearchResult")');
+                                } else {
+                                    generateSearch();
+                                }
                                 break;
                         }
 
@@ -254,7 +258,7 @@
                         //        e.stopPropagation();
                         //    });
                         //}
-                      
+
                         // 綁定 like icon 的互動功能
                         $(container).find('[data-ia]').interactive();
                         // 綁定 like icon 的彈跳登入畫面
@@ -268,9 +272,9 @@
 
                         // like 按鈕
                         let $like = `<a ${suggestion.data.focusBtnHtml}></a>`;
-                        // 
+                        //
                         let $compare = `<div class="c-itemKeyword__collections">${suggestion.data.compareBtnHtml}</div>`;
-                        
+
                         // 申購按鈕
                         let $purchase = suggestion.data.purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.data.subscribeBtnHtml}>申購</a></div>` : '';
 
