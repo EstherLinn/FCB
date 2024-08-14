@@ -192,10 +192,10 @@ namespace Feature.Wealth.Account.Controllers
                                     step = "Step4 第e個網登入 創建會員並登入";
                                     FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
                                         cifMember.CIF_E_MAIL_ADDRESS, cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
-                                        true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE, cifMember.CIF_ESTABL_BIRTH_DATE,cifMember.CIF_CUST_ATTR,cifMember.CIF_SAL_FLAG);
+                                        true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE, cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG);
                                     _memberRepository.CreateNewMember(member);
                                     User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
-                                    SetCustomPropertyAndLogin(member, user);                   
+                                    SetCustomPropertyAndLogin(member, user);
                                 }
                                 else
                                 {
@@ -210,7 +210,7 @@ namespace Feature.Wealth.Account.Controllers
                                         return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                                     }
                                     User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
-                                    SetCustomPropertyAndLogin(member, user);                    
+                                    SetCustomPropertyAndLogin(member, user);
                                 }
                             }
                         }
@@ -400,8 +400,7 @@ namespace Feature.Wealth.Account.Controllers
         [HttpPost]
         public ActionResult SetUrlCookie(string url)
         {
-            WebUtil.SetCookieValue("ReturnUrl", url, DateTime.MinValue, true);
-            this.Response.SetSameSiteCookie("ReturnUrl");
+            this.Response.SetSameSiteCookie("ReturnUrl", url);
             return new JsonNetResult();
         }
 

@@ -9,16 +9,21 @@ namespace Foundation.Wealth.Helper
         /// </summary>
         /// <param name="response"></param>
         /// <param name="cookieName"></param>
-        public static void SetSameSiteCookie(this HttpResponseBase response, string cookieName)
+        /// <param name="value"></param>
+        public static void SetSameSiteCookie(this HttpResponseBase response, string cookieName, string value)
         {
             HttpCookie cookie = HttpContext.Current.Request.Cookies[cookieName];
-            if (cookie != null)
+            if (cookie == null)
             {
-                cookie.SameSite = SameSiteMode.Lax;
-                cookie.HttpOnly = true;
-                cookie.Secure = true;
-                response.Cookies.Set(cookie);
+                cookie = new HttpCookie(cookieName);
+
             }
+            cookie.Value = value;
+            cookie.SameSite = SameSiteMode.Lax;
+            cookie.Expires = System.DateTime.MinValue;
+            cookie.HttpOnly = true;
+            cookie.Secure = true;
+            response.Cookies.Set(cookie);
         }
     }
 }
