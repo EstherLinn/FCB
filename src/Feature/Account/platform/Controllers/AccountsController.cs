@@ -400,8 +400,7 @@ namespace Feature.Wealth.Account.Controllers
         [HttpPost]
         public ActionResult SetUrlCookie(string url)
         {
-            WebUtil.SetCookieValue("ReturnUrl", url, DateTime.MinValue, true);
-            this.Response.SetSameSiteCookie("ReturnUrl");
+            this.Response.SetSameSiteCookie("ReturnUrl", url);
             return new JsonNetResult();
         }
 
