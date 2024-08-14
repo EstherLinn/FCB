@@ -181,7 +181,8 @@ namespace Feature.Wealth.Component.Repositories
             return GetConsultScheduleList()
                 .Any(c => c.ScheduleDate == consultSchedule.ScheduleDate
                 && c.StartTime == consultSchedule.StartTime
-                && c.EmployeeID == consultSchedule.EmployeeID);
+                && c.EmployeeID == consultSchedule.EmployeeID
+                && c.StatusCode != "3");
         }
 
         internal void CancelConsultSchedule(Guid scheduleID)
