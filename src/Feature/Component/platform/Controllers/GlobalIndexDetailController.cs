@@ -45,6 +45,7 @@ namespace Feature.Wealth.Component.Controllers
                 catch (Exception ex)
                 {
                     model.RelevantGlobalIndex_Success = "Fail";
+                    model.RelevantGlobalIndex = new HtmlString("[]");
                 }
 
                 try
@@ -54,6 +55,7 @@ namespace Feature.Wealth.Component.Controllers
                 catch (Exception ex)
                 {
                     model.RelevantFund_Success = "Fail";
+                    model.RelevantFund = new HtmlString("[]");
                 }
 
                 try
@@ -63,6 +65,7 @@ namespace Feature.Wealth.Component.Controllers
                 catch (Exception ex)
                 {
                     model.RelevantETF_Success = "Fail";
+                    model.RelevantETF = new HtmlString("[]");
                 }
 
                 // 取得 K 線圖資料
@@ -73,6 +76,7 @@ namespace Feature.Wealth.Component.Controllers
                 catch (Exception ex)
                 {
                     model.PriceData_D_Success = "Fail";
+                    model.PriceData_D = new HtmlString("[]");
                 }
 
                 try
@@ -82,6 +86,7 @@ namespace Feature.Wealth.Component.Controllers
                 catch (Exception ex)
                 {
                     model.PriceData_W_Success = "Fail";
+                    model.PriceData_W = new HtmlString("[]");
                 }
 
                 try
@@ -91,6 +96,7 @@ namespace Feature.Wealth.Component.Controllers
                 catch (Exception ex)
                 {
                     model.PriceData_M_Success = "Fail";
+                    model.PriceData_M = new HtmlString("[]");
                 }
             }
 
