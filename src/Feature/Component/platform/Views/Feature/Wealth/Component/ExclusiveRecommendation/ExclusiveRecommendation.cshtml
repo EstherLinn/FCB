@@ -285,7 +285,7 @@
                 }
                 $('[eh-focus]', '[data-exclusive]').trigger('exec');
                 let chartDatas = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundFullChart)));
-                let groupChartDatas = Object.groupBy(chartDatas, "ProductCode");
+                let groupChartDatas = Object.groupBy(chartDatas, ({ ProductCode }) => ProductCode);
                 // highchart
                 $('[data-chart="mini"]').each(function (i, el) {
                     let chartId = $(el).data('chartid');
