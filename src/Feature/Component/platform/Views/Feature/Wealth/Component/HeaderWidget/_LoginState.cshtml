@@ -11,7 +11,7 @@
             <div class="l-topbar__list">
                 <div class="l-topbar__item">
                     <a href="#" class="o-topBtn o-topBtn--notify u-hidden" data-popover="#popoverNotify"></a>
-                    <div id="popoverNotify" class="c-popover">
+                <div id="popoverNotify" class="c-popover is-notify">
                         <div class="c-popover__wrap">
                             <nav class="c-popover__content">
                                 <div class="l-flex u-flex-col">
@@ -124,8 +124,10 @@
                                         </li>`
                         }
                         $('#topInfoList').html(DOMPurify.sanitize(html, { ADD_ATTR: ['target'] }));
-                        if ($('[data-haveread=true]', $('[data-popover="#popoverNotify"]')).length > 0) {
+                        if ($('[data-haveread=false]', $('#popoverNotify')).length > 0) {
                             $('[data-popover="#popoverNotify"]').addClass('is-notify');
+                        } else {
+                            $('[data-popover="#popoverNotify"]').removeClass('is-notify')
                         }
                         $('[data-popover="#popoverNotify"]').removeClass('u-hidden');
                     } else {
@@ -138,7 +140,6 @@
             }
             window.ResetTopInfoList();
             $('#topInfoList').on('click','[data-topInfoList]', function () {
-                console.log($(this))
             let $this = $(this);
             let isRead = $this.find('[data-haveread]').data('haveread');
             if (isRead) {
