@@ -4,10 +4,16 @@
 
 @if (Model == null)
 {
-    return;
+    @* 第三方登入隱藏tab *@
+    <div class="c-section" data-exclusive></div>
+    <script>
+        let panelId = $('[data-exclusive]').parent().attr('data-tab-panel-id');
+        $('.c-tab__navs').find('[data-tab-target=' + panelId + ']').parent().remove();
+    </script>
 }
-
-<div class="c-section">
+else
+{
+ <div class="c-section">
     <div class="c-section__content">
         <div class="c-tab c-tab--icon" data-tab="true" data-docking="false">
             <div class="c-tab__header">
@@ -1043,3 +1049,4 @@
         });
     });
 </script>
+}
