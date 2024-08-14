@@ -45,8 +45,8 @@
                         <option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency" data-sorting-class="is-asc">6個月績效低至高</option>
                         <option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
                         <option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
-                        <option value="點擊數" data-sorting-column="ViewCountOrderBy" data-sorting-class="is-desc">點擊數高至低</option>
-                        <option value="點擊數" data-sorting-column="ViewCountOrderBy" data-sorting-class="is-asc">點擊數低至高</option>
+                        <option value="點擊數" data-sorting-column="ViewCount" data-sorting-class="is-desc">點擊數高至低</option>
+                        <option value="點擊數" data-sorting-column="ViewCount" data-sorting-class="is-asc">點擊數低至高</option>
                     </select>
                 </div>
             </div>
@@ -108,7 +108,7 @@
                                 <th>
                                     <div class="c-table__title">
                                         <span>點擊數</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="ViewCountOrderBy"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="ViewCount"></a>
                                     </div>
                                 </th>
                                 <th>
@@ -242,29 +242,27 @@
             if (!jQuery) {
                 return;
             }
-            var selectedId = @(new HtmlString(Json.Encode(Model.SelectedId)));
-            var currentData = [];
 
             // 為了 DOMPurify.sanitize 正常運作加上 <table><tbody></tbody></table>
             function DOMPurifyData(data) {
                 let focusAttr = ['eh-focus', 'eh-focus-type', 'eh-focus-id', 'eh-focus-name', 'eh-focus-add'];
                 let compareAttr = ['eh-compare', 'eh-compare-type', 'eh-compare-id', 'eh-compare-name', 'eh-compare-add'];
                 let subscriptionAttr = ['eh-subscription', 'eh-subscription-type', 'eh-subscription-id'];
-				let commonAttr = ['target'];
-				let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
+                let commonAttr = ['target'];
+                let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
                 data = '<table><tbody>' + data + '</tbody></table>';
                 data = DOMPurify.sanitize(data, { ADD_ATTR: allCustomAttr });
                 data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');
                 return data;
             }
 
-            function ReturnView(selectedId, orderby, desc) {
+            function ReturnView(orderby, desc) {
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "PopularityFund", "GetSortedPopularityFund")',
                     type: 'POST',
-                    data: { selectedId: selectedId, orderby: orderby, desc: desc, __RequestVerificationToken: token },
+                    data: {orderby: orderby, desc: desc, __RequestVerificationToken: token },
                     success: function (data) {
                         $('#result').empty();
                         document.getElementById('result').innerHTML = DOMPurifyData(data);
@@ -339,7 +337,7 @@
                 console.log(`排序：${sorting}`);
 
 
-                ReturnView(selectedId, sortingColumn, orderby)
+                ReturnView(sortingColumn, orderby)
 
                 // 因展示，使用 setTimeout 延遲關閉 loading
                 setTimeout(() => {

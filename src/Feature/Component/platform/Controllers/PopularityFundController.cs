@@ -4,48 +4,41 @@ using System.Web.Mvc;
 using Sitecore.Mvc.Presentation;
 using System.Collections.Generic;
 using Feature.Wealth.Component.Repositories;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Feature.Wealth.Component.Models.PopularityFund;
-using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-using static Feature.Wealth.Component.Models.PopularityFund.PopularityFundModel;
 using Feature.Wealth.Component.Models.FundDetail;
-using Template = Feature.Wealth.Component.Models.PopularityFund.Template;
+using Feature.Wealth.Component.Models.PopularityFund;
+using static Feature.Wealth.Component.Models.PopularityFund.PopularityFundModel;
 
 namespace Feature.Wealth.Component.Controllers
 {
     public class PopularityFundController : Controller
     {
-        private PopularityFundRepository _popularityFundRepository = new PopularityFundRepository();
+        private readonly PopularityFundRepository _popularityFundRepository = new();
 
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
 
-            var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, Template.PopularityFund.Fields.FundID);
-            var viewModel = new PopularityFundModel { Item = dataSourceItem };
+            var funds = _popularityFundRepository.GetFundsDatas();
+            var renderDatas = _popularityFundRepository.GetFundRenderData(funds);
 
-            if (multilineField != null)
+            var viewModel = new PopularityFundModel
             {
-                viewModel.SelectedId = multilineField;
-                var funds = _popularityFundRepository.GetFundData();
-                var popularFunds = funds.Where(fund => multilineField.Contains(fund.ProductCode)).ToList();
-                var newfunds = popularFunds.OrderByDescending(f => f.ViewCountOrderBy).ToList();
-                viewModel.PopularFunds = _popularityFundRepository.GetFundRenderData(newfunds);
-                viewModel.DetailLink = FundRelatedSettingModel.GetFundDetailsUrl();
-            }
+                Item = dataSourceItem,
+                PopularFunds = renderDatas,
+                DetailLink = FundRelatedSettingModel.GetFundDetailsUrl()
+            };
 
             return View("/Views/Feature/Wealth/Component/PopularityFund/PopularityFund.cshtml", viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult GetSortedPopularityFund(string[] selectedId, string orderby, string desc)
+        public ActionResult GetSortedPopularityFund(string orderby, string desc)
         {
-            if (orderby == null) { orderby = "ViewCountOrderBy"; }
+            if (orderby == null) { orderby = "ViewCount"; }
             if (desc == null) { desc = "is-desc"; }
 
-            var funds = _popularityFundRepository.GetFundData();
-            var popularFunds = funds.Where(fund => selectedId.Contains(fund.ProductCode)).ToList();
+            var popularFunds = _popularityFundRepository.GetFundsDatas();
 
             var property = typeof(Funds).GetProperty(orderby);
             if (desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase))

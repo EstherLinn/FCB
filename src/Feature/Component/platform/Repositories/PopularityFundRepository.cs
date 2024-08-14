@@ -1,10 +1,10 @@
-﻿using Feature.Wealth.Component.Models.FundDetail;
-using Foundation.Wealth.Extensions;
-using Foundation.Wealth.Manager;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Linq;
 using System.Text;
+using Foundation.Wealth.Manager;
+using System.Collections.Generic;
+using Foundation.Wealth.Extensions;
+using Feature.Wealth.Component.Models.FundDetail;
 using static Feature.Wealth.Component.Models.PopularityFund.PopularityFundModel;
 
 namespace Feature.Wealth.Component.Repositories
@@ -27,29 +27,24 @@ namespace Feature.Wealth.Component.Repositories
 
             var _tagsRepository = new FundTagRepository();
             var tags = _tagsRepository.GetFundTagData();
-            var viewcountFunds = GetFundsDatas();
-
-
 
             foreach (var item in results)
             {
                 if (item != null)
                 {
                     ProcessFundFilterDatas(item);
-                    item.Tags = [];
-                    item.Tags.AddRange(from tagModel in tags.Where(t => t.FundTagType == FundTagEnum.DiscountTag)
-                                       where tagModel.ProductCodes.Contains(item.ProductCode)
-                                       select tagModel.TagName);
-                    var viewCountFund = viewcountFunds.FirstOrDefault(f => f.ProductCode == item.ProductCode);
-                    item.ViewCount = viewCountFund?.ViewCount.ToString();
-                    item.ViewCountOrderBy = viewCountFund?.ViewCountOrderBy;
+
+                    item.Tags = tags.Where(t => t.FundTagType == FundTagEnum.DiscountTag && t.ProductCodes.Contains(item.ProductCode))
+                                    .Select(t => t.TagName)
+                                    .ToList();
+                    fundItems.Add(item);
                 }
             }
 
-            fundItems.AddRange(results);
-
             return fundItems;
         }
+
+           
 
         private void ProcessFundFilterDatas(Funds item)
         {
@@ -63,7 +58,7 @@ namespace Feature.Wealth.Component.Repositories
         /// <summary>
         /// 取得資料-列表渲染用
         /// </summary>
-        public List<Funds> GetFundRenderData(List<Funds> funds)
+        public List<Funds> GetFundRenderData(IList<Funds> funds)
         {
             var result = new List<Funds>();
 
@@ -99,22 +94,38 @@ namespace Feature.Wealth.Component.Repositories
                 return new List<Funds>();
             }
 
-            var result = new List<Funds>();
 
-            foreach (var fund in funds)
-            {
-                var productCode = fund.QueryStrings.ContainsKey("id") ? fund.QueryStrings["id"] : null;
-                int? visitCount = fund.VisitCount;
+            var fundData = funds
+                .OrderByDescending(x => x.VisitCount)
+                .Take(10)
+                .Select(x => new 
+                {
+                    Id = x.QueryStrings.ContainsKey("id") ? x.QueryStrings["id"] : null,
+                    ViewCount = x.VisitCount
+                })
+                .ToList();
 
-                var vm = new Funds();
-                vm.ProductCode = productCode;
-                vm.ViewCount = visitCount.ToString();
-                vm.ViewCountOrderBy = visitCount;
-                result.Add(vm);
-            }
+
+            var allFunds = GetFundData();
+
+            var result = allFunds
+                .Select(fund => new
+                {
+                    Fund = fund,
+                    fundData.FirstOrDefault(fd => fd.Id == fund.ProductCode)?.ViewCount
+                })
+                .Where(x => x.ViewCount.HasValue)
+                .OrderBy(x => fundData.FindIndex(fd => fd.Id == x.Fund.ProductCode))
+                .Select(x =>
+                {
+                    x.Fund.ViewCount = x.ViewCount;
+                    return x.Fund;
+                })
+                .ToList();
 
             return result;
         }
+
 
 
     }
