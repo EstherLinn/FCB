@@ -36,6 +36,10 @@ namespace Feature.Wealth.Component.Models.Consult
         public string ConsultScheduleLink { get; set; }
         public List<QandA> QandAList { get; set; } = new List<QandA>();
         public HtmlString Notice { get; set; }
+        public string MainTitle { get; set; }
+        public HtmlString Description { get; set; }
+        public string ButtonText { get; set; }
+        public string Image { get; set; }
         public IList<ConsultSchedule> ConsultSchedules { get; set; }
         public HtmlString ConsultSchedulesHtmlString { get; set; }
         public IList<ConsultScheduleForCalendar> ConsultScheduleForCalendars { get; set; }
@@ -288,6 +292,10 @@ namespace Feature.Wealth.Component.Models.Consult
             {
                 public static readonly ID QandA = new ID("{A28F1CC6-FA71-432E-A2A7-AB4A36F0165B}");
                 public static readonly ID Notice = new ID("{46EFE03B-118E-432B-A1D1-8E1D584B4476}");
+                public static readonly ID MainTitle = new ID("{1AEB2E23-7DDF-446F-AF35-1B6A7C5978FD}");
+                public static readonly ID Description = new ID("{63824A06-5DAE-4E1F-AD2A-9C5605F08449}");
+                public static readonly ID ButtonText = new ID("{B1C97682-A3C9-40D4-BCA9-2ABFCE9BB72A}");
+                public static readonly ID Image = new ID("{A6CB6F8B-2951-4454-BABD-A9606BA65BDF}");
             }
         }
 

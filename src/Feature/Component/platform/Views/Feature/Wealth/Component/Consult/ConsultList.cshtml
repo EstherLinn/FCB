@@ -265,14 +265,14 @@
     <div class="c-section__content">
         <div class="c-feature c-feature--join c-feature--personalize">
             <div class="c-feature__content u-center">
-                <h3 class="c-feature__title">遠距諮詢 解決您的理財大小事</h3>
-                <p class="c-feature__desc">貴賓專屬服務，不必再舟車勞頓到分行找您的理顧了，線上立即預約，視訊諮詢！如有任何問題請洽分行理專</p>
+                <h3 class="c-feature__title">@Model.MainTitle</h3>
+                <p class="c-feature__desc">@Model.Description</p>
                 <div class="c-feature__actions">
-                    <a href="@Model.ConsultLink" class="o-btn o-btn--primary o-btn--flat o-btn--sm">立即預約</a>
+                    <a href="@Model.ConsultLink" class="o-btn o-btn--primary o-btn--flat o-btn--sm">@Model.ButtonText</a>
                 </div>
             </div>
             <div class="c-feature__plate">
-                <img src="~/themes/images/features/rsp.png" alt="遠距諮詢 解決您的理財大小事" class="c-feature__img">
+                <img src="@Model.Image" alt="@Model.MainTitle" class="c-feature__img">
             </div>
         </div>
     </div>
