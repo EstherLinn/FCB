@@ -19,7 +19,7 @@ namespace Feature.Wealth.Toolkit.Controllers
             UserRecordModel model = new();
             model.Init();
             this.ViewBag.Title = model.Domain;
-            return PartialView("/Views/Feature/Wealth/Toolkit/TableViewer/UserRecord.cshtml", model.Path);
+            return PartialView("/Views/Feature/Wealth/Toolkit/TableViewer/UserRecord.cshtml", model);
         }
 
         public ActionResult GetUserRecord(int iOrderColumeName, int iCount, int iOrder, string rules, string root)

@@ -1,12 +1,12 @@
 ﻿@using Foundation.Wealth.Helper;
-
+@model Feature.Wealth.Toolkit.Models.TableViewer.UserRecordModel
 <script>
     document.title = '@ViewBag.Title Usage log';
 
     var method = {
         select: {
             api: '@ClientRoute.GenerateUrl(this, "TableViewer", "GetUserRecord")',
-            path: '@Model'
+            path: '@Model.Path'
         }
     };
 
@@ -408,7 +408,10 @@
     <h1 class="subheading og">
         查詢結果
         <span id="lblQueryCount" style="padding-right: 20px;"></span>
-        <input type="button" value="下載" id="btnDownload" onclick="getFile()" class="w3-btn o-btn orange" style="width: 100px;" />
+        @if (Model.IsManager)
+        {
+            <input type="button" value="下載" id="btnDownload" onclick="getFile()" class="w3-btn o-btn orange" style="width: 100px;" />
+        }
     </h1>
     <div @*style="max-height: 500px; overflow-y: scroll;"*@>
         <div>

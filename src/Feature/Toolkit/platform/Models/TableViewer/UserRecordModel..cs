@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using Foundation.Wealth.Manager;
+using log4net;
+using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
 using Sitecore.Mvc.Presentation;
 using Sitecore.Web;
@@ -11,11 +13,15 @@ using System.Linq;
 using System.Web;
 using Xcms.Sitecore.Foundation.Basic.DbContext;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.Basic.Logging;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Toolkit.Models.TableViewer
 {
     public class UserRecordModel
     {
+        private readonly ILog _log = Logger.General;
+
         private void InitSetting()
         {
             this.Path = HttpContext.Current.Request?.Path;
@@ -26,10 +32,10 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
             }
         }
 
-
         public void Init()
         {
             InitSetting();
+            this.IsManager = CheckIsManager();
         }
 
         public void Init(string[][] rules, int iCount, int iOrder, int iOrderColumeName)
@@ -69,13 +75,13 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
                     result = "WHERE " + where;
                 }
             }
-            
+
             if (!string.IsNullOrEmpty(this.Domain))
             {
                 result = $"{result}{(string.IsNullOrEmpty(result) ? "WHERE" : " AND")} UPPER([UserName]) LIKE UPPER(@Domain)";
                 sqlParams.Add(new SqlParameter("Domain", this.Domain + "\\%"));
             }
-            
+
             string sqlOrder = !string.IsNullOrEmpty(columeName) ? $" ORDER BY {columeName} {ddlOrder}" : string.Empty;
 
             this.Count = iCount;
@@ -97,8 +103,51 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
                                   FROM [dbo].[AuthenticationHistory] WITH(NOLOCK) {result} {sqlOrder}";
 
             this.Dictionary = sqlParams.ToDictionary(x => x.ParameterName, y => y.Value);
+            this.IsManager = CheckIsManager();
         }
 
+        /// <summary>
+        /// 檢驗是否為管理者
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckIsManager()
+        {
+            if (!Sitecore.Context.IsLoggedIn)
+            {
+                return false;
+            }
+
+            if (Sitecore.Context.IsAdministrator)
+            {
+                return true;
+            }
+
+            try
+            {
+                Item configItem = ItemUtils.GetItem(ConfigItemID.UserRecord);
+
+                if (configItem == null)
+                {
+                    return false;
+                }   
+
+                string[] roles = configItem.GetMultiLineText(Templates.UserRecordConfiguration.Fields.Managers);
+
+                foreach (string roleName in roles)
+                {
+                    if (Sitecore.Context.User.IsInRole(roleName))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this._log.Error("檢驗是否為管理者發生錯誤", ex);
+            }
+
+            return false;
+        }
 
         private string GetColumeName(int input)
         {
@@ -250,7 +299,10 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
                 var auth = this.CustomSQL.ExecuteIList<History>(this.SqlAuthComm, parameters, commandType).ToList();
                 history.AddRange(auth);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                this._log.Error("TableViewer Get History Data Error", ex);
+            }
 
             string param = this.OrderColumeName;
             var propertyInfo = typeof(History).GetProperty(param);
@@ -595,6 +647,7 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
         public string Message { get; set; }
 
         public string Path { get; set; }
+        public bool IsManager { get; set; }
 
         private IDataAccess MasterSQL => DbManager.Master;
         private IDataAccess CustomSQL => DbManager.Custom;
@@ -631,5 +684,10 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
         public string Domain => this.Setting?["Filter Options Domain"];
 
         #endregion Property
+
+        public class ConfigItemID
+        {
+            public const string UserRecord = "{24191774-4AA0-443E-A180-CCEB339B8C60}";
+        }
     }
 }
