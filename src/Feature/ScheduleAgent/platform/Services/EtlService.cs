@@ -196,7 +196,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         public void FinishJob(string filename)
         {
             //CSV檔案資料完成後，檔案改名加_done
-            if (filename.Equals("Fundlist") || filename.ToLower().Contains("bond"))
+            if (filename.Equals("fundlist") || filename.ToLower().Contains("bond"))
             {
                 filename = Path.ChangeExtension(filename, "csv");
                 string localFilePath = Path.Combine(LocalDirectory, filename);
