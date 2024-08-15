@@ -275,7 +275,8 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var newsData = new MarketNewsModel
                 {
-                    HotNews = !string.IsNullOrEmpty(item.NewsType) && item.NewsType.Contains("頭條新聞") ? string.Empty : "u-invisible",
+                    HotNews = !string.IsNullOrEmpty(item.NewsType) && item.NewsType.Contains("頭條新聞") ? 2 : 1,
+                    DisplayHotNews = !string.IsNullOrEmpty(item.NewsType) && item.NewsType.Contains("頭條新聞") ? string.Empty : "u-invisible",
                     NewsType = item.NewsType ?? string.Empty,
                     NewsDate = item.NewsDate.ToString() + " " + item.NewsTime.ToString(),
                     NewsTitle = item.NewsTitle,

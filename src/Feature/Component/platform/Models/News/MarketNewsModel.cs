@@ -10,7 +10,8 @@
 
     public class MarketNewsModel : MarketNewsTableModel
     {
-        public string HotNews { get; set; }
+        public int HotNews { get; set; }
+        public string DisplayHotNews { get; set; }
         public string NewsType { get; set; }
         public int? NewsViewCount { get; set; }
         public string DisplayNewsViewCount { get; set; }
