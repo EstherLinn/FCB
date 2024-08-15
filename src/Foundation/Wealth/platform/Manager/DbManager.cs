@@ -8,8 +8,12 @@ namespace Foundation.Wealth.Manager
     {
         [ThreadStatic]
         private static IDataAccess _custom;
+
         [ThreadStatic]
         private static IDataAccess _cif;
+
+        [ThreadStatic]
+        private static IDataAccess _master;
 
         public static IDataAccess Custom
         {
@@ -46,6 +50,25 @@ namespace Foundation.Wealth.Manager
                 };
                 _cif = DataAccessFactory.Create(cp);
                 return _cif;
+            }
+        }
+
+        public static IDataAccess Master
+        {
+            get
+            {
+                if (_master != null)
+                {
+                    return _master;
+                }
+
+                var cp = new ConnectionParameter
+                {
+                    ConnectionString = ConfigurationManager.ConnectionStrings["master"].ConnectionString,
+                    DataBaseType = DataBaseType.MsSql
+                };
+                _master = DataAccessFactory.Create(cp);
+                return _master;
             }
         }
     }

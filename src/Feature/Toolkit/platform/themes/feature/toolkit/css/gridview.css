@@ -1,0 +1,177 @@
+﻿Caption
+{
+	font-family: Arial, Sans-Serif;
+	font-size: 15px;
+	font-weight: bold;
+	padding-bottom: 5px;
+	color: #16387c;
+}
+
+/*GridViewCSS Soft Grey Style*/
+.GridViewStyle
+{
+    font-family: Arial, Sans-Serif;
+    font-size:small;
+    table-layout: auto;
+    border-collapse: collapse;
+    border:#91a7b4 1px solid;
+}
+
+/*Header and Pager styles*/
+.HeaderStyle, .PagerStyle /*Common Styles*/
+{
+    background-color:#d1dbe0;
+}
+.HeaderStyle th
+{
+    padding: 5px;
+    color: #16387c;
+}
+.HeaderStyle a
+{
+    text-decoration:none;
+    color:#16387c;
+    display:block;
+    text-align:left;
+    font-weight:normal;
+}
+.PagerStyle table td
+{
+    border:0px;
+    padding:2px;
+}
+.PagerStyle td
+{
+    border-top: #91a7b4 1px solid;
+}
+.PagerStyle a
+{
+    color:#16387c;
+    text-decoration:none;
+    padding:2px 3px 2px 3px;
+    
+    border-top:solid 1px #fff;
+    border-right:solid 1px #91a7b4;
+    border-bottom:solid 1px #91a7b4;
+    border-left:solid 1px #fff;
+}
+
+.PagerStyle span
+{
+    font-weight:bold;
+    color:#16387c;
+    text-decoration:none;
+    padding:2px 3px 2px 3px;
+}
+/*RowStyles*/
+.RowStyle td, .AltRowStyle td, .SelectedRowStyle td, .EditRowStyle td /*Common Styles*/
+{
+    padding: 2px 5px 2px 5px;
+    border-right: solid 1px #91a7b4;
+}
+.RowStyle td
+{
+    background-color: #f1f5f6;
+}
+.EmptyRowStyle td
+{
+	background-color: #f1f5f6;
+}
+.AltRowStyle td
+{
+    background-color:#d1dbe0;
+    background-position:0 -80px;
+    background-repeat:repeat-x;
+}
+.SelectedRowStyle td
+{
+    background-color: #fcb814;
+	background-image: url(../img/sprite.gif);
+    background-position:center;
+    background-repeat:repeat-x;
+}
+
+.custom-calendar .ajax__calendar_container
+{
+	background-color: #ffc; /* pale yellow */
+	border: solid 1px #666;
+}
+.custom-calendar .ajax__calendar_title
+{
+	background-color: #cf9; /* pale green */
+	height: 20px;
+	color: #333;
+}
+.custom-calendar .ajax__calendar_prev, .custom-calendar .ajax__calendar_next
+{
+	background-color: #aaa; /* darker gray */
+	height: 20px;
+	width: 20px;
+}
+.custom-calendar .ajax__calendar_today
+{
+	background-color: #cff; /* pale blue */
+	height: 20px;
+}
+.custom-calendar .ajax__calendar_days table thead tr td
+{
+	background-color: #ff9; /* dark yellow */
+	color: #333;
+}
+.custom-calendar .ajax__calendar_day
+{
+	color: #333; /* normal day - darker gray color */
+}
+.custom-calendar .ajax__calendar_other .ajax__calendar_day
+{
+	color: #666; /* day not actually in this month - lighter gray color */
+}
+
+div.ajax__calendar_days table tr td
+{
+	padding-right: 0px;
+}
+
+div.ajax__calendar_body
+{
+	width: 205px; 
+}
+div.ajax__calendar_container
+{
+	width: 205px; 
+}
+
+.hide {
+    display: none;
+}
+
+.container {
+    display: table;
+}
+
+.navbar-collapse {
+    display: table-row;
+}
+
+.navbar-content {
+    display: table-cell;
+}
+
+.align-center {
+    vertical-align: middle;
+}
+
+#loader {
+    position: fixed;
+    background: rgba(255, 255, 255, 0.85);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error {
+    color: Red;
+    font-size: 16px;
+}
