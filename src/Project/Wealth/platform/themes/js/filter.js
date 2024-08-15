@@ -120,7 +120,6 @@
         if ($('[data-filter-input][data-calendar="true"]').length > 0) {
             $('[data-filter-input][data-calendar="true"]').datepicker('update');
         }
-        setTag();
     });
 
     /**
