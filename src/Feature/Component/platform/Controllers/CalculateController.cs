@@ -83,6 +83,7 @@ namespace Feature.Wealth.Component.Controllers
         /// 獲取ETF資料
         /// </summary>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetEtfData(string ExpectedRoi, string RiskLevel)
         {
             List<EtfModel> datas;
