@@ -18,7 +18,7 @@
                         <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" id="MailInfoType_criteria">
                             <option value="all">全部通知</option>
                             <option value="@MailInfoTypeEnum.到價通知.ToString()">@MailInfoTypeEnum.到價通知.ToString()</option>
-                            @if (!string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
+                            @if (FcbMemberHelper.CheckMemberLogin() && !string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
                             {
                                 <option value="@MailInfoTypeEnum.理顧預約.ToString()">@MailInfoTypeEnum.理顧預約.ToString()</option>
                             }
