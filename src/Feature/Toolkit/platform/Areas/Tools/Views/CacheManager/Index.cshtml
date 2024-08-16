@@ -1,0 +1,508 @@
+﻿@using Feature.Wealth.Toolkit.Pipelines.initialize;
+@using Feature.Wealth.Toolkit.Areas.Tools.Models.CacheManager;
+@model CacheManagerViewModal
+
+@section Head {
+    <script>
+        (function (window, document, undefined) {
+            way.options.persistent = false;
+
+            const fnWidgetTab = function () {
+                var tabShowEvent = new Event('tab.show');
+
+                const $tabButtons = [].slice.call(getAllElements('.tabs .tab'));
+                $tabButtons.map(function ($el) {
+                    const $tabContent = getAllElements('.tab-content');
+                    if (!!$tabContent) {
+                        $tabContent.forEach(function ($el) {
+                            $el.classList.remove('is-active');
+                            $el.style.display = 'none';
+                        });
+                    }
+
+                    $el.addEventListener('click', function () {
+                        const isActive = $el.classList.contains("is-active");
+                        if (!isActive) {
+                            const $activeTabContent = getAllElements('.tab-content.is-active')[0];
+                            if (!!$activeTabContent) {
+                                $activeTabContent.classList.remove('is-active');
+                                $activeTabContent.style.display = 'none';
+                            }
+
+                            const $activeTab = getAllElements('li.tab.is-active')[0];
+                            if (!!$activeTab) {
+                                $activeTab.classList.remove('is-active');
+                            }
+
+                            const $targetTabContent = getAllElements($el.getAttribute('tab-target'))[0];
+                            if (!!$targetTabContent) {
+                                $targetTabContent.classList.add('is-active');
+                                $targetTabContent.style.display = 'block';
+                            }
+
+                            $el.classList.add('is-active');
+                        }
+                        $el.dispatchEvent(tabShowEvent);
+
+                    }, false);
+                });
+            };
+
+            const fnWidgetModal = {
+                OpenModal: function (target) {
+                    const $target = document.getElementById(target);
+                    $target.classList.add('is-active');
+                },
+                CloseModals: function () {
+                    const $modals = getAllElements('.modal');
+                    $modals.forEach(function ($el) {
+                        $el.classList.remove('is-active');
+                    });
+                },
+                Init: function () {
+                    const $modalButtons = getAllElements('.modal-button');
+                    const $modalCloses = getAllElements('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button');
+
+                    if ($modalButtons.length > 0) {
+                        $modalButtons.forEach(function ($el) {
+                            $el.addEventListener('click', function () {
+                                fnWidgetModal.OpenModal(target);
+                            });
+                        });
+                    }
+
+                    if ($modalCloses.length > 0) {
+                        $modalCloses.forEach(function ($el) {
+                            $el.addEventListener('click', function () {
+                                fnWidgetModal.CloseModals();
+                            });
+                        });
+                    }
+                    document.addEventListener('keydown', function (event) {
+                        const e = event || window.event;
+                        if (e.keyCode === 27) {
+                            fnWidgetModal.CloseModals();
+                        }
+                    });
+                }
+            };
+
+            const fnCache = function () {
+                document.body.addEventListener('click', function (e) {
+                    for (let target = e.target; target && target !== this; target = target.parentNode) {
+                        if (target.matches('[data-eh="cache"]')) {
+                            actionMethod(target);
+                            e.preventDefault();
+                            break;
+                        }
+                    }
+                }, false);
+
+                var method = {
+                    sitecore: {
+                        options: {
+                            url: '@ToolkitRoute.GenerateUrl(this, "CacheManager", "SitecoreMethod")',
+                        }
+                    },
+                    runtime: {
+                        options: {
+                            url: '@ToolkitRoute.GenerateUrl(this, "CacheManager", "AspNetMethod")',
+                        }
+                    },
+                    memory: {
+                        options: {
+                            url: '@ToolkitRoute.GenerateUrl(this, "CacheManager", "MemoryMethod")',
+                        }
+                    }
+                };
+
+                function actionMethod(e) {
+
+                    var openModal = function (data) {
+                        data.Message = setJsonFormatting(data.Message);
+                        way.set('modal', data);
+                        fnWidgetModal.OpenModal('modal');
+                    };
+                    const defaultOptions = {
+                        method: "POST",
+                        headers: { Accept: "application/json", "Content-Type": "application/json;charset=UTF-8" },
+                        data: {}
+                    };
+                    const type = e.getAttribute('eh-cache-type');
+
+                    const handle = method[type];
+                    const options = extend({}, defaultOptions, handle.options);
+                    const action = e.getAttribute('eh-cache-action');
+                    options.data.action = action;
+
+
+                    const index = e.getAttribute('eh-cache-index');
+                    const key = type + '.Caches.List.' + index;
+                    switch (action) {
+                        case 'reload':
+                            axios(options).then(function (response) {
+                                const data = response.data;
+                                way.set(type, data);
+                            }).catch(function (error) {});
+                            break;
+                        case 'clear':
+                            axios(options).then(function (response) {
+                                const data = response.data;
+                                way.set(type, data);
+                            }).catch(function (error) {});
+                            break;
+                        case 'content':
+                            options.data.key = way.get(key + '.Key');
+                            axios(options).then(function (response) {
+                                const data = response.data;
+                                openModal(data);
+                            }).catch(function (error) {});
+                            break;
+                        case 'delete':
+                            options.data.key = way.get(key + '.Key');
+                            axios(options).then(function (response) {
+                                const data = response.data;
+                                way.set(type, data);
+                            }).catch(function (error) {});
+                            break;
+                        default:
+                            openModal({ Message: '錯誤操作' });
+                            return;
+                    }
+                };
+
+                function setJsonFormatting(message) {
+                    if (message != null || message != undefined) {
+                        try {
+                            let jsonObj = JSON.parse(message);
+                            if (typeof (jsonObj) == 'string') {
+                                jsonObj = JSON.parse(jsonObj);
+                            }
+                            return JSON.stringify(jsonObj, null, 4);
+                        }
+                        catch (e) {
+                            return message;
+                        }
+                    }
+                    else {
+                        return 'Invalid Message';
+                    }
+                }
+            };
+
+            EventHandler.AddAction('fnWidgetTabs', fnWidgetTab);
+            EventHandler.AddAction('fnWidgetModal', fnWidgetModal.Init);
+            EventHandler.AddAction('fnCache', fnCache);
+        })(window, document);
+    </script>
+}
+
+<section class="hero is-info is-sitecore">
+    <div class="hero-head"></div>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <p class="title">@(ViewBag.Title ?? "Cache Manager")</p>
+        </div>
+    </div>
+    <div class="hero-foot">
+        <nav class="is-boxed is-fullwidth tabs">
+            <div class="container">
+                <ul>
+                    <li class="tab" tab-target="#tab-aspcache">
+                        <a>Asp.Net</a>
+                    </li>
+                    <li class="tab" tab-target="#tab-memorycache">
+                        <a>Memory</a>
+                    </li>
+                    <li class="tab" tab-target="#tab-sitecorecache">
+                        <a>Sitecore</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</section>
+<section class="section">
+    <div class="container">
+        <div class="tab-content table-container" id="tab-aspcache" style="display: none" way-scope="runtime">
+            <div class="has-text-centered level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button is-info is-light" data-eh="cache" eh-cache-action="reload" eh-cache-type="runtime" type="button">Reload</button>
+                            </div>
+                            <div class="control">
+                                <button class="button is-danger is-light" data-eh="cache" eh-cache-action="clear" eh-cache-type="runtime" type="button">Clear All</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <div>
+                            <p class="heading">Time</p>
+                            <p class="is-6 subtitle" way-data="Time"></p>
+                        </div>
+                    </div>
+                    <div class="level-item">
+                        <div>
+                            <p class="heading">Machine</p>
+                            <p class="is-6 subtitle" way-data="Env">@Environment.MachineName</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <table class="is-bordered is-fullwidth is-hoverable is-narrow is-striped table" way-scope-break="true">
+                <thead class="has-text-centered">
+                    <tr>
+                        <th scope="col">Seq</th>
+                        <th scope="col" style="width: 15%">Action</th>
+                        <th scope="col">Key</th>
+                        <th scope="col" style="width: 30%">Type Name</th>
+                        <th scope="col" style="width: 30%">Expire Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr way-repeat="runtime.Caches.List">
+                        <th class="has-text-centered" scope="col">$$key</th>
+                        <td>
+                            <div class="field is-grouped">
+                                <div class="control">
+                                    <button class="button is-danger" data-eh="cache" eh-cache-action="delete" eh-cache-index="$$key" eh-cache-type="runtime">Remove</button>
+                                </div>
+                                <div class="control">
+                                    <button class="button is-info" data-eh="cache" eh-cache-action="content" eh-cache-index="$$key" eh-cache-type="runtime">Content</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div way-data="Key"></div>
+                        </td>
+                        <td>
+                            <div way-data="Type"></div>
+                        </td>
+                        <td>
+                            <div way-data="ExpireDate"></div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+        <div class="tab-content table-container" id="tab-memorycache" style="display: none" way-scope="memory">
+            <div class="has-text-centered level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button is-info is-light" data-eh="cache" eh-cache-action="reload" eh-cache-type="memory" type="button">Reload</button>
+                            </div>
+                            <div class="control">
+                                <button class="button is-danger is-light" data-eh="cache" eh-cache-action="clear" eh-cache-type="memory" type="button">Clear All</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <div>
+                            <p class="heading">Time</p>
+                            <p class="is-6 subtitle" way-data="Time"></p>
+                        </div>
+                    </div>
+                    <div class="level-item">
+                        <div>
+                            <p class="heading">Machine</p>
+                            <p class="is-6 subtitle" way-data="Env">@Environment.MachineName</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <table class="is-bordered is-fullwidth is-hoverable is-narrow is-striped table" way-scope-break="true">
+                <thead class="has-text-centered">
+                    <tr>
+                        <th scope="col">Seq</th>
+                        <th scope="col" style="width: 15%">Action</th>
+                        <th scope="col">Key</th>
+                        <th scope="col" style="width: 30%">Type Name</th>
+                        <th scope="col" style="width: 30%">Expire Date</th>
+                    </tr>
+                </thead>
+                <tfoot></tfoot>
+                <tbody>
+                    <tr way-repeat="memory.Caches.List">
+                        <th class="has-text-centered" scope="col">$$key</th>
+                        <td>
+                            <div class="field is-grouped">
+                                <div class="control">
+                                    <button class="button is-danger" data-eh="cache" eh-cache-action="delete" eh-cache-index="$$key" eh-cache-type="memory">Remove</button>
+                                </div>
+                                <div class="control">
+                                    <button class="button is-info " data-eh="cache" eh-cache-action="content" eh-cache-index="$$key" eh-cache-type="memory">Content</button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div way-data="Key"></div>
+                        </td>
+                        <td>
+                            <div way-data="Type"></div>
+                        </td>
+                        <td>
+                            <div way-data="ExpireDate"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-content table-container" id="tab-sitecorecache" style="display: none" way-scope="sitecore">
+            <div class="has-text-centered level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button is-info is-light" data-eh="cache" eh-cache-action="reload" eh-cache-type="sitecore" type="button">Reload</button>
+                            </div>
+                            <div class="control">
+                                <button class="button is-danger is-light" data-eh="cache" eh-cache-action="clear" eh-cache-type="sitecore" type="button">Clear All</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <div>
+                            <p class="heading">Time</p>
+                            <p class="is-6 subtitle" way-data="Time"></p>
+                        </div>
+                    </div>
+                    <div class="level-item">
+                        <div>
+                            <p class="heading">Machine</p>
+                            <p class="is-6 subtitle" way-data="Env">@Environment.MachineName</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            @{
+                var sitecoreCaches = Model.SitecoreCaches.List.ToList();
+            }
+            <table class="is-bordered is-fullwidth is-hoverable is-narrow is-striped table" way-scope="Caches">
+                <thead class="has-text-centered">
+                    <tr>
+                        <th colspan="8">
+                            <div class="level">
+                                <div class="level-left">
+                                    <div class="level-item">
+                                        <div>
+                                            <p class="heading">Enable Caches</p>
+                                            <p class="is-6 subtitle">@sitecoreCaches.Count(x => x.Enable)</p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item">
+                                        <div>
+                                            <p class="heading">Total Caches</p>
+                                            <p class="is-6 subtitle" way-data="TotalCaches">@Model.SitecoreCaches.TotalCaches</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th scope="col">Seq</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">MaxSize</th>
+                        <th scope="col">Count</th>
+                        <th scope="col">Severity Level</th>
+                        <th scope="col">Description</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @{
+                        for (int i = 0; i < sitecoreCaches.Count; i++)
+                        {
+                            <tr way-scope="List.@i">
+                                <th class="has-text-centered">@i</th>
+                                <td>
+                                    @if (sitecoreCaches[i].Enable)
+                                    {
+                                        <div class="field is-grouped">
+                                            <div class="control">
+                                                <button class="button is-danger" data-eh="cache" eh-cache-action="delete" eh-cache-index="@i" eh-cache-type="sitecore">Remove</button>
+                                            </div>
+                                            <div class="control">
+                                                @*<button class="button is-info " data-eh="cache" eh-cache-action="content" eh-cache-index="$$key" eh-cache-type="sitecore">Content</button>*@
+                                            </div>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <div way-data="Name">@sitecoreCaches[i].Name</div>
+                                </td>
+                                <td>
+                                    <div class="has-text-centered" way-data="Size">@sitecoreCaches[i].Size</div>
+                                </td>
+                                <td>
+                                    <div class="has-text-centered" way-data="MaxSize">@sitecoreCaches[i].MaxSize</div>
+                                </td>
+                                <td>
+                                    <div class="has-text-centered" way-data="Count">@sitecoreCaches[i].Count</div>
+                                </td>
+                                <td>
+                                    <div class="has-text-centered" way-data="SeverityLevel">@sitecoreCaches[i].SeverityLevel</div>
+                                </td>
+                                <td>
+                                    <div class="has-text-centered" way-data="Description">@sitecoreCaches[i].Description</div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="has-text-right" colspan="3">Total:</th>
+                        <td class="has-text-centered">
+                            <div way-data="TotalSize">@Model.SitecoreCaches.TotalSize</div>
+                        </td>
+                        <td class="has-text-centered">
+                            <div way-data="TotalMaxSize">@Model.SitecoreCaches.TotalMaxSize</div>
+                        </td>
+                        <td class="has-text-centered">
+                            <div way-data="Entries">@Model.SitecoreCaches.Entries</div>
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</section>
+
+<div class="modal" id="modal" way-scope="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Cache Content</p>
+            <button aria-label="close" class="delete"></button>
+        </header>
+        <section class="modal-card-body">
+            <pre class="content" way-data="Message" style="background-color:white"></pre>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button">Close</button>
+        </footer>
+    </div>
+</div>
+
+@section Body{
+}
