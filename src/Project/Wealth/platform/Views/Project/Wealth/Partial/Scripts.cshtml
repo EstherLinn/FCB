@@ -36,7 +36,7 @@
         })
         if (isLogin) {
             let url = new URL(location.href);
-            let isMemberHome = url.pathname.includes('member-home');
+            let isMemberHome = url.pathname.toLowerCase().includes('member-home');
             if (!isMemberHome) {
                 $.ajax({
                     type: "post",
