@@ -604,7 +604,9 @@
                 type: "post",
                 url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetTrackList")",
                 success: function (msg) {
-                    window.resetTable(msg);
+                    //設定localstorage才能對照備註
+                    store.set('focus', msg);
+                    resetTable(msg);
                     resetTable2(msg);
                     resetTable3(msg);
                 },
