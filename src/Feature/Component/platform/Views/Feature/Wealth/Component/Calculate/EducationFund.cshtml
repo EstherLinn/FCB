@@ -1539,6 +1539,15 @@
             var lockImg = "/themes/images/icons/others/lock.svg"
             var defaultRiskAttributes = '@Model.DefaultRiskAttributes';
             var fundIds = @(new HtmlString(JsonHelper.SerializeObject(Model.FundID)));
+            var educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi;
+            var educationalFundValue, educationalFundyears, educationalFundamountPrepared, educationalFundmonthlyInvestment, educationalFundexpectedRoi;
+            var SessionKeys = [
+                'educationalFundValue',
+                'educationalFundyears',
+                'educationalFundamountPrepared',
+                'educationalFundmonthlyInvestment',
+                'educationalFundexpectedRoi'
+            ];
             var assetsData = {
                 stock: {
                     number: @Model.StockAllocation,
@@ -1708,6 +1717,50 @@
             });
             //#endregion
 
+            //#region 如果有值就執行試算
+            $(document).ready(function () {
+                if (SessionStorageExist(SessionKeys)) {
+                    educationalFundValue = Number(sessionStorage.getItem('educationalFundValue'));
+                    educationalFundyears = Number(sessionStorage.getItem('educationalFundyears'));
+                    educationalFundamountPrepared = Number(sessionStorage.getItem('educationalFundamountPrepared'));
+                    educationalFundmonthlyInvestment = Number(sessionStorage.getItem('educationalFundmonthlyInvestment'));
+                    educationalFundexpectedRoi = Number(sessionStorage.getItem('educationalFundexpectedRoi'));
+
+                    $('#Calculate').trigger('click');
+                    RemoveSessionVal();
+                }
+            });
+            //#endregion
+
+            //#region SessionVal狀態設定事件
+            //設定Session
+            function SetSessionVal(educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi) {
+                sessionStorage.setItem('educationalFundValue', educationalFund);
+                sessionStorage.setItem('educationalFundyears', years);
+                sessionStorage.setItem('educationalFundamountPrepared', amountPrepared);
+                sessionStorage.setItem('educationalFundmonthlyInvestment', monthlyInvestment);
+                sessionStorage.setItem('educationalFundexpectedRoi', expectedRoi);
+            }
+            //移除Session
+            function RemoveSessionVal() {
+                educationalFund = educationalFundValue;
+                years = educationalFundyears;
+                amountPrepared = educationalFundamountPrepared;
+                monthlyInvestment = educationalFundmonthlyInvestment;
+                expectedRoi = educationalFundexpectedRoi;
+
+                sessionStorage.removeItem('educationalFundValue', educationalFund);
+                sessionStorage.removeItem('educationalFundyears', years);
+                sessionStorage.removeItem('educationalFundamountPrepared', amountPrepared);
+                sessionStorage.removeItem('educationalFundmonthlyInvestment', monthlyInvestment);
+                sessionStorage.removeItem('educationalFundexpectedRoi', expectedRoi);
+            }
+            //判斷Session是否有資料
+            function SessionStorageExist(keys) {
+                return keys.every(key => sessionStorage.getItem(key) !== null);
+            }
+            //#endregion
+
             //#region 開始試算按鈕綁定事件
             $("#Calculate").click(function () {
                 if (clickCheck()) {
@@ -1718,11 +1771,22 @@
                     $("#calculateMain").addClass("u-hidden");
                     $('.l-mainstage').first().addClass('u-hidden');
 
-                    let educationalFund = $("#educationalFund").val();
-                    let years = $("#years").val();
-                    let amountPrepared = $("#amountPrepared").val();
-                    let monthlyInvestment = $("#monthlyInvestment").val();
-                    let expectedRoi = $("#expectedRoi").val();
+                    educationalFund = $("#educationalFund").val();
+                    years = $("#years").val();
+                    amountPrepared = $("#amountPrepared").val();
+                    monthlyInvestment = $("#monthlyInvestment").val();
+                    expectedRoi = $("#expectedRoi").val();
+
+                    //Session設定或清空判斷
+                    if (SessionStorageExist(SessionKeys)) {
+                        educationalFund = educationalFundValue;
+                        years = educationalFundyears;
+                        amountPrepared = educationalFundamountPrepared;
+                        monthlyInvestment = educationalFundmonthlyInvestment;
+                        expectedRoi = educationalFundexpectedRoi;
+                    } else {
+                        SetSessionVal(educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
+                    }
 
                     $("#educationalFund_Popup").val(educationalFund);
                     $("#years_Popup").val(years);
@@ -1820,11 +1884,14 @@
                     $.magnificPopup.close();
                     $('.l-mainstage').first().addClass('u-hidden');
 
-                    let educationalFund = $("#educationalFund_Popup").val();
-                    let years = $("#years_Popup").val();
-                    let amountPrepared = $("#amountPrepared_Popup").val();
-                    let monthlyInvestment = $("#monthlyInvestment_Popup").val();
-                    let expectedRoi = $("#expectedRoi_Popup").val();
+                    educationalFund = $("#educationalFund_Popup").val();
+                    years = $("#years_Popup").val();
+                    amountPrepared = $("#amountPrepared_Popup").val();
+                    monthlyInvestment = $("#monthlyInvestment_Popup").val();
+                    expectedRoi = $("#expectedRoi_Popup").val();
+
+                    //設定Session
+                    SetSessionVal(educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
 
                     // 試算結果
                     let planningResults = planningCompute(years, amountPrepared, monthlyInvestment, expectedRoi);
@@ -2040,8 +2107,10 @@
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "Calculate", "SaveCalculationResults")',
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(calculationData),
+                    data: calculationData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", token);
+                    }
                 }).done(function (data, textStatus, jqXHR) {
                     window.toast('已儲存');
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -2055,7 +2124,7 @@
             $('#btnUnlock').on('click', function (e) {
                 e.preventDefault();
                 $.ajax({
-                    url: '@Url.Action("GetCifMemberRisk", "Accounts")',
+                    url: '@ClientRoute.GenerateUrl(this, "Accounts", "GetCifMemberRisk")',
                     type: 'POST',
                     success: function (data) {
                         if (data.success && data.risk != undefined) {
@@ -2402,7 +2471,7 @@
                 divRemoveAttributes($('#chartsGap'));
                 $('#chartsGap').empty();
 
-                description = $('#resultDescription').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
+                description = encodeURIComponent($('#resultDescription').prop('outerHTML').replace(/(\n\s*)+/g, '\n'));
 
                 // 試算結果讀條顯示
                 renderReadingbar('chartsGap', educationalFundVal, current, InsufficientAmountVal);
@@ -2429,9 +2498,9 @@
                 // 預期總收益
                 $("#tab1_Total").text(resultFormatVal + "元");
                 // 已準備金額
-                $("#tab1_AmountPrepared").text(amountPrepared + " 萬元");
+                $("#tab1_AmountPrepared").text(parseFloat(amountPrepared).toLocaleString() + " 萬元");
                 // 每月投入
-                $("#tab1_MonthlyInvestment").text(monthlyInvestment + "萬元");
+                $("#tab1_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + "萬元");
                 // 投資報酬率
                 $("#tab1_ExpectedRoi").text(expectedRoi + " %");
                 // 投資
@@ -2447,7 +2516,7 @@
 
                 let tab1_earningsChart = $('#tab1_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
 
-                earningsChart.push(tab1_earningsChart);
+                earningsChart.push(encodeURIComponent(tab1_earningsChart));
 
                 // tab1圓餅圖資料
                 chartsRevenues.push({
@@ -2509,9 +2578,9 @@
                 // 預期總收益
                 $("#tab2_Total").text(totalFormatVal + "元");
                 // 已準備金額
-                $("#tab2_AmountPrepared").text(amountPrepared + " 萬元");
+                $("#tab2_AmountPrepared").text(parseFloat(amountPrepared).toLocaleString() + " 萬元");
                 //每月投入
-                $("#tab2_MonthlyInvestment").text(resultFormatVal + "萬元");
+                $("#tab2_MonthlyInvestment").text(resultFormatVal.toLocaleString() + "萬元");
                 //投資報酬率
                 $("#tab2_ExpectedRoi").text(expectedRoi + " %");
                 //投資
@@ -2527,7 +2596,7 @@
 
                 let tab2_earningsChart = $('#tab2_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
 
-                earningsChart.push(tab2_earningsChart);
+                earningsChart.push(encodeURIComponent(tab2_earningsChart));
 
                 // tab2圓餅圖資料
                 chartsRevenues.push({
@@ -2583,9 +2652,9 @@
                 // 預期總收益
                 $("#tab3_Total").text(totalFormatVal + "元");
                 // 已準備金額
-                $("#tab3_AmountPrepared").text(amountPrepared + " 萬元");
+                $("#tab3_AmountPrepared").text(parseFloat(amountPrepared).toLocaleString() + " 萬元");
                 //每月投入
-                $("#tab3_MonthlyInvestment").text(monthlyInvestment + "萬元");
+                $("#tab3_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + "萬元");
                 //投資報酬率
                 $("#tab3_ExpectedRoi").text(resultFormatVal + " %");
                 //投資
@@ -2601,7 +2670,7 @@
 
                 let tab3_earningsChart = $('#tab3_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
 
-                earningsChart.push(tab3_earningsChart);
+                earningsChart.push(encodeURIComponent(tab3_earningsChart));
 
                 // tab3圓餅圖資料
                 chartsRevenues.push({
@@ -2656,9 +2725,9 @@
                 // 預期總收益
                 $("#tab4_Total").text(totalFormatVal + "元");
                 // 已準備金額
-                $("#tab4_AmountPrepared").text(amountPrepared + " 萬元");
+                $("#tab4_AmountPrepared").text(parseFloat(amountPrepared).toLocaleString() + " 萬元");
                 //每月投入
-                $("#tab4_MonthlyInvestment").text(monthlyInvestment + "萬元");
+                $("#tab4_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + "萬元");
                 //投資報酬率
                 $("#tab4_ExpectedRoi").text(expectedRoi + " %");
                 //投資
@@ -2674,7 +2743,7 @@
 
                 let tab4_earningsChart = $('#tab4_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
 
-                earningsChart.push(tab4_earningsChart);
+                earningsChart.push(encodeURIComponent(tab4_earningsChart));
 
                 // tab4圓餅圖資料
                 chartsRevenues.push({
@@ -2729,9 +2798,9 @@
                 // 預期總收益
                 $("#tab5_Total").text(resultFormatVal + "元");
                 // 已準備金額
-                $("#tab5_AmountPrepared").text(amountPrepared + " 萬元");
+                $("#tab5_AmountPrepared").text(parseFloat(amountPrepared).toLocaleString() + " 萬元");
                 // 每月投入
-                $("#tab5_MonthlyInvestment").text(monthlyInvestment + "萬元");
+                $("#tab5_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + "萬元");
                 // 投資報酬率
                 $("#tab5_ExpectedRoi").text(expectedRoiFormatVal + " %");
                 // 投資
@@ -2747,7 +2816,7 @@
 
                 let tab5_earningsChart = $('#tab5_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
 
-                earningsChart.push(tab5_earningsChart);
+                earningsChart.push(encodeURIComponent(tab5_earningsChart));
 
                 // tab5圓餅圖資料
                 chartsRevenues.push({
@@ -3388,12 +3457,15 @@
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
-                    url: '@Url.Action("GetFundData", "Calculate")',
+                    url: '@ClientRoute.GenerateUrl(this, "Calculate", "GetFundData")',
                     method: 'POST',
                     data: {
                         ExpectedRoi: expectedRoi,
                         ProductFundIDs: fundIds,
                         __RequestVerificationToken: token
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", token);
                     },
                     success: function (data) {
                         if(data != null && data.length != 0) {
@@ -3433,12 +3505,18 @@
                     riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
                 }
 
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
-                    url: '@Url.Action("GetEtfData", "Calculate")',
+                    url: '@ClientRoute.GenerateUrl(this, "Calculate", "GetEtfData")',
                     method: 'POST',
                     data: {
                         ExpectedRoi: expectedRoi,
                         RiskLevel: riskLevel,
+                        __RequestVerificationToken: token
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", token);
                     },
                     success: function (data) {
                         if (data != null && data.length != 0) {
@@ -3538,7 +3616,7 @@
                                         <div class="c-box c-box--goods">
                                             <div class="c-box__main">
                                                 <div class="c-cardFund">
-                                                                <a href="${fund.FundDetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                                                    <a href="${fund.FundDetailUrl}" class="c-cardFund__name u-ellipsis-2"target="_blank">
                                                                 ${fund.ProductCode} ${fund.FundName}
                                                     </a>
                                                     <div class="c-cardFund__trend">
@@ -3659,7 +3737,7 @@
                                             <div class="c-box c-box--goods">
                                                 <div class="c-box__main">
                                                     <div class="c-cardFund">
-                                                                            <a href="${Etf.ETFDetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                                                                <a href="${Etf.ETFDetailUrl}" class="c-cardFund__name u-ellipsis-2"target="_blank">
                                                                         ${Etf.ProductCode} ${Etf.ETFName}
                                                         </a>
                                                         <div class="c-cardFund__trend">

@@ -1592,6 +1592,20 @@
             var lockImg = "/themes/images/icons/others/lock.svg"
             var defaultRiskAttributes = '@Model.DefaultRiskAttributes';
             var fundIds = @(new HtmlString(JsonHelper.SerializeObject(Model.FundID)));
+            var yearBegin, yearEnd, lifeExpectancy, currentMonthlyCost, retireMonthlyCost, amountPrepared, pension, monthlyInvestment, expectedRoi, payExpensesYears;
+            var RetyearBegin, RetyearEnd, RetlifeExpectancy, RetcurrentMonthlyCost, RetretireMonthlyCost, RetamountPrepared, Retpension, RetmonthlyInvestment, RetexpectedRoi, RetpayExpensesYears;
+            var SessionKeys = [
+                'RetyearBegin',
+                'RetyearEnd',
+                'RetlifeExpectancy',
+                'RetcurrentMonthlyCost',
+                'RetretireMonthlyCost',
+                'RetamountPrepared',
+                'Retpension',
+                'RetmonthlyInvestment',
+                'RetexpectedRoi',
+                'RetpayExpensesYears'
+            ];
             var assetsData = {
                 stock: {
                     number: @Model.StockAllocation,
@@ -1640,6 +1654,7 @@
                 const year = Number(values[handle]);
                 if (handle) {
                     $inputYearEnd.val(year);
+                    inputCheck('yearEnd', year);
                 } else {
                     $inputYearBegin.val(year);
                 }
@@ -1798,6 +1813,70 @@
             });
             //#endregion
 
+            //#region 如果有值就執行試算
+            $(document).ready(function () {
+                if (SessionStorageExist(SessionKeys)) {
+                    RetyearBegin = Number(sessionStorage.getItem('RetyearBegin'));
+                    RetyearEnd = Number(sessionStorage.getItem('RetyearEnd'));
+                    RetlifeExpectancy = Number(sessionStorage.getItem('RetlifeExpectancy'));
+                    RetcurrentMonthlyCost = Number(sessionStorage.getItem('RetcurrentMonthlyCost'));
+                    RetretireMonthlyCost = Number(sessionStorage.getItem('RetretireMonthlyCost'));
+                    RetamountPrepared = Number(sessionStorage.getItem('RetamountPrepared'));
+                    Retpension = Number(sessionStorage.getItem('Retpension'));
+                    RetmonthlyInvestment = Number(sessionStorage.getItem('RetmonthlyInvestment'));
+                    RetexpectedRoi = Number(sessionStorage.getItem('RetexpectedRoi'));
+                    RetpayExpensesYears = Number(sessionStorage.getItem('RetpayExpensesYears'));
+
+                    $('#Calculate').trigger('click');
+                    RemoveSessionVal();
+                }
+            });
+            //#endregion
+
+            //#region SessionVal狀態設定事件
+            //設定Session
+            function SetSessionVal(yearBegin, yearEnd, lifeExpectancy, currentMonthlyCost, retireMonthlyCost, amountPrepared, pension, monthlyInvestment, expectedRoi, payExpensesYears) {
+                sessionStorage.setItem('RetyearBegin', yearBegin);
+                sessionStorage.setItem('RetyearEnd', yearEnd);
+                sessionStorage.setItem('RetlifeExpectancy', lifeExpectancy);
+                sessionStorage.setItem('RetcurrentMonthlyCost', currentMonthlyCost);
+                sessionStorage.setItem('RetretireMonthlyCost', retireMonthlyCost);
+                sessionStorage.setItem('RetamountPrepared', amountPrepared);
+                sessionStorage.setItem('Retpension', pension);
+                sessionStorage.setItem('RetmonthlyInvestment', monthlyInvestment);
+                sessionStorage.setItem('RetexpectedRoi', expectedRoi);
+                sessionStorage.setItem('RetpayExpensesYears', payExpensesYears);
+            }
+            //移除Session
+            function RemoveSessionVal() {
+                yearBegin = RetyearBegin;
+                yearEnd = RetyearEnd;
+                lifeExpectancy = RetlifeExpectancy;
+                currentMonthlyCost = RetcurrentMonthlyCost;
+                retireMonthlyCost = RetretireMonthlyCost;
+                amountPrepared = RetamountPrepared;
+                pension = Retpension;
+                monthlyInvestment = RetmonthlyInvestment;
+                expectedRoi = RetexpectedRoi;
+                payExpensesYears = parseFloat(lifeExpectancy) - parseFloat(yearEnd);
+
+                sessionStorage.removeItem('RetyearBegin', yearBegin);
+                sessionStorage.removeItem('RetyearEnd', yearEnd);
+                sessionStorage.removeItem('RetlifeExpectancy', lifeExpectancy);
+                sessionStorage.removeItem('RetcurrentMonthlyCost', currentMonthlyCost);
+                sessionStorage.removeItem('RetretireMonthlyCost', retireMonthlyCost);
+                sessionStorage.removeItem('RetamountPrepared', amountPrepared);
+                sessionStorage.removeItem('Retpension', pension);
+                sessionStorage.removeItem('RetmonthlyInvestment', monthlyInvestment);
+                sessionStorage.removeItem('RetexpectedRoi', expectedRoi);
+                sessionStorage.removeItem('RetpayExpensesYears', payExpensesYears);
+            }
+            //判斷Session是否有資料
+            function SessionStorageExist(keys) {
+                return keys.every(key => sessionStorage.getItem(key) !== null);
+            }
+            //#endregion
+
             //#region 開始試算按鈕綁定事件
             $("#Calculate").click(function () {
                 if (clickCheck()) {
@@ -1808,15 +1887,32 @@
                     $("#calculateMain").addClass("u-hidden");
                     $('.l-mainstage').first().addClass('u-hidden');
 
-                    let yearBegin = $("#yearBegin").val();
-                    let yearEnd = $("#yearEnd").val();
-                    let lifeExpectancy = $("#lifeExpectancy").val();
-                    let currentMonthlyCost = $("#currentMonthlyCost").val();
-                    let retireMonthlyCost = $("#retireMonthlyCost").val();
-                    let amountPrepared = $("#amountPrepared").val();
-                    let pension = $("#pension").val();
-                    let monthlyInvestment = $("#monthlyInvestment").val();
-                    let expectedRoi = $("#expectedRoi").val();
+                    yearBegin = $("#yearBegin").val();
+                    yearEnd = $("#yearEnd").val();
+                    lifeExpectancy = $("#lifeExpectancy").val();
+                    currentMonthlyCost = $("#currentMonthlyCost").val();
+                    retireMonthlyCost = $("#retireMonthlyCost").val();
+                    amountPrepared = $("#amountPrepared").val();
+                    pension = $("#pension").val();
+                    monthlyInvestment = $("#monthlyInvestment").val();
+                    expectedRoi = $("#expectedRoi").val();
+                    payExpensesYears = parseFloat(lifeExpectancy) - parseFloat(yearEnd);
+
+                    //Session設定或清空判斷
+                    if (!SC_DATA.IsLoggedIn && SessionStorageExist(SessionKeys)) {
+                        yearBegin = RetyearBegin;
+                        yearEnd = RetyearEnd;
+                        lifeExpectancy = RetlifeExpectancy;
+                        currentMonthlyCost = RetcurrentMonthlyCost;
+                        retireMonthlyCost = RetretireMonthlyCost;
+                        amountPrepared = RetamountPrepared;
+                        pension = Retpension;
+                        monthlyInvestment = RetmonthlyInvestment;
+                        expectedRoi = RetexpectedRoi;
+                        payExpensesYears = parseFloat(lifeExpectancy) - parseFloat(yearEnd);
+                    } else {
+                        SetSessionVal(yearBegin, yearEnd, lifeExpectancy, currentMonthlyCost, retireMonthlyCost, amountPrepared, pension, monthlyInvestment, expectedRoi, payExpensesYears);
+                    }
 
                     $("#yearBegin_Popup").val(yearBegin);
                     $("#yearEnd_Popup").val(yearEnd);
@@ -1827,6 +1923,7 @@
                     $("#pension_Popup").val(pension);
                     $("#monthlyInvestment_Popup").val(monthlyInvestment);
                     $("#expectedRoi_Popup").val(expectedRoi);
+                    $("#payExpensesVal_Popup").text(payExpensesYears);
 
                     // 年期
                     let years = parseFloat(yearEnd) - parseFloat(yearBegin);
@@ -1920,14 +2017,19 @@
                     $.magnificPopup.close();
                     $('.l-mainstage').first().addClass('u-hidden');
 
-                    let yearBegin = $("#yearBegin_Popup").val();
-                    let yearEnd = $("#yearEnd_Popup").val();
-                    let lifeExpectancy = $("#lifeExpectancy_Popup").val();
-                    let retireMonthlyCost = $("#retireMonthlyCost_Popup").val();
-                    let amountPrepared = $("#amountPrepared_Popup").val();
-                    let pension = $("#pension_Popup").val();
-                    let monthlyInvestment = $("#monthlyInvestment_Popup").val();
-                    let expectedRoi = $("#expectedRoi_Popup").val();
+                    yearBegin = $("#yearBegin_Popup").val();
+                    yearEnd = $("#yearEnd_Popup").val();
+                    lifeExpectancy = $("#lifeExpectancy_Popup").val();
+                    currentMonthlyCost = $("#currentMonthlyCost_Popup").val();
+                    retireMonthlyCost = $("#retireMonthlyCost_Popup").val();
+                    amountPrepared = $("#amountPrepared_Popup").val();
+                    pension = $("#pension_Popup").val();
+                    monthlyInvestment = $("#monthlyInvestment_Popup").val();
+                    expectedRoi = $("#expectedRoi_Popup").val();
+                    payExpensesYears = parseFloat(lifeExpectancy) - parseFloat(yearEnd);
+
+                    //設定Session
+                    SetSessionVal(yearBegin, yearEnd, lifeExpectancy, currentMonthlyCost, retireMonthlyCost, amountPrepared, pension, monthlyInvestment, expectedRoi, payExpensesYears);
 
                     // 年期
                     let years = parseFloat(yearEnd) - parseFloat(yearBegin);
@@ -2145,8 +2247,10 @@
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "Calculate", "SaveCalculationResults")',
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(calculationData),
+                    data: calculationData,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", token);
+                    }
                 }).done(function (data, textStatus, jqXHR) {
                     window.toast('已儲存');
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -2160,7 +2264,7 @@
             $('#btnUnlock').on('click', function (e) {
                 e.preventDefault();
                 $.ajax({
-                    url: '@Url.Action("GetCifMemberRisk", "Accounts")',
+                    url: '@ClientRoute.GenerateUrl(this, "Accounts", "GetCifMemberRisk")',
                     type: 'POST',
                     success: function (data) {
                         if (data.success && data.risk != undefined) {
@@ -2665,7 +2769,7 @@
                 divRemoveAttributes($('#chartsGap'));
                 $('#chartsGap').empty();
 
-                description = $('#resultDescription').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
+                description = encodeURIComponent($('#resultDescription').prop('outerHTML').replace(/(\n\s*)+/g, '\n'));
 
                 // 試算結果讀條顯示
                 renderReadingbar('chartsGap', targetAmount, current, totalB);
@@ -2691,9 +2795,9 @@
                 // 預期總收益
                 $("#tab1_Total").text(resultFormatVal + "元");
                 // 預估退休金
-                $("#tab1_Pension").text(pension + " 萬元");
+                $("#tab1_Pension").text(parseFloat(pension).toLocaleString() + " 萬元");
                 // 每月投入
-                $("#tab1_MonthlyInvestment").text(monthlyInvestment + " 萬元");
+                $("#tab1_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + " 萬元");
                 // 投資報酬率
                 $("#tab1_ExpectedRoi").text(expectedRoi + " %");
                 // 距離離退休還有多少年
@@ -2709,7 +2813,7 @@
 
                 let tab1_earningsChart = $('#tab1_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
 
-                earningsChart.push(tab1_earningsChart);
+                earningsChart.push(encodeURIComponent(tab1_earningsChart));
 
                 // tab1圓餅圖資料
                 chartsRevenues.push({
@@ -2774,9 +2878,9 @@
                 // 預期總收益
                 $("#tab2_Total").text(totalFormatVal + "元");
                 // 預估退休金
-                $("#tab2_Pension").text(pension + " 萬元");
+                $("#tab2_Pension").text(parseFloat(pension).toLocaleString() + " 萬元");
                 // 每月投入
-                $("#tab2_MonthlyInvestment").text(resultFormatVal + " 萬元");
+                $("#tab2_MonthlyInvestment").text(resultFormatVal.toLocaleString() + " 萬元");
                 // 投資報酬率
                 $("#tab2_ExpectedRoi").text(expectedRoi + " %");
                 // 距離離退休還有多少年
@@ -2792,7 +2896,7 @@
 
                 let tab2_earningsChart = $('#tab2_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
 
-                earningsChart.push(tab2_earningsChart);
+                earningsChart.push(encodeURIComponent(tab2_earningsChart));
 
                 // tab2圓餅圖資料
                 chartsRevenues.push({
@@ -2851,9 +2955,9 @@
                 // 預期總收益
                 $("#tab3_Total").text(totalFormatVal + "元");
                 // 預估退休金
-                $("#tab3_Pension").text(pension + " 萬元");
+                $("#tab3_Pension").text(parseFloat(pension).toLocaleString() + " 萬元");
                 // 每月投入
-                $("#tab3_MonthlyInvestment").text(monthlyInvestment + " 萬元");
+                $("#tab3_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + " 萬元");
                 // 投資報酬率
                 $("#tab3_ExpectedRoi").text(resultFormatVal + " %");
                 // 距離離退休還有多少年
@@ -2869,7 +2973,7 @@
 
                 let tab3_earningsChart = $('#tab3_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
 
-                earningsChart.push(tab3_earningsChart);
+                earningsChart.push(encodeURIComponent(tab3_earningsChart));
 
                 // tab3圓餅圖資料
                 chartsRevenues.push({
@@ -2927,9 +3031,9 @@
                 // 預期總收益
                 $("#tab4_Total").text(resultFormatVal + "元");
                 // 預估退休金
-                $("#tab4_Pension").text(pension + " 萬元");
+                $("#tab4_Pension").text(parseFloat(pension).toLocaleString() + " 萬元");
                 // 每月投入
-                $("#tab4_MonthlyInvestment").text(monthlyInvestment + " 萬元");
+                $("#tab4_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + " 萬元");
                 // 投資報酬率
                 $("#tab4_ExpectedRoi").text(expectedRoiFormatVal + " %");
                 // 距離離退休還有多少年
@@ -2945,7 +3049,7 @@
 
                 let tab4_earningsChart = $('#tab4_earningsChart').prop('outerHTML').replace(/(\n\s*)+/g, '\n');
 
-                earningsChart.push(tab4_earningsChart);
+                earningsChart.push(encodeURIComponent(tab4_earningsChart));
 
                 // tab4圓餅圖資料
                 chartsRevenues.push({
@@ -3599,12 +3703,15 @@
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
-                    url: '@Url.Action("GetFundData", "Calculate")',
+                    url: '@ClientRoute.GenerateUrl(this, "Calculate", "GetFundData")',
                     method: 'POST',
                     data: {
                         ExpectedRoi: expectedRoi,
                         ProductFundIDs: fundIds,
                         __RequestVerificationToken: token
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", token);
                     },
                     success: function (data) {
                         if (data != null && data.length != 0) {
@@ -3644,12 +3751,18 @@
                     riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
                 }
 
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
                 $.ajax({
-                    url: '@Url.Action("GetEtfData", "Calculate")',
+                    url: '@ClientRoute.GenerateUrl(this, "Calculate", "GetEtfData")',
                     method: 'POST',
                     data: {
                         ExpectedRoi: expectedRoi,
                         RiskLevel: riskLevel,
+                        __RequestVerificationToken: token
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken", token);
                     },
                     success: function (data) {
                         if (data != null && data.length != 0) {
@@ -3749,7 +3862,7 @@
                                         <div class="c-box c-box--goods">
                                             <div class="c-box__main">
                                                 <div class="c-cardFund">
-                                                                <a href="${fund.FundDetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                                                    <a href="${fund.FundDetailUrl}" class="c-cardFund__name u-ellipsis-2"target="_blank">
                                                                 ${fund.ProductCode} ${fund.FundName}
                                                     </a>
                                                     <div class="c-cardFund__trend">
@@ -3870,7 +3983,7 @@
                                             <div class="c-box c-box--goods">
                                                 <div class="c-box__main">
                                                     <div class="c-cardFund">
-                                                                            <a href="${Etf.ETFDetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                                                                <a href="${Etf.ETFDetailUrl}" class="c-cardFund__name u-ellipsis-2"target="_blank">
                                                                         ${Etf.ProductCode} ${Etf.ETFName}
                                                         </a>
                                                         <div class="c-cardFund__trend">

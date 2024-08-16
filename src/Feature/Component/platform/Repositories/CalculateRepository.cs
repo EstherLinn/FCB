@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Web;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Templates = Feature.Wealth.Component.Models.Calculate.Template;
@@ -109,8 +110,8 @@ namespace Feature.Wealth.Component.Repositories
                     Name = data.Name,
                     DateTime = data.DateTime,
                     ResultHasGap = data.ResultHasGap,
-                    Description = data.Description,
-                    EarningsChart = data.EarningsChart,
+                    Description = HttpUtility.UrlDecode(data.Description),
+                    EarningsChart = data.EarningsChart.Select(HttpUtility.UrlDecode).ToList(),
                     Readingbar = data.Readingbar,
                     ChartsRevenues = data.ChartsRevenues,
                     ChartsRewards = data.ChartsRewards,
