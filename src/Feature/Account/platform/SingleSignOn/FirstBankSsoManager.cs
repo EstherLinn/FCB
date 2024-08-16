@@ -42,7 +42,8 @@ namespace Feature.Wealth.Account.SingleSignOn
 
         private void SetUserProfile(FirstBankUser user, Employee member)
         {
-            user.Profile.EmployeeEmail = "i" + member.EmployeeCode.TrimStart('0') + "@firstbank.com.tw";
+            string mailCode = Regex.Replace(member.EmployeeCode.TrimStart('0'), ".$", string.Empty);
+            user.Profile.EmployeeEmail = "i" + mailCode + "@firstbank.com.tw";
             user.Profile.EmployeeName = member.EmployeeName;
         }
 
@@ -209,8 +210,11 @@ namespace Feature.Wealth.Account.SingleSignOn
             {
                 return;
             }
+            if (string.IsNullOrEmpty(scUser.Profile.Email))
+            {
+                scUser.Profile.Email = info.EmployeeEmail;
+            }
 
-            scUser.Profile.Email = info.EmployeeEmail;
             scUser.Profile.FullName = info.EmployeeName;
             foreach (var propertyInfo in info.GetProperties())
             {
