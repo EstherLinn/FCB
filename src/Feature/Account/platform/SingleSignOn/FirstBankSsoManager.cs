@@ -1,5 +1,6 @@
 ﻿using Feature.Wealth.Account.Models.OAuth;
 using Feature.Wealth.Account.Models.SingleSignOn;
+using Sitecore.Security;
 using Sitecore.Security.Accounts;
 using Sitecore.Security.Domains;
 using Sitecore.SecurityModel;
@@ -45,6 +46,9 @@ namespace Feature.Wealth.Account.SingleSignOn
             string mailCode = Regex.Replace(member.EmployeeCode.TrimStart('0'), ".$", string.Empty);
             user.Profile.EmployeeEmail = "i" + mailCode + "@firstbank.com.tw";
             user.Profile.EmployeeName = member.EmployeeName;
+            user.Profile.DepartmentCode = member.DepartmentCode;
+            user.Profile.DepartmentName = member.DepartmentName;
+            user.Profile.PositionName = member.PositionName;
         }
 
         /// <summary>
@@ -81,7 +85,7 @@ namespace Feature.Wealth.Account.SingleSignOn
 
             User scUser = MemberUtils.AddOrGetUser(domainName, userName, member.EmployeeCode);
 
-            UpdateToSitecoreProfile(scUser, user);
+            UpdateToSitecoreProfile(scUser.Profile, user.Profile);
             var result = GrantRole(scUser, member);
 
             if (!result.Item1)
@@ -203,26 +207,28 @@ namespace Feature.Wealth.Account.SingleSignOn
             }
         }
 
-        public void UpdateToSitecoreProfile(User scUser, FirstBankUser user)
+        public void UpdateToSitecoreProfile(UserProfile userProfile, FirstBankUserProfile info)
         {
-            var info = user.Profile;
             if (info == null)
             {
                 return;
             }
-            if (string.IsNullOrEmpty(scUser.Profile.Email))
+            if (string.IsNullOrEmpty(userProfile.Email))
             {
-                scUser.Profile.Email = info.EmployeeEmail;
+                userProfile.Email = info.EmployeeEmail;
             }
 
-            scUser.Profile.FullName = info.EmployeeName;
+            userProfile.FullName = info.EmployeeName;
             foreach (var propertyInfo in info.GetProperties())
             {
                 string value = propertyInfo.GetValue(info)?.ToString() ?? string.Empty;
-                scUser.Profile.SetCustomProperty(propertyInfo.Name, value);
+                userProfile.SetCustomProperty(propertyInfo.Name, value);
             }
 
-            scUser.Profile.Save();
+            // Assigning the user profile template
+            userProfile.ProfileItemId = "{8213A692-BFC6-49AE-B834-D6EE7709FD55}";
+
+            userProfile.Save();
         }
     }
 }

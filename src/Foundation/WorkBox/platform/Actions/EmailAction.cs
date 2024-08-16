@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -125,11 +126,14 @@ namespace Foundation.WorkBox.Actions.Workflows
                     return Role.Exists($"{submittedUser.Domain.Name}\\{role}");
                 }).Select(role => Role.FromName($"{submittedUser.Domain.Name}\\{role}"));
 
-
+                var departmentCode = ProcessString(submittedUser.Profile.GetCustomProperty("DepartmentCode"));
                 foreach (var role in roles)
                 {
+                    if (string.IsNullOrEmpty(departmentCode))
+                        continue;
+
                     //僅搜尋直接使用該Role的User
-                    var users = RolesInRolesManager.GetUsersInRole(role, false)?.Where(u => !string.IsNullOrEmpty(u.Profile?.Email));
+                    var users = RolesInRolesManager.GetUsersInRole(role, false)?.Where(u => !string.IsNullOrEmpty(u.Profile?.Email) && ProcessString(u.Profile?.GetCustomProperty("DepartmentCode")) == departmentCode);
                     if (users == null || !users.Any())
                         continue;
 
@@ -258,6 +262,31 @@ namespace Foundation.WorkBox.Actions.Workflows
                         Log.Error($"{GetType().FullName} Error", ex, this);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// H073__D1 信託處信託規劃部　　　　　　　　　　　　　　　　　　　　　　
+        /// H073__D2 信託處專案業務部　　　　　　　　　　　　　　　　　　　　　　
+        /// H072__D1 理財業務處行銷規劃部　　　　　　　　　　　　　　　　　　　　
+        /// H072__D6 理財業務處投資顧問部　　　　　　　　　　　　　　　　　　　　
+        /// H072__D3 理財業務處理財管理部　　　　　　　　　　　　　　　　　　　　
+        /// H079__DB 資訊處新興科技開發部　　　　　　　　　　　　　　　　　　　　
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public string ProcessString(string input)
+        {
+            string pattern = @"^(\w\d{3})\d{2}(\w{2}).*";
+            Match match = Regex.Match(input ?? string.Empty, pattern);
+
+            if (match.Success)
+            {
+                return $"{match.Groups[1].Value}__{match.Groups[2].Value}";
+            }
+            else
+            {
+                return input; // Return original string if it doesn't match the pattern
             }
         }
     }
