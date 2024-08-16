@@ -1163,34 +1163,17 @@ namespace Feature.Wealth.Component.Repositories
         private Dictionary<int?, List<EtfDividendRecord>> GetDividendRecords()
         {
             string sql = """
-                WITH [DividendCTE] AS(
-                	SELECT [FirstBankCode]
-                        ,[ETFCode]
-                        ,[ExDividendDate]
-                        ,[RecordDate]
-                        ,[PaymentDate]
-                        ,[TotalDividendAmount]
-                        ,[DividendFrequency]
-                        ,[ShortTermCapitalGains]
-                        ,[LongTermCapitalGains]
-                        ,[Currency]
-                    FROM [dbo].[Sysjust_Dividend_ETF] WITH (NOLOCK)
-                	UNION
-                	SELECT [FirstBankCode]
-                        ,[ETFCode]
-                        ,[ExDividendDate]
-                        ,[RecordDate]
-                        ,[PaymentDate]
-                        ,[TotalDividendAmount]
-                        ,[DividendFrequency]
-                        ,[ShortTermCapitalGains]
-                        ,[LongTermCapitalGains]
-                        ,[Currency]
-                    FROM [dbo].[Sysjust_Dividend_ETF_History] WITH (NOLOCK)
-                )
-
-                SELECT *
-                FROM [DividendCTE]
+                SELECT [FirstBankCode]
+                    ,[ETFCode]
+                    ,[ExDividendDate]
+                    ,[RecordDate]
+                    ,[PaymentDate]
+                    ,[TotalDividendAmount]
+                    ,[DividendFrequency]
+                    ,[ShortTermCapitalGains]
+                    ,[LongTermCapitalGains]
+                    ,[Currency]
+                FROM [dbo].[Sysjust_Dividend_ETF] WITH (NOLOCK)
                 WHERE [FirstBankCode] = @ETFId
                 ORDER BY [ExDividendDate] DESC
                 """;
