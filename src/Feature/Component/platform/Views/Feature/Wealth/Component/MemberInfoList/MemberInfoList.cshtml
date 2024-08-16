@@ -1,6 +1,6 @@
 ﻿@using Foundation.Wealth.Helper
 @using Feature.Wealth.ScheduleAgent.Models.Mail
-
+@using Feature.Wealth.Account.Helpers;
 
 <div class="c-empty" data-noInfoList>
     <div class="c-empty__img">
@@ -18,7 +18,10 @@
                         <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" id="MailInfoType_criteria">
                             <option value="all">全部通知</option>
                             <option value="@MailInfoTypeEnum.到價通知.ToString()">@MailInfoTypeEnum.到價通知.ToString()</option>
-                            <option value="@MailInfoTypeEnum.理顧預約.ToString()">@MailInfoTypeEnum.理顧預約.ToString()</option>
+                            @if (!string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
+                            {
+                                <option value="@MailInfoTypeEnum.理顧預約.ToString()">@MailInfoTypeEnum.理顧預約.ToString()</option>
+                            }
                             <option value="@MailInfoTypeEnum.優惠活動.ToString()">@MailInfoTypeEnum.優惠活動.ToString()</option>
                             <option value="@MailInfoTypeEnum.週月報.ToString()">@MailInfoTypeEnum.週月報.ToString()</option>
                         </select>

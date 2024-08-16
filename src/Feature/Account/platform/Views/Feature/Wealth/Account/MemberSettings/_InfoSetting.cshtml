@@ -33,21 +33,24 @@
         <div class="c-section__title">Email通知</div>
         <div class="c-section__content">
             <div class="l-flex u-flex-col u-flex-gap-sm">
-                <div class="l-flex__item">
-                    <div class="c-box u-padding-md u-padding-xl@dt-only">
-                        <div class="c-form c-form--setting c-form--hor u-flex-center">
-                            <div class="c-form__title">理財視訊通知</div>
-                            <div class="c-form__content">
-                                <div class="o-switch">
-                                    <input class="o-switch__input" type="checkbox" name="videoCall" id="videoCall"
-                                           @(member.VideoInfoOpen ? "checked" : string.Empty)>
-                                    <label class="o-switch__label" for="videoCall"></label>
-                                    <div class="o-switch__text" data-close="關閉" data-open="已開啟"></div>
+                @if (!string.IsNullOrEmpty(member.WebBankId))
+                {
+                    <div class="l-flex__item">
+                        <div class="c-box u-padding-md u-padding-xl@dt-only">
+                            <div class="c-form c-form--setting c-form--hor u-flex-center">
+                                <div class="c-form__title">理財視訊通知</div>
+                                <div class="c-form__content">
+                                    <div class="o-switch">
+                                        <input class="o-switch__input" type="checkbox" name="videoCall" id="videoCall"
+                                        @(member.VideoInfoOpen ? "checked" : string.Empty)>
+                                        <label class="o-switch__label" for="videoCall"></label>
+                                        <div class="o-switch__text" data-close="關閉" data-open="已開啟"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
                 <div class="l-flex__item">
                     <div class="c-box u-padding-md u-padding-xl@dt-only">
                         <div class="c-form c-form--setting c-form--hor u-flex-center">
