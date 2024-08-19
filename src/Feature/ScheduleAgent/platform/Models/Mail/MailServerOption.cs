@@ -35,7 +35,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Mail
             }
             catch
             {
-                this.Port = 25;
+                this.Port = 587;
             }
             this.UseSSL = useSSL;
             this.User = string.IsNullOrEmpty(user) ? Sitecore.Configuration.Settings.GetSetting("MailServerUserName") : user;

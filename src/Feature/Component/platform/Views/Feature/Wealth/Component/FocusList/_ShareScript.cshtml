@@ -7,7 +7,9 @@
             if (!jQuery) {
                 return;
             }
-
+            let urlParams = new URLSearchParams(window.location.search);
+            let focusId = DOMPurify.sanitize(decodeURIComponent(urlParams.get('id')));
+            let ehTag = '[eh-info-id="' + focusId.toUpperCase() + '"]';
             function loading() {
                 window.loading('show');
                 setTimeout(() => {
@@ -69,7 +71,18 @@
                             $('[eh-tracklist-info]', '#fundTable').interactive();
                             $('[eh-tracklist-focus]', '#fundTable').off('click.interactive');
                             $('[eh-tracklist-info]', '#fundTable').off('click.interactive');
-
+                            if (focusId != null) {
+                                if ($(ehTag, '#fundTable').length) {
+                                    $('[data-tab-panel-id="tab-1-1"]').addClass('is-active');
+                                    $('[data-tab-target="tab-1-1"]').addClass('is-active');
+                                    $('[data-tab-panel-id="tab-1-2"]').removeClass('is-active');
+                                    $('[data-tab-target="tab-1-2"]').removeClass('is-active');
+                                    $('[data-tab-panel-id="tab-1-3"]').removeClass('is-active');
+                                    $('[data-tab-target="tab-1-3"]').removeClass('is-active');
+                                    $(ehTag).trigger('click');
+                                    focusId = null;
+                                }
+                            }
                         }
                     },
                     order: {
@@ -265,6 +278,18 @@
                             $('[eh-tracklist-info]', '#etfTable').interactive();
                             $('[eh-tracklist-focus]', '#etfTable').off('click.interactive');
                             $('[eh-tracklist-info]', '#etfTable').off('click.interactive');
+                            if (focusId != null) {
+                                if ($(ehTag, '#etfTable').length) {
+                                    $('[data-tab-panel-id="tab-1-1"]').removeClass('is-active');
+                                    $('[data-tab-target="tab-1-1"]').removeClass('is-active');
+                                    $('[data-tab-panel-id="tab-1-2"]').addClass('is-active');
+                                    $('[data-tab-target="tab-1-2"]').addClass('is-active');
+                                    $('[data-tab-panel-id="tab-1-3"]').removeClass('is-active');
+                                    $('[data-tab-target="tab-1-3"]').removeClass('is-active');
+                                    $(ehTag).trigger('click');
+                                    focusId = null;
+                                }
+                            }
                         }
                     },
                     order: {
@@ -461,6 +486,18 @@
                             $('[eh-tracklist-info]', '#foreignStockTable').interactive();
                             $('[eh-tracklist-focus]', '#foreignStockTable').off('click.interactive');
                             $('[eh-tracklist-info]', '#foreignStockTable').off('click.interactive');
+                            if (focusId != null) {
+                                if ($(ehTag, '#foreignStockTable').length) {
+                                    $('[data-tab-panel-id="tab-1-1"]').removeClass('is-active');
+                                    $('[data-tab-target="tab-1-1"]').removeClass('is-active');
+                                    $('[data-tab-panel-id="tab-1-2"]').removeClass('is-active');
+                                    $('[data-tab-target="tab-1-2"]').removeClass('is-active');
+                                    $('[data-tab-panel-id="tab-1-3"]').addClass('is-active');
+                                    $('[data-tab-target="tab-1-3"]').addClass('is-active');
+                                    $(ehTag).trigger('click');
+                                    focusId = null;
+                                }
+                            }
                         }
                     },
                     order: {
@@ -848,7 +885,6 @@
                 });
             })
             // #endregion 共用
-
         });
     })(jQuery, window, document);
 </script>

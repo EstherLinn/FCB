@@ -13,19 +13,15 @@ using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Sitecore.Data;
 using Sitecore.Globalization;
 using Sitecore.Data.Items;
+using FluentFTP.Helpers;
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
 {
     public class MailRepository : IMailInfo<MemebrReachInfo>, IMailRecord<MailRecord>
     {
         private readonly ILoggerService _logger;
-        private readonly ID fundRelatedRoot = new ID("{0FC0B4B7-AB28-4C66-91A5-C9A7A45A5499}");
-        private readonly ID fundDetailsLinkField = new ID("{E9D1628F-C48D-4353-8526-FEDAB06A8050}");
-        private readonly ID etfRelatedRoot = new ID("{7E546D5C-6D92-451B-8E56-D45AE14DDEE8}");
-        private readonly ID etfDetailsLinkField = new ID("{E0FA77EF-C5E8-4B8D-A6C7-3A149F729CF7}");
-        private readonly ID usStockRelatedRoot = new ID("{B6913A88-4FC4-48C2-8BAF-1350C93E8A5A}");
-        private readonly ID usStockDetailsLinkField = new ID("{93D8E15F-8DD2-49D5-9858-990673212E5A}");
-
+        private readonly ID memberRelatedRoot = new ID("{1D504FEF-3A5D-41A5-AFFF-96555715C615}");
+        private readonly ID focusListLink = new ID("{4DD89F12-BD12-4B73-9001-1231EFB8078C}");
         public MailRepository(ILoggerService logger)
         {
             this._logger = logger;
@@ -44,7 +40,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             DbManager.Custom.ExecuteNonQuery(sql, mailRecords, CommandType.Text);
         }
 
-        public void SendMail(IEnumerable<MemebrReachInfo> memebrReachInfos,Item settings)
+        public void SendMail(IEnumerable<MemebrReachInfo> memebrReachInfos, Item settings)
         {
             if (memebrReachInfos == null || !memebrReachInfos.Any())
             {
@@ -56,16 +52,12 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var homeUrl = $"https://";
             var cdHostName = Settings.GetSetting("CDHostName");
             homeUrl += cdHostName;
-            string fundDetailsUrl, etfDetailsUrl, usStockDetailsUrl;
+            string focusUrl;
             using (new LanguageSwitcher("zh-TW"))
             {
                 Database db = Database.GetDatabase("web");
-                fundDetailsUrl = ItemUtils.GeneralLink(db.GetItem(fundRelatedRoot), fundDetailsLinkField)?.Url;
-                etfDetailsUrl = ItemUtils.GeneralLink(db.GetItem(etfRelatedRoot), etfDetailsLinkField)?.Url;
-                usStockDetailsUrl = ItemUtils.GeneralLink(db.GetItem(usStockRelatedRoot), usStockDetailsLinkField)?.Url;
-                fundDetailsUrl = new Uri(fundDetailsUrl).AbsolutePath.ToString();
-                etfDetailsUrl = new Uri(etfDetailsUrl).AbsolutePath.ToString();
-                usStockDetailsUrl = new Uri(usStockDetailsUrl).AbsolutePath.ToString();
+                focusUrl = ItemUtils.GeneralLink(db.GetItem(memberRelatedRoot), focusListLink)?.Url;
+                focusUrl = new Uri(focusUrl).AbsolutePath.ToString();
             }
             foreach (var group in groupByMember)
             {
@@ -96,7 +88,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                 PlatFormId = item.PlatFormId,
                                 InfoDateTime = DateTime.Now,
                                 InfoContent = string.Format("{0}已達到您設定的目標價格囉 !", item.ProductName),
-                                InfoLink = string.Format("{0}?id={1}", fundDetailsUrl, item.InvestId),
+                                InfoLink = string.Format("{0}?id={1}", focusUrl, item.InvestId),
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
@@ -123,22 +115,12 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         if ((item.PriceValue < item.ReachValue && item.NewestValue >= item.ReachValue) || (item.PriceValue > item.ReachValue && item.NewestValue <= item.ReachValue))
                         {
                             sb.Append(string.Format("<p>截至{0}(收盤價基準日)止，您關注的「<span style='color:red;'> {1} </span>」收盤價已達到您設定的目標價格{2}，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestId + item.ProductName, item.ReachValue));
-                            var detailsUrl = string.Empty;
-                            switch (item.InvestType.ToLower())
-                            {
-                                case "etf":
-                                    detailsUrl = etfDetailsUrl;
-                                    break;
-                                case "foreignstocks":
-                                    detailsUrl = usStockDetailsUrl;
-                                    break;
-                            }
                             mailRecords.Add(new MailRecord
                             {
                                 PlatFormId = item.PlatFormId,
                                 InfoDateTime = DateTime.Now,
                                 InfoContent = string.Format("{0} 收盤價已達到您設定的目標價格囉 !", item.ProductName),
-                                InfoLink = string.Format("{0}?id={1}", detailsUrl, item.InvestId),
+                                InfoLink = string.Format("{0}?id={1}", focusUrl, item.InvestId),
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
@@ -165,25 +147,12 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         if (item.NewestValue >= item.RiseValue)
                         {
                             sb.Append(string.Format("<p>截至{0}({1}基準日)止，您關注的「<span style='color:red;'> {2} </span>」漲幅達{3}%，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestType.ToLower() == "fund" ? "淨值" : "收盤價", item.InvestId + item.ProductName, item.RisePercent));
-                            var detailsUrl = string.Empty;
-                            switch (item.InvestType.ToLower())
-                            {
-                                case "fund":
-                                    detailsUrl = fundDetailsUrl;
-                                    break;
-                                case "etf":
-                                    detailsUrl = etfDetailsUrl;
-                                    break;
-                                case "foreignstocks":
-                                    detailsUrl = usStockDetailsUrl;
-                                    break;
-                            }
                             mailRecords.Add(new MailRecord
                             {
                                 PlatFormId = item.PlatFormId,
                                 InfoDateTime = DateTime.Now,
                                 InfoContent = string.Format("{0}已達您設定的漲幅囉！", item.ProductName),
-                                InfoLink = string.Format("{0}?id={1}", detailsUrl, item.InvestId),
+                                InfoLink = string.Format("{0}?id={1}", focusUrl, item.InvestId),
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
@@ -210,25 +179,12 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         if (item.NewestValue <= item.FallValue)
                         {
                             sb.Append(string.Format("<p>截至{0}({1}基準日)止，您關注的「<span style='color:red;'> {2} </span>」跌幅達{3}%，若欲調整相關通知，請登入第e理財進行操作，感謝您的配合，謝謝</p>", item.NewestDate, item.InvestType.ToLower() == "fund" ? "淨值" : "收盤價", item.InvestId + item.ProductName, item.FallPercent));
-                            var detailsUrl = string.Empty;
-                            switch (item.InvestType.ToLower())
-                            {
-                                case "fund":
-                                    detailsUrl = fundDetailsUrl;
-                                    break;
-                                case "etf":
-                                    detailsUrl = etfDetailsUrl;
-                                    break;
-                                case "foreignstocks":
-                                    detailsUrl = usStockDetailsUrl;
-                                    break;
-                            }
                             mailRecords.Add(new MailRecord
                             {
                                 PlatFormId = item.PlatFormId,
                                 InfoDateTime = DateTime.Now,
                                 InfoContent = string.Format("{0}已達您設定的跌幅囉！", item.ProductName),
-                                InfoLink = string.Format("{0}?id={1}", detailsUrl, item.InvestId),
+                                InfoLink = string.Format("{0}?id={1}", focusUrl, item.InvestId),
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
@@ -267,14 +223,31 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                     message.To.Add(item.MailTo);
                                     message.Subject = item.Topic;
                                     message.Body = item.Content;
-                                    //add EnableSsl
-                                    client.EnableSsl = Sitecore.MainUtil.GetBool(Settings.GetSetting("MailServerUseSsl"), true);
                                     client.Send(message);
                                     _logger.Error($"到價通知Mail發送To:{item.MailTo}");
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logger.Error($"到價通知Mail發送失敗:{ex.Message}");
+                                    _logger.Error($"到價通知Mail發送失敗:{ex.ToString}");
+                                    //發信有問題，不記錄到table
+                                    string[] topicWord = ["收盤價", "漲幅", "跌幅"];
+                                    if (item.Topic.Contains("基金商品最新淨值"))
+                                    {
+                                        mailRecords.RemoveAll(x => !x.InfoContent.ContainsAny(topicWord));
+                                    }
+                                    else if (item.Topic.Contains("ETF/國外股票"))
+                                    {
+                                        mailRecords.RemoveAll(x => x.InfoContent.Contains("收盤價"));
+                                    }
+                                    else if (item.Topic.Contains("漲幅"))
+                                    {
+                                        mailRecords.RemoveAll(x => x.InfoContent.Contains("漲幅"));
+
+                                    }
+                                    else if (item.Topic.Contains("跌幅"))
+                                    {
+                                        mailRecords.RemoveAll(x => x.InfoContent.Contains("跌幅"));
+                                    }
                                 }
                             }
                         }

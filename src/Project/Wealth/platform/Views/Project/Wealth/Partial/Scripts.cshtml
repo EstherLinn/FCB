@@ -34,6 +34,27 @@
                 //設置成功
             },
         })
+        $.ajax({
+            type: "post",
+            url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
+            data: { "block": true },
+            success: function (msg) {
+                if (msg)
+                {
+                    //被阻擋回首頁彈窗登入
+                    let url = new URL(msg.url);
+                    let isMemberHome = url.pathname.toLowerCase().includes('member-home');
+                    if (isMemberHome && !isLogin) {
+                        $.magnificPopup.open({
+                            items: {
+                                src: '#popupLogin'
+                            },
+                            type: 'inline'
+                        });
+                    }
+                }
+            },
+        })
         if (isLogin) {
             let url = new URL(location.href);
             let isMemberHome = url.pathname.toLowerCase().includes('member-home');
