@@ -1,4 +1,7 @@
 ﻿using Feature.Wealth.Account.Helpers;
+using Foundation.Wealth.Helper;
+using Sitecore.Web;
+using System;
 using System.Web.Mvc;
 using System.Web.Mvc.Filters;
 namespace Feature.Wealth.Account.Filter
@@ -10,6 +13,12 @@ namespace Feature.Wealth.Account.Filter
             if (!FcbMemberHelper.CheckMemberLogin())
             {
                 filterContext.Result = new HttpUnauthorizedResult();
+                if (!filterContext.HttpContext.Request.IsAjaxRequest())
+                {
+                    var domain = string.IsNullOrEmpty(Sitecore.Context.Site.TargetHostName) ? filterContext.HttpContext.Request.Url.Host : Sitecore.Context.Site.TargetHostName;
+                    var url = filterContext.HttpContext.Request.RawUrl;
+                    filterContext.HttpContext.Response.SetSameSiteCookie("BlockUrl", $"https://{domain}{url}");
+                }
             }
         }
         public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)

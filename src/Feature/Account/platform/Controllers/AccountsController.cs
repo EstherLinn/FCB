@@ -120,7 +120,7 @@ namespace Feature.Wealth.Account.Controllers
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
 
-        public async Task<ActionResult> SignInWebBank()
+        public ActionResult SignInWebBank()
         {
             string step = string.Empty;
             try
@@ -147,34 +147,35 @@ namespace Feature.Wealth.Account.Controllers
                         _cache.Remove(txReqId);
                         if (!string.IsNullOrEmpty(id))
                         {
-                            step = "Step1 apppay導轉回理財網　開始判斷為第三方登入綁網銀或是網銀登入";
+                            step = "Step1 apppay導轉回理財網　開始判斷網銀登入";
+                            //step = "Step1 apppay導轉回理財網　開始判斷為第三方登入綁網銀或是網銀登入";
                             //判斷為綁定網銀或是網銀登入
-                            if (FcbMemberHelper.CheckMemberLogin())
-                            {
-                                step = "Step2 第三方登入綁定網銀，取得理財網db cif資料";
-                                //第三方綁定網銀
-                                var cifMember = _memberRepository.GetWebBankUserInfo(id);
-                                if (cifMember == null)
-                                {
-                                    step = "Step3-3 第三方登入綁定網銀 cifMember:null";
-                                    Session["LoginStatus"] = false;
-                                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
-                                }
-                                var isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), cifMember.CIF_PROMO_CODE);
-                                if (isBind)
-                                {
-                                    step = "Step4 第三方登入綁定網銀 SetWebBankId";
-                                    //成功綁定
-                                    RefreshMemberInfo();
-                                }
-                                else
-                                {
-                                    step = "Step4 第三方登入綁定網銀 error";
-                                }
-                            }
-                            else
-                            {
-                                step = "Step2 第e個網登入";
+                            //if (FcbMemberHelper.CheckMemberLogin())
+                            //{
+                            //    step = "Step2 第三方登入綁定網銀，取得理財網db cif資料";
+                            //    //第三方綁定網銀
+                            //    var cifMember = _memberRepository.GetWebBankUserInfo(id);
+                            //    if (cifMember == null)
+                            //    {
+                            //        step = "Step3-3 第三方登入綁定網銀 cifMember:null";
+                            //        Session["LoginStatus"] = false;
+                            //        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                            //    }
+                            //    var isBind = _memberRepository.BindWebBank(FcbMemberHelper.GetMemberPlatForm(), FcbMemberHelper.GetMemberPlatFormId(), cifMember.CIF_PROMO_CODE);
+                            //    if (isBind)
+                            //    {
+                            //        step = "Step4 第三方登入綁定網銀 SetWebBankId";
+                            //        //成功綁定
+                            //        RefreshMemberInfo();
+                            //    }
+                            //    else
+                            //    {
+                            //        step = "Step4 第三方登入綁定網銀 error";
+                            //    }
+                            //}
+                            //else
+                            //{
+                            step = "Step2 第e個網登入";
                                 //網銀登入
                                 var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, id);
                                 if (!isExist)
@@ -212,7 +213,7 @@ namespace Feature.Wealth.Account.Controllers
                                     User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
                                     SetCustomPropertyAndLogin(member, user);
                                 }
-                            }
+                            //}
                         }
                         else
                         {
@@ -245,7 +246,7 @@ namespace Feature.Wealth.Account.Controllers
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
 
-        public async Task<ActionResult> SignInWebBankByApp()
+        public ActionResult SignInWebBankByApp()
         {
             //防止網銀身分重複登入
             if (FcbMemberHelper.CheckMemberLogin() && FcbMemberHelper.GetMemberPlatForm() == PlatFormEunm.WebBank)
@@ -405,11 +406,20 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetUrlCookie()
+        public ActionResult GetUrlCookie(bool block = false)
         {
+            var url = WebUtil.GetCookieValue("ReturnUrl");
+            if (!string.IsNullOrEmpty(WebUtil.GetCookieValue("BlockUrl")))
+            {
+                url = WebUtil.GetCookieValue("BlockUrl");
+                if (!block)
+                {
+                    this.Response.Cookies["BlockUrl"].Expires = DateTime.Now.AddDays(-1);
+                }
+            }
             object objReturn = new
             {
-                url = WebUtil.GetCookieValue("ReturnUrl")
+                url
             };
             return new JsonNetResult(objReturn);
         }
