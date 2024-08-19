@@ -1728,16 +1728,19 @@
                                         let result = compareParams.find((item) => item.id == key);
                                         const navDate = data.respNetAssetValue[key].resultSet.result[0].v1.split(',');
                                         const nav = data.respNetAssetValue[key].resultSet.result[0].v5.split(',');
-                                        let startPoint = roundTo(nav[0], 2);
+                                        let startPoint = null;
                                         let lastData = null;
                                         mapData.push({
                                             id: key,
                                             name: result.name,
                                             data: navDate.map((date, i) => {
                                                 let current = roundTo(nav[i], 2);
-                                                if (startPoint === undefined || current === undefined || dataRange(date,params)) {
+                                                if (current === undefined || dataRange(date, params)) {
                                                     return false;
                                                 }
+                                                if (startPoint === null) {
+                                                    startPoint = current;
+     #                                          }
                                                 let extent = current - startPoint;
                                                 lastData = {
                                                     upDown: extent < 0 ? 'down' : 'up',
