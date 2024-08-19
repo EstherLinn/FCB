@@ -158,7 +158,7 @@ namespace Foundation.WorkBox.Actions.Workflows
                 var encoding = Encoding.UTF8;
                 using (MailMessage message = new MailMessage()
                 {
-                    From = new MailAddress(sender, string.IsNullOrEmpty(this.InnerItem["DisplayName"]) ? "【理財網通知】" : this.InnerItem["DisplayName"]),
+                    From = new MailAddress(sender, string.IsNullOrEmpty(this.InnerItem["DisplayName"]) ? "【第一銀行第e理財網】" : this.InnerItem["DisplayName"]),
                     IsBodyHtml = true,
                     HeadersEncoding = encoding,
                     BodyEncoding = encoding,
@@ -190,7 +190,7 @@ namespace Foundation.WorkBox.Actions.Workflows
                         StringBuilder sb = new StringBuilder();
                         var currentRequestUrl = HttpContext.Current.Request.Url;
                         sb.AppendLine(body);
-                        subject += " 您有" + statusName + "的" + deleteTag + "項目： " + displayName + "，請登入理財網後台" + ((state.StateID == REVIEW) ? "確認" : "處理") + "。";
+                        subject += " 您有" + statusName + "的" + deleteTag + "項目： " + displayName + "，請登入第e理財網後台" + ((state.StateID == REVIEW) ? "確認" : "處理") + "。";
                         sb.Append("<br/>");
 
                         var workboxUrlString = new UrlString($"{currentRequestUrl.Scheme}://{currentRequestUrl.DnsSafeHost}/sitecore/shell/Applications/Workbox.aspx");
