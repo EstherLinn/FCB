@@ -2007,10 +2007,10 @@
 						onFilterSelect: function (obj) {
 							if (obj.criteria.type === 'range') {
 								if (obj.values[0] !== obj.values[0]) {
-									obj.values[0] = -99999;
+									obj.values[0] = -99999999999;
 								}
 								if (obj.values[1] !== obj.values[1]) {
-									obj.values[1] = 99999;
+									obj.values[1] = 9999999999;
 								}
 							}
 						},
