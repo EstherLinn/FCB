@@ -3,7 +3,7 @@ using Feature.Wealth.Component.Repositories;
 using Sitecore.Mvc.Presentation;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
-
+ 
 namespace Feature.Wealth.Component.Controllers
 {
     public class SearchBarController : Controller
@@ -16,6 +16,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetSearchResult() => new JsonNetResult(_searchRepository.GetResultList());
     }
 }
