@@ -44,7 +44,7 @@ namespace Feature.Wealth.Account.SingleSignOn
         private void SetUserProfile(FirstBankUser user, Employee member)
         {
             string mailCode = Regex.Replace(member.EmployeeCode.TrimStart('0'), ".$", string.Empty);
-            user.Profile.EmployeeEmail = "i" + mailCode + "@firstbank.com.tw";
+            user.Profile.EmployeeEmail = "i" + mailCode.PadLeft(5, '0') + "@firstbank.com.tw";
             user.Profile.EmployeeName = member.EmployeeName;
             user.Profile.DepartmentCode = member.DepartmentCode;
             user.Profile.DepartmentName = member.DepartmentName;
