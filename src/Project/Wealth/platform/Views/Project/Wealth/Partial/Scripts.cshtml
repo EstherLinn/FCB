@@ -624,6 +624,7 @@
             } else {
                 $("#popupAlert").find('[data-set-title]').text('最新淨值');
             }
+            //預設初始值
             $("#popupAlert").find('[data-title]').data('id', $(self).closest("tr").find('[data-id]').data('id'));
             $("#popupAlert").find('[data-title]')[0].setAttribute("href", url);
             $("#popupAlert").find('[data-pricevalue]').data('pricevalue', $(self).closest("tr").find('[data-pricevalue]').data('pricevalue'));
@@ -648,7 +649,7 @@
             $("#popupAlert").find('[data-alert-fall]').val('');
             $("#popupAlert").find('[data-count-input]').val(0);
             $("#popupAlert").find('.c-count__text').text(0);
-
+            //根據有無設定過給值
             $.ajax({
                 type: "post",
                 url: "@ClientRoute.GenerateUrl(this, "FocusList", "GetProductReachInfo")",
@@ -661,8 +662,12 @@
                             let endDate = '';
                             switch (item.infoType) {
                                 case "1":
-                                    $('input[name="price"]').prop("checked", item.openInfo)
-                                    $("#popupAlert").find('[data-alert-price]').val(item.reachValue)
+                                    $('input[name="price"]').prop("checked", item.openInfo);
+                                    $("#popupAlert").find('[data-alert-price]').val(item.reachValue);
+                                    let pvalue = $("#popupAlert").find('[data-pricevalue]').data('pricevalue');
+                                    window.triggerType = '';
+                                    window.percent = ((item.reachValue - pvalue) / pvalue) * 100;
+                                    window.percent = window.percent.toFixed(2);
                                     $('[data-count-input]').trigger('change.count');
                                     startDate = item.infoStartDate.split('T')[0].replaceAll('-', '/');
                                     endDate = item.infoEndDate.split('T')[0].replaceAll('-', '/');

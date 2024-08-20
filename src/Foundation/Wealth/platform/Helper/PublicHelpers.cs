@@ -157,7 +157,7 @@ namespace Foundation.Wealth.Helper
             builder.MergeAttribute("eh-info-id", id);
             builder.MergeAttribute("eh-info-name ", name);
             builder.MergeAttribute("data-eh", "info-init,info-click");
-            builder.MergeAttribute("data-msg", "加入通知|取消通知");
+            builder.MergeAttribute("data-msg", "通知設定|通知設定");
             builder.MergeAttribute("data-ia", "true");
             builder.MergeAttribute("data-ia-toast", "false");
             builder.MergeAttribute("data-popup", "true");
