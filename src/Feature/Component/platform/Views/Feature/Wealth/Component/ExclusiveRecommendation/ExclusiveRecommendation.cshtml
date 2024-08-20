@@ -23,8 +23,8 @@
                                 <p class="c-feature__desc">@Model.SubTitle</p>
                             </div>
                             <div class="c-feature__plate">
-                                <img class="u-hidden@lt" src="@Model.ImagePCUrl" srcset="@(Model.ImagePC3xUrl + " 3x")" alt="第一銀行 投資週/月報">
-                                <img class="u-hidden@dt-only" src="@Model.ImageMobileUrl" srcset="@(Model.ImageMobile3xUrl + " 3x")" alt="第一銀行 投資週/月報">
+                                <img class="u-hidden@lt" src="@Model.ImagePCUrl" alt="第一銀行 投資週/月報">
+                                <img class="u-hidden@dt-only" src="@Model.ImageMobileUrl" alt="第一銀行 投資週/月報">
                             </div>
                         </div>
                     </div>
@@ -343,7 +343,7 @@ else
     @* 第三方登入隱藏tab *@
     <div class="c-section" data-exclusive></div>
     <script>
-        let panelId = $('[data-exclusive]').parent().attr('data-tab-panel-id');
-        $('.c-tab__navs').find('[data-tab-target=' + panelId + ']').parent().remove();
+        let panelId_exclusive = $('[data-exclusive]').parent().attr('data-tab-panel-id');
+        $('.c-tab__navs').find('[data-tab-target=' + panelId_exclusive + ']').parent().remove();
     </script>
 }
