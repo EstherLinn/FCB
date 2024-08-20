@@ -3592,10 +3592,11 @@
                 const $swiperWrapper = event;
                 $swiperWrapper.empty();
                 let fundHTML = '';
-                let SubscribeButtonHtml = '';
                 let style1, style2, style3;
 
                 fundData.forEach((fund, index) => {
+                    let SubscribeButtonHtml = '';
+
                     if (fund.OneMonthReturnOriginalCurrency > 0) {
                         style1 = "t-rise";
                         style2 = "o-rise o-rise--sm";
@@ -3713,10 +3714,11 @@
                 const $swiperWrapper = eventEtf;
                 $swiperWrapper.empty();
                 let EtfHTML = '';
-                let SubscribeButtonHtml = '';
                 let style1, style2, style3;
 
                 EtfData.forEach((Etf, index) => {
+                    let SubscribeButtonHtml = '';
+
                     if (Etf.MonthlyReturnNetValueOriginalCurrency > 0) {
                         style1 = "t-rise";
                         style2 = "o-rise o-rise--sm";

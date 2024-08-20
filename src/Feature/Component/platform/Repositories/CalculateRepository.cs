@@ -185,14 +185,14 @@ namespace Feature.Wealth.Component.Repositories
             if (string.IsNullOrEmpty(ExpectedRoi))
             {
                 FundDataSql = @$"
-                 SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency]
+                 SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
                  ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] DESC";
             }
             else
             {
                 FundDataSql = @$"
-                 SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency]
+                 SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
                  WHERE [OneYearReturnOriginalCurrency] >= '{ExpectedRoi}'
                  ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] DESC";
@@ -208,7 +208,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var allRecommendedProductCodesSql = string.Join(", ", ProductFundIDs.Select(pc => $"'{pc}'"));
                 string allRecommendedDataSql = @$"
-                 SELECT [ProductCode], [FundName], [OneMonthReturnOriginalCurrency]
+                 SELECT [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
                  WHERE [ProductCode] IN ({allRecommendedProductCodesSql})";
 
@@ -279,7 +279,7 @@ namespace Feature.Wealth.Component.Repositories
             if (string.IsNullOrEmpty(ExpectedRoi))
             {
                 EtfDataSql = @$"
-                 SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency]
+                 SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicETF]
                  WHERE [RiskLevel] IN ({RiskLevel})
                  ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] DESC";
@@ -287,7 +287,7 @@ namespace Feature.Wealth.Component.Repositories
             else
             {
                 EtfDataSql = @$"
-                 SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency]
+                 SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicETF]
                  WHERE [OneYearReturnMarketPriceOriginalCurrency] >= '{ExpectedRoi}' AND [RiskLevel] IN ({RiskLevel})
                  ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] DESC";
@@ -297,7 +297,7 @@ namespace Feature.Wealth.Component.Repositories
             if (EtfData.Count < 3)
             {
                 EtfDataSql = @$"
-                 SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency]
+                 SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicETF]
                  ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] DESC";
 
