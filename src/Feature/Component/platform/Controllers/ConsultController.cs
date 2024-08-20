@@ -220,8 +220,10 @@ namespace Feature.Wealth.Component.Controllers
             reserveds.Add(new Reserved { Date = "2024-06-12", StartTime = "14:30", EndTime = "15:00" });
 
             // 把對應理顧已預約時間加入已佔用時間
-            var temp = consultScheduleList.Where(c => c.EmployeeID.ToLower() == FcbMemberHelper.GetMemberAllInfo().AdvisrorID.ToLower() && c.StatusCode != "3"
-            && DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0);
+            var employeeID = string.IsNullOrEmpty(info.AdvisrorID) ? string.Empty : info.AdvisrorID.ToLower();
+            var temp = consultScheduleList.Where(
+                c => c.EmployeeID.ToLower() == employeeID && c.StatusCode != "3" && DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0
+                );
 
             if (temp != null && temp.Any())
             {
