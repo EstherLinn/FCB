@@ -1498,6 +1498,7 @@
     (function ($, window, document, undefined) {
         document.addEventListener("DOMContentLoaded", function () {
             var resultHasGap;
+            var Risk = SC_DATA.Risk !== undefined ? SC_DATA.Risk.toString() : undefined;
             var description, readingbar = [], earningsChart = [], chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [], chartsAssets = [];
             var hasRenderedRecommendations = false;
             var lockImg = "/themes/images/icons/others/lock.svg"
@@ -1750,7 +1751,7 @@
                     } else {
                         SetSessionVal(Target, Years, Prepared, Monthly, ExpectedRoi);
                     }
-                    
+
                     $("#TargetRemark").val(Target);
                     $("#EstimateYearRemark").val(Years);
                     $("#PreparedRemark").val(Prepared);
@@ -1799,11 +1800,11 @@
                         $(".tab4Btn").addClass("u-hidden");
                         $(".tab5Btn").removeClass("u-hidden");
 
-                        if (SC_DATA.Risk == '1') {
+                        if (Risk == '1') {
                             defaultRiskAttributes = 2;
-                        } else if (SC_DATA.Risk == '2') {
+                        } else if (Risk == '2') {
                             defaultRiskAttributes = 5;
-                        } else if (SC_DATA.Risk == '3') {
+                        } else if (Risk == '3') {
                             defaultRiskAttributes = 7;
                         }
 
@@ -1834,7 +1835,7 @@
                     }
                     else {
                         $("#consultsuccessful").removeClass("u-hidden");
-                    }                  
+                    }
                 }
             });
             //#endregion
@@ -2102,7 +2103,7 @@
                             }, 100);
 
                             UpdateRiskAttributesContent(data.risk);
-
+                            Risk = data.risk;
                             $("#CalculateRemark").trigger('click');
                         } else {
                             setTimeout(function (e) {
@@ -2143,9 +2144,9 @@
             //#region 登入遮罩判斷&依照客戶風險屬性給值
             if (SC_DATA.IsLoggedIn) {
                 if (SC_DATA.WebBankId !== "") {
-                    if (SC_DATA.Risk !== undefined) {
+                    if (Risk !== undefined) {
 
-                        UpdateRiskAttributesContent(SC_DATA.Risk);
+                        UpdateRiskAttributesContent(Risk);
 
                     } else {
                         renderNotRisk();
@@ -2507,7 +2508,7 @@
                     stock: assetsData.stock.number
                 });
 
-                if (SC_DATA.Risk !== undefined) {
+                if (Risk !== undefined) {
                     let tab = "tab1";
                     let event = $('[data-tab-panel-id="tab-1"] .recommendedFunds .swiper-wrapper');
                     let eventString = '[data-tab-panel-id="tab-1"] .recommendedFunds';
@@ -2592,7 +2593,7 @@
                     stock: assetsData.stock.number
                 });
 
-                if (SC_DATA.Risk !== undefined) {
+                if (Risk !== undefined) {
                     let tab = "tab2";
 
                     let event = $('[data-tab-panel-id="tab-2"] .recommendedFunds .swiper-wrapper');
@@ -2666,7 +2667,7 @@
                     stock: assetsData.stock.number
                 });
 
-                if (SC_DATA.Risk !== undefined) {
+                if (Risk !== undefined) {
                     let tab = "tab3";
 
                     let event = $('[data-tab-panel-id="tab-3"] .recommendedFunds .swiper-wrapper');
@@ -2739,7 +2740,7 @@
                     stock: assetsData.stock.number
                 });
 
-                if (SC_DATA.Risk !== undefined) {
+                if (Risk !== undefined) {
                     let tab = "tab4";
 
                     let event = $('[data-tab-panel-id="tab-4"] .recommendedFunds .swiper-wrapper');
@@ -2812,7 +2813,7 @@
                     stock: assetsData.stock.number
                 });
 
-                if (SC_DATA.Risk !== undefined) {
+                if (Risk !== undefined) {
                     let tab = "tab5";
 
                     let event = $('[data-tab-panel-id="tab-5"] .recommendedFunds .swiper-wrapper');
@@ -3380,7 +3381,6 @@
 
             //#region 更新風險屬性相關內容
             function UpdateRiskAttributesContent(risk) {
-                risk = String(risk);
                 let imgSrc, warningText;
 
                 switch (risk) {
@@ -3464,11 +3464,11 @@
                     expectedRoi = ExpectedRoi;
                 }
 
-                if (SC_DATA.Risk == '1') {
+                if (Risk == '1') {
                     riskLevel = "'RR1','RR2'";
-                } else if (SC_DATA.Risk == '2') {
+                } else if (Risk == '2') {
                     riskLevel = "'RR1','RR2','RR3','RR4'";
-                } else if (SC_DATA.Risk == '3') {
+                } else if (Risk == '3') {
                     riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
                 }
 
