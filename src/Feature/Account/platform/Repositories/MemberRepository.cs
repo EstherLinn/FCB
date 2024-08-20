@@ -747,7 +747,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             string id = string.Empty;
             var strSql = @$" Declare @@promotionCode varchar(24) = @promotionCode
-                             SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE = @promotionCode";
+                             SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE　COLLATE Latin1_General_CS_AS = @@promotionCode";
 
             var para = new
             {
@@ -846,7 +846,7 @@ namespace Feature.Wealth.Account.Repositories
             try
             {
                 string sqlStr = @$"declare @@id VARCHAR(33) =@id,@@risk varchar(30) = @risk
-                                   update [CIF] set CIF_AO_EMPNO =@risk where [CIF_ID] = @id ";
+                                   update [CIF] set CIF_EMP_RISK =@@risk where [CIF_ID] = @@id ";
                 var para = new
                 {
                     id = new DbString() { Value = id, Length = 33 },
