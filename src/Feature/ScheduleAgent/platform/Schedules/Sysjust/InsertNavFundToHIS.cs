@@ -25,7 +25,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     try
                     {
                         var basic = await etlService.ParseCsv<SysjustNavFundToHis>(filename);
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_FUNDNAV_HIS]", "FirstBankCode", "Date", filename);
+                        _repository.BulkInsertToDatabaseForHIS(basic, "[Sysjust_FUNDNAV_HIS]", "FirstBankCode", "Date", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
