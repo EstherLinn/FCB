@@ -242,7 +242,7 @@ namespace Feature.Wealth.Component.Repositories
                     (item.OnlineSubscriptionAvailability == "Y" ||
                     string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
                 {
-                    item.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, item.ProductCode, InvestTypeEnum.Fund, false).ToString();
+                    item.SubscribeButtonHtml = PublicHelpers.SubscriptionButtonForCard(null, null, item.ProductCode, InvestTypeEnum.Fund).ToString();
                 }
                 else
                 {
