@@ -23,9 +23,11 @@
         if (SC_DATA.IsLoggedIn) {
             isLogin = true;
         }
+
         if (SC_DATA.IsGlobalStyle) {
             $('html').addClass('is-globalization');
         }
+
         $.ajax({
             type: "post",
             url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
@@ -34,6 +36,7 @@
                 //設置成功
             },
         })
+
         $.ajax({
             type: "post",
             url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
@@ -55,6 +58,7 @@
                 }
             },
         })
+
         if (isLogin) {
             let url = new URL(location.href);
             let isMemberHome = url.pathname.toLowerCase().includes('member-home');
@@ -69,8 +73,10 @@
                 })
             }
         }
+
         const tabIdentifier = Date.now().toString();
         const storageKey = 'tabs' + new Date().toISOString().split('T')[0];
+
         //載入頁面時加一個tab戳記
         ['DOMContentLoaded'].forEach(function (event) {
             window.addEventListener(event, function (e) {
@@ -108,11 +114,13 @@
             this.type = type;
             this.name = name;
         }
+
         window.FocsuObj = function (id, type) {
             this.id = id;
             this.type = type;
             this.trackDate = getNowDate();
         }
+
         window.checkItemExists = function (key, value) {
             let existingEntries = store.get(key) || [];
             let idx = existingEntries.findIndex((x) => x.id == value);
@@ -122,6 +130,7 @@
                 return true;
             }
         }
+
         window.addItem = function (key, value) {
             let existingEntries = store.get(key) || [];
             let idx = existingEntries.findIndex((x) => x.id == value.id);
@@ -130,6 +139,7 @@
                 store.set(key, existingEntries)
             }
         }
+
         window.removeItem = function (key, value) {
             let existingEntries = store.get(key) || [];
             let idx = existingEntries.findIndex((x) => x.id == value.id);
@@ -181,6 +191,21 @@
             });
         }
 
+        window.RiskHandler = function () {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "Accounts", "GetCifMemberRisk")',
+                    type: 'POST',
+                    success: function (data) {
+                        resolve(data);
+                    },
+                    error: function (xhr, status, errorThrown) {
+                        reject({ xhr, status, errorThrown });
+                    }
+                });
+            });
+        }
+
         EventHandler.AddOnExec('compare-init', function (e) {
             let self = e.target;
             $(self).interactive();
@@ -212,6 +237,7 @@
                 $(self).off('click.magnificPopup');
             }
         });
+
         EventHandler.AddClick('compare-click', function (e) {
             let self = e.target;
             let id = self.getAttribute('eh-compare-id');
@@ -277,6 +303,7 @@
                 }
             }
         });
+
         EventHandler.AddClick('focus-click', function (e) {
             let self = e.target;
             if (isLogin) {
@@ -596,6 +623,7 @@
             cancelBtn.setAttribute('data-cancel-id', id);
             cancelBtn.setAttribute('data-cancel-type', type);
         });
+
         EventHandler.AddOnExec('focusdate-init', function (e) {
             let focusStore = store.get('focus') || [];
             let focusId = e.target.getAttribute('eh-focus-id');
@@ -606,6 +634,7 @@
                 }
             }
         });
+
         EventHandler.AddOnExec('info-init', function (e) {
             let self = e.target;
             let isHasInfo = $(self).closest("tr").find('[data-infostatus]').data('infostatus');
@@ -613,6 +642,7 @@
                 $(self).addClass('is-active');
             }
         });
+
         EventHandler.AddClick('info-click', function (e) {
             let self = e.target;
             let type = self.getAttribute('eh-info-type');
