@@ -187,7 +187,7 @@ namespace Feature.Wealth.Component.Repositories
                 FundDataSql = @$"
                  SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
-                 ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] DESC";
+                 ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] ASC";
             }
             else
             {
@@ -195,7 +195,7 @@ namespace Feature.Wealth.Component.Repositories
                  SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
                  WHERE [OneYearReturnOriginalCurrency] >= '{ExpectedRoi}'
-                 ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] DESC";
+                 ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] ASC";
             }
             var FundData = DbManager.Custom.ExecuteIList<FundModel>(FundDataSql, null, CommandType.Text);
 
@@ -282,7 +282,7 @@ namespace Feature.Wealth.Component.Repositories
                  SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicETF]
                  WHERE [RiskLevel] IN ({RiskLevel})
-                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] DESC";
+                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] ASC";
             }
             else
             {
@@ -290,7 +290,7 @@ namespace Feature.Wealth.Component.Repositories
                  SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicETF]
                  WHERE [OneYearReturnMarketPriceOriginalCurrency] >= '{ExpectedRoi}' AND [RiskLevel] IN ({RiskLevel})
-                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] DESC";
+                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] ASC";
             }
             var EtfData = DbManager.Custom.ExecuteIList<EtfModel>(EtfDataSql, null, CommandType.Text);
 
@@ -299,7 +299,7 @@ namespace Feature.Wealth.Component.Repositories
                 EtfDataSql = @$"
                  SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicETF]
-                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] DESC";
+                 ORDER BY [OneYearReturnMarketPriceOriginalCurrency] DESC, [ProductCode] ASC";
 
                 EtfData = DbManager.Custom.ExecuteIList<EtfModel>(EtfDataSql, null, CommandType.Text);
             }
