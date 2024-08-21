@@ -1726,37 +1726,27 @@
                                     }
                                     if (params.stock.includes(key) && data.respNetAssetValue[key] && data.respNetAssetValue[key].resultSet) {
                                         let result = compareParams.find((item) => item.id == key);
-                                        const navDate = data.respNetAssetValue[key].resultSet.result[0].v1.split(',');
-                                        const nav = data.respNetAssetValue[key].resultSet.result[0].v5.split(',');
-                                        let startPoint = null;
-                                        let lastData = null;
+                                        const navData = data.respNetAssetValue[key].resultSet.result;
                                         mapData.push({
                                             id: key,
                                             name: result.name,
-                                            data: navDate.map((date, i) => {
-                                                let current = roundTo(nav[i], 2);
-                                                if (current === undefined || dataRange(date, params)) {
-                                                    return false;
-                                                }
-                                                if (startPoint === null) {
-                                                    startPoint = current;
-                                                }
-                                                let extent = current - startPoint;
+                                            data: navData.map((nav, i) => {
                                                 lastData = {
-                                                    upDown: extent < 0 ? 'down' : 'up',
-                                                    x: new Date(date.replaceAll('/', '-')).getTime(),
-                                                    y: roundTo(extent / startPoint * 100, 2)
+                                                    upDown: Number(nav.v2) < 0 ? 'down' : 'up',
+                                                    x: new Date(nav.v1.replaceAll('/', '-')).getTime(),
+                                                    y: roundTo(nav.v2, 2)
                                                 };
                                                 return lastData;
                                             }).reverse()
                                         });
-                                     
+                                        let mapLable = mapData[mapData.length - 1].data;
+                                        let lableData = mapLable[mapLable.length - 1];
                                         lables.push({
                                             id: key,
                                             name: result.name,
                                             type: 'stock',
-                                            upDown: lastData.upDown,
-                                            value: lastData.y,
+                                            upDown: lableData.upDown,
+                                            value: lableData.y,
                                         });
                                     }
                                     data.mapData = mapData;

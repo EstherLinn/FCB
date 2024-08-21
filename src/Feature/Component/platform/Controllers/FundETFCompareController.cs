@@ -96,7 +96,7 @@ namespace Feature.Wealth.Component.Controllers
 
             foreach (string id in stock?.Distinct().Take(3) ?? [])
             {
-                respNetAssetValue[id] = _djMoneyApiRespository.GetGlobalInedxPriceData(id, cycle);
+                respNetAssetValue[id] = await _djMoneyApiRespository.GetBenchmarkROIDuringDate(id, startDate, endDate);
             }
 
             return new JsonNetResult(new
