@@ -74,7 +74,7 @@ namespace Feature.Wealth.Component.Models.PopularityFund
             /// <summary>
             /// 點擊次數
             /// </summary>
-            public string ViewCount { get; set; }
+            public int? ViewCount { get; set; }
 
             /// <summary>
             /// 是否上架
@@ -82,11 +82,6 @@ namespace Feature.Wealth.Component.Models.PopularityFund
             public string AvailabilityStatus { get; set; }
 
             public List<string> Tags { get; set; }
-
-            /// <summary>
-            /// 點擊次數(排序用)
-            /// </summary>
-            public int? ViewCountOrderBy { get; set; }
         }
     }
 
