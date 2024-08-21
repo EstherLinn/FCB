@@ -1,19 +1,31 @@
 ﻿@using Feature.Wealth.Account.Helpers;
+
 @{
     var isLogin = FcbMemberHelper.CheckMemberLogin();
 }
+
 @if (isLogin)
 {
     var isGlobalStyle = FcbMemberHelper.IsMemberStyleGlobal();
-    var WebBankId = FcbMemberHelper.GetMemberWebBankId();
-    var PlatForm = FcbMemberHelper.GetMemberPlatForm().ToString();
-<script>
-    addObjectValue(SC_DATA, 'IsLoggedIn', @(isLogin ? "true" : "false"));
-    addObjectValue(SC_DATA, 'IsGlobalStyle', @(isGlobalStyle ? "true" : "false"));
-    addObjectValue(SC_DATA, 'WebBankId', "@WebBankId");
-    addObjectValue(SC_DATA, 'PlatForm', "@PlatForm");
-    addObjectValue(SC_DATA, 'ItemId', '@Sitecore.Context.Item.ID');
-</script>
+    var webBankId = FcbMemberHelper.GetMemberWebBankId();
+    var platForm = FcbMemberHelper.GetMemberPlatForm().ToString();
+    var member = FcbMemberHelper.fcbMemberModel;
+
+    <script>
+        addObjectValue(SC_DATA, 'IsLoggedIn', @(isLogin ? "true" : "false"));
+        addObjectValue(SC_DATA, 'IsGlobalStyle', @(isGlobalStyle ? "true" : "false"));
+        addObjectValue(SC_DATA, 'WebBankId', "@webBankId");
+        addObjectValue(SC_DATA, 'PlatForm', "@platForm");
+        addObjectValue(SC_DATA, 'ItemId', '@Sitecore.Context.Item.ID');
+        addObjectValue(SC_DATA, 'Gender', @member.Gender);
+    </script>
+
+    if (!string.IsNullOrEmpty(member.Risk))
+    {
+        <script>
+            addObjectValue(SC_DATA, 'Risk', '@member.Risk');
+        </script>
+    }
 
     Html.RenderPartial("~/Views/Feature/Wealth/Component/HeaderWidget/_LoginState.cshtml");
 }

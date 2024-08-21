@@ -11,17 +11,9 @@
 
 @{
     var isLogin = FcbMemberHelper.CheckMemberLogin();
-    var member = FcbMemberHelper.fcbMemberModel;
     var WebKycLink = Settings.GetSetting("WebKYC");
     var FirsteKycLink = Settings.GetSetting("FirsteKYC");
     var IleoKycLink = Settings.GetSetting("IleoKYC");
-}
-
-@if (isLogin)
-{
-    <script>
-        addObjectValue(SC_DATA, 'Risk', @member.Risk);
-    </script>
 }
 
 <!-- 教育基金試算_描述區塊 -->
@@ -1533,8 +1525,32 @@
 <script>
     (function ($, window, document, undefined) {
         document.addEventListener("DOMContentLoaded", function () {
+            if (SC_DATA.IsLoggedIn) {
+
+                $('[data-save="true"]').removeClass('u-hidden');
+
+                if (SC_DATA.Risk == undefined) {
+                    RiskHandler().then((data) => {
+                        SC_DATA.Risk = data.risk;
+                    });
+                }
+
+                if (SC_DATA.WebBankId !== "") {
+                    if (SC_DATA.Risk !== undefined) {
+
+                        UpdateRiskAttributesContent(SC_DATA.Risk);
+
+                    } else {
+                        renderNotRisk();
+                    }
+                } else {
+                    renderTPPLogin();
+                }
+            } else {
+                renderNotLogin();
+            }
+
             var resultHasGap;
-            var Risk = SC_DATA.Risk !== undefined ? SC_DATA.Risk.toString() : undefined;
             var description, readingbar = [], earningsChart = [], chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [], chartsAssets = [];
             var hasRenderedRecommendations = false;
             var lockImg = "/themes/images/icons/others/lock.svg"
@@ -1837,11 +1853,11 @@
                         $(".tab4Btn").addClass("u-hidden");
                         $(".tab5Btn").removeClass("u-hidden");
 
-                        if (Risk == '1') {
+                        if (SC_DATA.Risk == '1') {
                             defaultRiskAttributes = 2;
-                        } else if (Risk == '2') {
+                        } else if (SC_DATA.Risk == '2') {
                             defaultRiskAttributes = 5;
-                        } else if (Risk == '3') {
+                        } else if (SC_DATA.Risk == '3') {
                             defaultRiskAttributes = 7;
                         }
 
@@ -2124,42 +2140,43 @@
             //#region 解鎖專屬推薦綁定事件
             $('#btnUnlock').on('click', function (e) {
                 e.preventDefault();
-                $.ajax({
-                    url: '@ClientRoute.GenerateUrl(this, "Accounts", "GetCifMemberRisk")',
-                    type: 'POST',
-                    success: function (data) {
-                        if (data.success && data.risk != undefined) {
 
-                            setTimeout(function (e) {
-                                $.magnificPopup.open({
-                                    items: {
-                                        src: '#popupRisksuccess'
-                                    },
-                                    type: 'inline'
-                                });
-                                $.magnificPopup.instance.history.splice(0, $.magnificPopup.instance.history.length - 1);
-                            }, 100);
-
-                            UpdateRiskAttributesContent(data.risk);
-                            Risk = data.risk;
-                            $("#Recalculate").trigger('click');
-                        } else {
-                            setTimeout(function (e) {
-                                $.magnificPopup.open({
-                                    items: {
-                                        src: '#popupRiskInvalid'
-                                    },
-                                    type: 'inline'
-                                });
-                                $.magnificPopup.instance.history.splice(0, $.magnificPopup.instance.history.length - 1);
-                            }, 100);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.log(error);
-                    }
+                RiskHandler().then((data) => {
+                    unlockRecommendations(data);
                 });
             });
+            //#endregion
+
+            //#region 解鎖專屬推薦方法
+            function unlockRecommendations(data) {
+                if (data.success && data.risk != undefined) {
+                    SC_DATA.Risk = data.risk;
+
+                    setTimeout(function (e) {
+                        $.magnificPopup.open({
+                            items: {
+                                src: '#popupRisksuccess'
+                            },
+                            type: 'inline'
+                        });
+                        $.magnificPopup.instance.history.splice(0, $.magnificPopup.instance.history.length - 1);
+                    }, 100);
+
+                    UpdateRiskAttributesContent(data.risk);
+
+                    $("#Recalculate").trigger('click');
+                } else {
+                    setTimeout(function (e) {
+                        $.magnificPopup.open({
+                            items: {
+                                src: '#popupRiskInvalid'
+                            },
+                            type: 'inline'
+                        });
+                        $.magnificPopup.instance.history.splice(0, $.magnificPopup.instance.history.length - 1);
+                    }, 100);
+                }
+            }
             //#endregion
 
             //#region 成功解鎖專屬推薦綁定事件
@@ -2177,24 +2194,6 @@
 
                 window.open(webKycLink, '_blank');
             });
-            //#endregion
-
-            //#region 登入遮罩判斷&依照客戶風險屬性給值
-            if (SC_DATA.IsLoggedIn) {
-                if (SC_DATA.WebBankId !== "") {
-                    if (Risk !== undefined) {
-
-                        UpdateRiskAttributesContent(Risk);
-
-                    } else {
-                        renderNotRisk();
-                    }
-                } else {
-                    renderTPPLogin();
-                }
-            } else {
-                renderNotLogin();
-            }
             //#endregion
 
             //#region 行動裝置判斷
@@ -2546,7 +2545,7 @@
                     stock: assetsData.stock.number
                 });
 
-                if (Risk !== undefined) {
+                if (SC_DATA.Risk !== undefined) {
                     let tab = "tab1";
                     let event = $('[data-tab-panel-id="tab-1"] .recommendedFunds .swiper-wrapper');
                     let eventString = '[data-tab-panel-id="tab-1"] .recommendedFunds';
@@ -2626,7 +2625,7 @@
                     stock: assetsData.stock.number
                 });
 
-                if (Risk !== undefined) {
+                if (SC_DATA.Risk !== undefined) {
                     let tab = "tab2";
 
                     let event = $('[data-tab-panel-id="tab-2"] .recommendedFunds .swiper-wrapper');
@@ -2700,7 +2699,7 @@
                     stock: assetsData.stock.number
                 });
 
-                if (Risk !== undefined) {
+                if (SC_DATA.Risk !== undefined) {
                     let tab = "tab3";
 
                     let event = $('[data-tab-panel-id="tab-3"] .recommendedFunds .swiper-wrapper');
@@ -2773,7 +2772,7 @@
                     stock: assetsData.stock.number
                 });
 
-                if (Risk !== undefined) {
+                if (SC_DATA.Risk !== undefined) {
                     let tab = "tab4";
 
                     let event = $('[data-tab-panel-id="tab-4"] .recommendedFunds .swiper-wrapper');
@@ -2846,7 +2845,7 @@
                     stock: assetsData.stock.number
                 });
 
-                if (Risk !== undefined) {
+                if (SC_DATA.Risk !== undefined) {
                     let tab = "tab5";
 
                     let event = $('[data-tab-panel-id="tab-5"] .recommendedFunds .swiper-wrapper');
@@ -3497,11 +3496,11 @@
                     expectedRoi = ExpectedRoi;
                 }
 
-                if (Risk == '1') {
+                if (SC_DATA.Risk == '1') {
                     riskLevel = "'RR1','RR2'";
-                } else if (Risk == '2') {
+                } else if (SC_DATA.Risk == '2') {
                     riskLevel = "'RR1','RR2','RR3','RR4'";
-                } else if (Risk == '3') {
+                } else if (SC_DATA.Risk == '3') {
                     riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
                 }
 
