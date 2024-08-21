@@ -92,13 +92,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
+                            sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", string.Format("{0}?id={1}", homeUrl + focusUrl, item.InvestId)));
                         }
                     }
                     mailSchema.Topic = $@"【第一銀行 第e理財網】 基金商品最新淨值已達您設定的目標價格！趕快抓住投資機會！🚀 ";
                     if (sb.Length != 0)
                     {
                         sb.Insert(0, "<p>親愛的客戶您好：</p><p>第一銀行提醒您，</p>");
-                        sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
                         mailSchema.Content = sb.ToString();
                         mails.Add(mailSchema);
                     }
@@ -124,13 +124,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
+                            sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", string.Format("{0}?id={1}", homeUrl + focusUrl, item.InvestId)));
                         }
                     }
                     mailSchema.Topic = $@"【第一銀行 第e理財網】ETF/國外股票商品已達您設定的目標價格！趕快抓住投資機會！📈";
                     if (sb.Length != 0)
                     {
                         sb.Insert(0, "<p>親愛的客戶您好：</p><p>第一銀行提醒您，</p>");
-                        sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
                         mailSchema.Content = sb.ToString();
                         mails.Add(mailSchema);
                     }
@@ -156,13 +156,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
+                            sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", string.Format("{0}?id={1}", homeUrl + focusUrl, item.InvestId)));
                         }
                     }
                     mailSchema.Topic = $@"【第一銀行 第e理財網】 信託商品已達您設定的漲幅囉！";
                     if (sb.Length != 0)
                     {
                         sb.Insert(0, "<p>親愛的客戶您好：</p><p>第一銀行提醒您，</p>");
-                        sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
                         mailSchema.Content = sb.ToString();
                         mails.Add(mailSchema);
                     }
@@ -188,13 +188,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                 MailInfoType = MailInfoTypeEnum.到價通知.ToString(),
                                 HaveRead = false
                             });
+                            sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", string.Format("{0}?id={1}", homeUrl + focusUrl, item.InvestId)));
                         }
                     }
                     mailSchema.Topic = $@"【第一銀行 第e理財網】 信託商品已達您設定的跌幅囉！";
                     if (sb.Length != 0)
                     {
                         sb.Insert(0, "<p>親愛的客戶您好：</p><p>第一銀行提醒您，</p>");
-                        sb.Append(string.Format("<p>第e理財網連結：<a href='{0}' target='_blank' style='color:red;'>{0}</a></p>", homeUrl));
                         mailSchema.Content = sb.ToString();
                         mails.Add(mailSchema);
                     }
