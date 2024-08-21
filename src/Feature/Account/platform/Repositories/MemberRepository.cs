@@ -295,7 +295,7 @@ namespace Feature.Wealth.Account.Repositories
                             SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
                             B.CIF_ESTABL_BIRTH_DATE as Birthday,
                             B.CIF_CUST_ATTR as Gender,
-                            B.CIF_SAL_FLAG,
+                            B.CIF_SAL_FLAG as SalFlag,
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
                             FROM [FCB_Member] as A
@@ -338,7 +338,7 @@ namespace Feature.Wealth.Account.Repositories
                             SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
                             B.CIF_ESTABL_BIRTH_DATE as Birthday,
                             B.CIF_CUST_ATTR as Gender,
-                            B.CIF_SAL_FLAG,
+                            B.CIF_SAL_FLAG as SalFlag,
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
                             FROM [FCB_Member] as A
@@ -371,7 +371,7 @@ namespace Feature.Wealth.Account.Repositories
                             SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
                             B.CIF_ESTABL_BIRTH_DATE as Birthday,
                             B.CIF_CUST_ATTR as Gender,
-                            B.CIF_SAL_FLAG,
+                            B.CIF_SAL_FLAG as SalFlag,
                             C.EmployeeName as Advisror,
                             C.EmployeeCode as AdvisrorID
                             FROM [FCB_Member] as A
