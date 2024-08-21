@@ -1,6 +1,4 @@
-﻿
-
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Foundation.Wealth.Extensions
 {
@@ -83,7 +81,23 @@ namespace Foundation.Wealth.Extensions
 
             return string.Format("{0}/{1}", outputLeftValue, outputRightValue);
         }
-
+        /// <summary>
+        /// 將字串裡的數字轉成千分位
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string FormatThousandth(this string str) {
+            if (str == "NA")
+            {
+                return "NA";
+            }
+            // 使用正則表達式匹配字串中的所有數字
+            string result = Regex.Replace(str, @"\d+", match =>
+            {
+                return int.Parse(match.Value).ToString("N0");
+            });
+            return result;
+        }
         /// <summary>
         /// 檢查email格式
         /// </summary>

@@ -1566,7 +1566,7 @@
                             <div class="c-zebraList__title">最低單筆投資金額(註2)</div>
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
-                                    @BasicData.MinimumSingleInvestmentAmount.FormatCurrencyWithValue()
+                                    @BasicData.MinimumSingleInvestmentAmount.FormatCurrencyWithValue().FormatThousandth()
                                 </span>
                             </div>
                         </div>
@@ -1574,7 +1574,7 @@
                             <div class="c-zebraList__title">最低定期定額<br>投資金額(註2)</div>
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
-                                    @BasicData.MinimumRegularInvestmentAmount.FormatCurrencyWithValue()
+                                    @BasicData.MinimumRegularInvestmentAmount.FormatCurrencyWithValue().FormatThousandth()
                                 </span>
                             </div>
                         </div>
@@ -1582,7 +1582,7 @@
                             <div class="c-zebraList__title">最低定期不定額投資金額</div>
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
-                                    @BasicData.MinimumIrregularInvestmentAmount.FormatCurrencyWithValue()
+                                    @BasicData.MinimumIrregularInvestmentAmount.FormatCurrencyWithValue().FormatThousandth()
                                 </span>
                             </div>
                         </div>
@@ -2407,7 +2407,7 @@
                             <div class="l-divideList__item">
                                 <div class="c-numerical">
                                     <div class="c-numerical__title c-numerical__title--dk"><span>每單位分配金額</span></div>
-                                    <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold">@(BasicData.Dividend.CheckNullOrEmptyString() == "-" ? "-" : BasicData.Dividend.CheckNullOrEmptyString() + BasicData.ValuationCurrency.CheckNullOrEmptyString())</span></div>
+                                    <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold" data-dividendCurrency>@BasicData.Dividend.CheckNullOrEmptyString()</span></div>
                                 </div>
                             </div>
                         </div>
@@ -2670,6 +2670,7 @@
             let dividendData = @(new HtmlString(JsonHelper.SerializeObjectWithEscapeHtml(Model.FundDividendRecords)));
             if (dividendData.length > 0) {
                 $('#dividendCurrency').html(`每單位配息<br class="u-hidden@dt-only">金額(${dividendData[0].Currency.trim()})`);
+                $('[data-dividendCurrency]').text($('[data-dividendCurrency]').text() + dividendData[0].Currency.trim());
                 const dividendYearData = dividendData.map((item) => new Date(item.BaseDate).getFullYear()).filter(function (element, index, arr) {
                     return arr.indexOf(element) === index;
                 });
