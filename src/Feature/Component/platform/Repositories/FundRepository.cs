@@ -299,7 +299,7 @@ namespace Feature.Wealth.Component.Repositories
                                     ,[Shareholding] Holding
                                       FROM {tableName}
                                      WHERE [FirstBankCode] = @fundId
-                                     ORDER BY [Shareholding] DESC";
+                                     ORDER BY [Shareholding] DESC,[StockName]";
             var para = new { fundId };
             List<FundStockHolding> fundStockHolding = DbManager.Custom.ExecuteIList<FundStockHolding>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundStockHolding;
