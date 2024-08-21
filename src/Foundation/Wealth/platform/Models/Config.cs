@@ -23,9 +23,10 @@ namespace Foundation.Wealth.Models
             get
             {
                 var isDevelop = false;
-#if DEBUG
-                isDevelop = (CuntextEnvironment ?? "DEVELOPMENT") == "DEVELOPMENT";
-#endif
+                if (string.IsNullOrEmpty(CuntextEnvironment) || CuntextEnvironment == "LOCAL" || CuntextEnvironment == "DEVELOPMENT")
+                {
+                    isDevelop = true;
+                }
                 return isDevelop;
             }
         }

@@ -552,12 +552,12 @@ namespace Feature.Wealth.Account.Controllers
             {
                 return new EmptyResult();
             }
-#if DEBUG
             if (!Foundation.Wealth.Models.Config.IsEnableCheck)
             {
-                return new JsonNetResult(new { success = true, risk = "2" });
+                var riskItem = ItemUtils.GetItem("{A919250C-132C-4633-A1FF-B3CB0384F33F}");
+                var testRisk = ItemUtils.GetFieldValue(riskItem, "Risk");
+                return new JsonNetResult(new { success = true, risk = testRisk });
             }
-#endif
             var canReadOracle = _memberRepository.CheckEDHStatus();
             if (!canReadOracle)
             {
