@@ -176,43 +176,43 @@ namespace Feature.Wealth.Account.Controllers
                             //else
                             //{
                             step = "Step2 第e個網登入";
-                                //網銀登入
-                                var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, id);
-                                if (!isExist)
+                            //網銀登入
+                            var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, id);
+                            if (!isExist)
+                            {
+                                step = "Step3 第e個網登入 取得理財網db cif客戶資料";
+                                //創建會員
+                                var cifMember = _memberRepository.GetWebBankUserInfo(id);
+                                if (cifMember == null)
                                 {
-                                    step = "Step3 第e個網登入 取得理財網db cif客戶資料";
-                                    //創建會員
-                                    var cifMember = _memberRepository.GetWebBankUserInfo(id);
-                                    if (cifMember == null)
-                                    {
-                                        step = "Step3-3 第e個網登入 cifMember:null";
-                                        Session["LoginStatus"] = false;
-                                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
-                                    }
-                                    //創建會員
-                                    step = "Step4 第e個網登入 創建會員並登入";
-                                    FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
-                                        cifMember.CIF_E_MAIL_ADDRESS, cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
-                                        true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE, cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG);
-                                    _memberRepository.CreateNewMember(member);
-                                    User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
-                                    SetCustomPropertyAndLogin(member, user);
+                                    step = "Step3-3 第e個網登入 cifMember:null";
+                                    Session["LoginStatus"] = false;
+                                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                                 }
-                                else
+                                //創建會員
+                                step = "Step4 第e個網登入 創建會員並登入";
+                                FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
+                                    cifMember.CIF_E_MAIL_ADDRESS, cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
+                                    true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE, cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG);
+                                _memberRepository.CreateNewMember(member);
+                                User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
+                                SetCustomPropertyAndLogin(member, user);
+                            }
+                            else
+                            {
+                                step = "Step3 第e個網登入 已有會員直接登入";
+                                //登入
+                                FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, id);
+                                if (member == null)
                                 {
-                                    step = "Step3 第e個網登入 已有會員直接登入";
-                                    //登入
-                                    FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, id);
-                                    if (member == null)
-                                    {
-                                        step = $"Step3 理財網已有會員，直接登入，取得會員資料有誤";
-                                        Session["LoginStatus"] = false;
-                                        Session["ErrorMsg"] = "理財網取得會員資料有誤，請聯絡資訊處";
-                                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
-                                    }
-                                    User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
-                                    SetCustomPropertyAndLogin(member, user);
+                                    step = $"Step3 理財網已有會員，直接登入，取得會員資料有誤";
+                                    Session["LoginStatus"] = false;
+                                    Session["ErrorMsg"] = "理財網取得會員資料有誤，請聯絡資訊處";
+                                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                                 }
+                                User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
+                                SetCustomPropertyAndLogin(member, user);
+                            }
                             //}
                         }
                         else
@@ -552,6 +552,12 @@ namespace Feature.Wealth.Account.Controllers
             {
                 return new EmptyResult();
             }
+#if DEBUG
+            if (!Foundation.Wealth.Models.Config.IsEnableCheck)
+            {
+                return new JsonNetResult(new { success = true, risk = "2" });
+            }
+#endif
             var canReadOracle = _memberRepository.CheckEDHStatus();
             if (!canReadOracle)
             {
