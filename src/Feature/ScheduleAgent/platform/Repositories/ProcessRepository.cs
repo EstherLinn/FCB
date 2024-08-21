@@ -67,6 +67,59 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
+        public void BulkInsertToDatabaseForHIS<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath)
+        {
+            var properties = typeof(T).GetProperties();
+            string columns = string.Join(",", properties.Select(p => p.Name));
+            string parameters = string.Join(",", properties.Select(p => "@" + p.Name));
+
+            string mergeQuery = $@"
+            MERGE INTO {tableName} AS target
+            USING (VALUES ({parameters})) AS source ({columns})
+            ON
+            (target.{key} > DATEADD(DAY, -30, GETDATE()))
+            AND (source.{uniqueColumn} IS NULL
+            AND target.{uniqueColumn} IS NULL
+            OR target.{uniqueColumn} = source.{uniqueColumn})
+            AND (target.{key} = source.{key})
+            WHEN MATCHED THEN
+              UPDATE SET {GenerateUpdateSet(properties)}
+            WHEN NOT MATCHED THEN
+              INSERT ({columns}) VALUES ({parameters});
+             ";
+
+            int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
+            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line);
+            _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
+        }
+
+        public void BulkInsertToDatabaseFor30Days<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, string date)
+        {
+            var properties = typeof(T).GetProperties();
+            string columns = string.Join(",", properties.Select(p => p.Name));
+            string parameters = string.Join(",", properties.Select(p => "@" + p.Name));
+
+            string mergeQuery = $@"
+            MERGE INTO {tableName} AS target
+            USING (VALUES ({parameters})) AS source ({columns})
+            ON
+            (target.{date} > DATEADD(DAY, -30, GETDATE()))
+            AND (source.{uniqueColumn} IS NULL
+            AND target.{uniqueColumn} IS NULL
+            OR target.{uniqueColumn} = source.{uniqueColumn})
+            AND (target.{key} = source.{key})
+            AND (target.{key2} = source.{key2})
+            WHEN MATCHED THEN
+              UPDATE SET {GenerateUpdateSet(properties)}
+            WHEN NOT MATCHED THEN
+              INSERT ({columns}) VALUES ({parameters});
+             ";
+
+            int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
+            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line);
+            _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
+        }
+
         /// <summary>
         /// 將資料插入最新的資料表中(會刪除舊資料，插入最新的資料=資料表裡僅保留最新的資料)
         /// </summary>
