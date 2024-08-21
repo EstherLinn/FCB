@@ -30,7 +30,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     {
                         var basic = await etlService.ParseCsv<SysjustDividendFund>(filename);
                         _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Dividend_Fund]", filename);
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Dividend_Fund_History]", "UpdateTime", "FirstBankCode", "ExDividendDate", filename);
+                        _repository.BulkInsertToDatabaseForHIS(basic, "[Sysjust_Dividend_Fund_History]", "FirstBankCode", "ExDividendDate", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)

@@ -26,7 +26,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     {
                         var basic = await etlService.ParseCsv<SysjustFundSizeFund1>(filename);
                         _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Fundsize_Fund_1]", filename);
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Fundsize_Fund_1_History]", "ScaleDate", "FirstBankCode", filename);
+                        _repository.BulkInsertToDatabaseForHIS(basic, "[Sysjust_Fundsize_Fund_1_History]", "FirstBankCode", "ScaleDate", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)
