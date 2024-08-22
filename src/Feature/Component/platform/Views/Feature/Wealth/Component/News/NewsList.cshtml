@@ -627,12 +627,10 @@
 
             window.NewsList = {
                 ApiRequest: function () {
-                    var token = $('input[name="__RequestVerificationToken"]').val();
                     var reqSearch = {
                         req: {
                             DatasourceId: '@Model.DatasourceId'
                         },
-                        __RequestVerificationToken: token
                     };
 
                     $.ajax({

@@ -35,7 +35,6 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult GetNewsListResultData(ReqNewsList req)
         {
             var resp = _newsRespository.GetNewsListResult(req);
