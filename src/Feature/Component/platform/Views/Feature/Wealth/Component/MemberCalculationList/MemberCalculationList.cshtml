@@ -181,9 +181,6 @@
                     setTimeout(() => {
                         $('#downloadPdf').removeAttr('style');
                         generatePDF(type);
-                        $('#downloadPdf').css('visibility', 'hidden');
-                        $('#downloadPdf').empty();
-                        window.loading('hide');
                     }, 2500);
                 }
             });
@@ -797,55 +794,58 @@
                 const resultDescription = document.querySelector('#resultDescription');
                 const downloadPdfWrap = document.querySelectorAll('.downloadPdf_Wrap');
 
-                // 定义函数将 DOM 元素转换为图片并添加到 PDF
-                async function addElementToPDF(element, pdf, pdfWidth, yOffset = 0) {
-                    // 克隆元素以避免潜在的问题
-                    const clonedElement = element.cloneNode(true);
-                    clonedElement.style.width = '1186px'; // 设置宽度为 1186px
-                    clonedElement.style.position = 'absolute';
-                    clonedElement.style.left = '0';
-                    document.body.appendChild(clonedElement);
-
+                // 定義函數將 DOM 元素轉換為圖片並新增至 PDF
+                async function addElementToPDF(element, pdf, pdfWidth, imgeHight, bgColor, yOffset = 0) {
                     try {
-                        await html2canvas(clonedElement, { scale: 2 }).then(canvas => {
-                            const imgData = canvas.toDataURL('image/png');
-                            const imgProps = pdf.getImageProperties(imgData);
-                            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                        // 使用 dom-to-image 直接將元素轉換為圖片
+                        const dataUrl = await domtoimage.toPng(element, { quality: 1, height: imgeHight, bgcolor: bgColor });
+                        const img = new Image();
+                        img.src = dataUrl;
 
-                            if (yOffset + pdfHeight > pdf.internal.pageSize.getHeight()) {
-                                pdf.addPage();
-                                yOffset = 0;
-                            }
-                            pdf.addImage(imgData, 'PNG', 0, yOffset, pdfWidth, pdfHeight);
-                            yOffset += pdfHeight;
+                        return new Promise((resolve, reject) => {
+                            img.onload = () => {
+                                const imgProps = pdf.getImageProperties(dataUrl);
+                                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                                // 處理頁面溢出
+                                if (yOffset + pdfHeight > pdf.internal.pageSize.getHeight()) {
+                                    pdf.addPage();
+                                    yOffset = 0;
+                                }
+                                pdf.addImage(dataUrl, 'PNG', 0, yOffset, pdfWidth, pdfHeight);
+                                yOffset += pdfHeight;
+                                resolve(yOffset);
+                            };
+                            img.onerror = reject;
                         });
                     } catch (error) {
-                        console.error('Error generating canvas for element:', element, error);
+                        console.error('Error generating image for element:', element, error);
                     }
-
-                    // 移除克隆的元素
-                    document.body.removeChild(clonedElement);
-                    return yOffset;
                 }
 
-                // PDF 页面宽度
+                // PDF 頁面寬度
                 const pdfWidth = pdf.internal.pageSize.getWidth();
 
-                // 处理 resultDescription 和 downloadPdf_Wrap 的第一个 div
+                // 處理 resultDescription 和 downloadPdf_Wrap 的第一個 div
                 let yOffset = await addElementToPDF(resultDescription, pdf, pdfWidth);
-                const firstDiv = downloadPdfWrap[0];
-                yOffset = await addElementToPDF(firstDiv, pdf, pdfWidth, yOffset);
-
-                // 处理 downloadPdf_Wrap 其余的 div，每个 div 独立成页
-                for (let i = 1; i < downloadPdfWrap.length; i++) {
-                    pdf.addPage();
-                    yOffset = await addElementToPDF(downloadPdfWrap[i], pdf, pdfWidth);
+                if (downloadPdfWrap.length > 0) {
+                    const firstDiv = downloadPdfWrap[0];
+                    yOffset = await addElementToPDF(firstDiv, pdf, pdfWidth, 1200, '#FFFFFF', yOffset);
                 }
 
-                // 下载生成的 PDF
-                pdf.save(`${type}.pdf`);
-            }
+                // 處理 downloadPdf_Wrap 其餘的 div，每個 div 獨立成頁
+                for (let i = 1; i < downloadPdfWrap.length; i++) {
+                    pdf.addPage();
+                    await addElementToPDF(downloadPdfWrap[i], pdf, pdfWidth, 1200, '#FFFFFF');
+                }
 
+                // 下載產生的 PDF
+                pdf.save(`${type}.pdf`);
+
+                $('#downloadPdf').css('visibility', 'hidden');
+                $('#downloadPdf').empty();
+                window.loading('hide');
+            }
             //#endregion
 
         });
