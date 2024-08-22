@@ -32,7 +32,7 @@
                                 <div class="c-form">
                                     <div class="c-form__title">客戶姓名</div>
                                     <div class="c-form__content">
-                                        <div class="l-form is-error" id="l-form-customername">
+                                        <div class="l-form" id="l-form-customername">
                                             <div class="l-form__input">
                                                 <input id="input-customername" type="text" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入客戶姓名" data-name>
                                             </div>
@@ -47,7 +47,7 @@
                                 <div class="c-form">
                                     <div class="c-form__title">客戶ID</div>
                                     <div class="c-form__content">
-                                        <div class="l-form is-error" id="l-form-customerid">
+                                        <div class="l-form" id="l-form-customerid">
                                             <div class="l-form__input">
                                                 <input id="input-customerid" type="text" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入客戶ID">
                                             </div>
@@ -62,7 +62,7 @@
                                 <div class="c-form">
                                     <div class="c-form__title">聯絡電話</div>
                                     <div class="c-form__content">
-                                        <div class="l-form is-error" id="l-form-phone">
+                                        <div class="l-form" id="l-form-phone">
                                             <div class="l-form__input">
                                                 <input id="input-tel" type="tel" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入聯絡電話">
                                             </div>
@@ -231,7 +231,7 @@
                                     <div class="c-form c-form--time">
                                         <div class="c-form__title">選擇日期</div>
                                         <div class="c-form__content">
-                                            <div class="l-form is-error" id="l-form-date">
+                                            <div class="l-form" id="l-form-date">
                                                 <div class="l-form__item">
                                                     <div class="o-calendarBox o-calendarBox--noMax">
                                                         <input type="text" class="o-calendarBox__input" custom-data-calendar="true" readonly>
@@ -248,7 +248,7 @@
                                     <div class="c-form c-form--time">
                                         <div class="c-form__title">選擇時段</div>
                                         <div class="c-form__content">
-                                            <div class="l-form is-error" id="l-form-time">
+                                            <div class="l-form" id="l-form-time">
                                                 <div class="l-form__item">
                                                     <div class="l-pickGroup l-pickGroup--time">
                                                         <div class="l-pickGroup__item">
@@ -457,7 +457,7 @@
     const consultSchedules = @Model.ConsultSchedulesHtmlString;
     const reserveds = @Model.ReservedsHtmlString;
     const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六'];
-    const emailReg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    const emailReg = /^[a-zA-Z0-9_.+-]+@@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
     const phoneReg = /^09[0-9]{8}$/;
 
     var currentConsultSchedule = {
@@ -542,29 +542,46 @@
         function verify() {
             var flag = true;
 
+            if (currentConsultSchedule.CustomerName) {
+            }
+            else {
+                $('#l-form-customername').addClass('is-error');
+                flag = false;
+            }
+
+            if (currentConsultSchedule.CustomerID) {
+            }
+            else {
+                $('#l-form-customerid').addClass('is-error');
+                flag = false;
+            }
+
             if (currentConsultSchedule.Phone && validatePhone(currentConsultSchedule.Phone)) {
             }
             else {
                 flag = false;
+                $('#l-form-phone').addClass('is-error');
             }
 
             if (currentConsultSchedule.Mail && validateEmail(currentConsultSchedule.Mail)) {
             }
             else {
                 flag = false;
+                $('#l-form-mail').addClass('is-error');
             }
 
             if (currentConsultSchedule.Subject) {
             }
             else {
                 flag = false;
+                $('#l-form-subject').addClass('is-error');
             }
 
             if ($('#picheck').prop("checked")) {
             }
             else {
                 flag = false;
-            }
+            }           
 
             return flag;
         }
@@ -644,8 +661,6 @@
                 $('[data-time]').attr('disabled', true);
                 //取消選擇全部時段
                 $('[data-time]').prop('checked', false);
-                //顯示沒選擇時段錯誤訊息
-                $('#l-form-time').addClass('is-error');
 
                 checkConsult();
 
@@ -666,6 +681,10 @@
                 bindText();
                 $('#btn-check').attr("href", "#popupConfirm");
             }
+            else {
+                //顯示沒選擇時段錯誤訊息
+                $('#l-form-time').addClass('is-error');
+            }
         });
 
         $('[data-next]').on('click', function (e) {
@@ -674,6 +693,26 @@
             if (verify()) {
                 $('#step01').hide();
                 $('#step02').show();
+            }
+        });
+
+        $('#btn-check').on('click', function (e) {
+            e.preventDefault();
+
+            if (currentConsultSchedule.ScheduleDateString) {
+
+            }
+            else {
+                //顯示沒選擇日期錯誤訊息
+                $('#l-form-date').addClass('is-error');
+            }
+
+            if ($('[data-time]:checked').val()) {
+
+            }
+            else {
+                //顯示沒選擇時段錯誤訊息
+                $('#l-form-time').addClass('is-error');
             }
         });
 
