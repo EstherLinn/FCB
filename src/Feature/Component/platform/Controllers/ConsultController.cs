@@ -181,6 +181,7 @@ namespace Feature.Wealth.Component.Controllers
                 EmployeeName = info.Advisror,
                 CustomerID = info.WebBankId,
                 CustomerName = info.MemberName,
+                PersonalInformationLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.PersonalInformationLink).Url,
             };
 
             // 取得近30日假日           

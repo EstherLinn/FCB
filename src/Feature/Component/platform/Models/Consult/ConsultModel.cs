@@ -20,6 +20,7 @@ namespace Feature.Wealth.Component.Models.Consult
         public string EmployeeName { get; set; }
         public string CustomerID { get; set; }
         public string CustomerName { get; set; }
+        public string PersonalInformationLink { get; set; }
     }
 
     public class ConsultScheduleModel
@@ -281,6 +282,7 @@ namespace Feature.Wealth.Component.Models.Consult
 
             public readonly struct Fields
             {
+                public static readonly ID PersonalInformationLink = new ID("{F0D15279-4ADF-4744-AE0E-A46E116D701C}");
             }
         }
 
