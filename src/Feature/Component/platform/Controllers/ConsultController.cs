@@ -28,19 +28,14 @@ namespace Feature.Wealth.Component.Controllers
                 return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", null);
             }
 
-            return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", CreateConsultModel(item));
-        }
-
-        public ActionResult EmployeeConsult()
-        {
-            var item = RenderingContext.CurrentOrNull?.Rendering.Item;
-
-            if (!FcbMemberHelper.CheckMemberLogin() || string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
+            if (FcbMemberHelper.fcbMemberModel.IsEmployee)
             {
-                return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", null);
+                return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", CreateConsultModel(item));
             }
-
-            return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", CreateConsultModel(item));
+            else
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", CreateConsultModel(item));
+            }
         }
 
         public ActionResult ConsultList()
@@ -52,7 +47,21 @@ namespace Feature.Wealth.Component.Controllers
                 return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", null);
             }
 
-            return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", CreateConsultListModel(item));
+            if (FcbMemberHelper.fcbMemberModel.IsEmployee)
+            {
+                if(FcbMemberHelper.fcbMemberModel.IsManager)
+                {
+                    return View("/Views/Feature/Wealth/Component/Consult/ManagerConsultList.cshtml", CreateConsultListModel(item));
+                }
+                else
+                {
+                    return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsultList.cshtml", CreateConsultListModel(item));
+                }
+            }
+            else
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", CreateConsultListModel(item));
+            }
         }
 
         private ConsultListModel CreateConsultListModel(Item item)
@@ -188,9 +197,7 @@ namespace Feature.Wealth.Component.Controllers
                         consultScheduleList.Add(clone);
                     }
                 }
-            }
-
-            
+            }            
 
             var consultModel = new ConsultModel
             {

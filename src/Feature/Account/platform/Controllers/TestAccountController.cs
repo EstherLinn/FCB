@@ -23,8 +23,16 @@ namespace Feature.Wealth.Account.Controllers
         public ActionResult Index()
         {
             var id = Settings.GetSetting("StressTestId");
-            FcbMemberModel member = new FcbMemberModel(id, "一銀測試", "fcb@fcb.com", "1", "忠孝路分行經辦１", "00944114", true, true,
-                QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, id, new DateTime(1990,7,20),"1", "Y");
+
+            string isEmployee = Sitecore.Web.WebUtil.GetSafeQueryString("IsEmployee");
+            string isManager = Sitecore.Web.WebUtil.GetSafeQueryString("IsManager");
+
+            FcbMemberModel member = new FcbMemberModel(id, "一銀測試", "fcb@fcb.com",
+                "1", "忠孝路分行經辦１", "00944114", true,
+                true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank,
+                id, new DateTime(1990, 7, 20), "1", "Y",
+                isEmployee == "1", isManager == "1");
+
             User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
             user.Profile.Name = member.MemberName;
             user.Profile.Email = member.MemberEmail;
