@@ -31,7 +31,7 @@ namespace Feature.Wealth.Component.Controllers
                 HotUSStocks = usStocks,
                 USStockSearchLink = USStockRelatedLinkSetting.GetUSStockSearchUrl(),
                 FundNetAssetValueDate = funds.Select(f => f.NetAssetValueDate).FirstOrDefault(),
-                ETFNetAssetValueDate = etfs.Select(f => f.NetAssetValueDate).FirstOrDefault(),
+                ETFMarketPriceDate = etfs.Select(f => f.MarketPriceDate).FirstOrDefault(),
                 USStockDataDate = usStocks.Select(f => DateTime.Parse(f.DataDate)).FirstOrDefault(),
             };
 
