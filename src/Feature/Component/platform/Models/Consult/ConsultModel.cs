@@ -45,6 +45,8 @@ namespace Feature.Wealth.Component.Models.Consult
         public HtmlString ConsultSchedulesHtmlString { get; set; }
         public IList<ConsultScheduleForCalendar> ConsultScheduleForCalendars { get; set; }
         public HtmlString ConsultScheduleForCalendarsHtmlString { get; set; }
+        public bool IsEmployee { get; set; } = false;
+        public bool IsManager { get; set; } = false;
     }
 
     public class QandA
