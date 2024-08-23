@@ -425,7 +425,7 @@ namespace Feature.Wealth.Component.Repositories
                               ,[Dividend]
                               ,[AnnualizedDividendRate]
                               ,[Currency]
-                          FROM [Sysjust_Dividend_Fund]   WHERE [FirstBankCode]=@fundId
+                          FROM [Sysjust_Dividend_Fund] (NOLOCK) WHERE [FirstBankCode]=@fundId
                           ORDER BY [ExDividendDate] DESC";
             var para = new { fundId };
             List<FundDividendRecord> fundDividendRecord = DbManager.Custom.ExecuteIList<FundDividendRecord>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
