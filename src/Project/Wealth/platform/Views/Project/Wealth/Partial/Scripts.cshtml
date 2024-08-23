@@ -28,36 +28,67 @@
             $('html').addClass('is-globalization');
         }
 
-        $.ajax({
-            type: "post",
-            url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
-            data: { "url": '@url' },
-            success: function (msg) {
-                //設置成功
-            },
-        })
-
-        $.ajax({
-            type: "post",
-            url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
-            data: { "block": true },
-            success: function (msg) {
-                if (msg)
-                {
-                    //被阻擋回首頁彈窗登入
-                    let url = new URL(msg.url);
-                    let isMemberHome = url.pathname.toLowerCase().includes('member-home');
-                    if (isMemberHome && !isLogin) {
-                        $.magnificPopup.open({
-                            items: {
-                                src: '#popupLogin'
-                            },
-                            type: 'inline'
-                        });
-                    }
+       function SetUrlCookie(){
+           return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
+                data: { "url": '@url' },
+                success: function(response) {
+                    resolve(response);  
+                },
+                error: function(error) {
+                    reject(error);  
                 }
-            },
-        })
+            });
+         });
+        }
+
+        function GetUrlCookie(){
+           return new Promise((resolve, reject) => {
+            $.ajax({
+                type: "post",
+                url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
+                data: { "unlockBlock": false },
+                success: function(response) {
+                    resolve(response);  
+                },
+                error: function(error) {
+                    reject(error);  
+                }
+               });
+         });
+        }
+           //確保set完cookie後才取得cookie
+           SetUrlCookie().then(function(resp){
+             return GetUrlCookie();
+           }).then(function(resp){
+               if (resp) {
+                        //被阻擋回首頁彈窗登入
+                        if (!isLogin && resp.beBlock) {
+                            $.magnificPopup.open({
+                                items: {
+                                    src: '#popupLogin'
+                                },
+                                type: 'inline',
+                                callbacks: {
+                                    close: function CancelBlock() {
+                                        $.ajax({
+                                            type: "post",
+                                            url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
+                                            data: { "unlockBlock": true },
+                                            success: function (msg) {
+                                                //關閉登入popup刪除block cookie
+                                            },
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }
+           }).catch(function(error) {
+            console.error('Error:', error); 
+            });
 
         if (isLogin) {
             let url = new URL(location.href);
@@ -99,13 +130,13 @@
         //離開頁面後砍一個tab戳記
         ['unload'].forEach(function (event) {
             window.addEventListener(event, function (e) {
-                 const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                 const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
-                 localStorage.setItem(storageKey, JSON.stringify(updatedTabs));
-                 if (isLogin && updatedTabs.length === 0) {
-                     isLogin = false;
-                     logOutEvent();
-                 }
+                const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
+                localStorage.setItem(storageKey, JSON.stringify(updatedTabs));
+                if (isLogin && updatedTabs.length === 0) {
+                    isLogin = false;
+                    logOutEvent();
+                }
             });
         });
 
@@ -190,7 +221,19 @@
             }).fail(function (jqXHR, textStatus, errorThrown) {
             });
         }
-
+        window.VerifyLoginRedirctToHome = function (verifyLogin) {
+            if (!verifyLogin) {
+                 $('[data-errormsg]', '#infoFail').text("由於長時間未操作，您的登入已過期，請重新登入。");
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#infoFail'
+                        },
+                        type: 'inline'
+                    });
+                let homePage = new URL(location.protocol + "//" + location.hostname);
+                location.href = homePage;
+            }
+        }
         window.RiskHandler = function () {
             return new Promise((resolve, reject) => {
                 $.ajax({
@@ -312,22 +355,26 @@
                 let type = self.getAttribute('eh-focus-type');
                 if (id && name && type) {
                     let obj = new FocsuObj(id, type);
-                    if (self.getAttribute('eh-focus-add').toString() == "false") {
-                        addItem('focus', obj);
-                        self.setAttribute('eh-focus-add', true);
-                    } else {
-                        removeItem('focus', obj);
-                        self.setAttribute('eh-focus-add', false);
-                    }
                     $.ajax({
                         type: "post",
                         url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
-                        data: { "trackList": store.get("focus") || [], "productId": id},
+                        data: { "trackList": store.get("focus") || [], "productId": id ,"pageUrl": window.location.pathname + window.location.search},
                         beforeSend: function () { $('.c-loading').loading('show'); },
-                        success: function (msg) {
-                            $('.c-loading').loading('hide');
+                        success: function (resp) {
+                            if(!resp.success && resp.block)
+                            {
+                                    window.VerifyLoginRedirctToHome(resp.success);
+                                    return;
+                            }
+                            if (self.getAttribute('eh-focus-add').toString() == "false") {
+                                addItem('focus', obj);
+                                self.setAttribute('eh-focus-add', true);
+                            } else {
+                                removeItem('focus', obj);
+                                self.setAttribute('eh-focus-add', false);
+                            }
                         },
-                        error: function (msg) {
+                        error: function (resp) {
                             //設置error
                             if (self.getAttribute('eh-focus-add').toString() == "false") {
                                 removeItem('focus', obj);
@@ -337,6 +384,9 @@
                                 self.setAttribute('eh-focus-add', true);
                             }
                         },
+                        complete: function () {
+                        $('.c-loading').loading('hide');
+                    }
                     })
                 }
 

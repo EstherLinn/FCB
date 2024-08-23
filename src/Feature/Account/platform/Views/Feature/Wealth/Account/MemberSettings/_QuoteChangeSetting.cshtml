@@ -60,9 +60,10 @@
                     type: "post",
                     url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetQuoteChangeColor")",
                     beforeSend: function () { window.loading('show'); },
-                    data: { "color": val },
+                    data: { "color": val,"pageUrl": window.location.pathname + window.location.search },
                     success: function (msg) {
-                        //設置成功
+                        window.VerifyLoginRedirctToHome(msg.success);
+                        return;
                     },
                     complete: function () { window.loading('hide'); }
                 })

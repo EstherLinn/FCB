@@ -700,14 +700,19 @@
                 let self = e.target;
                 let cancelId = self.getAttribute('data-cancel-id');
                 let cancelType = self.getAttribute('data-cancel-type');
-                let obj = new CompareObj(cancelId, cancelType);
-                removeItem('focus', obj);
                 $.ajax({
                     type: "post",
                     url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
-                    data: { "trackList": store.get("focus") || [], "productId": cancelId},
+                    data: { "trackList": store.get("focus") || [], "productId": cancelId,"pageUrl": window.location.pathname + window.location.search },
                     beforeSend: function () { $('.c-loading').loading('show'); },
-                    success: function (msg) {
+                    success: function (resp) {
+                    if(!resp.success && resp.block)
+                            {
+                                    window.VerifyLoginRedirctToHome(resp.success);
+                                    return;
+                            }
+                            let obj = new CompareObj(cancelId, cancelType);
+                            removeItem('focus', obj);
                         switch (cancelType.toLowerCase()) {
                             case "fund":
                                 window.resetTable();
@@ -851,19 +856,29 @@
                         _obj.FallPercent = fallPercent;
                     }
                 }
-
+                _obj.pageUrl = window.location.pathname + window.location.search;
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "ReachInfo", "SetReachInfo")',
                     method: 'post',
                     data: _obj,
                     beforeSend: function () { $('.c-loading').loading('show'); },
                     success: function (resp) {
-                        $.magnificPopup.close({
-                            items: {
-                                src: '#popupAlert'
-                            },
-                            type: 'inline'
-                        });
+                        if(resp && !resp.success)
+                        {
+                            if(resp.errormsg !== '')
+                            {
+                                $('[data-errormsg]', '#infoFail').text(resp.errormsg);
+                                $.magnificPopup.open({
+                                    items: {
+                                        src: '#infoFail'
+                                    },
+                                    type: 'inline'
+                                });
+                                return;
+                            }
+                            window.VerifyLoginRedirctToHome(resp.success);
+                            return;
+                        }
                         switch (productType.toLowerCase()) {
                             case "fund":
                                 window.resetTable();
@@ -875,6 +890,12 @@
                                 resetTable3();
                                 break;
                         }
+                          $.magnificPopup.close({
+                            items: {
+                                src: '#popupAlert'
+                            },
+                            type: 'inline'
+                        });
                     },
                     error: function (xhr) {
                         console.log(xhr)

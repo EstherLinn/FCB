@@ -12,13 +12,19 @@ namespace Feature.Wealth.Account.Filter
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                filterContext.Result = new HttpUnauthorizedResult();
+                var domain = string.IsNullOrEmpty(Sitecore.Context.Site.TargetHostName) ? filterContext.HttpContext.Request.Url.Host : Sitecore.Context.Site.TargetHostName;
+                var url = filterContext.HttpContext.Request.RawUrl;
                 if (!filterContext.HttpContext.Request.IsAjaxRequest())
                 {
-                    var domain = string.IsNullOrEmpty(Sitecore.Context.Site.TargetHostName) ? filterContext.HttpContext.Request.Url.Host : Sitecore.Context.Site.TargetHostName;
-                    var url = filterContext.HttpContext.Request.RawUrl;
                     filterContext.HttpContext.Response.SetSameSiteCookie("BlockUrl", $"https://{domain}{url}");
+                    filterContext.Result = new HttpUnauthorizedResult();
                 }
+                else
+                {
+                    var pageUrl = filterContext.HttpContext.Request.Params["pageUrl"];
+                    filterContext.HttpContext.Response.SetSameSiteCookie("BlockUrl", $"https://{domain}{pageUrl}");
+                }
+
             }
         }
         public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)

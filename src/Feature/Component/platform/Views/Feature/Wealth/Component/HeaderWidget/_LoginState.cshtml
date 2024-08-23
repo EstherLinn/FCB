@@ -157,7 +157,8 @@
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "MemberInfoList", "SetInfoHaveReadByMember")',
                     type: 'POST',
-                    data: { "mailInfoType": $this.find('[data-mailType]').text(), "recordNumber": $this.find('[data-recordnum]').data('recordnum') },
+                    data: { "mailInfoType": $this.find('[data-mailType]').text(), "recordNumber": $this.find('[data-recordnum]').data('recordnum')
+                    ,"pageUrl": window.location.pathname + window.location.search},
                     beforeSend: function () { window.loading('show'); },
                     success: function (data, textStatus, jqXHR) {
                         if (data && data.success) {
@@ -166,6 +167,10 @@
                                 window.ResetMailInfoTable();
                             }
                             window.loading('hide');
+                        }else if(!data.success && data.block)
+                        {
+                            window.VerifyLoginRedirctToHome(data.success);
+                            return;
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) { },
