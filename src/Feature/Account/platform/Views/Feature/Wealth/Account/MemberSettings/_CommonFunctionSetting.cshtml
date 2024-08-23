@@ -86,9 +86,13 @@
             type: "post",
             url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetCommonFunctions")",
             beforeSend: function () { window.loading('show'); },
-            data: { "commons": commonArray },
+            data: { "commons": commonArray, "pageUrl": window.location.pathname + window.location.search },
             success: function (resp) {
-                //設置成功
+                if(!resp.success)
+                {
+                     window.VerifyLoginRedirctToHome(resp.success);
+                     return;
+                }
                 window.SetCommonFunctionList();
             },
             complete: function () { window.loading('hide'); }

@@ -112,7 +112,7 @@
                         type: "post",
                         url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetMemberEmail")",
                         beforeSend: function () { window.loading('show'); },
-                        data: { "email": val },
+                        data: { "email": val ,"pageUrl": window.location.pathname + window.location.search},
                         success: function (resp) {
                             if (resp.success) {
                                 //設置成功
@@ -120,6 +120,11 @@
                                 $('#email').val('');
                                 $('#emailText').text(val);
                             } else {
+                                if(resp.block)
+                                {
+                                    window.VerifyLoginRedirctToHome(resp.success);
+                                    return;
+                                }
                                 $('#emailErrorMsg').find('span').text(resp.errorMessage);
                                 $('#emailDiv').addClass('is-error');
                                 $('#emailErrorMsg').removeClass('u-hidden');
@@ -139,9 +144,10 @@
                 type: "post",
                 url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetVideoInfo")",
                 beforeSend: function () { window.loading('show'); },
-                data: { "open": val },
+                data: { "open": val, "pageUrl": window.location.pathname + window.location.search },
                 success: function (msg) {
-                    //設置成功
+                    window.VerifyLoginRedirctToHome(msg.success);
+                    return;
                 },
                 complete: function () { window.loading('hide'); }
             })
@@ -153,9 +159,10 @@
                 type: "post",
                 url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetArriedInfo")",
                 beforeSend: function () { window.loading('show'); },
-                data: { "open": val },
+                data: { "open": val, "pageUrl": window.location.pathname + window.location.search },
                 success: function (msg) {
-                    //設置成功
+                    window.VerifyLoginRedirctToHome(msg.success);
+                    return;
                 },
                 complete: function () { window.loading('hide'); }
             })

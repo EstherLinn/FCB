@@ -21,7 +21,7 @@ using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MemberUtils;
-
+using Feature.Wealth.Account.Filter;
 namespace Feature.Wealth.Account.Controllers
 {
     public class AccountsController : JsonNetController
@@ -360,19 +360,31 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
+        [MemberAuthenticationFilter]
         public async Task<ActionResult> InsertTrack(List<TrackListModel> trackList, string productId, string productType)
         {
+            object objReturn = new
+            {
+                success = false,
+                block = false
+            };
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new EmptyResult();
+                objReturn = new
+                {
+                    success = false,
+                    block = true
+                };
+                return new JsonNetResult(objReturn);
             }
             if (trackList == null)
             {
                 trackList = Enumerable.Empty<TrackListModel>().ToList();
             }
-            object objReturn = new
+            objReturn = new
             {
-                success = _memberRepository.InSertTrackList(trackList)
+                success = _memberRepository.InSertTrackList(trackList),
+                block = false
             };
             if (FcbMemberHelper.GetMemberPlatForm() == PlatFormEunm.WebBank)
             {
@@ -402,24 +414,27 @@ namespace Feature.Wealth.Account.Controllers
         public ActionResult SetUrlCookie(string url)
         {
             this.Response.SetSameSiteCookie("ReturnUrl", url);
-            return new JsonNetResult();
+            return new JsonNetResult(new { success = true });
         }
 
         [HttpPost]
-        public ActionResult GetUrlCookie(bool block = false)
+        public ActionResult GetUrlCookie(bool unlockBlock = false)
         {
             var url = WebUtil.GetCookieValue("ReturnUrl");
+            var beBlock = false;
             if (!string.IsNullOrEmpty(WebUtil.GetCookieValue("BlockUrl")))
             {
                 url = WebUtil.GetCookieValue("BlockUrl");
-                if (!block)
+                beBlock = true;
+                if (unlockBlock)
                 {
                     this.Response.Cookies["BlockUrl"].Expires = DateTime.Now.AddDays(-1);
                 }
             }
             object objReturn = new
             {
-                url
+                url,
+                beBlock
             };
             return new JsonNetResult(objReturn);
         }
@@ -440,18 +455,29 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
+        [MemberAuthenticationFilter]
         public ActionResult SetMemberEmail(string email)
         {
+            object objReturn = new
+            {
+                success = false,
+                block = false
+            };
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new EmptyResult();
+                objReturn = new
+                {
+                    success = false,
+                    block = true
+                };
+                return new JsonNetResult(objReturn);
             }
-            object objReturn = null;
             if (string.IsNullOrEmpty(email) || !email.IsValidEmail())
             {
                 objReturn = new
                 {
                     success = false,
+                    block = false,
                     errorMessage = "不符合Email格式，請重新輸入。"
                 };
                 return new JsonNetResult(objReturn);
@@ -466,13 +492,18 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
+        [MemberAuthenticationFilter]
         public ActionResult SetVideoInfo(bool open)
         {
+            object objReturn = new
+            {
+                success = false,
+            };
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new EmptyResult();
+                return new JsonNetResult(objReturn);
             }
-            object objReturn = new
+            objReturn = new
             {
                 success = _memberRepository.SetVideoInfo(FcbMemberHelper.GetMemberPlatFormId(), open)
             };
@@ -481,13 +512,18 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
+        [MemberAuthenticationFilter]
         public ActionResult SetArriedInfo(bool open)
         {
+            object objReturn = new
+            {
+                success = false,
+            };
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new EmptyResult();
+                return new JsonNetResult(objReturn);
             }
-            object objReturn = new
+            objReturn = new
             {
                 success = _memberRepository.SetArriedInfo(FcbMemberHelper.GetMemberPlatFormId(), open)
             };
@@ -496,13 +532,18 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
+        [MemberAuthenticationFilter]
         public ActionResult SetQuoteChangeColor(string color)
         {
+            object objReturn = new
+            {
+                success = false,
+            };
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new EmptyResult();
+                return new JsonNetResult(objReturn);
             }
-            object objReturn = new
+            objReturn = new
             {
                 success = _memberRepository.SetQuoteChangeColor(FcbMemberHelper.GetMemberPlatFormId(), color)
             };
@@ -511,17 +552,22 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
+        [MemberAuthenticationFilter]
         public ActionResult SetCommonFunctions(List<string> commons)
         {
+            object objReturn = new
+            {
+                success = false,
+            };
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new EmptyResult();
+                return new JsonNetResult(objReturn);
             }
             if (commons == null || !commons.Any())
             {
                 commons = Enumerable.Empty<string>().ToList();
             }
-            object objReturn = new
+            objReturn = new
             {
                 success = _memberRepository.SetCommonFunctions(FcbMemberHelper.GetMemberPlatFormId(), commons)
             };
@@ -546,11 +592,12 @@ namespace Feature.Wealth.Account.Controllers
             Authentication.LoginVirtualUser(user);
         }
         [HttpPost]
+        [MemberAuthenticationFilter]
         public ActionResult GetCifMemberRisk()
         {
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new EmptyResult();
+                return new JsonNetResult(new { success = false, block = true });
             }
             if (!Foundation.Wealth.Models.Config.IsEnableCheck)
             {
@@ -591,8 +638,9 @@ namespace Feature.Wealth.Account.Controllers
         }
 
         [HttpPost]
+        [MemberAuthenticationFilter]
         public ActionResult SetCommonTools(string itemId, bool isActive) => FcbMemberHelper.CheckMemberLogin() && _memberRepository.CheckCommonTools(itemId) ?
             new JsonNetResult(_memberRepository.SetCommonTools(itemId, isActive)) :
-            new EmptyResult();
+            new JsonNetResult(new { Item1 = false });
     }
 }

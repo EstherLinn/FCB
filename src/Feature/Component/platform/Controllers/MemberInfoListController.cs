@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Account.Helpers;
+﻿using Feature.Wealth.Account.Filter;
+using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Repositories;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Feature.Wealth.Component.Controllers
         }
         public ActionResult Index()
         {
-            
+
             return View("/Views/Feature/Wealth/Component/MemberInfoList/MemberInfoList.cshtml");
         }
         [HttpPost]
@@ -43,13 +44,24 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        [MemberAuthenticationFilter]
         public ActionResult SetInfoHaveReadByMember(string mailInfoType, int recordNumber)
         {
+            object obj = new
+            {
+                success = false,
+                block = false
+            };
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new EmptyResult();
+                obj = new
+                {
+                    success = false,
+                    block = true
+                };
+                return new JsonNetResult(obj);
             }
-            var obj = new
+            obj = new
             {
                 success = _infoListRepository.SetInfoHaveReadByMember(mailInfoType, recordNumber)
             };
@@ -57,13 +69,24 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        [MemberAuthenticationFilter]
         public ActionResult SetAllInfoHaveReadByMember()
         {
+            object obj = new
+            {
+                success = false,
+                block = false
+            };
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new EmptyResult();
+                obj = new
+                {
+                    success = false,
+                    block = true
+                };
+                return new JsonNetResult(obj);
             }
-            var obj = new
+            obj = new
             {
                 success = _infoListRepository.SetAllInfoHaveReadByMember()
             };

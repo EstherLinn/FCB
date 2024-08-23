@@ -478,6 +478,16 @@
         </div>
     </div>
 </div>
+<div id="infoFail" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">失敗</h2>
+        </header>
+        <div class="c-modal__content">
+            <p data-errormsg></p>
+        </div>
+    </div>
+</div>
 @if (Session["LoginStatus"] != null)
 {
     var item =  ItemUtils.GetItem(Templates.LoginErrorMesaage.Root);

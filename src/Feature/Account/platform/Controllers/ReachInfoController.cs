@@ -18,18 +18,29 @@ namespace Feature.Wealth.Account.Controllers
             this._reachInfoRepository = new ReachInfoRepository();
         }
         [HttpPost]
+        [MemberAuthenticationFilter]
         public ActionResult SetReachInfo(ReachInfo reachInfo)
         {
+            var obj = new
+            {
+                success = false,
+                errormsg = string.Empty
+            };
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new EmptyResult();
+                return new JsonNetResult(obj);
             }
-            object returnObj = new
-              {
-                  success = _reachInfoRepository.SetReachInfo(reachInfo)
-              };
+            if (string.IsNullOrEmpty(FcbMemberHelper.GetMemberAllInfo().MemberEmail))
+            {
+                return new JsonNetResult(obj = new{ success = false, errormsg = "請先設定您的電子信箱。"});
+            }
+            obj = new
+            {
+                success = _reachInfoRepository.SetReachInfo(reachInfo),
+                errormsg = string.Empty
+            };
 
-            return new JsonNetResult(returnObj);
+            return new JsonNetResult(obj);
         }
     }
 }

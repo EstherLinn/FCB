@@ -129,8 +129,13 @@
                 $.ajax({
                     type: 'post',
                     url: '@ClientRoute.GenerateUrl(this, "Accounts", "SetCommonTools")',
-                    data: { itemId: itemId, isActive: SC_DATA.CommonTools_isActive },
+                    data: { itemId: itemId, isActive: SC_DATA.CommonTools_isActive , pageUrl: window.location.pathname + window.location.search},
                     success: function (resp) {
+                        if(resp && !resp.Item1)
+                        {
+                            window.VerifyLoginRedirctToHome(resp.Item1);
+                            return;
+                        }
                         if (resp && resp.Item2) {
                             SC_DATA.CommonTools_isActive = false;
                             commonActive();
