@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Feature.Wealth.Account.Models.OAuth;
 using Feature.Wealth.Component.Models.Consult;
 using Foundation.Wealth.Manager;
 using Sitecore.Marketing.Definitions.AutomationPlans.Model;
@@ -142,6 +143,21 @@ namespace Feature.Wealth.Component.Repositories
                            FROM [Calendar] WITH (NOLOCK) WHERE [RealDate] > GETDATE()";
 
             var result = this._dbConnection.Query<Calendar>(sql)?.ToList() ?? new List<Calendar>();
+            return result;
+        }
+
+        public Branch GetBranch(string employeeCode)
+        {
+            string sql = @"SELECT 
+                           A.[OfficeOrBranchCode] [BranchCode],
+                           A.[OfficeOrBranchName] [BranchName],
+                           '(' + B.[PhoneAreaCode] + ')' + B.[PhoneNumber] [BranchPhone],
+                           A.[DepartmentCode] [DepartmentCode]
+                           FROM [HRIS] A WITH (NOLOCK)
+                           LEFT JOIN [Branch_Data] B WITH (NOLOCK) ON SUBSTRING(A.OfficeOrBranchCode, 2, 3) = B.BranchCode
+                           WHERE A.EmployeeCode = @EmployeeCode";
+
+            var result = this._dbConnection.Query<Branch>(sql, new { EmployeeCode = employeeCode })?.FirstOrDefault() ?? new Branch();
 
             return result;
         }
