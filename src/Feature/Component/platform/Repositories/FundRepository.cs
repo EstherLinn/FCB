@@ -418,19 +418,14 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundDividendRecord> GetDividendRecord(string fundId)
         {
-            var sql = @";WITH CTE AS (
-                         SELECT * FROM [Sysjust_Dividend_Fund] (NOLOCK)
-                         WHERE [FirstBankCode]=@fundId
-                        )
-                        SELECT [FirstBankCode]
+            var sql = @" SELECT [FirstBankCode]
                               ,FORMAT([ExDividendDate],'yyyy/MM/dd') [ExDividendDate]
                               ,FORMAT([BaseDate],'yyyy/MM/dd')[BaseDate]
                               ,FORMAT([ReleaseDate],'yyyy/MM/dd')[ReleaseDate]
                               ,[Dividend]
                               ,[AnnualizedDividendRate]
                               ,[Currency]
-                          FROM CTE
-                          WHERE ExDividendDate >= CAST(CAST(YEAR(DATEADD(YEAR,-2,(SELECT MAX(ExDividendDate) FROM CTE))) AS varchar(4))+'-01-01' AS smalldatetime)
+                          FROM [Sysjust_Dividend_Fund] (NOLOCK) WHERE [FirstBankCode]=@fundId
                           ORDER BY [ExDividendDate] DESC";
             var para = new { fundId };
             List<FundDividendRecord> fundDividendRecord = DbManager.Custom.ExecuteIList<FundDividendRecord>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
