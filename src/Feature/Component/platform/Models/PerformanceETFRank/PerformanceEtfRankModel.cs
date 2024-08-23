@@ -34,8 +34,8 @@ namespace Feature.Wealth.Component.Models.PerformanceEtfRank
             /// <summary>
             /// 淨值日期
             /// </summary>
-            public DateTime NetAssetValueDate { get; set; }
-            public string NetAssetValueDateFormat => NetAssetValueDate.ToString("yyyy/MM/dd");
+            public DateTime MarketPriceDate { get; set; }
+            public string MarketPriceDateFormat => MarketPriceDate.ToString("yyyy/MM/dd");
 
             /// <summary>
             /// 價格(市價)

@@ -90,7 +90,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.ProductName = f.ProductName.Normalize(NormalizationForm.FormKC);
                 vm.ExchangeCode = f.ExchangeCode;
                 vm.MarketPrice = f.MarketPrice;
-                vm.NetAssetValueDate = f.NetAssetValueDateFormat;
+                vm.MarketPriceDate = f.MarketPriceDateFormat;
                 vm.DiscountPremium = CreateDictionary(f.DiscountPremium);
 
                 vm.LatestVolumeTradingVolume = new KeyValuePair<string, decimal?>(f.LatestVolumeTradingVolumeFormat, f.LatestVolumeTradingVolume);

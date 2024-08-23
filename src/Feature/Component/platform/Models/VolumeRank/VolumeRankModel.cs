@@ -37,12 +37,12 @@ namespace Feature.Wealth.Component.Models.VolumeRank
             /// <summary>
             /// 淨值日期
             /// </summary>
-            public DateTime NetAssetValueDate { get; set; }
+            public DateTime MarketPriceDate { get; set; }
 
             /// <summary>
             /// 淨值日期
             /// </summary>
-            public string NetAssetValueDateFormat => NetAssetValueDate.ToString("yyyy/MM/dd");
+            public string MarketPriceDateFormat => MarketPriceDate.ToString("yyyy/MM/dd");
 
             /// <summary>
             /// 市價
