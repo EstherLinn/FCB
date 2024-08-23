@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Account.Helpers;
+using Feature.Wealth.Account.Models.OAuth;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.Component.Repositories;
 using Newtonsoft.Json;
@@ -153,6 +154,8 @@ namespace Feature.Wealth.Component.Controllers
 
         private ConsultModel CreateConsultModel(Item item)
         {
+            var info = FcbMemberHelper.GetMemberAllInfo();
+
             var temps = this._consultRepository.GetConsultScheduleList();
 
             temps = temps.Where(c => DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0 && c.StatusCode != "3").ToList();
@@ -164,12 +167,30 @@ namespace Feature.Wealth.Component.Controllers
             {
                 foreach(var c  in temps)
                 {
-                    // TODO 非本人的預約資料只留下時間及分機相關資訊
-                    consultScheduleList.Add(c);
+                    // 非本人的預約資料只留下時間及分機相關資訊
+                    if(c.CustomerID == info.WebBankId)
+                    {
+                        consultScheduleList.Add(c);
+                    }
+                    else
+                    {
+                        var clone = new ConsultSchedule()
+                        {
+                            ScheduleID = c.ScheduleID,
+                            EmployeeID = c.EmployeeID,
+                            ScheduleDate = c.ScheduleDate,
+                            ScheduleDateString = c.ScheduleDateString,
+                            StartTime = c.StartTime,
+                            EndTime = c.EndTime,
+                            DNIS = c.DNIS,
+                        };
+
+                        consultScheduleList.Add(clone);
+                    }
                 }
             }
 
-            var info = FcbMemberHelper.GetMemberAllInfo();
+            
 
             var consultModel = new ConsultModel
             {
@@ -323,11 +344,14 @@ namespace Feature.Wealth.Component.Controllers
 
             consultSchedule.EmployeeID = info.AdvisrorID;
             consultSchedule.EmployeeName = info.Advisror;
+
+            Branch branch = this._consultRepository.GetBranch(consultSchedule.EmployeeID);
+
             //TODO 找到對應分行資訊
-            consultSchedule.BranchCode = "B203050000";
-            consultSchedule.BranchName = "樹林分行";
-            consultSchedule.BranchPhone = "(02)123456789";
-            consultSchedule.DepartmentCode = "B20307E001";
+            consultSchedule.BranchCode = branch.BranchCode;
+            consultSchedule.BranchName = branch.BranchName;
+            consultSchedule.BranchPhone = branch.BranchPhone;
+            consultSchedule.DepartmentCode = branch.DepartmentCode;
 
             if (string.IsNullOrEmpty(consultSchedule.CustomerID) || string.IsNullOrEmpty(consultSchedule.CustomerName))
             {

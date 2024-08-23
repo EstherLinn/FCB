@@ -274,6 +274,14 @@ namespace Feature.Wealth.Component.Models.Consult
         public string BranchPhone { get; set; }
     }
 
+    public class Branch
+    {
+        public string BranchCode { get; set; }
+        public string BranchName { get; set; }
+        public string BranchPhone { get; set; }
+        public string DepartmentCode { get; set; }
+    }
+
     public struct Template
     {
         public readonly struct ConsultSchedule
