@@ -2716,7 +2716,7 @@
             if (dividendData.length > 0) {
                 $('#dividendCurrency').html(`每單位配息<br class="u-hidden@dt-only">金額(${dividendData[0].Currency.trim()})`);
                 $('[data-dividendCurrency]').text($('[data-dividendCurrency]').text() + dividendData[0].Currency.trim());
-                const dividendYearData = dividendData.map((item) => new Date(item.BaseDate).getFullYear()).filter(function (element, index, arr) {
+                const dividendYearData = dividendData.map((item) => new Date(item.ExDividendDate).getFullYear()).filter(function (element, index, arr) {
                     return arr.indexOf(element) === index;
                 });
                 $.each(dividendYearData, function (index, value) {
