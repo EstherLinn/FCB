@@ -79,27 +79,33 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             var result = MapperNewsResult(datasource);
-            return result?.ToList();
+            return result;
         }
 
-        private IEnumerable<NewsListResult> MapperNewsResult(Item item)
+        private List<NewsListResult> MapperNewsResult(Item item)
         {
             NewsListModel model = new NewsListModel();
             model.Initialize(item);
-            model.NewsItems = model.NewsItems.OrderByDescending(i => i.Date);
+            model.NewsItems = model.NewsItems.OrderByDescending(i => i.Date.HasValue ? i.Date.Value : DateTime.MinValue);
 
             var config = new TypeAdapterConfig();
             config.ForType<Data, NewsListResult>()
                 .AfterMapping((src, dest) =>
                 {
-                    var timeOffset = new DateTimeOffset(src.Date.Value);
+                    long timeOffsetLong = 0;
+                    if (src.Date.HasValue)
+                    {
+                        var timeOffset = new DateTimeOffset(src.Date.Value);
+                        timeOffsetLong = timeOffset.ToUnixTimeMilliseconds();
+                    }
+
                     dest.PageTitlePair = new KeyValuePair<string, string>(src.PageTitle, string.IsNullOrEmpty(src.PageTitle) ? "-" : src.PageTitle);
-                    dest.DatePair = new KeyValuePair<long, string>(timeOffset.ToUnixTimeMilliseconds(), src.Date.HasValue ? DateTimeExtensions.FormatDate(src.Date) : "-");
+                    dest.DatePair = new KeyValuePair<long, string>(timeOffsetLong, src.Date.HasValue ? DateTimeExtensions.FormatDate(src.Date) : "-");
                     dest.CategoryPair = new KeyValuePair<string, string>(src.Category, string.IsNullOrEmpty(src.Category) ? string.Empty : src.Category);
                     dest.FocusPair = new KeyValuePair<int, bool>(Convert.ToInt32(src.IsFocus), src.IsFocus);
                 });
 
-            var result = model.NewsItems.Adapt<IEnumerable<NewsListResult>>(config);
+            var result = model.NewsItems.Adapt<List<NewsListResult>>(config);
             return result;
         }
 

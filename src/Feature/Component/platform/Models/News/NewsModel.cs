@@ -40,13 +40,7 @@ namespace Feature.Wealth.Component.Models.News
         public int Count { get; set; }
         public string Json { get; set; }
 
-        public NewsListModel()
-        { }
-
-        //public NewsListModel(string datasourceId)
-        //{
-        //    this.DatasourceId = datasourceId;
-        //}
+        public NewsListModel() { }
 
         public void Initialize(Item item)
         {
@@ -80,7 +74,7 @@ namespace Feature.Wealth.Component.Models.News
             this.NewsItems = GetNewsDetails(items);
         }
 
-        protected IEnumerable<Data> GetNewsDetails(Item[] items)
+        private IEnumerable<Data> GetNewsDetails(Item[] items)
         {
             foreach (Item item in items)
             {
