@@ -12,6 +12,7 @@ using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using static Feature.Wealth.Component.ComponentTemplates;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -211,6 +212,16 @@ namespace Feature.Wealth.Component.Controllers
                 CustomerName = info.MemberName,
                 PersonalInformationLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.PersonalInformationLink).Url,
             };
+
+            var subjects = ItemUtils.GetMultiListValueItems(item, Template.ConsultSchedule.Fields.SubjectList);
+
+            if (subjects != null && subjects.Any())
+            {
+                foreach (var subject in subjects)
+                {
+                    consultModel.SubjectList.Add(ItemUtils.GetFieldValue(subject, DropdownOption.Fields.OptionText));
+                }
+            }
 
             // 取得近30日假日           
             string[] holidays = this._consultRepository.GetCalendar().Where(c => c.IsHoliday).Select(c => c.RealDate).ToArray();

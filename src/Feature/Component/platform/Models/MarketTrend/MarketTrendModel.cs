@@ -150,17 +150,6 @@ namespace Feature.Wealth.Component.Models.MarketTrend
         {
             public static readonly ID Id = new ID("{8F851745-0B44-407B-9A09-5EA100FCB1A6}");
         }
-
-        public readonly struct DropdownOption
-        {
-            public static readonly ID Id = new ID("{362DF993-E969-4243-898A-B01297B4B18A}");
-
-            public readonly struct Fields
-            {
-                public static readonly ID OptionText = new ID("{8532457A-4AF0-488D-8C45-34AC0AE7A859}");
-                public static readonly ID OptionValue = new ID("{B7E1B3B4-5A73-4C5E-A67B-C7DD68779F83}");
-            }
-        }
     }
 
     public enum RelevantInformationType
