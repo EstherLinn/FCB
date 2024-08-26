@@ -151,7 +151,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT 
                            A.[OfficeOrBranchCode] [BranchCode],
                            A.[OfficeOrBranchName] [BranchName],
-                           '(' + B.[PhoneAreaCode] + ')' + B.[PhoneNumber] [BranchPhone],
+                           '(' + TRIM(B.[PhoneAreaCode]) + ')' + B.[PhoneNumber] [BranchPhone],
                            A.[DepartmentCode] [DepartmentCode]
                            FROM [HRIS] A WITH (NOLOCK)
                            LEFT JOIN [Branch_Data] B WITH (NOLOCK) ON SUBSTRING(A.OfficeOrBranchCode, 2, 3) = B.BranchCode
