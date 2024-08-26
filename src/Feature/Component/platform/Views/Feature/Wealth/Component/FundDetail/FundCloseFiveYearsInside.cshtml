@@ -5,7 +5,18 @@
     var FundSameLevelApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetSameLevelFund");
     var detailsUrl = FundRelatedSettingModel.GetFundDetailsUrl();
 }
-
+<style>
+    /*移除漲跌幅符號*/
+    .o-rise:before, .o-fall:before {
+        content: '' !important;
+    }
+    /*列印時隱藏麵包屑及分享*/
+    @@media print {
+        .l-navbar__wrap, .l-sharebar {
+            display: none;
+        }
+    }
+</style>
 <div class="l-mainstage">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
@@ -186,7 +197,14 @@
                         Highcharts.chart('rateChart', {
                             chart: {
                                 type: 'column',
-                                height: 326
+                                height: 326,
+                                events: {
+                                    load: function () {
+                                        setTimeout(function () {
+                                            window.print();
+                                        }, 1000);
+                                    }
+                                }
                             },
                             title: {
                                 text: ''
@@ -220,7 +238,7 @@
                             },
                             plotOptions: {
                                 series: {
-                                    groupPadding: 0.1
+                                    groupPadding: 0.1,
                                 },
                                 column: {
                                     borderRadius: 4,
