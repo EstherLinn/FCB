@@ -427,7 +427,7 @@
     const reserveds = @Model.ReservedsHtmlString;
     const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六'];
     const emailReg = /^[a-zA-Z0-9_.+-]+@@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-    const phoneReg = /^09[0-9]{8}$/;
+    const phoneReg = /(\d{2,3}-?|\(\d{2,3}\))\d{3,4}-?\d{4}|09\d{2}(\d{6}|-\d{3}-\d{3})/;
 
     var currentConsultSchedule = {
         CustomerID: '',
