@@ -66,6 +66,16 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// </summary>
         public string PlatFormId { get; set; }
 
+        /// <summary>
+        /// 是否為員工
+        /// </summary>
+        public bool IsEmployee { get; set; } = false;
+
+        /// <summary>
+        /// 是否為主管
+        /// </summary>
+        public bool IsManager { get; set; } = false;
+
         public FcbMemberModel()
         {
         }
@@ -84,7 +94,9 @@ namespace Feature.Wealth.Account.Models.OAuth
 
         public FcbMemberModel(string webBankId, string memberName, string memberEmail,
             string risk, string advisror, string advisrorID, bool videoInfoOpen,
-            bool arrivedInfoOpen, QuoteChangeEunm stockShowColor, PlatFormEunm platForm, string platFormId,DateTime? birthday,string gender,string salFlag)
+            bool arrivedInfoOpen, QuoteChangeEunm stockShowColor, PlatFormEunm platForm,
+            string platFormId, DateTime? birthday, string gender, string salFlag,
+            bool isEmployee = false, bool isManager = false)
         {
             this.WebBankId = webBankId;
             this.MemberName = memberName;
@@ -100,6 +112,8 @@ namespace Feature.Wealth.Account.Models.OAuth
             this.Birthday = birthday;
             this.Gender = gender;
             this.SalFlag = salFlag;
+            this.IsEmployee = isEmployee;
+            this.IsManager = isManager;
         }
 
     }

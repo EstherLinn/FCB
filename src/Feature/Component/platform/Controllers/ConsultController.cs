@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Account.Helpers;
+using Feature.Wealth.Account.Models.OAuth;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.Component.Repositories;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using static Feature.Wealth.Component.ComponentTemplates;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -27,19 +29,14 @@ namespace Feature.Wealth.Component.Controllers
                 return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", null);
             }
 
-            return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", CreateConsultModel(item));
-        }
-
-        public ActionResult EmployeeConsult()
-        {
-            var item = RenderingContext.CurrentOrNull?.Rendering.Item;
-
-            if (!FcbMemberHelper.CheckMemberLogin() || string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
+            if (FcbMemberHelper.fcbMemberModel.IsEmployee)
             {
-                return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", null);
+                return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", CreateConsultModel(item));
             }
-
-            return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", CreateConsultModel(item));
+            else
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", CreateConsultModel(item));
+            }
         }
 
         public ActionResult ConsultList()
@@ -51,7 +48,21 @@ namespace Feature.Wealth.Component.Controllers
                 return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", null);
             }
 
-            return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", CreateConsultListModel(item));
+            if (FcbMemberHelper.fcbMemberModel.IsEmployee)
+            {
+                if(FcbMemberHelper.fcbMemberModel.IsManager)
+                {
+                    return View("/Views/Feature/Wealth/Component/Consult/ManagerConsultList.cshtml", CreateConsultListModel(item));
+                }
+                else
+                {
+                    return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsultList.cshtml", CreateConsultListModel(item));
+                }
+            }
+            else
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", CreateConsultListModel(item));
+            }
         }
 
         private ConsultListModel CreateConsultListModel(Item item)
@@ -153,6 +164,8 @@ namespace Feature.Wealth.Component.Controllers
 
         private ConsultModel CreateConsultModel(Item item)
         {
+            var info = FcbMemberHelper.GetMemberAllInfo();
+
             var temps = this._consultRepository.GetConsultScheduleList();
 
             temps = temps.Where(c => DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0 && c.StatusCode != "3").ToList();
@@ -164,12 +177,28 @@ namespace Feature.Wealth.Component.Controllers
             {
                 foreach(var c  in temps)
                 {
-                    // TODO 非本人的預約資料只留下時間及分機相關資訊
-                    consultScheduleList.Add(c);
-                }
-            }
+                    // 非本人的預約資料只留下時間及分機相關資訊
+                    if(c.CustomerID == info.WebBankId)
+                    {
+                        consultScheduleList.Add(c);
+                    }
+                    else
+                    {
+                        var clone = new ConsultSchedule()
+                        {
+                            ScheduleID = c.ScheduleID,
+                            EmployeeID = c.EmployeeID,
+                            ScheduleDate = c.ScheduleDate,
+                            ScheduleDateString = c.ScheduleDateString,
+                            StartTime = c.StartTime,
+                            EndTime = c.EndTime,
+                            DNIS = c.DNIS,
+                        };
 
-            var info = FcbMemberHelper.GetMemberAllInfo();
+                        consultScheduleList.Add(clone);
+                    }
+                }
+            }            
 
             var consultModel = new ConsultModel
             {
@@ -181,7 +210,18 @@ namespace Feature.Wealth.Component.Controllers
                 EmployeeName = info.Advisror,
                 CustomerID = info.WebBankId,
                 CustomerName = info.MemberName,
+                PersonalInformationLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.PersonalInformationLink).Url,
             };
+
+            var subjects = ItemUtils.GetMultiListValueItems(item, Template.ConsultSchedule.Fields.SubjectList);
+
+            if (subjects != null && subjects.Any())
+            {
+                foreach (var subject in subjects)
+                {
+                    consultModel.SubjectList.Add(ItemUtils.GetFieldValue(subject, DropdownOption.Fields.OptionText));
+                }
+            }
 
             // 取得近30日假日           
             string[] holidays = this._consultRepository.GetCalendar().Where(c => c.IsHoliday).Select(c => c.RealDate).ToArray();
@@ -322,11 +362,14 @@ namespace Feature.Wealth.Component.Controllers
 
             consultSchedule.EmployeeID = info.AdvisrorID;
             consultSchedule.EmployeeName = info.Advisror;
+
+            Branch branch = this._consultRepository.GetBranch(consultSchedule.EmployeeID);
+
             //TODO 找到對應分行資訊
-            consultSchedule.BranchCode = "B203050000";
-            consultSchedule.BranchName = "樹林分行";
-            consultSchedule.BranchPhone = "(02)123456789";
-            consultSchedule.DepartmentCode = "B20307E001";
+            consultSchedule.BranchCode = branch.BranchCode;
+            consultSchedule.BranchName = branch.BranchName;
+            consultSchedule.BranchPhone = branch.BranchPhone;
+            consultSchedule.DepartmentCode = branch.DepartmentCode;
 
             if (string.IsNullOrEmpty(consultSchedule.CustomerID) || string.IsNullOrEmpty(consultSchedule.CustomerName))
             {

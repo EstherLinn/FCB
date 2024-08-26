@@ -18,7 +18,7 @@ else
             <div class="c-tab c-tab--icon" data-tab="true" data-docking="false">
                 <div class="c-tab__header">
                     <div class="c-tab__title">
-                        <b class="t2">我的預約</b>
+                        <b class="t2">預約紀錄</b>
                     </div>
                     <ul class="c-tab__navs">
                         <!-- .is-active: 作用中的項目 -->
@@ -44,10 +44,7 @@ else
                         <div class="c-tab__header">
                             <ul class="c-tab__navs">
                                 <li>
-                                    <a href="#" class="c-tab__item is-active" target="_self" title="預約成功" data-tab-target="tab-status-1">預約成功</a>
-                                </li>
-                                <li>
-                                    <a href="#" class="c-tab__item" target="_self" title="預約確認中" data-tab-target="tab-status-2">預約確認中</a>
+                                    <a href="#" class="c-tab__item is-active" target="_self" title="諮詢清單" data-tab-target="tab-status-1">諮詢清單</a>
                                 </li>
                                 <li>
                                     <a href="#" class="c-tab__item" target="_self" title="歷史紀錄" data-tab-target="tab-status-3">歷史紀錄</a>
@@ -56,167 +53,117 @@ else
                         </div>
                         <!-- is-active: 作用中的項目 -->
                         <div class="c-tab__panel is-active" data-tab-panel-id="tab-status-1">
-                            <div class="l-table">
-                                <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
-                                    <colgroup>
-                                        <col style="width: 1%;">
-                                        <col style="width: 2%;">
-                                        <col style="width: 3%;">
-                                        <col style="width: 3%;">
-                                        <col style="width: 2%;">
-                                        <col style="width: 1%;">
-                                        <col style="width: 1%;">
-                                    </colgroup>
-                                    <thead>
-                                        <tr class="u-nowrap">
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>即將到來</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>預約日期</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>預約時段</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>電子信箱</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>預約明細</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>取消預約</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>開始諮詢</span>
-                                                </div>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody1">
-                                    </tbody>
-                                </table>
-                                <div class="l-pagination">
-                                    <div class="l-pagination__size" id="uid-perPage-1">
-                                    </div>
-                                    <div class="l-pagination__switch" id="uid-pagination-1">
-                                    </div>
+                        <div class="l-table">
+                            <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
+                                <colgroup>
+                                    <col style="width: 1%;">
+                                    <col style="width: 2%;">
+                                    <col style="width: 3%;">
+                                    <col style="width: 3%;">
+                                    <col style="width: 2%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                </colgroup>
+                                <thead>
+                                    <tr class="u-nowrap">
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>即將到來</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約日期</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約時段</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>電子信箱</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約明細</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>取消預約</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>開始諮詢</span>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody1">
+                                </tbody>
+                            </table>
+                            <div class="l-pagination">
+                                <div class="l-pagination__size" id="uid-perPage-1">
+                                </div>
+                                <div class="l-pagination__switch" id="uid-pagination-1">
                                 </div>
                             </div>
                         </div>
-                        <div class="c-tab__panel" data-tab-panel-id="tab-status-2">
-                            <div class="l-table">
-                                <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
-                                    <colgroup>
-                                        <col style="width: 2%;">
-                                        <col style="width: 2%;">
-                                        <col style="width: 3%;">
-                                        <col style="width: 2%;">
-                                        <col style="width: 1%;">
-                                    </colgroup>
-                                    <thead>
-                                        <tr class="u-nowrap">
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>預約日期</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>預約時段</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>電子信箱</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>預約明細</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>取消預約</span>
-                                                </div>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody0">
-                                    </tbody>
-                                </table>
-                                <div class="l-pagination">
-                                    <div class="l-pagination__size" id="uid-perPage-0">
-                                    </div>
-                                    <div class="l-pagination__switch" id="uid-pagination-0">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
                         <div class="c-tab__panel" data-tab-panel-id="tab-status-3">
-                            <div class="l-table">
-                                <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
-                                    <colgroup>
-                                        <col style="width: 1%;">
-                                        <col style="width: 1%;">
-                                        <col style="width: 2%;">
-                                        <col style="width: 1%;">
-                                        <col style="width: 1%;">
-                                    </colgroup>
-                                    <thead>
-                                        <tr class="u-nowrap">
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>預約日期</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>預約時段</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>電子信箱</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>預約狀態</span>
-                                                </div>
-                                            </th>
-                                            <th>
-                                                <div class="c-table__title">
-                                                    <span>預約明細</span>
-                                                </div>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tbody2">
-                                    </tbody>
-                                </table>
-                                <div class="l-pagination">
-                                    <div class="l-pagination__size" id="uid-perPage-2">
-                                    </div>
-                                    <div class="l-pagination__switch" id="uid-pagination-2">
-                                    </div>
+                        <div class="l-table">
+                            <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
+                                <colgroup>
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 2%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                </colgroup>
+                                <thead>
+                                    <tr class="u-nowrap">
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約日期</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約時段</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>電子信箱</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約狀態</span>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                <span>預約明細</span>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody2">
+                                </tbody>
+                            </table>
+                            <div class="l-pagination">
+                                <div class="l-pagination__size" id="uid-perPage-2">
+                                </div>
+                                <div class="l-pagination__switch" id="uid-pagination-2">
                                 </div>
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
                 <div class="c-tab__panel" data-tab-panel-id="tab-icon-2">
@@ -694,31 +641,31 @@ else
                 $('[data-detail="Description"]').text(consultSchedule.Description);
                 $('[data-cancel]').attr('data-id', id);
             }
-    
+
             function bindClickEvent() {
                 $('[data-popup]').magnificPopup();
 
                 $('[data-popup-name="popupDetail"]').on('click', function (e) {
                     e.preventDefault();
-    
+
                     setPopup($(this).attr('data-id'));
                 });
-    
+
                 $('[data-popup-name="popupCancel"]').on('click', function (e) {
                     e.preventDefault();
-    
+
                     setPopup($(this).attr('data-id'));
                 });
-    
+
                 $('[data-cancel]').on('click', function (e) {
                     e.preventDefault();
                     window.loading('show');
                     var id = $(this).attr('data-id')
                     var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
-    
+
                     var token = $('input[name="__RequestVerificationToken"]').val();
                     consultSchedule.__RequestVerificationToken = token;
-    
+
                     $.ajax({
                         url: '@ClientRoute.GenerateUrl(this, "Consult", "CancelConsultSchedule")',
                         type: 'POST',
@@ -729,13 +676,13 @@ else
                             if (data0.length > 0) {
                                 fjs0.removeRecords({ ScheduleID: id });
                             }
-    
+
                             if (data1.length > 0) {
                                 fjs1.removeRecords({ ScheduleID: id });
                             }
                         }
                         else {
-    
+
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                     }).always(function () {
@@ -743,9 +690,9 @@ else
                     });
                 });
             }
-    
+
             bindClickEvent();
-    
+
             moment.locale('zh-tw', {
                 weekdaysMin: dayNamesZh,
                 meridiemParse: /凌晨|早上|上午|中午|下午|晚上/,

@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using static Feature.Wealth.Component.ComponentTemplates;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -112,8 +113,8 @@ namespace Feature.Wealth.Component.Controllers
 
                 var degree = ItemUtils.GetReferenceFieldItem(child, Template.MarketTrendItem.Fields.Degree);
 
-                marketTrend.Degree = ItemUtils.GetFieldValue(degree, Template.DropdownOption.Fields.OptionValue);
-                marketTrend.DegreeText = ItemUtils.GetFieldValue(degree, Template.DropdownOption.Fields.OptionText);
+                marketTrend.Degree = ItemUtils.GetFieldValue(degree, DropdownOption.Fields.OptionValue);
+                marketTrend.DegreeText = ItemUtils.GetFieldValue(degree, DropdownOption.Fields.OptionText);
 
                 // 處理相關指數
                 var indexItems = ItemUtils.GetMultiListValueItems(child, Template.MarketTrendItem.Fields.IndexCode);
@@ -281,7 +282,7 @@ namespace Feature.Wealth.Component.Controllers
 
                 if (newsItems != null && newsItems.Any())
                 {
-                    string newsType = ItemUtils.GetFieldValue(newsItems.FirstOrDefault(), Template.DropdownOption.Fields.OptionText);
+                    string newsType = ItemUtils.GetFieldValue(newsItems.FirstOrDefault(), DropdownOption.Fields.OptionText);
                     var pageId = Models.News.MarketNewsRelatedLinkSetting.GetMarketNewsDetailPageItem().ID.ToGuid();
 
                     marketTrend.News = this._marketTrendRepository.GetNews(pageId, newsType).ToList();

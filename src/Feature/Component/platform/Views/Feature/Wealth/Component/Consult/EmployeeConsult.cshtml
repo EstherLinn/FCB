@@ -98,70 +98,20 @@
                                         <div class="l-form is-error" id="l-form-subject">
                                             <div class="l-form__item">
                                                 <div class="l-pickGroup l-pickGroup--form">
-                                                    <div class="l-pickGroup__item">
-                                                        <label class="o-checkbox">
-                                                            <input class="o-checkbox__input" type="checkbox" value="投資市場諮詢" data-subject>
-                                                            <div class="o-checkbox__text">
-                                                                投資市場諮詢
+                                                    @if (Model.SubjectList != null)
+                                                    {
+                                                        foreach (var item in Model.SubjectList)
+                                                        {
+                                                            <div class="l-pickGroup__item">
+                                                                <label class="o-checkbox">
+                                                                    <input class="o-checkbox__input" type="checkbox" value="@item" data-subject>
+                                                                    <div class="o-checkbox__text">
+                                                                        @item
+                                                                    </div>
+                                                                </label>
                                                             </div>
-                                                        </label>
-                                                    </div>
-                                                    <div class="l-pickGroup__item">
-                                                        <label class="o-checkbox">
-                                                            <input class="o-checkbox__input" type="checkbox" value="投資組合建議" data-subject>
-                                                            <div class="o-checkbox__text">
-                                                                投資組合建議
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                    <div class="l-pickGroup__item">
-                                                        <label class="o-checkbox">
-                                                            <input class="o-checkbox__input" type="checkbox" value="資產配置規劃" data-subject>
-                                                            <div class="o-checkbox__text">
-                                                                資產配置規劃
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                    <div class="l-pickGroup__item">
-                                                        <label class="o-checkbox">
-                                                            <input class="o-checkbox__input" type="checkbox" value="稅務及資金規劃" data-subject>
-                                                            <div class="o-checkbox__text">
-                                                                稅務及資金規劃
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                    <div class="l-pickGroup__item">
-                                                        <label class="o-checkbox">
-                                                            <input class="o-checkbox__input" type="checkbox" value="家族及企業財富傳承" data-subject>
-                                                            <div class="o-checkbox__text">
-                                                                家族及企業財富傳承
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                    <div class="l-pickGroup__item">
-                                                        <label class="o-checkbox">
-                                                            <input class="o-checkbox__input" type="checkbox" value="退休理財規劃" data-subject>
-                                                            <div class="o-checkbox__text">
-                                                                退休理財規劃
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                    <div class="l-pickGroup__item">
-                                                        <label class="o-checkbox">
-                                                            <input class="o-checkbox__input" type="checkbox" value="全方位理財健診" data-subject>
-                                                            <div class="o-checkbox__text">
-                                                                全方位理財健診
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                    <div class="l-pickGroup__item">
-                                                        <label class="o-checkbox">
-                                                            <input class="o-checkbox__input" type="checkbox" value="投資研究報告" data-subject>
-                                                            <div class="o-checkbox__text">
-                                                                投資研究報告
-                                                            </div>
-                                                        </label>
-                                                    </div>
+                                                        }
+                                                    }
                                                 </div>
                                             </div>
                                             <div class="l-form__text l-form__text--error">
@@ -192,7 +142,7 @@
                                 <label class="o-checkbox">
                                     <input class="o-checkbox__input" type="checkbox" id="picheck">
                                     <div class="o-checkbox__text">
-                                        為保護您的權益，請詳細閱讀<a href="#" class="o-link">個人資料運用告知聲明</a>，當表單送出時，即視同您已充分了解與同意。
+                                        為保護您的權益，請詳細閱讀<a href="@Model.PersonalInformationLink" class="o-link">個人資料運用告知聲明</a>，當表單送出時，即視同您已充分了解與同意。
                                     </div>
                                 </label>
                             </div>
@@ -383,11 +333,11 @@
                 </div>
                 <div class="l-info__item">
                     <div class="l-info__title">諮詢主題</div>
-                    <div class="l-info__val" id="l-info-subject">投資組合建議、資產配置規劃、退休理財規劃</div>
+                    <div class="l-info__val" id="l-info-subject"></div>
                 </div>
                 <div class="l-info__item">
                     <div class="l-info__title">其他諮詢內容</div>
-                    <div class="l-info__val" id="l-info-description">預計在50歲退休，想了解退休缺口多大，如何進行資產配置，有機會可以提早退休</div>
+                    <div class="l-info__val" id="l-info-description"></div>
                 </div>
             </div>
         </div>

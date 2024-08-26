@@ -20,6 +20,8 @@ namespace Feature.Wealth.Component.Models.Consult
         public string EmployeeName { get; set; }
         public string CustomerID { get; set; }
         public string CustomerName { get; set; }
+        public string PersonalInformationLink { get; set; }
+        public List<string> SubjectList { get; set; } = new List<string>();
     }
 
     public class ConsultScheduleModel
@@ -44,6 +46,8 @@ namespace Feature.Wealth.Component.Models.Consult
         public HtmlString ConsultSchedulesHtmlString { get; set; }
         public IList<ConsultScheduleForCalendar> ConsultScheduleForCalendars { get; set; }
         public HtmlString ConsultScheduleForCalendarsHtmlString { get; set; }
+        public bool IsEmployee { get; set; } = false;
+        public bool IsManager { get; set; } = false;
     }
 
     public class QandA
@@ -273,6 +277,14 @@ namespace Feature.Wealth.Component.Models.Consult
         public string BranchPhone { get; set; }
     }
 
+    public class Branch
+    {
+        public string BranchCode { get; set; }
+        public string BranchName { get; set; }
+        public string BranchPhone { get; set; }
+        public string DepartmentCode { get; set; }
+    }
+
     public struct Template
     {
         public readonly struct ConsultSchedule
@@ -281,6 +293,8 @@ namespace Feature.Wealth.Component.Models.Consult
 
             public readonly struct Fields
             {
+                public static readonly ID PersonalInformationLink = new ID("{F0D15279-4ADF-4744-AE0E-A46E116D701C}");
+                public static readonly ID SubjectList = new ID("{0271AD6F-0BB0-4E36-A656-A6C547073915}");
             }
         }
 
