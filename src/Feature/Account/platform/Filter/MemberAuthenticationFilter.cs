@@ -2,6 +2,7 @@
 using Foundation.Wealth.Helper;
 using Sitecore.Web;
 using System;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Filters;
 namespace Feature.Wealth.Account.Filter
@@ -13,7 +14,7 @@ namespace Feature.Wealth.Account.Filter
             if (!FcbMemberHelper.CheckMemberLogin())
             {
                 var domain = string.IsNullOrEmpty(Sitecore.Context.Site.TargetHostName) ? filterContext.HttpContext.Request.Url.Host : Sitecore.Context.Site.TargetHostName;
-                var url = filterContext.HttpContext.Request.RawUrl;
+                var url = HttpUtility.UrlEncode(filterContext.HttpContext.Request.RawUrl);
                 if (!filterContext.HttpContext.Request.IsAjaxRequest())
                 {
                     filterContext.HttpContext.Response.SetSameSiteCookie("BlockUrl", $"https://{domain}{url}");
@@ -21,7 +22,7 @@ namespace Feature.Wealth.Account.Filter
                 }
                 else
                 {
-                    var pageUrl = filterContext.HttpContext.Request.Params["pageUrl"];
+                    var pageUrl = HttpUtility.UrlEncode(filterContext.HttpContext.Request.Params["pageUrl"]);
                     filterContext.HttpContext.Response.SetSameSiteCookie("BlockUrl", $"https://{domain}{pageUrl}");
                 }
 

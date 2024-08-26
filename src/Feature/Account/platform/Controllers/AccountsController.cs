@@ -424,7 +424,7 @@ namespace Feature.Wealth.Account.Controllers
             var beBlock = false;
             if (!string.IsNullOrEmpty(WebUtil.GetCookieValue("BlockUrl")))
             {
-                url = WebUtil.GetCookieValue("BlockUrl");
+                url = HttpUtility.UrlDecode(WebUtil.GetCookieValue("BlockUrl"));
                 beBlock = true;
                 if (unlockBlock)
                 {
