@@ -507,7 +507,7 @@
                 <section class="c-section Locker"></section>
 
                 <!-- 風險屬性 & 資產配置 -->
-                <div class="c-section">
+                <div class="c-section" id="tab1RiskAsset">
                     <div class="c-section">
                         <div class="l-calcCharts">
                             <div class="l-calcCharts__item">
@@ -695,7 +695,7 @@
                 <section class="c-section Locker"></section>
 
                 <!-- 風險屬性 & 資產配置 -->
-                <div class="c-section">
+                <div class="c-section" id="tab2RiskAsset">
                     <div class="c-section">
                         <div class="l-calcCharts">
                             <div class="l-calcCharts__item">
@@ -883,7 +883,7 @@
                 <section class="c-section Locker"></section>
 
                 <!-- 風險屬性 & 資產配置 -->
-                <div class="c-section">
+                <div class="c-section" id="tab3RiskAsset">
                     <div class="c-section">
                         <div class="l-calcCharts">
                             <div class="l-calcCharts__item">
@@ -1071,7 +1071,7 @@
                 <section class="c-section Locker"></section>
 
                 <!-- 風險屬性 & 資產配置 -->
-                <div class="c-section">
+                <div class="c-section" id="tab4RiskAsset">
                     <div class="c-section">
                         <div class="l-calcCharts">
                             <div class="l-calcCharts__item">
@@ -1261,7 +1261,7 @@
                 <section class="c-section Locker"></section>
 
                 <!-- 風險屬性 & 資產配置 -->
-                <div class="c-section">
+                <div class="c-section" id="tab5RiskAsset">
                     <div class="c-section">
                         <div class="l-calcCharts">
                             <div class="l-calcCharts__item">
@@ -1525,31 +1525,6 @@
 <script>
     (function ($, window, document, undefined) {
         document.addEventListener("DOMContentLoaded", function () {
-            if (SC_DATA.IsLoggedIn) {
-
-                $('[data-save="true"]').removeClass('u-hidden');
-
-                if (SC_DATA.Risk == undefined) {
-                    RiskHandler().then((data) => {
-                        SC_DATA.Risk = data.risk;
-                    });
-                }
-
-                if (SC_DATA.WebBankId !== "") {
-                    if (SC_DATA.Risk !== undefined) {
-
-                        UpdateRiskAttributesContent(SC_DATA.Risk);
-
-                    } else {
-                        renderNotRisk();
-                    }
-                } else {
-                    renderTPPLogin();
-                }
-            } else {
-                renderNotLogin();
-            }
-
             var resultHasGap;
             var description, readingbar = [], earningsChart = [], chartsRevenues = [], chartsRewards = [], chartsRewardsCategories = [], chartsAssets = [];
             var hasRenderedRecommendations = false;
@@ -1582,6 +1557,26 @@
                     text: '@Model.CurrencyAllocationText'
                 }
             };
+
+            if (SC_DATA.IsLoggedIn) {
+
+                $('[data-save="true"]').removeClass('u-hidden');
+
+                if (SC_DATA.Risk == undefined) {
+                    RiskHandler().then((data) => {
+                        SC_DATA.Risk = data.risk;
+                    });
+                }
+                if (SC_DATA.Risk !== undefined && SC_DATA.PlatForm == 'WebBank') {
+
+                    UpdateRiskAttributesContent(SC_DATA.Risk);
+
+                } else if (SC_DATA.Risk == undefined && SC_DATA.PlatForm == 'WebBank') {
+                    renderNotRisk();
+                }
+            } else {
+                renderNotLogin();
+            }
 
             //#region 預計幾年後達成目標綁定事件
             let $sliderYear = $('[data-slider-id="year"]').get(0),
@@ -2118,7 +2113,8 @@
                     ChartsRevenues: chartsRevenues,
                     ChartsRewards: chartsRewards,
                     ChartsRewardsCategories: chartsRewardsCategories,
-                    __RequestVerificationToken: token
+                    __RequestVerificationToken: token,
+                    pageUrl: window.location.pathname + window.location.search
                 };
 
                 $.ajax({
@@ -2129,7 +2125,12 @@
                         xhr.setRequestHeader("RequestVerificationToken", token);
                     }
                 }).done(function (data, textStatus, jqXHR) {
-                    window.toast('已儲存');
+                    if (data && data.success) {
+                        window.toast('已儲存');
+                    } else if (!data.success && data.block) {
+                        window.VerifyLoginRedirctToHome(data.success);
+                        return;
+                    }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     console.log(errorThrown);
                 }).always(function () {
@@ -2142,7 +2143,12 @@
                 e.preventDefault();
 
                 RiskHandler().then((data) => {
-                    unlockRecommendations(data);
+                    if (data && data.success) {
+                        unlockRecommendations(data);
+                    } else if (!data.success && data.block) {
+                        window.VerifyLoginRedirctToHome(data.success);
+                        return;
+                    }
                 });
             });
             //#endregion
@@ -2554,13 +2560,18 @@
                     let eventEtf = $('[data-tab-panel-id="tab-1"] .recommendedETF .swiper-wrapper');
                     let eventStringEtf = '[data-tab-panel-id="tab-1"] .recommendedETF';
                     getEtfData(tab, eventEtf, eventStringEtf, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
-                } else {
+
+                } else if (!SC_DATA.IsLoggedIn || (SC_DATA.PlatForm == 'WebBank' && SC_DATA.Risk == undefined)) {
                     if (!hasRenderedRecommendations) {
                         renderRecommendedFunds(9);
                         renderRecommendedETFs(3);
                         renderRecommendedProductChart();
                         hasRenderedRecommendations = true;
                     }
+                } else if (SC_DATA.PlatForm == 'Line' || SC_DATA.PlatForm == 'FaceBook') {
+                    $('#tab1RiskAsset').addClass('u-hidden');
+                    $('#tab1Fund').addClass('u-hidden');
+                    $('#tab1ETF').addClass('u-hidden');
                 }
             }
             //#endregion
@@ -2635,6 +2646,11 @@
                     let eventEtf = $('[data-tab-panel-id="tab-2"] .recommendedETF .swiper-wrapper');
                     let eventStringEtf = '[data-tab-panel-id="tab-2"] .recommendedETF';
                     getEtfData(tab, eventEtf, eventStringEtf, educationalFund, years, amountPrepared, result, expectedRoi);
+
+                } else if (SC_DATA.PlatForm == 'Line' || SC_DATA.PlatForm == 'FaceBook') {
+                    $('#tab2RiskAsset').addClass('u-hidden');
+                    $('#tab2Fund').addClass('u-hidden');
+                    $('#tab2ETF').addClass('u-hidden');
                 }
             }
             //#endregion
@@ -2709,6 +2725,11 @@
                     let eventEtf = $('[data-tab-panel-id="tab-3"] .recommendedETF .swiper-wrapper');
                     let eventStringEtf = '[data-tab-panel-id="tab-3"] .recommendedETF';
                     getEtfData(tab, eventEtf, eventStringEtf, educationalFund, years, amountPrepared, monthlyInvestment, result);
+
+                } else if (SC_DATA.PlatForm == 'Line' || SC_DATA.PlatForm == 'FaceBook') {
+                    $('#tab3RiskAsset').addClass('u-hidden');
+                    $('#tab3Fund').addClass('u-hidden');
+                    $('#tab3ETF').addClass('u-hidden');
                 }
             }
             //#endregion
@@ -2782,6 +2803,11 @@
                     let eventEtf = $('[data-tab-panel-id="tab-4"] .recommendedETF .swiper-wrapper');
                     let eventStringEtf = '[data-tab-panel-id="tab-4"] .recommendedETF';
                     getEtfData(tab, eventEtf, eventStringEtf, educationalFund, result, amountPrepared, monthlyInvestment, expectedRoi);
+
+                } else if (SC_DATA.PlatForm == 'Line' || SC_DATA.PlatForm == 'FaceBook') {
+                    $('#tab4RiskAsset').addClass('u-hidden');
+                    $('#tab4Fund').addClass('u-hidden');
+                    $('#tab4ETF').addClass('u-hidden');
                 }
             }
             //#endregion
@@ -2855,6 +2881,11 @@
                     let eventEtf = $('[data-tab-panel-id="tab-5"] .recommendedETF .swiper-wrapper');
                     let eventStringEtf = '[data-tab-panel-id="tab-5"] .recommendedETF';
                     getEtfData(tab, eventEtf, eventStringEtf, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi);
+
+                } else if (SC_DATA.PlatForm == 'Line' || SC_DATA.PlatForm == 'FaceBook') {
+                    $('#tab5RiskAsset').addClass('u-hidden');
+                    $('#tab5Fund').addClass('u-hidden');
+                    $('#tab5ETF').addClass('u-hidden');
                 }
             }
             //#endregion
@@ -3354,7 +3385,8 @@
                                     <div class="c-calcLocker__icon">
                                                     <img src="${lockImg}" alt="">
                                     </div>
-                                    <div class="c-calcLocker__desc t2 t-bold">登入查看專屬推薦</div>
+                                        <div class="c-calcLocker__desc t2 t-bold">登入儲存試算結果及查看推薦商品</div>
+                                        <div class="c-calcLocker__desc" style="color:#808080">*第三方登入僅有儲存功能</div>
                                     <div class="c-calcLocker__actions">
                                         <div class="c-calcLocker__btn"><a href="#popupLogin" class="o-btn o-btn--primary o-btn--lg" data-popup="true">立即登入</a></div>
                                     </div>
@@ -3367,27 +3399,6 @@
                     type: 'inline',
                     midClick: true
                 });
-            }
-            //#endregion
-
-            //#region 判斷登入平台遮罩顯示
-            function renderTPPLogin() {
-                const TPPLoginHTML = `
-                                    <div class="c-calcLocker">
-                                        <div class="l-wrap">
-                                            <div class="c-calcLocker__icon">
-                                                            <img src="${lockImg}" alt="">
-                                            </div>
-                                            <div class="c-calcLocker__desc t2 t-bold">綁定一銀帳戶查看專屬推薦</div>
-                                            <div class="c-calcLocker__actions">
-                                                <div class="c-calcLocker__btn"><a href="https://ibank.firstbank.com.tw/NetBank/DigAMA/LandingPage/index.html" target="_blank" class="o-btn o-btn--secondary o-btn--lg" rel="noreferrer noopener">立即開戶</a></div>
-                                                            <div class="c-calcLocker__btn"><a href="#" target="_self" class="o-btn o-btn--primary o-btn--lg" data-eh="fcblogin-click">立即綁定</a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                            `;
-                $('.Locker').append(TPPLoginHTML);
-                $('.Locker').addClass("c-section--locker");
             }
             //#endregion
 
