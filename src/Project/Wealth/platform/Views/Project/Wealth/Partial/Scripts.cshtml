@@ -35,10 +35,10 @@
                 url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
                 data: { "url": '@url' },
                 success: function(response) {
-                    resolve(response);  
+                    resolve(response);
                 },
                 error: function(error) {
-                    reject(error);  
+                    reject(error);
                 }
             });
          });
@@ -51,10 +51,10 @@
                 url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
                 data: { "unlockBlock": false },
                 success: function(response) {
-                    resolve(response);  
+                    resolve(response);
                 },
                 error: function(error) {
-                    reject(error);  
+                    reject(error);
                 }
                });
          });
@@ -88,7 +88,7 @@
                     }
                 }
         }).catch(function(error) {
-        console.error('Error:', error); 
+        console.error('Error:', error);
         });
 
         if (isLogin) {
@@ -107,25 +107,30 @@
         }
 
         const tabIdentifier = Date.now().toString();
-        const storageKey = 'tabs' + new Date().toISOString().split('T')[0];
-
+        const storageKey = 'tabs' + dayjs().format('YYYY-MM-DD');
+        //刪除前一天的localstorage
+        const beforeOneDayKey = "tabs" + dayjs(Date.now() - (24 * 60 * 60 * 1000)).format('YYYY-MM-DD');
+        store.remove(beforeOneDayKey);
         //載入頁面時加一個tab戳記
         ['DOMContentLoaded'].forEach(function (event) {
             window.addEventListener(event, function (e) {
                 const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
                 openTabs.push(tabIdentifier);
                 localStorage.setItem(storageKey, JSON.stringify(openTabs));
+                //如果登入狀態但已經關閉過頁面則登出
+                if(isLogin && store.get(storageKey + "_left")){
+                    store.remove(storageKey + "_left");
+                    logOutEvent();
+                    let logOutRoute = new URL( location.protocol +"//"+ location.host + "@ClientRoute.GenerateUrl(this, "Accounts", "Logout")");
+                    location.href = logOutRoute;
+                }
+                store.remove(storageKey + "_left");
             });
         });
 
         //登出Event
         const logOutEvent = (event) => {
-            $.ajax({
-                type: "post",
-                url: "@ClientRoute.GenerateUrl(this, "Accounts", "Logout")",
-                success: function (msg) {
-                }
-            })
+            navigator.sendBeacon("@ClientRoute.GenerateUrl(this, "Accounts", "Logout")", null);
         }
 
         //離開頁面後砍一個tab戳記
@@ -135,6 +140,8 @@
                 const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
                 localStorage.setItem(storageKey, JSON.stringify(updatedTabs));
                 if (isLogin && updatedTabs.length === 0) {
+                    //設置離開頁面localstorage
+                    store.set(storageKey + "_left", true);
                     isLogin = false;
                     logOutEvent();
                 }
