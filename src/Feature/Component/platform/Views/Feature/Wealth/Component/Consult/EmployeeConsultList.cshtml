@@ -354,40 +354,6 @@ else
         </div>
     </div>
     
-    <script id="template0" type="text/html">
-        <tr class="c-cardTable__item u-center@dt-only">
-            <td class="c-cardTable__space"></td>
-            <td class="c-cardTable__body" data-card-table-width="1/1">
-                <div class="c-cardTable__title" data-length="5">預約日期</div>
-                <div class="c-cardTable__content"><%= ScheduleDateString %></div>
-            </td>
-            <td class="c-cardTable__body" data-card-table-width="1/1">
-                <div class="c-cardTable__title" data-length="5">預約時段</div>
-                <div class="c-cardTable__content"><%= StartTime %>~<%= EndTime %></div>
-            </td>
-            <td class="c-cardTable__body">
-                <div class="c-cardTable__title" data-length="5">電子信箱</div>
-                <div class="c-cardTable__content"><%= Mail %></div>
-            </td>
-            <td class="c-cardTable__body" data-card-table-width="1/1">
-                <div class="c-cardTable__title" data-length="5">預約明細</div>
-                <div class="c-cardTable__content">
-                    <a href="#popupDetail" class="o-link" data-popup="true" data-popup-name="popupDetail" data-id="<%= ScheduleID %>">查看</a>
-                </div>
-            </td>
-            <td class="c-cardTable__space"></td>
-            <td class="c-cardTable__footer" data-card-table-width="1/1">
-                <div class="c-cardTable__content">
-                    <ul class="l-collect l-collect--divider@lt">
-                        <li class="l-collect__item">
-                            <a href="#popupCancel" class="o-statusBtn o-statusBtn--cancel" data-popup-name="popupCancel" data-after-lt="取消預約" data-msg="取消預約" data-ia="true" data-ia-toast="false" data-popup="true" data-id="<%= ScheduleID %>"></a>
-                        </li>
-                    </ul>
-                </div>
-            </td>
-        </tr>
-    </script>
-    
     <script id="template1" type="text/html">
         <tr class="c-cardTable__item u-center@dt-only">
             <td class="c-cardTable__space"></td>
@@ -413,8 +379,12 @@ else
                 <div class="c-cardTable__content"><%= StartTime %>~<%= EndTime %></div>
             </td>
             <td class="c-cardTable__body">
-                <div class="c-cardTable__title" data-length="5">電子信箱</div>
-                <div class="c-cardTable__content"><%= Mail %></div>
+                <div class="c-cardTable__title" data-length="5">預約客戶</div>
+                <div class="c-cardTable__content"><%= CustomerName %></div>
+            </td>
+            <td class="c-cardTable__body">
+                <div class="c-cardTable__title" data-length="5">預約電話</div>
+                <div class="c-cardTable__content"><%= Phone %></div>
             </td>
             <td class="c-cardTable__body" data-card-table-width="1/1">
                 <div class="c-cardTable__title" data-length="5">預約明細</div>
@@ -461,7 +431,9 @@ else
             </td>
             <td class="c-cardTable__body" data-card-table-width="1/1">
                 <div class="c-cardTable__title" data-length="5">預約狀態</div>
-                <% if (StatusCode == '2') { %>
+                <% if (StatusCode == '0') { %>
+                    <div class="c-cardTable__content">待確認</div>
+                <% } else if (StatusCode == '2') { %>
                     <div class="c-cardTable__content">預約成功</div>
                 <% } else { %>
                     <div class="c-cardTable__content">預約取消</div>
@@ -532,41 +504,9 @@ else
                 }
             });
     
-            var data0 = consultSchedules.filter(c => c.StatusCode == '0');
             var data1 = consultSchedules.filter(c => c.StatusCode == '1');
-            var data2 = consultSchedules.filter(c => c.StatusCode == '2' || c.StatusCode == '3');
-    
-            var fjs0 = FilterJS(data0, '#tbody0', {
-                template: '#template0',
-                callbacks: {
-                    afterFilter: function (result) {
-                        window.loading('hide');
-                    },
-                    afterPagination: function () {
-                        bindClickEvent();
-                    }
-                },
-                search: {},
-                order: {
-                    default_sort: 'asc',
-                    sorts: [],
-                    onSortEvent: function (f, e) { },
-                },
-                pagination: {
-                    //headerView: '#uid-filter-header',
-                    container: '#uid-pagination-0',
-                    paginationView: '#uid-template-pagination',
-                    visiblePages: 5,
-                    perPage: {
-                        values: [10, 50, 100, data0.length],
-                        container: '#uid-perPage-0',
-                        perPageView: '#uid-template-perPage'
-                    },
-                    onPagination: function () {
-                    }
-                }
-            });
-    
+            var data2 = consultSchedules.filter(c => c.StatusCode == '0' || c.StatusCode == '2' || c.StatusCode == '3');
+
             var fjs1 = FilterJS(data1, '#tbody1', {
                 template: '#template1',
                 callbacks: {
