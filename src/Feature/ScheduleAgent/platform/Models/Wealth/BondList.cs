@@ -52,5 +52,23 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
 
         [Index(13)]
         public string StopSubscriptionDate { get; set; }
+
+        [Index(14)]
+        public string RedemptionDateByIssuer { get; set; }
+
+        [Index(15)]
+        public string Issuer { get; set; }
+
+        [Index(16)]
+        public string OpenToPublic { get; set; }
+
+        [Index(17)]
+        public string Listed { get; set; }
+
+        [Index(18)]
+        public string ListingDate { get; set; }
+
+        [Index(19)]
+        public string DelistingDate { get; set; }
     }
 }

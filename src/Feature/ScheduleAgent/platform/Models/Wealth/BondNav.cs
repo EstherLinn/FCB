@@ -46,6 +46,9 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
 
         [Index(11)]
         public string FitchCreditRating { get; set; }
+
+        [Index(12)]
+        public decimal? YieldRateYTM { get; set; }
     }
 
 
