@@ -3,6 +3,8 @@ using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.Component.Models.Calculate;
 using System.Collections.Generic;
+using Feature.Wealth.Account.Helpers;
+using Feature.Wealth.Account.Filter;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -55,9 +57,26 @@ namespace Feature.Wealth.Component.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [MemberAuthenticationFilter]
         public ActionResult SaveCalculationResults(CalculationResultData data)
         {
             object objReturn = new
+            {
+                success = false,
+                block = false
+            };
+
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                objReturn = new
+                {
+                    success = false,
+                    block = true
+                };
+                return new JsonNetResult(objReturn);
+            }
+
+            objReturn = new
             {
                 success = _calculateRepository.UpdateCalculationResults(data)
             };

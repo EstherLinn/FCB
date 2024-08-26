@@ -59,36 +59,37 @@
                });
          });
         }
-           //確保set完cookie後才取得cookie
-           SetUrlCookie().then(function(resp){
-             return GetUrlCookie();
-           }).then(function(resp){
-               if (resp) {
-                        //被阻擋回首頁彈窗登入
-                        if (!isLogin && resp.beBlock) {
-                            $.magnificPopup.open({
-                                items: {
-                                    src: '#popupLogin'
-                                },
-                                type: 'inline',
-                                callbacks: {
-                                    close: function CancelBlock() {
-                                        $.ajax({
-                                            type: "post",
-                                            url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
-                                            data: { "unlockBlock": true },
-                                            success: function (msg) {
-                                                //關閉登入popup刪除block cookie
-                                            },
-                                        });
-                                    }
+
+        //確保set完cookie後才取得cookie
+        SetUrlCookie().then(function(resp){
+            return GetUrlCookie();
+        }).then(function(resp){
+            if (resp) {
+                    //被阻擋回首頁彈窗登入
+                    if (!isLogin && resp.beBlock) {
+                        $.magnificPopup.open({
+                            items: {
+                                src: '#popupLogin'
+                            },
+                            type: 'inline',
+                            callbacks: {
+                                close: function CancelBlock() {
+                                    $.ajax({
+                                        type: "post",
+                                        url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
+                                        data: { "unlockBlock": true },
+                                        success: function (msg) {
+                                            //關閉登入popup刪除block cookie
+                                        },
+                                    });
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
-           }).catch(function(error) {
-            console.error('Error:', error); 
-            });
+                }
+        }).catch(function(error) {
+        console.error('Error:', error); 
+        });
 
         if (isLogin) {
             let url = new URL(location.href);
@@ -221,6 +222,7 @@
             }).fail(function (jqXHR, textStatus, errorThrown) {
             });
         }
+
         window.VerifyLoginRedirctToHome = function (verifyLogin) {
             if (!verifyLogin) {
                  $('[data-errormsg]', '#infoFail').text("由於長時間未操作，您的登入已過期，請重新登入。");
@@ -234,11 +236,13 @@
                 location.href = homePage;
             }
         }
+
         window.RiskHandler = function () {
             return new Promise((resolve, reject) => {
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "Accounts", "GetCifMemberRisk")',
                     type: 'POST',
+                    data: { pageUrl: window.location.pathname + window.location.search },
                     success: function (data) {
                         resolve(data);
                     },

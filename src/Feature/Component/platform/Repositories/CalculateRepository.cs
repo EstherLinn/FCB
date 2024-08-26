@@ -144,7 +144,7 @@ namespace Feature.Wealth.Component.Repositories
 
                 var strSql = @$"
                     MERGE MemberCalculationList AS target
-                    USING (SELECT @id AS PlatFormId) AS source
+                    USING (SELECT @id COLLATE Latin1_General_CS_AS AS PlatFormId) AS source
                     ON (target.PlatFormId = source.PlatFormId)
                     WHEN MATCHED THEN 
                         UPDATE SET {columnName} = @jsonStr 
