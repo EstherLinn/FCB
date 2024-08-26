@@ -10,6 +10,7 @@ using Feature.Wealth.Component.Repositories;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
+using Sitecore.StringExtensions;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.ComponentTemplates;
@@ -24,7 +25,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            if(!FcbMemberHelper.CheckMemberLogin() || string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
+            if (!FcbMemberHelper.CheckMemberLogin() || string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
             {
                 return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", null);
             }
@@ -50,7 +51,7 @@ namespace Feature.Wealth.Component.Controllers
 
             if (FcbMemberHelper.fcbMemberModel.IsEmployee)
             {
-                if(FcbMemberHelper.fcbMemberModel.IsManager)
+                if (FcbMemberHelper.fcbMemberModel.IsManager)
                 {
                     return View("/Views/Feature/Wealth/Component/Consult/ManagerConsultList.cshtml", CreateConsultListModel(item));
                 }
@@ -68,6 +69,7 @@ namespace Feature.Wealth.Component.Controllers
         private ConsultListModel CreateConsultListModel(Item item)
         {
             var temps = this._consultRepository.GetConsultScheduleList();
+            var info = FcbMemberHelper.GetMemberAllInfo();
 
             // 根據使用者過濾顯示
             var consultScheduleList = new List<ConsultSchedule>();
@@ -76,7 +78,25 @@ namespace Feature.Wealth.Component.Controllers
             {
                 foreach (var c in temps)
                 {
-                    if (c.CustomerID.ToLower() == FcbMemberHelper.GetMemberWebBankId().ToLower())
+                    if (info.IsEmployee && !string.IsNullOrEmpty(info.AdvisrorID))
+                    {
+                        if(info.IsManager)
+                        {
+                            var branch = this._consultRepository.GetBranch(info.AdvisrorID);
+                            if (c.BranchCode == branch.BranchCode)
+                            {
+                                consultScheduleList.Add(c);
+                            }
+                        }
+                        else
+                        {
+                            if(c.EmployeeID.ToLower() == info.AdvisrorID.ToLower())
+                            {
+                                consultScheduleList.Add(c);
+                            }
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(info.WebBankId) && c.CustomerID.ToLower() == info.WebBankId.ToLower())
                     {
                         consultScheduleList.Add(c);
                     }
@@ -172,33 +192,58 @@ namespace Feature.Wealth.Component.Controllers
 
             var consultScheduleList = new List<ConsultSchedule>();
 
-
-            if(temps != null && temps.Any())
+            if (temps != null && temps.Any())
             {
-                foreach(var c  in temps)
+                foreach (var c in temps)
                 {
-                    // 非本人的預約資料只留下時間及分機相關資訊
-                    if(c.CustomerID == info.WebBankId)
+                    if(info.IsEmployee && !string.IsNullOrEmpty(info.AdvisrorID))
                     {
-                        consultScheduleList.Add(c);
+                        // 非本人的預約資料只留下時間及分機相關資訊
+                        if (c.EmployeeID == info.AdvisrorID)
+                        {
+                            consultScheduleList.Add(c);
+                        }
+                        else
+                        {
+                            var clone = new ConsultSchedule()
+                            {
+                                ScheduleID = c.ScheduleID,
+                                EmployeeID = c.EmployeeID,
+                                ScheduleDate = c.ScheduleDate,
+                                ScheduleDateString = c.ScheduleDateString,
+                                StartTime = c.StartTime,
+                                EndTime = c.EndTime,
+                                DNIS = c.DNIS,
+                            };
+
+                            consultScheduleList.Add(clone);
+                        }
                     }
                     else
                     {
-                        var clone = new ConsultSchedule()
+                        // 非本人的預約資料只留下時間及分機相關資訊
+                        if (c.CustomerID == info.WebBankId)
                         {
-                            ScheduleID = c.ScheduleID,
-                            EmployeeID = c.EmployeeID,
-                            ScheduleDate = c.ScheduleDate,
-                            ScheduleDateString = c.ScheduleDateString,
-                            StartTime = c.StartTime,
-                            EndTime = c.EndTime,
-                            DNIS = c.DNIS,
-                        };
+                            consultScheduleList.Add(c);
+                        }
+                        else
+                        {
+                            var clone = new ConsultSchedule()
+                            {
+                                ScheduleID = c.ScheduleID,
+                                EmployeeID = c.EmployeeID,
+                                ScheduleDate = c.ScheduleDate,
+                                ScheduleDateString = c.ScheduleDateString,
+                                StartTime = c.StartTime,
+                                EndTime = c.EndTime,
+                                DNIS = c.DNIS,
+                            };
 
-                        consultScheduleList.Add(clone);
-                    }
+                            consultScheduleList.Add(clone);
+                        }
+                    }                    
                 }
-            }            
+            }
 
             var consultModel = new ConsultModel
             {
@@ -409,7 +454,7 @@ namespace Feature.Wealth.Component.Controllers
 
             //TODO 驗證使用者資訊
 
-            if(consultSchedule != null && Guid.TryParse(consultSchedule.ScheduleID.ToString(), out var scheduleID))
+            if (consultSchedule != null && Guid.TryParse(consultSchedule.ScheduleID.ToString(), out var scheduleID))
             {
                 this._consultRepository.CancelConsultSchedule(scheduleID);
             }
