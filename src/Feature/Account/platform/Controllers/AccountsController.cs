@@ -191,9 +191,13 @@ namespace Feature.Wealth.Account.Controllers
                                 }
                                 //創建會員
                                 step = "Step4 第e個網登入 創建會員並登入";
-                                FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
-                                    cifMember.CIF_E_MAIL_ADDRESS, cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
-                                    true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE, cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG);
+                                FcbMemberModel member = new FcbMemberModel(
+                                    cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME, cifMember.CIF_E_MAIL_ADDRESS,
+                                    cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
+                                    true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,
+                                    cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
+                                    cifMember.IsEmployee, cifMember.IsManager);
+
                                 _memberRepository.CreateNewMember(member);
                                 User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
                                 SetCustomPropertyAndLogin(member, user);
@@ -278,9 +282,12 @@ namespace Feature.Wealth.Account.Controllers
                             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                         }
                         step = $"Step4 App登入 已取得CIF資料,理財網創建會員並登入";
-                        FcbMemberModel member = new FcbMemberModel(cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME,
-                            cifMember.CIF_E_MAIL_ADDRESS, cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
-                            true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE, cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG);
+                        FcbMemberModel member = new FcbMemberModel(
+                            cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME, cifMember.CIF_E_MAIL_ADDRESS,
+                            cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
+                            true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,
+                            cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
+                            cifMember.IsEmployee, cifMember.IsManager);
 
                         _memberRepository.CreateNewMember(member);
                         SetCustomPropertyAndLogin(member, user);

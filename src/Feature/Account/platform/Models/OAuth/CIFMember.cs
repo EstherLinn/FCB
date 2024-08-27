@@ -52,5 +52,15 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// HRIS 員工代號 對應 所屬理專ID
         /// </summary>
         public string HRIS_EmployeeCode { get; set; }
+
+        /// <summary>
+        /// 是否為員工
+        /// </summary>
+        public bool IsEmployee { get; set; } = false;
+
+        /// <summary>
+        /// 是否為主管
+        /// </summary>
+        public bool IsManager { get; set; } = false;
     }
 }
