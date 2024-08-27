@@ -19,6 +19,7 @@ namespace Feature.Wealth.Component.Repositories
         private readonly string _route = Settings.GetSetting("MoneyDjApiRoute");
         private readonly string _token = Settings.GetSetting("MoneyDjToken");
         private readonly string _today = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow).ToString("yyyy/MM/dd");
+        private readonly ILog _log = Logger.Api;
 
         #region 基金
 
@@ -44,16 +45,16 @@ namespace Feature.Wealth.Component.Repositories
                 else
                 {
                     var error = await request.GetStringAsync();
-                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
             }
             catch (Exception ex)
             {
-                Logger.Api.Info(ex.Message);
+                this._log.Error(ex.Message);
             }
             return result;
         }
@@ -85,16 +86,16 @@ namespace Feature.Wealth.Component.Repositories
                 else
                 {
                     var error = await request.GetStringAsync();
-                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
             }
             catch (Exception ex)
             {
-                Logger.Api.Info(ex.Message);
+                this._log.Error(ex.Message);
             }
             return result;
         }
@@ -123,16 +124,16 @@ namespace Feature.Wealth.Component.Repositories
                 else
                 {
                     var error = await request.GetStringAsync();
-                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
             }
             catch (Exception ex)
             {
-                Logger.Api.Info(ex.Message);
+                this._log.Error(ex.Message);
             }
             return result;
         }
@@ -162,16 +163,16 @@ namespace Feature.Wealth.Component.Repositories
                 else
                 {
                     var error = request.GetStringAsync().Result;
-                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
             }
             catch (Exception ex)
             {
-                Logger.Api.Info(ex.Message);
+                this._log.Error(ex.Message);
             }
             return result;
         }
@@ -199,16 +200,16 @@ namespace Feature.Wealth.Component.Repositories
                 else
                 {
                     var error = await request.GetStringAsync();
-                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
             }
             catch (Exception ex)
             {
-                Logger.Api.Info(ex.Message);
+                this._log.Error(ex.Message);
             }
             return result;
         }
@@ -311,16 +312,16 @@ namespace Feature.Wealth.Component.Repositories
                 else
                 {
                     var error = await request.GetStringAsync();
-                    Logger.Api.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                Logger.Api.Info($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
             }
             catch (Exception ex)
             {
-                Logger.Api.Info(ex.Message);
+                this._log.Error(ex.Message);
             }
             return result;
         }
@@ -330,51 +331,68 @@ namespace Feature.Wealth.Component.Repositories
         public JObject GetGlobalInedxRelevantInformation(string indexCode, int type)
         {
             JObject result = null;
-            var request = _route.
-            AppendPathSegments("api", "Finance", "finance", "Related", indexCode, type).
-            WithOAuthBearerToken(_token).
-            AllowAnyHttpStatus().
-            GetAsync().
-            ReceiveString().Result;
 
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var request = _route.
+                AppendPathSegments("api", "Finance", "finance", "Related", indexCode, type).
+                WithOAuthBearerToken(_token).
+                AllowAnyHttpStatus().
+                GetAsync().
+                ReceiveString().Result;
+
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
             }
+            catch (FlurlHttpException ex)
+            {
+                var status = ex.StatusCode;
+                var resp = ex.GetResponseStringAsync().Result;
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+                throw ex;
+            }
+
             return result;
         }
 
         public JObject GetGlobalInedxPriceData(string indexCode, string cycle)
         {
             JObject result = null;
-            var request = _route.
-            AppendPathSegments("api", "Finance", "finance", "Price", indexCode, cycle).
-            WithOAuthBearerToken(_token).
-            AllowAnyHttpStatus().
-            GetAsync().
-            ReceiveString().Result;
 
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var request = _route.
+                AppendPathSegments("api", "Finance", "finance", "Price", indexCode, cycle).
+                WithOAuthBearerToken(_token).
+                AllowAnyHttpStatus().
+                GetAsync().
+                ReceiveString().Result;
+
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
             }
-            return result;
-        }
-
-        public JObject GetNewsForMarketTrend(string id)
-        {
-            JObject result = null;
-            var request = _route.
-            AppendPathSegments("api", "News", "kmdjnews", "type", id, 5).
-            WithOAuthBearerToken(_token).
-            AllowAnyHttpStatus().
-            GetAsync().
-            ReceiveString().Result;
-
-            if (!string.IsNullOrEmpty(request))
+            catch (FlurlHttpException ex)
             {
-                result = JObject.Parse(request);
+                var status = ex.StatusCode;
+                var resp = ex.GetResponseStringAsync().Result;
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                throw ex;
             }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+                throw ex;
+            }
+
             return result;
         }
 
@@ -416,8 +434,6 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         #region ETF
-
-        private readonly ILog _log = Logger.Api;
 
         /// <summary>
         /// ETF - 績效走勢資訊

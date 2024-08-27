@@ -194,21 +194,23 @@ namespace Feature.Wealth.Account.Repositories
         public CIFMember GetWebBankUserInfo(string id)
         {
             CIFMember member = null;
-            var strSql = @$" Declare @@id varchar(33) = @id
-                            Select
-                            a.CIF_CUST_NAME,
-                            a.CIF_CUST_ATTR,
-                            a.CIF_E_MAIL_ADDRESS,
-                            a.CIF_ESTABL_BIRTH_DATE,
-                            a.CIF_SAL_FLAG,
-                            SUBSTRING(a.CIF_EMP_RISK,1,1) as CIF_EMP_RISK,
-                            a.CIF_AO_EMPNO,
-                            b.EmployeeName as CIF_AO_EMPName,
-                            b.EmployeeCode as HRIS_EmployeeCode,
-                            c.PROMOTION_CODE as CIF_PROMO_CODE
-                            FROM [CIF] as a
-                            left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
-                            left join [CFMBSEL] as c on CIF_ID = CUST_ID
+            var strSql = @$"DECLARE @@id varchar(33) = @id
+                            SELECT
+                            A.CIF_CUST_NAME,
+                            A.CIF_CUST_ATTR,
+                            A.CIF_E_MAIL_ADDRESS,
+                            A.CIF_ESTABL_BIRTH_DATE,
+                            A.CIF_SAL_FLAG,
+                            SUBSTRING(A.CIF_EMP_RISK,1,1) AS CIF_EMP_RISK,
+                            A.CIF_AO_EMPNO,
+                            B.EmployeeName AS CIF_AO_EMPName,
+                            B.EmployeeCode AS HRIS_EmployeeCode,
+                            IIF(A.CIF_ID = B.EmployeeID, CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
+                            IIF(B.SupervisorCode = '9', CONVERT(bit, 0), CONVERT(bit, 1)) AS IsManager,
+                            C.PROMOTION_CODE AS CIF_PROMO_CODE
+                            FROM [CIF] AS A
+                            LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
+                            LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
                             WHERE CIF_ID = @@id ";
 
             var para = new
@@ -240,22 +242,24 @@ namespace Feature.Wealth.Account.Repositories
         public CIFMember GetAppUserInfo(string promotionCode)
         {
             CIFMember member = null;
-            var strSql = @$" Declare @@promotionCode varchar(24) = @promotionCode
-                            Select
-                            a.CIF_CUST_NAME,
-                            a.CIF_CUST_ATTR,
-                            a.CIF_E_MAIL_ADDRESS,
-                            a.CIF_ESTABL_BIRTH_DATE,
-                            SUBSTRING(a.CIF_EMP_RISK,1,1) as CIF_EMP_RISK,
-                            a.CIF_SAL_FLAG,
-                            a.CIF_AO_EMPNO,
-                            b.EmployeeName as CIF_AO_EMPName,
-                            b.EmployeeCode as HRIS_EmployeeCode,
-                            C.PROMOTION_CODE as CIF_PROMO_CODE
-                            FROM [CIF] as a
-                            left join [HRIS] as b on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
-                            left join [CFMBSEL] as C on CIF_ID = CUST_ID
-                            WHERE C.PROMOTION_CODE  COLLATE Latin1_General_CS_AS = @@promotionCode ";
+            var strSql = @$"DECLARE @@promotionCode varchar(24) = @promotionCode
+                            SELECT
+                            A.CIF_CUST_NAME,
+                            A.CIF_CUST_ATTR,
+                            A.CIF_E_MAIL_ADDRESS,
+                            A.CIF_ESTABL_BIRTH_DATE,
+                            A.CIF_SAL_FLAG,
+                            SUBSTRING(A.CIF_EMP_RISK,1,1) AS CIF_EMP_RISK,
+                            A.CIF_AO_EMPNO,
+                            B.EmployeeName AS CIF_AO_EMPName,
+                            B.EmployeeCode AS HRIS_EmployeeCode,
+                            IIF(A.CIF_ID = B.EmployeeID, CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
+                            IIF(B.SupervisorCode = '9', CONVERT(bit, 0), CONVERT(bit, 1)) AS IsManager,
+                            C.PROMOTION_CODE AS CIF_PROMO_CODE
+                            FROM [CIF] AS A
+                            LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
+                            LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
+                            WHERE C.PROMOTION_CODE COLLATE Latin1_General_CS_AS = @@promotionCode ";
 
             var para = new
             {
@@ -289,19 +293,21 @@ namespace Feature.Wealth.Account.Repositories
         {
             FcbMemberModel fcbMemberModel = null;
             int idLength = 100;
-            var strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
-                            Select
+            var strSql = @$"DECLARE @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
+                            SELECT
                             A.*,
-                            SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
-                            B.CIF_ESTABL_BIRTH_DATE as Birthday,
-                            B.CIF_CUST_ATTR as Gender,
-                            B.CIF_SAL_FLAG as SalFlag,
-                            C.EmployeeName as Advisror,
-                            C.EmployeeCode as AdvisrorID
-                            FROM [FCB_Member] as A
-                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE  COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
-                            WHERE PlatForm = @@Platform and ";
+                            SUBSTRING(B.CIF_EMP_RISK,1,1) AS Risk,
+                            B.CIF_ESTABL_BIRTH_DATE AS Birthday,
+                            B.CIF_CUST_ATTR AS Gender,
+                            B.CIF_SAL_FLAG AS SalFlag,
+                            C.EmployeeName AS Advisror,
+                            C.EmployeeCode AS AdvisrorID,
+                            IIF(B.CIF_ID = C.EmployeeID, CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
+                            IIF(C.SupervisorCode = '9', CONVERT(bit, 0), CONVERT(bit, 1)) AS IsManager
+                            FROM [FCB_Member] AS A
+                            LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
+                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
+                            WHERE PlatForm = @@Platform AND ";
 
             if (platFormEunm == PlatFormEunm.WebBank)
             {
@@ -332,19 +338,21 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetRefreshMemberInfo(PlatFormEunm platFormEunm, string id)
         {
             FcbMemberModel fcbMemberModel = null;
-            var strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
-                            Select
+            var strSql = @$"DECLARE @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
+                            SELECT
                             A.*,
-                            SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
-                            B.CIF_ESTABL_BIRTH_DATE as Birthday,
-                            B.CIF_CUST_ATTR as Gender,
-                            B.CIF_SAL_FLAG as SalFlag,
-                            C.EmployeeName as Advisror,
-                            C.EmployeeCode as AdvisrorID
-                            FROM [FCB_Member] as A
-                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE  COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
-                            WHERE PlatForm = @@Platform and PlatFormId  COLLATE Latin1_General_CS_AS = @@id";
+                            SUBSTRING(B.CIF_EMP_RISK,1,1) AS Risk,
+                            B.CIF_ESTABL_BIRTH_DATE AS Birthday,
+                            B.CIF_CUST_ATTR AS Gender,
+                            B.CIF_SAL_FLAG AS SalFlag,
+                            C.EmployeeName AS Advisror,
+                            C.EmployeeCode AS AdvisrorID,
+                            IIF(B.CIF_ID = C.EmployeeID, CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
+                            IIF(C.SupervisorCode = '9', CONVERT(bit, 0), CONVERT(bit, 1)) AS IsManager
+                            FROM [FCB_Member] AS A
+                            LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
+                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
+                            WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@id";
 
             var para = new
             {
@@ -365,19 +373,21 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetAppMemberInfo(PlatFormEunm platFormEunm, string promotionCode)
         {
             FcbMemberModel fcbMemberModel = null;
-            var strSql = @$" Declare @@platForm varchar(10) = @platForm, @@promotionCode varchar(100) = @promotionCode
-                            Select
+            var strSql = @$"DECLARE @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
+                            SELECT
                             A.*,
-                            SUBSTRING(B.CIF_EMP_RISK,1,1) as Risk,
-                            B.CIF_ESTABL_BIRTH_DATE as Birthday,
-                            B.CIF_CUST_ATTR as Gender,
-                            B.CIF_SAL_FLAG as SalFlag,
-                            C.EmployeeName as Advisror,
-                            C.EmployeeCode as AdvisrorID
-                            FROM [FCB_Member] as A
-                            left join [CIF] as B on B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE  COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            left join [HRIS] as C on CIF_AO_EMPNO = SUBSTRING(EmployeeCode, len(EmployeeCode) -len( CIF_AO_EMPNO) +1 , len(CIF_AO_EMPNO))
-                            WHERE PlatForm = @@Platform and PlatFormId  COLLATE Latin1_General_CS_AS = @@promotionCode";
+                            SUBSTRING(B.CIF_EMP_RISK,1,1) AS Risk,
+                            B.CIF_ESTABL_BIRTH_DATE AS Birthday,
+                            B.CIF_CUST_ATTR AS Gender,
+                            B.CIF_SAL_FLAG AS SalFlag,
+                            C.EmployeeName AS Advisror,
+                            C.EmployeeCode AS AdvisrorID,
+                            IIF(B.CIF_ID = C.EmployeeID, CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
+                            IIF(C.SupervisorCode = '9', CONVERT(bit, 0), CONVERT(bit, 1)) AS IsManager
+                            FROM [FCB_Member] AS A
+                            LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
+                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
+                            WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@promotionCode";
 
             var para = new
             {

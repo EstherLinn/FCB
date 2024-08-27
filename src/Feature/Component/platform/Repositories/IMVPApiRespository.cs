@@ -14,7 +14,8 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class IMVPApiRespository
     {
-        private readonly string _route = Settings.GetSetting("IMVP");
+        private readonly string _route = Settings.GetSetting("IMVPApiRoute");
+        private readonly ILog _log = Logger.Api;
 
         /// <summary>
         /// 取得 toke
@@ -23,22 +24,37 @@ namespace Feature.Wealth.Component.Repositories
         public JObject Verification()
         {
             JObject result = null;
-            var request = _route.
-            AppendPathSegments("api", "rest", "app", "verification").
-            SetQueryParams(new
-            {
-                appId = "WEA_APP",
-                appKey = "wea1234",
-            }).
-            WithHeader("ContentType", "application/json").
-            AllowAnyHttpStatus().
-            PostAsync().
-            ReceiveString().Result;
 
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var request = _route.
+                AppendPathSegments("api", "rest", "app", "verification").
+                SetQueryParams(new
+                {
+                    appId = "WEA_APP",
+                    appKey = "wea1234",
+                }).
+                WithHeader("ContentType", "application/json").
+                AllowAnyHttpStatus().
+                PostAsync().
+                ReceiveString().Result;
+
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
             }
+            catch (FlurlHttpException ex)
+            {
+                var status = ex.StatusCode;
+                var resp = ex.GetResponseStringAsync().Result;
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+            }
+
             return result;
         }
 
@@ -53,24 +69,39 @@ namespace Feature.Wealth.Component.Repositories
         public JObject GetReserved(string token, string empId, string startDate, string endDate)
         {
             JObject result = null;
-            var request = _route.
-            AppendPathSegments("api", "rest", "fm", "getReserved").
-            SetQueryParams(new
-            {
-                token = token,
-                empId = empId,
-                startDate = startDate,
-                endDate = endDate
-            }).
-            WithHeader("ContentType", "application/json").
-            AllowAnyHttpStatus().
-            PostAsync().
-            ReceiveString().Result;
 
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var request = _route.
+                AppendPathSegments("api", "rest", "fm", "getReserved").
+                SetQueryParams(new
+                {
+                    token = token,
+                    empId = empId,
+                    startDate = startDate,
+                    endDate = endDate
+                }).
+                WithHeader("ContentType", "application/json").
+                AllowAnyHttpStatus().
+                PostAsync().
+                ReceiveString().Result;
+
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
             }
+            catch (FlurlHttpException ex)
+            {
+                var status = ex.StatusCode;
+                var resp = ex.GetResponseStringAsync().Result;
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+            }
+
             return result;
         }
 
@@ -82,31 +113,46 @@ namespace Feature.Wealth.Component.Repositories
         public JObject Reserved(IMVPRequestData imvpRequestData)
         {
             JObject result = null;
-            var request = _route.
-            AppendPathSegments("api", "rest", "fm", "getReserved").
-            SetQueryParams(new
-            {
-                token = imvpRequestData.token,
-                scheduleId = imvpRequestData.scheduleId,
-                action = imvpRequestData.action,
-                empId = imvpRequestData.empId,
-                type = imvpRequestData.type,
-                date = imvpRequestData.date,
-                startTime = imvpRequestData.startTime,
-                endTime = imvpRequestData.endTime,
-                custId = imvpRequestData.custId,
-                subject = imvpRequestData.subject,
-                description = imvpRequestData.description
-            }).
-            WithHeader("ContentType", "application/json").
-            AllowAnyHttpStatus().
-            PostAsync().
-            ReceiveString().Result;
 
-            if (!string.IsNullOrEmpty(request))
+            try
             {
-                result = JObject.Parse(request);
+                var request = _route.
+                AppendPathSegments("api", "rest", "fm", "getReserved").
+                SetQueryParams(new
+                {
+                    token = imvpRequestData.token,
+                    scheduleId = imvpRequestData.scheduleId,
+                    action = imvpRequestData.action,
+                    empId = imvpRequestData.empId,
+                    type = imvpRequestData.type,
+                    date = imvpRequestData.date,
+                    startTime = imvpRequestData.startTime,
+                    endTime = imvpRequestData.endTime,
+                    custId = imvpRequestData.custId,
+                    subject = imvpRequestData.subject,
+                    description = imvpRequestData.description
+                }).
+                WithHeader("ContentType", "application/json").
+                AllowAnyHttpStatus().
+                PostAsync().
+                ReceiveString().Result;
+
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
             }
+            catch (FlurlHttpException ex)
+            {
+                var status = ex.StatusCode;
+                var resp = ex.GetResponseStringAsync().Result;
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+            }
+
             return result;
         }
     }
