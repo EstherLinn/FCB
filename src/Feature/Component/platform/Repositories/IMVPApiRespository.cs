@@ -14,7 +14,7 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class IMVPApiRespository
     {
-        private readonly string _route = Settings.GetSetting("IMVP");
+        private readonly string _route = Settings.GetSetting("IMVPApiRoute");
         private readonly ILog _log = Logger.Api;
 
         /// <summary>

@@ -15,7 +15,7 @@ namespace Feature.Wealth.Component.Repositories
 {
     public class OctonApiRespository
     {
-        private readonly string _route = Settings.GetSetting("Octon");
+        private readonly string _route = Settings.GetSetting("OctonApiRoute");
         private readonly ILog _log = Logger.Api;
 
         /// <summary>
