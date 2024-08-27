@@ -565,5 +565,40 @@ namespace Feature.Wealth.Component.Controllers
 
             return new JsonNetResult(true);
         }
+
+        [HttpPost]
+        public ActionResult CheckConsultSchedule(string scheduleId, string action)
+        {
+            // TODO 驗證來源 IP
+
+            if(string.IsNullOrEmpty(scheduleId) || string.IsNullOrEmpty(action))
+            {
+                return new JsonNetResult(new { statusCode = -1101, statusMsg = "缺少必要參數" });
+            }
+
+            var result = this._consultRepository.GetConsultSchedule(scheduleId);
+
+            if (result == null || result.ScheduleID == null || result.ScheduleID == Guid.Empty)
+            {
+                return new JsonNetResult(new { statusCode = -1104, statusMsg = "資料不存在" });
+            }
+
+            if(action == "1")
+            {
+                result.StatusCode = "1";
+                this._consultRepository.UpdateConsultSchedule(result);
+            }
+            else if (action == "2")
+            {
+                result.StatusCode = "3";
+                this._consultRepository.UpdateConsultSchedule(result);
+            }
+            else
+            {
+                return new JsonNetResult(new { statusCode = -1102, statusMsg = "無效的參數或參數格式不正確" });
+            }
+
+            return new JsonNetResult(new { statusCode = 0, statusMsg = "正常" });
+        }
     }
 }
