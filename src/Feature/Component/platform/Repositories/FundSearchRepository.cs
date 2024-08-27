@@ -34,6 +34,8 @@ namespace Feature.Wealth.Component.Repositories
 
             var result = new List<Funds>();
 
+            if (funds == null) return result;
+
             foreach (var f in funds)
             {
                 var vm = new Funds();
@@ -59,7 +61,7 @@ namespace Feature.Wealth.Component.Repositories
                                             where tagModel.ProductCodes.Contains(f.ProductCode)
                                             select tagModel.TagName);
 
-                vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator;
+                vm.DomesticForeignFundIndicator = f.DomesticForeignFundIndicator ?? string.Empty;
                 vm.ProductCode = f.ProductCode;
                 vm.FundName = FullWidthToHalfWidth(f.FundName);
                 vm.NetAssetValue = Round4(f.NetAssetValue);
@@ -263,21 +265,21 @@ namespace Feature.Wealth.Component.Repositories
 
         public List<string> GetDividend()
         {
-            var items = GetFundSearchData(); 
+            var items = GetFundSearchData();
             var dividendFrequencies = items
-                    .Select(f => f.DividendDistributionFrequency)
-                    .Distinct()
-                    .ToList();
+                   .Select(f => f.DividendDistributionFrequency)
+                   .Distinct()
+                   .ToList();
 
             var sortedDividendFrequencies = dividendFrequencies
-             .Select(f => new
-             {
-                 Frequency = f,
-                 Value = GetFrequency(f)
-             })
-             .OrderBy(x => x.Value.HasValue ? x.Value.Value : int.MaxValue) 
-             .Select(x => x.Frequency)
-             .ToList();
+                .Select(f => new
+                {
+                    Frequency = f,
+                    Value = GetFrequency(f)
+                })
+                .OrderBy(x => x.Value.HasValue ? x.Value.Value : int.MaxValue)
+                .Select(x => x.Frequency)
+                .ToList();
 
             return sortedDividendFrequencies;
         }
