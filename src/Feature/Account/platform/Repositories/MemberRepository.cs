@@ -209,7 +209,7 @@ namespace Feature.Wealth.Account.Repositories
                             IIF(B.SupervisorCode = '9', CONVERT(bit, 0), CONVERT(bit, 1)) AS IsManager,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE
                             FROM [CIF] AS A
-                            LEFT JOIN [HRIS] AS B ON CIF_AO_EMPNO = SUBSTRING(EmployeeCode, LEN(EmployeeCode) - LEN(CIF_AO_EMPNO) + 1, LEN(CIF_AO_EMPNO))
+                            LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
                             LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
                             WHERE CIF_ID = @@id ";
 
@@ -257,7 +257,7 @@ namespace Feature.Wealth.Account.Repositories
                             IIF(B.SupervisorCode = '9', CONVERT(bit, 0), CONVERT(bit, 1)) AS IsManager,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE
                             FROM [CIF] AS A
-                            LEFT JOIN [HRIS] AS B ON CIF_AO_EMPNO = SUBSTRING(EmployeeCode, LEN(EmployeeCode) - LEN(CIF_AO_EMPNO) + 1, LEN(CIF_AO_EMPNO))
+                            LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
                             LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
                             WHERE C.PROMOTION_CODE COLLATE Latin1_General_CS_AS = @@promotionCode ";
 
@@ -306,7 +306,7 @@ namespace Feature.Wealth.Account.Repositories
                             IIF(C.SupervisorCode = '9', CONVERT(bit, 0), CONVERT(bit, 1)) AS IsManager
                             FROM [FCB_Member] AS A
                             LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            LEFT JOIN [HRIS] AS C ON CIF_AO_EMPNO = SUBSTRING(EmployeeCode, LEN(EmployeeCode) - LEN(CIF_AO_EMPNO) + 1, LEN(CIF_AO_EMPNO))
+                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND ";
 
             if (platFormEunm == PlatFormEunm.WebBank)
@@ -351,7 +351,7 @@ namespace Feature.Wealth.Account.Repositories
                             IIF(C.SupervisorCode = '9', CONVERT(bit, 0), CONVERT(bit, 1)) AS IsManager
                             FROM [FCB_Member] AS A
                             LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            LEFT JOIN [HRIS] AS C ON CIF_AO_EMPNO = SUBSTRING(EmployeeCode, LEN(EmployeeCode) - LEN(CIF_AO_EMPNO) + 1, LEN(CIF_AO_EMPNO))
+                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@id";
 
             var para = new
@@ -386,7 +386,7 @@ namespace Feature.Wealth.Account.Repositories
                             IIF(C.SupervisorCode = '9', CONVERT(bit, 0), CONVERT(bit, 1)) AS IsManager
                             FROM [FCB_Member] AS A
                             LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            LEFT JOIN [HRIS] AS C ON CIF_AO_EMPNO = SUBSTRING(EmployeeCode, LEN(EmployeeCode) - LEN(CIF_AO_EMPNO) + 1, LEN(CIF_AO_EMPNO))
+                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@promotionCode";
 
             var para = new
