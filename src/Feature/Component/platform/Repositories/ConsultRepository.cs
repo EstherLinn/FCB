@@ -148,11 +148,18 @@ namespace Feature.Wealth.Component.Repositories
 
         public Branch GetBranch(string employeeCode)
         {
-            string sql = @"SELECT 
+            string sql = @"SELECT
                            A.[OfficeOrBranchCode] [BranchCode],
                            A.[OfficeOrBranchName] [BranchName],
-                           '(' + TRIM(B.[PhoneAreaCode]) + ')' + B.[PhoneNumber] [BranchPhone],
-                           A.[DepartmentCode] [DepartmentCode]
+                           A.[DepartmentCode] [DepartmentCode],
+                           CASE 
+                           WHEN LEN(B.[PhoneNumber]) = 8
+                           THEN '(' + TRIM(B.[PhoneAreaCode]) + ')' + SUBSTRING(B.[PhoneNumber], 1, 4) + '-' + SUBSTRING(B.[PhoneNumber], 5, 4)
+                           WHEN LEN(B.[PhoneNumber]) = 7
+                           THEN '(' + TRIM(B.[PhoneAreaCode]) + ')' + SUBSTRING(B.[PhoneNumber], 1, 3) + '-' + SUBSTRING(B.[PhoneNumber], 4, 4)
+                           WHEN LEN(B.[PhoneNumber]) = 6
+                           THEN '(' + TRIM(B.[PhoneAreaCode]) + ')' + SUBSTRING(B.[PhoneNumber], 1, 2) + '-' + SUBSTRING(B.[PhoneNumber], 3, 4)
+                           END AS [BranchPhone]
                            FROM [HRIS] A WITH (NOLOCK)
                            LEFT JOIN [Branch_Data] B WITH (NOLOCK) ON SUBSTRING(A.OfficeOrBranchCode, 2, 3) = B.BranchCode
                            WHERE A.EmployeeCode = @EmployeeCode";
