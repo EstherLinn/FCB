@@ -4,13 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Account.Helpers;
-using Feature.Wealth.Account.Models.OAuth;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.Component.Repositories;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
-using Sitecore.StringExtensions;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.ComponentTemplates;
@@ -82,7 +80,7 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     if (info.IsEmployee && !string.IsNullOrEmpty(info.AdvisrorID))
                     {
-                        if(info.IsManager)
+                        if (info.IsManager)
                         {
                             var branch = this._consultRepository.GetBranch(info.AdvisrorID);
                             if (c.BranchCode == branch.BranchCode)
@@ -92,7 +90,7 @@ namespace Feature.Wealth.Component.Controllers
                         }
                         else
                         {
-                            if(c.EmployeeID.ToLower() == info.AdvisrorID.ToLower())
+                            if (c.EmployeeID.ToLower() == info.AdvisrorID.ToLower())
                             {
                                 consultScheduleList.Add(c);
                             }
@@ -198,7 +196,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 foreach (var c in temps)
                 {
-                    if(info.IsEmployee && !string.IsNullOrEmpty(info.AdvisrorID))
+                    if (info.IsEmployee && !string.IsNullOrEmpty(info.AdvisrorID))
                     {
                         // 非本人的預約資料只留下時間及分機相關資訊
                         if (c.EmployeeID == info.AdvisrorID)
@@ -243,7 +241,7 @@ namespace Feature.Wealth.Component.Controllers
 
                             consultScheduleList.Add(clone);
                         }
-                    }                    
+                    }
                 }
             }
 
@@ -301,10 +299,35 @@ namespace Feature.Wealth.Component.Controllers
             consultModel.End = allowDates[allowDates.Count - 1];
             consultModel.HolidayDatesHtmlString = new HtmlString(JsonConvert.SerializeObject(holidayDates));
 
-            //TODO 呼叫 IMVP API 取得理顧已佔用時間
+            //呼叫 IMVP API 取得理顧已佔用時間
             var reserveds = new List<Reserved>();
-            reserveds.Add(new Reserved { Date = "2024-06-11", StartTime = "10:30", EndTime = "11:00" });
-            reserveds.Add(new Reserved { Date = "2024-06-12", StartTime = "14:30", EndTime = "15:00" });
+
+            var respons = this._iMVPApiRespository.Verification();
+
+            if (respons != null && respons.ContainsKey("token"))
+            {
+                var token = respons["token"];
+                if (token != null)
+                {
+                    var respons2 = this._iMVPApiRespository.GetReserved(
+                        token.ToString(), info.AdvisrorID, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.AddDays(30).ToString("yyyyMMdd")
+                        );
+
+                    if (respons2 != null && respons2.ContainsKey("data"))
+                    {
+                        var data = respons2["data"];
+                        for (int i = 0; i < data.Count(); i++)
+                        {
+                            reserveds.Add(new Reserved
+                            {
+                                Date = data[i]["date"].ToString().Insert(6, "-").Insert(4, "-"),
+                                StartTime = data[i]["startTime"].ToString().Insert(2, ":"),
+                                EndTime = data[i]["endTime"].ToString().Insert(2, ":")
+                            });
+                        }
+                    }
+                }
+            }
 
             // 把對應理顧已預約時間加入已佔用時間
             var employeeID = string.IsNullOrEmpty(info.AdvisrorID) ? string.Empty : info.AdvisrorID.ToLower();
@@ -463,7 +486,35 @@ namespace Feature.Wealth.Component.Controllers
 
             this._consultRepository.InsertConsultSchedule(consultSchedule);
 
-            //TODO 呼叫 IMVP API
+            //呼叫 IMVP API 新增
+            if (info.IsEmployee == false)
+            {
+                var respons = this._iMVPApiRespository.Verification();
+
+                if (respons != null && respons.ContainsKey("token"))
+                {
+                    var token = respons["token"];
+                    if (token != null)
+                    {
+                        IMVPRequestData imvpRequestData = new IMVPRequestData
+                        {
+                            token = token.ToString(),
+                            scheduleId = consultSchedule.ScheduleID.ToString(),
+                            action = "1",
+                            empId = consultSchedule.EmployeeID,
+                            type = "1",
+                            date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
+                            startTime = consultSchedule.StartTime.Replace(":", string.Empty),
+                            endTime = consultSchedule.EndTime.Replace(":", string.Empty),
+                            custId = consultSchedule.CustomerID,
+                            subject = consultSchedule.Subject,
+                            description = consultSchedule.Description
+                        };
+
+                        var respons2 = this._iMVPApiRespository.Reserved(imvpRequestData);
+                    }
+                }
+            }
 
             return new JsonNetResult(true);
         }
@@ -485,7 +536,32 @@ namespace Feature.Wealth.Component.Controllers
                 return new JsonNetResult(false);
             }
 
-            //TODO 呼叫 IMVP API
+            //呼叫 IMVP API 取消
+            var respons = this._iMVPApiRespository.Verification();
+
+            if (respons != null && respons.ContainsKey("token"))
+            {
+                var token = respons["token"];
+                if (token != null)
+                {
+                    IMVPRequestData imvpRequestData = new IMVPRequestData
+                    {
+                        token = token.ToString(),
+                        scheduleId = consultSchedule.ScheduleID.ToString(),
+                        action = "2",
+                        empId = consultSchedule.EmployeeID,
+                        type = "1",
+                        date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
+                        startTime = consultSchedule.StartTime.Replace(":", string.Empty),
+                        endTime = consultSchedule.EndTime.Replace(":", string.Empty),
+                        custId = consultSchedule.CustomerID,
+                        subject = consultSchedule.Subject,
+                        description = consultSchedule.Description
+                    };
+
+                    var respons2 = this._iMVPApiRespository.Reserved(imvpRequestData);
+                }
+            }
 
             return new JsonNetResult(true);
         }
