@@ -20,6 +20,8 @@ namespace Feature.Wealth.Component.Controllers
     public class ConsultController : Controller
     {
         private readonly ConsultRepository _consultRepository = new ConsultRepository();
+        private readonly OctonApiRespository _octonApiRespository = new OctonApiRespository();
+        private readonly IMVPApiRespository _iMVPApiRespository = new IMVPApiRespository();
 
         public ActionResult Consult()
         {
@@ -363,7 +365,28 @@ namespace Feature.Wealth.Component.Controllers
                     {
                         if (string.IsNullOrEmpty(consultSchedule.EmployeeURL) || string.IsNullOrEmpty(consultSchedule.CustomerURL))
                         {
-                            // TODO 呼叫API取得視訊連結
+                            // 呼叫API取得視訊連結
+                            var octonRequestData = new OctonRequestData
+                            {
+                                Authorization = consultSchedule.ScheduleID.ToString(),
+                                dnis = consultSchedule.DNIS,
+                                Date = consultSchedule.ScheduleDate.ToString("yyyy-MM-dd"),
+                                Start = consultSchedule.StartTime,
+                                End = consultSchedule.EndTime,
+                                EmployeeCode = consultSchedule.EmployeeID,
+                                EmployeeName = consultSchedule.EmployeeName,
+                                BranchCode = consultSchedule.BranchCode,
+                                BranchName = consultSchedule.BranchName,
+                                BranchPhone = consultSchedule.BranchPhone
+                            };
+
+                            var respons = this._octonApiRespository.GetWebURL(octonRequestData);
+
+                            if (respons != null && respons.ContainsKey("Code") && respons["Code"].ToString() == "0000")
+                            {
+                                consultSchedule.EmployeeURL = respons["Agnet"].ToString();
+                                consultSchedule.CustomerURL = respons["URL"].ToString();
+                            }
 
                             // 更新DB資料
                             this._consultRepository.UpdateConsultSchedule(consultSchedule);
@@ -410,7 +433,6 @@ namespace Feature.Wealth.Component.Controllers
 
             Branch branch = this._consultRepository.GetBranch(consultSchedule.EmployeeID);
 
-            //TODO 找到對應分行資訊
             consultSchedule.BranchCode = branch.BranchCode;
             consultSchedule.BranchName = branch.BranchName;
             consultSchedule.BranchPhone = branch.BranchPhone;
