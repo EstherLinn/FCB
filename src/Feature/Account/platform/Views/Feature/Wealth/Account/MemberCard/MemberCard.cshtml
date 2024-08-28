@@ -96,14 +96,23 @@
                                         <span>理財諮詢</span>
                                     </div>
                                     <div class="c-member__value">
-                                        @if (Model.ScheduleDate.HasValue)
+                                        @*無理專預約諮詢給dash*@
+                                        @if (string.IsNullOrEmpty(member.Advisror))
                                         {
-                                            <b>還有 <span class="t-warning">@Model.ScheduleSpace</span> 天 </b>
-                                            <div class="t-date u-inline@lt">(@Model.ScheduleDate.Value.ToString("yyyy/MM/dd"))</div>
+                                            <b>-</b>
                                         }
                                         else
                                         {
-                                            <a href="@memberReserveUrl" target="_blank" class="o-btn o-btn--primary o-btn--thin o-btn--auto">預約線上諮詢</a>
+                                            @*有理專判斷有無預約*@
+                                            if (Model.ScheduleDate.HasValue)
+                                            {
+                                                <b>還有 <span class="t-warning">@Model.ScheduleSpace</span> 天 </b>
+                                                <div class="t-date u-inline@lt">(@Model.ScheduleDate.Value.ToString("yyyy/MM/dd"))</div>
+                                            }
+                                            else
+                                            {
+                                                <a href="@memberReserveUrl" target="_blank" class="o-btn o-btn--primary o-btn--thin o-btn--auto">預約線上諮詢</a>
+                                            }
                                         }
                                     </div>
                                 </div>
