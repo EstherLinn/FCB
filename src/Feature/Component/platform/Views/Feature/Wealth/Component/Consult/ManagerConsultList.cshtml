@@ -588,10 +588,6 @@ else
                     }).done(function (data, textStatus, jqXHR) {
                         $.magnificPopup.close();
                         if (data.success) {
-                            if (data0.length > 0) {
-                                fjs0.removeRecords({ ScheduleID: id });
-                            }
-
                             if (data1.length > 0) {
                                 fjs1.removeRecords({ ScheduleID: id });
                             }
