@@ -120,7 +120,6 @@
                 localStorage.setItem(storageKey, JSON.stringify(openTabs));
                 //如果登入狀態但已經關閉過頁面則登出
                 if (isLogin && updatedTabs.length === 0  && sessionStorage.getItem("visit") == null) {
-                    store.remove(storageKey + "_left");
                     let logOutRoute = new URL(location.protocol + "//" + location.host + "@ClientRoute.GenerateUrl(this, "Accounts", "Logout")");
                     location.href = logOutRoute;
                 }
