@@ -485,6 +485,12 @@ namespace Feature.Wealth.Component.Controllers
                 return new JsonNetResult(false);
             }
 
+            // 避免 DB 出現 NULL
+            if(string.IsNullOrEmpty(consultSchedule.Description))
+            {
+                consultSchedule.Description = string.Empty;
+            }
+
             this._consultRepository.InsertConsultSchedule(consultSchedule);
 
             //呼叫 IMVP API 新增
