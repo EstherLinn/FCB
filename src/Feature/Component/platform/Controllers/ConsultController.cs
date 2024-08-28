@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Feature.Wealth.Account.Filter;
 using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.Component.Repositories;
@@ -521,6 +522,7 @@ namespace Feature.Wealth.Component.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [MemberAuthenticationFilter]
         public ActionResult CancelConsultSchedule(ConsultSchedule consultSchedule)
         {
             //驗證使用者資訊
