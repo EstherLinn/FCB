@@ -58,7 +58,7 @@
                             <div class="c-form__content">
                                 <div class="o-switch">
                                     <input class="o-switch__input" type="checkbox" name="price" id="price"
-                                           @(member.ArrivedInfoOpen ? "checked" : string.Empty)>
+                                    @(member.ArrivedInfoOpen ? "checked" : string.Empty)>
                                     <label class="o-switch__label" for="price"></label>
                                     <div class="o-switch__text" data-close="關閉" data-open="已開啟"></div>
                                 </div>
@@ -106,36 +106,35 @@
         $('#emailBtn').on('click', function (e) {
             let val = $('#email').val();
             if (val !== "") {
-                 $('#emailDiv').removeClass('is-error');
+                $('#emailDiv').removeClass('is-error');
                 $('#emailErrorMsg').addClass('u-hidden');
-                    $.ajax({
-                        type: "post",
-                        url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetMemberEmail")",
-                        beforeSend: function () { window.loading('show'); },
-                        data: { "email": val ,"pageUrl": window.location.pathname + window.location.search},
-                        success: function (resp) {
-                            if (resp.success) {
-                                //設置成功
-                                $.magnificPopup.close();
-                                $('#email').val('');
-                                $('#emailText').text(val);
-                            } else {
-                                if(resp.block)
-                                {
-                                    window.VerifyLoginRedirctToHome(resp.success);
-                                    return;
-                                }
-                                $('#emailErrorMsg').find('span').text(resp.errorMessage);
-                                $('#emailDiv').addClass('is-error');
-                                $('#emailErrorMsg').removeClass('u-hidden');
+                $.ajax({
+                    type: "post",
+                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetMemberEmail")",
+                    beforeSend: function () { window.loading('show'); },
+                    data: { "email": val, "pageUrl": window.location.pathname + window.location.search },
+                    success: function (resp) {
+                        if (resp.success) {
+                            //設置成功
+                            $.magnificPopup.close();
+                            $('#email').val('');
+                            $('#emailText').text(val);
+                        } else {
+                            if (resp.block) {
+                                window.VerifyLoginRedirctToHome(resp.success);
+                                return;
                             }
-                        },
-                        complete: function () { window.loading('hide');}
-                    })
-                } else {
-                    $('#emailDiv').addClass('is-error');
-                    $('#emailErrorMsg').removeClass('u-hidden');
-                }
+                            $('#emailErrorMsg').find('span').text(resp.errorMessage);
+                            $('#emailDiv').addClass('is-error');
+                            $('#emailErrorMsg').removeClass('u-hidden');
+                        }
+                    },
+                    complete: function () { window.loading('hide'); }
+                })
+            } else {
+                $('#emailDiv').addClass('is-error');
+                $('#emailErrorMsg').removeClass('u-hidden');
+            }
         });
         $('#videoCall').on('change', function (e) {
             let self = e.target;

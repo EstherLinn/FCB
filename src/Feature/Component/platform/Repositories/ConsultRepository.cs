@@ -159,6 +159,7 @@ namespace Feature.Wealth.Component.Repositories
                            THEN '(' + TRIM(B.[PhoneAreaCode]) + ')' + SUBSTRING(B.[PhoneNumber], 1, 3) + '-' + SUBSTRING(B.[PhoneNumber], 4, 4)
                            WHEN LEN(B.[PhoneNumber]) = 6
                            THEN '(' + TRIM(B.[PhoneAreaCode]) + ')' + SUBSTRING(B.[PhoneNumber], 1, 2) + '-' + SUBSTRING(B.[PhoneNumber], 3, 4)
+                           ELSE '(' + TRIM(B.[PhoneAreaCode]) + ')' + B.[PhoneNumber]
                            END AS [BranchPhone]
                            FROM [HRIS] A WITH (NOLOCK)
                            LEFT JOIN [Branch_Data] B WITH (NOLOCK) ON SUBSTRING(A.OfficeOrBranchCode, 2, 3) = B.BranchCode
