@@ -778,7 +778,7 @@ namespace Feature.Wealth.Component.Repositories
                 """;
             var param = new { ETFId = this.ETFId };
             var result = DbManager.Custom.ExecuteIList<EtfTradingPrice>(sql, param, CommandType.Text)
-                .Select(r =>
+                ?.Select(r =>
                 {
                     r.BuyPriceChangeStyle = r.BuyPriceChange.DecimalNumberToStyle();
                     r.BuyPriceChangePercentageStyle = r.BuyPriceChangePercentage.DecimalNumberToStyle();
@@ -1105,7 +1105,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             var param = new { ETFId = etfId, condition = selectType };
             var result = DbManager.Custom.ExecuteIList<EtfRiskGraph>("sp_ETFRiskindicatorsPicture", param, CommandType.StoredProcedure)
-                .Select(r =>
+                ?.Select(r =>
                 {
                     r.ETFName = r.ETFName?.Normalize(NormalizationForm.FormKC) ?? string.Empty;
                     return r;
@@ -1254,8 +1254,8 @@ namespace Feature.Wealth.Component.Repositories
                 """;
             var param = new { ETFId = this.ETFId };
 
-            var result = DbManager.Custom.ExecuteIList<EtfScaleRecord>(sql, param, CommandType.Text)/*?.ToList()*/
-                .Select(r =>
+            var result = DbManager.Custom.ExecuteIList<EtfScaleRecord>(sql, param, CommandType.Text)
+                ?.Select(r =>
                 {
                     r.ScaleMillions = NumberExtensions.Rounding(r.ScaleMillions, 2);
                     return r;
