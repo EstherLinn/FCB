@@ -72,6 +72,7 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public IEnumerable<FundBasicDto> GetSameAgeCard(int age)
         {
+            age = age < 10 ? age : age / 10;
             string sql = $@"SELECT TOP(3) ProductCode,FundName,AvailabilityStatus,OnlineSubscriptionAvailability,OneMonthReturnOriginalCurrency FROM vw_BasicFund
                         WHERE ProductCode IN (SELECT value from (SELECT FUND_ID FROM Wms_age_profile_d_mf WHERE AGE=@age) A cross apply STRING_SPLIT (a.FUND_ID,','))
                         ORDER BY SixMonthReturnOriginalCurrency DESC";
