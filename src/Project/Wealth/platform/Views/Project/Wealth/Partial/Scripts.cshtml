@@ -352,8 +352,15 @@
                 let id = self.getAttribute('eh-focus-id');
                 let name = self.getAttribute('eh-focus-name');
                 let type = self.getAttribute('eh-focus-type');
+                let obj = new FocsuObj(id, type);
+                if (self.getAttribute('eh-focus-add').toString() == "false") {
+                    addItem('focus', obj);
+                    self.setAttribute('eh-focus-add', true);
+                } else {
+                    removeItem('focus', obj);
+                    self.setAttribute('eh-focus-add', false);
+                }
                 if (id && name && type) {
-                    let obj = new FocsuObj(id, type);
                     $.ajax({
                         type: "post",
                         url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
@@ -365,17 +372,20 @@
                                     window.VerifyLoginRedirctToHome(resp.success);
                                     return;
                             }
-                            if (self.getAttribute('eh-focus-add').toString() == "false") {
-                                addItem('focus', obj);
-                                self.setAttribute('eh-focus-add', true);
-                            } else {
-                                removeItem('focus', obj);
-                                self.setAttribute('eh-focus-add', false);
+                            if (!resp.success)
+                            {
+                                if (self.getAttribute('eh-focus-add').toString() == "true") {
+                                    removeItem('focus', obj);
+                                    self.setAttribute('eh-focus-add', false);
+                                } else {
+                                    addItem('focus', obj);
+                                    self.setAttribute('eh-focus-add', true);
+                                }
                             }
                         },
                         error: function (resp) {
                             //設置error
-                            if (self.getAttribute('eh-focus-add').toString() == "false") {
+                            if (self.getAttribute('eh-focus-add').toString() == "true") {
                                 removeItem('focus', obj);
                                 self.setAttribute('eh-focus-add', false);
                             } else {

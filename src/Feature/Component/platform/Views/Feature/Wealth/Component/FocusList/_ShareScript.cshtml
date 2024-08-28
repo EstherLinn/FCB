@@ -700,6 +700,8 @@
                 let self = e.target;
                 let cancelId = self.getAttribute('data-cancel-id');
                 let cancelType = self.getAttribute('data-cancel-type');
+                let obj = new CompareObj(cancelId, cancelType);
+                removeItem('focus', obj);
                 $.ajax({
                     type: "post",
                     url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
@@ -711,8 +713,9 @@
                                     window.VerifyLoginRedirctToHome(resp.success);
                                     return;
                             }
-                            let obj = new CompareObj(cancelId, cancelType);
-                            removeItem('focus', obj);
+                        if (!resp.success) {
+                            addItem('focus', obj);
+                        }
                         switch (cancelType.toLowerCase()) {
                             case "fund":
                                 window.resetTable();
@@ -726,7 +729,8 @@
                         }
                     },
                     error: function (msg) {
-                        //設置成功
+                        //設置error
+                        addItem('focus', obj);
                     },
                     complete: function () { $('.c-loading').loading('hide'); }
                 })
