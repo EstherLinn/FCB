@@ -748,8 +748,6 @@ else
                 });
             }
     
-            bindClickEvent();
-    
             moment.locale('zh-tw', {
                 weekdaysMin: dayNamesZh,
                 meridiemParse: /凌晨|早上|上午|中午|下午|晚上/,
@@ -1065,7 +1063,11 @@ else
                 // 開始諮詢的該筆資料
                 let id = $(this).data('eventId');
                 let data = dataSource.find(item => item.id === id);
+
+                window.open('@(Model.ConsultScheduleLink)?id='+id);
             });
+
+            bindClickEvent();
         });
     </script>
 }
