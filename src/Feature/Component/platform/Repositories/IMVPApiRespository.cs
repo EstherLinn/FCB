@@ -4,10 +4,9 @@ using Flurl.Http;
 using log4net;
 using Newtonsoft.Json.Linq;
 using Sitecore.Configuration;
-using Sitecore.Marketing.Definitions.AutomationPlans.Model;
-using Sitecore.Web.UI.HtmlControls;
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Net.Http;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 
 namespace Feature.Wealth.Component.Repositories
@@ -27,16 +26,17 @@ namespace Feature.Wealth.Component.Repositories
 
             try
             {
+                var formContent = new FormUrlEncodedContent(
+                [
+                    new KeyValuePair<string, string>("appId", "WEA_APP"),
+                    new KeyValuePair<string, string>("appKey", "wea1234"),
+                ]);
+
                 var request = _route.
                 AppendPathSegments("api", "rest", "app", "verification").
-                SetQueryParams(new
-                {
-                    appId = "WEA_APP",
-                    appKey = "wea1234",
-                }).
                 WithHeader("ContentType", "application/json").
                 AllowAnyHttpStatus().
-                PostAsync().
+                PostAsync(formContent).
                 ReceiveString().Result;
 
                 if (!string.IsNullOrEmpty(request))
