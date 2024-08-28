@@ -115,23 +115,17 @@
         ['DOMContentLoaded'].forEach(function (event) {
             window.addEventListener(event, function (e) {
                 const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
                 openTabs.push(tabIdentifier);
                 localStorage.setItem(storageKey, JSON.stringify(openTabs));
                 //如果登入狀態但已經關閉過頁面則登出
-                if(isLogin && store.get(storageKey + "_left")){
-                    store.remove(storageKey + "_left");
-                    logOutEvent();
-                    let logOutRoute = new URL( location.protocol +"//"+ location.host + "@ClientRoute.GenerateUrl(this, "Accounts", "Logout")");
+                if (isLogin && updatedTabs.length === 0  && sessionStorage.getItem("visit") == null) {
+                    let logOutRoute = new URL(location.protocol + "//" + location.host + "@ClientRoute.GenerateUrl(this, "Accounts", "Logout")");
                     location.href = logOutRoute;
                 }
-                store.remove(storageKey + "_left");
+                sessionStorage.setItem("visit", true);
             });
         });
-
-        //登出Event
-        const logOutEvent = (event) => {
-            navigator.sendBeacon("@ClientRoute.GenerateUrl(this, "Accounts", "Logout")", null);
-        }
 
         //離開頁面後砍一個tab戳記
         ['unload'].forEach(function (event) {
@@ -139,12 +133,6 @@
                 const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
                 const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
                 localStorage.setItem(storageKey, JSON.stringify(updatedTabs));
-                if (isLogin && updatedTabs.length === 0) {
-                    //設置離開頁面localstorage
-                    store.set(storageKey + "_left", true);
-                    isLogin = false;
-                    logOutEvent();
-                }
             });
         });
 
