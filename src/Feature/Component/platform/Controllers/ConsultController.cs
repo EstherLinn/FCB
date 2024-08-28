@@ -523,9 +523,15 @@ namespace Feature.Wealth.Component.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CancelConsultSchedule(ConsultSchedule consultSchedule)
         {
-            var info = FcbMemberHelper.GetMemberAllInfo();
-
-            //TODO 驗證使用者資訊
+            //驗證使用者資訊
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new JsonNetResult(new
+                {
+                    success = false,
+                    block = true
+                });
+            }
 
             if (consultSchedule != null && Guid.TryParse(consultSchedule.ScheduleID.ToString(), out var scheduleID))
             {
@@ -563,7 +569,11 @@ namespace Feature.Wealth.Component.Controllers
                 }
             }
 
-            return new JsonNetResult(true);
+            return new JsonNetResult(new
+            {
+                success = true,
+                block = false
+            });
         }
 
         [HttpPost]
