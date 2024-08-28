@@ -1,6 +1,7 @@
 ﻿using Feature.Wealth.Component.Models.Consult;
 using Flurl;
 using Flurl.Http;
+using Flurl.Http.Configuration;
 using log4net;
 using Newtonsoft.Json.Linq;
 using Sitecore.Configuration;
@@ -26,18 +27,23 @@ namespace Feature.Wealth.Component.Repositories
 
             try
             {
-                var formContent = new FormUrlEncodedContent(
-                [
+                var formContent = new FormUrlEncodedContent([
                     new KeyValuePair<string, string>("appId", "WEA_APP"),
                     new KeyValuePair<string, string>("appKey", "wea1234"),
                 ]);
 
-                var request = _route.
-                AppendPathSegments("api", "rest", "app", "verification").
-                WithHeader("ContentType", "application/json").
-                AllowAnyHttpStatus().
-                PostAsync(formContent).
-                ReceiveString().Result;
+                var flurlClient = new FlurlClientBuilder(this._route).
+                    ConfigureInnerHandler(hch => {
+                        hch.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                    }).Build();
+
+                var request = flurlClient.
+                    Request().
+                    AppendPathSegments("api", "rest", "app", "verification").
+                    WithHeader("ContentType", "application/json").
+                    AllowAnyHttpStatus().
+                    PostAsync(formContent).
+                    ReceiveString().Result;
 
                 if (!string.IsNullOrEmpty(request))
                 {
@@ -72,19 +78,25 @@ namespace Feature.Wealth.Component.Repositories
 
             try
             {
-                var request = _route.
-                AppendPathSegments("api", "rest", "fm", "getReserved").
-                SetQueryParams(new
-                {
-                    token = token,
-                    empId = empId,
-                    startDate = startDate,
-                    endDate = endDate
-                }).
-                WithHeader("ContentType", "application/json").
-                AllowAnyHttpStatus().
-                PostAsync().
-                ReceiveString().Result;
+                var formContent = new FormUrlEncodedContent([
+                    new KeyValuePair<string, string>("token", token),
+                    new KeyValuePair<string, string>("empId", empId),
+                    new KeyValuePair<string, string>("startDate", startDate),
+                    new KeyValuePair<string, string>("endDate", endDate),
+                ]);
+
+                var flurlClient = new FlurlClientBuilder(this._route).
+                    ConfigureInnerHandler(hch => {
+                        hch.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                    }).Build();
+
+                var request = flurlClient.
+                    Request().
+                    AppendPathSegments("api", "rest", "fm", "getReserved").
+                    WithHeader("ContentType", "application/json").
+                    AllowAnyHttpStatus().
+                    PostAsync(formContent).
+                    ReceiveString().Result;
 
                 if (!string.IsNullOrEmpty(request))
                 {
@@ -116,26 +128,32 @@ namespace Feature.Wealth.Component.Repositories
 
             try
             {
-                var request = _route.
-                AppendPathSegments("api", "rest", "fm", "getReserved").
-                SetQueryParams(new
-                {
-                    token = imvpRequestData.token,
-                    scheduleId = imvpRequestData.scheduleId,
-                    action = imvpRequestData.action,
-                    empId = imvpRequestData.empId,
-                    type = imvpRequestData.type,
-                    date = imvpRequestData.date,
-                    startTime = imvpRequestData.startTime,
-                    endTime = imvpRequestData.endTime,
-                    custId = imvpRequestData.custId,
-                    subject = imvpRequestData.subject,
-                    description = imvpRequestData.description
-                }).
-                WithHeader("ContentType", "application/json").
-                AllowAnyHttpStatus().
-                PostAsync().
-                ReceiveString().Result;
+                var formContent = new FormUrlEncodedContent([
+                    new KeyValuePair<string, string>("token", imvpRequestData.token),
+                    new KeyValuePair<string, string>("scheduleId", imvpRequestData.scheduleId),
+                    new KeyValuePair<string, string>("action", imvpRequestData.action),
+                    new KeyValuePair<string, string>("empId", imvpRequestData.empId),
+                    new KeyValuePair<string, string>("type", imvpRequestData.type),
+                    new KeyValuePair<string, string>("date", imvpRequestData.date),
+                    new KeyValuePair<string, string>("startTime", imvpRequestData.startTime),
+                    new KeyValuePair<string, string>("endTime", imvpRequestData.endTime),
+                    new KeyValuePair<string, string>("custId", imvpRequestData.custId),
+                    new KeyValuePair<string, string>("subject", imvpRequestData.subject),
+                    new KeyValuePair<string, string>("description", imvpRequestData.description),
+                ]);
+
+                var flurlClient = new FlurlClientBuilder(this._route).
+                    ConfigureInnerHandler(hch => {
+                        hch.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+                    }).Build();
+
+                var request = flurlClient.
+                    Request().
+                    AppendPathSegments("api", "rest", "fm", "getReserved").
+                    WithHeader("ContentType", "application/json").
+                    AllowAnyHttpStatus().
+                    PostAsync(formContent).
+                    ReceiveString().Result;
 
                 if (!string.IsNullOrEmpty(request))
                 {
