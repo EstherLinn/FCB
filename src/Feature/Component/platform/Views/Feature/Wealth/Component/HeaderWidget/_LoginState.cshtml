@@ -10,11 +10,17 @@
         <!-- 登入狀態 -->
         <div class="l-topbar__list">
             <div class="l-topbar__item">
-                <a href="#" class="o-topBtn o-topBtn--notify u-hidden" data-popover="#popoverNotify"></a>
+                <a href="#" class="o-topBtn o-topBtn--notify" data-popover="#popoverNotify"></a>
                 <div id="popoverNotify" class="c-popover is-notify">
                     <div class="c-popover__wrap">
                         <nav class="c-popover__content">
-                            <div class="l-flex u-flex-col">
+                            <div class="c-empty u-hidden" data-empty>
+                                <div class="c-empty__img">
+                                    <img src="~/themes/images/lions/lion-common.svg" alt="">
+                                </div>
+                                <div class="c-empty__desc">您目前尚未有訊息通知</div>
+                            </div>
+                            <div class="l-flex u-flex-col u-hidden" data-noempty>
                                 <div class="l-flex__item">
                                     <ul class="c-listGroup" id="topInfoList">
                                     </ul>
@@ -119,33 +125,38 @@
                         for (var i = 0; i < data.length; i++) {
                             isRead = data[i].HaveRead ? "" : "is-hint";
                             html += `<li class="c-listGroup__item" data-topInfoList>
-                                                <div class="c-itemNotify ${isRead}" data-haveread=${data[i].HaveRead}  data-recordnum="${data[i].RecordNumber}">
-                                                    <div class="c-itemNotify__topbar">
-                                                        <span class="t-date">${data[i].InfoDateTimeString}</span>
-                                                        <span class="o-hangTag" data-mailType>${data[i].MailInfoType}</span>
+                                                    <div class="c-itemNotify ${isRead}" data-haveread=${data[i].HaveRead}  data-recordnum="${data[i].RecordNumber}">
+                                                        <div class="c-itemNotify__topbar">
+                                                            <span class="t-date">${data[i].InfoDateTimeString}</span>
+                                                            <span class="o-hangTag" data-mailType>${data[i].MailInfoType}</span>
+                                                        </div>
+                                                        <div class="c-itemNotify__link">
+                                                                <a href="${data[i].InfoLink}" target="_blank" class="o-itemLink">
+                                                                <span class="o-itemLink__title">${data[i].InfoContent}</span>
+                                                                <img src="/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                                            </a>
+                                                        </div>
                                                     </div>
-                                                    <div class="c-itemNotify__link">
-                                                            <a href="${data[i].InfoLink}" target="_blank" class="o-itemLink">
-                                                            <span class="o-itemLink__title">${data[i].InfoContent}</span>
-                                                            <img src="/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </li>`
+                                                </li>`
                         }
                         $('#topInfoList').html(DOMPurify.sanitize(html, { ADD_ATTR: ['target'] }));
+                        $('[data-empty]').addClass('u-hidden');
+                        $('[data-noempty]').removeClass('u-hidden');
                         if ($('[data-haveread=false]', $('#popoverNotify')).length > 0) {
                             $('[data-popover="#popoverNotify"]').addClass('is-notify');
                         } else {
                             $('[data-popover="#popoverNotify"]').removeClass('is-notify')
                         }
-                        $('[data-popover="#popoverNotify"]').removeClass('u-hidden');
                     } else {
-                        $('[data-popover="#popoverNotify"]').addClass('u-hidden');
+                        $('[data-empty]').removeClass('u-hidden');
+                        $('[data-noempty]').addClass('u-hidden');
+                        $('[data-popover="#popoverNotify"]').removeClass('is-notify')
                     }
 
                 }).fail(function (jqXHR, textStatus, errorThrown) {
-                    $('[data-popover="#popoverNotify"]').addClass('u-hidden');
+                    $('[data-empty]').removeClass('u-hidden');
+                    $('[data-noempty]').addClass('u-hidden');
+                    $('[data-popover="#popoverNotify"]').removeClass('is-notify')
                 });
             }
             window.ResetTopInfoList();
@@ -158,8 +169,10 @@
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "MemberInfoList", "SetInfoHaveReadByMember")',
                     type: 'POST',
-                    data: { "mailInfoType": $this.find('[data-mailType]').text(), "recordNumber": $this.find('[data-recordnum]').data('recordnum')
-                    ,"pageUrl": window.location.pathname + window.location.search},
+                    data: {
+                        "mailInfoType": $this.find('[data-mailType]').text(), "recordNumber": $this.find('[data-recordnum]').data('recordnum')
+                        , "pageUrl": window.location.pathname + window.location.search
+                    },
                     beforeSend: function () { window.loading('show'); },
                     success: function (data, textStatus, jqXHR) {
                         if (data && data.success) {
@@ -168,8 +181,7 @@
                                 window.ResetMailInfoTable();
                             }
                             window.loading('hide');
-                        }else if(!data.success && data.block)
-                        {
+                        } else if (!data.success && data.block) {
                             window.VerifyLoginRedirctToHome(data.success);
                             return;
                         }
