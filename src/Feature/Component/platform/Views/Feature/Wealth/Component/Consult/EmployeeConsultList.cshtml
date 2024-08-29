@@ -592,35 +592,41 @@ else
                     e.preventDefault();
                     window.loading('show');
                     var id = $(this).attr('data-id')
-                    var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
-
-                    var token = $('input[name="__RequestVerificationToken"]').val();
-                    consultSchedule.__RequestVerificationToken = token;
-                    consultSchedule.pageUrl = window.location.pathname + window.location.search;
-
-                    $.ajax({
-                        url: '@ClientRoute.GenerateUrl(this, "Consult", "CancelConsultSchedule")',
-                        type: 'POST',
-                        data: consultSchedule
-                    }).done(function (data, textStatus, jqXHR) {
-                        $.magnificPopup.close();
-                        if (data.success) {
-                            if (data1.length > 0) {
-                                fjs1.removeRecords({ ScheduleID: id });
-                            }
-                        }
-                        else {
-                            if (data.block) {
-                                window.VerifyLoginRedirctToHome(data.success);
-                                return;
-                            }
-                        }
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                    }).always(function () {
-                        window.loading('hide');
-                    });
+                    cancelConsultSchedule(id);
                 });
             }
+
+            function cancelConsultSchedule(id) {
+                var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                consultSchedule.__RequestVerificationToken = token;
+                consultSchedule.pageUrl = window.location.pathname + window.location.search;
+
+                $.ajax({
+                    url: '@ClientRoute.GenerateUrl(this, "Consult", "CancelConsultSchedule")',
+                    type: 'POST',
+                    data: consultSchedule
+                }).done(function (data, textStatus, jqXHR) {
+                    $.magnificPopup.close();
+                    if (data.success) {
+                        if (data1.length > 0) {
+                            fjs1.removeRecords({ ScheduleID: id });
+                        }
+                    }
+                    else {
+                        if (data.block) {
+                            window.VerifyLoginRedirctToHome(data.success);
+                            return;
+                        }
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                }).always(function () {
+                    window.loading('hide');
+                });
+            }
+
+            bindClickEvent();
     
             moment.locale('zh-tw', {
                 weekdaysMin: dayNamesZh,
@@ -936,12 +942,16 @@ else
                 e.preventDefault();
                 // 開始諮詢的該筆資料
                 let id = $(this).data('eventId');
-                let data = dataSource.find(item => item.id === id);
+                window.open('@(Model.ConsultScheduleLink)?id=' + id + '&type=Employee');
+            });
 
-                 window.open('@(Model.ConsultScheduleLink)?id='+id+'&type=Employee');
-            });            
-
-            bindClickEvent();
+            // 取消諮詢
+            $('body').on('click.cancel', '[data-cancel]', function () {
+                e.preventDefault();
+                // 開始諮詢的該筆資料
+                let id = $(this).data('eventId');
+                cancelConsultSchedule(id);
+            });
         });
     </script>
 }
