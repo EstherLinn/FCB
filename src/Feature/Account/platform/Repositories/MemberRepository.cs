@@ -880,7 +880,7 @@ namespace Feature.Wealth.Account.Repositories
         public DateTime? GetMemberScheduleDate()
         {
             DateTime? dt = null;
-            var strSql = @$" Select top 1 ScheduleDate From ConsultSchedule where CustomerID  COLLATE Latin1_General_CS_AS =@id and StatusCode = '1'  order by ScheduleDate ";
+            var strSql = @$" Select top 1 ScheduleDate From ConsultSchedule where CustomerID  COLLATE Latin1_General_CS_AS =@id and StatusCode = '1' and  ScheduleDate>=CAST(GETDATE() AS DATE)  order by ScheduleDate ";
 
             var para = new
             {
