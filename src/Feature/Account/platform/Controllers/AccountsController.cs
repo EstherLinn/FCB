@@ -1,6 +1,7 @@
 ﻿using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Account.Models.Api;
 using Feature.Wealth.Account.Models.FundTrackList;
+using Feature.Wealth.Account.Models.MemberLog;
 using Feature.Wealth.Account.Models.OAuth;
 using Feature.Wealth.Account.Repositories;
 using Feature.Wealth.Account.Services;
@@ -71,12 +72,24 @@ namespace Feature.Wealth.Account.Controllers
             {
                 //創建會員
                 member = new FcbMemberModel(responseVerify.Name, responseVerify.Email, true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.Line, responseProfile.UserId);
-                _memberRepository.CreateNewMember(member);
+                var createdSuccess = _memberRepository.CreateNewMember(member);
+                if (!createdSuccess)
+                {
+                    Session["LoginStatus"] = false;
+                    Session["ErrorMsg"] = "Line 登入創建理財網會員有誤，請聯絡資訊處。";
+                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                }
             }
             else
             {
                 //已存在會員
                 member = _memberRepository.GetMemberInfo(PlatFormEunm.Line, responseProfile.UserId);
+                if (member == null)
+                {
+                    Session["LoginStatus"] = false;
+                    Session["ErrorMsg"] = "Line 登入取得理財網會員有誤，請聯絡資訊處。";
+                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                }
             }
             SetCustomPropertyAndLogin(member, user);
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
@@ -109,12 +122,24 @@ namespace Feature.Wealth.Account.Controllers
             {
                 //創建會員
                 member = new FcbMemberModel(responseProfile.Name, responseProfile.Email, true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.FaceBook, responseProfile.Id);
-                _memberRepository.CreateNewMember(member);
+                var createdSuccess = _memberRepository.CreateNewMember(member);
+                if (!createdSuccess)
+                {
+                    Session["LoginStatus"] = false;
+                    Session["ErrorMsg"] = "Facebook 登入創建理財網會員有誤，請聯絡資訊處。";
+                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                }
             }
             else
             {
                 //已存在會員
                 member = _memberRepository.GetMemberInfo(PlatFormEunm.FaceBook, responseProfile.Id);
+                if (member == null)
+                {
+                    Session["LoginStatus"] = false;
+                    Session["ErrorMsg"] = "Facebook 登入取得理財網會員有誤，請聯絡資訊處。";
+                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                }
             }
             SetCustomPropertyAndLogin(member, user);
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
@@ -198,7 +223,13 @@ namespace Feature.Wealth.Account.Controllers
                                     cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
                                     cifMember.IsEmployee, cifMember.IsManager);
 
-                                _memberRepository.CreateNewMember(member);
+                                var createdSuccess = _memberRepository.CreateNewMember(member);
+                                if (!createdSuccess)
+                                {
+                                    Session["LoginStatus"] = false;
+                                    Session["ErrorMsg"] = "網銀 登入創建理財網會員有誤，請聯絡資訊處。";
+                                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                                }
                                 User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
                                 SetCustomPropertyAndLogin(member, user);
                             }
@@ -289,7 +320,13 @@ namespace Feature.Wealth.Account.Controllers
                             cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
                             cifMember.IsEmployee, cifMember.IsManager);
 
-                        _memberRepository.CreateNewMember(member);
+                        var createdSuccess = _memberRepository.CreateNewMember(member);
+                        if (!createdSuccess)
+                        {
+                            Session["LoginStatus"] = false;
+                            Session["ErrorMsg"] = "網銀App 登入創建理財網會員有誤，請聯絡資訊處。";
+                            return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                        }
                         SetCustomPropertyAndLogin(member, user);
                     }
                     else
@@ -363,6 +400,14 @@ namespace Feature.Wealth.Account.Controllers
         public ActionResult Logout()
         {
             Authentication.LogOutUser();
+            MemberLog memberLog = new MemberLog()
+            {
+                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
+                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
+                Action = ActionEnum.Logout.ToString(),
+                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
+            };
+            _memberRepository.RecordMemberActionLog(memberLog);
             return Redirect(callBackUrl);
         }
 
@@ -494,6 +539,15 @@ namespace Feature.Wealth.Account.Controllers
                 success = _memberRepository.SetMemberEmail(FcbMemberHelper.GetMemberPlatFormId(), email),
                 errorMessage = string.Empty
             };
+            MemberLog memberLog = new MemberLog()
+            {
+                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
+                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
+                Action = ActionEnum.Edit.ToString(),
+                Description = string.Format("修改Email: {0} > {1}", FcbMemberHelper.fcbMemberModel.MemberEmail, email),
+                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
+            };
+            _memberRepository.RecordMemberActionLog(memberLog);
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
@@ -514,6 +568,15 @@ namespace Feature.Wealth.Account.Controllers
             {
                 success = _memberRepository.SetVideoInfo(FcbMemberHelper.GetMemberPlatFormId(), open)
             };
+            MemberLog memberLog = new MemberLog()
+            {
+                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
+                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
+                Action = ActionEnum.Edit.ToString(),
+                Description = string.Format("理財視訊通知: {0} > {1}", FcbMemberHelper.fcbMemberModel.VideoInfoOpen, open),
+                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
+            };
+            _memberRepository.RecordMemberActionLog(memberLog);
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
@@ -534,6 +597,15 @@ namespace Feature.Wealth.Account.Controllers
             {
                 success = _memberRepository.SetArriedInfo(FcbMemberHelper.GetMemberPlatFormId(), open)
             };
+            MemberLog memberLog = new MemberLog()
+            {
+                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
+                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
+                Action = ActionEnum.Edit.ToString(),
+                Description = string.Format("到價通知: {0} > {1}", FcbMemberHelper.fcbMemberModel.ArrivedInfoOpen, open),
+                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
+            };
+            _memberRepository.RecordMemberActionLog(memberLog);
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
@@ -554,6 +626,15 @@ namespace Feature.Wealth.Account.Controllers
             {
                 success = _memberRepository.SetQuoteChangeColor(FcbMemberHelper.GetMemberPlatFormId(), color)
             };
+            MemberLog memberLog = new MemberLog()
+            {
+                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
+                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
+                Action = ActionEnum.Edit.ToString(),
+                Description = string.Format("修改漲跌顏色: {0} > {1}", FcbMemberHelper.fcbMemberModel.StockShowColor.ToString(), color),
+                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
+            };
+            _memberRepository.RecordMemberActionLog(memberLog);
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
@@ -578,6 +659,15 @@ namespace Feature.Wealth.Account.Controllers
             {
                 success = _memberRepository.SetCommonFunctions(FcbMemberHelper.GetMemberPlatFormId(), commons)
             };
+            MemberLog memberLog = new MemberLog()
+            {
+                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
+                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
+                Action = ActionEnum.Edit.ToString(),
+                Description = string.Format("修改常用功能: {0}", string.Join(",", commons.ToArray())),
+                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
+            };
+            _memberRepository.RecordMemberActionLog(memberLog);
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
@@ -597,6 +687,14 @@ namespace Feature.Wealth.Account.Controllers
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
             user.Profile.Save();
             Authentication.LoginVirtualUser(user);
+            MemberLog memberLog = new MemberLog()
+            {
+                PlatForm = fcbMember.PlatForm.ToString(),
+                PlatFormId = fcbMember.PlatFormId,
+                Action = ActionEnum.Login.ToString(),
+                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
+            };
+            _memberRepository.RecordMemberActionLog(memberLog);
         }
         [HttpPost]
         [MemberAuthenticationFilter]
