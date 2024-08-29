@@ -205,19 +205,17 @@ namespace Feature.Wealth.Account.Repositories
                             A.CIF_AO_EMPNO,
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
-                            IIF(D.EmployeeID IS NOT NULL AND D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
-                            IIF(D.EmployeeID IS NOT NULL AND D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE
                             FROM [CIF] AS A
                             LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
                             LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
-                            LEFT JOIN [HRIS] AS D ON A.CIF_ID = D.EmployeeID
                             WHERE CIF_ID = @@id ";
 
             var para = new
             {
                 id = new DbString() { Value = id, IsAnsi = true, Length = 33 },
             };
+
             try
             {
                 member = DbManager.Custom.Execute<CIFMember>(strSql, para, commandType: System.Data.CommandType.Text);
@@ -231,6 +229,19 @@ namespace Feature.Wealth.Account.Repositories
             {
                 Log.Error(ex.Message);
             }
+
+            if(member != null && string.IsNullOrEmpty(member.CIF_ID) == false)
+            {
+                var employeeID = member.CIF_ID.Substring(0, 10);
+                var employee = GetEmployeeInfoByEmployeeID(employeeID);
+
+                if(employee != null)
+                {
+                    member.IsEmployee = employee.IsEmployee;
+                    member.IsManager = employee.IsManager;
+                }
+            }
+
             return member;
 
         }
@@ -254,13 +265,10 @@ namespace Feature.Wealth.Account.Repositories
                             A.CIF_AO_EMPNO,
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
-                            IIF(D.EmployeeID IS NOT NULL AND D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
-                            IIF(D.EmployeeID IS NOT NULL AND D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE
                             FROM [CIF] AS A
                             LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
                             LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
-                            LEFT JOIN [HRIS] AS D ON A.CIF_ID = D.EmployeeID
                             WHERE C.PROMOTION_CODE COLLATE Latin1_General_CS_AS = @@promotionCode ";
 
             var para = new
@@ -281,6 +289,19 @@ namespace Feature.Wealth.Account.Repositories
             {
                 Log.Error(ex.Message);
             }
+
+            if (member != null && string.IsNullOrEmpty(member.CIF_ID) == false)
+            {
+                var employeeID = member.CIF_ID.Substring(0, 10);
+                var employee = GetEmployeeInfoByEmployeeID(employeeID);
+
+                if (employee != null)
+                {
+                    member.IsEmployee = employee.IsEmployee;
+                    member.IsManager = employee.IsManager;
+                }
+            }
+
             return member;
 
         }
@@ -304,12 +325,10 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_SAL_FLAG AS SalFlag,
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
-                            IIF(D.EmployeeID IS NOT NULL AND D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
-                            IIF(D.EmployeeID IS NOT NULL AND D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager
+                            B.CIF_ID
                             FROM [FCB_Member] AS A
                             LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
-                            LEFT JOIN [HRIS] AS D ON B.CIF_ID = D.EmployeeID
                             WHERE PlatForm = @@Platform AND ";
 
             if (platFormEunm == PlatFormEunm.WebBank)
@@ -322,12 +341,29 @@ namespace Feature.Wealth.Account.Repositories
             {
                 strSql += "PlatFormId COLLATE Latin1_General_CS_AS = @@id";
             }
+
             var para = new
             {
                 Platform = new DbString() { Value = platFormEunm.ToString(), Length = 10 },
                 id = new DbString() { Value = id, IsAnsi = true, Length = idLength },
             };
+
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
+
+            if (fcbMemberModel != null && string.IsNullOrEmpty(fcbMemberModel.CIF_ID) == false)
+            {
+                var employeeID = fcbMemberModel.CIF_ID.Substring(0, 10);
+                var employee = GetEmployeeInfoByEmployeeID(employeeID);
+
+                if (employee != null)
+                {
+                    fcbMemberModel.IsEmployee = employee.IsEmployee;
+                    fcbMemberModel.IsManager = employee.IsManager;
+                }
+
+                // FcbMemberModel 不要保留 CIF_ID
+                fcbMemberModel.CIF_ID = string.Empty;
+            }
 
             return fcbMemberModel;
         }
@@ -350,12 +386,10 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_SAL_FLAG AS SalFlag,
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
-                            IIF(D.EmployeeID IS NOT NULL AND D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
-                            IIF(D.EmployeeID IS NOT NULL AND D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager
+                            B.CIF_ID
                             FROM [FCB_Member] AS A
                             LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
-                            LEFT JOIN [HRIS] AS D ON B.CIF_ID = D.EmployeeID
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@id";
 
             var para = new
@@ -363,7 +397,23 @@ namespace Feature.Wealth.Account.Repositories
                 Platform = new DbString() { Value = platFormEunm.ToString(), Length = 10 },
                 id = new DbString() { Value = id, IsAnsi = true, Length = 100 },
             };
+
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
+
+            if (fcbMemberModel != null && string.IsNullOrEmpty(fcbMemberModel.CIF_ID) == false)
+            {
+                var employeeID = fcbMemberModel.CIF_ID.Substring(0, 10);
+                var employee = GetEmployeeInfoByEmployeeID(employeeID);
+
+                if (employee != null)
+                {
+                    fcbMemberModel.IsEmployee = employee.IsEmployee;
+                    fcbMemberModel.IsManager = employee.IsManager;
+                }
+
+                // FcbMemberModel 不要保留 CIF_ID
+                fcbMemberModel.CIF_ID = string.Empty;
+            }
 
             return fcbMemberModel;
         }
@@ -386,12 +436,10 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_SAL_FLAG AS SalFlag,
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
-                            IIF(D.EmployeeID IS NOT NULL AND D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
-                            IIF(D.EmployeeID IS NOT NULL AND D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager
+                            B.CIF_ID
                             FROM [FCB_Member] AS A
                             LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
-                            LEFT JOIN [HRIS] AS D ON B.CIF_ID = D.EmployeeID
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@promotionCode";
 
             var para = new
@@ -399,7 +447,23 @@ namespace Feature.Wealth.Account.Repositories
                 Platform = new DbString() { Value = platFormEunm.ToString(), Length = 10 },
                 promotionCode = new DbString() { Value = promotionCode, IsAnsi = true, Length = 100 },
             };
+
             fcbMemberModel = DbManager.Custom.Execute<FcbMemberModel>(strSql, para, commandType: System.Data.CommandType.Text);
+
+            if (fcbMemberModel != null && string.IsNullOrEmpty(fcbMemberModel.CIF_ID) == false)
+            {
+                var employeeID = fcbMemberModel.CIF_ID.Substring(0, 10);
+                var employee = GetEmployeeInfoByEmployeeID(employeeID);
+
+                if (employee != null)
+                {
+                    fcbMemberModel.IsEmployee = employee.IsEmployee;
+                    fcbMemberModel.IsManager = employee.IsManager;
+                }
+
+                // FcbMemberModel 不要保留 CIF_ID
+                fcbMemberModel.CIF_ID = string.Empty;
+            }
 
             return fcbMemberModel;
         }
@@ -888,6 +952,60 @@ namespace Feature.Wealth.Account.Repositories
             };
             dt = DbManager.Custom.Execute<DateTime?>(strSql, para, commandType: System.Data.CommandType.Text);
             return dt;
+        }
+
+        public Employee GetEmployeeInfoByEmployeeID(string id)
+        {
+            Employee member = null;
+            var strSql = @$"DECLARE @@id varchar(10) = @id
+                            SELECT TOP (1)
+                            [EmployeeCode]
+                            ,[EmployeeName]
+                            ,[EmployeeID]
+                            ,[SubsidiaryCode]
+                            ,[BusinessGroup]
+                            ,[BusinessName]
+                            ,[OfficeOrBranchCode]
+                            ,[OfficeOrBranchName]
+                            ,[DepartmentCode]
+                            ,[DepartmentName]
+                            ,[PositionCode]
+                            ,[PositionName]
+                            ,[JobTitleCode]
+                            ,[JobTitleName]
+                            ,[JobPositionCode]
+                            ,[JobPositionName]
+                            ,[Supervisor]
+                            ,[AppointmentDate]
+                            ,[Attendancebranch]
+                            ,[SupervisorCode]
+                            ,[SupervisorName]
+                            ,[HaveTrustLicense]
+                            ,[HaveInsurancseLicense]
+                            ,[InvestmentQualifications]
+                            ,[DerivativeFinancialOrStructuredQualifications]
+                            ,[PersonalFinanceBusinessPersonnelCategory]
+                            ,[RegionalCenterBusinessGroup]
+                            ,[SalaryLevel]
+                            ,[SalaryScale]
+                            ,IIF(D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee
+                            ,IIF(D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WITH (NOLOCK) WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager
+                            FROM [dbo].[HRIS] AS D WITH (NOLOCK)
+                            WHERE [EmployeeID] = @@id ";
+            try
+            {
+                var para = new
+                {
+                    id = new DbString() { Value = id, IsAnsi = true, Length = 10 },
+                };
+
+                member = DbManager.Custom.Execute<Employee>(strSql, para, commandType: System.Data.CommandType.Text);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+            return member;
         }
     }
 }

@@ -31,5 +31,15 @@
         public string RegionalCenterBusinessGroup { get; set; }
         public string SalaryLevel { get; set; }
         public string SalaryScale { get; set; }
+
+        /// <summary>
+        /// 是否為理顧
+        /// </summary>
+        public bool IsEmployee { get; set; } = false;
+
+        /// <summary>
+        /// 是否為理顧主管
+        /// </summary>
+        public bool IsManager { get; set; } = false;
     }
 }
