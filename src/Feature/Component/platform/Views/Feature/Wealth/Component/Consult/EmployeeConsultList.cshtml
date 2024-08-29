@@ -396,7 +396,7 @@ else
             <td class="c-cardTable__footer" data-card-table-width="1/1">
                 <div class="c-cardTable__content">
                     <% if (Start) { %>
-                        <a href="@(Model.ConsultScheduleLink)?id=<%= ScheduleID %>&type=Employee" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult">開始諮詢</a>
+                        <a href="@(Model.ConsultScheduleLink)?id=<%= ScheduleID %>&type=Employee" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult" target="_blank">開始諮詢</a>
                     <% } else { %>
                         <a href="" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult is-disabled">等待中</a>
                     <% } %>
@@ -605,10 +605,6 @@ else
                     }).done(function (data, textStatus, jqXHR) {
                         $.magnificPopup.close();
                         if (data.success) {
-                            if (data0.length > 0) {
-                                fjs0.removeRecords({ ScheduleID: id });
-                            }
-
                             if (data1.length > 0) {
                                 fjs1.removeRecords({ ScheduleID: id });
                             }
@@ -625,8 +621,6 @@ else
                     });
                 });
             }
-
-            bindClickEvent();
     
             moment.locale('zh-tw', {
                 weekdaysMin: dayNamesZh,
@@ -943,7 +937,11 @@ else
                 // 開始諮詢的該筆資料
                 let id = $(this).data('eventId');
                 let data = dataSource.find(item => item.id === id);
-            });
+
+                 window.open('@(Model.ConsultScheduleLink)?id='+id+'&type=Employee');
+            });            
+
+            bindClickEvent();
         });
     </script>
 }

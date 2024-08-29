@@ -485,6 +485,12 @@ namespace Feature.Wealth.Component.Controllers
                 return new JsonNetResult(false);
             }
 
+            // 避免 DB 出現 NULL
+            if(string.IsNullOrEmpty(consultSchedule.Description))
+            {
+                consultSchedule.Description = string.Empty;
+            }
+
             this._consultRepository.InsertConsultSchedule(consultSchedule);
 
             //呼叫 IMVP API 新增
@@ -579,13 +585,18 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public ActionResult CheckConsultSchedule(string scheduleId, string action)
+        public ActionResult CheckSchedule(string scheduleId, string action, string description)
         {
             // TODO 驗證來源 IP
 
-            if(string.IsNullOrEmpty(scheduleId) || string.IsNullOrEmpty(action))
+            if (string.IsNullOrEmpty(scheduleId) || string.IsNullOrEmpty(action))
             {
                 return new JsonNetResult(new { statusCode = -1101, statusMsg = "缺少必要參數" });
+            }
+
+            if(Guid.TryParse(scheduleId, out var temp) == false)
+            {
+                return new JsonNetResult(new { statusCode = -1102, statusMsg = "無效的參數或參數格式不正確" });
             }
 
             var result = this._consultRepository.GetConsultSchedule(scheduleId);
@@ -595,7 +606,12 @@ namespace Feature.Wealth.Component.Controllers
                 return new JsonNetResult(new { statusCode = -1104, statusMsg = "資料不存在" });
             }
 
-            if(action == "1")
+            if (string.IsNullOrEmpty(description) == false)
+            {
+                result.Description = result.Description + " 理顧意見：" + description;
+            }
+
+            if (action == "1")
             {
                 result.StatusCode = "1";
                 this._consultRepository.UpdateConsultSchedule(result);

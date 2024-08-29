@@ -316,12 +316,8 @@
                     <div class="l-info__val" id="l-info-scheduleTime"></div>
                 </div>
                 <div class="l-info__item">
-                    <div class="l-info__title">客戶姓名</div>
+                    <div class="l-info__title">預約姓名</div>
                     <div class="l-info__val" id="l-info-customername"></div>
-                </div>
-                <div class="l-info__item">
-                    <div class="l-info__title">客戶ID</div>
-                    <div class="l-info__val" id="l-info-customerid"></div>
                 </div>
                 <div class="l-info__item">
                     <div class="l-info__title">聯絡電話</div>
@@ -461,7 +457,6 @@
             $('#l-info-customername').text(currentConsultSchedule.CustomerName);
 
             currentConsultSchedule.CustomerID = DOMPurify.sanitize($('#input-customerid').val());
-            $('#l-info-customerid').text(currentConsultSchedule.CustomerID);
 
             currentConsultSchedule.Phone = DOMPurify.sanitize($('#input-tel').val());
             $('#l-info-tel').text(currentConsultSchedule.Phone);

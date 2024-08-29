@@ -588,10 +588,6 @@ else
                     }).done(function (data, textStatus, jqXHR) {
                         $.magnificPopup.close();
                         if (data.success) {
-                            if (data0.length > 0) {
-                                fjs0.removeRecords({ ScheduleID: id });
-                            }
-
                             if (data1.length > 0) {
                                 fjs1.removeRecords({ ScheduleID: id });
                             }
@@ -608,8 +604,6 @@ else
                     });
                 });
             }
-
-            bindClickEvent();
 
             moment.locale('zh-tw', {
                 weekdaysMin: dayNamesZh,
@@ -876,7 +870,7 @@ else
                 var footerBtnSuccess = `
                         <div class="l-action l-action--inline" data-footer-tmpl="success">
                             <div class="l-action__item">
-                                <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-quick-close data-cancel>取消預約</a>
+                                <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-id="{id}" data-quick-close data-cancel>取消預約</a>
                             </div>
                             <div class="l-action__item">
                                 <a href="#" class="o-btn o-btn--primary o-btn--sm {isDisabled}" data-event-id="{id}" data-start-btn>{starBtnText}</a>
@@ -885,7 +879,7 @@ else
                 var footerBtnReserving = `
                         <div class="l-action l-action--inline" data-footer-tmpl="reserving">
                             <div class="l-action__item">
-                                <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-quick-close data-cancel>取消預約</a>
+                                <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-id="{id}" data-quick-close data-cancel>取消預約</a>
                             </div>
                         </div>`;
                 var $footerWrapper = `
@@ -926,7 +920,9 @@ else
                 // 開始諮詢的該筆資料
                 let id = $(this).data('eventId');
                 let data = dataSource.find(item => item.id === id);
-            });
+            });            
+
+            bindClickEvent();
         });
     </script>
 }
