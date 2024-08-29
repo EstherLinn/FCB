@@ -17,6 +17,7 @@ using Sitecore.Data;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Dapper;
+using Feature.Wealth.Account.Models.MemberLog;
 
 namespace Feature.Wealth.Account.Repositories
 {
@@ -727,6 +728,15 @@ namespace Feature.Wealth.Account.Repositories
                     var affectedRows = DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
                     success = affectedRows != 0;
                     commons.Body = GetCommonToolsInfo(tools);
+                    MemberLog memberLog = new MemberLog()
+                    {
+                        PlatForm = FcbMemberHelper.GetMemberPlatForm().ToString(),
+                        PlatFormId = id,
+                        Action = ActionEnum.Edit.ToString(),
+                        Description = string.Format("修改常用功能: {0}", string.Join(",", tools.ToArray())),
+                        ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
+                    };
+                    this.RecordMemberActionLog(memberLog);
                 }
             }
             catch (SqlException ex)
@@ -888,6 +898,23 @@ namespace Feature.Wealth.Account.Repositories
             };
             dt = DbManager.Custom.Execute<DateTime?>(strSql, para, commandType: System.Data.CommandType.Text);
             return dt;
+        }
+        public void RecordMemberActionLog(MemberLog memberLog)
+        {
+            string strSql = $"INSERT INTO [MemberActionLog] (PlatForm,PlatFormId,Action,Description,ActionTime) values " +
+               $"(@PlatForm,@PlatFormId,@Action,@Description,@ActionTime)";
+            try
+            {
+                DbManager.Custom.ExecuteNonQuery(strSql, memberLog, commandType: System.Data.CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
         }
     }
 }
