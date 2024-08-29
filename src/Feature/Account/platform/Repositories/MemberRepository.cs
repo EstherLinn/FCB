@@ -784,7 +784,7 @@ namespace Feature.Wealth.Account.Repositories
             Log.Info("Oracle　檢查紅綠燈　table : EDHStatus,connection start");
             try
             {
-                using (var connection = (OdbcConnection)DbManager.Cif.DbConnection())
+                using (var connection = new OdbcConnection(ConfigurationManager.ConnectionStrings["cif"].ConnectionString))
                 {
                     connection.Open();
                     Log.Info("Oracle 檢查紅綠燈　table : EDHStatus,command start");
@@ -817,7 +817,7 @@ namespace Feature.Wealth.Account.Repositories
             Log.Info("取得CIF即時資料開始: WEA_ODS_CIF_VIEW,OdbcConnection start");
             try
             {
-                using (var odbcConn = (OdbcConnection)DbManager.Cif.DbConnection())
+                using (var odbcConn = new OdbcConnection(ConfigurationManager.ConnectionStrings["cif"].ConnectionString))
                 {
                     odbcConn.Open();
                     string query = "SELECT CIF_EMP_RISK FROM WEA_ODS_CIF_VIEW WHERE CIF_ID = ?";

@@ -610,6 +610,11 @@ namespace Feature.Wealth.Account.Controllers
             {
                 var riskItem = ItemUtils.GetItem("{A919250C-132C-4633-A1FF-B3CB0384F33F}");
                 var testRisk = ItemUtils.GetFieldValue(riskItem, "Risk");
+                var isenableTest = riskItem.IsChecked("EnableTest");
+                if (!isenableTest)
+                {
+                    return new JsonNetResult(new { success = false });
+                }
                 return new JsonNetResult(new { success = true, risk = testRisk });
             }
             var canReadOracle = _memberRepository.CheckEDHStatus();
