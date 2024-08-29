@@ -50,16 +50,13 @@ namespace Feature.Wealth.Component.Controllers
                 return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", null);
             }
 
-            if (FcbMemberHelper.fcbMemberModel.IsEmployee)
+            if (FcbMemberHelper.fcbMemberModel.IsManager)
             {
-                if (FcbMemberHelper.fcbMemberModel.IsManager)
-                {
-                    return View("/Views/Feature/Wealth/Component/Consult/ManagerConsultList.cshtml", CreateConsultListModel(item));
-                }
-                else
-                {
-                    return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsultList.cshtml", CreateConsultListModel(item));
-                }
+                return View("/Views/Feature/Wealth/Component/Consult/ManagerConsultList.cshtml", CreateConsultListModel(item));
+            }
+            else if (FcbMemberHelper.fcbMemberModel.IsEmployee)
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsultList.cshtml", CreateConsultListModel(item));
             }
             else
             {
