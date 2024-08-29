@@ -211,7 +211,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             var encoding = Encoding.UTF8;
                             using (MailMessage message = new MailMessage()
                             {
-                                From = new MailAddress(mailServerOption.User, string.IsNullOrEmpty(mailServerOption.UserName) ? "第e理財網" : mailServerOption.UserName),
+                                From = new MailAddress(mailServerOption.From, string.IsNullOrEmpty(mailServerOption.UserName) ? "第e理財網" : mailServerOption.UserName),
                                 IsBodyHtml = true,
                                 HeadersEncoding = encoding,
                                 BodyEncoding = encoding,
