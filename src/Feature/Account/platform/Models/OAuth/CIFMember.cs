@@ -54,12 +54,12 @@ namespace Feature.Wealth.Account.Models.OAuth
         public string HRIS_EmployeeCode { get; set; }
 
         /// <summary>
-        /// 是否為員工
+        /// 是否為理顧
         /// </summary>
         public bool IsEmployee { get; set; } = false;
 
         /// <summary>
-        /// 是否為主管
+        /// 是否為理顧主管
         /// </summary>
         public bool IsManager { get; set; } = false;
     }
