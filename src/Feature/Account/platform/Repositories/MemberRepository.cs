@@ -206,7 +206,7 @@ namespace Feature.Wealth.Account.Repositories
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             IIF(D.EmployeeID IS NOT NULL AND D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
-                            IIF(D.EmployeeID IS NOT NULL AND B.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager,
+                            IIF(D.EmployeeID IS NOT NULL AND D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE
                             FROM [CIF] AS A
                             LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
@@ -255,7 +255,7 @@ namespace Feature.Wealth.Account.Repositories
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             IIF(D.EmployeeID IS NOT NULL AND D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
-                            IIF(D.EmployeeID IS NOT NULL AND B.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager,
+                            IIF(D.EmployeeID IS NOT NULL AND D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE
                             FROM [CIF] AS A
                             LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
@@ -305,7 +305,7 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
                             IIF(D.EmployeeID IS NOT NULL AND D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
-                            IIF(D.EmployeeID IS NOT NULL AND B.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager,
+                            IIF(D.EmployeeID IS NOT NULL AND D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager
                             FROM [FCB_Member] AS A
                             LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
@@ -351,7 +351,7 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
                             IIF(D.EmployeeID IS NOT NULL AND D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
-                            IIF(D.EmployeeID IS NOT NULL AND B.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager,
+                            IIF(D.EmployeeID IS NOT NULL AND D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager
                             FROM [FCB_Member] AS A
                             LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
@@ -387,7 +387,7 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
                             IIF(D.EmployeeID IS NOT NULL AND D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee,
-                            IIF(D.EmployeeID IS NOT NULL AND B.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager,
+                            IIF(D.EmployeeID IS NOT NULL AND D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager
                             FROM [FCB_Member] AS A
                             LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
