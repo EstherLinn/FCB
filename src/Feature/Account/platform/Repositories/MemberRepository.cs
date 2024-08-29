@@ -240,6 +240,12 @@ namespace Feature.Wealth.Account.Repositories
                 {
                     member.IsEmployee = employee.IsEmployee;
                     member.IsManager = employee.IsManager;
+
+                    if(employee.IsEmployee || employee.IsManager)
+                    {
+                        member.CIF_AO_EMPNO = employee.EmployeeCode;
+                        member.CIF_AO_EMPName = employee.EmployeeName;
+                    }
                 }
             }
 
@@ -300,6 +306,12 @@ namespace Feature.Wealth.Account.Repositories
                 {
                     member.IsEmployee = employee.IsEmployee;
                     member.IsManager = employee.IsManager;
+
+                    if (employee.IsEmployee || employee.IsManager)
+                    {
+                        member.CIF_AO_EMPNO = employee.EmployeeCode;
+                        member.CIF_AO_EMPName = employee.EmployeeName;
+                    }
                 }
             }
 
@@ -360,6 +372,12 @@ namespace Feature.Wealth.Account.Repositories
                 {
                     fcbMemberModel.IsEmployee = employee.IsEmployee;
                     fcbMemberModel.IsManager = employee.IsManager;
+
+                    if (employee.IsEmployee || employee.IsManager)
+                    {
+                        fcbMemberModel.AdvisrorID = employee.EmployeeCode;
+                        fcbMemberModel.Advisror = employee.EmployeeName;
+                    }
                 }
 
                 // FcbMemberModel 不要保留 CIF_ID
@@ -410,6 +428,12 @@ namespace Feature.Wealth.Account.Repositories
                 {
                     fcbMemberModel.IsEmployee = employee.IsEmployee;
                     fcbMemberModel.IsManager = employee.IsManager;
+
+                    if (employee.IsEmployee || employee.IsManager)
+                    {
+                        fcbMemberModel.AdvisrorID = employee.EmployeeCode;
+                        fcbMemberModel.Advisror = employee.EmployeeName;
+                    }
                 }
 
                 // FcbMemberModel 不要保留 CIF_ID
@@ -460,6 +484,12 @@ namespace Feature.Wealth.Account.Repositories
                 {
                     fcbMemberModel.IsEmployee = employee.IsEmployee;
                     fcbMemberModel.IsManager = employee.IsManager;
+
+                    if (employee.IsEmployee || employee.IsManager)
+                    {
+                        fcbMemberModel.AdvisrorID = employee.EmployeeCode;
+                        fcbMemberModel.Advisror = employee.EmployeeName;
+                    }
                 }
 
                 // FcbMemberModel 不要保留 CIF_ID
