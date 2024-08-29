@@ -32,8 +32,15 @@ namespace Feature.Wealth.Account.Controllers
             user.Profile.Name = member.MemberName;
             user.Profile.Email = member.MemberEmail;
 
-            member.IsEmployee = isEmployee == "1";
-            member.IsManager = isManager == "1";
+            if(string.IsNullOrEmpty(isEmployee) == false)
+            {
+                member.IsEmployee = isEmployee == "1";
+            }
+
+            if (string.IsNullOrEmpty(isManager) == false)
+            {
+                member.IsManager = isManager == "1";
+            }
 
             string objToJson = JsonConvert.SerializeObject(member);
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
