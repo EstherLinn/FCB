@@ -352,6 +352,7 @@ namespace Feature.Wealth.Component.Controllers
             return consultModel;
         }
 
+        [MemberAuthenticationFilter]
         public ActionResult ConsultSchedule()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
