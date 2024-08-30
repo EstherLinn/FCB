@@ -118,8 +118,9 @@ else
                             <div class="l-table">
                                 <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
                                     <colgroup>
-                                        <col style="width: 1%;">
-                                        <col style="width: 1%;">
+                                        <col style="width: 2%;">
+                                        <col style="width: 3%;">
+                                        <col style="width: 3%;">
                                         <col style="width: 2%;">
                                         <col style="width: 1%;">
                                         <col style="width: 1%;">
@@ -138,7 +139,12 @@ else
                                             </th>
                                             <th>
                                                 <div class="c-table__title">
-                                                    <span>電子信箱</span>
+                                                    <span>預約客戶</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>連絡電話</span>
                                                 </div>
                                             </th>
                                             <th>
@@ -417,8 +423,12 @@ else
                 <div class="c-cardTable__content"><%= StartTime %>~<%= EndTime %></div>
             </td>
             <td class="c-cardTable__body">
-                <div class="c-cardTable__title" data-length="5">電子信箱</div>
-                <div class="c-cardTable__content"><%= Mail %></div>
+                <div class="c-cardTable__title" data-length="5">預約客戶</div>
+                <div class="c-cardTable__content"><%= CustomerName %></div>
+            </td>
+            <td class="c-cardTable__body">
+                <div class="c-cardTable__title" data-length="5">預約電話</div>
+                <div class="c-cardTable__content"><%= Phone %></div>
             </td>
             <td class="c-cardTable__body" data-card-table-width="1/1">
                 <div class="c-cardTable__title" data-length="5">預約狀態</div>
