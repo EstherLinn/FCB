@@ -37,7 +37,7 @@
                                                 <input id="input-customername" type="text" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入客戶姓名" data-name>
                                             </div>
                                             <div class="l-form__text l-form__text--error">
-                                                <div class="o-errorText"><span class="s4">請輸入客戶姓名</span></div>
+                                                <div class="o-errorText" id="errorText-customername"><span class="s4">請輸入客戶姓名</span></div>
                                             </div>
                                         </div>
                                     </div>
@@ -49,7 +49,7 @@
                                     <div class="c-form__content">
                                         <div class="l-form" id="l-form-customerid">
                                             <div class="l-form__input">
-                                                <input id="input-customerid" type="text" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入客戶ID">
+                                                <input id="input-customerid" type="text" class="o-textbox o-textbox--full o-textbox--form" placeholder="" readonly>
                                             </div>
                                             <div class="l-form__text l-form__text--error">
                                                 <div class="o-errorText"><span class="s4">請輸入客戶ID</span></div>
@@ -398,10 +398,87 @@
     </div>
 </div>
 
-<script>
+<div id="popupChose" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">選擇客戶</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                    以下為相同姓名之客戶，請選擇您要預約的客戶
+                </div>
+                <div class="l-flex__item">
+                    <div class="l-table">
+                        <table class="c-table c-table--hover u-center">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div class="c-table__title"></div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>客戶姓名</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>客戶ID</span>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>主要往來分行</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="t-bold" id="customerInfo">
+                                <tr>
+                                    <td>
+                                        <label class="o-radio o-radio--box">
+                                            <input class="o-radio__input" type="radio" name="radio" data-client>
+                                            <div class="o-radio__text"></div>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        林嘉欣
+                                    </td>
+                                    <td>
+                                        N10***1235
+                                    </td>
+                                    <td>
+                                        424-太平分行
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="l-flex__item u-center u-hidden" data-no-client>
+                    <span class="t-warning">請選一位客戶</span>
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-popup-close="true">取消</a>
+                </div>
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-select-client>確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
     const holidayDates = @Model.HolidayDatesHtmlString;
     const consultSchedules = @Model.ConsultSchedulesHtmlString;
     const reserveds = @Model.ReservedsHtmlString;
+    const customerInfos = @Model.CustomerInfosHtmlString;
+
     const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六'];
     const emailReg = /^[a-zA-Z0-9_.+-]+@@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
     const phoneReg = /(\d{2,3}-?|\(\d{2,3}\))\d{3,4}-?\d{4}|09\d{2}(\d{6}|-\d{3}-\d{3})/;
@@ -456,8 +533,6 @@
             currentConsultSchedule.CustomerName = DOMPurify.sanitize($('#input-customername').val());
             $('#l-info-customername').text(currentConsultSchedule.CustomerName);
 
-            currentConsultSchedule.CustomerID = DOMPurify.sanitize($('#input-customerid').val());
-
             currentConsultSchedule.Phone = DOMPurify.sanitize($('#input-tel').val());
             $('#l-info-tel').text(currentConsultSchedule.Phone);
 
@@ -487,17 +562,10 @@
         function verify() {
             var flag = true;
 
-            if (currentConsultSchedule.CustomerName) {
-            }
-            else {
-                $('#l-form-customername').addClass('is-error');
-                flag = false;
-            }
-
             if (currentConsultSchedule.CustomerID) {
             }
             else {
-                $('#l-form-customerid').addClass('is-error');
+                $('#l-form-customername').addClass('is-error');
                 flag = false;
             }
 
@@ -526,7 +594,7 @@
             }
             else {
                 flag = false;
-            }           
+            }
 
             return flag;
         }
@@ -671,22 +739,6 @@
             location.href = new URL(location.origin + '@Model.ReturnLink');
         });
 
-        $('#input-customername').change(function () {
-            $('#l-form-customername').addClass('is-error');
-            bindText();
-            if (currentConsultSchedule.CustomerName) {
-                $('#l-form-customername').removeClass('is-error');
-            }
-        });
-
-        $('#input-customerid').change(function () {
-            $('#l-form-customerid').addClass('is-error');
-            bindText();
-            if (currentConsultSchedule.CustomerID) {
-                $('#l-form-customerid').removeClass('is-error');
-            }
-        });
-
         $('#input-tel').change(function () {
             $('#l-form-phone').addClass('is-error');
             bindText();
@@ -773,5 +825,149 @@
             });
         });
 
+        // 示意相同姓名之客戶
+        $('[data-name]').on('blur', function (e) {
+            if (!!e.target.value) {
+                var name = e.target.value;
+                var infos = customerInfos.filter(c => c.CustomerName == name);
+
+                if (infos.length < 1) {
+                    $('#input-customerid').val('');
+                    currentConsultSchedule.CustomerID = '';
+                    $('#errorText-customername').text("找不到指定客戶");
+                    $('#l-form-customername').addClass('is-error');
+                    bindText();
+                }
+                else if (infos.length == 1) {
+                    $('#input-customerid').val(DOMPurify.sanitize(infos[0].CIF_ID));
+                    currentConsultSchedule.CustomerID = DOMPurify.sanitize(infos[0].WebBankId);
+                    $('#l-form-customername').removeClass('is-error');
+                    bindText();
+                }
+                else if (infos.length > 1) {
+                    $('#customerInfo').html('');
+
+                    infos.forEach(info => {
+                        $('#customerInfo').append(
+                            `<tr>
+                                 <td>
+                                     <label class="o-radio o-radio--box">
+                                         <input class="o-radio__input" type="radio" name="radio" value="${DOMPurify.sanitize(info.WebBankId)}" data-client>
+                                         <div class="o-radio__text"></div>
+                                     </label>
+                                 </td >
+                                 <td>
+                                     ${DOMPurify.sanitize(info.CustomerName)}
+                                 </td>
+                                 <td>
+                                     ${DOMPurify.sanitize(info.CIF_ID)}
+                                 </td>
+                                 <td>
+                                     ${DOMPurify.sanitize(info.BranchName)}
+                                 </td>
+                             </tr>`
+                        );
+                    });
+                    
+
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#popupChose'
+                        },
+                        closeOnBgClick: false
+                    });
+                }
+            }
+            else {
+                $('#input-customerid').val('');
+                currentConsultSchedule.CustomerID = '';
+                $('#errorText-customername').text("請輸入客戶姓名");
+                $('#l-form-customername').addClass('is-error');
+            }
+
+            bindText();
+        });
+
+        // 示意相同姓名之客戶
+        $('[data-name]').on('blur', function (e) {
+            if (!!e.target.value) {
+                var name = e.target.value;
+                var infos = customerInfos.filter(c => c.CustomerName == name);
+
+                if (infos.length < 1) {
+                    $('#input-customerid').val('');
+                    currentConsultSchedule.CustomerID = '';
+                    $('#errorText-customername').text("找不到指定客戶");
+                    $('#l-form-customername').addClass('is-error');
+                    bindText();
+                }
+                else if (infos.length == 1) {
+                    $('#input-customerid').val(DOMPurify.sanitize(infos[0].CIF_ID));
+                    currentConsultSchedule.CustomerID = DOMPurify.sanitize(infos[0].WebBankId);
+                    $('#l-form-customername').removeClass('is-error');
+                    bindText();
+                }
+                else if (infos.length > 1) {
+                    $('#customerInfo').html('');
+
+                    infos.forEach(info => {
+                        $('#customerInfo').append(
+                            `<tr>
+                                 <td>
+                                     <label class="o-radio o-radio--box">
+                                         <input class="o-radio__input" type="radio" name="radio" value="${DOMPurify.sanitize(info.WebBankId)}" data-client>
+                                         <div class="o-radio__text"></div>
+                                     </label>
+                                 </td >
+                                 <td>
+                                     ${DOMPurify.sanitize(info.CustomerName)}
+                                 </td>
+                                 <td>
+                                     ${DOMPurify.sanitize(info.CIF_ID)}
+                                 </td>
+                                 <td>
+                                     ${DOMPurify.sanitize(info.BranchName)}
+                                 </td>
+                             </tr>`
+                        );
+                    });
+                    
+
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#popupChose'
+                        },
+                        closeOnBgClick: false
+                    });
+                }
+            }
+            else {
+                $('#input-customerid').val('');
+                currentConsultSchedule.CustomerID = '';
+                $('#errorText-customername').text("請輸入客戶姓名");
+                $('#l-form-customername').addClass('is-error');
+            }
+
+            bindText();
+        });
+
+        $('[data-select-client]').on('click', function (e) {
+            e.preventDefault();
+            if ($('[data-client]:checked').length === 0) {
+                $('[data-no-client]').removeClass('u-hidden');
+            }
+            else {
+                var v = $('[data-client]:checked').val();
+                var info = customerInfos.filter(c => c.WebBankId == v)[0];
+
+                $('#input-customerid').val(DOMPurify.sanitize(info.CIF_ID));
+                currentConsultSchedule.CustomerID = DOMPurify.sanitize(info.WebBankId);
+                $('#l-form-customername').removeClass('is-error');
+
+                bindText();
+
+                $.magnificPopup.close();
+            }
+        });
     });
 </script>
