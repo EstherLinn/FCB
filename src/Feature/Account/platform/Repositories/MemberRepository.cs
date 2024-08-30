@@ -1049,7 +1049,7 @@ namespace Feature.Wealth.Account.Repositories
                             ,[SalaryLevel]
                             ,[SalaryScale]
                             ,IIF(D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee
-                            ,IIF(D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT DISTINCT Supervisor FROM HRIS WITH (NOLOCK) WHERE Supervisor = D.EmployeeCode), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager
+                            ,IIF(D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT TOP (1) Supervisor FROM HRIS WITH (NOLOCK) WHERE Supervisor = D.EmployeeCode AND PersonalFinanceBusinessPersonnelCategory = '2'), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager
                             FROM [dbo].[HRIS] AS D WITH (NOLOCK)
                             WHERE [EmployeeID] = @@id ";
             try
