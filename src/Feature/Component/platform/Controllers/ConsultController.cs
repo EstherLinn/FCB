@@ -526,11 +526,12 @@ namespace Feature.Wealth.Component.Controllers
             MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
 
             var currentRequestUrl = Request.Url;
+            var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl();
 
             if (info.IsEmployee)
             {
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
-                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
+                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
             }
             else
             {
@@ -655,9 +656,10 @@ namespace Feature.Wealth.Component.Controllers
                 this._consultRepository.UpdateConsultSchedule(consultSchedule);
 
                 var currentRequestUrl = Request.Url;
+                var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl();
 
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
-                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
+                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
 
                 using (new SecurityDisabler())
                 {
@@ -672,8 +674,11 @@ namespace Feature.Wealth.Component.Controllers
                 consultSchedule.StatusCode = "3";
                 this._consultRepository.UpdateConsultSchedule(consultSchedule);
 
+                var currentRequestUrl = Request.Url;
+                var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultListUrl();
+
                 mail.Topic = this._consultRepository.GetRejectMailTopic();
-                mail.Content = this._consultRepository.GetRejectMailContent(consultSchedule, description);
+                mail.Content = this._consultRepository.GetRejectMailContent(consultSchedule, description, url);
 
                 using (new SecurityDisabler())
                 {
