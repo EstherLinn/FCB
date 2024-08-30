@@ -206,7 +206,8 @@ namespace Feature.Wealth.Account.Repositories
                             A.CIF_AO_EMPNO,
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
-                            C.PROMOTION_CODE AS CIF_PROMO_CODE
+                            C.PROMOTION_CODE AS CIF_PROMO_CODE,
+                            A.CIF_ID
                             FROM [CIF] AS A
                             LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
                             LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
@@ -231,17 +232,17 @@ namespace Feature.Wealth.Account.Repositories
                 Log.Error(ex.Message);
             }
 
-            if(member != null && string.IsNullOrEmpty(member.CIF_ID) == false)
+            if (member != null && string.IsNullOrEmpty(member.CIF_ID) == false)
             {
                 var employeeID = member.CIF_ID.Substring(0, 10);
                 var employee = GetEmployeeInfoByEmployeeID(employeeID);
 
-                if(employee != null)
+                if (employee != null)
                 {
                     member.IsEmployee = employee.IsEmployee;
                     member.IsManager = employee.IsManager;
 
-                    if(employee.IsEmployee || employee.IsManager)
+                    if (employee.IsEmployee || employee.IsManager)
                     {
                         member.CIF_AO_EMPNO = employee.EmployeeCode;
                         member.CIF_AO_EMPName = employee.EmployeeName;
@@ -272,7 +273,8 @@ namespace Feature.Wealth.Account.Repositories
                             A.CIF_AO_EMPNO,
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
-                            C.PROMOTION_CODE AS CIF_PROMO_CODE
+                            C.PROMOTION_CODE AS CIF_PROMO_CODE,
+                            A.CIF_ID
                             FROM [CIF] AS A
                             LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
                             LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID

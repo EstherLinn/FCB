@@ -1,12 +1,16 @@
 ﻿using Dapper;
-using Feature.Wealth.Account.Models.OAuth;
 using Feature.Wealth.Component.Models.Consult;
+using Feature.Wealth.ScheduleAgent.Models.Mail;
 using Foundation.Wealth.Manager;
-using Sitecore.Marketing.Definitions.AutomationPlans.Model;
+using log4net;
+using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net.Mail;
+using System.Text;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -214,10 +218,133 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"UPDATE [ConsultSchedule] SET
                            StatusCode = '3'
                            ,ModifiedOn = GETDATE()
-                           WHERE ScheduleID = @ScheduleID"
-            ;
+                           WHERE ScheduleID = @ScheduleID";
 
             this._dbConnection.Execute(sql, new { ScheduleID = scheduleID });
+        }
+
+        public string GetWaitMailTopic()
+        {
+            return "「第一銀行第e理財網」遠距理財諮詢服務預約 – 確認中";
+        }
+
+        public string GetWaitMailContent(ConsultSchedule consultSchedule)
+        {
+            string result = $@"親愛的客戶：<br><br>
+您於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 有預約遠距理財諮詢服務，本次預約請靜待您的專員{consultSchedule.EmployeeName}確認後，會再寄送確認Mail通知您，感謝您耐心等候。<br><br>
+若超過1天沒有收到確認Mail，可致電理顧{consultSchedule.EmployeeName} 電話，謝謝您
+";
+
+            return result;
+        }
+
+        public string GetSuccessMailTopic()
+        {
+            return "「第一銀行第e理財網」遠距理財諮詢服務 - 預約完成";
+        }
+
+        public string GetSuccessMailContent(ConsultSchedule consultSchedule, string url)
+        {
+            string result = $@"親愛的客戶：<br><br>
+通知您於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 已預約成功「遠距理財諮詢服務」，以下是您的預約資料：<br><br>
+服務理顧：{consultSchedule.EmployeeName}<br>
+預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
+預約時段：{consultSchedule.StartTime}<br>
+諮詢主題：{consultSchedule.Subject}<br>
+其他諮詢內容：{consultSchedule.Description}<br><br> 
+為保障您的權益，若欲取消預約或更改時間，請提早登入第e理財調整，感謝您的配合，謝謝。<br><br> 
+第e理財網連結：{url}?id={consultSchedule.ScheduleID.ToString()}
+";
+
+            return result;
+        }
+
+        public string GetNoticeMailTopic()
+        {
+            return "「第一銀行第e理財網」遠距理財諮詢服務 - 預約提醒";
+        }
+
+        public string GetNoticeMailContent(ConsultSchedule consultSchedule, string url)
+        {
+            string result = $@"親愛的客戶：<br><br> 
+通知您於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 已預約成功「遠距理財諮詢服務」，以下是您的預約資料：<br><br>
+服務理顧：{consultSchedule.EmployeeName}<br>
+預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
+預約時段：{consultSchedule.StartTime}<br>
+諮詢主題：{consultSchedule.Subject}<br>
+其他諮詢內容：{consultSchedule.Description}<br><br> 
+為保障您的權益，若欲取消預約或更改時間，請提早登入第e理財調整，感謝您的配合，謝謝。<br><br> 
+第e理財網連結：{url}?id={consultSchedule.ScheduleID.ToString()}
+";
+
+            return result;
+        }
+
+        public string GetRejectMailTopic()
+        {
+            return "「第一銀行第e理財網」遠距理財諮詢服務 - 預約失敗";
+        }
+
+        public string GetRejectMailContent(ConsultSchedule consultSchedule, string msg)
+        {
+            string result = $@"親愛的客戶：<br><br> 
+通知您於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 「遠距理財諮詢服務」，因理顧以 {msg} 原因，故無法於您預約的時段為您提供遠距理財視訊諮詢服務，以下是您的預約資料：<br><br>
+服務理顧：{consultSchedule.EmployeeName}<br>
+預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
+預約時段：{consultSchedule.StartTime}<br>
+諮詢主題：{consultSchedule.Subject}<br>
+其他諮詢內容：{consultSchedule.Description}<br><br> 
+若對此次預約失敗有疑問，可致電理顧{consultSchedule.EmployeeName}電話再次確認，謝謝您。
+";
+
+            return result;
+        }
+
+        public string GetCancelMailTopic()
+        {
+            return "「第一銀行第e理財網」遠距理財諮詢服務預約 – 取消預約";
+        }
+
+        public string GetCancelMailContent(ConsultSchedule consultSchedule)
+        {
+            string result = $@"親愛的客戶：<br><br> 
+已成功取消於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 的遠距理財諮詢服務，為保障您的權益，若此次預約取消有疑問，可致電理顧{consultSchedule.EmployeeName}電話再次確認，謝謝您。
+";
+
+            return result;
+        }
+
+        private readonly ILog _log = Logger.General;
+
+        public void SendMail(MailSchema mail, Item settings)
+        {
+            MailServerOption mailServerOption = new MailServerOption(settings);
+            using (var client = mailServerOption.ToSMTPClient())
+            {
+                var encoding = Encoding.UTF8;
+                using (MailMessage message = new MailMessage()
+                {
+                    From = new MailAddress(mailServerOption.From, string.IsNullOrEmpty(mailServerOption.UserName) ? "第e理財網" : mailServerOption.UserName),
+                    IsBodyHtml = true,
+                    HeadersEncoding = encoding,
+                    BodyEncoding = encoding,
+                    SubjectEncoding = encoding
+                })
+                {
+                    try
+                    {
+                        message.To.Add(mail.MailTo);
+                        message.Subject = mail.Topic;
+                        message.Body = mail.Content;
+                        client.Send(message);
+                        this._log.Info($"預約諮詢Mail發送To:{mail.MailTo}");
+                    }
+                    catch (Exception ex)
+                    {
+                        this._log.Error($"預約諮詢Mail發送失敗:{ex.ToString}");
+                    }
+                }
+            }
         }
     }
 }

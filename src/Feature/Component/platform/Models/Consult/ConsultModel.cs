@@ -323,5 +323,10 @@ namespace Feature.Wealth.Component.Models.Consult
                 public static readonly ID Answer = new ID("{8D87FD0E-10C1-421C-9E4F-1133829299C8}");
             }
         }
+
+        public readonly struct SmtpSettings
+        {
+            public static readonly ID id = new ID("{152C4D42-0650-4C48-BF37-18A18655AF42}");
+        }
     }
 }
