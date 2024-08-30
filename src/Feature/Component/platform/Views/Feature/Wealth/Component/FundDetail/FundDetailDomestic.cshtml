@@ -2724,7 +2724,7 @@
                         $.each(filterData, function (index, value) {
                             $('#fundSelect').find("select").append($('<option>', {
                                 value: value.v5,
-                                text: value.v6
+                                text: value.v5 + " " + value.v6
                             }));
                         });
                         $('#fundSelect').find("select").on('change', function () {
