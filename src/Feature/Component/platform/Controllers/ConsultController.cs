@@ -705,7 +705,6 @@ namespace Feature.Wealth.Component.Controllers
 
         private Item GetMailSetting()
         {
-            var a = ItemUtils.GetItem(Template.SmtpSettings.id);
             return ItemUtils.GetItem(Template.SmtpSettings.id);
         }
     }
