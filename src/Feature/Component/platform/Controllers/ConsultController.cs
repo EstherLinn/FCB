@@ -370,6 +370,14 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     consultScheduleModel.Message = "找不到對應的預約紀錄，即將返回列表。";
                 }
+                else if (consultSchedule.StatusCode == "0")
+                {
+                    consultScheduleModel.Message = "該筆預約紀錄待確認，即將返回列表。";
+                }
+                else if (consultSchedule.StatusCode == "3")
+                {
+                    consultScheduleModel.Message = "該筆預約紀錄已取消，即將返回列表。";
+                }
                 else
                 {
                     var start = DateTime.Parse(consultSchedule.ScheduleDate.ToString("yyyy-MM-dd") + " " + consultSchedule.StartTime);
