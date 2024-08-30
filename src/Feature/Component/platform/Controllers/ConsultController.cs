@@ -10,7 +10,9 @@ using Feature.Wealth.Component.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Mail;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
+using Sitecore.Globalization;
 using Sitecore.Mvc.Presentation;
+using Sitecore.SecurityModel;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -536,7 +538,13 @@ namespace Feature.Wealth.Component.Controllers
                 mail.Content = this._consultRepository.GetWaitMailContent(consultSchedule);
             }
 
-            this._consultRepository.SendMail(mail, GetMailSetting());
+            using (new SecurityDisabler())
+            {
+                using (new LanguageSwitcher("en"))
+                {
+                    this._consultRepository.SendMail(mail, GetMailSetting());
+                }
+            }
 
             return new JsonNetResult(true);
         }
@@ -570,7 +578,13 @@ namespace Feature.Wealth.Component.Controllers
             mail.Topic = this._consultRepository.GetCancelMailTopic();
             mail.Content = this._consultRepository.GetCancelMailContent(consultSchedule);
 
-            this._consultRepository.SendMail(mail, GetMailSetting());
+            using (new SecurityDisabler())
+            {
+                using (new LanguageSwitcher("en"))
+                {
+                    this._consultRepository.SendMail(mail, GetMailSetting());
+                }
+            }
 
             //呼叫 IMVP API 取消
             var respons = this._iMVPApiRespository.Verification();
@@ -645,7 +659,13 @@ namespace Feature.Wealth.Component.Controllers
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
                 mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
 
-                this._consultRepository.SendMail(mail, GetMailSetting());
+                using (new SecurityDisabler())
+                {
+                    using (new LanguageSwitcher("en"))
+                    {
+                        this._consultRepository.SendMail(mail, GetMailSetting());
+                    }
+                }
             }
             else if (action == "2")
             {
@@ -655,7 +675,13 @@ namespace Feature.Wealth.Component.Controllers
                 mail.Topic = this._consultRepository.GetRejectMailTopic();
                 mail.Content = this._consultRepository.GetRejectMailContent(consultSchedule, description);
 
-                this._consultRepository.SendMail(mail, GetMailSetting());
+                using (new SecurityDisabler())
+                {
+                    using (new LanguageSwitcher("en"))
+                    {
+                        this._consultRepository.SendMail(mail, GetMailSetting());
+                    }
+                }
             }
             else
             {
@@ -667,6 +693,7 @@ namespace Feature.Wealth.Component.Controllers
 
         private Item GetMailSetting()
         {
+            var a = ItemUtils.GetItem(Template.SmtpSettings.id);
             return ItemUtils.GetItem(Template.SmtpSettings.id);
         }
     }
