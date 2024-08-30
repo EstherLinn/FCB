@@ -2580,7 +2580,6 @@
                 });
 
                 if (SC_DATA.Risk !== undefined) {
-                    console.log('AAA')
                     let tab = "tab1";
                     let event = $('[data-tab-panel-id="tab-1"] .recommendedFunds .swiper-wrapper');
                     let eventString = '[data-tab-panel-id="tab-1"] .recommendedFunds';
@@ -2597,12 +2596,10 @@
                         renderRecommendedProductChart();
                         hasRenderedRecommendations = true;
                     }
-                    console.log('BBB')
                 } else if (SC_DATA.PlatForm == 'Line' || SC_DATA.PlatForm == 'FaceBook') {
                     $('#tab1RiskAsset').addClass('u-hidden');
                     $('#tab1Fund').addClass('u-hidden');
                     $('#tab1ETF').addClass('u-hidden');
-                    console.log('CCC')
                 }
             }
             //#endregion
