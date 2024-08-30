@@ -370,6 +370,14 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     consultScheduleModel.Message = "找不到對應的預約紀錄，即將返回列表。";
                 }
+                else if (consultSchedule.StatusCode == "0")
+                {
+                    consultScheduleModel.Message = "該筆預約紀錄待確認，即將返回列表。";
+                }
+                else if (consultSchedule.StatusCode == "3")
+                {
+                    consultScheduleModel.Message = "該筆預約紀錄已取消，即將返回列表。";
+                }
                 else
                 {
                     var start = DateTime.Parse(consultSchedule.ScheduleDate.ToString("yyyy-MM-dd") + " " + consultSchedule.StartTime);
@@ -526,11 +534,12 @@ namespace Feature.Wealth.Component.Controllers
             MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
 
             var currentRequestUrl = Request.Url;
+            var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl();
 
             if (info.IsEmployee)
             {
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
-                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
+                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
             }
             else
             {
@@ -655,9 +664,10 @@ namespace Feature.Wealth.Component.Controllers
                 this._consultRepository.UpdateConsultSchedule(consultSchedule);
 
                 var currentRequestUrl = Request.Url;
+                var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl();
 
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
-                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
+                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
 
                 using (new SecurityDisabler())
                 {
@@ -672,8 +682,11 @@ namespace Feature.Wealth.Component.Controllers
                 consultSchedule.StatusCode = "3";
                 this._consultRepository.UpdateConsultSchedule(consultSchedule);
 
+                var currentRequestUrl = Request.Url;
+                var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultListUrl();
+
                 mail.Topic = this._consultRepository.GetRejectMailTopic();
-                mail.Content = this._consultRepository.GetRejectMailContent(consultSchedule, description);
+                mail.Content = this._consultRepository.GetRejectMailContent(consultSchedule, description, url);
 
                 using (new SecurityDisabler())
                 {
