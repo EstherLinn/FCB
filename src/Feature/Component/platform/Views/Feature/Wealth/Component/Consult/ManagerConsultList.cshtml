@@ -570,13 +570,6 @@ else
 
                     setPopup($(this).attr('data-id'));
                 });
-
-                $('[data-cancel]').on('click', function (e) {
-                    e.preventDefault();
-                    window.loading('show');
-                    var id = $(this).attr('data-id')
-                    cancelConsultSchedule(id);
-                });
             }
 
             function cancelConsultSchedule(id) {
@@ -610,6 +603,13 @@ else
             }
 
             bindClickEvent();
+
+            $('[data-cancel]').on('click', function (e) {
+                e.preventDefault();
+                window.loading('show');
+                var id = $(this).attr('data-id')
+                cancelConsultSchedule(id);
+            });
 
             moment.locale('zh-tw', {
                 weekdaysMin: dayNamesZh,
