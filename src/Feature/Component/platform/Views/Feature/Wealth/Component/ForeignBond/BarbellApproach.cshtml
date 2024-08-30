@@ -1,0 +1,16 @@
+﻿<div class="c-section">
+    <iframe id="SysJustIFRAME" width="100%" scrolling="no"></iframe>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+        document.addEventListener("DOMContentLoaded", function () {
+            var _selector = '#SysJustIFRAME';
+
+            function setIframeSrc() {
+                $(_selector).attr('src', '/b2bbond/invest/invest03');
+            }
+            setIframeSrc();
+        });
+    })(jQuery, window, document);
+</script>
