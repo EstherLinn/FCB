@@ -17,9 +17,13 @@
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(data));
     xhr.onload = function() {
+        let homePage = new URL(location.protocol + "//" + location.hostname);
+        if (xhr.status != 200) {
+            location.href = homePage;
+            return;
+        }
         let res = JSON.parse(xhr.responseText);
         if (res.url == '') {
-            let homePage = new URL(location.protocol + "//" +location.hostname);
             location.href = homePage;
         } else {
             const url = new URL(res.url);
