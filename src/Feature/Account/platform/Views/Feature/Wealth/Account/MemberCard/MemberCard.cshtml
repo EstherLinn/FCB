@@ -87,9 +87,17 @@
                                         <span>您的理專</span>
                                     </div>
                                     <div class="c-member__value">
-                                        <b>@(string.IsNullOrEmpty(member.Advisror) ? "-" : member.Advisror)</b>
+                                        @if (member.IsEmployee || member.IsManager)
+                                        {
+                                            <b>@member.MemberName</b>
+                                        }else
+                                        {
+                                            <b>@(string.IsNullOrEmpty(member.Advisror) ? "-" : member.Advisror)</b>
+                                        }
                                     </div>
                                 </div>
+                                if(!member.IsEmployee && !member.IsManager)
+                                {
                                 <div class="c-member__info">
                                     <div class="c-member__title">
                                         <img src="~/themes/images/icons/member/appointment.svg" alt="">
@@ -111,11 +119,12 @@
                                             }
                                             else
                                             {
-                                                <a href="@memberReserveUrl" target="_blank" class="o-btn o-btn--primary o-btn--thin o-btn--auto">預約線上諮詢</a>
+                                                <a href="@memberReserveUrl" class="o-btn o-btn--primary o-btn--thin o-btn--auto">預約線上諮詢</a>
                                             }
                                         }
                                     </div>
                                 </div>
+                                }
                             }
                         </div>
                     </div>

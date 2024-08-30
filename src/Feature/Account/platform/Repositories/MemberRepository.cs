@@ -452,7 +452,7 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetAppMemberInfo(PlatFormEunm platFormEunm, string promotionCode)
         {
             FcbMemberModel fcbMemberModel = null;
-            var strSql = @$"DECLARE @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
+            var strSql = @$"DECLARE @@platForm varchar(10) = @platForm, @@promotionCode varchar(100) = @promotionCode
                             SELECT
                             A.*,
                             SUBSTRING(B.CIF_EMP_RISK,1,1) AS Risk,

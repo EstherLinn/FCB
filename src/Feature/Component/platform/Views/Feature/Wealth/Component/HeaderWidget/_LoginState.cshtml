@@ -88,9 +88,9 @@
                             }
                         </ul>
                     </nav>
-                    @if (!string.IsNullOrEmpty(member.WebBankId) && !string.IsNullOrEmpty(member.Advisror))
+                    @if (!string.IsNullOrEmpty(member.WebBankId) && !string.IsNullOrEmpty(member.Advisror) && !member.IsManager)
                     {
-                        @*不是網銀身分及網銀身分無理專,隱藏預約按鈕*@
+                        @*網銀身分及網銀身分有理專及不是主管,顯示預約按鈕*@
                         <div class="c-popover__footer">
                             <a href="@MemberRelatedLinkHelper.GetReserveConsultingUrl()" class="o-btn o-btn--primary o-btn--sm o-btn--flat">預約諮詢</a>
                         </div>
