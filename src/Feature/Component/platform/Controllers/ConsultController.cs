@@ -7,12 +7,12 @@ using Feature.Wealth.Account.Filter;
 using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.Component.Repositories;
+using Feature.Wealth.ScheduleAgent.Models.Mail;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-using static Feature.Wealth.Component.ComponentTemplates;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -262,7 +262,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 foreach (var subject in subjects)
                 {
-                    consultModel.SubjectList.Add(ItemUtils.GetFieldValue(subject, DropdownOption.Fields.OptionText));
+                    consultModel.SubjectList.Add(ItemUtils.GetFieldValue(subject, ComponentTemplates.DropdownOption.Fields.OptionText));
                 }
             }
 
@@ -483,12 +483,10 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             // 避免 DB 出現 NULL
-            if(string.IsNullOrEmpty(consultSchedule.Description))
+            if (string.IsNullOrEmpty(consultSchedule.Description))
             {
                 consultSchedule.Description = string.Empty;
             }
-
-            this._consultRepository.InsertConsultSchedule(consultSchedule);
 
             //呼叫 IMVP API 新增
             if (info.IsEmployee == false)
@@ -520,6 +518,24 @@ namespace Feature.Wealth.Component.Controllers
                 }
             }
 
+            //TODO 呼叫 IMVP 失敗不新增預約
+            this._consultRepository.InsertConsultSchedule(consultSchedule);
+
+            MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
+
+            if (info.IsEmployee)
+            {
+                mail.Topic = this._consultRepository.GetSuccessMailTopic();
+                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
+            }
+            else
+            {
+                mail.Topic = this._consultRepository.GetWaitMailTopic();
+                mail.Content = this._consultRepository.GetWaitMailContent(consultSchedule);
+            }
+
+            this._consultRepository.SendMail(mail, GetMailSetting());
+
             return new JsonNetResult(true);
         }
 
@@ -546,6 +562,13 @@ namespace Feature.Wealth.Component.Controllers
             {
                 return new JsonNetResult(false);
             }
+
+            MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
+
+            mail.Topic = this._consultRepository.GetCancelMailTopic();
+            mail.Content = this._consultRepository.GetCancelMailContent(consultSchedule);
+
+            this._consultRepository.SendMail(mail, GetMailSetting());
 
             //呼叫 IMVP API 取消
             var respons = this._iMVPApiRespository.Verification();
@@ -591,32 +614,44 @@ namespace Feature.Wealth.Component.Controllers
                 return new JsonNetResult(new { statusCode = -1101, statusMsg = "缺少必要參數" });
             }
 
-            if(Guid.TryParse(scheduleId, out var temp) == false)
+            if (Guid.TryParse(scheduleId, out var temp) == false)
             {
                 return new JsonNetResult(new { statusCode = -1102, statusMsg = "無效的參數或參數格式不正確" });
             }
 
-            var result = this._consultRepository.GetConsultSchedule(scheduleId);
+            var consultSchedule = this._consultRepository.GetConsultSchedule(scheduleId);
 
-            if (result == null || result.ScheduleID == null || result.ScheduleID == Guid.Empty)
+            if (consultSchedule == null || consultSchedule.ScheduleID == null || consultSchedule.ScheduleID == Guid.Empty)
             {
                 return new JsonNetResult(new { statusCode = -1104, statusMsg = "資料不存在" });
             }
 
             if (string.IsNullOrEmpty(description) == false)
             {
-                result.Description = result.Description + " 理顧意見：" + description;
+                consultSchedule.Description = consultSchedule.Description + " 理顧意見：" + description;
             }
+
+            MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
 
             if (action == "1")
             {
-                result.StatusCode = "1";
-                this._consultRepository.UpdateConsultSchedule(result);
+                consultSchedule.StatusCode = "1";
+                this._consultRepository.UpdateConsultSchedule(consultSchedule);
+
+                mail.Topic = this._consultRepository.GetSuccessMailTopic();
+                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
+
+                this._consultRepository.SendMail(mail, GetMailSetting());
             }
             else if (action == "2")
             {
-                result.StatusCode = "3";
-                this._consultRepository.UpdateConsultSchedule(result);
+                consultSchedule.StatusCode = "3";
+                this._consultRepository.UpdateConsultSchedule(consultSchedule);
+
+                mail.Topic = this._consultRepository.GetRejectMailTopic();
+                mail.Content = this._consultRepository.GetRejectMailContent(consultSchedule, description);
+
+                this._consultRepository.SendMail(mail, GetMailSetting());
             }
             else
             {
@@ -624,6 +659,11 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             return new JsonNetResult(new { statusCode = 0, statusMsg = "正常" });
+        }
+
+        private Item GetMailSetting()
+        {
+            return ItemUtils.GetItem(Template.SmtpSettings.id);
         }
     }
 }
