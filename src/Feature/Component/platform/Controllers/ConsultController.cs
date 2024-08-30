@@ -546,32 +546,6 @@ namespace Feature.Wealth.Component.Controllers
                 }
             }
 
-            //TODO 呼叫 IMVP 失敗不新增預約
-            this._consultRepository.InsertConsultSchedule(consultSchedule);
-
-            MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
-
-            var currentRequestUrl = Request.Url;
-
-            if (info.IsEmployee)
-            {
-                mail.Topic = this._consultRepository.GetSuccessMailTopic();
-                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
-            }
-            else
-            {
-                mail.Topic = this._consultRepository.GetWaitMailTopic();
-                mail.Content = this._consultRepository.GetWaitMailContent(consultSchedule);
-            }
-
-            using (new SecurityDisabler())
-            {
-                using (new LanguageSwitcher("en"))
-                {
-                    this._consultRepository.SendMail(mail, GetMailSetting());
-                }
-            }
-
             return new JsonNetResult(true);
         }
 
