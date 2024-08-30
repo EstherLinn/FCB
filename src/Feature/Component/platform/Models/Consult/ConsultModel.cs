@@ -285,6 +285,20 @@ namespace Feature.Wealth.Component.Models.Consult
         public string DepartmentCode { get; set; }
     }
 
+    /// <summary>
+    /// 該理顧負責的客戶
+    /// </summary>
+    public class CustomerInfo
+    {
+        /// <summary>
+        /// 身份證字號，要顯示在畫面上需將中4~6碼變XXX，並去掉最後一碼
+        /// </summary>
+        public string CIF_ID { get; set; }
+        public string CustomerName { get; set; }
+        public string WebBankId { get; set; }
+        public string BranchName { get; set; }
+    }
+
     public struct Template
     {
         public readonly struct ConsultSchedule
