@@ -551,10 +551,12 @@ namespace Feature.Wealth.Component.Controllers
 
             MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
 
+            var currentRequestUrl = Request.Url;
+
             if (info.IsEmployee)
             {
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
-                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
+                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
             }
             else
             {
