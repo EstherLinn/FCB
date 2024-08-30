@@ -24,16 +24,39 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string UnsuccessfulContent { get; set; }
         public string ExpectedReturnRemarks { get; set; }
         public string DefaultRiskAttributes { get; set; }
-        public int? StockAllocation { get; set; }
-        public int? BondAllocation { get; set; }
-        public int? CurrencyAllocation { get; set; }
-        public string StockAllocationFieldName { get; set; }
-        public string BondAllocationFieldName { get; set; }
-        public string CurrencyAllocationFieldName { get; set; }
-        public string StockAllocationText { get; set; }
-        public string BondAllocationText { get; set; }
-        public string CurrencyAllocationText { get; set; }
-        public string Notice { get; set; }
+        public string ConservativeRiskImage { get; set; }
+        public int? ConservativeRiskStockAllocation { get; set; }
+        public int? ConservativeRiskBondAllocation { get; set; }
+        public int? ConservativeRiskCurrencyAllocation { get; set; }
+        public string ConservativeRiskStockAllocationFieldName { get; set; }
+        public string ConservativeRiskBondAllocationFieldName { get; set; }
+        public string ConservativeRiskCurrencyAllocationFieldName { get; set; }
+        public string ConservativeRiskStockAllocationText { get; set; }
+        public string ConservativeRiskBondAllocationText { get; set; }
+        public string ConservativeRiskCurrencyAllocationText { get; set; }
+        public string ConservativeRiskNotice { get; set; }
+        public string RobustRiskImage { get; set; }
+        public int? RobustRiskStockAllocation { get; set; }
+        public int? RobustRiskBondAllocation { get; set; }
+        public int? RobustRiskCurrencyAllocation { get; set; }
+        public string RobustRiskStockAllocationFieldName { get; set; }
+        public string RobustRiskBondAllocationFieldName { get; set; }
+        public string RobustRiskCurrencyAllocationFieldName { get; set; }
+        public string RobustRiskStockAllocationText { get; set; }
+        public string RobustRiskBondAllocationText { get; set; }
+        public string RobustRiskCurrencyAllocationText { get; set; }
+        public string RobustRiskNotice { get; set; }
+        public string PositiveRiskImage { get; set; }
+        public int? PositiveRiskStockAllocation { get; set; }
+        public int? PositiveRiskBondAllocation { get; set; }
+        public int? PositiveRiskCurrencyAllocation { get; set; }
+        public string PositiveRiskStockAllocationFieldName { get; set; }
+        public string PositiveRiskBondAllocationFieldName { get; set; }
+        public string PositiveRiskCurrencyAllocationFieldName { get; set; }
+        public string PositiveRiskStockAllocationText { get; set; }
+        public string PositiveRiskBondAllocationText { get; set; }
+        public string PositiveRiskCurrencyAllocationText { get; set; }
+        public string PositiveRiskNotice { get; set; }
         public string RemoteConsultationSuccessTitle { get; set; }
         public string RemoteConsultationSuccessContent { get; set; }
         public string RemoteConsultationSuccessButtonText { get; set; }

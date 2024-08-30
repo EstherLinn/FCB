@@ -237,6 +237,7 @@
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "Accounts", "GetCifMemberRisk")',
                     type: 'POST',
+                    async: false,
                     data: { pageUrl: window.location.pathname + window.location.search },
                     success: function (data) {
                         resolve(data);
