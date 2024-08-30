@@ -22,9 +22,9 @@ namespace Feature.Wealth.Account.Pipelines
                 var id = FcbMemberHelper.GetMemberPlatFormId();
                 var platForm = FcbMemberHelper.GetMemberPlatForm().ToString();
                 var info = FcbMemberHelper.GetMemberAllInfo();
-                using (XConnectClient client = Sitecore.XConnect.Client.Configuration.SitecoreXConnectClientConfiguration.GetClient())
+                try
                 {
-                    try
+                    using (XConnectClient client = Sitecore.XConnect.Client.Configuration.SitecoreXConnectClientConfiguration.GetClient())
                     {
                         if (Tracker.Current == null)
                         {
@@ -65,14 +65,14 @@ namespace Feature.Wealth.Account.Pipelines
                         }
 
                     }
-                    catch (XdbExecutionException ex)
-                    {
-                        Logger.Account.Info(ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Account.Info(ex);
-                    }
+                }
+                catch (XdbExecutionException ex)
+                {
+                    Logger.Account.Info(ex);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Account.Info(ex);
                 }
             }
         }
