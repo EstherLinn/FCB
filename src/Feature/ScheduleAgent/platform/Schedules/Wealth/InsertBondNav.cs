@@ -26,7 +26,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     try
                     {
                         var basic = await etlService.ParseCsvNotTXT<BondNav>(filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[BondNav]", filename);
+                        _repository.BulkInsertToDatabaseForHIS(basic, "[BondNav]", "BondCode", "Date", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)

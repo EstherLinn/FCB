@@ -4,7 +4,6 @@ using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
