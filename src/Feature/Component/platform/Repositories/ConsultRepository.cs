@@ -351,7 +351,7 @@ namespace Feature.Wealth.Component.Repositories
                         message.Subject = mail.Topic;
                         message.Body = mail.Content;
                         client.Send(message);
-                        this._log.Info($"預約諮詢Mail發送To:{mail.MailTo}");
+                        this._log.Error($"預約諮詢Mail發送To:{mail.MailTo}");
                     }
                     catch (Exception ex)
                     {
