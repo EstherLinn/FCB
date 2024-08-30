@@ -90,13 +90,13 @@ namespace Feature.Wealth.Component.Controllers
                         }
                         else
                         {
-                            if (c.EmployeeID.ToLower() == info.AdvisrorID.ToLower())
+                            if (c.EmployeeID == info.AdvisrorID)
                             {
                                 consultScheduleList.Add(c);
                             }
                         }
                     }
-                    else if (!string.IsNullOrEmpty(info.WebBankId) && c.CustomerID.ToLower() == info.WebBankId.ToLower())
+                    else if (!string.IsNullOrEmpty(info.WebBankId) && c.CustomerID == info.WebBankId)
                     {
                         consultScheduleList.Add(c);
                     }
@@ -258,6 +258,11 @@ namespace Feature.Wealth.Component.Controllers
                 PersonalInformationLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.PersonalInformationLink).Url,
             };
 
+            if (info.IsEmployee && !string.IsNullOrEmpty(info.AdvisrorID))
+            {
+                consultModel.CustomerInfosHtmlString = new HtmlString(JsonConvert.SerializeObject(this._consultRepository.GetCustomerInfos(info.AdvisrorID)));
+            }
+
             var subjects = ItemUtils.GetMultiListValueItems(item, Template.ConsultSchedule.Fields.SubjectList);
 
             if (subjects != null && subjects.Any())
@@ -330,10 +335,8 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             // 把對應理顧已預約時間加入已佔用時間
-            var employeeID = string.IsNullOrEmpty(info.AdvisrorID) ? string.Empty : info.AdvisrorID.ToLower();
-            var temp = consultScheduleList.Where(
-                c => c.EmployeeID.ToLower() == employeeID && c.StatusCode != "3" && DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0
-                );
+            var employeeID = string.IsNullOrEmpty(info.AdvisrorID) ? string.Empty : info.AdvisrorID;
+            var temp = consultScheduleList.Where(c => c.EmployeeID == employeeID && c.StatusCode != "3" && DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0);
 
             if (temp != null && temp.Any())
             {

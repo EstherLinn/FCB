@@ -22,6 +22,7 @@ namespace Feature.Wealth.Component.Models.Consult
         public string CustomerName { get; set; }
         public string PersonalInformationLink { get; set; }
         public List<string> SubjectList { get; set; } = new List<string>();
+        public HtmlString CustomerInfosHtmlString { get; set; }
     }
 
     public class ConsultScheduleModel
