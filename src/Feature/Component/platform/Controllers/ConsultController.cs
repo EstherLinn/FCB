@@ -596,19 +596,6 @@ namespace Feature.Wealth.Component.Controllers
             mail.Topic = this._consultRepository.GetCancelMailTopic();
             mail.Content = this._consultRepository.GetCancelMailContent(consultSchedule);
 
-            using (new SecurityDisabler())
-            {
-                using (new LanguageSwitcher("en"))
-                {
-                    this._consultRepository.SendMail(mail, GetMailSetting());
-                }
-            }
-
-            MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
-
-            mail.Topic = this._consultRepository.GetCancelMailTopic();
-            mail.Content = this._consultRepository.GetCancelMailContent(consultSchedule);
-
             this._consultRepository.SendMail(mail, GetMailSetting());
 
             //呼叫 IMVP API 取消
@@ -718,6 +705,7 @@ namespace Feature.Wealth.Component.Controllers
 
         private Item GetMailSetting()
         {
+            var a = ItemUtils.GetItem(Template.SmtpSettings.id);
             return ItemUtils.GetItem(Template.SmtpSettings.id);
         }
     }
