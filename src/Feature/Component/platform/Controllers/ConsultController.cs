@@ -523,10 +523,12 @@ namespace Feature.Wealth.Component.Controllers
 
             MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
 
+            var currentRequestUrl = Request.Url;
+
             if (info.IsEmployee)
             {
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
-                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
+                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
             }
             else
             {
@@ -638,8 +640,10 @@ namespace Feature.Wealth.Component.Controllers
                 consultSchedule.StatusCode = "1";
                 this._consultRepository.UpdateConsultSchedule(consultSchedule);
 
+                var currentRequestUrl = Request.Url;
+
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
-                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
+                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl());
 
                 this._consultRepository.SendMail(mail, GetMailSetting());
             }
