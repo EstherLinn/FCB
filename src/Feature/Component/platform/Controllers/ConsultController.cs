@@ -564,7 +564,13 @@ namespace Feature.Wealth.Component.Controllers
                 mail.Content = this._consultRepository.GetWaitMailContent(consultSchedule);
             }
 
-            this._consultRepository.SendMail(mail, GetMailSetting());
+            using (new SecurityDisabler())
+            {
+                using (new LanguageSwitcher("en"))
+                {
+                    this._consultRepository.SendMail(mail, GetMailSetting());
+                }
+            }
 
             return new JsonNetResult(true);
         }
@@ -598,7 +604,13 @@ namespace Feature.Wealth.Component.Controllers
             mail.Topic = this._consultRepository.GetCancelMailTopic();
             mail.Content = this._consultRepository.GetCancelMailContent(consultSchedule);
 
-            this._consultRepository.SendMail(mail, GetMailSetting());
+            using (new SecurityDisabler())
+            {
+                using (new LanguageSwitcher("en"))
+                {
+                    this._consultRepository.SendMail(mail, GetMailSetting());
+                }
+            }
 
             //呼叫 IMVP API 取消
             var respons = this._iMVPApiRespository.Verification();
@@ -707,6 +719,7 @@ namespace Feature.Wealth.Component.Controllers
 
         private Item GetMailSetting()
         {
+            var a = ItemUtils.GetItem(Template.SmtpSettings.id);
             return ItemUtils.GetItem(Template.SmtpSettings.id);
         }
     }
