@@ -284,7 +284,25 @@
             <h2 class="c-modal__title">提醒</h2>
         </header>
         <div class="c-modal__content">
-            因您同一日已預約超過二個時段，請重新預約其他日期，不便之處敬請見諒。
+            該客戶同一日已預約超過二個時段，請重新預約其他日期。
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true">確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupRemind2" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">提醒</h2>
+        </header>
+        <div class="c-modal__content" id="popupRemind2Text">
+            該客戶已達10個工作天內預約6次之上限，請於  再進行預約。
         </div>
         <div class="c-modal__action">
             <div class="l-action l-action--inline">
@@ -358,7 +376,7 @@
                     <img src="~/themes/images/icons/status/success.svg" alt="">
                 </div>
                 <div class="l-flex__item">
-                    感謝您的預約，本行理財專員將盡速回覆您，並確認預約時間。如您有留存電子信箱，系統將自動寄發本次預約訊息。
+                    您已協助客戶預約，系統將自動寄發預約訊息給客戶，請盡速通知客戶至電子信箱確認。
                 </div>
             </div>
         </div>
@@ -949,6 +967,8 @@
             }
 
             bindText();
+
+            checkConsultLimit();
         });
 
         $('[data-select-client]').on('click', function (e) {
@@ -966,8 +986,36 @@
 
                 bindText();
 
+                checkConsultLimit();
+
                 $.magnificPopup.close();
             }
         });
+
+        function checkConsultLimit() {
+            var schedules = consultSchedules.filter((c) => c.CustomerID == currentConsultSchedule.CustomerID)
+
+            if (schedules.length > 5) {
+                var schedule = schedules[0];
+
+                $('#popupRemind2Text').text('該客戶已達10個工作天內預約6次之上限，請於' + schedule.ScheduleDateString + '再進行預約。')
+
+                // 提示訊息
+                $.magnificPopup.open({
+                    items: {
+                        src: '#popupRemind2'
+                    },
+                    closeOnBgClick: false,
+                    callbacks: {
+                        afterClose: function () {
+                            $('#input-customerid').val('');
+                            currentConsultSchedule.CustomerID = '';
+                            $('#errorText-customername').text("請輸入客戶姓名");
+                            $('#l-form-customername').addClass('is-error');
+                        }
+                    }
+                }, 0);
+            }
+        }
     });
 </script>
