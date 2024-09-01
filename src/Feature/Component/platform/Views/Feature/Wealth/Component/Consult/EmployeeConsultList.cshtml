@@ -58,7 +58,7 @@
                             <div class="l-flex__item">
                                 <div class="o-actionbox o-actionbox--md">
                                     <input type="text" class="o-actionbox__input" id="search-table1" placeholder="輸入客戶姓名">
-                                    <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier"></button>
+                                    <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit1></button>
                                 </div>
                             </div>
                             <div class="l-flex__item u-right u-hidden@dt-only">
@@ -144,7 +144,7 @@
                             <div class="l-flex__item">
                                 <div class="o-actionbox o-actionbox--md">
                                     <input type="text" class="o-actionbox__input" id="search-table2" placeholder="輸入客戶姓名">
-                                    <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier"></button>
+                                    <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit2></button>
                                 </div>
                             </div>
                             <div class="l-flex__item u-right u-hidden@dt-only">
@@ -571,7 +571,7 @@
             search: {
                 ele: '#search-table1',
                 fields: ['CustomerName'],
-                start_length: 2,
+                start_length: 1,
                 bindEvent: false
             },
             order: {
@@ -615,6 +615,13 @@
             }
         });
 
+        fjs1.bindEvent('[data-keyword-submit1]', 'click.loading');
+        $('#search-table1').on('keypress.loading', function (e) {
+            if (e.which === 13) {
+                $('[data-keyword-submit1]').trigger('click.loading');
+            }
+        });
+
         var fjs2 = FilterJS(data2, '#tbody2', {
             template: '#template2',
             callbacks: {
@@ -629,7 +636,7 @@
             search: {
                 ele: '#search-table2',
                 fields: ['CustomerName'],
-                start_length: 2,
+                start_length: 1,
                 bindEvent: false
             },
             order: {
@@ -670,6 +677,13 @@
                 },
                 onPagination: function () {
                 }
+            }
+        });
+
+        fjs2.bindEvent('[data-keyword-submit2]', 'click.loading');
+        $('#search-table2').on('keypress.loading', function (e) {
+            if (e.which === 13) {
+                $('[data-keyword-submit2]').trigger('click.loading');
             }
         });
 
