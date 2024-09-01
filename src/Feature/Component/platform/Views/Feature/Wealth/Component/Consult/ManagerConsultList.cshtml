@@ -57,7 +57,7 @@
                         <div class="l-flex u-flex-col u-flex-gap-sm">
                             <div class="l-flex__item">
                                 <div class="o-actionbox o-actionbox--md">
-                                    <input type="text" class="o-actionbox__input" id="search-table1" placeholder="輸入客戶姓名或ID">
+                                    <input type="text" class="o-actionbox__input" id="search-table1" placeholder="輸入客戶姓名">
                                     <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit1></button>
                                 </div>
                             </div>
@@ -149,7 +149,7 @@
                         <div class="l-flex u-flex-col u-flex-gap-sm">
                             <div class="l-flex__item">
                                 <div class="o-actionbox o-actionbox--md">
-                                    <input type="text" class="o-actionbox__input" id="search-table2" placeholder="輸入理顧姓名">
+                                    <input type="text" class="o-actionbox__input" id="search-table2" placeholder="輸入客戶姓名">
                                     <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit2></button>
                                 </div>
                             </div>
@@ -543,7 +543,7 @@
             },
             search: {
                 ele: '#search-table1',
-                fields: ['EmployeeName'],
+                fields: ['CustomerName'],
                 start_length: 1,
                 bindEvent: false
             },
@@ -608,7 +608,7 @@
             },
             search: {
                 ele: '#search-table2',
-                fields: ['EmployeeName'],
+                fields: ['CustomerName'],
                 start_length: 1,
                 bindEvent: false
             },
