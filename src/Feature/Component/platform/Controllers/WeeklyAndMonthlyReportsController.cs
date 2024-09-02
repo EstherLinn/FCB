@@ -4,6 +4,7 @@ using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -61,6 +62,8 @@ namespace Feature.Wealth.Component.Controllers
 
                 datas.Add(reportsItem);
             }
+
+            datas = datas.OrderByDescending(x => x.ReportsDate).ToList();
 
             return new JsonNetResult(datas);
         }
