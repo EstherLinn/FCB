@@ -556,6 +556,12 @@ namespace Feature.Wealth.Component.Controllers
                 using (new LanguageSwitcher("en"))
                 {
                     this._consultRepository.SendMail(mail, GetMailSetting());
+
+                    if (info.IsEmployee)
+                    {
+                        var mailRecord = this._consultRepository.GetMailRecord(consultSchedule, url);
+                        this._consultRepository.InsertMailRecords(new List<MailRecord>() { mailRecord });
+                    }
                 }
             }
 
@@ -678,6 +684,9 @@ namespace Feature.Wealth.Component.Controllers
                     using (new LanguageSwitcher("en"))
                     {
                         this._consultRepository.SendMail(mail, GetMailSetting());
+
+                        var mailRecord = this._consultRepository.GetMailRecord(consultSchedule, url);
+                        this._consultRepository.InsertMailRecords(new List<MailRecord>() { mailRecord });
                     }
                 }
             }
