@@ -15,6 +15,18 @@ namespace Feature.Wealth.Component.Models.Bond
         public HtmlString BondHtmlString { get; set; }
         public List<string> HotKeywordTags { get; set; }
         public List<string> HotProductTags { get; set; }
+        /// <summary>
+        /// 計價幣別
+        /// </summary>
+        public IEnumerable<string> CurrencyList { get; set; }
+        /// <summary>
+        /// 配息頻率
+        /// </summary>
+        public IEnumerable<string> PaymentFrequencyList { get; set; }
+        /// <summary>
+        /// 發行機構
+        /// </summary>
+        public IEnumerable<string> IssuerList { get; set; }
     }
 
     public class BondDetailModel
@@ -39,7 +51,7 @@ namespace Feature.Wealth.Component.Models.Bond
         /// </summary>
         public string BondName { get; set; }
         /// <summary>
-        /// 計價幣別
+        /// 計價幣別英文代碼
         /// </summary>
         public string Currency { get; set; }
         /// <summary>
@@ -47,13 +59,13 @@ namespace Feature.Wealth.Component.Models.Bond
         /// </summary>
         public string CurrencyCode { get; set; }
         /// <summary>
-        /// 計價幣別代碼
+        /// 計價幣別名稱
         /// </summary>
         public string CurrencyName { get; set; }
         /// <summary>
         /// 票面利率
         /// </summary>
-        public decimal InterestRate { get; set; }
+        public decimal? InterestRate { get; set; }
         /// <summary>
         /// 配息頻率
         /// 0：零息
@@ -63,6 +75,15 @@ namespace Feature.Wealth.Component.Models.Bond
         /// 4：年
         /// </summary>
         public int PaymentFrequency { get; set; }
+        /// <summary>
+        /// 配息頻率
+        /// 0：零息
+        /// 1：月
+        /// 2：季
+        /// 3：半年
+        /// 4：年
+        /// </summary>
+        public string PaymentFrequencyName { get; set; }
         /// <summary>
         /// 風險等級
         /// RR1
@@ -110,6 +131,10 @@ namespace Feature.Wealth.Component.Models.Bond
         /// </summary>
         public string MaturityDate { get; set; }
         /// <summary>
+        /// 到期日-年
+        /// </summary>
+        public decimal? MaturityYear { get; set; }
+        /// <summary>
         /// 停止申購日期 YYYYMMDD 有一些寫 29109999
         /// </summary>
         public string StopSubscriptionDate { get; set; }
@@ -147,11 +172,11 @@ namespace Feature.Wealth.Component.Models.Bond
         /// <summary>
         /// 申購價
         /// </summary>
-        public decimal RedemptionFee { get; set; }
+        public decimal? RedemptionFee { get; set; }
         /// <summary>
         /// 贖回價
         /// </summary>
-        public decimal SubscriptionFee { get; set; }
+        public decimal? SubscriptionFee { get; set; }
         /// <summary>
         /// 日期 YYYYMMDD
         /// </summary>
@@ -170,7 +195,7 @@ namespace Feature.Wealth.Component.Models.Bond
         /// <summary>
         /// 前手息
         /// </summary>
-        public string PreviousInterest { get; set; }
+        public decimal? PreviousInterest { get; set; }
         /// <summary>
         /// S&P信評
         /// </summary>
@@ -186,11 +211,15 @@ namespace Feature.Wealth.Component.Models.Bond
         /// <summary>
         /// 殖利率YTM-不含前手息
         /// </summary>
-        public decimal YieldRateYTM { get; set; }
+        public decimal? YieldRateYTM { get; set; }
+        /// <summary>
+        /// 漲跌月 (當天參考淨值價-對應上個月同一日參考申購價)/ 對應上個月同一日參考申購價x100%
+        /// </summary>
+        public decimal? UpsAndDownsMonth { get; set; }
         /// <summary>
         /// 漲跌季 (當天參考淨值價-對應上三個月同一日參考申購價)/ 對應上三個月同一日參考申購價x100%
         /// </summary>
-        public decimal UpsAndDownsSeason { get; set; }
+        public decimal? UpsAndDownsSeason { get; set; }
 
         public string DetailLink { get; set; }
 
@@ -241,11 +270,11 @@ namespace Feature.Wealth.Component.Models.Bond
         /// <summary>
         /// 申購價
         /// </summary>
-        public string RedemptionFee { get; set; }
+        public decimal? RedemptionFee { get; set; }
         /// <summary>
         /// 贖回價
         /// </summary>
-        public string SubscriptionFee { get; set; }
+        public decimal? SubscriptionFee { get; set; }
         /// <summary>
         /// 日期
         /// </summary>
