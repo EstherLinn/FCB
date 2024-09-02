@@ -411,8 +411,8 @@
                                 <option value="報價日期低至高" data-sorting-column="Date" data-sorting-class="is-asc">報價日期低至高</option>
                                 <option value="參考申購價格高至低" data-sorting-column="RedemptionFee" data-sorting-class="is-desc">參考申購價格高至低</option>
                                 <option value="參考申購價格低至高" data-sorting-column="RedemptionFee" data-sorting-class="is-asc">參考申購價格低至高</option>
-                                <option value="漲跌季高至低" data-sorting-column="UpsAndDownsSeason" data-sorting-class="is-desc">漲跌季高至低</option>
-                                <option value="漲跌季低至高" data-sorting-column="UpsAndDownsSeason" data-sorting-class="is-asc">漲跌季低至高</option>
+                                <option value="漲跌月高至低" data-sorting-column="UpsAndDownsMonth" data-sorting-class="is-desc">漲跌月高至低</option>
+                                <option value="漲跌月低至高" data-sorting-column="UpsAndDownsMonth" data-sorting-class="is-asc">漲跌月低至高</option>
                             </select>
                         </div>
                     </div>
@@ -468,8 +468,8 @@
                                 </th>
                                 <th>
                                     <div class="c-table__title">
-                                        <span>漲跌季%</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="UpsAndDownsSeason"></a>
+                                        <span>漲跌月%</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="UpsAndDownsMonth"></a>
                                     </div>
                                 </th>
                                 <th>
@@ -560,12 +560,12 @@
             </div>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/2">
-            <div class="c-cardTable__title" data-length="5">漲跌季%</div>
+            <div class="c-cardTable__title" data-length="5">漲跌月%</div>
             <div class="c-cardTable__content">
-                <% if (typeof UpsAndDownsSeason == "number" && !isNaN(UpsAndDownsSeason) && UpsAndDownsSeason >= 0) { %>
-                    <span class="o-rise"><%= UpsAndDownsSeason.toFixed(2) %>%</span>
-                <% } else if (typeof UpsAndDownsSeason == "number" && !isNaN(UpsAndDownsSeason) && UpsAndDownsSeason < 0) { %>
-                    <span class="o-fall"><%= Math.abs(UpsAndDownsSeason).toFixed(2) %>%</span>
+                <% if (typeof UpsAndDownsMonth == "number" && !isNaN(UpsAndDownsMonth) && UpsAndDownsMonth >= 0) { %>
+                    <span class="o-rise"><%= UpsAndDownsMonth.toFixed(2) %>%</span>
+                <% } else if (typeof UpsAndDownsMonth == "number" && !isNaN(UpsAndDownsMonth) && UpsAndDownsMonth < 0) { %>
+                    <span class="o-fall"><%= Math.abs(UpsAndDownsMonth).toFixed(2) %>%</span>
                 <% } else { %>
                     <span>-</span>
                 <% } %>

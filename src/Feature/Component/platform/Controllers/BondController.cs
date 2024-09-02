@@ -46,7 +46,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 Item = item,
                 BondList = bondList,
-                BondHtmlString = new HtmlString(JsonConvert.SerializeObject(bondList)),
+                BondHtmlString = new HtmlString(JsonConvert.SerializeObject(bondList.OrderByDescending(i => i.UpsAndDownsMonth))),
                 HotKeywordTags = keywords,
                 HotProductTags = products,
                 CurrencyList = bondList.OrderBy(i => i.CurrencyCode).Select(i => i.CurrencyName).Distinct(),
