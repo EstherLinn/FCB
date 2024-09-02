@@ -280,10 +280,6 @@ namespace Feature.Wealth.Component.Models.Bond
         /// 日期
         /// </summary>
         public string Date { get; set; }
-        /// <summary>
-        /// 商品名稱
-        /// </summary>
-        public string BondName { get; set; }
     }
 
     public struct Template

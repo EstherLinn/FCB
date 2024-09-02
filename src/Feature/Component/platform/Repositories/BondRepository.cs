@@ -116,6 +116,16 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     bonds[i].MinIncrementAmountNumber = 0;
                 }
+
+                if (DateTime.TryParse(bonds[i].Date, out var oneMonthAgo))
+                {
+                    bonds[i].UpsAndDownsMonth = GetUpsAndDowns(bonds[i].BondCode, bonds[i].RedemptionFee, oneMonthAgo.ToString("yyyyMMdd"));
+                }
+
+                if (DateTime.TryParse(bonds[i].Date, out var threeMonthAgo))
+                {
+                    bonds[i].UpsAndDownsSeason = GetUpsAndDowns(bonds[i].BondCode, bonds[i].RedemptionFee, threeMonthAgo.ToString("yyyyMMdd"));
+                }
             }
 
             return bonds;
@@ -219,22 +229,46 @@ namespace Feature.Wealth.Component.Repositories
                 bond.MinIncrementAmountNumber = 0;
             }
 
+            if(DateTime.TryParse(bond.Date, out var oneMonthAgo))
+            {
+                bond.UpsAndDownsMonth = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, oneMonthAgo.ToString("yyyyMMdd"));
+            }
+
+            if (DateTime.TryParse(bond.Date, out var threeMonthAgo))
+            {
+                bond.UpsAndDownsSeason = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, threeMonthAgo.ToString("yyyyMMdd"));
+            }
+
             return bond;
+        }
+
+        private decimal? GetUpsAndDowns(string bondCode, decimal? redemptionFee, string date)
+        {
+            var bondHistoryPrice = GetBondHistoryPrice(bondCode, date);
+
+            if(redemptionFee.HasValue && bondHistoryPrice != null && bondHistoryPrice.RedemptionFee.HasValue)
+            {
+                return (redemptionFee - bondHistoryPrice.RedemptionFee) / bondHistoryPrice.RedemptionFee * 100;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public IList<BondHistoryPrice> GetBondHistoryPrice(string bondCode)
         {
-            string sql = @"[BondCode]
+            string sql = @"SELECT
+                           [BondCode]
                            ,[Currency]
                            ,[RedemptionFee]
                            ,[SubscriptionFee]
                            ,SUBSTRING([Date],1,4)+'/'+SUBSTRING([Date],5,2)+'/'+SUBSTRING([Date],7,2) AS [Date]
-                           ,[BondName]
                            FROM [BondHistoryPrice] WITH (NOLOCK)
                            WHERE SUBSTRING(BondCode, 1, 4) = @BondCode
                            ORDER BY Date ASC";
 
-            var bondHistoryPrices = this._dbConnection.Query<BondHistoryPrice>(sql)?.ToList() ?? new List<BondHistoryPrice>();
+            var bondHistoryPrices = this._dbConnection.Query<BondHistoryPrice>(sql, new { BondCode = bondCode })?.ToList() ?? new List<BondHistoryPrice>();
 
             for (int i = 0; i < bondHistoryPrices.Count; i++)
             {
@@ -243,6 +277,26 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             return bondHistoryPrices;
+        }
+
+        public BondHistoryPrice GetBondHistoryPrice(string bondCode, string date)
+        {
+            string sql = @"SELECT TOP (1)
+                           [BondCode]
+                           ,[Currency]
+                           ,[RedemptionFee]
+                           ,[SubscriptionFee]
+                           ,SUBSTRING([Date],1,4)+'/'+SUBSTRING([Date],5,2)+'/'+SUBSTRING([Date],7,2) AS [Date]
+                           FROM [BondHistoryPrice] WITH (NOLOCK)
+                           WHERE SUBSTRING(BondCode, 1, 4) = @BondCode AND [Date] <= @date
+                           ORDER BY Date DESC";
+
+            var bondHistoryPrice = this._dbConnection.Query<BondHistoryPrice>(sql, new { BondCode = bondCode, date = date })?.FirstOrDefault() ?? new BondHistoryPrice();
+
+            bondHistoryPrice.RedemptionFee = Round2(bondHistoryPrice.RedemptionFee);
+            bondHistoryPrice.SubscriptionFee = Round2(bondHistoryPrice.SubscriptionFee);
+
+            return bondHistoryPrice;
         }
 
         public decimal? Round2(decimal? value)
