@@ -970,7 +970,7 @@ namespace Feature.Wealth.Account.Repositories
                                    update [CIF] set CIF_EMP_RISK =@@risk where [CIF_ID] = @@id ";
                 var para = new
                 {
-                    id = new DbString() { Value = id, Length = 33 },
+                    id = new DbString() { Value = id, IsAnsi = true, Length = 33 },
                     risk = new DbString() { Value = getRisk, Length = 20 }
                 };
                 var affectedRows = DbManager.Custom.ExecuteNonQuery(sqlStr, para, commandType: System.Data.CommandType.Text);
