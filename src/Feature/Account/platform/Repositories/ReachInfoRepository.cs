@@ -18,16 +18,8 @@ namespace Feature.Wealth.Account.Repositories
         private ILog Log { get; } = Logger.Account;
         public List<ReachInfo> GetProductReachInfosByType(string platFormId, string type )
         {
-            string sql = $@" Select * FROM MemberReachInfo Where PlatFormId = @id and InvestType =@type";
+            string sql = $@" Select * FROM MemberReachInfo Where PlatFormId COLLATE Latin1_General_CS_AS = @id and InvestType =@type";
             var para = new { id =  FcbMemberHelper.GetMemberPlatFormId(), type =type};
-            var results = DbManager.Custom.ExecuteIList<ReachInfo>(sql, para, CommandType.Text)?.ToList();
-            return results;
-        }
-
-        public List<ReachInfo> GetReachInfoLists(string id)
-        {
-            string sql = $@" SELECT * from MemberReachInfo  where PlatFormId=@id";
-            var para = new { id = id };
             var results = DbManager.Custom.ExecuteIList<ReachInfo>(sql, para, CommandType.Text)?.ToList();
             return results;
         }
@@ -36,7 +28,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             string sql = $@" SELECT PlatFormId,InvestType,InvestId,PriceValue,InfoType,ReachValue,RiseValue,RisePercent,FallValue,FallPercent,
                 Format(InfoStartDate,'yyyy/MM/dd')InfoStartDate,Format(InfoEndDate,'yyyy/MM/dd')InfoEndDate,Format(SetDateTime,'yyyy/MM/dd')SetDateTime,OpenInfo
-                from MemberReachInfo  where PlatFormId=@platFormId and InvestType=@type and InvestId=@id";
+                from MemberReachInfo  where PlatFormId COLLATE Latin1_General_CS_AS=@platFormId and InvestType=@type and InvestId=@id";
             var para = new { platFormId = platFormId, type = type, id = id };
             var results = DbManager.Custom.ExecuteIList<ReachInfo>(sql, para, CommandType.Text)?.ToList();
             return results;
@@ -46,7 +38,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             bool success = false;
             string strSql = @$"MERGE MemberReachInfo AS target 
-USING (SELECT @PlatFormId,@InvestId,@InfoType ) AS source (PlatFormId,InvestId,InfoType) 
+USING (SELECT @PlatFormId COLLATE Latin1_General_CS_AS,@InvestId,@InfoType ) AS source (PlatFormId,InvestId,InfoType) 
 ON (target.PlatFormId = source.PlatFormId and target.InvestId = source.InvestId and target.InfoType = source.InfoType) 
 WHEN MATCHED THEN UPDATE SET PriceValue=@PriceValue, ReachValue = @ReachValue,RiseValue =@RiseValue,RisePercent =@RisePercent,FallValue=@FallValue,FallPercent=@FallPercent,
 InfoStartDate=@InfoStartDate,InfoEndDate=@InfoEndDate,SetDateTime=@SetDateTime,OpenInfo=@OpenInfo
