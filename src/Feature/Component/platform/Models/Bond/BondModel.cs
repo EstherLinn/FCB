@@ -126,6 +126,7 @@ namespace Feature.Wealth.Component.Models.Bond
         /// C：10000000
         /// </summary>
         public string MinIncrementAmount { get; set; }
+        public int MinIncrementAmountNumber { get; set; }
         /// <summary>
         /// 到期日 YYYYMMDD
         /// </summary>

@@ -89,10 +89,10 @@ namespace Feature.Wealth.Component.Repositories
                 bonds[i].UpsAndDownsMonth = Round2(bonds[i].UpsAndDownsMonth);
                 bonds[i].UpsAndDownsMonth = Round2(bonds[i].UpsAndDownsMonth);
 
-                if(DateTime.TryParse(bonds[i].MaturityDate, out var d))
+                if (DateTime.TryParse(bonds[i].MaturityDate, out var d))
                 {
                     var diff = d.Subtract(now).TotalDays;
-                    if(diff > 0)
+                    if (diff > 0)
                     {
                         bonds[i].MaturityYear = decimal.Parse((diff / 365).ToString());
                     }
@@ -107,6 +107,15 @@ namespace Feature.Wealth.Component.Repositories
                 }
 
                 bonds[i].MaturityYear = Round2(bonds[i].MaturityYear);
+
+                if (int.TryParse(bonds[i].MinIncrementAmount, out var min))
+                {
+                    bonds[i].MinIncrementAmountNumber = min;
+                }
+                else
+                {
+                    bonds[i].MinIncrementAmountNumber = 0;
+                }
             }
 
             return bonds;
@@ -200,6 +209,15 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             bond.MaturityYear = Round2(bond.MaturityYear);
+
+            if (int.TryParse(bond.MinIncrementAmount, out var min))
+            {
+                bond.MinIncrementAmountNumber = min;
+            }
+            else
+            {
+                bond.MinIncrementAmountNumber = 0;
+            }
 
             return bond;
         }
