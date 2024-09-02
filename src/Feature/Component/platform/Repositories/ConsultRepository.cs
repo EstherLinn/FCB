@@ -405,7 +405,7 @@ namespace Feature.Wealth.Component.Repositories
                 PlatFormId = consultSchedule.CustomerID,
                 InfoDateTime = DateTime.Now,
                 MailInfoType = MailInfoTypeEnum.理顧預約.ToString(),
-                InfoContent = $@"您已成功預約 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 的理顧諮詢，請查看會議連結",
+                InfoContent = $@"您已成功預約 {DateTime.Parse(consultSchedule.ScheduleDate.ToString("yyyy/MM/dd") + " " + consultSchedule.StartTime).ToString("yyyy/MM/dd tt HH:mm")} 的理顧諮詢，請查看會議連結",
                 InfoLink = url
             };
 
