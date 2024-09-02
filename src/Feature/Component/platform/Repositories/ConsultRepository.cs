@@ -390,5 +390,26 @@ namespace Feature.Wealth.Component.Repositories
 
             return result;
         }
+
+        public void InsertMailRecords(List<MailRecord> mailRecords)
+        {
+            var sql = $"INSERT INTO MailRecord (PlatFormId, MailInfoType,InfoContent,InfoLink,InfoDateTime,HaveRead) " +
+                       $"VALUES (@PlatFormId, @MailInfoType,@InfoContent,@InfoLink,@InfoDateTime,@HaveRead)";
+            DbManager.Custom.ExecuteNonQuery(sql, mailRecords, CommandType.Text);
+        }
+
+        public MailRecord GetMailRecord(ConsultSchedule consultSchedule, string url)
+        {
+            var mailRecord = new MailRecord
+            {
+                PlatFormId = consultSchedule.CustomerID,
+                InfoDateTime = DateTime.Now,
+                MailInfoType = MailInfoTypeEnum.理顧預約.ToString(),
+                InfoContent = $@"您已成功預約 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 的理顧諮詢，請查看會議連結",
+                InfoLink = url
+            };
+
+            return mailRecord;
+        }
     }
 }
