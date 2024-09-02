@@ -4,6 +4,7 @@ using Feature.Wealth.Component.Models.Bond;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Sitecore.Data.Items;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -28,23 +29,40 @@ namespace Feature.Wealth.Component.Repositories
                            ,A.[CurrencyCode]
                            ,C.[CurrencyName]
                            ,A.[InterestRate]
-                           ,A.[PaymentFrequency]
+                           ,[PaymentFrequency]
+                           ,CASE 
+                           WHEN A.[PaymentFrequency] = 0
+                           THEN '零息'
+                           WHEN A.[PaymentFrequency] = 1
+                           THEN '月配'
+                           WHEN A.[PaymentFrequency] = 2
+                           THEN '季配'
+                           WHEN A.[PaymentFrequency] = 3
+                           THEN '半年配'
+                           WHEN A.[PaymentFrequency] = 4
+                           THEN '年配'
+                           ELSE ''
+                           END AS [PaymentFrequencyName]
                            ,A.[RiskLevel]
                            ,A.[SalesTarget]
                            ,A.[MinSubscriptionForeign]
                            ,A.[MinSubscriptionNTD]
                            ,A.[MinIncrementAmount]
-                           ,A.[MaturityDate]
-                           ,A.[StopSubscriptionDate]
+                           ,SUBSTRING(A.[MaturityDate],1,4)+'/'+SUBSTRING(A.[MaturityDate],5,2)+'/'+SUBSTRING(A.[MaturityDate],7,2) AS [MaturityDate]
+                           ,CASE
+                           WHEN A.[StopSubscriptionDate] = '29109999'
+                           THEN NULL
+                           ELSE SUBSTRING(A.[StopSubscriptionDate],1,4)+'/'+SUBSTRING(A.[StopSubscriptionDate],5,2)+'/'+SUBSTRING(A.[StopSubscriptionDate],7,2)
+                           END AS [StopSubscriptionDate]
                            ,A.[RedemptionDateByIssuer]
                            ,A.[Issuer]
                            ,A.[OpenToPublic]
                            ,A.[Listed]
-                           ,A.[ListingDate]
-                           ,A.[DelistingDate]
+                           ,SUBSTRING(A.[ListingDate],1,4)+'/'+SUBSTRING(A.[ListingDate],5,2)+'/'+SUBSTRING(A.[ListingDate],7,2) AS [ListingDate]
+                           ,SUBSTRING(A.[DelistingDate],1,4)+'/'+SUBSTRING(A.[DelistingDate],5,2)+'/'+SUBSTRING(A.[DelistingDate],7,2) AS [DelistingDate]
                            ,B.[RedemptionFee]
                            ,B.[SubscriptionFee]
-                           ,B.[Date]
+                           ,SUBSTRING(B.[Date],1,4)+'/'+SUBSTRING(B.[Date],5,2)+'/'+SUBSTRING(B.[Date],7,2) AS [Date]
                            ,B.[ReservedColumn]
                            ,B.[Note]
                            ,B.[PreviousInterest]
@@ -58,6 +76,38 @@ namespace Feature.Wealth.Component.Repositories
                            ORDER BY A.BondCode";
 
             var bonds = this._dbConnection.Query<Bond>(sql)?.ToList() ?? new List<Bond>();
+
+            var now = DateTime.Now;
+
+            for (int i = 0; i < bonds.Count; i++)
+            {
+                bonds[i].InterestRate = Round4(bonds[i].InterestRate);
+                bonds[i].RedemptionFee = Round2(bonds[i].RedemptionFee);
+                bonds[i].SubscriptionFee = Round2(bonds[i].SubscriptionFee);
+                bonds[i].PreviousInterest = Round4(bonds[i].PreviousInterest);
+                bonds[i].YieldRateYTM = Round2(bonds[i].YieldRateYTM);
+                bonds[i].UpsAndDownsMonth = Round2(bonds[i].UpsAndDownsMonth);
+                bonds[i].UpsAndDownsMonth = Round2(bonds[i].UpsAndDownsMonth);
+
+                if(DateTime.TryParse(bonds[i].MaturityDate, out var d))
+                {
+                    var diff = d.Subtract(now).TotalDays;
+                    if(diff > 0)
+                    {
+                        bonds[i].MaturityYear = decimal.Parse((diff / 365).ToString());
+                    }
+                    else
+                    {
+                        bonds[i].MaturityYear = 0;
+                    }
+                }
+                else
+                {
+                    bonds[i].MaturityYear = 0;
+                }
+
+                bonds[i].MaturityYear = Round2(bonds[i].MaturityYear);
+            }
 
             return bonds;
         }
@@ -74,23 +124,40 @@ namespace Feature.Wealth.Component.Repositories
                            ,A.[CurrencyCode]
                            ,C.[CurrencyName]
                            ,A.[InterestRate]
-                           ,A.[PaymentFrequency]
+                           ,[PaymentFrequency]
+                           ,CASE 
+                           WHEN A.[PaymentFrequency] = 0
+                           THEN '零息'
+                           WHEN A.[PaymentFrequency] = 1
+                           THEN '月配'
+                           WHEN A.[PaymentFrequency] = 2
+                           THEN '季配'
+                           WHEN A.[PaymentFrequency] = 3
+                           THEN '半年配'
+                           WHEN A.[PaymentFrequency] = 4
+                           THEN '年配'
+                           ELSE ''
+                           END AS [PaymentFrequencyName]
                            ,A.[RiskLevel]
                            ,A.[SalesTarget]
                            ,A.[MinSubscriptionForeign]
                            ,A.[MinSubscriptionNTD]
                            ,A.[MinIncrementAmount]
-                           ,A.[MaturityDate]
-                           ,A.[StopSubscriptionDate]
+                           ,SUBSTRING(A.[MaturityDate],1,4)+'/'+SUBSTRING(A.[MaturityDate],5,2)+'/'+SUBSTRING(A.[MaturityDate],7,2) AS [MaturityDate]
+                           ,CASE
+                           WHEN A.[StopSubscriptionDate] = '29109999'
+                           THEN NULL
+                           ELSE SUBSTRING(A.[StopSubscriptionDate],1,4)+'/'+SUBSTRING(A.[StopSubscriptionDate],5,2)+'/'+SUBSTRING(A.[StopSubscriptionDate],7,2)
+                           END AS [StopSubscriptionDate]
                            ,A.[RedemptionDateByIssuer]
                            ,A.[Issuer]
                            ,A.[OpenToPublic]
                            ,A.[Listed]
-                           ,A.[ListingDate]
-                           ,A.[DelistingDate]
+                           ,SUBSTRING(A.[ListingDate],1,4)+'/'+SUBSTRING(A.[ListingDate],5,2)+'/'+SUBSTRING(A.[ListingDate],7,2) AS [ListingDate]
+                           ,SUBSTRING(A.[DelistingDate],1,4)+'/'+SUBSTRING(A.[DelistingDate],5,2)+'/'+SUBSTRING(A.[DelistingDate],7,2) AS [DelistingDate]
                            ,B.[RedemptionFee]
                            ,B.[SubscriptionFee]
-                           ,B.[Date]
+                           ,SUBSTRING(B.[Date],1,4)+'/'+SUBSTRING(B.[Date],5,2)+'/'+SUBSTRING(B.[Date],7,2) AS [Date]
                            ,B.[ReservedColumn]
                            ,B.[Note]
                            ,B.[PreviousInterest]
@@ -105,6 +172,35 @@ namespace Feature.Wealth.Component.Repositories
 
             var bond = this._dbConnection.Query<Bond>(sql, new { BondCode = bondCode })?.FirstOrDefault() ?? new Bond();
 
+            var now = DateTime.Now;
+
+            bond.InterestRate = Round4(bond.InterestRate);
+            bond.RedemptionFee = Round2(bond.RedemptionFee);
+            bond.SubscriptionFee = Round2(bond.SubscriptionFee);
+            bond.PreviousInterest = Round4(bond.PreviousInterest);
+            bond.YieldRateYTM = Round2(bond.YieldRateYTM);
+            bond.UpsAndDownsMonth = Round2(bond.UpsAndDownsMonth);
+            bond.UpsAndDownsMonth = Round2(bond.UpsAndDownsMonth);
+
+            if (DateTime.TryParse(bond.MaturityDate, out var d))
+            {
+                var diff = d.Subtract(now).TotalDays;
+                if (diff > 0)
+                {
+                    bond.MaturityYear = decimal.Parse((diff / 365).ToString());
+                }
+                else
+                {
+                    bond.MaturityYear = 0;
+                }
+            }
+            else
+            {
+                bond.MaturityYear = 0;
+            }
+
+            bond.MaturityYear = Round2(bond.MaturityYear);
+
             return bond;
         }
 
@@ -114,13 +210,19 @@ namespace Feature.Wealth.Component.Repositories
                            ,[Currency]
                            ,[RedemptionFee]
                            ,[SubscriptionFee]
-                           ,[Date]
+                           ,SUBSTRING([Date],1,4)+'/'+SUBSTRING([Date],5,2)+'/'+SUBSTRING([Date],7,2) AS [Date]
                            ,[BondName]
                            FROM [BondHistoryPrice] WITH (NOLOCK)
                            WHERE SUBSTRING(BondCode, 1, 4) = @BondCode
                            ORDER BY Date ASC";
 
             var bondHistoryPrices = this._dbConnection.Query<BondHistoryPrice>(sql)?.ToList() ?? new List<BondHistoryPrice>();
+
+            for (int i = 0; i < bondHistoryPrices.Count; i++)
+            {
+                bondHistoryPrices[i].RedemptionFee = Round2(bondHistoryPrices[i].RedemptionFee);
+                bondHistoryPrices[i].SubscriptionFee = Round2(bondHistoryPrices[i].SubscriptionFee);
+            }
 
             return bondHistoryPrices;
         }

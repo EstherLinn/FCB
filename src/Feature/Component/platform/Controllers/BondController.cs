@@ -48,7 +48,10 @@ namespace Feature.Wealth.Component.Controllers
                 BondList = bondList,
                 BondHtmlString = new HtmlString(JsonConvert.SerializeObject(bondList)),
                 HotKeywordTags = keywords,
-                HotProductTags = products
+                HotProductTags = products,
+                CurrencyList = bondList.OrderBy(i => i.CurrencyCode).Select(i => i.CurrencyName).Distinct(),
+                PaymentFrequencyList = bondList.OrderBy(i => i.PaymentFrequency).Select(i => i.PaymentFrequencyName).Distinct(),
+                IssuerList = bondList.OrderBy(i => i.Issuer).Select(i => i.Issuer).Distinct(),
             };
 
             return model;
