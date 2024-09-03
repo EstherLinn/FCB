@@ -20,6 +20,7 @@ namespace Feature.Wealth.Component.Models.Consult
         public string EmployeeName { get; set; }
         public string CustomerID { get; set; }
         public string CustomerName { get; set; }
+        public string PersonalInformationText { get; set; }
         public string PersonalInformationLink { get; set; }
         public List<string> SubjectList { get; set; } = new List<string>();
         public HtmlString CustomerInfosHtmlString { get; set; }
@@ -308,6 +309,7 @@ namespace Feature.Wealth.Component.Models.Consult
 
             public readonly struct Fields
             {
+                public static readonly ID PersonalInformationText = new ID("{2C7674B0-E573-4515-A2D8-1E777867880A}");
                 public static readonly ID PersonalInformationLink = new ID("{F0D15279-4ADF-4744-AE0E-A46E116D701C}");
                 public static readonly ID SubjectList = new ID("{0271AD6F-0BB0-4E36-A656-A6C547073915}");
             }

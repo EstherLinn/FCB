@@ -256,6 +256,7 @@ namespace Feature.Wealth.Component.Controllers
                 EmployeeName = info.Advisror,
                 CustomerID = info.WebBankId,
                 CustomerName = info.MemberName,
+                PersonalInformationText = ItemUtils.GetFieldValue(item, Template.ConsultSchedule.Fields.PersonalInformationText),
                 PersonalInformationLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.PersonalInformationLink).Url,
             };
 
