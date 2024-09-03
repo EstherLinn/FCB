@@ -349,11 +349,21 @@
                 return;
             }
 
+            window.loading = () => 0; // 覆蓋 loading
+
             function loading() {
                 window.loading('show');
                 setTimeout(() => {
                     window.loading('hide');
                 }, 300);
+            }
+
+            function showLoading() {
+                $('.c-loading').loading('show');
+            }
+
+            function hideLoading() {
+                $('.c-loading').loading('hide');
             }
 
             function generateSearchKeywordList(data) {
@@ -544,7 +554,7 @@
                             $(`[data-filter-empty=${isEmpty}]`).show();
                             $(`[data-filter-empty=${!isEmpty}]`).hide();
 
-                            window.loading('hide');
+                            hideLoading();
                         },
                         afterPagination: function () {
                             $('[data-popup]').magnificPopup();
@@ -647,7 +657,8 @@
                     }).fail(function (jqXHR, textStatus, errorThrown) {
                         console.log({ jqXHR, textStatus, errorThrown });
                     }).always(function () {
-                        window.loading('hide');
+                        hideLoading();
+                        window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
                     });
                 }
             }
@@ -656,7 +667,7 @@
             $('#table').on('click.sorting', '.o-sorting', function (e) {
                 e.preventDefault();
                 // 呼叫 loading
-                window.loading('show');
+                showLoading();
                 var $this = $(this);
                 var orderby = '';
                 if ($this.hasClass('is-asc')) {
@@ -678,14 +689,14 @@
                 // 因展示，使用 setTimeout 延遲關閉 loading
                 setTimeout(() => {
                     // 關閉loading
-                    window.loading('hide');
+                    hideLoading();
                 }, 300);
             });
 
             // 手機版分頁筆數功能
             $('[data-sortingbox="true"]').on('change.sorting', function (e) {
                 // 呼叫 loading
-                window.loading('show');
+                showLoading();
                 var sorting = $(this).val();
                 var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
                 var sortingColumn = $('option:selected', this).data('sorting-column');
@@ -699,7 +710,7 @@
                 // 因展示，使用 setTimeout 延遲關閉 loading
                 setTimeout(() => {
                     // 關閉loading
-                    window.loading('hide');
+                    hideLoading();
                 }, 300);
             });
 
