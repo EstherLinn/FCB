@@ -640,36 +640,10 @@ namespace Feature.Wealth.Component.Controllers
             });
         }
 
-        private string GetIPAddress()
-        {
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
-            string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-
-            if (!string.IsNullOrEmpty(ipAddress))
-            {
-                string[] addresses = ipAddress.Split(',');
-                if (addresses.Length != 0)
-                {
-                    return addresses[0];
-                }
-            }
-
-            return context.Request.ServerVariables["REMOTE_ADDR"];
-        }
-
         [HttpPost]
+        [IMVPAuthenticationFilter]
         public ActionResult CheckSchedule(string scheduleId, string action, string description)
         {
-            // 驗證來源 IP
-            var safeIP = Settings.GetSetting("IMVPSafeIP");
-
-            var ip = GetIPAddress();
-
-            if(safeIP.Contains(ip) == false)
-            {
-                return new JsonNetResult(new { statusCode = -9999, statusMsg = "不合法的IP" });
-            }
-
             if (string.IsNullOrEmpty(scheduleId) || string.IsNullOrEmpty(action))
             {
                 return new JsonNetResult(new { statusCode = -1101, statusMsg = "缺少必要參數" });
