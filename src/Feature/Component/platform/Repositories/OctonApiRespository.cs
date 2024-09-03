@@ -32,7 +32,7 @@ namespace Feature.Wealth.Component.Repositories
                 var request = _route.
                 AppendPathSegments("mmccmedia", "GetWebURL").
                 SetQueryParams($"Tenant=YJI304&SysCode=Octon&dnis={octonRequestData.dnis}&Date={octonRequestData.Date}&Start={HttpUtility.UrlEncode(octonRequestData.Start)}&End={HttpUtility.UrlEncode(octonRequestData.End)}&EmployeeCode={octonRequestData.EmployeeCode}&EmployeeName={octonRequestData.EmployeeName}&BranchCode={octonRequestData.BranchCode}&BranchName={octonRequestData.BranchName}&BranchPhone={octonRequestData.BranchPhone}").
-                WithHeader("Authorization", octonRequestData.Authorization).
+                WithHeader("Authorization", octonRequestData.id).
                 WithHeader("ContentType", "application/x-www-form-urlencoded;charset=utf-8").
                 AllowAnyHttpStatus().
                 PostAsync().

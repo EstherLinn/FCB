@@ -252,9 +252,9 @@ namespace Feature.Wealth.Component.Models.Consult
     public class OctonRequestData
     {
         /// <summary>
-        /// 對應預約 GUID
+        /// 對應預約 GUID，放進 Authorization 給 Octon
         /// </summary>
-        public string Authorization { get; set; }
+        public string id { get; set; }
         /// <summary>
         /// 1003~1007
         /// </summary>
