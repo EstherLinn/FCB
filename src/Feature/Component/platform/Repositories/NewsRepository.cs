@@ -5,8 +5,11 @@ using Foundation.Wealth.Manager;
 using Mapster;
 using Newtonsoft.Json.Linq;
 using Sitecore.Data;
+using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Extensions;
+using Sitecore.Mvc.Presentation;
+using Sitecore.Resources.Media;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -618,7 +621,7 @@ namespace Feature.Wealth.Component.Repositories
                 datas.LatestHeadlines.NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + _datas[0].NewsSerialNumber;
 
                 datas.Headlines = new List<HeadlineNewsData>();
-                for (int i = 1 ; i < _datas.Count ; i++)
+                for (int i = 1; i < _datas.Count; i++)
                 {
                     var newsData = new HeadlineNewsData();
                     newsData.NewsDate = _datas[i].NewsDate;
@@ -652,7 +655,7 @@ namespace Feature.Wealth.Component.Repositories
                 visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
                 datas.LatestHeadlines.NewsViewCount = visitCount?.ToString("N0") ?? "0";
 
-                for (int i = 0 ; i < datas.Headlines.Count ; i++)
+                for (int i = 0; i < datas.Headlines.Count; i++)
                 {
                     currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.Headlines[i].NewsSerialNumber);
                     visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
@@ -664,5 +667,136 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         #endregion 頭條新聞
+
+        #region 首頁頭條新聞
+
+        /// <summary>
+        /// 取得首頁頭條新聞資料庫資料
+        /// </summary>
+        public IList<HomeHeadlinesData> GetHomeHeadlinesDbData()
+        {
+            string newsTypeQuery = @"
+        SELECT [NewsType]
+        FROM [dbo].[NewsType]
+        WHERE [TypeNumber] = '2'";
+
+            var headlineNewsType = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
+
+            string query = @"
+            WITH CTE AS (
+                SELECT
+                    nl.[NewsDate],
+                    nl.[NewsTime],
+                    nl.[NewsTitle],
+                    nl.[NewsSerialNumber],
+                    nd.[NewsDetailDate],
+                    nd.[NewsContent],
+                    nd.[NewsRelatedProducts],
+                    nd.[NewsType],
+                    ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC) AS RowNum
+                FROM
+                    [dbo].[NewsList] nl
+                LEFT JOIN
+                    [dbo].[NewsDetail] nd
+                    ON nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
+            )
+            SELECT TOP 4
+                [NewsDate],
+                [NewsTime],
+                [NewsTitle],
+                [NewsSerialNumber],
+                [NewsDetailDate],
+                [NewsContent],
+                [NewsRelatedProducts],
+                [NewsType]
+            FROM
+                CTE
+            WHERE
+                RowNum = 1
+                AND [NewsType] LIKE @HeadlineNewsType
+            ORDER BY
+                [NewsDate] DESC,
+                [NewsTime] DESC;";
+
+            var result = DbManager.Custom.ExecuteIList<HomeHeadlinesData>(query, new { HeadlineNewsType = '%' + headlineNewsType[0] + '%' }, CommandType.Text);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 整理頭條新聞資料庫資料
+        /// </summary>
+        public HomeHeadlinesModel OrganizeHomeHeadlinesDbData(List<HomeHeadlinesData> _datas)
+        {
+            var dataSource = RenderingContext.CurrentOrNull?.ContextItem;
+
+            if (dataSource == null || dataSource.TemplateID.ToString() != Templates.HomeHeadlines.Id.ToString())
+            {
+                return null;
+            }
+
+            var datas = new HomeHeadlinesModel();
+
+            datas.Datasource = dataSource;
+            datas.ButtonText = ItemUtils.GetFieldValue(dataSource, Templates.HomeHeadlines.Fields.ButtonText);
+            datas.ButtonLink = ItemUtils.GeneralLink(dataSource, Templates.HomeHeadlines.Fields.ButtonLink).Url;
+
+            var imageUrlList = GetImageUrlList(dataSource);
+
+            if (_datas != null && _datas.Any())
+            {
+                datas.LatestHeadlines = new HomeHeadlinesData
+                {
+                    NewsImage = imageUrlList.Count > 0 ? imageUrlList[0] : string.Empty,
+                    NewsDate = _datas[0].NewsDate,
+                    NewsTime = _datas[0].NewsTime,
+                    NewsTitle = _datas[0].NewsTitle,
+                    NewsSerialNumber = _datas[0].NewsSerialNumber,
+                    NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + _datas[0].NewsSerialNumber
+                };
+
+                datas.Headlines = new List<HomeHeadlinesData>();
+                for (int i = 1; i < _datas.Count; i++)
+                {
+                    var newsData = new HomeHeadlinesData
+                    {
+                        NewsImage = imageUrlList.Count > i ? imageUrlList[i] : string.Empty,
+                        NewsDate = _datas[i].NewsDate,
+                        NewsTime = _datas[i].NewsTime,
+                        NewsTitle = _datas[i].NewsTitle,
+                        NewsSerialNumber = _datas[i].NewsSerialNumber,
+                        NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + _datas[i].NewsSerialNumber
+                    };
+
+                    datas.Headlines.Add(newsData);
+                }
+            }
+
+            return datas;
+        }
+
+        /// <summary>
+        ///  取得圖片連結 List
+        /// </summary>
+        public List<string> GetImageUrlList(Item dataSource)
+        {
+            var imageDatasourceId = ItemUtils.GetFieldValue(dataSource, Templates.HomeHeadlines.Fields.ImageDatasource);
+
+            var imageDatasource = Sitecore.Context.Database.GetItem(imageDatasourceId);
+
+            var imageSubItems = imageDatasource.Children.Take(4).ToList();
+
+            var imageUrlList = new List<string>();
+
+            foreach (var item in imageSubItems)
+            {
+                MediaItem media = new MediaItem(item);
+                string mediaUrl = MediaManager.GetMediaUrl(media);
+                imageUrlList.Add(mediaUrl);
+            }
+
+            return imageUrlList;
+        }
+        #endregion 首頁頭條新聞
     }
 }

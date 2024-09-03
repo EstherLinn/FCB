@@ -206,5 +206,17 @@ namespace Feature.Wealth.Component.Models.News
                 public static readonly ID CategoryName = new ID("{92B68A8A-2469-4FD7-B703-AC7F194011F1}");
             }
         }
+
+        public struct HomeHeadlines
+        {
+            public static readonly ID Id = new ID("{08A878FD-41ED-466D-9F2C-DDCA3DB488AC}");
+
+            public struct Fields
+            {
+                public static readonly ID ImageDatasource = new ID("{25265AB0-9486-43F1-90E0-D10152F4C5C7}");
+                public static readonly ID ButtonText = new ID("{D49F68A8-8220-433A-9EEA-820ABB7919C9}");
+                public static readonly ID ButtonLink = new ID("{93170015-282A-4124-BC4D-DF52BB73B2CF}");
+            }
+        }
     }
 }
