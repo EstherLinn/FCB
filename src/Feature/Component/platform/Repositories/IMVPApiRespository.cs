@@ -32,10 +32,7 @@ namespace Feature.Wealth.Component.Repositories
                     new KeyValuePair<string, string>("appKey", "wea1234"),
                 ]);
 
-                var flurlClient = new FlurlClientBuilder(this._route).
-                    ConfigureInnerHandler(hch => {
-                        hch.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-                    }).Build();
+                var flurlClient = new FlurlClientBuilder(this._route).Build();
 
                 var request = flurlClient.
                     Request().
@@ -85,10 +82,7 @@ namespace Feature.Wealth.Component.Repositories
                     new KeyValuePair<string, string>("endDate", endDate),
                 ]);
 
-                var flurlClient = new FlurlClientBuilder(this._route).
-                    ConfigureInnerHandler(hch => {
-                        hch.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-                    }).Build();
+                var flurlClient = new FlurlClientBuilder(this._route).Build();
 
                 var request = flurlClient.
                     Request().
@@ -142,10 +136,7 @@ namespace Feature.Wealth.Component.Repositories
                     new KeyValuePair<string, string>("description", imvpRequestData.description),
                 ]);
 
-                var flurlClient = new FlurlClientBuilder(this._route).
-                    ConfigureInnerHandler(hch => {
-                        hch.ServerCertificateCustomValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-                    }).Build();
+                var flurlClient = new FlurlClientBuilder(this._route).Build();
 
                 var request = flurlClient.
                     Request().
