@@ -844,7 +844,18 @@
 
                                                                     if (decimal.TryParse(item.BankSellPriceChange, out bankSellPriceChange))
                                                                     {
-                                                                        diffClass = bankSellPriceChange > 0 ? "o-rise" : "o-fall";
+                                                                        if (bankSellPriceChange > 0)
+                                                                        {
+                                                                            diffClass = "o-rise";
+                                                                        }
+                                                                        else if (bankSellPriceChange < 0)
+                                                                        {
+                                                                            diffClass = "o-fall";
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            diffClass = "";
+                                                                        }
                                                                     }
                                                                     else
                                                                     {
@@ -860,7 +871,7 @@
                                                                         </td>
                                                                         <td>
                                                                             <span class="@diffClass">
-                                                                                @item.BankSellPriceChange
+                                                                                @Math.Abs(bankSellPriceChange).ToString()
                                                                             </span>
                                                                         </td>
                                                                     </tr>
