@@ -20,7 +20,11 @@
                             <option value="@MailInfoTypeEnum.到價通知.ToString()">@MailInfoTypeEnum.到價通知.ToString()</option>
                             @if (FcbMemberHelper.CheckMemberLogin() && !string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
                             {
+                                var member = FcbMemberHelper.GetMemberAllInfo();
+                                if (!member.IsEmployee && !member.IsManager)
+                                {
                                 <option value="@MailInfoTypeEnum.理顧預約.ToString()">@MailInfoTypeEnum.理顧預約.ToString()</option>
+                                }
                             }
                             <option value="@MailInfoTypeEnum.優惠活動.ToString()">@MailInfoTypeEnum.優惠活動.ToString()</option>
                             <option value="@MailInfoTypeEnum.週月報.ToString()">@MailInfoTypeEnum.週月報.ToString()</option>
