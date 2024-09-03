@@ -614,6 +614,16 @@
                 return;
             }
 
+            function loading() {
+                // 開啟loading方式:
+                window.loading('show');
+                setTimeout(() => {
+                    // 載入完成需將loading關閉
+                    // 關閉loading方式:
+                    window.loading('hide');
+                }, 300);
+            }
+
             $('[id="total"]').text(bondList.length);
             $('[id="total-wt"]').text(bondList.length);
 
