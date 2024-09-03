@@ -13,13 +13,13 @@
                 <div class="l-pageHeader__title">
                     <div class="c-pageHeader">
                         <div class="c-pageHeader__main">
-                            <h1 class="c-pageHeader__title">@(Model.Bond.BondCode + " " + Model.Bond.BondName)</h1>
+                            <h1 class="c-pageHeader__title">@(Model.BondDetail.BondCode + " " + Model.BondDetail.BondName)</h1>
                             <!-- 如果沒有tag，不要放 div.c-pageHeader__tags 區塊 -->
-                            @if (Model.Bond.Discount != null && Model.Bond.Discount.Any())
+                            @if (Model.BondDetail.Discount != null && Model.BondDetail.Discount.Any())
                             {
                                 <div class="c-pageHeader__tags">
                                     <ul class="l-tag">
-                                        @foreach (var tag in Model.Bond.Discount)
+                                        @foreach (var tag in Model.BondDetail.Discount)
                                         {
                                             <li class="l-tag__item">
                                                 <span class="o-tag">@tag</span>
@@ -30,10 +30,10 @@
                             }
                         </div>
                         <div class="c-pageHeader__subContent">
-                            @* <h2 class="c-pageHeader__subTitle">@Model.Bond.ISINCode</h2> *@
+                            @* <h2 class="c-pageHeader__subTitle">@Model.BondDetail.ISINCode</h2> *@
                         </div>
                         <div class="c-pageHeader__views">
-                            <div class="o-views o-views--bk" data-eh="visit-update,visit-exec" eh-visit-pageid="@Model.PageID" eh-visit-qs="id=@Model.Bond.BondCode"></div>
+                            <div class="o-views o-views--bk" data-eh="visit-update,visit-exec" eh-visit-pageid="@Model.PageID" eh-visit-qs="id=@Model.BondDetail.BondCode"></div>
                         </div>
                     </div>
                 </div>
@@ -44,13 +44,13 @@
                                 <div class="l-detailInfo__item">
                                     <div class="c-numerical">
                                         <div class="c-numerical__title u-left@dt-only"><span>計價幣別</span></div>
-                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@Model.Bond.ClosingPriceText</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@Model.BondDetail.CurrencyName</span></div>
                                     </div>
                                 </div>
                                 <div class="l-detailInfo__item">
                                     <div class="c-numerical">
                                         <div class="c-numerical__title u-left@dt-only"><span>票面利率</span></div>
-                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@Model.Bond.DataDate</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span>@(Model.BondDetail.InterestRate)%</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -58,7 +58,7 @@
                                 <div class="l-detailInfo__item">
                                     <div class="c-numerical c-numerical--horiz@lt">
                                         <div class="c-numerical__title u-left@dt-only"><span>報價日期</span></div>
-                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only"><span>@Model.Bond.FundCode</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only"><span>@Model.BondDetail.Date</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -67,12 +67,12 @@
                     <div class="l-pageHeader__action">
                         <ul class="l-pageWallet">
                             <li class="l-pageWallet__item">
-                                @Model.Bond.FocusButton
+                                @Model.BondDetail.FocusButton
                             </li>
-                            @if (Model.Bond.AvailabilityStatus == "Y" && Model.Bond.OnlineSubscriptionAvailability != "N")
+                            @if (Model.BondDetail.OpenToPublic == "Y" && Model.BondDetail.Listed == "Y")
                             {
                                 <li class="l-pageWallet__btn">
-                                    @Model.Bond.SubscribeButton
+                                    @Model.BondDetail.SubscribeButton
                                 </li>
                             }
                         </ul>
@@ -90,15 +90,19 @@
                 <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
                 <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
                 <li><a href="#" class="c-tab__item is-active" target="_self" title="基本資料" data-tab-target="tab-1">基本資料</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="財務資料" data-tab-target="tab-2">財務資料</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="價格走勢" data-tab-target="tab-3">價格走勢</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="歷史價格" data-tab-target="tab-2">歷史價格</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="配息時程" data-tab-target="tab-3">配息時程</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="相關商品" data-tab-target="tab-4">相關商品</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="公司分析" data-tab-target="tab-5">公司分析</a></li>
             </ul>
             <div class="c-tab__collapse">
                 <a href="#" class="c-tab__switch"></a>
                 <div class="c-tab__dropdown">
                     <a href="#" class="c-tab__clone is-active" target="_self" title="基本資料" data-tab-target="tab-1">基本資料</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="財務資料" data-tab-target="tab-2">財務資料</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="價格走勢" data-tab-target="tab-3">價格走勢</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="歷史價格" data-tab-target="tab-2">歷史價格</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="配息時程" data-tab-target="tab-3">配息時程</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="相關商品" data-tab-target="tab-4">相關商品</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="公司分析" data-tab-target="tab-5">公司分析</a>
                 </div>
             </div>
         </div>
@@ -106,14 +110,7 @@
         <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
             <section class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
-                    <div class="l-selectbox">
-                        <div class="l-selectbox__item">
-                            <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" data-select-name="tab-1">
-                                <option value="1001">基本資料</option>
-                                <option value="1017">相關企業</option>
-                            </select>
-                        </div>
-                    </div>
+
                 </div>
                 <div class="l-flex__item"></div>
             </section>
@@ -121,23 +118,7 @@
         <div class="c-tab__panel" data-tab-panel-id="tab-2">
             <section class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
-                    <div class="l-selectbox">
-                        <div class="l-selectbox__item">
-                            <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" data-select-name="tab-2">
-                                <option value="3001">營收分析</option>
-                                <option value="3002">資產負債表</option>
-                                <option value="3003">損益表</option>
-                                <option value="3004">現金流量表</option>
-                                <option value="3005">財務比率表</option>
-                                <option value="3010">獲利能力</option>
-                                <option value="3011">財務結構</option>
-                                <option value="3012">盈餘分析</option>
-                                <option value="3013">經營績效</option>
-                                <option value="3014">現金流量分析</option>
-                                <option value="3015">償還能力</option>
-                            </select>
-                        </div>
-                    </div>
+
                 </div>
                 <div class="l-flex__item"></div>
             </section>
@@ -145,26 +126,33 @@
         <div class="c-tab__panel" data-tab-panel-id="tab-3">
             <section class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
-                    <div class="l-selectbox">
-                        <div class="l-selectbox__item">
-                            <select class="o-selectbox o-selectbox--full o-selectbox--form" data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" data-select-name="tab-3">
-                                <option value="4008">技術分析</option>
-                                <option value="4010">收盤走勢圖</option>
-                            </select>
-                        </div>
-                    </div>
+
                 </div>
                 <div class="l-flex__item"></div>
             </section>
         </div>
-        <iframe id="SysJustIFRAME" width="100%" scrolling="no"></iframe>
-        @if (Model.Bond.HotProductTags != null && Model.Bond.HotProductTags.Any())
+        <div class="c-tab__panel" data-tab-panel-id="tab-4">
+            <section class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                </div>
+                <div class="l-flex__item"></div>
+            </section>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-5">
+            <section class="l-flex u-flex-col u-flex-gap-sm">
+                <div class="l-flex__item">
+                </div>
+                <div class="l-flex__item"></div>
+            </section>
+        </div>
+        <iframe id="SysJustIFRAME" width="100%" scrolling="no" frameborder="0" style="border:none; height:1500px"></iframe>
+        @if (Model.BondDetail.HotProductTags != null && Model.BondDetail.HotProductTags.Any())
         {
             <div class="c-hashTags">
                 <div class="c-hashTags__title">Tags</div>
                 <div class="c-hashTags__content">
                     <ul class="l-divideList l-divideList--sm">
-                        @foreach (var tag in Model.Bond.HotProductTags)
+                        @foreach (var tag in Model.BondDetail.HotProductTags)
                         {
                             <li class="l-divideList__item l-divideList__item--auto">
                                 <a href="@(Model.SearchUrl + "?hotproduct=" + tag)" class="o-hashTag u-nowrap">#@tag</a>
@@ -202,11 +190,11 @@
         var _name = 'sysjust b2brwd corp';
 
         function setIframeSrc(val) {
-            $(_selector).attr('src', `@(Model.b2brwdDomain)/b2brwdCommon/proxy/gopage.xdjhtm?aspid=firstbank&bid=@(Model.Bond.FirstBankCode)&api=${val}`);
+            $(_selector).attr('src', `/b2bbond/BondBasic/Basic0${val}?id=@(Model.BondDetail.ISINCode)&bid=@(Model.BondDetail.BondCode)`);
         }
 
         function init() {
-            setIframeSrc('1001');
+            setIframeSrc('1');
 
             // Add Lister to
             $(_selector)
@@ -300,15 +288,9 @@
             return val;
         }
 
-        $('select').on('change', function () {
-            var val = this.value;
-
-            setIframeSrc(val);
-        });
-
         $('[data-tab-target]').on('click', function () {
             var name = DOMPurify.sanitize($(this).attr("data-tab-target"));
-            var val = $(`[data-select-name=${name}`)[0].value;
+            var val = name.replace('tab-', '');
 
             setIframeSrc(val);
         });
