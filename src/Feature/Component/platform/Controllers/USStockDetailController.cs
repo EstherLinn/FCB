@@ -1,5 +1,4 @@
-﻿using System;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Feature.Wealth.Component.Models.USStock;
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Data.Items;

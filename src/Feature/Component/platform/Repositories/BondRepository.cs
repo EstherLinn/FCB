@@ -89,6 +89,10 @@ namespace Feature.Wealth.Component.Repositories
                 bonds[i].UpsAndDownsMonth = Round2(bonds[i].UpsAndDownsMonth);
                 bonds[i].UpsAndDownsMonth = Round2(bonds[i].UpsAndDownsMonth);
 
+                bonds[i].DetailLink = bonds[i].DetailLink + "?id=" + bonds[i].BondCode;
+                bonds[i] = GetButtonHtml(bonds[i], true);
+                bonds[i] = SetTags(bonds[i]);
+
                 if (DateTime.TryParse(bonds[i].MaturityDate, out var d))
                 {
                     var diff = d.Subtract(now).TotalDays;
@@ -200,6 +204,10 @@ namespace Feature.Wealth.Component.Repositories
             bond.YieldRateYTM = Round2(bond.YieldRateYTM);
             bond.UpsAndDownsMonth = Round2(bond.UpsAndDownsMonth);
             bond.UpsAndDownsMonth = Round2(bond.UpsAndDownsMonth);
+
+            bond.DetailLink = bond.DetailLink + "?id=" + bond.BondCode;
+            bond = GetButtonHtml(bond, true);
+            bond = SetTags(bond);
 
             if (DateTime.TryParse(bond.MaturityDate, out var d))
             {
