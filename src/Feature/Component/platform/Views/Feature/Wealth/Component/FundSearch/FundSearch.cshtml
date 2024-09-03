@@ -1963,13 +1963,13 @@
 					// 申購按鈕
 					let $purchase = suggestion.Data.Purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.Data.AutoSubscribeButtonHtml}>申購</a></div>` : '';
 					return `<div class="c-itemKeyword">
-																								<a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+																										<a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
 
-																									<div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-																								</a>
-																								<div class="c-itemKeyword__collections">${$like}</div>
-																								${$purchase}
-																							</div>`;
+																											<div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+																										</a>
+																										<div class="c-itemKeyword__collections">${$like}</div>
+																										${$purchase}
+																									</div>`;
 				}
 			});
 		}
@@ -1982,21 +1982,27 @@
 			let fjs;
 
 			var token = $('input[name="__RequestVerificationToken"]').val();
-
+			window.loading = () => 0;//蓋掉window.loading function
 			$.ajax({
 				url: '@ClientRoute.GenerateUrl(this, "FundSearch", "GetAllFunds")',
 				type: 'POST',
 				data: { __RequestVerificationToken: token },
-			}).done(function (data, textStatus, jqXHR) {
-				initFilter(data);
-				initAutocomplete(data);
-				QueryStringSearch();
+				success: function (data, textStatus, jqXHR) {
+					initFilter(data);
+					initAutocomplete(data);
+					QueryStringSearch();
 
-				$('[data-tab] [data-tab-target]').first().trigger('switch');
-				$('[data-filter-switch="#uid-template"]').trigger('change');
-			}).fail(function (jqXHR, textStatus, errorThrown) {
-			}).always(function () {
-				window.loading('hide');
+					$('[data-tab] [data-tab-target]').first().trigger('switch');
+					$('[data-filter-switch="#uid-template"]').trigger('change');
+				},
+				complete: function () {
+					$('.c-loading').loading('hide');
+					window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
+				},
+				error: function (err) {
+					console.log(err);
+					$('.c-loading').loading('hide')
+				},
 			});
 
 			function initFilter(data) {
