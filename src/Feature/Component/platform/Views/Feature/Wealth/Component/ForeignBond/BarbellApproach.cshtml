@@ -1,16 +1,130 @@
 ﻿<div class="c-section">
-    <iframe id="SysJustIFRAME" width="100%" scrolling="no"></iframe>
+    <div class="l-wrap">
+        <iframe id="SysJustIFRAME" width="100%" scrolling="no" frameborder="0" style="border:none"></iframe>
+    </div>
 </div>
 
 <script>
-    (function ($, window, document, undefined) {
-        document.addEventListener("DOMContentLoaded", function () {
-            var _selector = '#SysJustIFRAME';
+    $(function () {
+        var ACTIONS = {
+            APPROVED: 0,
+            RESIZE: 1,
+            HEIGHT: 2,
+            URL: 3,
+            UNLOAD: 4,
+            NAVIGATE: 5,
+            AUTHORIZE: 6,
+            SCROLL: 7,
+            NAVIGATE_PRODUCT_PATH: 8,
+            LOADING_VISIBLE: 9,
+            SCROLLAR_VISIBLE: 10,
+            WINDOW_SIZE: 11,
+        };
 
-            function setIframeSrc() {
-                $(_selector).attr('src', '/b2bbond/invest/invest03');
-            }
+        var _targetOrigin = document.location.origin;
+        var _selector = '#SysJustIFRAME';
+        var _iframeInst = null;
+        var _self = this;
+        var _name = 'sysjust b2brwd corp';
+
+        function setIframeSrc(val) {
+            $(_selector).attr('src', `/b2bbond/invest/invest03`);
+        }
+
+        function init() {
             setIframeSrc();
-        });
-    })(jQuery, window, document);
+
+            // Add Lister to
+            $(_selector)
+                .on('load', iframeLstr)
+                .trigger('load');
+
+            window.addEventListener('message', receiveMessage);
+        }
+
+        // iframe Listener
+        function iframeLstr(e, url) {
+            _iframeInst = document.getElementById($(this).attr('id')).contentWindow;
+            _updateWindowSize();
+
+            onResize(function () {
+                _postMessage({ action: ACTIONS.RESIZE, data: true });
+                _updateWindowSize();
+            });
+        }
+
+        // resize helper
+        function onResize(callback) {
+            var reload_timeout;
+
+            $(window).on('resize', function () {
+                clearTimeout(reload_timeout);
+                reload_timeout = setTimeout(callback, 500);
+            });
+        }
+
+        function receiveMessage(e) {
+            var msg = {};
+
+            try {
+                msg = typeof e.data === 'object' ? e.data : JSON.parse(e.data);
+            } catch (e) {
+                return;
+            }
+            console.log(msg.name);
+            if (msg.name !== _name) return;
+
+            msg.status = 'receive';
+            msg.actionName = _getActionName(msg.action);
+
+            switch (msg.action) {
+                case ACTIONS.HEIGHT:
+                    $(_selector).outerHeight(msg.data + 10);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function _updateWindowSize() {
+            _postMessage({
+                action: ACTIONS.WINDOW_SIZE,
+                data: {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                }
+            });
+        }
+
+        function _postMessage(msg) {
+            var luggage = {
+                name: _name,
+                action: msg.action,
+                data: msg.data
+            };
+
+            _iframeInst.postMessage(luggage, _targetOrigin);
+
+            luggage.status = 'send';
+            luggage.actionName = _getActionName(luggage.action);
+
+        }
+
+        function _getActionName(act) {
+            var val;
+
+            Object.entries(ACTIONS).some(function (el) {
+                if (el[1] === act) {
+                    val = el[0];
+                    return true;
+                }
+
+                return false;
+            });
+
+            return val;
+        }
+
+        init();
+    });
 </script>
