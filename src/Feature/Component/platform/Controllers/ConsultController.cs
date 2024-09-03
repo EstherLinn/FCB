@@ -403,7 +403,7 @@ namespace Feature.Wealth.Component.Controllers
                             // 呼叫API取得視訊連結
                             var octonRequestData = new OctonRequestData
                             {
-                                Authorization = consultSchedule.ScheduleID.ToString(),
+                                Authorization = scheduleID,
                                 dnis = consultSchedule.DNIS,
                                 Date = consultSchedule.ScheduleDate.ToString("yyyy-MM-dd"),
                                 Start = consultSchedule.StartTime,
