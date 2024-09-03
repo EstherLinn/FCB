@@ -1,4 +1,5 @@
-﻿using Sitecore.Data;
+﻿using Feature.Wealth.Component.Models.USStock;
+using Sitecore.Data;
 using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,10 @@ namespace Feature.Wealth.Component.Models.Bond
 
     public class BondDetailModel
     {
+        public Item Item { get; set; }
+        public string PageID { get; set; } = BondRelatedLinkSetting.GetBondDetailPageItem()?.ID.ToString();
         public Bond BondDetail { get; set; }
+        public string SearchUrl { get; set; } = USStockRelatedLinkSetting.GetUSStockSearchUrl();
     }
 
     public class Bond
@@ -222,7 +226,7 @@ namespace Feature.Wealth.Component.Models.Bond
         /// </summary>
         public decimal? UpsAndDownsSeason { get; set; }
 
-        public string DetailLink { get; set; }
+        public string DetailLink { get; set; } = BondRelatedLinkSetting.GetBondDetailUrl();
 
         /// <summary>
         /// 熱門關鍵字
