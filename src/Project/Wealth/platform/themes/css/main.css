@@ -2226,6 +2226,9 @@ textarea {
 .o-rise--gbl {
   color: #2E9E40;
 }
+.o-rise--textOnly::before {
+  content: none;
+}
 
 .o-fall {
   color: var(--color-fall, #2E9E40);
@@ -2238,6 +2241,9 @@ textarea {
 }
 .o-fall--gbl {
   color: #F00;
+}
+.o-fall--textOnly::before {
+  content: none;
 }
 
 .o-singleBar {

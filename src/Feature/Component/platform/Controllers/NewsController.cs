@@ -128,5 +128,18 @@ namespace Feature.Wealth.Component.Controllers
             var item = RenderingContext.Current.Rendering.Item;
             return View("/Views/Feature/Wealth/Component/News/Headline.cshtml", new HeadlineModel(item));
         }
+
+        public ActionResult HomeHeadlines()
+        {
+            HomeHeadlinesModel datas;
+
+            // 取得 HomeHeadlines 資料庫資料
+            var _datas = (List<HomeHeadlinesData>)_newsRespository.GetHomeHeadlinesDbData();
+
+            // 整理 HomeHeadlines 資料庫資料
+            datas = _newsRespository.OrganizeHomeHeadlinesDbData(_datas);
+
+            return View("/Views/Feature/Wealth/Component/News/HomeHeadlines.cshtml", datas);
+        }
     }
 }
