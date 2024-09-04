@@ -982,7 +982,10 @@ namespace Feature.Wealth.Account.Repositories
             }
             return (success, getRisk);
         }
-
+        /// <summary>
+        /// 取得會員預約諮詢日期
+        /// </summary>
+        /// <returns></returns>
         public DateTime? GetMemberScheduleDate()
         {
             DateTime? dt = null;
@@ -994,6 +997,49 @@ namespace Feature.Wealth.Account.Repositories
             };
             dt = DbManager.Custom.Execute<DateTime?>(strSql, para, commandType: System.Data.CommandType.Text);
             return dt;
+        }
+        /// <summary>
+        /// 取得會員預約諮詢通知
+        /// </summary>
+        /// <returns></returns>
+        public string GetMemberScheduleMessage()
+        {
+            string msg = string.Empty;
+            var strSql = @$"  SELECT [StartTime] FROM [ConsultSchedule]
+            where CustomerID  COLLATE Latin1_General_CS_AS =@id and StatusCode = '1'  and ScheduleDate =CAST(GETDATE() AS DATE) and
+            CONVERT(TIME, StartTime) > CONVERT(TIME, CONVERT(VARCHAR(5), GETDATE(), 108));";
+            var para = new
+            {
+                id = FcbMemberHelper.GetMemberWebBankId()
+            };
+            var times = DbManager.Custom.ExecuteIList<string>(strSql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            if (times != null && times.Any())
+            {
+                string orderTimes = string.Join("、", times.ToArray());
+                msg = string.Format("提醒您，您今日 {0} 有預約理專遠距諮詢，請準時參與！", orderTimes);
+            }
+            return msg;
+        }
+        /// <summary>
+        /// 取得理顧預約諮詢通知
+        /// </summary>
+        /// <returns></returns>
+        public string GetAdvisrorScheduleMessage()
+        {
+            string msg = string.Empty;
+            var strSql = @$"  SELECT [StartTime] FROM [ConsultSchedule]
+            where EmployeeID  COLLATE Latin1_General_CS_AS =@id and StatusCode = '1'  and ScheduleDate =CAST(GETDATE() AS DATE) and
+            CONVERT(TIME, StartTime) > CONVERT(TIME, CONVERT(VARCHAR(5), GETDATE(), 108));";
+            var para = new
+            {
+                id = FcbMemberHelper.GetMemberAllInfo().AdvisrorID
+            };
+            var times = DbManager.Custom.ExecuteIList<string>(strSql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            if (times != null && times.Any())
+            {
+                msg = "提醒您，您今日有客戶預約遠距諮詢，請準時參與！";
+            }
+            return msg;
         }
 
         public void RecordMemberActionLog(MemberLog memberLog)
