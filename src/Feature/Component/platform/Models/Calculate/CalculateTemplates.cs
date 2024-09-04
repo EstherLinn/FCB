@@ -27,6 +27,7 @@ namespace Feature.Wealth.Component.Models.Calculate
                 public static readonly ID UnsuccessfulContent = new ID("{DB09C138-CB42-4485-992C-D5A01240BE20}");
                 public static readonly ID ExpectedReturnRemarks = new ID("{94FFECEE-3112-4AE4-8DED-B94870DC3885}");
                 public static readonly ID DefaultRiskAttributes = new ID("{54721E54-E73F-480E-B5D9-1B4A03CD6594}");
+                public static readonly ID RecommendedProductContent = new ID("{88C88486-D726-4E69-8DE7-0EAFEACF9436}");
                 public static readonly ID ConservativeRiskImage = new ID("{061C9AD5-DEB5-4871-972C-58B9C5979DF9}");
                 public static readonly ID ConservativeRiskStockAllocation = new ID("{84CB4BBC-6E9F-4F5B-AB75-6A6E76F54A1C}");
                 public static readonly ID ConservativeRiskBondAllocation = new ID("{FEF9B7DA-2A2F-4899-B36C-3804C676C969}");
@@ -37,7 +38,6 @@ namespace Feature.Wealth.Component.Models.Calculate
                 public static readonly ID ConservativeRiskStockAllocationText = new ID("{139256DA-D009-47B9-803D-F1BC5BC2C9E6}");
                 public static readonly ID ConservativeRiskBondAllocationText = new ID("{3E4130C7-C78B-4740-9ED6-A9329414D0BB}");
                 public static readonly ID ConservativeRiskCurrencyAllocationText = new ID("{6196D994-DE64-43A0-ABAB-4058268A0A4C}");
-                public static readonly ID ConservativeRiskNotice = new ID("{F6E26787-A45D-4424-8C7A-82DEF7FBBD7A}");
                 public static readonly ID RobustRiskImage = new ID("{C3253D5F-1B0A-4C77-83C3-99D8C560268B}");
                 public static readonly ID RobustRiskStockAllocation = new ID("{98929709-1E61-4054-AFE7-81A5AF4C6ABA}");
                 public static readonly ID RobustRiskBondAllocation = new ID("{4587B775-DF49-4A19-805D-EC0151FB5AC3}");
@@ -48,7 +48,6 @@ namespace Feature.Wealth.Component.Models.Calculate
                 public static readonly ID RobustRiskStockAllocationText = new ID("{3854DF59-FE34-4883-AC14-84CA6CA3BC4C}");
                 public static readonly ID RobustRiskBondAllocationText = new ID("{B04DBECA-C495-40DA-BD4E-EC7C60ACE35D}");
                 public static readonly ID RobustRiskCurrencyAllocationText = new ID("{A28877E5-303F-43D0-A476-DAB5DAFC9975}");
-                public static readonly ID RobustRiskNotice = new ID("{CB636ECC-B7E9-451A-A3E4-5C85819925E9}");
                 public static readonly ID PositiveRiskImage = new ID("{E5C995A9-FD2B-441A-B918-52785CF105A0}");
                 public static readonly ID PositiveRiskStockAllocation = new ID("{59CB2B82-C489-4EC5-9DF2-FE3D2939DC80}");
                 public static readonly ID PositiveRiskBondAllocation = new ID("{A399858F-42FC-42C0-BB9E-F7BF82A5A69E}");
@@ -59,7 +58,6 @@ namespace Feature.Wealth.Component.Models.Calculate
                 public static readonly ID PositiveRiskStockAllocationText = new ID("{13A2867F-2816-42CD-A92F-1408A501AF36}");
                 public static readonly ID PositiveRiskBondAllocationText = new ID("{92F8359F-1390-45E4-87E7-132A81068B12}");
                 public static readonly ID PositiveRiskCurrencyAllocationText = new ID("{4E0AC92B-4366-4D1B-88B7-15D97DBA284B}");
-                public static readonly ID PositiveRiskNotice = new ID("{0768A58D-15AC-4812-960F-D62A2D4CF12D}");
                 public static readonly ID RemoteConsultationSuccessTitle = new ID("{FFEE7E90-EFEC-42EE-B102-2C60766C12E1}");
                 public static readonly ID RemoteConsultationSuccessContent = new ID("{07158773-FDEB-4207-8AF3-660A0F51D9D3}");
                 public static readonly ID RemoteConsultationSuccessButtonText = new ID("{39C7F9EE-E9B2-47F1-B81F-54A262B295B8}");

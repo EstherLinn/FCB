@@ -64,6 +64,7 @@ namespace Feature.Wealth.Component.Repositories
             ? ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.DropdownOption.Fields.OptionValue)
             : "2";
 
+            model.RecommendedProductContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RecommendedProductContent);
             model.ConservativeRiskImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.ConservativeRiskImage);
             model.ConservativeRiskStockAllocation = ItemUtils.GetInteger(dataSource, Templates.Calculate.Fields.ConservativeRiskStockAllocation) ?? 0;
             model.ConservativeRiskBondAllocation = ItemUtils.GetInteger(dataSource, Templates.Calculate.Fields.ConservativeRiskBondAllocation) ?? 0;
@@ -74,7 +75,6 @@ namespace Feature.Wealth.Component.Repositories
             model.ConservativeRiskStockAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.ConservativeRiskStockAllocationText);
             model.ConservativeRiskBondAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.ConservativeRiskBondAllocationText);
             model.ConservativeRiskCurrencyAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.ConservativeRiskCurrencyAllocationText);
-            model.ConservativeRiskNotice = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.ConservativeRiskNotice);
             model.RobustRiskImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.RobustRiskImage);
             model.RobustRiskStockAllocation = ItemUtils.GetInteger(dataSource, Templates.Calculate.Fields.RobustRiskStockAllocation) ?? 0;
             model.RobustRiskBondAllocation = ItemUtils.GetInteger(dataSource, Templates.Calculate.Fields.RobustRiskBondAllocation) ?? 0;
@@ -85,7 +85,6 @@ namespace Feature.Wealth.Component.Repositories
             model.RobustRiskStockAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RobustRiskStockAllocationText);
             model.RobustRiskBondAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RobustRiskBondAllocationText);
             model.RobustRiskCurrencyAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RobustRiskCurrencyAllocationText);
-            model.RobustRiskNotice = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RobustRiskNotice);
             model.PositiveRiskImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.PositiveRiskImage);
             model.PositiveRiskStockAllocation = ItemUtils.GetInteger(dataSource, Templates.Calculate.Fields.PositiveRiskStockAllocation) ?? 0;
             model.PositiveRiskBondAllocation = ItemUtils.GetInteger(dataSource, Templates.Calculate.Fields.PositiveRiskBondAllocation) ?? 0;
@@ -96,7 +95,6 @@ namespace Feature.Wealth.Component.Repositories
             model.PositiveRiskStockAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.PositiveRiskStockAllocationText);
             model.PositiveRiskBondAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.PositiveRiskBondAllocationText);
             model.PositiveRiskCurrencyAllocationText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.PositiveRiskCurrencyAllocationText);
-            model.PositiveRiskNotice = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.PositiveRiskNotice);
             model.RemoteConsultationSuccessTitle = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessTitle);
             model.RemoteConsultationSuccessContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessContent);
             model.RemoteConsultationSuccessButtonText = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RemoteConsultationSuccessButtonText);
