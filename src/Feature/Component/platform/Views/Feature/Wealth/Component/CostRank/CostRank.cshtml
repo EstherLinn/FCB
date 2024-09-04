@@ -168,7 +168,7 @@
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
                                             <div class="c-cardTable__title" data-length="5">市價<br>(日期)</div>
-											<div class="c-cardTable__content">@item.MarketPrice<br><span class="t-date">@item.MarketPriceDateFormat</span></div>
+                                            <div class="c-cardTable__content">@item.MarketPrice<br><span class="t-date">@item.MarketPriceDateFormat</span></div>
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
                                             <div class="c-cardTable__title" data-length="5">
@@ -248,6 +248,7 @@
             }
 
             function ReturnSortView(orderby, desc) {
+                window.loading = () => 0;
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "CostRank", "GetSortedCostRank")',
                     type: 'POST',
@@ -260,6 +261,10 @@
                         $('[eh-compare]').trigger('exec');
                         $('[eh-focus]').trigger('exec');
                         $('[eh-subscription-type]').trigger('exec');
+                    },
+                    complete: function () {
+                        $('.c-loading').loading('hide');
+                        window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
                     },
                     error: function (xhr, status, error) {
                         console.error(error);

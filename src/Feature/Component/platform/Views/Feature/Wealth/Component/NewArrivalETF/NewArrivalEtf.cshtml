@@ -181,6 +181,7 @@
             function loadData(page, pageSize, orderby, desc) {
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
+				window.loading = () => 0;//蓋掉window.loading function
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "NewArrivalEtf", "GetSortedNewArrivalEtf")',
                     type: 'POST',
@@ -204,7 +205,11 @@
                         } else {
                             console.error("Empty response received from the server.");
                         }
-                    },
+					},
+					complete: function () {
+						$('.c-loading').loading('hide');
+						window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
+					},
                     error: function (xhr, status, error) {
                         console.error(error);
                     }

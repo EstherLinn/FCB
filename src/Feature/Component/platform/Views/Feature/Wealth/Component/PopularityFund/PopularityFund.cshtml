@@ -259,6 +259,7 @@
             function ReturnView(orderby, desc) {
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
+				window.loading = () => 0;//蓋掉window.loading function
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "PopularityFund", "GetSortedPopularityFund")',
                     type: 'POST',
@@ -271,7 +272,11 @@
                         $('[eh-compare]').trigger('exec');
                         $('[eh-focus]').trigger('exec');
                         $('[eh-subscription-type]').trigger('exec');
-                    },
+					},
+					complete: function () {
+						$('.c-loading').loading('hide');
+						window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
+					},
                     error: function (xhr, status, error) {
                         console.error(error);
                     }
