@@ -328,6 +328,38 @@ namespace Feature.Wealth.Component.Repositories
 
         #endregion 基金
 
+        public JObject GetBondClass()
+        {
+            JObject result = null;
+
+            try
+            {
+                var request = _route.
+                AppendPathSegments("api", "bond", "Class").
+                WithOAuthBearerToken(_token).
+                AllowAnyHttpStatus().
+                GetAsync().
+                ReceiveString().Result;
+
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
+            }
+            catch (FlurlHttpException ex)
+            {
+                var status = ex.StatusCode;
+                var resp = ex.GetResponseStringAsync().Result;
+                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+            }
+
+            return result;
+        }
+
         public JObject GetGlobalInedxRelevantInformation(string indexCode, int type)
         {
             JObject result = null;

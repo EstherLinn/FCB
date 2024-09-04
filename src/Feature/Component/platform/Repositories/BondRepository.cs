@@ -16,7 +16,10 @@ namespace Feature.Wealth.Component.Repositories
     public class BondRepository
     {
         private readonly IDbConnection _dbConnection = DbManager.Custom.DbConnection();
+        private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
+
         private IList<BondHistoryPrice> _bondHistoryPrices;
+        private List<BondClass> _bondClasses = new List<BondClass>();
 
         public IList<Bond> GetBondList()
         {
@@ -78,6 +81,8 @@ namespace Feature.Wealth.Component.Repositories
 
             var bonds = this._dbConnection.Query<Bond>(sql)?.ToList() ?? new List<Bond>();
 
+            GetBondClass();
+
             var minDate = bonds
                 .Where(b => string.IsNullOrEmpty(b.Date) == false)
                 .OrderBy(b => b.Date)
@@ -94,57 +99,7 @@ namespace Feature.Wealth.Component.Repositories
 
             for (int i = 0; i < bonds.Count; i++)
             {
-                bonds[i].InterestRate = Round4(bonds[i].InterestRate);
-                bonds[i].RedemptionFee = Round2(bonds[i].RedemptionFee);
-                bonds[i].SubscriptionFee = Round2(bonds[i].SubscriptionFee);
-                bonds[i].PreviousInterest = Round4(bonds[i].PreviousInterest);
-                bonds[i].YieldRateYTM = Round2(bonds[i].YieldRateYTM);
-                bonds[i].UpsAndDownsMonth = Round2(bonds[i].UpsAndDownsMonth);
-                bonds[i].UpsAndDownsMonth = Round2(bonds[i].UpsAndDownsMonth);
-
-                bonds[i].DetailLink = bonds[i].DetailLink + "?id=" + bonds[i].BondCode;
-                bonds[i] = GetButtonHtml(bonds[i], true);
-                bonds[i] = SetTags(bonds[i]);
-
-                if (DateTime.TryParse(bonds[i].MaturityDate, out var d))
-                {
-                    var diff = d.Subtract(now).TotalDays;
-                    if (diff > 0)
-                    {
-                        bonds[i].MaturityYear = decimal.Parse((diff / 365).ToString());
-                    }
-                    else
-                    {
-                        bonds[i].MaturityYear = 0;
-                    }
-                }
-                else
-                {
-                    bonds[i].MaturityYear = 0;
-                }
-
-                bonds[i].MaturityYear = Round2(bonds[i].MaturityYear);
-
-                if (int.TryParse(bonds[i].MinIncrementAmount, out var min))
-                {
-                    bonds[i].MinIncrementAmountNumber = min;
-                }
-                else
-                {
-                    bonds[i].MinIncrementAmountNumber = 0;
-                }
-
-                if (DateTime.TryParse(bonds[i].Date, out var oneMonthAgo))
-                {
-                    oneMonthAgo = oneMonthAgo.AddMonths(-1);
-                    bonds[i].UpsAndDownsMonth = GetUpsAndDowns(bonds[i].BondCode, bonds[i].RedemptionFee, oneMonthAgo.ToString("yyyyMMdd"), false);
-                }
-
-                if (DateTime.TryParse(bonds[i].Date, out var threeMonthAgo))
-                {
-                    threeMonthAgo = threeMonthAgo.AddMonths(-3);
-                    bonds[i].UpsAndDownsSeason = GetUpsAndDowns(bonds[i].BondCode, bonds[i].RedemptionFee, threeMonthAgo.ToString("yyyyMMdd"), false);
-                }
+                bonds[i] = MoreInfo(bonds[i], false);
             }
 
             return bonds;
@@ -210,6 +165,37 @@ namespace Feature.Wealth.Component.Repositories
 
             var bond = this._dbConnection.Query<Bond>(sql, new { BondCode = bondCode })?.FirstOrDefault() ?? new Bond();
 
+            GetBondClass();
+
+            bond = MoreInfo(bond, true);
+
+            return bond;
+        }
+
+        private void GetBondClass()
+        {
+            var result = this._djMoneyApiRespository.GetBondClass();
+
+            if (result != null
+                && result.ContainsKey("resultSet")
+                && result["resultSet"]["result"] != null
+                && result["resultSet"]["result"].Any())
+            {
+                foreach (var data in result["resultSet"]["result"])
+                {
+                    this._bondClasses.Add(new BondClass
+                    {
+                        ISINCode = data["v1"].ToString(),
+                        BondName = data["v2"].ToString(),
+                        Class = data["v9"].ToString(),
+                        BondCode = data["v33"].ToString(),
+                    });
+                }
+            }
+        }
+
+        private Bond MoreInfo (Bond bond, bool single)
+        {
             var now = DateTime.Now;
 
             bond.InterestRate = Round4(bond.InterestRate);
@@ -217,8 +203,6 @@ namespace Feature.Wealth.Component.Repositories
             bond.SubscriptionFee = Round2(bond.SubscriptionFee);
             bond.PreviousInterest = Round4(bond.PreviousInterest);
             bond.YieldRateYTM = Round2(bond.YieldRateYTM);
-            bond.UpsAndDownsMonth = Round2(bond.UpsAndDownsMonth);
-            bond.UpsAndDownsMonth = Round2(bond.UpsAndDownsMonth);
 
             bond.DetailLink = bond.DetailLink + "?id=" + bond.BondCode;
             bond = GetButtonHtml(bond, true);
@@ -255,14 +239,19 @@ namespace Feature.Wealth.Component.Repositories
             if (DateTime.TryParse(bond.Date, out var oneMonthAgo))
             {
                 oneMonthAgo = oneMonthAgo.AddMonths(-1);
-                bond.UpsAndDownsMonth = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, oneMonthAgo.ToString("yyyyMMdd"), true);
+                bond.UpsAndDownsMonth = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, oneMonthAgo.ToString("yyyyMMdd"), single);
             }
 
             if (DateTime.TryParse(bond.Date, out var threeMonthAgo))
             {
                 threeMonthAgo = threeMonthAgo.AddMonths(-3);
-                bond.UpsAndDownsSeason = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, threeMonthAgo.ToString("yyyyMMdd"), true);
+                bond.UpsAndDownsSeason = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, threeMonthAgo.ToString("yyyyMMdd"), single);
             }
+
+            bond.UpsAndDownsMonth = Round2(bond.UpsAndDownsMonth);
+            bond.UpsAndDownsSeason = Round2(bond.UpsAndDownsSeason);
+
+            bond.BondClass = this._bondClasses.Where(c => c.BondCode == bond.BondCode).Select(c => c.Class).FirstOrDefault() ?? null;
 
             return bond;
         }
