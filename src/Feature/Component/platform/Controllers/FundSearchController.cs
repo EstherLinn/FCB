@@ -38,6 +38,10 @@ namespace Feature.Wealth.Component.Controllers
             }
             string content = ItemUtils.GetFieldValue(dataSourceItem, Template.FundSearch.Fields.Content);
             HtmlString riskcontent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.RiskIndicatorContent);
+            HtmlString sharpecontent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.SharpeContent);
+            HtmlString betacontent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.BetaContent);
+            HtmlString alphacontent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.AlphaContent);
+            HtmlString standardDeviationContent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.StandardDeviationContent);
 
             var topicnames = _tagrepository.GetFundTenTagNameData();
 
@@ -81,7 +85,11 @@ namespace Feature.Wealth.Component.Controllers
                 HotProductTags = products,
                 TopicNameTags = topicnames,
                 Content = content,
-                RiskIndicatorContent = riskcontent
+                RiskIndicatorContent = riskcontent,
+                SharpeContent = sharpecontent,
+                BetaContent = betacontent,
+                AlphaContent = alphacontent,
+                StandardDeviationContent = standardDeviationContent
             };
 
             return View("/Views/Feature/Wealth/Component/FundSearch/FundSearch.cshtml", viewModel);

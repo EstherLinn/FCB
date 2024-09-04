@@ -14,5 +14,9 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public List<string> TopicNameTags { get; set; }
         public string Content { get; set; }
         public HtmlString RiskIndicatorContent { get; set; }
+        public HtmlString SharpeContent { get; set; }
+        public HtmlString BetaContent { get; set; }
+        public HtmlString AlphaContent { get; set; }
+        public HtmlString StandardDeviationContent { get; set; }
     }
 }

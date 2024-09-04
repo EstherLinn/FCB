@@ -429,6 +429,14 @@ namespace Feature.Wealth.Component.Models.FundSearch
                 /// 熱門商品
                 /// </summary>
                 public static readonly string HotProductags = "{B72C2E97-EB7B-48E3-9268-E9260E0BFE9A}";
+
+                public static readonly string SharpeContent = "{078174AD-EEA2-403F-A361-120F322136A1}";
+
+                public static readonly string BetaContent = "{41E51365-E8E5-4AE6-9F80-BD5C4432FC5B}";
+
+                public static readonly string AlphaContent = "{B948143F-D632-4CC5-AD86-FF6B77162AE5}";
+
+                public static readonly string StandardDeviationContent = "{53D1B3AD-6E5E-4B34-8B00-00137950C121}";
             }
         }
         

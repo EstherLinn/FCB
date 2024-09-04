@@ -828,6 +828,7 @@
 														<div class="c-filterForm" data-filter-group>
 															<div class="c-filterForm__title" data-filter-title>
 																<span>夏普指數</span>
+                                                                <a href="#sharpeContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
 																<div class="s4">(Sharpe)</div>
 															</div>
 															<div class="c-filterForm__value">
@@ -842,6 +843,7 @@
 														<div class="c-filterForm" data-filter-group>
 															<div class="c-filterForm__title" data-filter-title>
 																<span>貝他值</span>
+                                                                <a href="#betaContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
 																<div class="s4">(Beta)</div>
 															</div>
 															<div class="c-filterForm__value">
@@ -856,6 +858,7 @@
 														<div class="c-filterForm" data-filter-group>
 															<div class="c-filterForm__title" data-filter-title>
 																<span>標準差</span>
+                                                                <a href="#standardDeviationContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
 															</div>
 															<div class="c-filterForm__value">
 																<div class="c-sliderBar">
@@ -1236,24 +1239,28 @@
 						<th data-filter-switch-columns="3">
 							<div class="c-table__title">
 								<span>Sharpe</span>
+                                <a href="#sharpeContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
 								<a href="#" class="o-sorting" data-sorting-column="Sharpe"></a>
 							</div>
 						</th>
 						<th data-filter-switch-columns="3">
 							<div class="c-table__title">
 								<span>Beta</span>
+                                <a href="#betaContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
 								<a href="#" class="o-sorting" data-sorting-column="Beta"></a>
 							</div>
 						</th>
 						<th data-filter-switch-columns="3">
 							<div class="c-table__title">
 								<span>Alpha</span>
+                                <a href="#alphaContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
 								<a href="#" class="o-sorting" data-sorting-column="OneYearAlpha"></a>
 							</div>
 						</th>
 						<th data-filter-switch-columns="3">
 							<div class="c-table__title">
 								<span>年化標準差</span>
+                                <a href="#standardDeviationContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
 								<a href="#" class="o-sorting" data-sorting-column="AnnualizedStandardDeviation"></a>
 							</div>
 						</th>
@@ -1675,7 +1682,10 @@
 							<% } %>
 						</td>
 						<td class="c-cardTable__body" data-card-table-width="1/2">
-							<div class="c-cardTable__title" data-length="4">Sharpe</div>
+							<div class="c-cardTable__title" data-length="4">Sharpe
+                                 <a href="#sharpeContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                            </div>
+                           
 							<% if (Sharpe != null) { %>
 							<div class="c-cardTable__content"><%= Sharpe.toFixed(4) %></div>
 							<% } else {%>
@@ -1683,7 +1693,10 @@
 							<% } %>
 						</td>
 						<td class="c-cardTable__body" data-card-table-width="1/2">
-							<div class="c-cardTable__title" data-length="5">Beta</div>
+							<div class="c-cardTable__title" data-length="5">Beta
+                                <a href="#betaContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                            </div>
+                            
 							<% if (Beta != null) { %>
 							<div class="c-cardTable__content"><%= Beta.toFixed(4) %></div>
 							<% } else {%>
@@ -1691,7 +1704,10 @@
 							<% } %>
 						</td>
 						<td class="c-cardTable__body" data-card-table-width="1/2">
-							<div class="c-cardTable__title" data-length="4">Alpha</div>
+							<div class="c-cardTable__title" data-length="4">Alpha
+                                <a href="#alphaContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                            </div>
+                            
 							<% if (OneYearAlpha != null) { %>
 							<div class="c-cardTable__content"><%= OneYearAlpha.toFixed(4) %></div>
 							<% } else {%>
@@ -1699,7 +1715,10 @@
 							<% } %>
 						</td>
 						<td class="c-cardTable__body" data-card-table-width="1/2">
-							<div class="c-cardTable__title" data-length="5">年化標準差</div>
+							<div class="c-cardTable__title" data-length="5">年化標準差
+                                <a href="#standardDeviationContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                            </div>
+                            
 							<% if (AnnualizedStandardDeviation != null) { %>
 							<div class="c-cardTable__content"><%= AnnualizedStandardDeviation.toFixed(4) %></div>
 							<% } else {%>
@@ -1754,6 +1773,47 @@
 		</div>
 	</div>
 </div>
+<div id="sharpeContent" class="c-modal c-modal--sm mfp-hide">
+	<div class="c-modal__wrap">
+		<header class="c-modal__header">
+			<h2 class="c-modal__title">Sharpe</h2>
+		</header>
+		<div class="c-modal__content">
+            <p>@Model.SharpeContent</p>
+		</div>
+	</div>
+</div>
+<div id="betaContent" class="c-modal c-modal mfp-hide">
+	<div class="c-modal__wrap">
+		<header class="c-modal__header">
+            <h2 class="c-modal__title">Beta</h2>
+		</header>
+		<div class="c-modal__content">
+            <p>@Model.BetaContent</p>
+		</div>
+	</div>
+</div>
+<div id="alphaContent" class="c-modal c-modal mfp-hide">
+	<div class="c-modal__wrap">
+		<header class="c-modal__header">
+            <h2 class="c-modal__title">Alpha</h2>
+		</header>
+		<div class="c-modal__content">
+            <p>@Model.AlphaContent</p>
+		</div>
+	</div>
+</div>
+<div id="standardDeviationContent" class="c-modal c-modal mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">標準差</h2>
+        </header>
+        <div class="c-modal__content">
+            <p>@Model.StandardDeviationContent</p>
+        </div>
+    </div>
+</div>
+
 <script>
 	(function ($, window, document, undefined) {
 		function loading() {
