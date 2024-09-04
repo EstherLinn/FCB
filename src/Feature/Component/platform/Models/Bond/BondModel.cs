@@ -25,6 +25,10 @@ namespace Feature.Wealth.Component.Models.Bond
         /// </summary>
         public IEnumerable<string> PaymentFrequencyList { get; set; }
         /// <summary>
+        /// 配息頻率
+        /// </summary>
+        public IEnumerable<string> BondClassList { get; set; }
+        /// <summary>
         /// 發行機構
         /// </summary>
         public IEnumerable<string> IssuerList { get; set; }
@@ -225,6 +229,10 @@ namespace Feature.Wealth.Component.Models.Bond
         /// 漲跌季 (當天參考淨值價-對應上三個月同一日參考申購價)/ 對應上三個月同一日參考申購價x100%
         /// </summary>
         public decimal? UpsAndDownsSeason { get; set; }
+        /// <summary>
+        /// 債券分類
+        /// </summary>
+        public string BondClass { get; set; }
 
         public string DetailLink { get; set; } = BondRelatedLinkSetting.GetBondDetailUrl();
 
@@ -260,6 +268,9 @@ namespace Feature.Wealth.Component.Models.Bond
         //列表頁自動完成用 string
         public string AutoFocusButtonHtml { get; set; }
         public string AutoSubscribeButtonHtml { get; set; }
+
+        public List<string> DocPaths { get; set; } = new List<string>();
+        public string DocString { get; set; }
     }
 
     public class BondHistoryPrice
@@ -284,6 +295,26 @@ namespace Feature.Wealth.Component.Models.Bond
         /// 日期
         /// </summary>
         public string Date { get; set; }
+    }
+
+    public class BondClass
+    {
+        /// <summary>
+        /// ISIN code = v1
+        /// </summary>
+        public string ISINCode { get; set; }
+        /// <summary>
+        /// 第一銀行債券名稱 = v2
+        /// </summary>
+        public string BondName { get; set; }
+        /// <summary>
+        /// 債券分類 = v9
+        /// </summary>
+        public string Class { get; set; }
+        /// <summary>
+        /// 第一銀行債券代碼 = v33
+        /// </summary>
+        public string BondCode { get; set; }
     }
 
     public struct Template
@@ -337,6 +368,11 @@ namespace Feature.Wealth.Component.Models.Bond
             {
                 public static readonly ID TagType = new ID("{DAF9A595-54E6-4BA2-961B-FFD3004F9274}");
             }
+        }
+
+        public readonly struct DocFolder
+        {
+            public static readonly ID Id = new ID("{E2930B39-18A6-4833-9F0C-1D2AA56B0647}");
         }
     }
 }
