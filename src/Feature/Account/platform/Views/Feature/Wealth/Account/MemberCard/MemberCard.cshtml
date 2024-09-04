@@ -155,26 +155,43 @@
                                 btnText = Templates.MemberCard.Fields.LineButtonText.ToString();
                                 break;
                         }
-                        <div class="c-adCard">
-                            <div class="c-adCard__bg">
-                                <img class="u-hidden@lt" src="@(model.ImagePCUrl)" alt="">
-                                <img class="u-hidden@dt-only" src="@(model.ImageMBUrl)" alt="">
-                            </div>
-                            <div class="c-adCard__content">
-                                <div class="c-adCard__title">
-                                    @Html.Sitecore().Field(title, model.DataSource)
-                                </div>
-                                <div class="c-adCard__action">
-                                    @Html.Sitecore().BeginField(btnLink, model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--wt o-btn--thin o-btn--auto u-noShadow" })
-                                    @Html.Sitecore().Field(btnText, model.DataSource)
-                                    @Html.Sitecore().EndField()
-                                </div>
-                            </div>
-                            <div class="c-adCard__deco">
-                                <img src="@(model.ImageCornerUrl)" alt="">
-                            </div>
-                        </div>
+                                    <div class="c-adCard">
+                                        <div class="c-adCard__bg">
+                                            <img class="u-hidden@lt" src="@(model.ImagePCUrl)" alt="">
+                                            <img class="u-hidden@dt-only" src="@(model.ImageMBUrl)" alt="">
+                                        </div>
+                                        <div class="c-adCard__content">
+                                            <div class="c-adCard__title">
+                                                @Html.Sitecore().Field(title, model.DataSource)
+                                            </div>
+                                            <div class="c-adCard__action">
+                                                @Html.Sitecore().BeginField(btnLink, model.DataSource, new { haschildren = true, @class = "o-btn o-btn--primary o-btn--wt o-btn--thin o-btn--auto u-noShadow" })
+                                                @Html.Sitecore().Field(btnText, model.DataSource)
+                                                @Html.Sitecore().EndField()
+                                            </div>
+                                        </div>
+                                        <div class="c-adCard__deco">
+                                            <img src="@(model.ImageCornerUrl)" alt="">
+                                        </div>
+                                    </div>
                     }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="popupRemind" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">理財諮詢提醒</h2>
+        </header>
+        <div class="c-modal__content">
+            @(Model.ScheduleMessage)
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true" data-check-consult>查看預約</a>
                 </div>
             </div>
         </div>
@@ -182,7 +199,26 @@
 </div>
 <script>
     (function ($, window, document, undefined) {
-        //加入class防止麵包屑被背景蓋住
+        let schecduleMsg = "@(Model.ScheduleMessage)";
+        if (schecduleMsg !== "") {
+            // 顯示理財諮詢提醒
+            $(window).on('load.remind', function () {
+                setTimeout(() => {
+                    $.magnificPopup.open({
+                        items:
+                        {
+                            src: '#popupRemind'
+                        }
+                    }, 0);
+                }, 300);
+            });
+            // 查看預約
+            $('[data-check-consult]').on('click.check', function () {
+                let consultlistpanelId = $('[data-consultlist]').parent().attr('data-tab-panel-id');
+                $('[data-tab-target=' + consultlistpanelId + ']').trigger('click');
+            });
+        }
+    //加入class防止麵包屑被背景蓋住
         $('.l-navbar.l-navbar--gn').addClass('has-bg');
         //行動裝置判斷
         if ($(window).width() < 1199) {

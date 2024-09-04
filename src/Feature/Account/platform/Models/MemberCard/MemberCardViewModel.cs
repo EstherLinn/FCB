@@ -10,6 +10,8 @@ namespace Feature.Wealth.Account.Models.MemberCard
     {
         public DateTime? ScheduleDate { get; set; }
         public int ScheduleSpace { get; set; }
+        public string ScheduleMessage { get; set; }
+
         public MemberCardModel MemberCardModel { get; set; }
     }
 }

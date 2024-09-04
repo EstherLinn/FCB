@@ -24,6 +24,16 @@ namespace Feature.Wealth.Account.Controllers
                 MemberRepository memberRepository = new MemberRepository();
                 viewModel.ScheduleDate = memberRepository.GetMemberScheduleDate();
                 viewModel.ScheduleSpace = CalculateDays(viewModel.ScheduleDate);
+                var member = FcbMemberHelper.GetMemberAllInfo();
+
+                if (!member.IsManager && member.IsEmployee)
+                {
+                    viewModel.ScheduleMessage = memberRepository.GetAdvisrorScheduleMessage();
+                }
+                else if(!member.IsManager && !member.IsEmployee)
+                {
+                    viewModel.ScheduleMessage = memberRepository.GetMemberScheduleMessage();
+                }
             }
             return View("~/Views/Feature/Wealth/Account/MemberCard/MemberCard.cshtml", viewModel);
         }
