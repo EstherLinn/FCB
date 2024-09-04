@@ -16,6 +16,7 @@ namespace Feature.Wealth.Component.Repositories
     public class BondRepository
     {
         private readonly IDbConnection _dbConnection = DbManager.Custom.DbConnection();
+        private IList<BondHistoryPrice> _bondHistoryPrices;
 
         public IList<Bond> GetBondList()
         {
@@ -77,6 +78,18 @@ namespace Feature.Wealth.Component.Repositories
 
             var bonds = this._dbConnection.Query<Bond>(sql)?.ToList() ?? new List<Bond>();
 
+            var minDate = bonds
+                .Where(b => string.IsNullOrEmpty(b.Date) == false)
+                .OrderBy(b => b.Date)
+                .Select(b => b.Date).FirstOrDefault();
+
+
+            if (DateTime.TryParse(minDate, out var fourMonthAgo))
+            {
+                fourMonthAgo = fourMonthAgo.AddMonths(-4);
+                this._bondHistoryPrices = GetBondHistoryPriceByDate(fourMonthAgo.ToString("yyyyMMdd"));
+            }
+
             var now = DateTime.Now;
 
             for (int i = 0; i < bonds.Count; i++)
@@ -123,12 +136,14 @@ namespace Feature.Wealth.Component.Repositories
 
                 if (DateTime.TryParse(bonds[i].Date, out var oneMonthAgo))
                 {
-                    bonds[i].UpsAndDownsMonth = GetUpsAndDowns(bonds[i].BondCode, bonds[i].RedemptionFee, oneMonthAgo.ToString("yyyyMMdd"));
+                    oneMonthAgo = oneMonthAgo.AddMonths(-1);
+                    bonds[i].UpsAndDownsMonth = GetUpsAndDowns(bonds[i].BondCode, bonds[i].RedemptionFee, oneMonthAgo.ToString("yyyyMMdd"), false);
                 }
 
                 if (DateTime.TryParse(bonds[i].Date, out var threeMonthAgo))
                 {
-                    bonds[i].UpsAndDownsSeason = GetUpsAndDowns(bonds[i].BondCode, bonds[i].RedemptionFee, threeMonthAgo.ToString("yyyyMMdd"));
+                    threeMonthAgo = threeMonthAgo.AddMonths(-3);
+                    bonds[i].UpsAndDownsSeason = GetUpsAndDowns(bonds[i].BondCode, bonds[i].RedemptionFee, threeMonthAgo.ToString("yyyyMMdd"), false);
                 }
             }
 
@@ -237,24 +252,35 @@ namespace Feature.Wealth.Component.Repositories
                 bond.MinIncrementAmountNumber = 0;
             }
 
-            if(DateTime.TryParse(bond.Date, out var oneMonthAgo))
+            if (DateTime.TryParse(bond.Date, out var oneMonthAgo))
             {
-                bond.UpsAndDownsMonth = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, oneMonthAgo.ToString("yyyyMMdd"));
+                oneMonthAgo = oneMonthAgo.AddMonths(-1);
+                bond.UpsAndDownsMonth = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, oneMonthAgo.ToString("yyyyMMdd"), true);
             }
 
             if (DateTime.TryParse(bond.Date, out var threeMonthAgo))
             {
-                bond.UpsAndDownsSeason = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, threeMonthAgo.ToString("yyyyMMdd"));
+                threeMonthAgo = threeMonthAgo.AddMonths(-3);
+                bond.UpsAndDownsSeason = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, threeMonthAgo.ToString("yyyyMMdd"), true);
             }
 
             return bond;
         }
 
-        private decimal? GetUpsAndDowns(string bondCode, decimal? redemptionFee, string date)
+        private decimal? GetUpsAndDowns(string bondCode, decimal? redemptionFee, string date, bool single)
         {
-            var bondHistoryPrice = GetBondHistoryPrice(bondCode, date);
+            BondHistoryPrice bondHistoryPrice = null;
 
-            if(redemptionFee.HasValue && bondHistoryPrice != null && bondHistoryPrice.RedemptionFee.HasValue)
+            if (single)
+            {
+                bondHistoryPrice = GetBondHistoryPrice(bondCode, date);
+            }
+            else if (this._bondHistoryPrices != null && this._bondHistoryPrices.Count > 0)
+            {
+                bondHistoryPrice = this._bondHistoryPrices.Where(b => b.BondCode == bondCode && int.Parse(b.Date) <= int.Parse(date)).FirstOrDefault();
+            }
+
+            if (redemptionFee.HasValue && bondHistoryPrice != null && bondHistoryPrice.RedemptionFee.HasValue)
             {
                 return (redemptionFee - bondHistoryPrice.RedemptionFee) / bondHistoryPrice.RedemptionFee * 100;
             }
@@ -264,10 +290,15 @@ namespace Feature.Wealth.Component.Repositories
             }
         }
 
+        /// <summary>
+        /// 取得某債券所有歷史價格
+        /// </summary>
+        /// <param name="bondCode">債券代碼</param>
+        /// <returns></returns>
         public IList<BondHistoryPrice> GetBondHistoryPrice(string bondCode)
         {
             string sql = @"SELECT
-                           [BondCode]
+                           SUBSTRING([BondCode], 1, 4) AS [BondCode]
                            ,[Currency]
                            ,[RedemptionFee]
                            ,[SubscriptionFee]
@@ -287,10 +318,16 @@ namespace Feature.Wealth.Component.Repositories
             return bondHistoryPrices;
         }
 
+        /// <summary>
+        /// 取得某債券某一日前最近價格
+        /// </summary>
+        /// <param name="bondCode">債券債券代碼</param>
+        /// <param name="date">日期</param>
+        /// <returns></returns>
         public BondHistoryPrice GetBondHistoryPrice(string bondCode, string date)
         {
             string sql = @"SELECT TOP (1)
-                           [BondCode]
+                           SUBSTRING([BondCode], 1, 4) AS [BondCode]
                            ,[Currency]
                            ,[RedemptionFee]
                            ,[SubscriptionFee]
@@ -305,6 +342,34 @@ namespace Feature.Wealth.Component.Repositories
             bondHistoryPrice.SubscriptionFee = Round2(bondHistoryPrice.SubscriptionFee);
 
             return bondHistoryPrice;
+        }
+
+        /// <summary>
+        /// 取得一定時間內債券價格資料
+        /// </summary>
+        /// <param name="date">日期</param>
+        /// <returns></returns>
+        public IList<BondHistoryPrice> GetBondHistoryPriceByDate(string date)
+        {
+            string sql = @"SELECT
+                           SUBSTRING([BondCode], 1, 4) AS [BondCode]
+                           ,[Currency]
+                           ,[RedemptionFee]
+                           ,[SubscriptionFee]
+                           ,[Date]
+                           FROM [BondHistoryPrice] WITH (NOLOCK)
+                           WHERE [Date] >= @date
+                           ORDER BY Date ASC";
+
+            var bondHistoryPrices = this._dbConnection.Query<BondHistoryPrice>(sql, new { date = date })?.ToList() ?? new List<BondHistoryPrice>();
+
+            for (int i = 0; i < bondHistoryPrices.Count; i++)
+            {
+                bondHistoryPrices[i].RedemptionFee = Round2(bondHistoryPrices[i].RedemptionFee);
+                bondHistoryPrices[i].SubscriptionFee = Round2(bondHistoryPrices[i].SubscriptionFee);
+            }
+
+            return bondHistoryPrices;
         }
 
         public decimal? Round2(decimal? value)
