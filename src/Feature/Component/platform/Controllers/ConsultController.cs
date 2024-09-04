@@ -641,7 +641,6 @@ namespace Feature.Wealth.Component.Controllers
             });
         }
 
-        [HttpPost]
         [IMVPAuthenticationFilter]
         public ActionResult CheckSchedule(string scheduleId, string action, string description)
         {
