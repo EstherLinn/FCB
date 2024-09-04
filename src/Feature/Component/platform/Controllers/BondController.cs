@@ -42,7 +42,7 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     var paths = new List<string>
                     {
-                        doc.Paths.Path
+                        doc.Url()
                     };
 
                     dic_docs.Add(key, paths);
@@ -50,7 +50,7 @@ namespace Feature.Wealth.Component.Controllers
                 else
                 {
                     var paths = dic_docs[key];
-                    paths.Add(doc.Paths.Path);
+                    paths.Add(doc.Url());
                     dic_docs[key] = paths;
                 }
             }
@@ -69,7 +69,7 @@ namespace Feature.Wealth.Component.Controllers
 
                     foreach(var path in bondList[i].DocPaths)
                     {
-                        docString += $@"<a href=""{path}"" target=""_blank"" class=""o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold""></a>";
+                        docString += $@"<a href=""{path}"" target=""_blank"" class=""o-prefixLink o-prefixLink--pdf t-bold""></a>";
                     }
 
                     bondList[i].DocString = docString;
