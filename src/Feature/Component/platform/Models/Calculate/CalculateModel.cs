@@ -24,6 +24,7 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string UnsuccessfulContent { get; set; }
         public string ExpectedReturnRemarks { get; set; }
         public string DefaultRiskAttributes { get; set; }
+        public string RecommendedProductContent { get; set; }
         public string ConservativeRiskImage { get; set; }
         public int? ConservativeRiskStockAllocation { get; set; }
         public int? ConservativeRiskBondAllocation { get; set; }
@@ -34,7 +35,6 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string ConservativeRiskStockAllocationText { get; set; }
         public string ConservativeRiskBondAllocationText { get; set; }
         public string ConservativeRiskCurrencyAllocationText { get; set; }
-        public string ConservativeRiskNotice { get; set; }
         public string RobustRiskImage { get; set; }
         public int? RobustRiskStockAllocation { get; set; }
         public int? RobustRiskBondAllocation { get; set; }
@@ -45,7 +45,6 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string RobustRiskStockAllocationText { get; set; }
         public string RobustRiskBondAllocationText { get; set; }
         public string RobustRiskCurrencyAllocationText { get; set; }
-        public string RobustRiskNotice { get; set; }
         public string PositiveRiskImage { get; set; }
         public int? PositiveRiskStockAllocation { get; set; }
         public int? PositiveRiskBondAllocation { get; set; }
@@ -56,7 +55,6 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string PositiveRiskStockAllocationText { get; set; }
         public string PositiveRiskBondAllocationText { get; set; }
         public string PositiveRiskCurrencyAllocationText { get; set; }
-        public string PositiveRiskNotice { get; set; }
         public string RemoteConsultationSuccessTitle { get; set; }
         public string RemoteConsultationSuccessContent { get; set; }
         public string RemoteConsultationSuccessButtonText { get; set; }

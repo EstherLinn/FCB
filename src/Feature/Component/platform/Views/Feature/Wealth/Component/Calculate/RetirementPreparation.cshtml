@@ -787,16 +787,20 @@
                         </div>
                     </div>
 
-                    <div class="c-section">
-                        <div class="c-warning warningNotice"></div>
-                    </div>
+                    @if (!string.IsNullOrEmpty(Model.RecommendedProductContent))
+                    {
+                        <div class="c-section">
+                            <div class="c-warning tab1warningNotice u-hidden">
+                                @Html.Sitecore().Field(Template.Calculate.Fields.RecommendedProductContent.ToString(), Model.Datasource)
+                            </div>
+                        </div>
+                    }
 
                 </div>
 
                 <!-- 推薦基金 -->
                 <div class="c-section" id="tab1Fund">
                     <div class="c-section__title">推薦基金</div>
-                    <p class="tab1FundTip"></p>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--3rows recommendedFunds">
                             <div class="swiper-wrapper c-swiper__wrapper">
@@ -972,16 +976,20 @@
                         </div>
                     </div>
 
-                    <div class="c-section">
-                        <div class="c-warning warningNotice"></div>
-                    </div>
+                    @if (!string.IsNullOrEmpty(Model.RecommendedProductContent))
+                    {
+                        <div class="c-section">
+                            <div class="c-warning tab2warningNotice u-hidden">
+                                @Html.Sitecore().Field(Template.Calculate.Fields.RecommendedProductContent.ToString(), Model.Datasource)
+                            </div>
+                        </div>
+                    }
 
                 </div>
 
                 <!-- 推薦基金 -->
                 <div class="c-section" id="tab2Fund">
                     <div class="c-section__title">推薦基金</div>
-                    <p class="tab2FundTip"></p>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--3rows recommendedFunds">
                             <div class="swiper-wrapper c-swiper__wrapper">
@@ -1157,16 +1165,20 @@
                         </div>
                     </div>
 
-                    <div class="c-section">
-                        <div class="c-warning warningNotice"></div>
-                    </div>
+                    @if (!string.IsNullOrEmpty(Model.RecommendedProductContent))
+                    {
+                        <div class="c-section">
+                            <div class="c-warning tab3warningNotice u-hidden">
+                                @Html.Sitecore().Field(Template.Calculate.Fields.RecommendedProductContent.ToString(), Model.Datasource)
+                            </div>
+                        </div>
+                    }
 
                 </div>
 
                 <!-- 推薦基金 -->
                 <div class="c-section" id="tab3Fund">
                     <div class="c-section__title">推薦基金</div>
-                    <p class="tab3FundTip"></p>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--3rows recommendedFunds">
                             <div class="swiper-wrapper c-swiper__wrapper">
@@ -1342,16 +1354,20 @@
                         </div>
                     </div>
 
-                    <div class="c-section">
-                        <div class="c-warning warningNotice"></div>
-                    </div>
+                    @if (!string.IsNullOrEmpty(Model.RecommendedProductContent))
+                    {
+                        <div class="c-section">
+                            <div class="c-warning tab4warningNotice u-hidden">
+                                @Html.Sitecore().Field(Template.Calculate.Fields.RecommendedProductContent.ToString(), Model.Datasource)
+                            </div>
+                        </div>
+                    }
 
                 </div>
 
                 <!-- 推薦基金 -->
                 <div class="c-section" id="tab4Fund">
                     <div class="c-section__title">推薦基金</div>
-                    <p class="tab4FundTip"></p>
                     <div class="c-section__content">
                         <div class="swiper c-swiper c-swiper--3rows recommendedFunds">
                             <div class="swiper-wrapper c-swiper__wrapper">
@@ -3724,25 +3740,22 @@
 
             //#region 更新風險屬性相關內容
             function UpdateRiskAttributesContent(risk) {
-                let imgSrc, warningText;
+                let imgSrc;
 
                 switch (risk) {
                     case "1":
                         defaultRiskAttributes = 2;
                         imgSrc = '@Model.ConservativeRiskImage';
-                        warningText = '@Model.ConservativeRiskNotice';
                         assetsData = conservativeAssetsData;
                         break;
                     case "2":
                         defaultRiskAttributes = 5;
                         imgSrc = '@Model.RobustRiskImage'
-                        warningText = '@Model.RobustRiskNotice';
                         assetsData = robustAssetsData;
                         break;
                     case "3":
                         defaultRiskAttributes = 7;
                         imgSrc = '@Model.PositiveRiskImage'
-                        warningText = '@Model.PositiveRiskNotice';
                         assetsData = positiveAssetsData;
                         break;
                     default:
@@ -3751,7 +3764,6 @@
                 }
 
                 $('.l-riskCard__charts img').attr('src', imgSrc);
-                $('.warningNotice').text(warningText.replace(/&#160;/g, ' '));
             }
             //#endregion
 
@@ -3862,12 +3874,12 @@
                                                         <div class="c-cardFund__trend">
                                                             <div class="c-cardFund__rate">
                                                                 <span class="t-small">
-                                                                    <span class="t-fall">月報酬率</span>
-                                                                    <span class="o-fall o-fall--sm">0%</span>
+                                                                    <span class="t-rise">月報酬率</span>
+                                                                    <span class="o-rise o-rise--sm">0%</span>
                                                                 </span>
                                                             </div>
                                                             <div class="c-cardFund__charts">
-                                                                <div class="o-charts o-charts--fall" data-chart="mini"></div>
+                                                                <div class="o-charts o-charts--rise" data-chart="mini"></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -3900,7 +3912,11 @@
 
                 var dataIsFormSitecore = fundData.some(item => item.DataIsFormSitecore);
 
-                $(`.${tab}FundTip`).text(dataIsFormSitecore ? '目前依績效評估，暫時無符合您需求之推薦標的，建議可參考下列本行推薦基金標的。' : '');
+                if (dataIsFormSitecore) {
+                    $(`.${tab}warningNotice`).removeClass('u-hidden');
+                } else {
+                    $(`.${tab}warningNotice`).addClass('u-hidden');
+                }
 
                 const $swiperWrapper = event;
                 $swiperWrapper.empty();
@@ -3910,7 +3926,7 @@
                 fundData.forEach((fund, index) => {
                     let SubscribeButtonHtml = '';
 
-                    if (fund.OneMonthReturnOriginalCurrency > 0) {
+                    if (fund.OneMonthReturnOriginalCurrency >= 0) {
                         style1 = "t-rise";
                         style2 = "o-rise o-rise--sm";
                         style3 = "o-charts--rise";
@@ -4032,7 +4048,7 @@
                 EtfData.forEach((Etf, index) => {
                     let SubscribeButtonHtml = '';
 
-                    if (Etf.MonthlyReturnNetValueOriginalCurrency > 0) {
+                    if (Etf.MonthlyReturnNetValueOriginalCurrency >= 0) {
                         style1 = "t-rise";
                         style2 = "o-rise o-rise--sm";
                         style3 = "o-charts--rise";
