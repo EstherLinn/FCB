@@ -24,6 +24,24 @@ namespace Feature.Wealth.Component.Controllers
             return View("/Views/Feature/Wealth/Component/Bond/Bond.cshtml", CreateModel(item, bondList));
         }
 
+        public ActionResult UpDownRank()
+        {
+            var item = RenderingContext.CurrentOrNull?.Rendering.Item;
+
+            var bondList = this._bondRepository.GetBondList();
+
+            return View("/Views/Feature/Wealth/Component/Bond/UpDownRank.cshtml", CreateModel(item, bondList));
+        }
+
+        public ActionResult BondPrice()
+        {
+            var item = RenderingContext.CurrentOrNull?.Rendering.Item;
+
+            var bondList = this._bondRepository.GetBondList();
+
+            return View("/Views/Feature/Wealth/Component/Bond/BondPrice.cshtml", CreateModel(item, bondList));
+        }
+
         protected BondModel CreateModel(Item item, IList<Bond> bondList)
         {
             var hotKeywordTags = ItemUtils.GetMultiListValueItems(item, Template.Bond.Fields.HotKeyword);
@@ -76,8 +94,6 @@ namespace Feature.Wealth.Component.Controllers
                 }
 
             }
-
-
 
             var model = new BondModel
             {

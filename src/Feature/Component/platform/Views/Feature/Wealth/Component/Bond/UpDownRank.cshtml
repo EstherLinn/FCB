@@ -1,0 +1,703 @@
+﻿@using Feature.Wealth.Component.Models.Bond
+@model BondModel
+
+@if (Model == null)
+{
+    return;
+}
+
+<div class="l-mainstage">
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">漲跌排行</h1>
+        </div>
+    </div>
+</div>
+
+<div class="l-stage">
+    <div class="l-wrap">
+        <div class="c-tab c-tab--wide" data-filter-empty="true" style="display:none;">
+            <div class="c-tab__panel is-active">
+                <div class="c-section">
+                    <div class="c-section__content">
+                        <div class="c-empty">
+                            <div class="c-empty__img">
+                                <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                            </div>
+                            <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="l-flex u-flex-col u-flex-gap-sm@lt" data-filter-empty="false" style="display:none;">
+            <div class="l-flex__item">
+                <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                    <div class="l-flex__item u-right u-hidden@dt-only">
+                        <div class="o-sortingbox">
+                            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="bondTable">
+                                <option value="">排序</option>
+                                <option value="債券名稱高至低" data-sorting-column="FullName" data-sorting-class="is-desc">債券名稱高至低</option>
+                                <option value="債券名稱低至高" data-sorting-column="FullName" data-sorting-class="is-asc">債券名稱低至高</option>
+                                <option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
+                                <option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
+                                <option value="票面利率高至低" data-sorting-column="InterestRate" data-sorting-class="is-desc">票面利率高至低</option>
+                                <option value="票面利率低至高" data-sorting-column="InterestRate" data-sorting-class="is-asc">票面利率低至高</option>
+                                <option value="到期日高至低" data-sorting-column="MaturityDate" data-sorting-class="is-desc">到期日高至低</option>
+                                <option value="到期日低至高" data-sorting-column="MaturityDate" data-sorting-class="is-asc">到期日低至高</option>
+                                <option value="殖利率高至低" data-sorting-column="YieldRateYTM" data-sorting-class="is-desc">殖利率高至低</option>
+                                <option value="殖利率低至高" data-sorting-column="YieldRateYTM" data-sorting-class="is-asc">殖利率低至高</option>
+                                <option value="參考申購價高至低" data-sorting-column="SubscriptionFee" data-sorting-class="is-desc">參考申購價高至低</option>
+                                <option value="參考申購價低至高" data-sorting-column="SubscriptionFee" data-sorting-class="is-asc">參考申購價低至高</option>
+                                <option value="漲跌月高至低" data-sorting-column="UpsAndDownsMonth" data-sorting-class="is-desc">漲跌月高至低</option>
+                                <option value="漲跌月低至高" data-sorting-column="UpsAndDownsMonth" data-sorting-class="is-asc">漲跌月低至高</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="l-flex__item">
+                <div class="l-table">
+                    <table class="c-table@dt-only c-cardTable@lt" data-table-name="bondTable" id="bondTable">
+                        <colgroup>
+                            <col style="width: auto;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                            <col style="width: 1%;">
+                        </colgroup>
+                        <thead>
+                            <tr class="u-nowrap">
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>債券名稱</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="FullName"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>幣別</span>
+                                        <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>票面利率</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="InterestRate"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>到期日</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="MaturityDate"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>殖利率</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="YieldRateYTM"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>參考申購價<br />(含前手息)<br />(報價日期)</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="SubscriptionFee"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>漲跌月%</span>
+                                        <a href="#" class="o-sorting" data-sorting-column="UpsAndDownsMonth"></a>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>英文公開說明書</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>關注</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>申購</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="bondTBody"></tbody>
+                    </table>
+                    @{
+                        Html.RenderPartial("~/Views/Feature/Wealth/Component/Partial/_Pagination.cshtml");
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<template id="tmplKeywordNotFound">
+    <div class="c-empty">
+        <div class="c-empty__img">
+            <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
+        </div>
+        <div class="c-empty__desc">哎呀！沒找到耶...<br>試試看其他關鍵字吧</div>
+    </div>
+</template>
+
+<script id="template" type="text/html">
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+        <td class="c-cardTable__top"></td>
+        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+            <div class="c-cardTable__content">
+                <div class="l-target">
+                    <div class="l-target__name">
+                        <a href="<%= DetailLink %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FullName %></a>
+                    </div>
+                    <% if (Discount != null && Discount.length > 0) { %>
+                        <div class="l-target__additional">
+                            <ul class="l-tag">
+                                <% for (var i = 0; i < Discount.length; i++) { %>
+                                    <li class="l-tag__item">
+                                        <span class="o-tag"><%= Discount[i] %></span>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">
+                幣別
+                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+            </div>
+            <div class="c-cardTable__content"><a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= CurrencyName %></a></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">票面利率</div>
+            <div class="c-cardTable__content">
+                <% if (typeof InterestRate == "number" && !isNaN(InterestRate)) { %>
+                    <span><%= InterestRate.toFixed(2) %>%</span>
+                <% } else { %>
+                    <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">到期日</div>
+            <div class="c-cardTable__content"><%= MaturityDate %></div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">殖利率</div>
+            <div class="c-cardTable__content">
+                <% if (typeof InterestRate == "number" && !isNaN(YieldRateYTM)) { %>
+                    <span><%= YieldRateYTM.toFixed(2) %>%</span>
+                <% } else { %>
+                    <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">參考申購價<br />(含前手息)<br />(報價日期)</div>
+            <div class="c-cardTable__content">
+                <% if (typeof SubscriptionFee == "number" && !isNaN(SubscriptionFee)) { %>
+                    <span><%= SubscriptionFee.toFixed(2) %></span>
+                <% } else { %>
+                    <span>-</span>
+                <% } %>
+                <br><span class="t-date"><%= Date %></span>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">漲跌月%</div>
+            <div class="c-cardTable__content">
+                <% if (typeof UpsAndDownsMonth == "number" && !isNaN(UpsAndDownsMonth) && UpsAndDownsMonth > 0) { %>
+                    <span class="o-rise"><%= UpsAndDownsMonth.toFixed(2) %>%</span>
+                <% } else if (typeof UpsAndDownsMonth == "number" && !isNaN(UpsAndDownsMonth) && UpsAndDownsMonth < 0) { %>
+                    <span class="o-fall"><%= Math.abs(UpsAndDownsMonth).toFixed(2) %>%</span>
+                <% } else if (typeof UpsAndDownsMonth == "number" && !isNaN(UpsAndDownsMonth) && UpsAndDownsMonth == 0) { %>
+                    <span><%= Math.abs(UpsAndDownsMonth).toFixed(2) %>%</span>
+                <% } else { %>
+                    <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">英文公開說明書</div>
+            <div class="c-cardTable__content">
+                <%= DocString %>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        <% if (OpenToPublic == 'Y' && Listed == 'Y') { %>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <%= FocusButtonHtml %>
+                    </li>
+                </ul>
+            </div>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+                <%= SubscribeButtonHtml %>
+            </div>
+        </td>
+        <% } else { %>
+        <td class="c-cardTable__footer" data-card-table-width="1/1">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <%= FocusButtonHtml %>
+                    </li>
+                </ul>
+            </div>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+            </div>
+        </td>
+        <% } %>
+    </tr>
+</script>
+
+<script type="text/javascript">
+    const bondList = @(Model.BondHtmlString);
+
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+
+            function loading() {
+                // 開啟loading方式:
+                window.loading('show');
+                setTimeout(() => {
+                    // 載入完成需將loading關閉
+                    // 關閉loading方式:
+                    window.loading('hide');
+                }, 300);
+            }
+
+            $('[id="total"]').text(bondList.length);
+            $('[id="total-wt"]').text(bondList.length);
+
+            var fjs = FilterJS(bondList, '#bondTBody', {
+                template: '#template',
+                criterias: [
+                    { field: 'CurrencyName', ele: '#uid-criteria-currencyPair :checkbox' },
+                    { field: 'CurrencyName', ele: '#uid-criteria-currencyPair :checkbox', all: 'all', selector: ':not(:checked)' },
+                    { field: 'PaymentFrequencyName', ele: '#uid-criteria-frequency :checkbox' },
+                    { field: 'PaymentFrequencyName', ele: '#uid-criteria-frequency :checkbox', all: 'all', selector: ':not(:checked)' },
+                    { field: 'BondClass', ele: '#uid-criteria-bondclass :checkbox' },
+                    { field: 'BondClass', ele: '#uid-criteria-bondclass :checkbox', all: 'all', selector: ':not(:checked)' },
+                    { field: 'Issuer', ele: '#uid-criteria-issuer :checkbox' },
+                    { field: 'Issuer', ele: '#uid-criteria-issuer :checkbox', all: 'all', selector: ':not(:checked)' },
+                    { field: 'MaturityYear', ele: '[data-slider-val="maturityYear"]', type: 'range', delimiter: ',' },
+                    { field: 'YieldRateYTM', ele: '[data-slider-val="yieldRateYTM"]', type: 'range', delimiter: ',' },
+                    { field: 'InterestRate', ele: '[data-slider-val="interestRate"]', type: 'range', delimiter: ',' },
+                    { field: 'MinIncrementAmountNumber', ele: '[data-slider-val="minIncrementAmount"]', type: 'range', delimiter: ',' },
+                ],
+                callbacks: {
+                    onFilterSelect: function (obj) {
+                        if (obj.criteria.type === 'range') {
+                            if (obj.values[0] !== obj.values[0]) {
+                                obj.values[0] = -9999999999;
+                            }
+                            if (obj.values[1] !== obj.values[1]) {
+                                obj.values[1] = 9999999999;
+                            }
+                        }
+                    },
+                    afterFilter: function (result) {
+                        let isEmpty = result.length == 0;
+                        $(`[data-filter-empty=${isEmpty}]`).show();
+                        $(`[data-filter-empty=${!isEmpty}]`).hide();
+
+                        $('[id="uid-total"]').text(result.length);
+
+                        window.loading('hide');
+                    },
+                    afterPagination: function () {
+                        $('[data-popup]').magnificPopup();
+                        $('[eh-compare]').trigger('exec');
+                        $('[eh-focus]').trigger('exec');
+                        $('[eh-subscription-type]').trigger('exec');
+                    }
+                },
+                search: {
+                    ele: '#keyword',
+                    fields: ['BondCode', 'BondName'],
+                    start_length: 2,
+                    bindEvent: false,
+                    multi: function () {
+                        let texts = [];
+                        $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                            let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                            let text = matches && matches[1];
+                            texts.push(text);
+                        });
+
+                        return texts;
+                    }
+                },
+                order: {
+                    default_sort: 'asc',
+                    sorts: [
+                        { field: 'group1', ele: 'select[data-sorting-linkto="bondTable"]' }
+                    ],
+                    onSortEvent: function (f, e) {
+                        let $self = $(this);
+                        if (e.type === 'click') {
+
+                        } else if (e.type === 'change') {
+                            let $selected = $self.find(':selected');
+                            let field = $selected.data('sorting-column');
+                            let order = $selected.data('sorting-class');
+                            f.field = field;
+                            if (!!order) {
+                                if (order === 'is-desc') {
+                                    f.order = 'desc';
+                                } else if (order === 'is-asc') {
+                                    f.order = 'asc';
+                                }
+                            } else {
+                                f.order = f.order === 'desc' ? 'asc' : 'desc';
+                            }
+                        }
+                    },
+                },
+                pagination: {
+                    //headerView: '#uid-filter-header',
+                    container: '#uid-pagination',
+                    paginationView: '#uid-template-pagination',
+                    visiblePages: 5,
+                    perPage: {
+                        values: [10, 50, 100, bondList.length],
+                        container: '#uid-perPage',
+                        perPageView: '#uid-template-perPage'
+                    },
+                    onPagination: function () {
+                    }
+                }
+            });
+
+            fjs.addCriteria({ field: 'HotKeywordTags', ele: '#hotkeywordtags input:checkbox' });
+            fjs.addCriteria({ field: 'HotProductTags', ele: '#hotproducttags input:checkbox' });
+
+            fjs.bindEvent('[data-filter-reset]', 'click.reset');
+            fjs.bindEvent('[data-tag-close]', 'click.tag');
+            fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+            $('[data-keyword-input]').on('keypress.loading', function (e) {
+                if (e.which === 13 && !!$(this).val().toString().trim()) {
+                    $('[data-keyword-submit]').trigger('click.loading');
+                }
+            });
+
+            fjs.filter();
+
+            function fnScrollUp() {
+                loading();
+                $('#bondTable').scrollPosition('scroll');
+            }
+
+            function fnScrollUpPageTo1() {
+                loading();
+                $('#bondTable').scrollPosition('scroll');
+                fjs.paginator.setCurrentPage(1);
+            }
+
+            let $containgerPagination = $('#uid-pagination');
+            $containgerPagination.on('click', '[data-page]', fnScrollUp);
+            $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                if (e.which === 13) {
+                    fnScrollUp();
+                }
+            });
+            $('#uid-view-perPage').on('change.pagesize', function () {
+                fnScrollUp();
+                fjs.paginator.setCurrentPage(1);
+            }).sizebox();
+            $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+            $('[data-keyword-submit]').on('click.loading', function () {
+                if (!!$('[data-keyword-input]').val().toString().trim()) {
+                    loading();
+                    insertKeywords();
+                }
+            });
+
+            $(function () {
+                // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
+                $('#keyword').autocomplete({
+                    noCache: true,
+                    minChars: 0,
+                    containerClass: 'autocomplete-suggestions autocomplete-suggestions--keyword',
+                    maxHeight: 'auto',
+                    zIndex: 5,
+                    preserveInput: true,
+                    showNoSuggestionNotice: true,
+                    noSuggestionNotice: $('#tmplKeywordNotFound').html(),
+                    lookup: function (query, done) {
+                        query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
+                        if (query.length == 0) {
+                            result = bondList.slice(0, 5);
+                        } else {
+                            result = bondList.filter(function (item) {
+                                return new RegExp(query, 'gi').test(item.value);
+                            }).slice(0, 5);
+                        }
+                        done({
+                            suggestions: result
+                        });
+                    },
+                    onSearchComplete: function (query, suggestions) {
+                        var autocomplete = $(this).autocomplete();
+                        var container = autocomplete.suggestionsContainer;
+                        var $this = $(this);
+
+                        // 取消套件預設 blur 事件會關閉 suggestions container
+                        $this.off('blur.autocomplete');
+
+                        // 綁定 window click 事件，點擊頁面其他的地方時可關閉 suggestions container
+                        if (autocomplete.isRegisteGlobalEvent != true) {
+                            $(window).on('click.autocomplete', {
+                                source: this
+                            }, e => {
+                                if (e.target != e.data.source) {
+                                    autocomplete.hide();
+                                }
+                            });
+                            autocomplete.isRegisteGlobalEvent = true;
+                        }
+
+                        // 綁定 like icon 的互動功能
+                        $(container).find('[data-ia]').interactive();
+                        // 綁定 like icon 的彈跳登入畫面
+                        $(container).find('[data-popup]').magnificPopup();
+                        $(container).find('[eh-compare]').trigger('exec');
+                        $(container).find('[eh-focus]').trigger('exec');
+                        $(container).find('[eh-subscription-type]').trigger('exec');
+                    },
+                    formatResult: function (suggestion, currentValue) {
+                        let detailUrl = suggestion.DetailLink ? suggestion.DetailLink : '#';
+
+                        // like 按鈕
+                        let likeWord = '加入關注|取消關注';
+                        let $like = `<a ${suggestion.AutoFocusButtonHtml}></a>`;
+
+                        // 申購按鈕
+                        let $purchase = (suggestion.OpenToPublic == 'Y' && suggestion.Listed == 'Y') ?
+                            `<div class="c-itemKeyword__actions"><a ${suggestion.AutoSubscribeButtonHtml}>申購</a></div>` : '';
+
+                        return `<div class="c-itemKeyword">
+                                    <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                        <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                    </a>
+                                    <div class="c-itemKeyword__collections">${$like}</div>
+                                    ${$purchase}
+                                </div>`;
+                    }
+                });
+            });
+
+            // table 排序功能
+            $('.o-sorting').on('click.sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                window.loading('show');
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                var tableName = $(this).closest('[data-table-name]').data('table-name');
+                var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+                var sortingColumn = $(this).data('sorting-column');
+                $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+                $sortingbox.trigger('change');
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
+            });
+
+            // 手機版分頁筆數功能
+            $('[data-sortingbox="true"]').on('change.sorting', function (e) {
+                // 呼叫 loading
+                window.loading('show');
+                var sorting = $(this).val();
+                var $linkTable = $(`[data-table-name="${$(this).data('sorting-linkto')}"]`);
+                var sortingColumn = $('option:selected', this).data('sorting-column');
+                var orderby = $('option:selected', this).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                console.log(`排序：${sorting}`);
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
+            });
+
+            // 分頁筆數功能
+            $('[data-sizebox="true"]').on('change.pagesize', function (e) {
+                // 呼叫 loading
+                window.loading('show');
+                var size = $(this).val();
+                console.log(`每頁顯示${size}筆`);
+
+                // 調整分頁
+                var $parentWrap = $(this).closest('.l-pagination');
+                var dataLength = parseInt($parentWrap.attr('data-length'));
+                $parentWrap.find('.l-pagination__switch').toggleClass('u-hidden', size === 'all');
+                if (size !== 'all') {
+                    var total = Math.ceil(dataLength / size);
+                    $parentWrap.find('[data-total]').attr('data-total', total);
+                    $parentWrap.find('.o-pagination__total').text(total);
+                    $parentWrap.find('.o-pagination__no').val(1);
+                    $parentWrap.find('.o-pagination__prev').addClass('is-disabled');
+                    $parentWrap.find('.o-pagination__next').toggleClass('is-disabled', total === 1);
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    window.loading('hide');
+                }, 300);
+            });
+
+            var urlParams = new URLSearchParams(window.location.search);
+            var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('word')));
+            var hotkeyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('hotword')));
+            var hotproduct = DOMPurify.sanitize(decodeURIComponent(urlParams.get('hotproduct')));
+
+            if (keyword && keyword != "null") {
+                $('#keyword').val(keyword);
+                setTimeout(() => {
+                    $('[data-keyword-submit]').trigger('click');
+                }, 300);
+            }
+            else if (hotkeyword && hotkeyword != "null") {
+                $("#hotkeyword-" + hotkeyword).trigger('click');
+            }
+            else if (hotproduct && hotproduct != "null") {
+                $("#hotproduct-" + hotproduct).trigger('click');
+            }
+
+            function initBind() {
+                // 拉霸
+                $('[data-slider-bar="maturityYear"]').sliderBar({
+                    start: [-5, 1000],
+                    connect: true,
+                    range: {
+                        'min': [-5, 5],
+                        '20%': [0, 5],
+                        '40%': [5, 5],
+                        '60%': [10, 10],
+                        '80%': [20, 980],
+                        'max': 1000
+                    },
+                    pips: {
+                        mode: 'positions',
+                        values: [0, 20, 40, 60, 80, 100],
+                        density: -1,
+                        format: wNumb({
+                            suffix: '年'
+                        })
+                    }
+                });
+
+                $('[data-slider-bar="yieldRateYTM"]').sliderBar({
+                    start: [-5, 1000],
+                    connect: true,
+                    range: {
+                        'min': [-5, 5],
+                        '20%': [0, 3],
+                        '40%': [3, 2],
+                        '60%': [5, 2],
+                        '80%': [7, 993],
+                        'max': 1000
+                    },
+                    pips: {
+                        mode: 'positions',
+                        values: [0, 20, 40, 60, 80, 100],
+                        density: -1,
+                        format: wNumb({
+                            suffix: '%'
+                        })
+                    }
+                });
+
+                $('[data-slider-bar="interestRate"]').sliderBar({
+                    start: [-5, 1000],
+                    connect: true,
+                    range: {
+                        'min': [-5, 5],
+                        '20%': [0, 3],
+                        '40%': [3, 2],
+                        '60%': [5, 2],
+                        '80%': [7, 993],
+                        'max': 1000
+                    },
+                    pips: {
+                        mode: 'positions',
+                       values: [0, 20, 40, 60, 80, 100],
+                        density: -1,
+                        format: wNumb({
+                            suffix: '%'
+                        })
+                    }
+                });
+                
+                $('[data-slider-bar="minIncrementAmount"]').sliderBar({
+                    start: [-5, 100000],
+                    connect: true,
+                    range: {
+                        'min': [-5, 5],
+                        '20%': [0, 0.2],
+                        '40%': [0.2, 0.8],
+                        '60%': [1, 19],
+                        '80%': [20, 9980],
+                        'max': 10000
+                    },
+                    pips: {
+                        mode: 'positions',
+                             values: [0, 20, 40, 60, 80, 100],
+                        density: -1,
+                        format: wNumb({
+                            suffix: '萬'
+                        })
+                    }
+                });
+            }
+
+            initBind();
+        });
+    })(jQuery, window, document);
+</script>
