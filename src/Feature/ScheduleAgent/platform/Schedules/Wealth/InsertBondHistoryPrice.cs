@@ -5,6 +5,7 @@ using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -24,8 +25,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsvNotTXT<BondHistoryPrice>(filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[BondHistoryPrice]", filename);
+                        var basic = (IList<BondHistoryPrice>)await etlService.ParseCsvNotTXT<BondHistoryPrice>(filename);
+                        _repository.BulkInsertToEncryptedDatabase(basic, "[BondHistoryPrice]", filename);
                         etlService.FinishJob(filename);
                     }
                     catch (Exception ex)

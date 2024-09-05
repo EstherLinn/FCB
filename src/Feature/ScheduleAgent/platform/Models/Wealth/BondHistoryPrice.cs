@@ -18,10 +18,10 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         public string Currency { get; set; }
 
         [Index(2)]
-        public decimal? RedemptionFee { get; set; }
+        public decimal? SubscriptionFee { get; set; }
 
         [Index(3)]
-        public decimal? SubscriptionFee { get; set; }
+        public decimal? RedemptionFee { get; set; }
 
         [Index(4)]
         public string Date { get; set; }
