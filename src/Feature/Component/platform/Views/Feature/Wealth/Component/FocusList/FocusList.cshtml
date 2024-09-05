@@ -22,6 +22,12 @@
                         <span class="c-tab__num" id="foreignStockTrackTotal">0</span>
                     </a>
                 </li>
+            <li>
+                <a href="#" class="c-tab__item " target="_self" title="國外債卷" data-tab-target="tab-1-4">
+                    國外債卷
+                    <span class="c-tab__num" id="foreignBondTrackTotal">0</span>
+                </a>
+            </li>
             </ul>
         </div>
         <div class="c-tab__panel is-active" data-tab-panel-id="tab-1-1">
@@ -32,6 +38,9 @@
         </div>
         <div class="c-tab__panel" data-tab-panel-id="tab-1-3">
             @Html.Partial("~/Views/Feature/Wealth/Component/FocusList/_ForeignStockList.cshtml")
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-1-4">
+            @Html.Partial("~/Views/Feature/Wealth/Component/FocusList/_ForeignBondList.cshtml")
         </div>
     </div>
 

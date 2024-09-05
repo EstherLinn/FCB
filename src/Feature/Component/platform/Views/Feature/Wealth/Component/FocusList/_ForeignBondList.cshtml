@@ -1,0 +1,276 @@
+﻿@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.Bond
+@using Feature.Wealth.Component.Models.Invest
+@{
+    var searchUrl = BondRelatedLinkSetting.GetBondSearchUrl();
+    var detailUrl = BondRelatedLinkSetting.GetBondDetailUrl();
+}
+
+<div class="l-flex u-flex-col u-flex-gap-xs" data-nofocusforeignBond>
+    <div class="l-flex__item">
+        <div class="c-empty">
+            <div class="c-empty__img">
+                <img src="~/themes/images/lions/lion-compare.svg" alt="">
+            </div>
+            <div class="c-empty__desc">目前還沒關注任何國外債卷</div>
+        </div>
+    </div>
+    <div class="l-flex__item u-center">
+        <a href="@searchUrl" class="o-btn o-btn--secondary o-btn--sm o-btn--flat">國外債卷搜尋</a>
+    </div>
+</div>
+
+<div class="l-flex u-flex-col u-flex-gap-sm u-hidden" data-focusforeignBond>
+    <div class="l-flex__item u-right u-hidden@dt-only">
+        <div class="o-sortingbox">
+            <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+            <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="foreignBondListTable" id="uid-foreignBond-sortbox">
+                <option value="">排序</option>
+                <option value="國外債券名稱高至低" data-sorting-column="BondCode" data-sorting-class="is-desc">國外債券名稱高至低</option>
+                <option value="國外債券名稱低至高" data-sorting-column="BondCode" data-sorting-class="is-asc">國外債券名稱低至高</option>
+                <option value="配息頻率高至低" data-sorting-column="PaymentFrequency" data-sorting-class="is-desc">配息頻率高至低</option>
+                <option value="配息頻率低至高" data-sorting-column="PaymentFrequency" data-sorting-class="is-asc">配息頻率低至高</option>
+                <option value="到期日近至遠" data-sorting-column="MaturityDate" data-sorting-class="is-desc">到期日近至遠</option>
+                <option value="到期日遠至近" data-sorting-column="MaturityDate" data-sorting-class="is-asc">到期日遠至近</option>
+                <option value="參考申購價(含前手息)高至低" data-sorting-column="SubscriptionFee" data-sorting-class="is-desc">參考申購價(含前手息)高至低</option>
+                <option value="參考申購價(含前手息)低至高" data-sorting-column="SubscriptionFee" data-sorting-class="is-asc">參考申購價(含前手息)低至高</option>
+                <option value="報價日期高至低" data-sorting-column="Date" data-sorting-class="is-desc">報價日期高至低</option>
+                <option value="報價日期低至高" data-sorting-column="Date" data-sorting-class="is-asc">報價日期低至高</option>
+                <option value="漲跌月高至低" data-sorting-column="UpsAndDownsMonth" data-sorting-class="is-desc">漲跌月高至低</option>
+                <option value="漲跌月低至高" data-sorting-column="UpsAndDownsMonth" data-sorting-class="is-asc">漲跌月低至高</option>
+                <option value="漲跌季高至低" data-sorting-column="UpsAndDownsSeason" data-sorting-class="is-desc">漲跌季高至低</option>
+                <option value="漲跌季低至高" data-sorting-column="UpsAndDownsSeason" data-sorting-class="is-asc">漲跌季低至高</option>
+            </select>
+        </div>
+    </div>
+    <div class="l-flex__item">
+        <div class="l-table">
+            <table class="c-table@dt-only c-cardTable@lt" data-table-name="foreignBondListTable" id="foreignBondTable">
+                <colgroup>
+                    <col style="width: auto;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                    <col style="width: 1%;">
+                </colgroup>
+                <thead>
+                    <tr class="u-nowrap">
+                        <th>
+                            <div class="c-table__title">
+                                <span>國外債券名稱</span>
+                                <!-- .is-asc: 升冪 -->
+                                <!-- .is-desc: 降冪 -->
+                                <a href="#" class="o-sorting" data-sorting-column="BondCode"></a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>配息頻率</span>
+                                <a href="#" class="o-sorting" data-sorting-column="PaymentFrequency"></a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>到期日</span>
+                                <a href="#" class="o-sorting" data-sorting-column="MaturityDate"></a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>參考申購價</br>(含前手息)</span>
+                                <a href="#" class="o-sorting" data-sorting-column="SubscriptionFee"></a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>報價日期</span>
+                                <a href="#" class="o-sorting" data-sorting-column="Date"></a>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>漲跌月%</span>
+                                <a href="#" class="o-sorting" data-sorting-column="UpsAndDownsMonth"></a>
+                            </div>
+                        </th>
+                        <th >
+                            <div class="c-table__title"+>
+                                <span>漲跌季%</span>
+                                <a href="#" class="o-sorting" data-sorting-column="UpsAndDownsSeason"></a>
+                            </div>
+                        </th> 
+                        <th>
+                            <div class="c-table__title">
+                                <span>關注</span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="c-table__title">
+                                <span>申購</span>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="uid-foreignBond-fjs"></tbody>
+                <script id="uid-foreignBond-template" type="text/html">
+                    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+                        <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+                        <td class="c-cardTable__top"></td>
+                        <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+                        <!-- .u-wrap@dt-only: 桌機版(@@desktop)自動折行 -->
+                        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+                            <div class="c-cardTable__content">
+                                <div class="l-target">
+                                    <div class="l-target__name">
+                                        <a href="@(detailUrl)?id=<%= BondCode %>" target="_blank" data-id="<%= BondCode %>" class="o-contentLink t-bold u-ellipsis-2"><%= FullName %></a>
+                                    </div>
+                                    <% if (Tags!=null) { %>
+                                    <div class="l-target__additional">
+                                        <ul class="l-tag">
+                                            <% for(var i = 0; i < Tags.length; i++ ) { %>
+                                            <li class="l-tag__item">
+                                                <a href="#" class="o-tag"><%= Tags[i] %></a>
+                                            </li>
+                                            <% } %>
+                                        </ul>
+                                    </div>
+                                    <% } %>
+                                    <div class="l-target__additional">
+                                        <div class="t-date" eh-focus-id="<%= BondCode %>" data-eh="focusdate-init" eh-focus-date></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+                    <td class="c-cardTable__space"></td>
+                    <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+                    <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                        <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                        <div class="c-cardTable__title" data-length="5">配息頻率</div>
+                         <% if (PaymentFrequencyName != null) { %>
+                        <div class="c-cardTable__content"><%= PaymentFrequencyName %></div>
+                        <% } else {%>
+                        <span>-</span>
+                        <% } %>
+                    </td>
+                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                        <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                        <div class="c-cardTable__title" data-length="4">到期日</div>
+                        <% if (MaturityDate != null) { %>
+                        <div class="c-cardTable__content"><%= MaturityDate %></div>
+                        <% } else {%>
+                        <span>-</span>
+                        <% } %>
+                    </td>
+                    <td class="c-cardTable__body" data-card-table-width="1/2">
+                         <div class="c-cardTable__title" data-length="5">參考申購價(含前手息)</div>
+                        <div class="c-cardTable__content">
+                             <% if (SubscriptionFee != null) { %>
+                             <div class="c-cardTable__content"><%= SubscriptionFee %></div>
+                            <% } else {%>
+                            <span>-</span>
+                            <% } %>
+                        </td>
+                   <td class="c-cardTable__body" data-card-table-width="1/2">
+                        <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                         <div class="c-cardTable__title" data-length="4">報價日期</div>
+                        <% if (Date != null) { %>
+                         <div class="c-cardTable__content"><%= Date %></div>
+                        <% } else {%>
+                        <span>-</span>
+                        <% } %>
+                    </td>
+                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">漲跌月</div>
+                            <div class="c-cardTable__content">
+                                <% if (UpsAndDownsMonth != null) { %>
+                                <div class="c-cardTable__content">
+                                <span class="<%= UpsAndDownsMonthStyle %>">
+                                    <%= UpsAndDownsMonth %>%
+                                </span>
+                                    </div>
+                                <% } else {%>
+                                <span>-</span>
+                                <% } %>
+                            </div>
+                        </td>
+                         <td class="c-cardTable__body" data-card-table-width="1/2">
+                            <div class="c-cardTable__title" data-length="5">漲跌季</div>
+                            <div class="c-cardTable__content">
+                               <% if (UpsAndDownsSeason != null) { %>
+                                <div class="c-cardTable__content">
+                                <span class="<%= UpsAndDownsSeasonStyle %>">
+                                    <%= UpsAndDownsSeason %>%
+                                </span>
+                                </div>
+                                <% } else {%>
+                                <span>-</span>
+                                <% } %>
+                            </div>
+                        </td>
+                        <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+                        <td class="c-cardTable__space"></td>
+                        <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+                        <td class="c-cardTable__footer" data-card-table-width="1/2">
+                            <div class="c-cardTable__content">
+                                <ul class="l-collect l-collect--divider@lt">
+                                    <li class="l-collect__item">
+                                        <%= Button.FocusButtonHtml %>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="c-cardTable__footer" data-card-table-width="1/2">
+                            <div class="c-cardTable__content">
+                                <% if (OpenToPublic == "Y" && Listed != "N") { %>
+                                <%= Button.SubscriptionButtonHtml %>
+                                <% } %>
+                            </div>
+                        </td>
+                    </tr><!-- .u-nowrap@dt-only: 桌機版(@@desktop)不折行 -->
+                </script>
+            </table>
+            <div class="l-pagination">
+                <div class="l-pagination__size" id="uid-foreignBond-perPage">
+                </div>
+                <script id="uid-foreignBond-template-perPage" type="text/html">
+                    <span>每頁顯示</span>
+                    <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+                    <select id="uid-foreignBond-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+                        <% for(var i = 0; i < values.length - 1; i++ ) { %>
+                        <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+                        <% } %>
+                        <option value="<%= values[values.length - 1] %>">全部</option>
+                    </select>
+                </script>
+                <div class="l-pagination__switch" id="uid-foreignBond-pagination">
+                </div>
+                <script id="uid-foreignBond-template-pagination" type="text/html">
+                    <div class="o-pagination">
+                        <% if (currentPage > 1) { %>
+                        <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+                        <% } else { %>
+                        <!-- .is-disabled: 停用狀態，無法點擊 -->
+                        <a href="#" class="o-pagination__prev is-disabled"></a>
+                        <% } %>
+                        <span class="o-pagination__pager">
+                            <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+                            <span class="o-pagination__total"><%= totalPages %></span>
+                        </span>
+                        <% if (currentPage < totalPages ) { %>
+                        <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+                        <% } else { %>
+                        <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+                        <% } %>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

@@ -79,6 +79,21 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        public ActionResult GetTrackForeignBonds(List<TrackListModel> trackListModels)
+        {
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                return new EmptyResult();
+            }
+            List<TrackListModel> trackLists = trackListModels ?? _memberRepository.GetTrackListFromDb(FcbMemberHelper.GetMemberPlatFormId());
+            if (trackLists == null)
+            {
+                return new JsonNetResult();
+            }
+            return new JsonNetResult(this.GetForeignBondsList(trackLists.Select(y => y.Id).ToList()));
+        }
+
+        [HttpPost]
         public ActionResult GetProductReachInfo(string type, string id)
         {
             if (!FcbMemberHelper.CheckMemberLogin())
@@ -122,6 +137,15 @@ namespace Feature.Wealth.Component.Controllers
             var itemsWithButtonAndInfo = _focusListRespository.SetReachInfoToFocusList(itemsWithButton, InvestTypeEnum.ForeignStocks);
             var finalItems = _focusListRespository.SetTagsToForeignStock(itemsWithButtonAndInfo);
             return finalItems;
+        }
+        private List<ForeignBondListModel> GetForeignBondsList(List<string> foreignBondsFocusList)
+        {
+            var items = _focusListRespository.GetForeignBondFocusData(foreignBondsFocusList);
+            var historyItems = _focusListRespository.GetBondHistoryPrice(items);
+            var CalCulateItems = _focusListRespository.CalculateUpsAndDowns(items, historyItems);
+            var itemsWithButton = _focusListRespository.SetButtonToBondFocusList(CalCulateItems, InvestTypeEnum.ForeignBonds);
+            var finalItems = _focusListRespository.SetTagsToForeignBond(itemsWithButton);
+            return finalItems?.OrderByDescending(x => x.UpsAndDownsMonth)?.ToList();
         }
     }
 }
