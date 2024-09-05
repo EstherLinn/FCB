@@ -1007,7 +1007,8 @@ namespace Feature.Wealth.Account.Repositories
             string msg = string.Empty;
             var strSql = @$"  SELECT [StartTime] FROM [ConsultSchedule]
             where CustomerID  COLLATE Latin1_General_CS_AS =@id and StatusCode = '1'  and ScheduleDate =CAST(GETDATE() AS DATE) and
-            CONVERT(TIME, StartTime) > CONVERT(TIME, CONVERT(VARCHAR(5), GETDATE(), 108));";
+            CONVERT(TIME, StartTime) > CONVERT(TIME, CONVERT(VARCHAR(5), GETDATE(), 108))
+            order by [StartTime] ";
             var para = new
             {
                 id = FcbMemberHelper.GetMemberWebBankId()
