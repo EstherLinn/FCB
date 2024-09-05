@@ -62,6 +62,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="l-detailInfo__lower">
+                                <div class="l-detailInfo__item">
+                                    <div class="c-numerical c-numerical--horiz@lt">
+                                        <div class="c-numerical__title u-left@dt-only"><span>參考贖回價</span></div>
+                                        <div class="c-numerical__content c-numerical__content--xl@dt-only u-left@dt-only"><span>@Model.BondDetail.SubscriptionFee</span></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="l-pageHeader__action">
@@ -69,12 +77,6 @@
                             <li class="l-pageWallet__item">
                                 @Model.BondDetail.FocusButton
                             </li>
-                            @if (Model.BondDetail.OpenToPublic == "Y" && Model.BondDetail.Listed == "Y")
-                            {
-                                <li class="l-pageWallet__btn">
-                                    @Model.BondDetail.SubscribeButton
-                                </li>
-                            }
                         </ul>
                     </div>
                 </div>
