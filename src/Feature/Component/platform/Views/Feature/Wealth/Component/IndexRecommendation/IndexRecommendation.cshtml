@@ -29,7 +29,7 @@
                         <li>
                             <a href="#" class="c-tab__item " target="_self" title="國外股票" data-tab-target="tab-3">@Html.Sitecore().Field(Template.IndexRecommendation.Fields.Tab3Title.ToString(), Model.Item)</a>
                         </li>
-                        <li style="display:none;">
+                        <li>
                             <a href="#" class="c-tab__item " target="_self" title="國外債券" data-tab-target="tab-4">@Html.Sitecore().Field(Template.IndexRecommendation.Fields.Tab4Title.ToString(), Model.Item)</a>
                         </li>
                     </ul>
@@ -68,7 +68,7 @@
                                     </th>
                                     <th>
                                         <div class="c-table__title">
-                                            <span>最新淨值</span>
+                                            <span>最新淨值</span><br /><span>(淨值日)</span>
                                         </div>
                                     </th>
                                     <th>
@@ -150,8 +150,8 @@
                                         <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
                                             <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                            <div class="c-cardTable__title" data-length="5">最新淨值</div>
-                                            <div class="c-cardTable__content">@item.NetAssetValue</div>
+                                            <div class="c-cardTable__title" data-length="5">最新淨值<br /><span>(淨值日)</span></div>
+                                            <div class="c-cardTable__content">@item.NetAssetValue<br /><span class="t-date">@item.NetAssetValueDate.ToString("yyyy/MM/dd")</span></div>
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
                                             <div class="c-cardTable__title" data-length="5">
@@ -169,6 +169,10 @@
                                                 {
                                                     <span class="o-fall">@item.PercentageChangeInFundPriceFormat%</span>
                                                 }
+                                                else if (item.PercentageChangeInFundPrice == 0)
+                                                {
+                                                    <span>@item.PercentageChangeInFundPriceFormat%</span>
+                                                }
                                                 else
                                                 {
                                                     <span class="o-rise">@item.PercentageChangeInFundPrice%</span>
@@ -181,6 +185,10 @@
                                                 @if (item.SixMonthReturnOriginalCurrency < 0)
                                                 {
                                                     <span class="o-fall">@item.SixMonthReturnOriginalCurrencyFormat%</span>
+                                                }
+                                                else if (item.SixMonthReturnOriginalCurrency == 0)
+                                                {
+                                                    <span>@item.SixMonthReturnOriginalCurrencyFormat%</span>
                                                 }
                                                 else
                                                 {
@@ -259,7 +267,7 @@
                                     </th>
                                     <th>
                                         <div class="c-table__title">
-                                            <span>市價</span>
+                                            <span>市價</span><br /><span>(日期)</span>
                                         </div>
                                     </th>
                                     <th>
@@ -343,8 +351,8 @@
                                             <div class="c-cardTable__content">@item.ExchangeCode</div>
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
-                                            <div class="c-cardTable__title" data-length="5">市價</div>
-                                            <div class="c-cardTable__content">@item.MarketPriceFormat</div>
+                                            <div class="c-cardTable__title" data-length="5">市價<br /><span>(日期)</span></div>
+                                            <div class="c-cardTable__content">@item.MarketPriceFormat<br /><span class="t-date">@item.MarketPriceDateFormat</span></div>
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
                                             <div class="c-cardTable__title" data-length="5">
@@ -359,10 +367,16 @@
                                             <div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
                                             @if (item.MarketPriceChangePercentage != null)
                                             {
-                                                if (item.MarketPriceChangePercentage >= 0)
+                                                if (item.MarketPriceChangePercentage > 0)
                                                 {
                                                     <div class="c-cardTable__content">
                                                         <span class="o-rise">@item.MarketPriceChangePercentageFormat%</span>
+                                                    </div>
+                                                }
+                                                else if (item.MarketPriceChangePercentage == 0)
+                                                {
+                                                    <div class="c-cardTable__content">
+                                                        <span>@item.MarketPriceChangePercentage%</span>
                                                     </div>
                                                 }
                                                 else
@@ -383,10 +397,16 @@
                                             <div class="c-cardTable__title" data-length="5">6個月績效</div>
                                             @if (item.SixMonthReturnMarketPriceOriginalCurrency != null)
                                             {
-                                                if (item.SixMonthReturnMarketPriceOriginalCurrency >= 0)
+                                                if (item.SixMonthReturnMarketPriceOriginalCurrency > 0)
                                                 {
                                                     <div class="c-cardTable__content">
                                                         <span class="o-rise">@item.SixMonthReturnMarketPriceOriginalCurrencyFormat%</span>
+                                                    </div>
+                                                }
+                                                else if (item.SixMonthReturnMarketPriceOriginalCurrency == 0)
+                                                {
+                                                    <div class="c-cardTable__content">
+                                                        <span>@item.SixMonthReturnMarketPriceOriginalCurrencyFormat%</span>
                                                     </div>
                                                 }
                                                 else
@@ -470,7 +490,7 @@
                                     </th>
                                     <th>
                                         <div class="c-table__title">
-                                            <span>收盤價格</span>
+                                            <span>收盤價格</span><br /><span>(收盤日)</span>
                                         </div>
                                     </th>
                                     <th>
@@ -550,8 +570,8 @@
                                             <div class="c-cardTable__content">@item.FundCode</div>
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
-                                            <div class="c-cardTable__title" data-length="5">收盤價格</div>
-                                            <div class="c-cardTable__content">@item.ClosingPriceText</div>
+                                            <div class="c-cardTable__title" data-length="5">收盤價格<br /><span>(收盤日)</span></div>
+                                            <div class="c-cardTable__content">@item.ClosingPriceText<br /><span class="t-date">@item.DataDate</span></div>
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
                                             <div class="c-cardTable__title" data-length="5">漲跌幅</div>
@@ -560,13 +580,17 @@
                                                 {
                                                     <span>-</span>
                                                 }
-                                                else if (item.DailyReturn >= 0)
+                                                else if (item.DailyReturn > 0)
                                                 {
                                                     <span class="o-rise">@(item.DailyReturn)%</span>
                                                 }
                                                 else if (item.DailyReturn < 0)
                                                 {
                                                     <span class="o-fall">@(Math.Abs(item.DailyReturn.Value))%</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@(item.DailyReturn)%</span>
                                                 }
                                             </div>
                                         </td>
@@ -577,13 +601,17 @@
                                                 {
                                                     <span>-</span>
                                                 }
-                                                else if (item.MonthlyReturn >= 0)
+                                                else if (item.MonthlyReturn > 0)
                                                 {
                                                     <span class="o-rise">@(item.MonthlyReturn)%</span>
                                                 }
                                                 else if (item.MonthlyReturn < 0)
                                                 {
                                                     <span class="o-fall">@(Math.Abs(item.MonthlyReturn.Value)) %</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@(item.MonthlyReturn)%</span>
                                                 }
                                             </div>
                                         </td>
@@ -667,17 +695,17 @@
                                     </th>
                                     <th>
                                         <div class="c-table__title">
-                                            <span>參考贖回價</span>
+                                            <span>參考申購價<br />(含前手息)<br />(報價日期)</span>
                                         </div>
                                     </th>
                                     <th>
                                         <div class="c-table__title">
-                                            <span>月</span>
+                                            <span>漲跌月%</span>
                                         </div>
                                     </th>
                                     <th>
                                         <div class="c-table__title">
-                                            <span>季</span>
+                                            <span>漲跌季%</span>
                                         </div>
                                     </th>
                                     <th>
@@ -693,86 +721,153 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                    <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
-                                    <td class="c-cardTable__top"></td>
-                                    <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
-                                    <td class="c-cardTable__header">
-                                        <div class="c-cardTable__content">
-                                            <span class="o-ranking o-ranking--1st" data-before-lt="排行"><i></i></span>
-                                        </div>
-                                    </td>
-                                    <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-                                        <div class="c-cardTable__content">
-                                            <div class="l-target">
-                                                <div class="l-target__name">
-                                                    <a href="#" class="o-contentLink t-bold u-ellipsis-2" target="_blank">SBY3 阿聯酋杜拜國家銀行公司債(限OBU及專業投資人申購)</a>
+                                @{
+                                    int itemCountBond = 0;
+                                }
+                                @foreach (var item in Model.HotBonds)
+                                {
+                                    itemCountBond++;
+                                    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+                                        <!-- .c-cardTable__top: 若需轉換成卡片，且有上方 header 色塊區，則需要放置此一欄位在 tr下的第一個欄位，無 header 就不需要此欄位 -->
+                                        <td class="c-cardTable__top"></td>
+                                        <!-- .c-cardTable__header: 轉成卡片時若為 header 區塊，需要加此 class name -->
+                                        <td class="c-cardTable__header">
+                                            <div class="c-cardTable__content">
+                                                @{
+                                                    int ranking = itemCountBond;
+                                                    string rankingClass = ranking == 1 ? "<span class=\"o-ranking o-ranking--1st\" data-before-lt=\"排行\"><i></i></span>" :
+                                                    ranking == 2 ? "<span class=\"o-ranking o-ranking--2st\" data-before-lt=\"排行\"><i></i></span>" :
+                                                    ranking == 3 ? "<span class=\"o-ranking o-ranking--3st\" data-before-lt=\"排行\"><i></i></span>" :
+                                                    "<span class=\"o-ranking o-ranking\" data-before-lt=\"排行\"><span>" + itemCountUSStock + "</span></span>";
+                                                }
+                                                @(new HtmlString(rankingClass))
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+                                            <div class="c-cardTable__content">
+                                                <div class="l-target">
+                                                    <div class="l-target__name">
+                                                        <a href="@item.DetailLink" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.FullName</a>
+                                                    </div>
+                                                    @if (item.Discount != null && item.Discount.Count > 0)
+                                                    {
+                                                        <div class="l-target__additional">
+                                                            <ul class="l-tag">
+                                                                @foreach (var discount in item.Discount)
+                                                                {
+                                                                    <li class="l-tag__item">
+                                                                        <span class="o-tag">@discount</span>
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
-                                    <td class="c-cardTable__space"></td>
-                                    <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
-                                    <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
-                                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                                        <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                        <div class="c-cardTable__title" data-length="4">
-                                            幣別
-                                            <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                        </div>
-                                        <div class="c-cardTable__content">
-                                            <a href="#" class="o-link">澳幣</a>
-                                        </div>
-                                    </td>
-                                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                                        <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
-                                        <div class="c-cardTable__title" data-length="5">配息頻率</div>
-                                        <div class="c-cardTable__content">月配</div>
-                                    </td>
-                                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                                        <div class="c-cardTable__title" data-length="4">到期日</div>
-                                        <div class="c-cardTable__content">2034/07/28</div>
-                                    </td>
-                                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                                        <div class="c-cardTable__title" data-length="5">參考贖回價</div>
-                                        <div class="c-cardTable__content">89.52</div>
-                                    </td>
-                                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                                        <div class="c-cardTable__title" data-length="4">月</div>
-                                        <div class="c-cardTable__content">
-                                            <span class="o-rise">888.22%</span>
-                                        </div>
-                                    </td>
-                                    <td class="c-cardTable__body" data-card-table-width="1/2">
-                                        <div class="c-cardTable__title" data-length="5">季</div>
-                                        <div class="c-cardTable__content">
-                                            <span class="o-rise">888.47%</span>
-                                        </div>
-                                    </td>
-                                    <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
-                                    <td class="c-cardTable__space"></td>
-                                    <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                                    <td class="c-cardTable__footer" data-card-table-width="1/2">
-                                        <div class="c-cardTable__content">
-                                            <ul class="l-collect l-collect--divider@lt">
-                                                <li class="l-collect__item">
-                                                    <a href="#" class="o-statusBtn o-statusBtn--like is-active" data-after-lt="關注" data-msg="加入關注|取消關注" data-ia="true"></a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td class="c-cardTable__footer" data-card-table-width="1/2">
-                                        <div class="c-cardTable__content"><a href="#popupPurchase" class="o-tableBtn o-tableBtn--card@lt" data-popup="true">申購</a></div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <!-- .c-cardTable__space: 若需轉換成卡片，需要在 body 區塊前額外放置此一欄位分隔 -->
+                                        <td class="c-cardTable__space"></td>
+                                        <!-- .c-cardTable__body: 轉成卡片時若為 body 區塊，需要加此 class name -->
+                                        <!-- [data-card-table-width]: 設定轉換成卡片時的欄位寬度，值為"幾分之幾"，範圍1/2 ~ 3/4 -->
+                                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                                            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                                            <div class="c-cardTable__title" data-length="4">
+                                                幣別
+                                                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                            </div>
+                                            <div class="c-cardTable__content">
+                                                @Html.CurrencyLink(null, item.CurrencyName)
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                                            <!-- [data-length]: 設定轉換成卡片時，標題的寬度，單位為字數em，範圍1~5字 -->
+                                            <div class="c-cardTable__title" data-length="5">配息頻率</div>
+                                            <div class="c-cardTable__content">@item.PaymentFrequencyName</div>
+                                        </td>
+                                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                                            <div class="c-cardTable__title" data-length="4">到期日</div>
+                                            <div class="c-cardTable__content">@item.MaturityDate</div>
+                                        </td>
+                                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                                            <div class="c-cardTable__title" data-length="5">參考申購價<br />(含前手息)<br />(報價日期)</div>
+                                            <div class="c-cardTable__content">
+                                                @item.SubscriptionFee<br><span class="t-date">@item.Date</span>
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                                            <div class="c-cardTable__title" data-length="4">漲跌月%</div>
+                                            <div class="c-cardTable__content">
+                                                @if (item.UpsAndDownsMonth == null)
+                                                {
+                                                    <span>-</span>
+                                                }
+                                                else if (item.UpsAndDownsMonth > 0)
+                                                {
+                                                    <span class="o-rise">@(item.UpsAndDownsMonth)%</span>
+                                                }
+                                                else if (item.UpsAndDownsMonth < 0)
+                                                {
+                                                    <span class="o-fall">@(Math.Abs(item.UpsAndDownsMonth.Value)) %</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@(item.UpsAndDownsMonth)%</span>
+                                                }
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                                            <div class="c-cardTable__title" data-length="5">漲跌季%</div>
+                                            <div class="c-cardTable__content">
+                                                @if (item.UpsAndDownsSeason == null)
+                                                {
+                                                    <span>-</span>
+                                                }
+                                                else if (item.UpsAndDownsSeason > 0)
+                                                {
+                                                    <span class="o-rise">@(item.UpsAndDownsSeason)%</span>
+                                                }
+                                                else if (item.UpsAndDownsSeason < 0)
+                                                {
+                                                    <span class="o-fall">@(Math.Abs(item.UpsAndDownsSeason.Value)) %</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@(item.UpsAndDownsSeason)%</span>
+                                                }
+                                            </div>
+                                        </td>
+                                        <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
+                                        <td class="c-cardTable__space"></td>
+                                        <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
+                                        <td class="c-cardTable__footer" data-card-table-width="@((item.OpenToPublic == "Y" && item.Listed == "Y")) ? "2/3" : "1/1")">
+                                            <div class="c-cardTable__content">
+                                                <ul class="l-collect l-collect--divider@lt">
+                                                    <li class="l-collect__item">
+                                                        @Html.FocusButton(null, item.BondCode, item.FullName, InvestTypeEnum.ForeignBonds, true)
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__footer" data-card-table-width="1/3">
+                                            <div class="c-cardTable__content">
+                                                @if (item.OpenToPublic == "Y" && item.Listed == "Y")
+                                                {
+                                                    @Html.SubscriptionButton(null, item.BondCode, InvestTypeEnum.ForeignBonds, true)
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+
                             </tbody>
                         </table>
                         <div class="l-dataNotes"><span class="t-date">資料日期：2023/09/13</span></div>
                     </div>
                     <div class="l-action">
                         <div class="l-action__item">
-                            <a href="#" class="o-btn o-btn--secondary o-btn--lg">更多國外債券</a>
+                            @Html.Sitecore().BeginField(Template.IndexRecommendation.Fields.Tab4ButtonLink.ToString(), Model.Item, new { haschildren = true, @class = "o-btn o-btn--secondary o-btn--lg" })
+                            @Html.Sitecore().Field(Template.IndexRecommendation.Fields.Tab4ButtonText.ToString(), Model.Item)
+                            @Html.Sitecore().EndField()
                         </div>
                     </div>
                 </div>

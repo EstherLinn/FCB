@@ -364,7 +364,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,[Date]
                            FROM [BondHistoryPrice] WITH (NOLOCK)
                            WHERE [Date] >= @date
-                           ORDER BY Date ASC";
+                           ORDER BY Date DESC";
 
             var bondHistoryPrices = this._dbConnection.Query<BondHistoryPrice>(sql, new { date = date })?.ToList() ?? new List<BondHistoryPrice>();
 
