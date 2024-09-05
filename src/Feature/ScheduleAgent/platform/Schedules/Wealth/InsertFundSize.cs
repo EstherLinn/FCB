@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Foundation.Wealth.Models;
+using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using Feature.Wealth.ScheduleAgent.Services;
-using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -14,34 +15,55 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
         {
             if (this.JobItems != null)
             {
+                var startTime = DateTime.UtcNow;
+                this.Logger.Info($"Execution started at {startTime}");
+
                 var _repository = new ProcessRepository(this.Logger);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
-                string filePath = "FUND_SIZE";
-                string tableName = "[FUND_SIZE]";
+                string fileName = "FUND_SIZE";
+                var TrafficLight = NameofTrafficLight.FUND_SIZE;
 
-                bool IsfilePath = await etlService.ExtractFile("FUND_SIZE");
 
-                if (IsfilePath)
+                var IsfilePath = await etlService.ExtractFile(fileName);
+
+                if (IsfilePath.Value)
                 {
                     try
                     {
-                        var basic = await etlService.ParseFixedLength<FundSize>(filePath);
-                        _repository.BulkInsertToNewDatabase(basic, tableName, filePath);
-
-                        etlService.FinishJob(filePath);
+                        //取得資料表名稱
+                        string tableName = EnumUtil.GetEnumDescription(TrafficLight);
+                        //透過CsvHelper解析資料
+                        var datas = await etlService.ParseFixedLength<FundSize>(fileName);
+                        //執行匯入temp資料表
+                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
+                        //匯入完成後開起紅燈
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                        //執行匯入主資料表
+                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
+                        //匯入完成後轉為綠燈
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                        //完成匯入更改檔案名稱_done
+                        etlService.FinishJob(fileName, startTime);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.Message, ex);
-                        _repository.LogChangeHistory(DateTime.UtcNow, filePath, ex.Message, " ", 0);
+                        _repository.LogChangeHistory(DateTime.UtcNow, fileName, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                     }
                 }
                 else
                 {
-                    this.Logger.Error("FUND_SIZE not found");
-                    _repository.LogChangeHistory(DateTime.UtcNow, filePath, "找不到檔案", " ", 0);
+                    this.Logger.Error($"{fileName} not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, fileName, IsfilePath.Key, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                 }
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                this.Logger.Info($"Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
+            }
+            else
+            {
+                this.Logger.Warn($"Not Setting Any JobItems");
             }
         }
     }

@@ -18,7 +18,7 @@ namespace Feature.Wealth.Component.Repositories
             string sql = """
                    SELECT *
                    FROM [vw_BasicFund] b
-                   JOIN [Fund_HighRated] h
+                   JOIN [Fund_HighRated] h WITH (NOLOCK)
                    ON b.ProductCode = h.ProductCode
                    ORDER BY SixMonthReturnOriginalCurrency
                    DESC,b.ProductCode

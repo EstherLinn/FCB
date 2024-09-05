@@ -113,7 +113,7 @@ namespace Feature.Wealth.Account.SingleSignOn
                   ,[RegionalCenterBusinessGroup]
                   ,[SalaryLevel]
                   ,[SalaryScale]
-              FROM [dbo].[HRIS]
+              FROM [dbo].[HRIS] WITH (NOLOCK)
             WHERE EmployeeCode = @id ";
             try
             {

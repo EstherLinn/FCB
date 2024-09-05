@@ -129,7 +129,7 @@ namespace Feature.Wealth.Component.Repositories
         public List<FundCloseYearNetValue> GetNetAssetValueWithCloseYear(string fundId)
         {
             string sql = @"SELECT Format([Date],'yyyy-MM-dd') NetAssetValueDate,[NetAssetValue] 
-                            FROM [Sysjust_FUNDNAV_HIS] where [FirstBankCode]=@fundId and CAST([Date] AS date) >= CAST(DATEADD(year, -1, GETDATE())AS date) ORDER BY [Date] ";
+                            FROM [Sysjust_FUNDNAV_HIS] WITH (NOLOCK) where [FirstBankCode]=@fundId and CAST([Date] AS date) >= CAST(DATEADD(year, -1, GETDATE())AS date) ORDER BY [Date] ";
             var para = new { fundId };
             List<FundCloseYearNetValue> fundCloseYearNetValue = DbManager.Custom.ExecuteIList<FundCloseYearNetValue>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundCloseYearNetValue;
@@ -171,7 +171,7 @@ namespace Feature.Wealth.Component.Repositories
                       ,[AnnualReturnRateTWD]
                       ,[IndicatorIndexPriceChange]
                       ,[AnnualReturnRateOriginalCurrency] - [IndicatorIndexPriceChange] as Difference
-                  FROM [Sysjust_Return_Fund_2] 
+                  FROM [Sysjust_Return_Fund_2] WITH (NOLOCK)
                   where [FirstBankCode] = @fundId 
                   ORDER BY [Year] DESC";
             var para = new { fundId };
@@ -197,7 +197,7 @@ namespace Feature.Wealth.Component.Repositories
                                   ,[ThreeYearReturnOriginalCurrency]
                                   ,[FiveYearReturnOriginalCurrency]
                                   ,[DataDate]
-                              FROM [Sysjust_Return_Fund] where [FirstBankCode] = @fundId";
+                              FROM [Sysjust_Return_Fund] WITH (NOLOCK) where [FirstBankCode] = @fundId";
             var para = new { fundId };
             FundAccumulationRateOfReturn fundAccumulationRateOfReturn = DbManager.Custom.Execute<FundAccumulationRateOfReturn>(sql, para, System.Data.CommandType.Text);
             return fundAccumulationRateOfReturn;
@@ -216,7 +216,7 @@ namespace Feature.Wealth.Component.Repositories
                           ,[MonthlyReturnRate]
                           ,[IndicatorIndexPriceChange]
                           ,[MonthlyReturnRate] - [IndicatorIndexPriceChange] as Difference
-                      FROM [Sysjust_Return_Fund_3]
+                      FROM [Sysjust_Return_Fund_3] WITH (NOLOCK)
                       WHERE [FirstBankCode] = @fundId";
             var para = new { fundId };
             List<FundDowJonesIndex> fundDowJonesIndex = DbManager.Custom.ExecuteIList<FundDowJonesIndex>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
@@ -235,7 +235,7 @@ namespace Feature.Wealth.Component.Repositories
                                   ,[FundName]
                                   ,[StockName] Category
                                   ,[Shareholding] Holding
-                              FROM [Sysjust_Holding_Fund_1]
+                              FROM [Sysjust_Holding_Fund_1] WITH (NOLOCK)
                               where [FirstBankCode] = @fundId and [StockName]!='合計'
                               order by [Shareholding] desc";
             var para = new { fundId };
@@ -256,7 +256,7 @@ namespace Feature.Wealth.Component.Repositories
                                   ,[Sector] Category
                                   ,[HoldingSector] Holding
                                   ,[Currency]
-                              FROM [Sysjust_Holding_Fund_3]
+                              FROM [Sysjust_Holding_Fund_3] WITH (NOLOCK)
                               where [FirstBankCode] = @fundId and Sector!='合計'
                               order by [HoldingSector] desc";
             var para = new { fundId };
@@ -276,7 +276,7 @@ namespace Feature.Wealth.Component.Repositories
                                   ,[Area] Category
                                   ,[HoldingArea] Holding
                                   ,[Currency]
-                              FROM [Sysjust_Holding_Fund_2]
+                              FROM [Sysjust_Holding_Fund_2] WITH (NOLOCK)
                               where [FirstBankCode] = @fundId and [Area]!='合計'
                               order by [HoldingArea] desc";
             var para = new { fundId };
@@ -297,7 +297,7 @@ namespace Feature.Wealth.Component.Repositories
                                     Format([Date],'yyyy/MM/dd') Date
                                     ,[StockName] FundName
                                     ,[Shareholding] Holding
-                                      FROM {tableName}
+                                      FROM {tableName} WITH (NOLOCK)
                                      WHERE [FirstBankCode] = @fundId
                                      ORDER BY [Shareholding] DESC,[StockName]";
             var para = new { fundId };
@@ -354,7 +354,7 @@ namespace Feature.Wealth.Component.Repositories
                       ,[ThreeYearVariance]
                       ,[FiveYearVariance]
                       ,[TenYearVariance]
-                  FROM [Sysjust_Risk_Fund]
+                  FROM [Sysjust_Risk_Fund] WITH (NOLOCK)
                 WHERE  [FirstBankCode] = @fundId";
             var para = new { fundId };
             FundRiskindicators fundRiskindicators = DbManager.Custom.Execute<FundRiskindicators>(sql, para, System.Data.CommandType.Text);
@@ -404,7 +404,7 @@ namespace Feature.Wealth.Component.Repositories
                           ,[InformationRatio]
                           ,[JensenIndex]
                           ,[TreynorIndex]
-                      FROM [Sysjust_Risk_Fund_3] 
+                      FROM [Sysjust_Risk_Fund_3] WITH (NOLOCK)
                       where [FirstBankCode]=@fundId ORDER BY [Date] DESC";
             var para = new { fundId };
             List<FundYearRateOfReturn> fundYearRateOfReturn = DbManager.Custom.ExecuteIList<FundYearRateOfReturn>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
@@ -425,7 +425,7 @@ namespace Feature.Wealth.Component.Repositories
                               ,[Dividend]
                               ,[AnnualizedDividendRate]
                               ,[Currency]
-                          FROM [Sysjust_Dividend_Fund] (NOLOCK) WHERE [FirstBankCode]=@fundId
+                          FROM [Sysjust_Dividend_Fund] WITH (NOLOCK) WHERE [FirstBankCode]=@fundId
                           ORDER BY [ExDividendDate] DESC";
             var para = new { fundId };
             List<FundDividendRecord> fundDividendRecord = DbManager.Custom.ExecuteIList<FundDividendRecord>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
@@ -442,7 +442,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             string tableName = domesticOroverseas == nameof(FundEnum.D) ? "[Sysjust_Fundsize_Fund_2]" : "[Sysjust_Fundsize_Fund_1]";
             var sql = $@" ;WITH CTE AS (
-                             SELECT * FROM {tableName} (NOLOCK)
+                             SELECT * FROM {tableName} WITH (NOLOCK)
                              WHERE [FirstBankCode]=@fundId
                             )
                             SELECT [FirstBankCode]

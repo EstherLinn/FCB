@@ -208,9 +208,9 @@ namespace Feature.Wealth.Account.Repositories
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE,
                             A.CIF_ID
-                            FROM [CIF] AS A
-                            LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
-                            LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
+                            FROM [CIF] AS A WITH (NOLOCK)
+                            LEFT JOIN [HRIS] AS B WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
+                            LEFT JOIN [CFMBSEL] AS C WITH (NOLOCK) ON CIF_ID = CUST_ID
                             WHERE CIF_ID = @@id ";
 
             var para = new
@@ -275,9 +275,9 @@ namespace Feature.Wealth.Account.Repositories
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE,
                             A.CIF_ID
-                            FROM [CIF] AS A
-                            LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
-                            LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
+                            FROM [CIF] AS A WITH (NOLOCK)
+                            LEFT JOIN [HRIS] AS B WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
+                            LEFT JOIN [CFMBSEL] AS C WITH (NOLOCK) ON CIF_ID = CUST_ID
                             WHERE C.PROMOTION_CODE COLLATE Latin1_General_CS_AS = @@promotionCode ";
 
             var para = new
@@ -342,8 +342,8 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeCode AS AdvisrorID,
                             B.CIF_ID
                             FROM [FCB_Member] AS A
-                            LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
+                            LEFT JOIN [CIF] AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
+                            LEFT JOIN [HRIS] AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND ";
 
             if (platFormEunm == PlatFormEunm.WebBank)
@@ -409,8 +409,8 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeCode AS AdvisrorID,
                             B.CIF_ID
                             FROM [FCB_Member] AS A
-                            LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
+                            LEFT JOIN [CIF] AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
+                            LEFT JOIN [HRIS] AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@id";
 
             var para = new
@@ -464,9 +464,9 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
                             B.CIF_ID
-                            FROM [FCB_Member] AS A
-                            LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
+                            FROM [FCB_Member] AS A 
+                            LEFT JOIN [CIF] AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
+                            LEFT JOIN [HRIS] AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@promotionCode";
 
             var para = new
@@ -868,7 +868,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             string id = string.Empty;
             var strSql = @$" Declare @@promotionCode varchar(24) = @promotionCode
-                             SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE　COLLATE Latin1_General_CS_AS = @@promotionCode";
+                             SELECT CUST_ID FROM CFMBSEL WITH (NOLOCK) WHERE PROMOTION_CODE　COLLATE Latin1_General_CS_AS = @@promotionCode";
 
             var para = new
             {

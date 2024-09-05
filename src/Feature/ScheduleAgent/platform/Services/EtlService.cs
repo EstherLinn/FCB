@@ -1,11 +1,14 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using Feature.Wealth.ScheduleAgent.Repositories;
 using FixedWidthParserWriter;
 using FluentFTP;
 using FluentFTP.Helpers;
+using JSNLog.Infrastructure;
 using Sitecore.Configuration;
 using Sitecore.Data.Items;
 using Sitecore.IO;
+using Sitecore.Services.Core;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,6 +18,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -192,22 +196,26 @@ namespace Feature.Wealth.ScheduleAgent.Services
         /// <summary>
         /// 完成資料插入後，檔案改名加_done
         /// </summary>
-        /// <param name="filename"></param>
-        public void FinishJob(string filename)
+        /// <param name="fileName"></param>
+        public void FinishJob(string fileName,DateTime startTime)
         {
+            var _repository = new ProcessRepository(this._logger);
             //CSV檔案資料完成後，檔案改名加_done
-            if (filename.Equals("fundlist") || filename.ToLower().Contains("bond"))
+            if (fileName.Equals("fundlist") || fileName.ToLower().Contains("bond"))
             {
-                filename = Path.ChangeExtension(filename, "csv");
-                string localFilePath = Path.Combine(LocalDirectory, filename);
-                string doneFileName = $"{Path.GetFileNameWithoutExtension(filename)}_done.csv";
+                fileName = Path.ChangeExtension(fileName, "csv");
+                string localFilePath = Path.Combine(LocalDirectory, fileName);
+                string doneFileName = $"{Path.GetFileNameWithoutExtension(fileName)}_done.csv";
                 string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
                 if (File.Exists(localDoneFilePath))
                 {
                     File.Delete(localDoneFilePath);
                 }
                 File.Move(localFilePath, localDoneFilePath);
-                this._logger.Info(filename + " 執行完成");
+                this._logger.Info(fileName + " 執行完成");
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                _repository.LogChangeHistory(DateTime.UtcNow, fileName, $"{fileName}排程完成", "", 0, duration.TotalSeconds,"Y");
             }
             //補檔案完成，修改後台checkbox設定，改成false
             else if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
@@ -219,33 +227,38 @@ namespace Feature.Wealth.ScheduleAgent.Services
                     this._Supplementsettings["Do Supplement"] = newValue.ToString();
                     this._Supplementsettings.Editing.EndEdit();
                 }
-                this._logger.Info(filename + " 完成補檔執行");
+                this._logger.Info(fileName + " 完成補檔執行");
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                _repository.LogChangeHistory(DateTime.UtcNow, fileName, $"{fileName}排程完成", "", 0, duration.TotalSeconds, "Y");
             }
             //TXT檔案資料完成後，檔案改名加_done
             else
             {
-                filename = Path.ChangeExtension(filename, "txt");
-                string localFilePath = Path.Combine(LocalDirectory, filename);
-                string doneFileName = $"{Path.GetFileNameWithoutExtension(filename)}_done.txt";
+                fileName = Path.ChangeExtension(fileName, "txt");
+                string localFilePath = Path.Combine(LocalDirectory, fileName);
+                string doneFileName = $"{Path.GetFileNameWithoutExtension(fileName)}_done.txt";
                 string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
                 if (File.Exists(localDoneFilePath))
                 {
                     File.Delete(localDoneFilePath);
                 }
                 File.Move(localFilePath, localDoneFilePath);
-                this._logger.Info(filename + " 執行完成");
+                this._logger.Info(fileName + " 執行完成");
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                _repository.LogChangeHistory(DateTime.UtcNow, fileName, $"{fileName}排程完成", "", 0, duration.TotalSeconds, "Y");
             }
-
         }
 
         /// <summary>
         /// 檢查Ftps檔案存不存在，以及是否要做補檔
         /// </summary>
-        public async Task<bool> ExtractFile(string fileName)
+        public async Task<KeyValuePair<string, bool> >ExtractFile(string fileName)
         {
             if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
             {
-                return true;
+                return new KeyValuePair<string, bool>("執行補檔", true);
             }
             else if (this._settings != null)
             {
@@ -277,7 +290,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         if (!await ftpClient.FileExists(filePath))
                         {
                             this._logger.Error($"File {fileName} not found.");
-                            return false;
+                            return new KeyValuePair<string, bool>($"File {fileName} not found.", false);
                         }
                         string localFilePath = Path.Combine(this.LocalDirectory, fileName);
 
@@ -292,30 +305,30 @@ namespace Feature.Wealth.ScheduleAgent.Services
                                 if (localFileHash.Equals(localFiledoneHash))
                                 {
                                     this._logger.Error("Same file content, skip download.");
-                                    return false;
+                                    return new KeyValuePair<string, bool>("Same file content, skip download.", false);
                                 }
                             }
                             this._logger.Error("Same file content, skip download.");
-                            return false;
+                            return new KeyValuePair<string, bool>("Same file content, skip download.", false);
                         }
                         //下載檔案
                         if (await ftpClient.DownloadFile(localFilePath, filePath, FtpLocalExists.Overwrite) == FtpStatus.Success)
                         {
-                            return true;
+                            return new KeyValuePair<string, bool> ("從FTPS下載檔案", true);
                         }
 
                         this._logger.Error($"File {fileName} not found on FTPS server.");
-                        return false;
+                        return new KeyValuePair<string, bool>($"File {fileName} not found on FTPS server.", false);
                     }
                 }
                 catch (Exception ex)
                 {
                     this._logger.Error($"Error while downloading file from FTPS server: {ex.Message}", ex);
+                    return new KeyValuePair<string, bool>($"Error while downloading file from FTPS server: {ex.Message}", false);
                 }
             }
 
-            return false;
+            return new KeyValuePair<string, bool>($"Error while ExtractFile", false);
         }
-
     }
 }

@@ -68,7 +68,7 @@ namespace Feature.Wealth.Component.Repositories
                                                 FirstBankCode AS ProductCode,
                                                 NetAssetValueDate,
                                                 NetAssetValue
-                                            FROM Sysjust_Nav_Fund
+                                            FROM Sysjust_Nav_Fund WITH (NOLOCK)
                                     WHERE FirstBankCode = '{productCode}'
                                     ORDER BY [NetAssetValueDate] DESC) AS [{productCode}]");
 

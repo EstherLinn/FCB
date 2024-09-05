@@ -13,6 +13,10 @@ using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Feature.Wealth.ScheduleAgent.Models.SignalStatus;
+using static Sitecore.ContentSearch.Linq.Extensions.ReflectionExtensions;
+using Sitecore.Diagnostics;
+using Foundation.Wealth.Models;
 
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
@@ -30,18 +34,20 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)
         /// </summary>
-        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath)
+        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now)
         {
             string mergeQuery = GenerateMergeQuery<T>(tableName, uniqueColumn, key);
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
-            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line);
+            var endTime = DateTime.UtcNow;
+            var duration = endTime - now;
+            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y");
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
         /// <summary>
         /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)三個參數比對
         /// </summary>
-        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath)
+        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, DateTime now)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -63,11 +69,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
              ";
 
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
-            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line);
+            var endTime = DateTime.UtcNow;
+            var duration = endTime - now;
+            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y");
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
-        public void BulkInsertToDatabaseForHIS<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath)
+        public void BulkInsertToDatabaseForHIS<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -89,11 +97,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
              ";
 
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
-            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line);
+            var endTime = DateTime.UtcNow;
+            var duration = endTime - now;
+            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y");
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
-        public void BulkInsertToDatabaseFor30Days<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, string date)
+        public void BulkInsertToDatabaseFor30Days<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, string date, DateTime now)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -116,15 +126,21 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
              ";
 
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
-            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line);
+            var endTime = DateTime.UtcNow;
+            var duration = endTime - now;
+            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y");
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
+
 
         /// <summary>
         /// 將資料插入最新的資料表中(會刪除舊資料，插入最新的資料=資料表裡僅保留最新的資料)
         /// </summary>
-
-        public void BulkInsertToNewDatabase<T>(IEnumerable<T> data, string tableName, string filePath)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="datas">集合</param>
+        /// <param name="tableName">資料表名稱</param>
+        /// <param name="fileName">檔案名稱</param>
+        public void BulkInsertToNewDatabase<T>(IEnumerable<T> datas, string tableName, string fileName, DateTime now)
         {
             string selectQuery = $@"SELECT * FROM {tableName}";
             var results = DbManager.Custom.ExecuteIList<T>(selectQuery, null, CommandType.Text);
@@ -146,20 +162,21 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             VALUES ({parameters});
             ";
 
-            int line = ExecuteNonQuery(insertQuery, data, CommandType.Text, true);
+            int line = ExecuteNonQuery(insertQuery, datas, CommandType.Text, true);
 
             if (line == 0)
             {
                 line = ExecuteNonQuery(insertQuery, results, CommandType.Text, true);
             }
 
-
-            LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, line);
-            _logger.Info($"{filePath} 最新資料 {tableName} {line}");
+            var endTime = DateTime.UtcNow;
+            var duration = endTime - now;
+            LogChangeHistory(DateTime.UtcNow, fileName, "最新資料", tableName, line, duration.TotalSeconds, "Y");
+            _logger.Info($"{fileName} 最新資料 {tableName} {line}");
         }
 
         ///加密的資料
-        public void BulkInsertToEncryptedDatabase<T>(IList<T> data, string tableName, string filePath)
+        public void BulkInsertToEncryptedDatabase<T>(IList<T> data, string tableName, string filePath, DateTime now)
         {
             var properties = typeof(T).GetProperties();
 
@@ -189,7 +206,10 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         bulkCopy.WriteToServer(dataTable);
 
                         int rowsAffected = dataTable.Rows.Count;
-                        LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, rowsAffected);
+
+                        var endTime = DateTime.UtcNow;
+                        var duration = endTime - now;
+                        LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, rowsAffected, duration.TotalSeconds, "Y");
                         _logger.Info($"{filePath} 最新資料 {tableName} {rowsAffected} 行");
                     }
                     catch (Exception ex)
@@ -205,7 +225,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// 將資料直接插入最新的資料表中
         /// </summary>
 
-        public void BulkInsertDirectToDatabase<T>(IEnumerable<T> data, string tableName, string filePath)
+        public void BulkInsertDirectToDatabase<T>(IEnumerable<T> data, string tableName, string filePath, DateTime startTime)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -217,8 +237,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             ";
 
             int line = ExecuteNonQuery(insertQuery, data, CommandType.Text, true);
-            LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, line);
-            _logger.Info($"{filePath} 最新資料 {tableName} {line}");
+            LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, line, (DateTime.UtcNow - startTime).TotalSeconds, "Y");
+            _logger.Info($"{filePath} 最新資料 {tableName} {line}，花費 {(DateTime.UtcNow - startTime).TotalSeconds} 秒匯入資料庫");
         }
 
 
@@ -326,7 +346,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             ExecuteNonQuery(storedProcedureName, spparameters, CommandType.StoredProcedure, true);
         }
 
-        public void LogChangeHistory(DateTime timestamp, string filePath, string operationType, string tableName, int line)
+        public void LogChangeHistory(DateTime timestamp, string filePath, string operationType, string tableName, int line, double time, string YorN)
         {
             var changeHistory = new ChangeHistory
             {
@@ -334,17 +354,18 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 ModificationDate = timestamp,
                 ModificationType = operationType,
                 DataTable = tableName,
-                ModificationLine = line
+                ModificationLine = line,
+                TotalSeconds = time,
+                Success = YorN
             };
             InsertChangeHistory(changeHistory);
         }
 
-
         public void InsertChangeHistory(ChangeHistory changeHistory)
         {
             string insertHistoryQuery = """
-                                        INSERT INTO ChangeHistory (FileName, ModificationDate, ModificationType, DataTable,ModificationLine)
-                                        VALUES (@FileName, @ModificationDate, @ModificationType, @DataTable, @ModificationLine);
+                                        INSERT INTO ChangeHistory (FileName, ModificationDate, ModificationType, DataTable,ModificationLine,TotalSeconds,Success)
+                                        VALUES (@FileName, @ModificationDate, @ModificationType, @DataTable, @ModificationLine,@TotalSeconds,@Success);
                                         """;
 
             using (var connection = DbManager.Custom.DbConnection())
@@ -415,6 +436,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             try
             {
+                this._logger.Info("OdbcConnection start");
                 connection = new OdbcConnection(connString);
                 connection.Open();
                 this._logger.Info("Opened Successfully");
@@ -458,5 +480,33 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
         }
 
+
+       
+
+        ///<summary>
+        ///改變紅綠燈狀態
+        ///</summary>
+        public void TurnTrafficLight(NameofTrafficLight name, TrafficLightStatus status)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@number", (int)name, DbType.Int32, ParameterDirection.Input);
+            parameters.Add("@status", (int)status, DbType.Int32, ParameterDirection.Input);
+            parameters.Add("@time", DateTime.Now, DbType.DateTime, ParameterDirection.Input);
+
+            string sql = """
+                    UPDATE [SignalStatus]
+                    SET Status = @status,UpdateTime = @time
+                    WHERE Number = @number
+                    """;
+
+            try
+            {
+                DbManager.Custom.ExecuteNonQuery(sql, parameters, CommandType.Text);
+            }
+            catch (Exception ex)
+            {
+                this._logger.Error(ex.Message, ex);
+            }
+        }
     }
 }

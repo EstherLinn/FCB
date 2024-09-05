@@ -276,7 +276,7 @@ namespace Feature.Wealth.Component.Repositories
 
                 string sql = @$"
                  SELECT [NetAssetValue]
-                 FROM [dbo].[Sysjust_Nav_Fund]
+                 FROM [dbo].[Sysjust_Nav_Fund] WITH (NOLOCK)
                  WHERE [FirstBankCode] = '{item.ProductCode}'AND [NetAssetValue] IS NOT NULL
                  ORDER BY [NetAssetValueDate] ASC;";
 
@@ -347,7 +347,7 @@ namespace Feature.Wealth.Component.Repositories
 
                 string sql = @$"
                  SELECT [NetAssetValue]
-                 FROM [dbo].[Sysjust_Nav_ETF]
+                 FROM [dbo].[Sysjust_Nav_ETF] WITH (NOLOCK)
                  WHERE [FirstBankCode] = '{item.ProductCode}'AND [NetAssetValue] IS NOT NULL
                  ORDER BY [NetAssetValueDate] ASC;";
 

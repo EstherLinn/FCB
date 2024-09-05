@@ -41,7 +41,7 @@ namespace Feature.Wealth.Component.Repositories
         public CompareBase GetCompareFundNetAssetValueThreeMonths(string fundId)
         {
             string sql = """
-                SELECT top 1 [FirstBankCode], MAX(NetAssetValue) AS MaxNetAssetValueThreeMonths, MIN(NetAssetValue) AS MinNetAssetValueThreeMonths FROM [dbo].[Sysjust_Nav_Fund]
+                SELECT top 1 [FirstBankCode], MAX(NetAssetValue) AS MaxNetAssetValueThreeMonths, MIN(NetAssetValue) AS MinNetAssetValueThreeMonths FROM [dbo].[Sysjust_Nav_Fund] WITH (NOLOCK)
                 WHERE [FirstBankCode] = @FundId AND [NetAssetValueDate] >= DATEADD(MONTH, -3, GETDATE())
                 GROUP BY [FirstBankCode]
                 """;
@@ -57,7 +57,7 @@ namespace Feature.Wealth.Component.Repositories
         public CompareBase GetCompareETFNetAssetValueThreeMonths(string etfId)
         {
             string sql = """
-                SELECT top 1 [FirstBankCode], MAX(NetAssetValue) AS MaxNetAssetValueThreeMonths, MIN(NetAssetValue) AS MinNetAssetValueThreeMonths FROM [dbo].[Sysjust_Nav_ETF]
+                SELECT top 1 [FirstBankCode], MAX(NetAssetValue) AS MaxNetAssetValueThreeMonths, MIN(NetAssetValue) AS MinNetAssetValueThreeMonths FROM [dbo].[Sysjust_Nav_ETF] WITH (NOLOCK)
                 WHERE [FirstBankCode] = @ETFId AND [NetAssetValueDate] >= DATEADD(MONTH, -3, GETDATE())
                 GROUP BY [FirstBankCode]
                 """;

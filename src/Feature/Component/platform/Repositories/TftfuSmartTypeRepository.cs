@@ -37,7 +37,7 @@ namespace Feature.Wealth.Component.Repositories
                         FROM
                             [vw_BasicFund] b
                         JOIN
-                            [TFTFU_STG] h
+                            [TFTFU_STG] h WITH (NOLOCK)
                         ON
                             b.ProductCode = SUBSTRING(h.TFTFU_FUND_ID_CODE,1,4)
                         WHERE
@@ -72,7 +72,7 @@ namespace Feature.Wealth.Component.Repositories
                         FROM
                             [vw_BasicFund] b
                         JOIN
-                            [TFTFU_STG] h
+                            [TFTFU_STG] h WITH (NOLOCK)
                         ON
                             b.ProductCode = SUBSTRING(h.TFTFU_FUND_ID_CODE,1,4)
                         WHERE
@@ -107,7 +107,7 @@ namespace Feature.Wealth.Component.Repositories
                         FROM
                             [vw_BasicFund] b
                         JOIN
-                            [TFTFU_STG] h
+                            [TFTFU_STG] h WITH (NOLOCK)
                         ON
                             b.ProductCode = SUBSTRING(h.TFTFU_FUND_ID_CODE,1,4)
                         WHERE
@@ -142,7 +142,7 @@ namespace Feature.Wealth.Component.Repositories
                         FROM
                             [vw_BasicFund] b
                         JOIN
-                            [TFTFU_STG] h
+                            [TFTFU_STG] h WITH (NOLOCK)
                         ON
                             b.ProductCode = SUBSTRING(h.TFTFU_FUND_ID_CODE,1,4)
                         WHERE

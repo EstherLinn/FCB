@@ -4,8 +4,10 @@ using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using System.Linq;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Feature.Wealth.ScheduleAgent.Models.SignalStatus;
 using System.Collections.Generic;
+using Foundation.Wealth.Models;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -15,31 +17,42 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
         {
             if (this.JobItems != null)
             {
+                var startTime = DateTime.UtcNow;
+                this.Logger.Info($"Execution started at {startTime}");
+
                 var _repository = new ProcessRepository(this.Logger);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
-                string filename = "HRIS";
-                bool IsfilePath = await etlService.ExtractFile(filename);
+                string fileName = "HRIS";
+                var IsfilePath = await etlService.ExtractFile(fileName);
 
-                if (IsfilePath)
+                if (IsfilePath.Value)
                 {
                     try
                     {
-                        var basic = (IList<Hris>)await etlService.ParseCsv<Hris>(filename);
-                        _repository.BulkInsertToEncryptedDatabase(basic, "[HRIS]", filename);
-                        etlService.FinishJob(filename);
+                        string tableName = EnumUtil.GetEnumDescription(NameofTrafficLight.HRIS);
+                        var datas = (IList<Hris>)await etlService.ParseCsv<Hris>(fileName);
+                        _repository.BulkInsertToEncryptedDatabase(datas, tableName, fileName, startTime);
+                        etlService.FinishJob(fileName, startTime);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.Message, ex);
-                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
+                        _repository.LogChangeHistory(DateTime.UtcNow, fileName, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                     }
                 }
                 else
                 {
-                    this.Logger.Error($"{filename} not found");
-                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
+                    this.Logger.Error($"{fileName} not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, fileName, IsfilePath.Key, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                 }
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                this.Logger.Info($"Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
+            }
+            else
+            {
+                this.Logger.Warn($"Not Setting Any JobItems");
             }
         }
     }
