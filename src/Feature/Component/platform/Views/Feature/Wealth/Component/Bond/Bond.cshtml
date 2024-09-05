@@ -416,8 +416,8 @@
                                 <option value="到期日低至高" data-sorting-column="MaturityDate" data-sorting-class="is-asc">到期日低至高</option>
                                 <option value="殖利率高至低" data-sorting-column="YieldRateYTM" data-sorting-class="is-desc">殖利率高至低</option>
                                 <option value="殖利率低至高" data-sorting-column="YieldRateYTM" data-sorting-class="is-asc">殖利率低至高</option>
-                                <option value="參考申購價高至低" data-sorting-column="RedemptionFee" data-sorting-class="is-desc">參考申購價高至低</option>
-                                <option value="參考申購價低至高" data-sorting-column="RedemptionFee" data-sorting-class="is-asc">參考申購價低至高</option>
+                                <option value="參考申購價高至低" data-sorting-column="SubscriptionFee" data-sorting-class="is-desc">參考申購價高至低</option>
+                                <option value="參考申購價低至高" data-sorting-column="SubscriptionFee" data-sorting-class="is-asc">參考申購價低至高</option>
                                 <option value="漲跌月高至低" data-sorting-column="UpsAndDownsMonth" data-sorting-class="is-desc">漲跌月高至低</option>
                                 <option value="漲跌月低至高" data-sorting-column="UpsAndDownsMonth" data-sorting-class="is-asc">漲跌月低至高</option>
                             </select>
@@ -476,7 +476,7 @@
                                 <th>
                                     <div class="c-table__title">
                                         <span>參考申購價<br />(含前手息)<br />(報價日期)</span>
-                                        <a href="#" class="o-sorting" data-sorting-column="RedemptionFee"></a>
+                                        <a href="#" class="o-sorting" data-sorting-column="SubscriptionFee"></a>
                                     </div>
                                 </th>
                                 <th>
@@ -580,8 +580,8 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">參考申購價<br />(含前手息)<br />(報價日期)</div>
             <div class="c-cardTable__content">
-                <% if (typeof RedemptionFee == "number" && !isNaN(RedemptionFee)) { %>
-                    <span><%= RedemptionFee.toFixed(2) %></span>
+                <% if (typeof SubscriptionFee == "number" && !isNaN(SubscriptionFee)) { %>
+                    <span><%= SubscriptionFee.toFixed(2) %></span>
                 <% } else { %>
                     <span>-</span>
                 <% } %>
