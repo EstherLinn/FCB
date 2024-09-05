@@ -239,13 +239,13 @@ namespace Feature.Wealth.Component.Repositories
             if (DateTime.TryParse(bond.Date, out var oneMonthAgo))
             {
                 oneMonthAgo = oneMonthAgo.AddMonths(-1);
-                bond.UpsAndDownsMonth = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, oneMonthAgo.ToString("yyyyMMdd"), single);
+                bond.UpsAndDownsMonth = GetUpsAndDowns(bond, oneMonthAgo.ToString("yyyyMMdd"), single);
             }
 
             if (DateTime.TryParse(bond.Date, out var threeMonthAgo))
             {
                 threeMonthAgo = threeMonthAgo.AddMonths(-3);
-                bond.UpsAndDownsSeason = GetUpsAndDowns(bond.BondCode, bond.RedemptionFee, threeMonthAgo.ToString("yyyyMMdd"), single);
+                bond.UpsAndDownsSeason = GetUpsAndDowns(bond, threeMonthAgo.ToString("yyyyMMdd"), single);
             }
 
             bond.UpsAndDownsMonth = Round2(bond.UpsAndDownsMonth);
@@ -256,27 +256,32 @@ namespace Feature.Wealth.Component.Repositories
             return bond;
         }
 
-        private decimal? GetUpsAndDowns(string bondCode, decimal? redemptionFee, string date, bool single)
+        private decimal? GetUpsAndDowns(Bond bond, string date, bool single)
         {
             BondHistoryPrice bondHistoryPrice = null;
 
             if (single)
             {
-                bondHistoryPrice = GetBondHistoryPrice(bondCode, date);
+                bondHistoryPrice = GetBondHistoryPrice(bond.BondCode, date);
             }
             else if (this._bondHistoryPrices != null && this._bondHistoryPrices.Count > 0)
             {
-                bondHistoryPrice = this._bondHistoryPrices.Where(b => b.BondCode == bondCode && int.Parse(b.Date) <= int.Parse(date)).FirstOrDefault();
+                bondHistoryPrice = this._bondHistoryPrices.Where(b => b.BondCode == bond.BondCode && int.Parse(b.Date) <= int.Parse(date)).FirstOrDefault();
             }
 
-            if (redemptionFee.HasValue && bondHistoryPrice != null && bondHistoryPrice.RedemptionFee.HasValue)
+            if(bondHistoryPrice != null)
             {
-                return (redemptionFee - bondHistoryPrice.RedemptionFee) / bondHistoryPrice.RedemptionFee * 100;
+                if(bond.RedemptionFee.HasValue && bond.RedemptionFee != 0 && bondHistoryPrice.RedemptionFee.HasValue && bondHistoryPrice.RedemptionFee != 0)
+                {
+                    return (bond.RedemptionFee - bondHistoryPrice.RedemptionFee) / bondHistoryPrice.RedemptionFee * 100;
+                }
+                else if (bond.SubscriptionFee.HasValue && bond.SubscriptionFee != 0 && bondHistoryPrice.SubscriptionFee.HasValue && bondHistoryPrice.SubscriptionFee != 0)
+                {
+                    return (bond.SubscriptionFee - bondHistoryPrice.SubscriptionFee) / bondHistoryPrice.SubscriptionFee * 100;
+                }
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         /// <summary>
