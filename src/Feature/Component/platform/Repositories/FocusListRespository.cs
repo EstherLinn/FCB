@@ -126,7 +126,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,[Date]
                            FROM [BondHistoryPrice] WITH (NOLOCK)
                            WHERE [Date] >= @date and BondCode in @BondCodes
-                           ORDER BY Date ASC";
+                           ORDER BY Date DESC";
             var para = new { date = fourMonthAgo.ToString("yyyyMMdd"), BondCodes = foreignBondFocusList.Select(y => y.BondCode).ToList() };
             bondHistoryPrices = DbManager.Custom.ExecuteIList<BondHistoryPrice>(sql.ToString(), para, CommandType.Text)?.ToList();
             return bondHistoryPrices;
@@ -149,8 +149,8 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     threeMonthAgo = threeMonthAgo.AddMonths(-3);
                 }
-                var monthFee = bondHistoryPrices.Where(x => x.BondCode == item.BondCode && int.Parse(x.Date) >= int.Parse(oneMonthAgo.ToString("yyyyMMdd"))).FirstOrDefault()?.SubscriptionFee;
-                var seasonFee = bondHistoryPrices.Where(x => x.BondCode == item.BondCode && int.Parse(x.Date) >= int.Parse(threeMonthAgo.ToString("yyyyMMdd"))).FirstOrDefault()?.SubscriptionFee;
+                var monthFee = bondHistoryPrices.Where(x => x.BondCode == item.BondCode && int.Parse(x.Date) <= int.Parse(oneMonthAgo.ToString("yyyyMMdd"))).FirstOrDefault()?.SubscriptionFee;
+                var seasonFee = bondHistoryPrices.Where(x => x.BondCode == item.BondCode && int.Parse(x.Date) <= int.Parse(threeMonthAgo.ToString("yyyyMMdd"))).FirstOrDefault()?.SubscriptionFee;
                 //月
                 if (item.SubscriptionFee.HasValue && item.SubscriptionFee > 0 && monthFee.HasValue && monthFee > 0)
                 {
@@ -163,7 +163,7 @@ namespace Feature.Wealth.Component.Repositories
                 else 
                 {
                     //申購價為0時用贖回價計算漲跌月
-                    monthFee = bondHistoryPrices.Where(x => x.BondCode == item.BondCode && int.Parse(x.Date) >= int.Parse(oneMonthAgo.ToString("yyyyMMdd"))).FirstOrDefault()?.RedemptionFee;
+                    monthFee = bondHistoryPrices.Where(x => x.BondCode == item.BondCode && int.Parse(x.Date) <= int.Parse(oneMonthAgo.ToString("yyyyMMdd"))).FirstOrDefault()?.RedemptionFee;
                     if (item.RedemptionFee.HasValue && item.RedemptionFee > 0 && monthFee.HasValue  && monthFee > 0)
                     {
                         item.UpsAndDownsMonth = Round2((item.RedemptionFee - monthFee) / monthFee * 100);
@@ -184,7 +184,7 @@ namespace Feature.Wealth.Component.Repositories
                 }
                 else
                 {
-                    seasonFee = bondHistoryPrices.Where(x => x.BondCode == item.BondCode && int.Parse(x.Date) >= int.Parse(threeMonthAgo.ToString("yyyyMMdd"))).FirstOrDefault()?.RedemptionFee;
+                    seasonFee = bondHistoryPrices.Where(x => x.BondCode == item.BondCode && int.Parse(x.Date) <= int.Parse(threeMonthAgo.ToString("yyyyMMdd"))).FirstOrDefault()?.RedemptionFee;
                     if (item.RedemptionFee.HasValue && item.RedemptionFee > 0 && seasonFee.HasValue && seasonFee > 0)
                     {
                         //申購價為0時用贖回價計算漲跌季
