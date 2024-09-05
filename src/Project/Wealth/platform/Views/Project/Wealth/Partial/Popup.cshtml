@@ -17,6 +17,9 @@
     var WebEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("WebEntrust"));
     var MobileEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("MobileEntrust"));
     var IleoEntrustLink = WebUtility.UrlDecode(Settings.GetSetting("IleoEntrust"));
+    var WebBondLink = WebUtility.UrlDecode(Settings.GetSetting("WebBond"));
+    var MobileBondLink = WebUtility.UrlDecode(Settings.GetSetting("MobileBond"));
+    var IleoBondLink = WebUtility.UrlDecode(Settings.GetSetting("IleoBond"));
 }
 <div id="popupLogin" class="c-modal mfp-hide">
     <div class="c-modal__wrap">
@@ -107,7 +110,10 @@
                     <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionRegular" target="_blank" data-type="Regular">定期定額</a>
                 </div>
                 <div class="l-action__item">
-                    <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionGo" target="_blank" data-type="Regular">前往</a>
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionGo" target="_blank">前往</a>
+                </div>
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" id="subscriptionBond" target="_blank">前往</a>
                 </div>
             </div>
         </div>
@@ -600,10 +606,13 @@
                 let single = document.getElementById("subscriptionSingle");
                 let regular = document.getElementById("subscriptionRegular");
                 let go = document.getElementById("subscriptionGo");
+                let bond = document.getElementById("subscriptionBond");
                 let singlelink = "";
                 let regularlink = "";
                 let golink = "";
+                let bondlink = "";
                 if ($(window).width() < 1199) {
+                    //第e行動&&ileo按鈕切換
                     $('input[name="platform"]', '#popupPurchase').on('click', function () {
                         let val = $(this).data('name');
                         let id = single.getAttribute("eh-subscription-id")
@@ -611,10 +620,12 @@
                             singlelink = "@MobileESingleLink";
                             regularlink = "@MobileERegularLink";
                             golink = "@MobileEntrustLink";
+                            bondlink = "@MobileBondLink";
                         } else {
                             singlelink = "@MobileIleoSingleLink";
                             regularlink = "@MobileIleoRegularLink";
                             golink = "@IleoEntrustLink";
+                            bondlink = "@IleoBondLink";
                         }
                         let singleUrl = new URL(singlelink.replaceAll("&amp;", "&"));
                         let singleOriginAndPath = singleUrl.origin + singleUrl.pathname;
@@ -702,6 +713,7 @@
                         single.setAttribute("href", singleCombined.slice(0, -1));
                         regular.setAttribute("href", regularCombined.slice(0, -1));
                         go.setAttribute("href", goCombined.slice(0, -1));
+                        bond.setAttribute("href", bondlink.replaceAll("&amp;", "&"));
                         store.set("MobilePlatform", val);
                     });
 
@@ -712,24 +724,29 @@
                         singlelink = "@MobileESingleLink";
                         regularlink = "@MobileERegularLink";
                         golink = "@MobileEntrustLink";
+                        bondlink = "@MobileBondLink";
                     } else {
                         $('input[data-name="ileo"]', '#popupPurchase').prop('checked', true);
                         singlelink = "@MobileIleoSingleLink";
                         regularlink = "@MobileIleoRegularLink";
                         golink = "@IleoEntrustLink";
+                        bondlink = "@IleoBondLink";
                     }
 
                     single.setAttribute("href", singlelink.replaceAll("&amp;", "&"));
                     regular.setAttribute("href", regularlink.replaceAll("&amp;", "&"));
                     go.setAttribute("href", golink.replaceAll("&amp;", "&"));
+                    bond.setAttribute("href", bondlink.replaceAll("&amp;", "&"));
                 }
                 else {
                     singlelink = "@SubcriptionSingleLink";
                     regularlink = "@SubcriptionRegularLink";
                     golink = "@WebEntrustLink";
+                    bondlink = "@WebBondLink";
                     single.setAttribute("href", singlelink.replaceAll("&amp;", "&"));
                     regular.setAttribute("href", regularlink.replaceAll("&amp;", "&"));
                     go.setAttribute("href", golink.replaceAll("&amp;", "&"));
+                    bond.setAttribute("href", bondlink.replaceAll("&amp;", "&"));
                 }
 
 </script>
