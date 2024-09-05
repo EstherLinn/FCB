@@ -47,7 +47,7 @@
                             <input type="radio" name="fundtype-1" value="上櫃股票型" class="o-pelletbox__input">
                             <span class="o-pelletbox__text">上櫃股票型</span>
                         </label><label class="o-pelletbox__item">
-							<input type="radio" name="fundtype-1" value="債券型海外債券投資等級" class="o-pelletbox__input">
+                            <input type="radio" name="fundtype-1" value="債券型海外債券投資等級" class="o-pelletbox__input">
                             <span class="o-pelletbox__text">跨國債券型</span>
                         </label><label class="o-pelletbox__item">
                             <input type="radio" name="fundtype-1" value="跨國投資股票型區域型" class="o-pelletbox__input">
@@ -409,8 +409,8 @@
                 let focusAttr = ['eh-focus', 'eh-focus-type', 'eh-focus-id', 'eh-focus-name', 'eh-focus-add'];
                 let compareAttr = ['eh-compare', 'eh-compare-type', 'eh-compare-id', 'eh-compare-name', 'eh-compare-add'];
                 let subscriptionAttr = ['eh-subscription', 'eh-subscription-type', 'eh-subscription-id'];
-				let commonAttr = ['target'];
-				let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
+                let commonAttr = ['target'];
+                let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
                 data = '<table><tbody>' + data + '</tbody></table>';
                 data = DOMPurify.sanitize(data, { ADD_ATTR: allCustomAttr });
                 data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');
@@ -420,7 +420,7 @@
             //顯示基金資料 (國內/國外tab,選擇的類型pelletboxInputs,頁面(第幾頁),頁面筆數(顯示幾筆))
             function loadData(tabTarget, selectedValue, page, pageSize, orderby, desc) {
                 var token = $('input[name="__RequestVerificationToken"]').val();
-
+                window.loading = () => 0;
                 $.ajax({
                     url: '@ClientRoute.GenerateUrl(this, "PerformanceFundRank", "GetSortedPerformanceFundRank")',
                     type: 'POST',
@@ -500,6 +500,10 @@
                         } else {
                             console.error("Empty response received from the server.");
                         }
+                    },
+                    complete: function () { 
+                        $('.c-loading').loading('hide');
+                        window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
