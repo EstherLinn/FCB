@@ -342,10 +342,12 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">1日績效</div>
             <div class="c-cardTable__content">
-                <% if (typeof DailyReturn == "number" && !isNaN(DailyReturn) && DailyReturn >= 0) { %>
+                <% if (typeof DailyReturn == "number" && !isNaN(DailyReturn) && DailyReturn > 0) { %>
                     <span class="o-rise"><%= DailyReturn.toFixed(2) %>%</span>
                 <% } else if (typeof DailyReturn == "number" && !isNaN(DailyReturn) && DailyReturn < 0) { %>
                     <span class="o-fall"><%= Math.abs(DailyReturn).toFixed(2) %>%</span>
+                <% } else if (typeof DailyReturn == "number" && !isNaN(DailyReturn) && DailyReturn == 0) { %>
+                    <span><%= Math.abs(DailyReturn).toFixed(2) %>%</span>
                 <% } else { %>
                     <span>-</span>
                 <% } %>
@@ -354,10 +356,12 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">1週績效</div>
             <div class="c-cardTable__content">
-                <% if (typeof WeeklyReturn == "number" && !isNaN(WeeklyReturn) && WeeklyReturn >= 0) { %>
+                <% if (typeof WeeklyReturn == "number" && !isNaN(WeeklyReturn) && WeeklyReturn > 0) { %>
                     <span class="o-rise"><%= WeeklyReturn.toFixed(2) %>%</span>
                 <% } else if (typeof WeeklyReturn == "number" && !isNaN(WeeklyReturn) && WeeklyReturn < 0) { %>
                     <span class="o-fall"><%= Math.abs(WeeklyReturn).toFixed(2) %>%</span>
+                <% } else if (typeof WeeklyReturn == "number" && !isNaN(WeeklyReturn) && WeeklyReturn == 0) { %>
+                    <span><%= Math.abs(WeeklyReturn).toFixed(2) %>%</span>
                 <% } else { %>
                     <span>-</span>
                 <% } %>
@@ -366,10 +370,12 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">1月績效</div>
             <div class="c-cardTable__content">
-                <% if (typeof MonthlyReturn == "number" && !isNaN(MonthlyReturn) && MonthlyReturn >= 0) { %>
+                <% if (typeof MonthlyReturn == "number" && !isNaN(MonthlyReturn) && MonthlyReturn > 0) { %>
                     <span class="o-rise"><%= MonthlyReturn.toFixed(2) %>%</span>
                 <% } else if (typeof MonthlyReturn == "number" && !isNaN(MonthlyReturn) && MonthlyReturn < 0) { %>
                     <span class="o-fall"><%= Math.abs(MonthlyReturn).toFixed(2) %>%</span>
+                <% } else if (typeof MonthlyReturn == "number" && !isNaN(MonthlyReturn) && MonthlyReturn == 0) { %>
+                    <span><%= Math.abs(MonthlyReturn).toFixed(2) %>%</span>
                 <% } else { %>
                     <span>-</span>
                 <% } %>
@@ -378,10 +384,12 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">1季績效</div>
             <div class="c-cardTable__content">
-                <% if (typeof ThreeMonthReturn == "number" && !isNaN(ThreeMonthReturn) && ThreeMonthReturn >= 0) { %>
+                <% if (typeof ThreeMonthReturn == "number" && !isNaN(ThreeMonthReturn) && ThreeMonthReturn > 0) { %>
                     <span class="o-rise"><%= ThreeMonthReturn.toFixed(2) %>%</span>
                 <% } else if (typeof ThreeMonthReturn == "number" && !isNaN(ThreeMonthReturn) && ThreeMonthReturn < 0) { %>
                     <span class="o-fall"><%= Math.abs(ThreeMonthReturn).toFixed(2) %>%</span>
+                <% } else if (typeof ThreeMonthReturn == "number" && !isNaN(ThreeMonthReturn) && ThreeMonthReturn == 0) { %>
+                    <span><%= Math.abs(ThreeMonthReturn).toFixed(2) %>%</span>
                 <% } else { %>
                     <span>-</span>
                 <% } %>
@@ -390,10 +398,12 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="5">1年績效</div>
             <div class="c-cardTable__content">
-                <% if (typeof OneYearReturn == "number" && !isNaN(OneYearReturn) && OneYearReturn >= 0) { %>
+                <% if (typeof OneYearReturn == "number" && !isNaN(OneYearReturn) && OneYearReturn > 0) { %>
                     <span class="o-rise"><%= OneYearReturn.toFixed(2) %>%</span>
                 <% } else if (typeof OneYearReturn == "number" && !isNaN(OneYearReturn) && OneYearReturn < 0) { %>
                     <span class="o-fall"><%= Math.abs(OneYearReturn).toFixed(2) %>%</span>
+                <% } else if (typeof OneYearReturn == "number" && !isNaN(OneYearReturn) && OneYearReturn == 0) { %>
+                    <span><%= Math.abs(OneYearReturn).toFixed(2) %>%</span>
                 <% } else { %>
                     <span>-</span>
                 <% } %>
