@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Component.Models.ETF;
+﻿using Feature.Wealth.Component.Models.Bond;
+using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Tag;
 using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.IndexRecommendation;
@@ -16,6 +17,7 @@ namespace Feature.Wealth.Component.Repositories
     {
         private readonly VisitCountRepository _repository = new VisitCountRepository();
         private readonly USStockRepository _uSStockRepository = new USStockRepository();
+        private readonly BondRepository _bondRepository = new BondRepository();
 
         public IList<Funds> GetFundData()
         {
@@ -232,6 +234,36 @@ namespace Feature.Wealth.Component.Repositories
             var results = uSStocData
                 .Where(e => uSStockIds.Contains(e.FirstBankCode))
                 .OrderBy(e => uSStockIds.IndexOf(e.FirstBankCode.ToString()))
+                .ToList();
+
+            return results;
+        }
+
+        public IList<Bond> GetBondDatas()
+        {
+            var queryitem = BondRelatedLinkSetting.GetBondDetailPageItem();
+            var query = queryitem.ID.ToGuid();
+            var bondData = _bondRepository.GetBondList();
+
+            var bonds = this._repository.GetVisitRecords(query, "id");
+
+            if (bonds == null || !bonds.Any())
+            {
+                return new List<Bond>();
+            }
+
+            var bondIds = bonds
+                .OrderByDescending(x => x.VisitCount)
+                .Take(5)
+                .SelectMany(x => x.QueryStrings)
+                .Where(x => x.Key.Equals("id"))
+                .Select(x => x.Value)
+                .ToList();
+
+
+            var results = bondData
+                .Where(e => bondIds.Contains(e.BondCode))
+                .OrderBy(e => bondIds.IndexOf(e.BondCode.ToString()))
                 .ToList();
 
             return results;
