@@ -20,6 +20,7 @@ namespace Feature.Wealth.Component.Controllers
             var funds = this._repository.GetFundsDatas();
             var etfs = this._repository.GetETFDatas();
             var usStocks = this._repository.GetUSStockDatas();
+            var bonds = this._repository.GetBondDatas();
 
             var viewModel = new IndexRecommendationModel
             {
@@ -29,10 +30,11 @@ namespace Feature.Wealth.Component.Controllers
                 HotETFs = etfs,
                 ETFDetailLink = EtfRelatedLinkSetting.GetETFDetailUrl(),
                 HotUSStocks = usStocks,
-                USStockSearchLink = USStockRelatedLinkSetting.GetUSStockSearchUrl(),
+                HotBonds = bonds,
                 FundNetAssetValueDate = funds.Select(f => f.NetAssetValueDate).FirstOrDefault(),
                 ETFMarketPriceDate = etfs.Select(f => f.MarketPriceDate).FirstOrDefault(),
                 USStockDataDate = usStocks.Select(f => DateTime.Parse(f.DataDate)).FirstOrDefault(),
+                BondDataDate = bonds.Select(f => DateTime.Parse(f.Date)).FirstOrDefault(),
             };
 
 

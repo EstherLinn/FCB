@@ -15,12 +15,13 @@ namespace Feature.Wealth.Component.Models.IndexRecommendation
         public IList<Funds> HotFunds { get; set; }
         public IList<ETFs> HotETFs { get; set; }
         public IList<USStock.USStock> HotUSStocks { get; set; }
+        public IList<Bond.Bond> HotBonds { get; set; }
         public string FundDetailLink { get; set; }
         public string ETFDetailLink { get; set; }
-        public string USStockSearchLink { get; set; }
         public DateTime FundNetAssetValueDate { get; set; }
         public DateTime ETFMarketPriceDate { get; set; }
         public DateTime USStockDataDate { get; set; }
+        public DateTime BondDataDate { get; set; }
         public Dictionary<string, string[]> TagsForTopETFs { get; set; }
     }
 
