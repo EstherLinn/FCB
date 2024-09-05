@@ -305,8 +305,8 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            SUBSTRING([BondCode], 1, 4) AS [BondCode]
                            ,[Currency]
-                           ,B.[SubscriptionFee]
-                           ,B.[RedemptionFee]
+                           ,[SubscriptionFee]
+                           ,[RedemptionFee]
                            ,SUBSTRING([Date],1,4)+'/'+SUBSTRING([Date],5,2)+'/'+SUBSTRING([Date],7,2) AS [Date]
                            FROM [BondHistoryPrice] WITH (NOLOCK)
                            WHERE SUBSTRING(BondCode, 1, 4) = @BondCode
@@ -334,8 +334,8 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT TOP (1)
                            SUBSTRING([BondCode], 1, 4) AS [BondCode]
                            ,[Currency]
-                           ,B.[SubscriptionFee]
-                           ,B.[RedemptionFee]
+                           ,[SubscriptionFee]
+                           ,[RedemptionFee]
                            ,SUBSTRING([Date],1,4)+'/'+SUBSTRING([Date],5,2)+'/'+SUBSTRING([Date],7,2) AS [Date]
                            FROM [BondHistoryPrice] WITH (NOLOCK)
                            WHERE SUBSTRING(BondCode, 1, 4) = @BondCode AND [Date] <= @date
@@ -359,8 +359,8 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            SUBSTRING([BondCode], 1, 4) AS [BondCode]
                            ,[Currency]
-                           ,B.[SubscriptionFee]
-                           ,B.[RedemptionFee]
+                           ,[SubscriptionFee]
+                           ,[RedemptionFee]
                            ,[Date]
                            FROM [BondHistoryPrice] WITH (NOLOCK)
                            WHERE [Date] >= @date
