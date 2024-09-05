@@ -181,11 +181,11 @@ namespace Feature.Wealth.Component.Models.Bond
         /// <summary>
         /// 申購價
         /// </summary>
-        public decimal? RedemptionFee { get; set; }
+        public decimal? SubscriptionFee { get; set; }
         /// <summary>
         /// 贖回價
         /// </summary>
-        public decimal? SubscriptionFee { get; set; }
+        public decimal? RedemptionFee { get; set; }
         /// <summary>
         /// 日期 YYYYMMDD
         /// </summary>
@@ -286,11 +286,11 @@ namespace Feature.Wealth.Component.Models.Bond
         /// <summary>
         /// 申購價
         /// </summary>
-        public decimal? RedemptionFee { get; set; }
+        public decimal? SubscriptionFee { get; set; }
         /// <summary>
         /// 贖回價
         /// </summary>
-        public decimal? SubscriptionFee { get; set; }
+        public decimal? RedemptionFee { get; set; }
         /// <summary>
         /// 日期
         /// </summary>

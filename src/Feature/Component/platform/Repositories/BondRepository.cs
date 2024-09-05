@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.Caching;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Templates = Feature.Wealth.Component.Models.Bond.Template;
 
@@ -17,6 +18,9 @@ namespace Feature.Wealth.Component.Repositories
     {
         private readonly IDbConnection _dbConnection = DbManager.Custom.DbConnection();
         private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
+
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly string BondClassCacheKey = $"Fcb_BondClassCache";
 
         private IList<BondHistoryPrice> _bondHistoryPrices;
         private List<BondClass> _bondClasses = new List<BondClass>();
@@ -64,8 +68,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,A.[Listed]
                            ,SUBSTRING(A.[ListingDate],1,4)+'/'+SUBSTRING(A.[ListingDate],5,2)+'/'+SUBSTRING(A.[ListingDate],7,2) AS [ListingDate]
                            ,SUBSTRING(A.[DelistingDate],1,4)+'/'+SUBSTRING(A.[DelistingDate],5,2)+'/'+SUBSTRING(A.[DelistingDate],7,2) AS [DelistingDate]
-                           ,B.[RedemptionFee]
                            ,B.[SubscriptionFee]
+                           ,B.[RedemptionFee]
                            ,SUBSTRING(B.[Date],1,4)+'/'+SUBSTRING(B.[Date],5,2)+'/'+SUBSTRING(B.[Date],7,2) AS [Date]
                            ,B.[ReservedColumn]
                            ,B.[Note]
@@ -148,8 +152,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,A.[Listed]
                            ,SUBSTRING(A.[ListingDate],1,4)+'/'+SUBSTRING(A.[ListingDate],5,2)+'/'+SUBSTRING(A.[ListingDate],7,2) AS [ListingDate]
                            ,SUBSTRING(A.[DelistingDate],1,4)+'/'+SUBSTRING(A.[DelistingDate],5,2)+'/'+SUBSTRING(A.[DelistingDate],7,2) AS [DelistingDate]
-                           ,B.[RedemptionFee]
                            ,B.[SubscriptionFee]
+                           ,B.[RedemptionFee]
                            ,SUBSTRING(B.[Date],1,4)+'/'+SUBSTRING(B.[Date],5,2)+'/'+SUBSTRING(B.[Date],7,2) AS [Date]
                            ,B.[ReservedColumn]
                            ,B.[Note]
@@ -174,33 +178,40 @@ namespace Feature.Wealth.Component.Repositories
 
         private void GetBondClass()
         {
-            var result = this._djMoneyApiRespository.GetBondClass();
+            this._bondClasses = (List<BondClass>)this._cache.Get(BondClassCacheKey) ?? new List<BondClass>();
 
-            if (result != null
-                && result.ContainsKey("resultSet")
-                && result["resultSet"]["result"] != null
-                && result["resultSet"]["result"].Any())
+            if (this._bondClasses.Any() == false)
             {
-                foreach (var data in result["resultSet"]["result"])
+                var result = this._djMoneyApiRespository.GetBondClass();
+
+                if (result != null
+                    && result.ContainsKey("resultSet")
+                    && result["resultSet"]["result"] != null
+                    && result["resultSet"]["result"].Any())
                 {
-                    this._bondClasses.Add(new BondClass
+                    foreach (var data in result["resultSet"]["result"])
                     {
-                        ISINCode = data["v1"].ToString(),
-                        BondName = data["v2"].ToString(),
-                        Class = data["v9"].ToString(),
-                        BondCode = data["v33"].ToString(),
-                    });
+                        this._bondClasses.Add(new BondClass
+                        {
+                            ISINCode = data["v1"].ToString(),
+                            BondName = data["v2"].ToString(),
+                            Class = data["v9"].ToString(),
+                            BondCode = data["v33"].ToString(),
+                        });
+                    }
                 }
+
+                this._cache.Set(BondClassCacheKey, this._bondClasses, DateTimeOffset.Now.AddMinutes(600));
             }
         }
 
-        private Bond MoreInfo (Bond bond, bool single)
+        private Bond MoreInfo(Bond bond, bool single)
         {
             var now = DateTime.Now;
 
             bond.InterestRate = Round4(bond.InterestRate);
-            bond.RedemptionFee = Round2(bond.RedemptionFee);
             bond.SubscriptionFee = Round2(bond.SubscriptionFee);
+            bond.RedemptionFee = Round2(bond.RedemptionFee);
             bond.PreviousInterest = Round4(bond.PreviousInterest);
             bond.YieldRateYTM = Round2(bond.YieldRateYTM);
 
@@ -269,15 +280,15 @@ namespace Feature.Wealth.Component.Repositories
                 bondHistoryPrice = this._bondHistoryPrices.Where(b => b.BondCode == bond.BondCode && int.Parse(b.Date) <= int.Parse(date)).FirstOrDefault();
             }
 
-            if(bondHistoryPrice != null)
+            if (bondHistoryPrice != null)
             {
-                if(bond.RedemptionFee.HasValue && bond.RedemptionFee != 0 && bondHistoryPrice.RedemptionFee.HasValue && bondHistoryPrice.RedemptionFee != 0)
-                {
-                    return (bond.RedemptionFee - bondHistoryPrice.RedemptionFee) / bondHistoryPrice.RedemptionFee * 100;
-                }
-                else if (bond.SubscriptionFee.HasValue && bond.SubscriptionFee != 0 && bondHistoryPrice.SubscriptionFee.HasValue && bondHistoryPrice.SubscriptionFee != 0)
+                if (bond.SubscriptionFee.HasValue && bond.SubscriptionFee != 0 && bondHistoryPrice.SubscriptionFee.HasValue && bondHistoryPrice.SubscriptionFee != 0)
                 {
                     return (bond.SubscriptionFee - bondHistoryPrice.SubscriptionFee) / bondHistoryPrice.SubscriptionFee * 100;
+                }
+                else if (bond.RedemptionFee.HasValue && bond.RedemptionFee != 0 && bondHistoryPrice.RedemptionFee.HasValue && bondHistoryPrice.RedemptionFee != 0)
+                {
+                    return (bond.RedemptionFee - bondHistoryPrice.RedemptionFee) / bondHistoryPrice.RedemptionFee * 100;
                 }
             }
 
@@ -294,8 +305,8 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            SUBSTRING([BondCode], 1, 4) AS [BondCode]
                            ,[Currency]
-                           ,[RedemptionFee]
-                           ,[SubscriptionFee]
+                           ,B.[SubscriptionFee]
+                           ,B.[RedemptionFee]
                            ,SUBSTRING([Date],1,4)+'/'+SUBSTRING([Date],5,2)+'/'+SUBSTRING([Date],7,2) AS [Date]
                            FROM [BondHistoryPrice] WITH (NOLOCK)
                            WHERE SUBSTRING(BondCode, 1, 4) = @BondCode
@@ -305,8 +316,8 @@ namespace Feature.Wealth.Component.Repositories
 
             for (int i = 0; i < bondHistoryPrices.Count; i++)
             {
-                bondHistoryPrices[i].RedemptionFee = Round2(bondHistoryPrices[i].RedemptionFee);
                 bondHistoryPrices[i].SubscriptionFee = Round2(bondHistoryPrices[i].SubscriptionFee);
+                bondHistoryPrices[i].RedemptionFee = Round2(bondHistoryPrices[i].RedemptionFee);
             }
 
             return bondHistoryPrices;
@@ -323,8 +334,8 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT TOP (1)
                            SUBSTRING([BondCode], 1, 4) AS [BondCode]
                            ,[Currency]
-                           ,[RedemptionFee]
-                           ,[SubscriptionFee]
+                           ,B.[SubscriptionFee]
+                           ,B.[RedemptionFee]
                            ,SUBSTRING([Date],1,4)+'/'+SUBSTRING([Date],5,2)+'/'+SUBSTRING([Date],7,2) AS [Date]
                            FROM [BondHistoryPrice] WITH (NOLOCK)
                            WHERE SUBSTRING(BondCode, 1, 4) = @BondCode AND [Date] <= @date
@@ -332,8 +343,8 @@ namespace Feature.Wealth.Component.Repositories
 
             var bondHistoryPrice = this._dbConnection.Query<BondHistoryPrice>(sql, new { BondCode = bondCode, date = date })?.FirstOrDefault() ?? new BondHistoryPrice();
 
-            bondHistoryPrice.RedemptionFee = Round2(bondHistoryPrice.RedemptionFee);
             bondHistoryPrice.SubscriptionFee = Round2(bondHistoryPrice.SubscriptionFee);
+            bondHistoryPrice.RedemptionFee = Round2(bondHistoryPrice.RedemptionFee);
 
             return bondHistoryPrice;
         }
@@ -348,8 +359,8 @@ namespace Feature.Wealth.Component.Repositories
             string sql = @"SELECT
                            SUBSTRING([BondCode], 1, 4) AS [BondCode]
                            ,[Currency]
-                           ,[RedemptionFee]
-                           ,[SubscriptionFee]
+                           ,B.[SubscriptionFee]
+                           ,B.[RedemptionFee]
                            ,[Date]
                            FROM [BondHistoryPrice] WITH (NOLOCK)
                            WHERE [Date] >= @date
@@ -359,8 +370,8 @@ namespace Feature.Wealth.Component.Repositories
 
             for (int i = 0; i < bondHistoryPrices.Count; i++)
             {
-                bondHistoryPrices[i].RedemptionFee = Round2(bondHistoryPrices[i].RedemptionFee);
                 bondHistoryPrices[i].SubscriptionFee = Round2(bondHistoryPrices[i].SubscriptionFee);
+                bondHistoryPrices[i].RedemptionFee = Round2(bondHistoryPrices[i].RedemptionFee);
             }
 
             return bondHistoryPrices;
