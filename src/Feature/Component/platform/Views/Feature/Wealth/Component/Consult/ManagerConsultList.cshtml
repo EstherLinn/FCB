@@ -661,7 +661,35 @@
         });
 
         // table 排序功能
-        $('.o-sorting').on('click.sorting', function (e) {
+        $('#consultationListTable1').on('click.sorting', '.o-sorting', function (e) {
+            e.preventDefault();
+            // 呼叫 loading
+            window.loading('show');
+            var $this = $(this);
+            var orderby = '';
+            if ($this.hasClass('is-asc')) {
+                $this.removeClass('is-asc').addClass('is-desc');
+                orderby = 'is-desc';
+            } else {
+                $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                $this.addClass('is-asc');
+                orderby = 'is-asc';
+            }
+
+            // 連動 sortingbox
+            var tableName = $(this).closest('[data-table-name]').data('table-name');
+            var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+            var sortingColumn = $(this).data('sorting-column');
+            $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+            $sortingbox.trigger('change');
+
+            // 因展示，使用 setTimeout 延遲關閉 loading
+            setTimeout(() => {
+                // 關閉loading
+                window.loading('hide');
+            }, 300);
+        });
+        $('#consultationListTable2').on('click.sorting', '.o-sorting', function (e) {
             e.preventDefault();
             // 呼叫 loading
             window.loading('show');

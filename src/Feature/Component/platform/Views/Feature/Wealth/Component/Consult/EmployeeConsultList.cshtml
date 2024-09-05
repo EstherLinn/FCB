@@ -688,7 +688,7 @@
         });
 
         // table 排序功能
-        $('.o-sorting').on('click.sorting', function (e) {
+        $('#consultationListTable1').on('click.sorting', '.o-sorting', function (e) {
             e.preventDefault();
             // 呼叫 loading
             window.loading('show');
@@ -716,7 +716,34 @@
                 window.loading('hide');
             }, 300);
         });
+        $('#consultationListTable2').on('click.sorting', '.o-sorting', function (e) {
+            e.preventDefault();
+            // 呼叫 loading
+            window.loading('show');
+            var $this = $(this);
+            var orderby = '';
+            if ($this.hasClass('is-asc')) {
+                $this.removeClass('is-asc').addClass('is-desc');
+                orderby = 'is-desc';
+            } else {
+                $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                $this.addClass('is-asc');
+                orderby = 'is-asc';
+            }
 
+            // 連動 sortingbox
+            var tableName = $(this).closest('[data-table-name]').data('table-name');
+            var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+            var sortingColumn = $(this).data('sorting-column');
+            $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+            $sortingbox.trigger('change');
+
+            // 因展示，使用 setTimeout 延遲關閉 loading
+            setTimeout(() => {
+                // 關閉loading
+                window.loading('hide');
+            }, 300);
+        });
         function setPopup(id) {
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
 
@@ -883,12 +910,12 @@
                     // 需下事件點選單筆行程跳出泡泡
                     datas.forEach(item => {
                         html += `
-                                        <div data-mb-popup class="c-event" style="background-color:${item.categoryColor}">
-                                            <div class="c-event__details">
-                                                <div>${item.title}</div>
-                                                <div>${moment(item.start).format("HH:mm")}</div>
-                                            </div>
-                                        </div>`;
+                                            <div data-mb-popup class="c-event" style="background-color:${item.categoryColor}">
+                                                <div class="c-event__details">
+                                                    <div>${item.title}</div>
+                                                    <div>${moment(item.start).format("HH:mm")}</div>
+                                                </div>
+                                            </div>`;
                     });
                     if (datas.length == 0) {
                         html = '無預約紀錄';
@@ -977,12 +1004,12 @@
             eventContent: function (info) {
                 if (window.innerWidth > 1200) {
                     let tmpl = `
-                                    <div class="c-event" style="background-color:${info.event.extendedProps.categoryColor}">
-                                        <div class="c-event__details">
-                                            <div>${info.event.title}</div>
-                                            <div>${moment(info.event.start).format("HH:mm")}</div>
-                                        </div>
-                                    </div>`;
+                                        <div class="c-event" style="background-color:${info.event.extendedProps.categoryColor}">
+                                            <div class="c-event__details">
+                                                <div>${info.event.title}</div>
+                                                <div>${moment(info.event.start).format("HH:mm")}</div>
+                                            </div>
+                                        </div>`;
                     return {
                         html: tmpl
                     };
@@ -1048,24 +1075,24 @@
             var $floatingEl = document.getElementById('tmpl').innerHTML;
             $floatingEl = $floatingEl.replace('${PopupColor}', data.popupColor).replace('${Title}', data.title).replace('${StartDay}', moment(data.start).format('YYYY/MM/DD (dd)')).replace('${StartTime}', `${moment(data.start).format('AHH:mm')}~${moment(data.end).format('HH:mm')}`).replace('${Phone}', data.phone).replace('${Email}', data.email).replace('${Topic}', data.topic).replace('${Other}', data.other);
             var footerBtnSuccess = `
-                            <div class="l-action l-action--inline" data-footer-tmpl="success">
-                                <div class="l-action__item">
-                                    <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-quick-close data-cancel>取消預約</a>
-                                </div>
-                                <div class="l-action__item">
-                                    <a href="#" class="o-btn o-btn--primary o-btn--sm {isDisabled}" data-event-id="{id}" data-start-btn>{starBtnText}</a>
-                                </div>
-                            </div>`;
+                                <div class="l-action l-action--inline" data-footer-tmpl="success">
+                                    <div class="l-action__item">
+                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-quick-close data-cancel>取消預約</a>
+                                    </div>
+                                    <div class="l-action__item">
+                                        <a href="#" class="o-btn o-btn--primary o-btn--sm {isDisabled}" data-event-id="{id}" data-start-btn>{starBtnText}</a>
+                                    </div>
+                                </div>`;
             var footerBtnReserving = `
-                            <div class="l-action l-action--inline" data-footer-tmpl="reserving">
-                                <div class="l-action__item">
-                                    <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-quick-close data-cancel>取消預約</a>
-                                </div>
-                            </div>`;
+                                <div class="l-action l-action--inline" data-footer-tmpl="reserving">
+                                    <div class="l-action__item">
+                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-quick-close data-cancel>取消預約</a>
+                                    </div>
+                                </div>`;
             var $footerWrapper = `
-                            <div class="c-eventPopup__footer">
-                                {btns}
-                            </div>`;
+                                <div class="c-eventPopup__footer">
+                                    {btns}
+                                </div>`;
             switch (data.type) {
                 case 'history':
                     $floatingEl = $floatingEl.replace('${footer}', '');
