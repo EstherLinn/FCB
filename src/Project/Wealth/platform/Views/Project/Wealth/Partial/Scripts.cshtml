@@ -421,9 +421,11 @@
                 let single = document.getElementById("subscriptionSingle");
                 let regular = document.getElementById("subscriptionRegular");
                 let go = document.getElementById("subscriptionGo");
+                let bond = document.getElementById("subscriptionBond");
                 single.setAttribute('eh-subscription-id', id);
                 regular.setAttribute('eh-subscription-id', id);
                 go.setAttribute('eh-subscription-id', id);
+                bond.setAttribute('eh-subscription-id', id);
                 let singleUrl = new URL(single.getAttribute("href"));
                 let singleOriginAndPath = singleUrl.origin + singleUrl.pathname;
                 let singleCombined = singleOriginAndPath + "?";
@@ -544,10 +546,18 @@
                     $(single).closest('div').removeClass('u-hidden');
                     $(regular).closest('div').removeClass('u-hidden');
                     $(go).closest('div').addClass('u-hidden');
-                } else {
+                    $(bond).closest('div').addClass('u-hidden');
+                } else if (type.toLowerCase() == "foreignbonds") {
+                    $(single).closest('div').addClass('u-hidden');
+                    $(regular).closest('div').addClass('u-hidden');
+                    $(go).closest('div').addClass('u-hidden');
+                    $(bond).closest('div').removeClass('u-hidden');
+                } else
+                {
                     $(single).closest('div').addClass('u-hidden');
                     $(regular).closest('div').addClass('u-hidden');
                     $(go).closest('div').removeClass('u-hidden');
+                    $(bond).closest('div').addClass('u-hidden');
                 }
             }
         });
