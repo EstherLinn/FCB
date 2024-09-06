@@ -138,7 +138,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             if (value != null)
             {
-                value = decimal.Round((decimal)value, 4);
+                value = decimal.Round((decimal)value, 4, MidpointRounding.AwayFromZero);
             }
             return value;
         }
