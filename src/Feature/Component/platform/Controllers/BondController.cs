@@ -54,7 +54,7 @@ namespace Feature.Wealth.Component.Controllers
 
             foreach (var doc in docs)
             {
-                var key = doc.Name.Substring(0, 4);
+                var key = doc.Name.Length > 4 ? doc.Name.Substring(0, 4) : doc.Name;
 
                 if (dic_docs.ContainsKey(key) == false)
                 {
@@ -104,7 +104,7 @@ namespace Feature.Wealth.Component.Controllers
                 HotProductTags = products,
                 CurrencyList = bondList.OrderBy(i => i.CurrencyCode).Select(i => i.CurrencyName).Distinct(),
                 PaymentFrequencyList = bondList.OrderBy(i => i.PaymentFrequency).Select(i => i.PaymentFrequencyName).Distinct(),
-                BondClassList = bondList.OrderBy(i => i.BondClass).Select(i => i.BondClass).Distinct(),
+                BondClassList = bondList.OrderBy(i => i.BondClass).Select(i => i.BondClass).Where(b => string.IsNullOrEmpty(b) == false).Distinct(),
                 IssuerList = bondList.OrderBy(i => i.Issuer).Select(i => i.Issuer).Distinct(),
             };
 
