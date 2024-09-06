@@ -1855,89 +1855,94 @@
             }
         }
 
-        function initBind() {
-            // 拉霸
-            $('[data-slider-bar="size"]').sliderBar({
-                start: [0, 302],
-                connect: true,
-                range: {
-                    'min': [0, 2],
-                    '17%': [2, 8],
-                    '33.5%': [10, 20],
-                    '50%': [30, 70],
-                    '66.5%': [100, 200],
-                    '83%': [300, 2],
-                    'max': 302
-                },
-                pips: {
-                    mode: 'positions',
-                    values: [0, 17, 33.5, 50, 66.5, 83, 100],
-                    density: -1,
-                    format: wNumb({
-                        suffix: '百萬'
-                    })
-                }
-            });
-            $('[data-slider-bar="returnRate"]').sliderBar({
-                start: [-5, 20],
-                step: 5,
-                connect: true,
-                range: {
-                    'min': -5,
-                    'max': 20
-                },
-                pips: {
-                    mode: 'steps',
-                    density: -1,
-                    format: wNumb({
-                        suffix: '%'
-                    })
-                }
-            });
-            $('[data-slider-bar="sharpe"]').sliderBar({
-                start: [-0.5, 2],
-                step: 0.5,
-                connect: true,
-                range: {
-                    'min': -0.5,
-                    'max': 2
-                },
-                pips: {
-                    mode: 'steps',
-                    density: -1,
-                    format: wNumb({})
-                }
-            });
-            $('[data-slider-bar="beta"]').sliderBar({
-                start: [-0.5, 2],
-                step: 0.5,
-                connect: true,
-                range: {
-                    'min': -0.5,
-                    'max': 2
-                },
-                pips: {
-                    mode: 'steps',
-                    density: -1,
-                    format: wNumb({})
-                }
-            });
-            $('[data-slider-bar="standardDeviation"]').sliderBar({
-                start: [-5, 20],
-                step: 5,
-                connect: true,
-                range: {
-                    'min': -5,
-                    'max': 20
-                },
-                pips: {
-                    mode: 'steps',
-                    density: -1,
-                    format: wNumb({
-                        suffix: '%'
-                    })
-                }
-            });
+		function initBind() {
+			// 拉霸
+			$('[data-slider-bar="size"]').sliderBar({
+				start: [0, 302],
+                margin: 5,
+				connect: true,
+				range: {
+					'min': [0, 2],
+					'17%': [2, 8],
+					'33.5%': [10, 20],
+					'50%': [30, 70],
+					'66.5%': [100, 200],
+					'83%': [300, 2],
+					'max': 302
+				},
+				pips: {
+					mode: 'positions',
+					values: [0, 17, 33.5, 50, 66.5, 83, 100],
+					density: -1,
+					format: wNumb({
+						suffix: '百萬'
+					})
+				}
+			});
+			$('[data-slider-bar="returnRate"]').sliderBar({
+				start: [-5, 20],
+				step: 5,
+                margin: 5,
+				connect: true,
+				range: {
+					'min': -5,
+					'max': 20
+				},
+				pips: {
+					mode: 'steps',
+					density: -1,
+					format: wNumb({
+						suffix: '%'
+					})
+				}
+			});
+			$('[data-slider-bar="sharpe"]').sliderBar({
+				start: [-0.5, 2],
+				step: 0.5,
+                margin: 0.5,
+				connect: true,
+				range: {
+					'min': -0.5,
+					'max': 2
+				},
+				pips: {
+					mode: 'steps',
+					density: -1,
+					format: wNumb({})
+				}
+			});
+			$('[data-slider-bar="beta"]').sliderBar({
+				start: [-0.5, 2],
+				step: 0.5,
+                margin: 0.5,
+				connect: true,
+				range: {
+					'min': -0.5,
+					'max': 2
+				},
+				pips: {
+					mode: 'steps',
+					density: -1,
+					format: wNumb({})
+				}
+			});
+			$('[data-slider-bar="standardDeviation"]').sliderBar({
+				start: [-5, 20],
+				step: 5,
+                margin: 5,
+				connect: true,
+				range: {
+					'min': -5,
+					'max': 20
+				},
+				pips: {
+					mode: 'steps',
+					density: -1,
+					format: wNumb({
+						suffix: '%'
+					})
+				}
+			});
 
             // 報酬率組合
             $('[data-filter-part="returnRate"] input').on('change.returnRate', function () {
