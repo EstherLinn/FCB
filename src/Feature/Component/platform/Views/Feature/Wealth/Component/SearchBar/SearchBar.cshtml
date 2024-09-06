@@ -133,6 +133,9 @@
                             case 'ForeignStock':
                                 generateSearch();
                                 break;
+                            case 'Bond':
+                                generateSearch();
+                                break;
                             case 'All':
                                 if (SC_DATA.S_IsInitial) {
                                     query = apiRequest('@ClientRoute.GenerateUrl(this, "SearchBar", "GetSearchResult")');
@@ -311,11 +314,15 @@
                         case 'StructuredProduct':
                             getStructuredProductResult(list);
                             break;
+                        case 'Bond':
+                            getBondResult(list);
+                            break;
                         case 'All':
                             getFundResult(list);
                             getETFResult(list);
                             getForeignStockResult(list);
                             getStructuredProductResult(list);
+                            getBondResult(list);
                             break;
                     }
 
@@ -394,6 +401,10 @@
                     };
                     list.push(obj);
                 });
+            }
+
+            function getBondResult(list) {
+
             }
         });
 

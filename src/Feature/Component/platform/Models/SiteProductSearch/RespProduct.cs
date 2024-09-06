@@ -25,5 +25,10 @@ namespace Feature.Wealth.Component.Models.SiteProductSearch
         /// 國外股票
         /// </summary>
         public List<ForeignStockResult> ForeignStocks { get; set; }
+
+        /// <summary>
+        /// 國外股票
+        /// </summary>
+        public List<ForeignBondsResult> Bond { get; set; }        
     }
 }
