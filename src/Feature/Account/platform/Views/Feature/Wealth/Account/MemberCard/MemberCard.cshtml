@@ -214,8 +214,8 @@
             });
             // 查看預約
             $('[data-check-consult]').on('click.check', function () {
-                let consultlistpanelId = $('[data-consultlist]').parent().attr('data-tab-panel-id');
-                $('[data-tab-target=' + consultlistpanelId + ']').trigger('click');
+                let consultlistpanelId = DOMPurify.sanitize($('[data-consultlist]').parent().attr('data-tab-panel-id'));
+                $('[data-tab-target=' + (consultlistpanelId) + ']').trigger('click');
             });
         }
     //加入class防止麵包屑被背景蓋住
