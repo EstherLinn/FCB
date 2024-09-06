@@ -124,6 +124,8 @@
 
             var dataSourceId = "@Model.DataSourceId";
 
+            window.loading = () => 0;//蓋掉window.loading function
+
             function initFilter(data) {
                 let opts = {
                     template: '#uid-template',
@@ -229,9 +231,10 @@
                     console.log(errorThrown);
                     $('[data-empty="true"]').show();
                     $('[data-empty="false"]').hide();
-
+                    $('.c-loading').loading('hide')
                 }).always(function () {
-                    window.loading('hide');
+                    $('.c-loading').loading('hide');
+                    window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
                 });
             }
 

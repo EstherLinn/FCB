@@ -485,7 +485,9 @@
             }
 
             var token = $('input[name="__RequestVerificationToken"]').val();        
-    
+
+            window.loading = () => 0;//蓋掉window.loading function
+
             // 商品列表
             $.ajax({
                 url: '@ClientRoute.GenerateUrl(this, "StructuredProduct", "GetStructuredProducts")',
@@ -518,6 +520,14 @@
                         $("[data-filter-empty=true]").show();
                         $("[data-filter-empty=false]").hide();
                     }
+                },
+                complete: function () {
+                    $('.c-loading').loading('hide');
+                    window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
+                },
+                error: function (err) {
+                    console.log(err);
+                    $('.c-loading').loading('hide')
                 }
             });
 
