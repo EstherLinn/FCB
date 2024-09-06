@@ -849,12 +849,15 @@
                     $endParents.removeClass('is-error');
                     $startMsg.text('');
                 }
-                let monthDiff = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() + 1 - startDate.getMonth() + 1);
+                let monthDiff = (endDate.getFullYear() - startDate.getFullYear()) * 12 + ((endDate.getMonth() + 1) - (startDate.getMonth() + 1));
                 if (endDate.getDate() < startDate.getDate()) {
                     monthDiff--;
                 }
+                if (endDate.getDate() > startDate.getDate()) {
+                    monthDiff++;
+                }
                 dateRangeMsg = "通知起訖日期不可超過3個月";
-                if (monthDiff > 4) {
+                if (monthDiff >= 4) {
                     $endParents.addClass('is-error');
                     $startMsg.closest('.o-errorText');
                     $endMsg.text(dateRangeMsg);

@@ -12,11 +12,11 @@
             <div class="c-empty__img">
                 <img src="~/themes/images/lions/lion-compare.svg" alt="">
             </div>
-            <div class="c-empty__desc">目前還沒關注任何國外債卷</div>
+            <div class="c-empty__desc">目前還沒關注任何國外債劵</div>
         </div>
     </div>
     <div class="l-flex__item u-center">
-        <a href="@searchUrl" class="o-btn o-btn--secondary o-btn--sm o-btn--flat">國外債卷搜尋</a>
+        <a href="@searchUrl" class="o-btn o-btn--secondary o-btn--sm o-btn--flat">國外債劵搜尋</a>
     </div>
 </div>
 
@@ -217,7 +217,7 @@
                         <!-- .c-cardTable__space: 若需轉換成卡片，body 區塊結尾處需要額外放置此一欄位分隔 -->
                         <td class="c-cardTable__space"></td>
                         <!-- .c-cardTable__footer: 轉成卡片時若為下方按鈕區塊，需要加此 class name -->
-                        <td class="c-cardTable__footer" data-card-table-width="1/2">
+                           <td class="c-cardTable__footer" data-card-table-width="<% if (OpenToPublic == 'Y' && Listed == 'Y'){%><%= '1/2' %><% } else {%><%= '1/1' %> <%}%>">
                             <div class="c-cardTable__content">
                                 <ul class="l-collect l-collect--divider@lt">
                                     <li class="l-collect__item">
