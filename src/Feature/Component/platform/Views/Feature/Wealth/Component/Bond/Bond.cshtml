@@ -997,15 +997,16 @@
             function initBind() {
                 // 拉霸
                 $('[data-slider-bar="maturityYear"]').sliderBar({
-                    start: [-5, 1000],
+                    start: [-5, 25],
+                    margin: 6,
                     connect: true,
                     range: {
                         'min': [-5, 5],
                         '20%': [0, 5],
                         '40%': [5, 5],
                         '60%': [10, 10],
-                        '80%': [20, 980],
-                        'max': 1000
+                        '80%': [20, 5],
+                        'max': 25
                     },
                     pips: {
                         mode: 'positions',
@@ -1018,15 +1019,16 @@
                 });
 
                 $('[data-slider-bar="yieldRateYTM"]').sliderBar({
-                    start: [-5, 1000],
+                    start: [-2, 10],
+                    margin: 3,
                     connect: true,
                     range: {
-                        'min': [-5, 5],
+                        'min': [-2, 2],
                         '20%': [0, 3],
                         '40%': [3, 2],
                         '60%': [5, 2],
-                        '80%': [7, 993],
-                        'max': 1000
+                        '80%': [7, 3],
+                        'max': 10
                     },
                     pips: {
                         mode: 'positions',
@@ -1039,15 +1041,16 @@
                 });
 
                 $('[data-slider-bar="interestRate"]').sliderBar({
-                    start: [-5, 1000],
+                    start: [-2, 10],
+                    margin: 2,
                     connect: true,
                     range: {
-                        'min': [-5, 5],
+                        'min': [-2, 2],
                         '20%': [0, 3],
                         '40%': [3, 2],
                         '60%': [5, 2],
-                        '80%': [7, 993],
-                        'max': 1000
+                        '80%': [7, 3],
+                        'max': 10
                     },
                     pips: {
                         mode: 'positions',
