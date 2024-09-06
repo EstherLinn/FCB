@@ -528,7 +528,7 @@
                             return query.length == 0 || new RegExp(query, 'gi').test(item.value);
                         });
                         done({
-                            suggestions: result.slice(0, 5)
+                            suggestions: result.slice(0, 5).sort((a, b) => (a.value > b.value ? 1 : -1))
                         });
                     },
                     onSearchComplete: function (query, suggestions) {
