@@ -160,7 +160,7 @@ namespace Feature.Wealth.Component.Repositories
             }
             if (value != null)
             {
-                value = decimal.Round((decimal)value, 2);
+                value = decimal.Round((decimal)value, 2, MidpointRounding.AwayFromZero);
             }
             return new KeyValuePair<bool, decimal?>(isUp, value);
         }
@@ -171,7 +171,7 @@ namespace Feature.Wealth.Component.Repositories
             if (value != null)
             {
                 isUp = value >= 0;
-                value = decimal.Round((decimal)value * 100, 2);
+                value = decimal.Round((decimal)value * 100, 2, MidpointRounding.AwayFromZero);
             }
             return new KeyValuePair<bool, decimal?>(isUp, value);
         }
@@ -180,7 +180,7 @@ namespace Feature.Wealth.Component.Repositories
         {
             if (value != null)
             {
-                value = decimal.Round((decimal)value, 4);
+                value = decimal.Round((decimal)value, 4, MidpointRounding.AwayFromZero);
             }
             return value;
         }
@@ -200,7 +200,7 @@ namespace Feature.Wealth.Component.Repositories
             }
             else
             {
-                value = decimal.Round((decimal)value, 4);
+                value = decimal.Round((decimal)value, 4, MidpointRounding.AwayFromZero);
                 status = value.ToString();
             }
 
