@@ -8,6 +8,7 @@ using System.Linq;
 using Feature.Wealth.Component.Models.Invest;
 using Foundation.Wealth.Helper;
 using Feature.Wealth.Component.Models.ETF;
+using System;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -119,7 +120,7 @@ namespace Feature.Wealth.Component.Repositories
             }
             if (value != null)
             {
-                value = decimal.Round((decimal)value, 4);
+                value = decimal.Round((decimal)value, 4, MidpointRounding.AwayFromZero);
             }
             return new KeyValuePair<bool, decimal?>(isUp, value);
         }

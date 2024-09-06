@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using static Feature.Wealth.Component.Models.VolumeRank.VolumeRankModel;
 using Feature.Wealth.Component.Models.ETF.Tag;
 using System.Linq;
+using System;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -46,8 +47,8 @@ namespace Feature.Wealth.Component.Repositories
         private void ProcessFundFilterDatas(ETFs item)
         {
             item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
-            item.DiscountPremium = decimal.Round(item.DiscountPremium, 2);
-            item.MarketPrice = decimal.Round(item.MarketPrice, 4);
+            item.DiscountPremium = decimal.Round(item.DiscountPremium, 2, MidpointRounding.AwayFromZero);
+            item.MarketPrice = decimal.Round(item.MarketPrice, 4, MidpointRounding.AwayFromZero);
         }
     }
 }
