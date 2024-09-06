@@ -177,8 +177,7 @@
         }
 
         window.getNowDate = function () {
-            let now = new Date();
-            return now.toISOString().split('T')[0].replaceAll('-', '/');
+           return dayjs().format('YYYY/MM/DD');
         }
 
         window.insertKeywords = function () {
@@ -725,6 +724,8 @@
                 $("#popupAlert").find('[data-set-title]').text('最新淨值');
             }
             //預設初始值
+            window.triggerType = '';
+            window.percent = 0;
             $("#popupAlert").find('[data-title]').data('id', $(self).closest("tr").find('[data-id]').data('id'));
             $("#popupAlert").find('[data-title]')[0].setAttribute("href", url);
             $("#popupAlert").find('[data-pricevalue]').data('pricevalue', $(self).closest("tr").find('[data-pricevalue]').data('pricevalue'));
@@ -734,8 +735,7 @@
             $("#popupAlert").find('[data-pricevaluedate]').text($(self).closest("tr").find('[data-pricevaluedate]').data('pricevaluedate'));
             let nowDate = getNowDate();
             let date = new Date();
-            let setDate = new Date(date.getFullYear(), date.getMonth() + 3, date.getDate());
-            let threeMonthLaterDate = setDate.toISOString().split('T')[0].replaceAll('-', '/');
+            let threeMonthLaterDate = dayjs(date.setMonth(date.getMonth() + 3)).format('YYYY/MM/DD');
             $('[data-infostart]').datepicker('setDate', nowDate);
             $('[data-infoend]').datepicker('setDate', threeMonthLaterDate);
             $('[data-infostart]').val(nowDate);
