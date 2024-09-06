@@ -400,14 +400,17 @@ namespace Feature.Wealth.Account.Controllers
         public ActionResult Logout()
         {
             Authentication.LogOutUser();
-            MemberLog memberLog = new MemberLog()
+            if (FcbMemberHelper.CheckMemberLogin())
             {
-                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
-                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
-                Action = ActionEnum.Logout.ToString(),
-                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
-            };
-            _memberRepository.RecordMemberActionLog(memberLog);
+                MemberLog memberLog = new MemberLog()
+                {
+                    PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
+                    PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
+                    Action = ActionEnum.Logout.ToString(),
+                    ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
+                };
+                _memberRepository.RecordMemberActionLog(memberLog);
+            }
             return Redirect(callBackUrl);
         }
 
