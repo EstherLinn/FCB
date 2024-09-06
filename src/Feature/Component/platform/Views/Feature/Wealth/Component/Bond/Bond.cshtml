@@ -809,6 +809,16 @@
             });
 
             $(function () {
+                let autoData = bondList.sort((a, b) => {
+                    if (a.BondCode < b.BondCode) {
+                        return -1;
+                    } else if (a.BondCode > b.BondCode) {
+                        return 1;
+                    }
+                    // a must be equal to b
+                    return 0;
+                });
+
                 // 關鍵字搜尋 autocomplete，參考套件：https://github.com/devbridge/jQuery-Autocomplete
                 $('#keyword').autocomplete({
                     noCache: true,
@@ -822,9 +832,9 @@
                     lookup: function (query, done) {
                         query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
                         if (query.length == 0) {
-                            result = bondList.slice(0, 5);
+                            result = autoData.slice(0, 5);
                         } else {
-                            result = bondList.filter(function (item) {
+                            result = autoData.filter(function (item) {
                                 return new RegExp(query, 'gi').test(item.value);
                             }).slice(0, 5);
                         }
