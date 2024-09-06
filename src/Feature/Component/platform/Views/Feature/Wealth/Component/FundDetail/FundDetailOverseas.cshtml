@@ -2679,6 +2679,7 @@
                 return;
             }
             $('body').addClass("has-bottomTool");
+            activateTabFromUrl();
             function emptyValueToDash(str) {
                 if (str == null || str.replace(/\s/g, "").length == 0) {
                     return "-"
