@@ -60,6 +60,10 @@ namespace Feature.Wealth.Component.Controllers
             {
                 return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsultList.cshtml", CreateConsultListModel(item));
             }
+            else if (string.IsNullOrEmpty(FcbMemberHelper.fcbMemberModel.AdvisrorID))
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/NoEmployeeConsultList.cshtml", CreateConsultListModel(item));
+            }
             else
             {
                 return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", CreateConsultListModel(item));
