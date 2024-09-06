@@ -613,7 +613,7 @@
                                 }
                                 // a must be equal to b
                                 return 0;
-                            });;
+                            });
                         } else {
                             result = USStockList.filter(function (item) {
                                 return new RegExp(query, 'gi').test(item.value);
@@ -625,7 +625,7 @@
                                 }
                                 // a must be equal to b
                                 return 0;
-                            });;
+                            });
                         }
                         done({
                             suggestions: result
