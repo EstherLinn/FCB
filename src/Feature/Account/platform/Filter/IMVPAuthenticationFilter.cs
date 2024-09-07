@@ -1,17 +1,17 @@
-﻿using Feature.Wealth.Account.Helpers;
-using Foundation.Wealth.Helper;
+﻿using Foundation.Wealth.Models;
 using Sitecore.Configuration;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Filters;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+
 namespace Feature.Wealth.Account.Filter
 {
     public class IMVPAuthenticationFilter : ActionFilterAttribute, IAuthenticationFilter
     {
         private string GetIPAddress()
         {
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            HttpContext context = HttpContext.Current;
             string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
 
             if (!string.IsNullOrEmpty(ipAddress))
@@ -30,10 +30,9 @@ namespace Feature.Wealth.Account.Filter
         {
             // 驗證來源 IP
             var safeIP = Settings.GetSetting("IMVPSafeIP");
-
             var ip = GetIPAddress();
 
-            if (safeIP.Contains(ip) == false)
+            if (!safeIP.Contains(ip) && Config.IsEnableCheck)
             {
                 filterContext.Result = new HttpUnauthorizedResult();
             }

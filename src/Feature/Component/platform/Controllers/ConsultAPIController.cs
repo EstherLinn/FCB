@@ -1,14 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using Feature.Wealth.Account.Filter;
+﻿using Feature.Wealth.Account.Filter;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.Component.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Mail;
+using Microsoft.IdentityModel.Tokens;
+using Sitecore.Configuration;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
 using Sitecore.SecurityModel;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -20,6 +25,33 @@ namespace Feature.Wealth.Component.Controllers
 
         [HttpPost]
         [IMVPAuthenticationFilter]
+        public ActionResult GetAuthorization()
+        {
+            string key = Settings.GetSetting("JwtSecretKey"); //Secret key which will be used later during validation    
+            var issuer = Settings.GetSetting("JwtIssuer");  //normally this will be your site URL    
+            var audience = Settings.GetSetting("JwtAudience");
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            //Create a List of Claims, Keep claims name short    
+            var permClaims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+            //Create Security Token object by giving required parameters    
+            var token = new JwtSecurityToken(issuer, //Issure    
+                            audience,  //Audience    
+                            permClaims,
+                            expires: DateTime.Now.AddDays(1),
+                            signingCredentials: credentials);
+            var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
+            var returnObj = new { token = jwt_token };
+            return new JsonNetResult(returnObj);
+        }
+
+        [HttpPost]
+        [ApiAuthentication]
         public async Task<ActionResult> CheckSchedule(string scheduleId, string action, string description)
         {
             if (string.IsNullOrEmpty(scheduleId) || string.IsNullOrEmpty(action))

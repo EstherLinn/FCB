@@ -12,5 +12,6 @@
     <PackageReference Include="MailKit" />
     <PackageReference Include="Oracle.ManagedDataAccess" />
     <PackageReference Include="FluentFTP" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
   </ItemGroup>
 </Project>
