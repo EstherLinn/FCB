@@ -33,9 +33,12 @@ namespace Feature.Wealth.Account.Filter
 
             // 提取 Bearer token
             string jwtToken = authHeader.Substring("Bearer ".Length).Trim();
-            var principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, tokenValidationParameters, out _);
 
-            if (principal == null)
+            try
+            {
+                new JwtSecurityTokenHandler().ValidateToken(jwtToken, tokenValidationParameters, out SecurityToken validatedToken);
+            }
+            catch (SecurityTokenException)
             {
                 filterContext.Result = new JsonNetResult(new { statusCode = -9996, statusMsg = "token 驗證失敗" });
             }
