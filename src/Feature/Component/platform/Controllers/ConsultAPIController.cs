@@ -1,14 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using Feature.Wealth.Account.Filter;
+﻿using Feature.Wealth.Account.Filter;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.Component.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Mail;
+using Microsoft.IdentityModel.Tokens;
+using Sitecore.Configuration;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
 using Sitecore.SecurityModel;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -18,36 +23,35 @@ namespace Feature.Wealth.Component.Controllers
     {
         private readonly ConsultRepository _consultRepository = new ConsultRepository();
 
-        [HttpGet]
-        public ActionResult GetToken()
+        [HttpPost]
+        [IMVPAuthenticationFilter]
+        public ActionResult GetAuthorization()
         {
-            string key = "my_secret_key_12345"; //Secret key which will be used later during validation    
-            var issuer = "http://mysite.com";  //normally this will be your site URL    
+            string key = Settings.GetSetting("JwtSecretKey"); //Secret key which will be used later during validation    
+            var issuer = Settings.GetSetting("JwtIssuer");  //normally this will be your site URL    
+            var audience = Settings.GetSetting("JwtAudience");
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            //var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-            //var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            //Create a List of Claims, Keep claims name short    
+            var permClaims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
 
-            ////Create a List of Claims, Keep claims name short    
-            //var permClaims = new List<Claim>();
-            //permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-            //permClaims.Add(new Claim("valid", "1"));
-            //permClaims.Add(new Claim("userid", "1"));
-            //permClaims.Add(new Claim("name", "bilal"));
-
-            ////Create Security Token object by giving required parameters    
-            //var token = new JwtSecurityToken(issuer, //Issure    
-            //                issuer,  //Audience    
-            //                permClaims,
-            //                expires: DateTime.Now.AddDays(1),
-            //                signingCredentials: credentials);
-            //var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
-            //var returnObj = new { data = jwt_token };
-            return new JsonNetResult(null);
+            //Create Security Token object by giving required parameters    
+            var token = new JwtSecurityToken(issuer, //Issure    
+                            audience,  //Audience    
+                            permClaims,
+                            expires: DateTime.Now.AddDays(1),
+                            signingCredentials: credentials);
+            var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
+            var returnObj = new { token = jwt_token };
+            return new JsonNetResult(returnObj);
         }
 
         [HttpPost]
-        [Authorize]
-        [IMVPAuthenticationFilter]
+        [ApiAuthentication]
         public async Task<ActionResult> CheckSchedule(string scheduleId, string action, string description)
         {
             if (string.IsNullOrEmpty(scheduleId) || string.IsNullOrEmpty(action))
