@@ -17,7 +17,7 @@ namespace Feature.Wealth.Account.Filter
             var authHeader = HttpContext.Current.Request.Headers["Authorization"]?.ToString();
             if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
             {
-                filterContext.Result = new HttpUnauthorizedResult("token not found");
+                filterContext.Result = new JsonNetResult(new { statusCode = -9997, statusMsg = "找不到 token" });
                 return;
             }
 
@@ -37,7 +37,7 @@ namespace Feature.Wealth.Account.Filter
 
             if (principal == null)
             {
-                filterContext.Result = new HttpUnauthorizedResult("token validation failed");
+                filterContext.Result = new JsonNetResult(new { statusCode = -9996, statusMsg = "token 驗證失敗" });
             }
         }
 
@@ -45,7 +45,7 @@ namespace Feature.Wealth.Account.Filter
         {
             if (filterContext.Result == null)
             {
-                filterContext.Result = new JsonNetResult(new { statusCode = -9999, statusMsg = "不合法的驗證" });
+                filterContext.Result = new JsonNetResult(new { statusCode = -9998, statusMsg = "不合法的驗證" });
             }
         }
     }
