@@ -70,6 +70,37 @@ namespace Feature.Wealth.Component.Controllers
             }
         }
 
+        public ActionResult QandAList()
+        {
+            var item = RenderingContext.CurrentOrNull?.Rendering.Item;
+
+            return View("/Views/Feature/Wealth/Component/Consult/QandAList.cshtml", CreateQandAListModel(item));
+        }
+
+        private QandAListModel CreateQandAListModel(Item item)
+        {
+            var qandAListModel = new QandAListModel
+            {
+                Item = item,
+            };
+
+            var qnas = ItemUtils.GetMultiListValueItems(item, Template.QandAList.Fields.QandA);
+
+            if (qnas != null && qnas.Any())
+            {
+                foreach (var qna in qnas)
+                {
+                    qandAListModel.QandAList.Add(new QandA
+                    {
+                        Question = ItemUtils.GetFieldValue(qna, Template.ConsultQandA.Fields.Question),
+                        Answer = ItemUtils.GetFieldValue(qna, Template.ConsultQandA.Fields.Answer)
+                    });
+                }
+            }
+
+            return qandAListModel;
+        }
+
         private ConsultListModel CreateConsultListModel(Item item)
         {
             var temps = this._consultRepository.GetConsultScheduleList();
