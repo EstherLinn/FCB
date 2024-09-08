@@ -36,14 +36,8 @@ namespace Feature.Wealth.Component.Models.Consult
     public class ConsultListModel
     {
         public Item Item { get; set; }
-        public string ConsultLink { get; set; }
         public string ConsultScheduleLink { get; set; }
-        public List<QandA> QandAList { get; set; } = new List<QandA>();
-        public HtmlString Notice { get; set; }
-        public string MainTitle { get; set; }
-        public HtmlString Description { get; set; }
-        public string ButtonText { get; set; }
-        public string Image { get; set; }
+
         public IList<ConsultSchedule> ConsultSchedules { get; set; }
         public HtmlString ConsultSchedulesHtmlString { get; set; }
         public IList<ConsultScheduleForCalendar> ConsultScheduleForCalendars { get; set; }
@@ -318,21 +312,6 @@ namespace Feature.Wealth.Component.Models.Consult
                 public static readonly ID PersonalInformationText = new ID("{2C7674B0-E573-4515-A2D8-1E777867880A}");
                 public static readonly ID PersonalInformationLink = new ID("{F0D15279-4ADF-4744-AE0E-A46E116D701C}");
                 public static readonly ID SubjectList = new ID("{0271AD6F-0BB0-4E36-A656-A6C547073915}");
-            }
-        }
-
-        public readonly struct ConsultList
-        {
-            public static readonly ID Id = new ID("{616E463F-3397-4070-803F-F518BD93CE1B}");
-
-            public readonly struct Fields
-            {
-                public static readonly ID QandA = new ID("{A28F1CC6-FA71-432E-A2A7-AB4A36F0165B}");
-                public static readonly ID Notice = new ID("{46EFE03B-118E-432B-A1D1-8E1D584B4476}");
-                public static readonly ID MainTitle = new ID("{1AEB2E23-7DDF-446F-AF35-1B6A7C5978FD}");
-                public static readonly ID Description = new ID("{63824A06-5DAE-4E1F-AD2A-9C5605F08449}");
-                public static readonly ID ButtonText = new ID("{B1C97682-A3C9-40D4-BCA9-2ABFCE9BB72A}");
-                public static readonly ID Image = new ID("{A6CB6F8B-2951-4454-BABD-A9606BA65BDF}");
             }
         }
 
