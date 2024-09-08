@@ -508,6 +508,7 @@
     const consultSchedules = @Model.ConsultSchedulesHtmlString;
     const dataSource = @Model.ConsultScheduleForCalendarsHtmlString;
     const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六']
+    let calendar;
 
     let popoverElement;
     const dateObj = new Date();
@@ -749,7 +750,8 @@
             });
         }
 
-        function cancelConsultSchedule(id) {
+        function cancelConsultSchedule(id) {            
+            window.loading('show');
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
 
             var token = $('input[name="__RequestVerificationToken"]').val();
@@ -765,6 +767,11 @@
                 if (data.success) {
                     if (data1.length > 0) {
                         fjs1.removeRecords({ ScheduleID: id });
+                    }
+
+                    var event = calendar.getEventById(id);
+                    if (event) {
+                        event.remove();
                     }
                 }
                 else {
@@ -783,7 +790,6 @@
 
         $('[data-cancel]').on('click', function (e) {
             e.preventDefault();
-            window.loading('show');
             var id = $(this).attr('data-id')
             cancelConsultSchedule(id);
         });
@@ -824,7 +830,7 @@
         });
 
         let calendarEl = document.getElementById('calendar');
-        let calendar = new FullCalendar.Calendar(calendarEl, {
+        calendar = new FullCalendar.Calendar(calendarEl, {
             height: 'auto',
             locale: 'zh-tw',
             initialView: 'dayGridMonth',
@@ -1053,16 +1059,13 @@
             var footerBtnSuccess = `
                             <div class="l-action l-action--inline" data-footer-tmpl="success">
                                 <div class="l-action__item">
-                                    <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-quick-close data-cancel>取消預約</a>
-                                </div>
-                                <div class="l-action__item">
-                                    <a href="#" class="o-btn o-btn--primary o-btn--sm {isDisabled}" data-event-id="{id}" data-start-btn>{starBtnText}</a>
+                                    <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-quick-close data-cancel>取消預約</a>
                                 </div>
                             </div>`;
             var footerBtnReserving = `
                             <div class="l-action l-action--inline" data-footer-tmpl="reserving">
                                 <div class="l-action__item">
-                                    <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{id}" data-quick-close data-cancel>取消預約</a>
+                                    <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-quick-close data-cancel>取消預約</a>
                                 </div>
                             </div>`;
             var $footerWrapper = `
@@ -1075,12 +1078,12 @@
                     break;
                 case 'success':
                     // 只在預約時段時顯示「開始諮詢」，尚未到來皆顯示「等待中」
-                    footerBtnSuccess = footerBtnSuccess.replace('{id}', data.id).replace('{starBtnText}', data.release ? '開始諮詢' : '等待中').replace('{isDisabled}', data.release ? '' : 'is-disabled');
+                    footerBtnSuccess = footerBtnSuccess.replace('{cid}', data.cid).replace('{starBtnText}', data.release ? '開始諮詢' : '等待中').replace('{isDisabled}', data.release ? '' : 'is-disabled');
                     $footerWrapper = $footerWrapper.replace('{btns}', footerBtnSuccess);
                     $floatingEl = $floatingEl.replace('${footer}', $footerWrapper);
                     break;
                 case 'reserving':
-                    footerBtnReserving = footerBtnReserving.replace('{id}', data.id);
+                    footerBtnReserving = footerBtnReserving.replace('{cid}', data.cid);
                     $footerWrapper = $footerWrapper.replace('{btns}', footerBtnReserving);
                     $floatingEl = $floatingEl.replace('${footer}', $footerWrapper);
                     break;
@@ -1090,8 +1093,15 @@
             return $floatingEl;
         }
 
-        // 單筆行程泡泡關閉
         $('body').on('click.quickClose', '[data-quick-close]', function (e) {
+            e.preventDefault();
+
+            $('.c-eventPopup').remove();
+            $('body').css('overflow', 'initial');
+        });
+
+        // 取消諮詢
+        $('body').on('click.cancel', '[data-cancel-btn]', function (e) {
             e.preventDefault();
 
             let id = $(this).data('eventId');
@@ -1104,9 +1114,10 @@
         // 開始諮詢
         $('body').on('click.start', '[data-start-btn]', function () {
             e.preventDefault();
+
             // 開始諮詢的該筆資料
             let id = $(this).data('eventId');
-            window.open('@(Model.ConsultScheduleLink)?id=' + id + '&type=Employee');
+            window.open('@(Model.ConsultScheduleLink)?id=' + id + '&type=Employee', "_blank");
         });
     });
 </script>
