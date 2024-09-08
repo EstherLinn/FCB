@@ -187,32 +187,12 @@ namespace Feature.Wealth.Component.Controllers
             var consultListModel = new ConsultListModel
             {
                 Item = item,
-                ConsultLink = ConsultRelatedLinkSetting.GetConsultUrl(),
                 ConsultScheduleLink = ConsultRelatedLinkSetting.GetConsultScheduleUrl(),
-                Notice = new HtmlString(ItemUtils.GetFieldValue(item, Template.ConsultList.Fields.Notice)),
-                MainTitle = ItemUtils.GetFieldValue(item, Template.ConsultList.Fields.MainTitle),
-                Description = new HtmlString(ItemUtils.GetFieldValue(item, Template.ConsultList.Fields.Description)),
-                ButtonText = ItemUtils.GetFieldValue(item, Template.ConsultList.Fields.ButtonText),
-                Image = ItemUtils.ImageUrl(item, Template.ConsultList.Fields.Image),
                 ConsultSchedules = consultScheduleList,
                 ConsultSchedulesHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleList)),
                 ConsultScheduleForCalendars = consultScheduleForCalendarList,
                 ConsultScheduleForCalendarsHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleForCalendarList)),
             };
-
-            var qnas = ItemUtils.GetMultiListValueItems(item, Template.ConsultList.Fields.QandA);
-
-            if (qnas != null && qnas.Any())
-            {
-                foreach (var qna in qnas)
-                {
-                    consultListModel.QandAList.Add(new QandA
-                    {
-                        Question = ItemUtils.GetFieldValue(qna, Template.ConsultQandA.Fields.Question),
-                        Answer = ItemUtils.GetFieldValue(qna, Template.ConsultQandA.Fields.Answer)
-                    });
-                }
-            }
 
             return consultListModel;
         }
