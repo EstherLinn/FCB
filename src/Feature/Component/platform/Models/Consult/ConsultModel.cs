@@ -156,6 +156,10 @@ namespace Feature.Wealth.Component.Models.Consult
         /// </summary>
         public string id { get; set; }
         /// <summary>
+        /// 同 ScheduleID
+        /// </summary>
+        public string cid { get; set; }
+        /// <summary>
         /// 預約中、預約成功、歷史紀錄
         /// </summary>
         public string title { get; set; }
