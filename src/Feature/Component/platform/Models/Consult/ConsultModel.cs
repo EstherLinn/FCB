@@ -52,6 +52,12 @@ namespace Feature.Wealth.Component.Models.Consult
         public bool IsManager { get; set; } = false;
     }
 
+    public class QandAListModel
+    {
+        public Item Item { get; set; }
+        public List<QandA> QandAList { get; set; } = new List<QandA>();
+    }
+
     public class QandA
     {
         public string Question { get; set; }
@@ -327,6 +333,16 @@ namespace Feature.Wealth.Component.Models.Consult
                 public static readonly ID Description = new ID("{63824A06-5DAE-4E1F-AD2A-9C5605F08449}");
                 public static readonly ID ButtonText = new ID("{B1C97682-A3C9-40D4-BCA9-2ABFCE9BB72A}");
                 public static readonly ID Image = new ID("{A6CB6F8B-2951-4454-BABD-A9606BA65BDF}");
+            }
+        }
+
+        public readonly struct QandAList
+        {
+            public static readonly ID Id = new ID("{071BB5A1-2A69-4384-A43D-901D0C5EE703}");
+
+            public readonly struct Fields
+            {
+                public static readonly ID QandA = new ID("{1FC5E334-1486-46E9-9940-BA4A7397BBA6}");
             }
         }
 
