@@ -268,62 +268,8 @@
         </div>
     </div>
 </div>
-<div class="c-section">
-    <div class="c-section__content">
-        <div class="c-feature c-feature--join c-feature--personalize">
-            <div class="c-feature__content u-center">
-                <h3 class="c-feature__title">@Model.MainTitle</h3>
-                <p class="c-feature__desc">@Model.Description</p>
-                <div class="c-feature__actions">
-                    <a href="@Model.ConsultLink" class="o-btn o-btn--primary o-btn--flat o-btn--sm">@Model.ButtonText</a>
-                </div>
-            </div>
-            <div class="c-feature__plate">
-                <img src="@Model.Image" alt="@Model.MainTitle" class="c-feature__img">
-            </div>
-        </div>
-    </div>
-</div>
-<div class="c-section">
-    <div class="c-section__title u-left">常見問題</div>
-    <div class="c-section__content">
-        <div class="l-flex u-flex-col u-flex-gap-sm">
 
-            @foreach (var item in Model.QandAList)
-            {
-                <div class="l-flex__item">
-                    <div class="c-collapse" data-collapse="true">
-                        <div class="c-collapse__head" data-collapse-button="true">
-                            <span>@item.Question</span>
-                        </div>
-                        <div class="c-collapse__content" data-collapse-content="true">
-                            <div class="c-collapse__inner">
-                                @item.Answer
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-
-        </div>
-    </div>
-</div>
-<div class="c-section">
-    <div class="c-section__content">
-        <div class="c-collapse c-collapse--warning" data-collapse="true">
-            <div class="c-collapse__head" data-collapse-button="true">
-                <span>注意事項</span>
-            </div>
-            <div class="c-collapse__content" data-collapse-content="true">
-                <div class="c-collapse__inner">
-                    <div class="l-list l-list--xs">
-                        @Model.Notice
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@Html.Sitecore().Placeholder("ConsultList")
 
 <div id="popupDetail" class="c-modal mfp-hide">
     <div class="c-modal__wrap">
