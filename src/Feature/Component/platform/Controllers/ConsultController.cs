@@ -147,6 +147,7 @@ namespace Feature.Wealth.Component.Controllers
                     var consultScheduleForCalendar = new ConsultScheduleForCalendar
                     {
                         id = consultSchedule.ScheduleID.ToString(),
+                        cid = consultSchedule.ScheduleID.ToString(),
                         userName = consultSchedule.CustomerName,
                         staffName = consultSchedule.EmployeeName,
                         phone = consultSchedule.Phone,
