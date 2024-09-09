@@ -972,7 +972,7 @@
             var footerBtnSuccess = `
                                 <div class="l-action l-action--inline" data-footer-tmpl="success">
                                     <div class="l-action__item">
-                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-quick-close data-cancel>取消預約</a>
+                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-cancel-btn>取消預約</a>
                                     </div>
                                     <div class="l-action__item">
                                         <a href="#" class="o-btn o-btn--primary o-btn--sm {isDisabled}" data-event-id="{cid}" data-start-btn>{starBtnText}</a>
@@ -981,7 +981,7 @@
             var footerBtnReserving = `
                                 <div class="l-action l-action--inline" data-footer-tmpl="reserving">
                                     <div class="l-action__item">
-                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-quick-close data-cancel>取消預約</a>
+                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-cancel-btn>取消預約</a>
                                     </div>
                                 </div>`;
             var $footerWrapper = `
@@ -994,12 +994,12 @@
                     break;
                 case 'success':
                     // 只在預約時段時顯示「開始諮詢」，尚未到來皆顯示「等待中」
-                    footerBtnSuccess = footerBtnSuccess.replace('{cid}', data.cid).replace('{starBtnText}', data.release ? '開始諮詢' : '等待中').replace('{isDisabled}', data.release ? '' : 'is-disabled');
+                    footerBtnSuccess = footerBtnSuccess.replaceAll('{cid}', data.cid).replace('{starBtnText}', data.release ? '開始諮詢' : '等待中').replace('{isDisabled}', data.release ? '' : 'is-disabled');
                     $footerWrapper = $footerWrapper.replace('{btns}', footerBtnSuccess);
                     $floatingEl = $floatingEl.replace('${footer}', $footerWrapper);
                     break;
                 case 'reserving':
-                    footerBtnReserving = footerBtnReserving.replace('{cid}', data.cid);
+                    footerBtnReserving = footerBtnReserving.replaceAll('{cid}', data.cid);
                     $footerWrapper = $footerWrapper.replace('{btns}', footerBtnReserving);
                     $floatingEl = $floatingEl.replace('${footer}', $footerWrapper);
                     break;
