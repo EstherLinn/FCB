@@ -1,7 +1,5 @@
 ﻿using Feature.Wealth.Account.Helpers;
 using Foundation.Wealth.Helper;
-using Sitecore.Web;
-using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Filters;

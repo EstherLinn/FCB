@@ -46,32 +46,38 @@ namespace Feature.Wealth.Component.Controllers
                             expires: DateTime.Now.AddDays(1),
                             signingCredentials: credentials);
             var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
+            Session[ApiAuthenticationAttribute.AUTHORIZATION_KEY] = jwt_token;
             var returnObj = new { token = jwt_token };
             return new JsonNetResult(returnObj);
         }
 
-        [HttpPost]
         [ApiAuthentication]
         public async Task<ActionResult> CheckSchedule(string scheduleId, string action, string description)
         {
+            if (ApiAuthenticationAttribute.IsVerify(Session[ApiAuthenticationAttribute.AUTHORIZATION_KEY] as string))
+            {
+                return new JsonNetResult(new { statusCode = -1100, statusMsg = "CSRF 驗證失敗" });
+            }
+
             if (string.IsNullOrEmpty(scheduleId) || string.IsNullOrEmpty(action))
             {
                 return new JsonNetResult(new { statusCode = -1101, statusMsg = "缺少必要參數" });
             }
 
-            if (Guid.TryParse(scheduleId, out var temp) == false)
+            if (!Guid.TryParse(scheduleId, out var id))
             {
                 return new JsonNetResult(new { statusCode = -1102, statusMsg = "無效的參數或參數格式不正確" });
             }
 
             var consultSchedule = this._consultRepository.GetConsultSchedule(scheduleId);
-
-            if (consultSchedule == null || consultSchedule.ScheduleID == null || consultSchedule.ScheduleID == Guid.Empty)
+            if (consultSchedule == null)
             {
                 return new JsonNetResult(new { statusCode = -1104, statusMsg = "資料不存在" });
             }
 
-            if (string.IsNullOrEmpty(description) == false)
+            consultSchedule.ScheduleID = id;
+
+            if (!string.IsNullOrEmpty(description))
             {
                 consultSchedule.Description = consultSchedule.Description + " 理顧意見：" + description;
             }
