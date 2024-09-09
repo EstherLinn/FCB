@@ -416,6 +416,9 @@
             </section>
         </div>
         <iframe id="SysJustIFRAME" width="100%" scrolling="no" frameborder="0" style="border:none;"></iframe>
+
+        @Html.Sitecore().Placeholder("BondDetail")
+
         @if (Model.BondDetail.HotProductTags != null && Model.BondDetail.HotProductTags.Any())
         {
             <div class="c-hashTags">
