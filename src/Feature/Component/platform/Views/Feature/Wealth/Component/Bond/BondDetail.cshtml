@@ -112,7 +112,6 @@
         <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
             <section class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
-
                 </div>
                 <div class="l-flex__item"></div>
             </section>
@@ -155,7 +154,7 @@
                                                     }
                                                     else
                                                     {
-                                                         <div class="c-numerical__content"><span>@Model.BondDetail.UpsAndDownsDay</span></div>
+                                                        <div class="c-numerical__content"><span>@Model.BondDetail.UpsAndDownsDay</span></div>
                                                     }
                                                 </span>
                                             </div>
@@ -180,7 +179,7 @@
                                                     }
                                                     else
                                                     {
-                                                         <div class="c-numerical__content"><span>@Model.BondDetail.UpsAndDownsPercentage%</span></div>
+                                                        <div class="c-numerical__content"><span>@Model.BondDetail.UpsAndDownsPercentage%</span></div>
                                                     }
                                                 </span>
                                             </div>
@@ -197,9 +196,69 @@
                         </div>
                     </section>
 
+                    <section class="c-section u-printBreak">
+                        <div class="c-section__title">參考贖回價走勢</div>
+                        <div class="c-section__content">
+                            <div class="l-flex u-flex-col u-flex-gap-sm">
+                                <div class="l-flex__item" data-chart="price">
+                                    <div class="c-empty">
+                                        <div class="c-empty__img">
+                                            <img src="@Url.Content("~/themes/images/lions/lion-keyword.svg")" alt="">
+                                        </div>
+                                        <div class="c-empty__desc">沒有資料</div>
+                                    </div>
+                                    <div class="c-chartBox">
+                                        <div class="c-chartBox__filter">
+                                            <div class="l-flex u-flex-gap-md u-flex-top u-flex-col@lt">
+                                                <div class="l-flex__item">
+                                                    <div class="l-pickGroup">
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                                <input class="o-btnRadio__input" type="radio" name="dateRange" value="3m" data-trend-filter="dateRange" checked>
+                                                                <div class="o-btnRadio__text"><span>3個月</span></div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                                <input class="o-btnRadio__input" type="radio" name="dateRange" value="12m" data-trend-filter="dateRange">
+                                                                <div class="o-btnRadio__text"><span>1年</span></div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                                <input class="o-btnRadio__input" type="radio" name="dateRange" value="36m" data-trend-filter="dateRange">
+                                                                <div class="o-btnRadio__text"><span>3年</span></div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                                <input class="o-btnRadio__input" type="radio" name="dateRange" value="60m" data-trend-filter="dateRange">
+                                                                <div class="o-btnRadio__text"><span>5年</span></div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__item">
+                                                            <label class="o-btnRadio o-btnRadio--capsule o-btnRadio--sm">
+                                                                <input class="o-btnRadio__input" type="radio" name="dateRange" value="establishment" data-trend-filter="dateRange">
+                                                                <div class="o-btnRadio__text"><span>成立至今</span></div>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="c-chartBox__chart">
+                                            <div id="priceChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     <section class="c-section">
+                        <div class="c-section__title">近5日參考贖回價</div>
                         <div class="l-table">
-                            <table class="c-table@dt-only c-table--surround c-cardTable@lt">
+                            <table class="c-table u-center u-nowrap" data-fixed-columns data-table-name="">
                                 <colgroup>
                                     <col style="width: 1%;">
                                     <col style="width: 1%;">
@@ -208,79 +267,73 @@
                                     <col style="width: 1%;">
                                 </colgroup>
                                 <thead>
-                                    <th colspan="5">
-                                        <div class="c-table__title">
-                                            <span>近5日參考贖回價</span>
-                                        </div>
-                                    </th>
+                                    <tr>
+                                        <th>
+                                            <div class="c-table__title">
+                                                @if (@Model.Top5BondHistoryPrice.Count > 0)
+                                                {
+                                                    <span>@Model.Top5BondHistoryPrice[0].Date</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                @if (@Model.Top5BondHistoryPrice.Count > 1)
+                                                {
+                                                    <span>@Model.Top5BondHistoryPrice[1].Date</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                @if (@Model.Top5BondHistoryPrice.Count > 2)
+                                                {
+                                                    <span>@Model.Top5BondHistoryPrice[2].Date</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                @if (@Model.Top5BondHistoryPrice.Count > 3)
+                                                {
+                                                    <span>@Model.Top5BondHistoryPrice[3].Date</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div class="c-table__title">
+                                                @if (@Model.Top5BondHistoryPrice.Count > 4)
+                                                {
+                                                    <span>@Model.Top5BondHistoryPrice[4].Date</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
+                                            </div>
+                                        </th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                        <td class="c-cardTable__body">
-                                            <div class="c-cardTable__content">
-                                            @if(@Model.Top5BondHistoryPrice.Count > 0)
-                                            {
-                                                <span>@Model.Top5BondHistoryPrice[0].Date</span>
-                                            }
-                                            else
-                                            {
-                                                <span>-</span>
-                                            }
-                                            </div>
-                                        </td>
-                                        <td class="c-cardTable__body">
-                                            <div class="c-cardTable__content">
-                                            @if(@Model.Top5BondHistoryPrice.Count > 1)
-                                            {
-                                                <span>@Model.Top5BondHistoryPrice[1].Date</span>
-                                            }
-                                            else
-                                            {
-                                                <span>-</span>
-                                            }
-                                            </div>
-                                        </td>
-                                        <td class="c-cardTable__body">
-                                            <div class="c-cardTable__content">
-                                            @if(@Model.Top5BondHistoryPrice.Count > 2)
-                                            {
-                                                <span>@Model.Top5BondHistoryPrice[2].Date</span>
-                                            }
-                                            else
-                                            {
-                                                <span>-</span>
-                                            }
-                                            </div>
-                                        </td>
-                                        <td class="c-cardTable__body">
-                                            <div class="c-cardTable__content">
-                                            @if(@Model.Top5BondHistoryPrice.Count > 3)
-                                            {
-                                                <span>@Model.Top5BondHistoryPrice[3].Date</span>
-                                            }
-                                            else
-                                            {
-                                                <span>-</span>
-                                            }
-                                            </div>
-                                        </td>
-                                        <td class="c-cardTable__body">
-                                            <div class="c-cardTable__content">
-                                            @if(@Model.Top5BondHistoryPrice.Count > 4)
-                                            {
-                                                <span>@Model.Top5BondHistoryPrice[4].Date</span>
-                                            }
-                                            else
-                                            {
-                                                <span>-</span>
-                                            }
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-                                        <td class="c-cardTable__body">
-                                            <div class="c-cardTable__content">
-                                            @if(@Model.Top5BondHistoryPrice.Count > 0)
+                                    <tr>
+                                        <td>
+                                            @if (@Model.Top5BondHistoryPrice.Count > 0)
                                             {
                                                 <span>@Model.Top5BondHistoryPrice[0].RedemptionFee</span>
                                             }
@@ -288,11 +341,9 @@
                                             {
                                                 <span>-</span>
                                             }
-                                            </div>
                                         </td>
-                                        <td class="c-cardTable__body">
-                                            <div class="c-cardTable__content">
-                                            @if(@Model.Top5BondHistoryPrice.Count > 1)
+                                        <td>
+                                            @if (@Model.Top5BondHistoryPrice.Count > 1)
                                             {
                                                 <span>@Model.Top5BondHistoryPrice[1].RedemptionFee</span>
                                             }
@@ -300,11 +351,9 @@
                                             {
                                                 <span>-</span>
                                             }
-                                            </div>
                                         </td>
-                                        <td class="c-cardTable__body">
-                                            <div class="c-cardTable__content">
-                                            @if(@Model.Top5BondHistoryPrice.Count > 2)
+                                        <td>
+                                            @if (@Model.Top5BondHistoryPrice.Count > 2)
                                             {
                                                 <span>@Model.Top5BondHistoryPrice[2].RedemptionFee</span>
                                             }
@@ -312,11 +361,9 @@
                                             {
                                                 <span>-</span>
                                             }
-                                            </div>
                                         </td>
-                                        <td class="c-cardTable__body">
-                                            <div class="c-cardTable__content">
-                                            @if(@Model.Top5BondHistoryPrice.Count > 3)
+                                        <td>
+                                            @if (@Model.Top5BondHistoryPrice.Count > 3)
                                             {
                                                 <span>@Model.Top5BondHistoryPrice[3].RedemptionFee</span>
                                             }
@@ -324,11 +371,9 @@
                                             {
                                                 <span>-</span>
                                             }
-                                            </div>
                                         </td>
-                                        <td class="c-cardTable__body">
-                                            <div class="c-cardTable__content">
-                                            @if(@Model.Top5BondHistoryPrice.Count > 4)
+                                        <td>
+                                            @if (@Model.Top5BondHistoryPrice.Count > 4)
                                             {
                                                 <span>@Model.Top5BondHistoryPrice[4].RedemptionFee</span>
                                             }
@@ -336,13 +381,12 @@
                                             {
                                                 <span>-</span>
                                             }
-                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </section>                    
+                    </section>
                 </div>
                 <div class="l-flex__item"></div>
             </section>
@@ -350,7 +394,6 @@
         <div class="c-tab__panel" data-tab-panel-id="tab-3">
             <section class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
-
                 </div>
                 <div class="l-flex__item"></div>
             </section>
@@ -391,6 +434,8 @@
 </div>
 
 <script>
+    const bondHistoryPrices = @Model.BondHistoryPriceHtmlString;
+
     $(function () {
         var ACTIONS = {
             APPROVED: 0,
@@ -516,10 +561,10 @@
             var name = DOMPurify.sanitize($(this).attr("data-tab-target"));
             var val = name.replace('tab-', '');
 
-            if(val == "2"){
+            if (val == "2") {
                 $(_selector).hide();
             }
-            else{
+            else {
                 $(_selector).show();
                 setIframeSrc(val);
             }
@@ -531,5 +576,252 @@
         $('[eh-subscription-type]').trigger('exec');
 
         init();
+
+        $('[data-trend-filter="dateRange"]').on('change', function () {
+            getParams();
+        });
+
+        var chart;
+
+        function getParams() {
+            const obj = {
+                range: $('[data-trend-filter="dateRange"]:checked').length > 0 ? $('[data-trend-filter="dateRange"]:checked').val() : "custom",
+                startdate: "",
+                enddate: "",
+            };
+
+            let today = new Date();
+
+            function CalDateRange(month) {
+                let set = new Date().setMonth(new Date().getMonth() - month);
+                let setDate = new Date(set);
+                return setDate.getFullYear() + "-" + ((setDate.getMonth() + 1) < 10 ? "0" + (setDate.getMonth() + 1) : (setDate.getMonth() + 1)) + "-" + setDate.getDate();
+            }
+
+            if (!obj.startdate && !obj.enddate) {
+                switch (obj.range) {
+                    case 'sinceYear':
+                        obj.startdate = today.getFullYear() + "-" + "01-01";
+                        obj.enddate = today.toISOString().split('T')[0];
+                        break;
+                    case '3m':
+                        obj.startdate = CalDateRange(3)
+                        obj.enddate = today.toISOString().split('T')[0];
+                        break;
+                    case '6m':
+                        obj.startdate = CalDateRange(6)
+                        obj.enddate = today.toISOString().split('T')[0];
+                        break;
+                    case '12m':
+                        obj.startdate = CalDateRange(12);
+                        obj.enddate = today.toISOString().split('T')[0];
+                        break;
+                    case '24m':
+                        obj.startdate = CalDateRange(24);
+                        obj.enddate = today.toISOString().split('T')[0];
+                        break;
+                    case '36m':
+                        obj.startdate = CalDateRange(36);
+                        obj.enddate = today.toISOString().split('T')[0];
+                        break;
+                    case '60m':
+                        obj.startdate = CalDateRange(60);
+                        obj.enddate = today.toISOString().split('T')[0];
+                        break;
+                    case 'establishment':
+                        if (bondHistoryPrices.length > 0) {
+                            obj.startdate = bondHistoryPrices[0].Date.replaceAll('/', '-');
+                            obj.enddate = today.toISOString().split('T')[0];
+                        }
+                        break;
+                }
+            } else {
+                obj.startdate = obj.startdate.replaceAll('/', '-');
+                obj.enddate = obj.enddate.replaceAll('/', '-');
+            }
+
+            if (chart) {
+                chart.showLoading();
+            }
+
+            initPriceChart(obj);
+        }
+        function roundToTwo(num) {
+            return +(Math.round(num + 'e+2') + 'e-2');
+        }
+        function CheckSameYear(d1, d2) {
+            let d1Year = new Date(d1).getFullYear();
+            let d2Year = new Date(d2).getFullYear();
+            return d1Year == d2Year
+        }
+        function CheckSameYearAndMonth(d1, d2) {
+            let d1Year = new Date(d1).getFullYear();
+            let d2Year = new Date(d2).getFullYear();
+            let d1Month = new Date(d1).getMonth() + 1;
+            let d2Month = new Date(d2).getMonth() + 1;
+            return d1Year == d2Year && d1Month == d2Month
+        }
+        let preVal;
+        function initPriceChart(obj) {
+            try {
+                let mapData = [];
+                var data = bondHistoryPrices.filter(item => item.Date.replaceAll('/', '-') >= obj.startdate && item.Date.replaceAll('/', '-') <= obj.enddate);
+
+                if (data.length != 0) {
+                    mapData = data.map(item => {
+                        return {
+                            x: new Date(item.Date.replaceAll('/', '-')).getTime(),
+                            name: item.Date.replaceAll('/', '-'),
+                            y: roundToTwo(item.RedemptionFee)
+                        };
+                    });
+                    mapData.reverse();
+                }
+
+                let series = {
+                    name: "參考贖回價",
+                    data: mapData,
+                    legendSymbol: 'rectangle',
+                    color: obj.netWorth ? '#A4844E' : '#238C6C',
+                    turboThreshold: 0,
+                };
+                chart = Highcharts.stockChart('priceChart', {
+                    chart: {
+                        zooming: {
+                            mouseWheel: {
+                                enabled: false
+                            }
+                        },
+                        height: 280
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    scrollbar: {
+                        enabled: false
+                    },
+                    navigator: {
+                        enabled: false
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+                    legend: {
+                        enabled: true,
+                        align: 'left',
+                        floating: false,
+                        y: 20,
+                        itemStyle: {
+                            fontSize: '1em',
+                            color: '#222',
+                            cursor: 'default'
+                        },
+                        itemHoverStyle: {
+                            color: '#222'
+                        },
+                        symbolHeight: 12,
+                        symbolWidth: 12
+                    },
+                    plotOptions: {
+                        series: {
+                            dataGrouping: {
+                                enabled: false
+                            },
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    lineWidth: 2,
+                                    halo: {
+                                        size: 8
+                                    }
+                                }
+                            },
+                            events: {
+                                legendItemClick: function () {
+                                    return false;
+                                }
+                            }
+                        }
+                    },
+                    tooltip: {
+                        split: false,
+                        useHTML: true,
+                        formatter: function () {
+                            const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + '</div>';
+                            return tooltip;
+                        },
+                        shadow: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        tickPosition: 'inside',
+                        tickWidth: 0.5,
+                        tickLength: 7,
+                        tickInterval: (24 * 3600 * 1000) * 7,
+                        labels: {
+                            formatter: function () {
+                                let format = CheckSameYear(obj.startdate, obj.enddate) ? '%m/%d' : '%Y/%m';
+                                let output = null;
+                                if (!this.isFirst && format == '%Y/%m') {
+                                    if (!CheckSameYearAndMonth(prevVal, this.value)) {
+                                        output = Highcharts.dateFormat(format, this.value);
+                                    }
+                                    prevVal = this.value;
+                                } else {
+                                    output = Highcharts.dateFormat(format, this.value);
+                                    prevVal = this.value;
+                                }
+                                return output;
+                            },
+                            style: {
+                                color: '#6e6e6e'
+                            }
+                        },
+                        crosshair: {
+                            width: 1,
+                            color: '#c3c3c3'
+                        },
+                        lineColor: '#ebebeb',
+                        tickColor: '#ebebeb'
+                    },
+                    yAxis: {
+                        showLastLabel: true,
+                        opposite: false,
+                        labels: {
+                            y: 4,
+                            formatter: function (value) {
+                                return value.value;
+                            },
+                            style: {
+                                color: '#6e6e6e'
+                            }
+                        },
+                        plotLines: [{
+                            color: '#c3c3c3'
+                        }]
+                    },
+                    series: [series]
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        if (bondHistoryPrices.length > 0) {
+            getParams();
+            $('[data-chart="price"]').find('.c-empty').addClass('u-hidden');
+            $('[data-chart="price"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+        }
+        else {
+            $('[data-chart="price"]').find('.c-empty').removeClass('u-hidden');
+            $('[data-chart="price"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+        }
+
     });
 </script>

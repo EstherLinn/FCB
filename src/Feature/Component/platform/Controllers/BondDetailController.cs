@@ -43,7 +43,7 @@ namespace Feature.Wealth.Component.Controllers
 
             foreach (var bondHistoryPrice in temp)
             {
-                if(model.Top5BondHistoryPrice.Count < 5)
+                if (model.Top5BondHistoryPrice.Count < 5)
                 {
                     model.Top5BondHistoryPrice.Add(bondHistoryPrice);
                 }
@@ -53,15 +53,15 @@ namespace Feature.Wealth.Component.Controllers
                 }
             }
 
-            if(model.Top5BondHistoryPrice.Any())
+            if (model.Top5BondHistoryPrice.Any())
             {
                 var lastBondHistoryPrice = model.Top5BondHistoryPrice.First();
                 var now = DateTime.Parse(model.BondDetail.Date);
                 var last = DateTime.Parse(lastBondHistoryPrice.Date);
 
-                if(DateTime.Compare(now, last) == 0)
+                if (DateTime.Compare(now, last) == 0)
                 {
-                    if(model.Top5BondHistoryPrice.Count > 1)
+                    if (model.Top5BondHistoryPrice.Count > 1)
                     {
                         lastBondHistoryPrice = model.Top5BondHistoryPrice[1];
                     }
@@ -76,7 +76,7 @@ namespace Feature.Wealth.Component.Controllers
                     }
                 }
 
-                if(model.BondDetail.RedemptionFee != null && lastBondHistoryPrice.RedemptionFee != null)
+                if (model.BondDetail.RedemptionFee != null && lastBondHistoryPrice.RedemptionFee != null)
                 {
                     model.BondDetail.UpsAndDownsDay = model.BondDetail.RedemptionFee - lastBondHistoryPrice.RedemptionFee;
                     model.BondDetail.UpsAndDownsPercentage = model.BondDetail.UpsAndDownsDay / lastBondHistoryPrice.RedemptionFee * 100;
