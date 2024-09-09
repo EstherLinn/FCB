@@ -78,7 +78,7 @@ namespace Feature.Wealth.Component.Repositories
                            FROM [ConsultSchedule] WITH (NOLOCK)
                            WHERE ScheduleID = @ScheduleID";
 
-            var result = this._dbConnection.Query<ConsultSchedule>(sql, new { ScheduleID = scheduleID })?.FirstOrDefault() ?? new ConsultSchedule();
+            var result = this._dbConnection.Query<ConsultSchedule>(sql, new { ScheduleID = scheduleID })?.FirstOrDefault();
 
             return result;
         }
