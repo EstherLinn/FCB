@@ -95,7 +95,7 @@
                 <li><a href="#" class="c-tab__item " target="_self" title="歷史價格" data-tab-target="tab-2">歷史價格</a></li>
                 <li><a href="#" class="c-tab__item " target="_self" title="配息時程" data-tab-target="tab-3">配息時程</a></li>
                 <li><a href="#" class="c-tab__item " target="_self" title="相關商品" data-tab-target="tab-4">相關商品</a></li>
-                <li><a href="#" class="c-tab__item " target="_self" title="公司分析" data-tab-target="tab-5">公司分析</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="公司分析" data-tab-target="tab-7">公司分析</a></li>
             </ul>
             <div class="c-tab__collapse">
                 <a href="#" class="c-tab__switch"></a>
@@ -104,7 +104,7 @@
                     <a href="#" class="c-tab__clone " target="_self" title="歷史價格" data-tab-target="tab-2">歷史價格</a>
                     <a href="#" class="c-tab__clone " target="_self" title="配息時程" data-tab-target="tab-3">配息時程</a>
                     <a href="#" class="c-tab__clone " target="_self" title="相關商品" data-tab-target="tab-4">相關商品</a>
-                    <a href="#" class="c-tab__clone " target="_self" title="公司分析" data-tab-target="tab-5">公司分析</a>
+                    <a href="#" class="c-tab__clone " target="_self" title="公司分析" data-tab-target="tab-7">公司分析</a>
                 </div>
             </div>
         </div>
@@ -120,7 +120,229 @@
         <div class="c-tab__panel" data-tab-panel-id="tab-2">
             <section class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
+                    <section class="c-section u-printBreak">
+                        <div class="c-section__content">
+                            <div class="c-borderBox">
+                                <div class="l-divideList l-divideList--col2@mb-only">
+                                    <div class="l-divideList__item">
+                                        <div class="c-numerical">
+                                            <div class="c-numerical__title c-numerical__title--dk"><span>日期</span></div>
+                                            <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold">@Model.BondDetail.Date</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="l-divideList__item">
+                                        <div class="c-numerical">
+                                            <div class="c-numerical__title c-numerical__title--dk"><span>參考贖回價</span></div>
+                                            <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold">@Model.BondDetail.RedemptionFee</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="l-divideList__item">
+                                        <div class="c-numerical">
+                                            <div class="c-numerical__title c-numerical__title--dk"><span>日漲跌</span></div>
+                                            <div class="c-numerical__content c-numerical__content--lg">
+                                                <span class="t-bold">
+                                                    @if (Model.BondDetail.UpsAndDownsDay == null)
+                                                    {
+                                                        <div class="c-numerical__content"><span>-</span></div>
+                                                    }
+                                                    else if (Model.BondDetail.UpsAndDownsDay > 0)
+                                                    {
+                                                        <div class="c-numerical__content"><span class="o-rise">@Model.BondDetail.UpsAndDownsDay</span></div>
+                                                    }
+                                                    else if (Model.BondDetail.UpsAndDownsDay < 0)
+                                                    {
+                                                        <div class="c-numerical__content"><span class="o-fall">@Math.Abs(Model.BondDetail.UpsAndDownsDay.Value)</span></div>
+                                                    }
+                                                    else
+                                                    {
+                                                         <div class="c-numerical__content"><span>@Model.BondDetail.UpsAndDownsDay</span></div>
+                                                    }
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="l-divideList__item">
+                                        <div class="c-numerical">
+                                            <div class="c-numerical__title c-numerical__title--dk"><span>日漲跌幅</span></div>
+                                            <div class="c-numerical__content c-numerical__content--lg">
+                                                <span class="t-bold">
+                                                    @if (Model.BondDetail.UpsAndDownsPercentage == null)
+                                                    {
+                                                        <div class="c-numerical__content"><span>-</span></div>
+                                                    }
+                                                    else if (Model.BondDetail.UpsAndDownsPercentage > 0)
+                                                    {
+                                                        <div class="c-numerical__content"><span class="o-rise">@Model.BondDetail.UpsAndDownsPercentage%</span></div>
+                                                    }
+                                                    else if (Model.BondDetail.UpsAndDownsPercentage < 0)
+                                                    {
+                                                        <div class="c-numerical__content"><span class="o-fall">@Math.Abs(Model.BondDetail.UpsAndDownsPercentage.Value)%</span></div>
+                                                    }
+                                                    else
+                                                    {
+                                                         <div class="c-numerical__content"><span>@Model.BondDetail.UpsAndDownsPercentage%</span></div>
+                                                    }
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="l-divideList__item">
+                                        <div class="c-numerical">
+                                            <div class="c-numerical__title c-numerical__title--dk"><span>計價幣別</span></div>
+                                            <div class="c-numerical__content c-numerical__content--lg"><span class="t-bold">@(Model.BondDetail.CurrencyName)</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
+                    <section class="c-section">
+                        <div class="l-table">
+                            <table class="c-table@dt-only c-table--surround c-cardTable@lt">
+                                <colgroup>
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                    <col style="width: 1%;">
+                                </colgroup>
+                                <thead>
+                                    <th colspan="5">
+                                        <div class="c-table__title">
+                                            <span>近5日參考贖回價</span>
+                                        </div>
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+                                        <td class="c-cardTable__body">
+                                            <div class="c-cardTable__content">
+                                            @if(@Model.Top5BondHistoryPrice.Count > 0)
+                                            {
+                                                <span>@Model.Top5BondHistoryPrice[0].Date</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body">
+                                            <div class="c-cardTable__content">
+                                            @if(@Model.Top5BondHistoryPrice.Count > 1)
+                                            {
+                                                <span>@Model.Top5BondHistoryPrice[1].Date</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body">
+                                            <div class="c-cardTable__content">
+                                            @if(@Model.Top5BondHistoryPrice.Count > 2)
+                                            {
+                                                <span>@Model.Top5BondHistoryPrice[2].Date</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body">
+                                            <div class="c-cardTable__content">
+                                            @if(@Model.Top5BondHistoryPrice.Count > 3)
+                                            {
+                                                <span>@Model.Top5BondHistoryPrice[3].Date</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body">
+                                            <div class="c-cardTable__content">
+                                            @if(@Model.Top5BondHistoryPrice.Count > 4)
+                                            {
+                                                <span>@Model.Top5BondHistoryPrice[4].Date</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+                                        <td class="c-cardTable__body">
+                                            <div class="c-cardTable__content">
+                                            @if(@Model.Top5BondHistoryPrice.Count > 0)
+                                            {
+                                                <span>@Model.Top5BondHistoryPrice[0].RedemptionFee</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body">
+                                            <div class="c-cardTable__content">
+                                            @if(@Model.Top5BondHistoryPrice.Count > 1)
+                                            {
+                                                <span>@Model.Top5BondHistoryPrice[1].RedemptionFee</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body">
+                                            <div class="c-cardTable__content">
+                                            @if(@Model.Top5BondHistoryPrice.Count > 2)
+                                            {
+                                                <span>@Model.Top5BondHistoryPrice[2].RedemptionFee</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body">
+                                            <div class="c-cardTable__content">
+                                            @if(@Model.Top5BondHistoryPrice.Count > 3)
+                                            {
+                                                <span>@Model.Top5BondHistoryPrice[3].RedemptionFee</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__body">
+                                            <div class="c-cardTable__content">
+                                            @if(@Model.Top5BondHistoryPrice.Count > 4)
+                                            {
+                                                <span>@Model.Top5BondHistoryPrice[4].RedemptionFee</span>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>                    
                 </div>
                 <div class="l-flex__item"></div>
             </section>
@@ -140,7 +362,7 @@
                 <div class="l-flex__item"></div>
             </section>
         </div>
-        <div class="c-tab__panel" data-tab-panel-id="tab-5">
+        <div class="c-tab__panel" data-tab-panel-id="tab-7">
             <section class="l-flex u-flex-col u-flex-gap-sm">
                 <div class="l-flex__item">
                 </div>
@@ -185,11 +407,11 @@
             WINDOW_SIZE: 11,
         };
 
-        var _targetOrigin = document.location.origin;
-        var _selector = '#SysJustIFRAME';
-        var _iframeInst = null;
-        var _self = this;
-        var _name = 'sysjust b2brwd corp';
+        let _targetOrigin = document.location.origin;
+        let _selector = '#SysJustIFRAME';
+        let _iframeInst = null;
+        let _self = this;
+        let _name = 'sysjust b2brwd corp';
 
         function setIframeSrc(val) {
             $(_selector).attr('src', `/b2bbond/BondBasic/Basic0${val}?id=@(Model.BondDetail.ISINCode)&bid=@(Model.BondDetail.BondCode)`);
@@ -294,7 +516,13 @@
             var name = DOMPurify.sanitize($(this).attr("data-tab-target"));
             var val = name.replace('tab-', '');
 
-            setIframeSrc(val);
+            if(val == "2"){
+                $(_selector).hide();
+            }
+            else{
+                $(_selector).show();
+                setIframeSrc(val);
+            }
         });
 
         $('[data-popup]').magnificPopup();

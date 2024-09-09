@@ -40,6 +40,9 @@ namespace Feature.Wealth.Component.Models.Bond
         public string PageID { get; set; } = BondRelatedLinkSetting.GetBondDetailPageItem()?.ID.ToString();
         public Bond BondDetail { get; set; }
         public string SearchUrl { get; set; } = USStockRelatedLinkSetting.GetUSStockSearchUrl();
+        public List<BondHistoryPrice> BondHistoryPriceList { get; set; } = new List<BondHistoryPrice>();
+        public HtmlString BondHistoryPriceHtmlString { get; set; } = new HtmlString(string.Empty);
+        public List<BondHistoryPrice> Top5BondHistoryPrice { get; set; } = new List<BondHistoryPrice>();
     }
 
     public class Bond
@@ -233,6 +236,9 @@ namespace Feature.Wealth.Component.Models.Bond
         /// 債券分類
         /// </summary>
         public string BondClass { get; set; }
+
+        public decimal? UpsAndDownsDay { get; set; }
+        public decimal? UpsAndDownsPercentage { get; set; }
 
         public string DetailLink { get; set; } = BondRelatedLinkSetting.GetBondDetailUrl();
 
