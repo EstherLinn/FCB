@@ -10,6 +10,7 @@ using Feature.Wealth.Component.Models.USStock;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using Mapster;
 using Sitecore.Configuration;
 using System;
@@ -187,7 +188,9 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<USStockListDto> QueryForeignStockData()
         {
-            string sqlQuery = """
+            string Sysjust_USStockList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_USStockList);
+            string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
+            string sqlQuery = $@"
                 SELECT [FirstBankCode]
                     ,[FundCode]
                     ,[EnglishName]
@@ -204,11 +207,11 @@ namespace Feature.Wealth.Component.Repositories
                     ,[SixMonthReturn]
                     ,[MainTable].[AvailabilityStatus]
                     ,[MainTable].[OnlineSubscriptionAvailability]
-                FROM [dbo].[Sysjust_USStockList] AS [StockTable] WITH (NOLOCK)
-                LEFT JOIN [dbo].[WMS_DOC_RECM] AS [MainTable] WITH (NOLOCK)
+                FROM {Sysjust_USStockList} AS [StockTable] WITH (NOLOCK)
+                LEFT JOIN {WMS_DOC_RECM} AS [MainTable] WITH (NOLOCK)
                     ON [StockTable].[FirstBankCode] = [MainTable].[ProductCode]
                 ORDER BY [StockTable].[MonthlyReturn] DESC, [StockTable].[FirstBankCode] ASC
-                """;
+                ";
             var collection = DbManager.Custom.ExecuteIList<USStockListDto>(sqlQuery, null, CommandType.Text);
             return collection;
         }

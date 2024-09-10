@@ -32,10 +32,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseFixedLength<Efnd>(fileName);
-                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         _repository.BulkInsertToDatabase(datas, tableName, "INVEST_FUND_NO", "DEPOSIT_DAY", "BASE_DAY", fileName, startTime);
-                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                         etlService.FinishJob(fileName, startTime);
                     }
                     catch (Exception ex)

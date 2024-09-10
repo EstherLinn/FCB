@@ -16,6 +16,7 @@ using Templates = Feature.Wealth.Component.Models.USStock.Template;
 using Feature.Wealth.Component.Models.Bond;
 using BondTemplates = Feature.Wealth.Component.Models.Bond.Template;
 using System;
+using Foundation.Wealth.Models;
 namespace Feature.Wealth.Component.Repositories
 {
     public class FocusListRespository
@@ -47,6 +48,8 @@ namespace Feature.Wealth.Component.Repositories
         }
         public List<ForeignStockListModel> GetForeignStockFocusData(List<string> foreignStockFocusList)
         {
+            string Sysjust_USStockList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_USStockList);
+            string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
             string sql = $@"
                   SELECT 
                            A.[FirstBankCode] ProductCode
@@ -58,8 +61,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), A.[MonthlyReturn]) [MonthlyReturn]
                            ,B.[OnlineSubscriptionAvailability]
                            ,B.[AvailabilityStatus]
-                           FROM [Sysjust_USStockList] A WITH (NOLOCK) 
-                           LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode] WHERE FirstBankCode in @foreignStockList order by [MonthlyReturn] desc
+                           FROM {Sysjust_USStockList} A WITH (NOLOCK)
+                           LEFT JOIN {WMS_DOC_RECM} B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode] WHERE FirstBankCode in @foreignStockList order by [MonthlyReturn] desc
                 ";
             var para = new { foreignStockList = foreignStockFocusList };
             var results = DbManager.Custom.ExecuteIList<ForeignStockListModel>(sql, para, CommandType.Text)?.ToList();
@@ -67,6 +70,8 @@ namespace Feature.Wealth.Component.Repositories
         }
         public List<ForeignBondListModel> GetForeignBondFocusData(List<string> foreignBondFocusList)
         {
+            string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
+            string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
             string sql = $@"
                             SELECT 
                             A.[BondCode]
@@ -91,8 +96,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,B.[SubscriptionFee]
                            ,B.[RedemptionFee]
                            ,SUBSTRING(B.[Date],1,4)+'/'+SUBSTRING(B.[Date],5,2)+'/'+SUBSTRING(B.[Date],7,2) AS [Date]
-                           FROM [BondList] AS A WITH (NOLOCK) 
-                           LEFT JOIN [BondNav] AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
+                           FROM {BondList} AS A WITH (NOLOCK)
+                           LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
                           　WHERE A.BondCode in @BondCodes
                            ORDER BY A.BondCode
                 ";

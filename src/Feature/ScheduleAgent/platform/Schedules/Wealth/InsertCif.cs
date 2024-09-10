@@ -13,6 +13,7 @@ using System.Diagnostics;
 using Foundation.Wealth.Manager;
 using System.Data;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Foundation.Wealth.Models;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -29,47 +30,66 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             //CIF 一次性排程 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM WEA_DW_CIF_VIEW";
 
+            var TrafficLight = NameofTrafficLight.CIF;
             List<Cif> batch = new List<Cif>();
             int batchSize = 1000;
             var isTrancate = false;
 
             try
             {
+                await ProcessData(_repository, sql, batch, batchSize, isTrancate, "[CIF_Process]");
+                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                await ProcessData(_repository, sql, batch, batchSize, isTrancate, "[CIF]");
+                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                this.Logger.Info($"取得CIF資料完成：Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
+                _repository.LogChangeHistory(DateTime.UtcNow, sql, "CIF", " ", 0, duration.TotalSeconds, "Y");
+            }
+            catch(Exception ex)
+            {
+                this.Logger.Error(ex.Message, ex);
+                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+            }
+        }
+
+
+        private async Task ProcessData(ProcessRepository _repository, string sql, List<Cif> batch, int batchSize, bool isTrancate, string tableName)
+        {
+            try
+            {
                 foreach (var result in _repository.Enumerate<Cif>(sql))
                 {
                     batch.Add(result);
 
-                    if (isTrancate == false)
+                    if (!isTrancate)
                     {
                         if (batch.Count > 0)
                         {
-                            _repository.TrancateTable("[CIF]");
+                            _repository.TrancateTable(tableName);
                             isTrancate = true;
                         }
                     }
 
                     if (batch.Count >= batchSize)
                     {
-                        await _repository.BulkInsertFromOracle(batch, "[CIF]");
+                        await _repository.BulkInsertFromOracle(batch, tableName);
                         batch.Clear();
                     }
                 }
 
                 if (batch.Any())
                 {
-                    await _repository.BulkInsertFromOracle(batch, "[CIF]");
+                    await _repository.BulkInsertFromOracle(batch, tableName);
                 }
-                var endTime = DateTime.UtcNow;
-                var duration = endTime - startTime;
-                this.Logger.Info($"取得CIF資料完成：Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, "CIF", " ", 0, duration.TotalSeconds, "Y");
+                
             }
             catch (Exception ex)
             {
                 this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, 0, "N");
             }
-
         }
     }
 }

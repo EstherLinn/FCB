@@ -1,13 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Foundation.Wealth.Models;
-using Feature.Wealth.ScheduleAgent.Services;
-using Xcms.Sitecore.Foundation.QuartzSchedule;
+﻿using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Feature.Wealth.ScheduleAgent.Repositories;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Feature.Wealth.ScheduleAgent.Models.Wealth;
+using Foundation.Wealth.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Xcms.Sitecore.Foundation.QuartzSchedule;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -48,31 +46,39 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             }
         }
 
-        private async Task OdbcBulkInsert(ProcessRepository _repository,string sql, List<TftfuStg> batch, int batchSize, bool isTrancate,string tableNamw)
+        private async Task OdbcBulkInsert(ProcessRepository _repository,string sql, List<TftfuStg> batch, int batchSize, bool isTrancate,string tableName)
         {
-            foreach (var result in _repository.Enumerate<TftfuStg>(sql))
+            try
             {
-                batch.Add(result);
-
-                if (isTrancate == false)
+                foreach (var result in _repository.Enumerate<TftfuStg>(sql))
                 {
-                    if (batch.Count > 0)
+                    batch.Add(result);
+
+                    if (isTrancate == false)
                     {
-                        _repository.TrancateTable(tableNamw);
-                        isTrancate = true;
+                        if (batch.Count > 0)
+                        {
+                            _repository.TrancateTable(tableName);
+                            isTrancate = true;
+                        }
+                    }
+
+                    if (batch.Count >= batchSize)
+                    {
+                        await _repository.BulkInsertFromOracle(batch, tableName);
+                        batch.Clear();
                     }
                 }
 
-                if (batch.Count >= batchSize)
+                if (batch.Any())
                 {
-                    await _repository.BulkInsertFromOracle(batch, tableNamw);
-                    batch.Clear();
+                    await _repository.BulkInsertFromOracle(batch, tableName);
                 }
             }
-
-            if (batch.Any())
+            catch (Exception ex)
             {
-                await _repository.BulkInsertFromOracle(batch, tableNamw);
+                this.Logger.Error(ex.Message, ex);
+                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, 0, "N");
             }
         }
     }

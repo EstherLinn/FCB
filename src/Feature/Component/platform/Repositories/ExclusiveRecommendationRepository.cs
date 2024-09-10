@@ -1,5 +1,7 @@
 ﻿using Feature.Wealth.Component.Models.ExclusiveRecommendation;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -37,6 +39,7 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public IEnumerable<FundNavDto> GetChartData(List<string> ids)
         {
+            string Sysjust_Nav_Fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Nav_Fund);
 
             var stringBuilder = new StringBuilder();
             for (int i = 0; i < ids.Count; ++i)
@@ -48,7 +51,7 @@ namespace Feature.Wealth.Component.Repositories
                                                 FirstBankCode AS ProductCode,
                                                 NetAssetValueDate,
                                                 NetAssetValue
-                                            FROM Sysjust_Nav_Fund WITH (NOLOCK)
+                                            FROM {Sysjust_Nav_Fund} WITH (NOLOCK)
                                     WHERE FirstBankCode = '{productCode}'
                                     ORDER BY [NetAssetValueDate] DESC) AS [{productCode}]");
 

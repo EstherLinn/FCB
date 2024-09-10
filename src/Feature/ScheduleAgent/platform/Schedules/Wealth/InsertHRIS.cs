@@ -24,15 +24,19 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
                 string fileName = "HRIS";
+                var TrafficLight = NameofTrafficLight.HRIS;
                 var IsfilePath = await etlService.ExtractFile(fileName);
 
                 if (IsfilePath.Value)
                 {
                     try
                     {
-                        string tableName = EnumUtil.GetEnumDescription(NameofTrafficLight.HRIS);
+                        string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = (IList<Hris>)await etlService.ParseCsv<Hris>(fileName);
+                        _repository.BulkInsertToEncryptedDatabase(datas, tableName + "_Process", fileName, startTime);
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         _repository.BulkInsertToEncryptedDatabase(datas, tableName, fileName, startTime);
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                         etlService.FinishJob(fileName, startTime);
                     }
                     catch (Exception ex)

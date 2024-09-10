@@ -31,19 +31,12 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 {
                     try
                     {
-                        //取得資料表名稱
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
-                        //透過CsvHelper解析資料
                         var datas = await etlService.ParseFixedLength<FundSize>(fileName);
-                        //執行匯入temp資料表
                         _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
-                        //匯入完成後開起紅燈
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                        //執行匯入主資料表
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
-                        //匯入完成後轉為綠燈
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        //完成匯入更改檔案名稱_done
                         etlService.FinishJob(fileName, startTime);
                     }
                     catch (Exception ex)

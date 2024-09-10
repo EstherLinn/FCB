@@ -1,5 +1,7 @@
 ﻿using Feature.Wealth.Component.Models.TabCards;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -59,6 +61,7 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             var stringBuilder = new StringBuilder();
+            string Sysjust_Nav_Fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Nav_Fund);
             for (int i = 0; i < productCodes.Count; ++i)
             {
                 string productCode = productCodes[i];
@@ -68,7 +71,7 @@ namespace Feature.Wealth.Component.Repositories
                                                 FirstBankCode AS ProductCode,
                                                 NetAssetValueDate,
                                                 NetAssetValue
-                                            FROM Sysjust_Nav_Fund WITH (NOLOCK)
+                                            FROM {Sysjust_Nav_Fund} WITH (NOLOCK)
                                     WHERE FirstBankCode = '{productCode}'
                                     ORDER BY [NetAssetValueDate] DESC) AS [{productCode}]");
 

@@ -1,5 +1,7 @@
 ﻿using Feature.Wealth.Account.Models.OAuth;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using log4net;
 using Sitecore.Security.Accounts;
 using Sitecore.SecurityModel;
@@ -84,6 +86,7 @@ namespace Feature.Wealth.Account.SingleSignOn
         public Employee GetEmployeeInfo(string id)
         {
             Employee member = null;
+            string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
             var strSql = @$" SELECT TOP (1) [EmployeeCode]
                   ,[EmployeeName]
                   ,[EmployeeID]
@@ -113,7 +116,7 @@ namespace Feature.Wealth.Account.SingleSignOn
                   ,[RegionalCenterBusinessGroup]
                   ,[SalaryLevel]
                   ,[SalaryScale]
-              FROM [dbo].[HRIS] WITH (NOLOCK)
+              FROM {HRIS} WITH (NOLOCK)
             WHERE EmployeeCode = @id ";
             try
             {

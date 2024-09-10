@@ -4,6 +4,7 @@ using Feature.Wealth.Component.Models.Invest;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,7 +19,8 @@ namespace Feature.Wealth.Component.Repositories
     {
         public IList<Funds> GetFundData()
         {
-            var sql = @"SELECT
+            string TFTFU_STG = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.TFTFU_STG);
+            var sql = $@"SELECT
                             ProductCode,
                             FundName,
                             NetAssetValueDate,
@@ -37,7 +39,7 @@ namespace Feature.Wealth.Component.Repositories
                         FROM
                             [vw_BasicFund] b
                         JOIN
-                            [TFTFU_STG] h WITH (NOLOCK)
+                            {TFTFU_STG} h WITH (NOLOCK)
                         ON
                             b.ProductCode = SUBSTRING(h.TFTFU_FUND_ID_CODE,1,4)
                         WHERE
@@ -53,7 +55,8 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<Funds> GetFundData2()
         {
-            var sql = @"SELECT
+            string TFTFU_STG = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.TFTFU_STG);
+            var sql = $@"SELECT
                             ProductCode,
                             FundName,
                             NetAssetValueDate,
@@ -72,7 +75,7 @@ namespace Feature.Wealth.Component.Repositories
                         FROM
                             [vw_BasicFund] b
                         JOIN
-                            [TFTFU_STG] h WITH (NOLOCK)
+                            {TFTFU_STG} h WITH (NOLOCK)
                         ON
                             b.ProductCode = SUBSTRING(h.TFTFU_FUND_ID_CODE,1,4)
                         WHERE
@@ -88,7 +91,8 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<Funds> GetCTTFundData1()
         {
-            var sql = @"SELECT
+            string TFTFU_STG = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.TFTFU_STG);
+            var sql = $@"SELECT
                             ProductCode,
                             FundName,
                             NetAssetValueDate,
@@ -107,7 +111,7 @@ namespace Feature.Wealth.Component.Repositories
                         FROM
                             [vw_BasicFund] b
                         JOIN
-                            [TFTFU_STG] h WITH (NOLOCK)
+                            {TFTFU_STG} h WITH (NOLOCK)
                         ON
                             b.ProductCode = SUBSTRING(h.TFTFU_FUND_ID_CODE,1,4)
                         WHERE
@@ -123,7 +127,8 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<Funds> GetCTTFundData2()
         {
-            var sql = @"SELECT
+            string TFTFU_STG = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.TFTFU_STG);
+            var sql = $@"SELECT
                             ProductCode,
                             FundName,
                             NetAssetValueDate,
@@ -142,7 +147,7 @@ namespace Feature.Wealth.Component.Repositories
                         FROM
                             [vw_BasicFund] b
                         JOIN
-                            [TFTFU_STG] h WITH (NOLOCK)
+                            {TFTFU_STG} h WITH (NOLOCK)
                         ON
                             b.ProductCode = SUBSTRING(h.TFTFU_FUND_ID_CODE,1,4)
                         WHERE

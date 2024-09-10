@@ -6,6 +6,8 @@ using Foundation.Wealth.Extensions;
 using System.Text;
 using System.Linq;
 using Feature.Wealth.Component.Models.FundDetail;
+using Foundation.Wealth.Helper;
+using Foundation.Wealth.Models;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -15,14 +17,16 @@ namespace Feature.Wealth.Component.Repositories
         {
             List<Funds> fundItems = new List<Funds>();
 
-            string sql = """
+            string tablename = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Fund_HighRated);
+
+            string sql = $@"
                    SELECT *
                    FROM [vw_BasicFund] b
-                   JOIN [Fund_HighRated] h WITH (NOLOCK)
+                   JOIN {tablename} h WITH (NOLOCK)
                    ON b.ProductCode = h.ProductCode
                    ORDER BY SixMonthReturnOriginalCurrency
                    DESC,b.ProductCode
-                   """;
+                   ";
 
             var results = DbManager.Custom.ExecuteIList<Funds>(sql, null, CommandType.Text);
 

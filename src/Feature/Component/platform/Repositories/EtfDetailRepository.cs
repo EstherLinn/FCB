@@ -2,7 +2,9 @@
 using Feature.Wealth.Component.Models.ETF.Detail;
 using Feature.Wealth.Component.Models.ETF.Tag;
 using Foundation.Wealth.Extensions;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using log4net;
 using Mapster;
 using Newtonsoft.Json.Linq;
@@ -370,7 +372,8 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private List<EtfTypeRanking> GetSameTypeETFRank()
         {
-            string sqlQuery = """
+            string Sysjust_Basic_ETF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Basic_ETF);
+            string sqlQuery = $@"
                 SELECT TOP 12 [FirstBankCode]
                     ,[ETFName]
                     ,[SixMonthReturnMarketPriceOriginalCurrency]
@@ -379,13 +382,13 @@ namespace Feature.Wealth.Component.Repositories
                 FROM [vw_BasicETF]
                 WHERE [InvestmentTargetName] = (
                         SELECT [InvestmentTargetName]
-                        FROM [dbo].[Sysjust_Basic_ETF] WITH (NOLOCK)
+                        FROM {Sysjust_Basic_ETF} WITH (NOLOCK)
                         WHERE [FirstBankCode] = @ETFId
                     )
                     AND [FirstBankCode] <> @ETFId AND [FirstBankCode] IS NOT NULL AND [FirstBankCode] <> ''
                     AND [FirstBankCode] NOT LIKE 'EA%' AND [FirstBankCode] NOT LIKE 'EB%'
                 ORDER BY [SixMonthReturnMarketPriceOriginalCurrency] DESC
-                """;
+                ";
             var param = new { ETFId = this.ETFId };
             var collection = DbManager.Custom.ExecuteIList<BasicEtfDto>(sqlQuery, param, CommandType.Text);
 
@@ -611,14 +614,15 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private List<EtfNav> GetThrityDaysNav()
         {
-            string sqlQuery = """
+            string Sysjust_Nav_ETF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Nav_ETF);
+            string sqlQuery = $@"
                 SELECT [FirstBankCode],[ExchangeCode],[NetAssetValueDate],[MarketPrice],[NetAssetValue],[RowNumber] FROM (
                     SELECT [FirstBankCode],[ExchangeCode],[NetAssetValueDate],[MarketPrice],[NetAssetValue],ROW_NUMBER() OVER(PARTITION BY [FirstBankCode] ORDER BY [NetAssetValueDate] DESC) AS [RowNumber]
-                    FROM [dbo].[Sysjust_Nav_ETF] WITH (NOLOCK)
+                    FROM {Sysjust_Nav_ETF} WITH (NOLOCK)
                 ) T1
                 WHERE [FirstBankCode] = @ETFId
                     AND [RowNumber] < 31
-                """;
+                ";
             var param = new { ETFId = this.ETFId };
             var result = DbManager.Custom.ExecuteIList<EtfNav>(sqlQuery, param, CommandType.Text)?.ToList();
             return result;
@@ -630,12 +634,13 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private List<EtfReferenceIndexAnnualReturn> GetAnnualReturn()
         {
-            string sqlQuery = """
+            string Sysjust_Return_ETF_2 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Return_ETF_2);
+            string sqlQuery = $@"
                 SELECT TOP 5 *
-                FROM [dbo].[Sysjust_Return_ETF_2] WITH (NOLOCK)
+                FROM {Sysjust_Return_ETF_2} WITH (NOLOCK)
                 WHERE [FirstBankCode] = @ETFId
                 ORDER BY [DataDate] DESC
-                """;
+                ";
             var param = new { ETFId = this.ETFId };
             var collection = DbManager.Custom.ExecuteIList<EtfReturn2>(sqlQuery, param, CommandType.Text);
 
@@ -663,12 +668,13 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private List<EtfReferenceIndexMonthlyReturn> GetNetWortMonthlyReturn()
         {
-            string sqlQuery = """
+            string Sysjust_Return_ETF_3 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Return_ETF_3);
+            string sqlQuery = $@"
                 SELECT TOP 12 *
-                FROM [dbo].[Sysjust_Return_ETF_3] WITH(NOLOCK)
+                FROM {Sysjust_Return_ETF_3} WITH(NOLOCK)
                 WHERE [FirstBankCode] = @ETFId
                 ORDER BY [DataDate] DESC
-                """;
+                ";
             var param = new { ETFId = this.ETFId };
             var collection = DbManager.Custom.ExecuteIList<EtfReturn3>(sqlQuery, param, CommandType.Text);
 
@@ -891,17 +897,18 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<EtfIndustryHolding> GetETFIndustryPercent(string etfId)
         {
-            string sql = """
+            string Sysjust_Holding_ETF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Holding_ETF);
+            string sql = $@"
                 SELECT [FirstBankCode]
                       ,[Date]
                       ,[IndustryName]
                       ,[Percentage]
                       ,[Currency]
                       ,[Amount]
-                FROM [dbo].[Sysjust_Holding_ETF] WITH(NOLOCK)
+                FROM {Sysjust_Holding_ETF} WITH(NOLOCK)
                 WHERE [FirstBankCode] = @ETFId
                 ORDER BY [Percentage] DESC
-                """;
+                ";
 
             var param = new { ETFId = etfId };
             var collection = DbManager.Custom.ExecuteIList<EtfHolding>(sql, param, CommandType.Text);
@@ -923,16 +930,17 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<EtfRegionHolding> GetETFRegionPercent(string etfId)
         {
-            string sql = """
+            string Sysjust_Holding_ETF_2 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Holding_ETF_2);
+            string sql = $@"
                 SELECT [FirstBankCode]
                       ,[Date]
                       ,[RegionName]
                       ,[Percentage]
                       ,[Amount]
-                FROM [dbo].[Sysjust_Holding_ETF_2] WITH(NOLOCK)
+                FROM {Sysjust_Holding_ETF_2} WITH(NOLOCK)
                 WHERE [FirstBankCode] = @ETFId
                 ORDER BY [Percentage] DESC
-                """;
+                ";
 
             var param = new { ETFId = etfId };
             var collection = DbManager.Custom.ExecuteIList<EtfHolding2>(sql, param, CommandType.Text);
@@ -953,7 +961,8 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private List<EtfStrockHolding> GetETFStockHolding()
         {
-            string sql = """
+            string Sysjust_Holding_ETF_3 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Holding_ETF_3);
+            string sql = $@"
                 SELECT TOP 10 [FirstBankCode]
                       ,[Date]
                       ,[ETFCode]
@@ -961,10 +970,10 @@ namespace Feature.Wealth.Component.Repositories
                       ,[StockName]
                       ,[Percentage]
                       ,[NumberofSharesHeld]
-                FROM [dbo].[Sysjust_Holding_ETF_3] WITH(NOLOCK)
+                FROM {Sysjust_Holding_ETF_3} WITH(NOLOCK)
                 WHERE [FirstBankCode] = @ETFId
                 ORDER BY [Percentage] DESC
-                """;
+                ";
 
             var param = new { ETFId = this.ETFId };
             var collection = DbManager.Custom.ExecuteIList<EtfHolding3>(sql, param, CommandType.Text);
@@ -987,11 +996,12 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private EtfRiskIndicator GetETFRiskIndicator()
         {
-            string sqlQuery = """
+            string Sysjust_Risk_ETF_2 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Risk_ETF_2);
+            string sqlQuery = $@"
                 SELECT *
-                FROM [Sysjust_Risk_ETF_2] WITH(NOLOCK)
+                FROM {Sysjust_Risk_ETF_2} WITH(NOLOCK)
                 WHERE [FirstBankCode] = @ETFId
-                """;
+                ";
             var param = new { ETFId = this.ETFId };
             var risk = DbManager.Custom.Execute<EtfRisk2>(sqlQuery, param, CommandType.Text);
 
@@ -1120,12 +1130,13 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private List<EtfYearReturnCompare> GetETFYearReturnCompare()
         {
-            string sql = """
+            string Sysjust_Risk_ETF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Risk_ETF);
+            string sql = $@"
                 SELECT TOP 5 *
-                FROM [dbo].[Sysjust_Risk_ETF] WITH(NOLOCK)
+                FROM {Sysjust_Risk_ETF} WITH(NOLOCK)
                 WHERE [FirstBankCode] = @ETFId
                 ORDER BY [Date] DESC
-                """;
+                ";
             var param = new { ETFId = this.ETFId };
             var collection = DbManager.Custom.ExecuteIList<EtfRisk>(sql, param, CommandType.Text);
             var config = new TypeAdapterConfig();
@@ -1162,7 +1173,8 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         private Dictionary<int?, List<EtfDividendRecord>> GetDividendRecords()
         {
-            string sql = """
+            string Sysjust_Dividend_ETF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Dividend_ETF);
+            string sql = $@"
                 SELECT [FirstBankCode]
                     ,[ETFCode]
                     ,[ExDividendDate]
@@ -1173,10 +1185,10 @@ namespace Feature.Wealth.Component.Repositories
                     ,[ShortTermCapitalGains]
                     ,[LongTermCapitalGains]
                     ,[Currency]
-                FROM [dbo].[Sysjust_Dividend_ETF] WITH (NOLOCK)
+                FROM {Sysjust_Dividend_ETF} WITH (NOLOCK)
                 WHERE [FirstBankCode] = @ETFId
                 ORDER BY [ExDividendDate] DESC
-                """;
+                ";
             var param = new { ETFId = this.ETFId };
             var collection = DbManager.Custom.ExecuteIList<EtfDividend>(sql, param, CommandType.Text);
             var config = new TypeAdapterConfig();
@@ -1236,10 +1248,11 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<EtfScaleRecord> GetScalechange()
         {
-            string sql = """
+            string Sysjust_Fundsize_ETF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Fundsize_ETF);
+            string sql = $@"
                 WITH [FundsizeCTE] AS(
                 	SELECT [FirstBankCode],[FundCode], FORMAT([ScaleDate],'yyyy/MM/dd') AS [ScaleDate] ,[ScaleMillions],[Currency]
-                	FROM [dbo].[Sysjust_Fundsize_ETF] WITH (NOLOCK)
+                	FROM {Sysjust_Fundsize_ETF} WITH (NOLOCK)
                     WHERE [FirstBankCode] = @ETFId
                 )
 
@@ -1251,7 +1264,7 @@ namespace Feature.Wealth.Component.Repositories
                         ) AS varchar(4)
                     ) + '-01-01' AS smalldatetime)
                 ORDER BY [ScaleDate] DESC
-                """;
+                ";
             var param = new { ETFId = this.ETFId };
 
             var result = DbManager.Custom.ExecuteIList<EtfScaleRecord>(sql, param, CommandType.Text)

@@ -17,6 +17,7 @@ using Feature.Wealth.ScheduleAgent.Models.SignalStatus;
 using static Sitecore.ContentSearch.Linq.Extensions.ReflectionExtensions;
 using Sitecore.Diagnostics;
 using Foundation.Wealth.Models;
+using Sitecore.Configuration;
 
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
@@ -488,24 +489,34 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         ///</summary>
         public void TurnTrafficLight(NameofTrafficLight name, TrafficLightStatus status)
         {
-            var parameters = new DynamicParameters();
-            parameters.Add("@number", (int)name, DbType.Int32, ParameterDirection.Input);
-            parameters.Add("@status", (int)status, DbType.Int32, ParameterDirection.Input);
-            parameters.Add("@time", DateTime.Now, DbType.DateTime, ParameterDirection.Input);
+            //先偵測總開關有沒有開
+            bool masterSwitch = Settings.GetBoolSetting("MasterLightSwitch", false);
 
-            string sql = """
+            if (masterSwitch)
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@number", (int)name, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@status", (int)status, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@time", DateTime.Now, DbType.DateTime, ParameterDirection.Input);
+
+                string sql = """
                     UPDATE [SignalStatus]
                     SET Status = @status,UpdateTime = @time
                     WHERE Number = @number
                     """;
 
-            try
-            {
-                DbManager.Custom.ExecuteNonQuery(sql, parameters, CommandType.Text);
+                try
+                {
+                    DbManager.Custom.ExecuteNonQuery(sql, parameters, CommandType.Text);
+                }
+                catch (Exception ex)
+                {
+                    this._logger.Error(ex.Message, ex);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                this._logger.Error(ex.Message, ex);
+                this._logger.Warn("紅綠燈總開關沒開");
             }
         }
     }

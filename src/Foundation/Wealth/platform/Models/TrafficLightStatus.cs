@@ -6,8 +6,8 @@ namespace Foundation.Wealth.Models
     public class SignalStatus
     {
         public int Number { get; set; }
-        public string SignalName { get; set; }
-        public TrafficLightStatus Status { get; set; }
+        public string Name { get; set; }
+        public int Status { get; set; }
         public DateTime UpdateTime { get; set; }
     }
 
@@ -206,7 +206,13 @@ namespace Foundation.Wealth.Models
         [Description("Wms_zodiac_profile_d_mf")]
         Wms_zodiac_profile_d_mf = 62,
 
+        [Description("CIF")]
+        CIF = 63,
+
+        [Description("CFMBSEL")]
+        CFMBSEL = 64,
+
         [Description("TFTFU_STG")]
-        TFTFU_STG = 63,
+        TFTFU_STG = 65
     }
 }
