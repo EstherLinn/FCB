@@ -853,6 +853,15 @@
             });
         });
 
+        window.activateTabFromUrl = function () {
+            let url = new URL(location.href);
+            let tabParam = url.searchParams.get('tab');
+            if(tabParam){
+                let activeTab = `tab-${tabParam}`;
+                $(`[data-tab-target=${activeTab}]`).trigger('click');
+            }            
+        };
+
     })(jQuery, window, document);
 </script>
 @Xcms.Sitecore.Foundation.Assets.Services.RenderAssetsService.Current.ScriptsRender("<script type=\"text/javascript\" src=\"{0}\" async ></script>", "/themes/project/wealth/js/utm.min.js")

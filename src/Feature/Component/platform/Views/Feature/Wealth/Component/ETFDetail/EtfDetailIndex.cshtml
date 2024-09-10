@@ -257,4 +257,11 @@
             });
         });
     }
+
+(function ($, window, document, undefined) {
+    document.addEventListener('DOMContentLoaded', function () {
+        window.activateTabFromUrl();
+    });
+})(jQuery, window, document);
+
 </script>
