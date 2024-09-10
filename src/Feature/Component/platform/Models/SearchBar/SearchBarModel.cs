@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Component.Models.ETF;
+﻿using Feature.Wealth.Component.Models.Bond;
+using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.SiteProductSearch;
 using Feature.Wealth.Component.Models.StructuredProduct;
@@ -38,6 +39,7 @@ namespace Feature.Wealth.Component.Models.SearchBar
                 EtfDetailPageLink = EtfRelatedLinkSetting.GetETFDetailUrl(),
                 FundDetailPageLink = FundRelatedSettingModel.GetFundDetailsUrl(),
                 StructuredProductDetailPageLink = StructuredProductRelatedLinkSetting.GetStructuredProductDetailUrl(),
+                ForeignBondsDetailPageLink = BondRelatedLinkSetting.GetBondDetailUrl(),
                 ForeignStockDetailPageLink = USStockRelatedLinkSetting.GetUSStockDetailUrl()
             };
         }

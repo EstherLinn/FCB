@@ -16,5 +16,7 @@ namespace Feature.Wealth.Component.Models
         StructuredProduct,
         [Description("市場新聞")]
         MarketNews,
+        [Description("國外債券")]
+        Bond,
     }
 }

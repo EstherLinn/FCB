@@ -39,8 +39,8 @@ namespace Feature.Wealth.Component.Repositories
                     FundProducts = MapperFundResult()?.ToList(),
                     ETFProducts = MapperETFResult()?.ToList(),
                     ForeignStocks = MapperForeignStockResult()?.ToList(),
+                    ForeignBonds = MapperForeignBondsResult()?.ToList(),
                     StructuredProducts = MapperStructuredProductResult()?.ToList(),
-                    Bond = MapperForeignBondResult()?.ToList()
                 };
                 _cache.Set(SearchBarCache, product, new CommonRepository().GetCacheExpireTime(Settings.GetSetting(CacheTime)));
             }
@@ -90,8 +90,9 @@ namespace Feature.Wealth.Component.Repositories
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
 
                     dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
-                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.ProductCode, InvestTypeEnum.Fund, true).ToString();
+                    dest.CompareButtonHtml = PublicHelpers.CompareButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
+                    //dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
+                    //dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.ProductCode, InvestTypeEnum.Fund, true).ToString();
                     dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
                     dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
                 });
@@ -174,8 +175,8 @@ namespace Feature.Wealth.Component.Repositories
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
 
                     dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF, true).ToString();
-                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.FirstBankCode, InvestTypeEnum.ETF, true).ToString();
+                    //dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF, true).ToString();
+                    //dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.FirstBankCode, InvestTypeEnum.ETF, true).ToString();
                     dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
                     dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
                 });
@@ -243,8 +244,8 @@ namespace Feature.Wealth.Component.Repositories
 
                     string fullName = string.Concat(src.FirstBankCode, src.ChineseName, src.EnglishName);
 
-                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks, true).ToString();
-                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.FirstBankCode, InvestTypeEnum.ForeignStocks, true).ToString();
+                    //dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks, true).ToString();
+                    //dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.FirstBankCode, InvestTypeEnum.ForeignStocks, true).ToString();
                     dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks).ToString();
                     dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks).ToString();
                 });
@@ -294,7 +295,7 @@ namespace Feature.Wealth.Component.Repositories
 
         #region 國外債券
 
-        public IList<BondListDto> GetBondList()
+        public IList<BondListDto> GetBondsList()
         {
             string sql = @"SELECT
                            A.[BondCode]
@@ -420,16 +421,16 @@ namespace Feature.Wealth.Component.Repositories
             return null;
         }
 
-        public IEnumerable<ForeignBondsResult> MapperForeignBondResult()
+        public IEnumerable<ForeignBondsResult> MapperForeignBondsResult()
         {
-            var collection = GetBondList();
+            var collection = GetBondsList();
 
             var config = new TypeAdapterConfig();
             config.ForType<BondListDto, ForeignBondsResult>()
                 .AfterMapping((src, dest) =>
                 {
-                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds, true).ToString();
-                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.BondCode, InvestTypeEnum.ForeignBonds, true).ToString();
+                    //dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds, true).ToString();
+                    //dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.BondCode, InvestTypeEnum.ForeignBonds, true).ToString();
                     dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds).ToString();
                     dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds).ToString();
                 });
