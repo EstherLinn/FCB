@@ -66,6 +66,7 @@
   var pluginName = 'popover';
   var defaults = {
     placement: 'bottom',
+    trigger: 'click',
     middleware: [window.FloatingUIDOM.offset(), window.FloatingUIDOM.flip(), window.FloatingUIDOM.shift()]
   };
   function Plugin(element, options) {
@@ -86,11 +87,12 @@
       }
       this.tooltip = $tooltip.get(0);
       this.update();
-      this.$element.off('click.popover').on('click.popover', e => {
+      const triggerType = this.options.trigger;
+      this.$element.off(triggerType + '.popover').on(triggerType + '.popover', e => {
         e.preventDefault();
         this.toggle.call(this);
       });
-      $(window).on('click.popover', {
+      $(window).on(triggerType + '.popover', {
         el: this.element,
         tooltip: this.tooltip
       }, e => {

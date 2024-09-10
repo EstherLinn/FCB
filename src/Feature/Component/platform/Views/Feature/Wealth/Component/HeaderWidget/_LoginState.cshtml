@@ -36,11 +36,11 @@
         </div>
         <div class="l-topbar__login">
             <!--登入狀態 電腦版-->
-            <a href="#" class="o-topBtn o-topBtn--login" data-popover="#popoverMember">
+            <a href="@MemberRelatedLinkHelper.GetFocusListUrl()" class="o-topBtn o-topBtn--login" data-popover="#popoverMember" data-trigger="mouseenter">
                 <span>會員專區</span>
             </a>
             <!--登入狀態-->
-            <div id="popoverMember" class="c-popover">
+            <div id="popoverMember" class="c-popover u-hidden@lt u-important">
                 <div class="c-popover__wrap">
                     <header class="c-popover__header">
                         <span class="c-popover__title">Hi @member.MemberName</span>

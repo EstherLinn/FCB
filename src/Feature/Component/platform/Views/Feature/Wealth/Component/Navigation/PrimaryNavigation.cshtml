@@ -4,10 +4,15 @@
 @using Xcms.Sitecore.Foundation.Basic.FieldTypes
 @using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions
 @inherits Xcms.Sitecore.Foundation.Basic.MVC.EditorCompatibleView<Xcms.Sitecore.Feature.Navigation.Models.NavigationMenu>
+@using Feature.Wealth.Account.Helpers
+@using Foundation.Wealth.Helper
 
 @if (Model == null)
 {
     return;
+}
+@{
+    var logoutUrl = ClientRoute.GenerateUrl(this, "Accounts", "Logout");
 }
 <div class="l-header__menu">
     <nav class="c-menu c-menu--lv1">
@@ -117,6 +122,23 @@
                     }
                 }
             </menu>
+            @if (FcbMemberHelper.CheckMemberLogin())
+            {
+                var member = FcbMemberHelper.GetMemberAllInfo();
+                <div class="c-menu__login">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        @if (!string.IsNullOrEmpty(member.WebBankId) && !string.IsNullOrEmpty(member.Advisror) && !member.IsManager)
+                        {
+                            <div class="l-flex__item">
+                                <a href="@MemberRelatedLinkHelper.GetReserveConsultingUrl()" class="o-btn o-btn--primary o-btn--lg">預約諮詢</a>
+                            </div>
+                        }
+                        <div class="l-flex__item">
+                            <a href="@logoutUrl" class="o-btn o-btn--login o-btn--lg">登出</a>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </nav>
 </div>
