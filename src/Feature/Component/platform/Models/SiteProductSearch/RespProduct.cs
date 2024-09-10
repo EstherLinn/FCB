@@ -1,5 +1,4 @@
-﻿using Feature.Wealth.Component.Models.ETF.Detail;
-using Feature.Wealth.Component.Models.SiteProductSearch.Product;
+﻿using Feature.Wealth.Component.Models.SiteProductSearch.Product;
 using System.Collections.Generic;
 
 namespace Feature.Wealth.Component.Models.SiteProductSearch
@@ -20,6 +19,11 @@ namespace Feature.Wealth.Component.Models.SiteProductSearch
         /// 結構型商品
         /// </summary>
         public List<StructuredProductResult> StructuredProducts { get; set; }
+
+        /// <summary>
+        /// 國外債券
+        /// </summary>
+        public List<ForeignBondsResult> ForeignBonds { get; set; }
 
         /// <summary>
         /// 國外股票

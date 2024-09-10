@@ -255,6 +255,7 @@
             let compare = store.get('compare') || [];
             if (checkItemExists('compare', id)) {
                 $(self).addClass('is-active');
+                self.setAttribute('data-tooltip', '取消比較');
                 self.setAttribute('eh-compare-add', true);
             } else {
                 $(self).removeClass('is-active');

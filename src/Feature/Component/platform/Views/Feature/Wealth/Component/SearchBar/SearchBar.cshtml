@@ -1,8 +1,8 @@
 ﻿@using Feature.Wealth.Component.Models.SearchBar
-@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions
 @using Feature.Wealth.Component.Models
 @using Feature.Wealth.Component.Repositories
 @using Foundation.Wealth.Helper;
+@using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions
 
 @model SearchBarModel
 @if (!Model.IsValid)
@@ -97,7 +97,8 @@
                 FundProducts: [],
                 ETFProducts: [],
                 ForeignStocks: [],
-                StructuredProducts: []
+                StructuredProducts: [],
+                ForeignBonds: []
             }
 
             // 搜尋全部，隱藏進階搜尋
@@ -128,6 +129,9 @@
                                 generateSearch();
                                 break;
                             case 'StructuredProduct':
+                                generateSearch();
+                                break;
+                            case 'ForeignBonds':
                                 generateSearch();
                                 break;
                             case 'ForeignStock':
@@ -266,7 +270,7 @@
                         $(container).find('[data-ia]').interactive();
                         // 綁定 like icon 的彈跳登入畫面
                         $(container).find('[data-popup]').magnificPopup();
-                        //$(container).find('[eh-compare]').trigger('exec').attr('data-after-lt', null);
+                        $(container).find('[eh-compare]').trigger('exec').attr('data-after-lt', null);
                         $(container).find('[eh-focus]').trigger('exec');
                         $(container).find('[eh-subscription-type]').trigger('exec');
                     },
@@ -275,19 +279,22 @@
 
                         // like 按鈕
                         let $like = `<a ${suggestion.data.focusBtnHtml}></a>`;
-                        //
-                        let $compare = `<div class="c-itemKeyword__collections">${suggestion.data.compareBtnHtml}</div>`;
+
+                        // 比較 按鈕
+                        let $compare = suggestion.data.isCompare == true ?
+                            // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
+                            `<a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-eh="compare-init,compare-click" data-ia="true" eh-compare="" eh-compare-add="false" eh-compare-id="${suggestion.data.id}" eh-compare-name="${suggestion.data.name}" eh-compare-type="${suggestion.data.type}" href="#" ></a>` : '';
 
                         // 申購按鈕
                         let $purchase = suggestion.data.purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.data.subscribeBtnHtml}>申購</a></div>` : '';
 
                         return `<div class="c-itemKeyword">
                             <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
-                                <div class="c-itemKeyword__type">${suggestion.data.type}</div>
+                                <div class="c-itemKeyword__type">${suggestion.data.displayName}</div>
                                 <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
                             </a>
+                            <div class="c-itemKeyword__collections">${$compare}</div>
                             <div class="c-itemKeyword__collections">${$like}</div>
-                            ${(suggestion.data.compareBtnHtml ? $compare : '')}
                             ${$purchase}
                         </div>`;
                     }
@@ -308,6 +315,9 @@
                         case 'ForeignStock':
                             getForeignStockResult(list);
                             break;
+                        case 'ForeignBonds':
+                            getForeignBondsResult(list);
+                            break;
                         case 'StructuredProduct':
                             getStructuredProductResult(list);
                             break;
@@ -315,6 +325,7 @@
                             getFundResult(list);
                             getETFResult(list);
                             getForeignStockResult(list);
+                            getForeignBondsResult(list);
                             getStructuredProductResult(list);
                             break;
                     }
@@ -338,12 +349,16 @@
                     let obj = {
                         value: item.ProductCode + ' ' + item.ProductName,
                         data: {
-                            type: getType() || $('#SearchCategory option[data-producttype="Fund"]').val(),
+                            type: getType(),
+                            displayName: getType() || $('#SearchCategory option[data-producttype="Fund"]').val(),
                             detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
                             purchase: item.CanOnlineSubscription,
                             focusBtnHtml: item.FocusButtonAutoHtml,
                             compareBtnHtml: item.CompareButtonHtml,
-                            subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                            subscribeBtnHtml: item.SubscribeButtonAutoHtml,
+                            isCompare: true,
+                            id: item.ProductCode,
+                            name: item.ProductName
                         }
                     };
                     list.push(obj);
@@ -355,12 +370,15 @@
                     let obj = {
                         value: item.FirstBankCode + ' ' + item.ETFName,
                         data: {
-                            type: getType() || $('#SearchCategory option[data-producttype="ETF"]').val(),
+                            type: getType(),
+                            displayName: getType() || $('#SearchCategory option[data-producttype="ETF"]').val(),
                             detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
                             purchase: item.CanOnlineSubscription,
                             focusBtnHtml: item.FocusButtonAutoHtml,
-                            compareBtnHtml: item.CompareButtonHtml,
-                            subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                            subscribeBtnHtml: item.SubscribeButtonAutoHtml,
+                            isCompare: true,
+                            id: item.FirstBankCode,
+                            name: item.ETFName
                         }
                     };
                     list.push(obj);
@@ -372,11 +390,24 @@
                     let obj = {
                         value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
                         data: {
-                            type: getType() || $('#SearchCategory option[data-producttype="ForeignStock"]').val(),
+                            displayName: getType() || $('#SearchCategory option[data-producttype="ForeignStock"]').val(),
                             detailUrl: '@Model.DetailPageLink.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
                             purchase: item.CanOnlineSubscription,
                             focusBtnHtml: item.FocusButtonAutoHtml,
                             subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                        }
+                    };
+                    list.push(obj);
+                });
+            }
+
+            function getForeignBondsResult(list) {
+                $.each(SC_DATA.S_Result.ForeignBonds, function (i, item) {
+                    let obj = {
+                        value: item.BondCode + ' ' + item.BondName,
+                        data: {
+                            displayName: getType() || $('#SearchCategory option[data-producttype="ForeignBonds"]').val(),
+                            detailUrl: '@Model.DetailPageLink.ForeignBondsDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
                         }
                     };
                     list.push(obj);
@@ -388,13 +419,14 @@
                     let obj = {
                         value: item.ProductCode + ' ' + item.ProductName,
                         data: {
-                            type: getType() || $('#SearchCategory option[data-producttype="StructuredProduct"]').val(),
+                            displayName: getType() || $('#SearchCategory option[data-producttype="StructuredProduct"]').val(),
                             detailUrl: '@Model.DetailPageLink.StructuredProductDetailPageLink' + '?' + $.param({ id: item.ProductCode })
                         }
                     };
                     list.push(obj);
                 });
             }
+
         });
 
     })(jQuery, window, document);

@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Component.Models.ETF;
+﻿using Feature.Wealth.Component.Models.Bond;
+using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Search;
 using Feature.Wealth.Component.Models.FundSearch;
 using Feature.Wealth.Component.Models.Invest;
@@ -38,7 +39,8 @@ namespace Feature.Wealth.Component.Repositories
                     FundProducts = MapperFundResult()?.ToList(),
                     ETFProducts = MapperETFResult()?.ToList(),
                     ForeignStocks = MapperForeignStockResult()?.ToList(),
-                    StructuredProducts = MapperStructuredProductResult()?.ToList()
+                    ForeignBonds = MapperForeignBondsResult()?.ToList(),
+                    StructuredProducts = MapperStructuredProductResult()?.ToList(),
                 };
                 _cache.Set(SearchBarCache, product, new CommonRepository().GetCacheExpireTime(Settings.GetSetting(CacheTime)));
             }
@@ -88,9 +90,9 @@ namespace Feature.Wealth.Component.Repositories
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
 
                     dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
-                    //dest.CompareButtonHtml = PublicHelpers.CompareButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
-                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.ProductCode, InvestTypeEnum.Fund, true).ToString();
+                    dest.CompareButtonHtml = PublicHelpers.CompareButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
+                    //dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund, true).ToString();
+                    //dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.ProductCode, InvestTypeEnum.Fund, true).ToString();
                     dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
                     dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
                 });
@@ -173,9 +175,8 @@ namespace Feature.Wealth.Component.Repositories
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
 
                     dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF, true).ToString();
-                    //dest.CompareButtonHtml = PublicHelpers.CompareButton(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF, true).ToString();
-                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.FirstBankCode, InvestTypeEnum.ETF, true).ToString();
+                    //dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF, true).ToString();
+                    //dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.FirstBankCode, InvestTypeEnum.ETF, true).ToString();
                     dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
                     dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
                 });
@@ -243,8 +244,8 @@ namespace Feature.Wealth.Component.Repositories
 
                     string fullName = string.Concat(src.FirstBankCode, src.ChineseName, src.EnglishName);
 
-                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks, true).ToString();
-                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.FirstBankCode, InvestTypeEnum.ForeignStocks, true).ToString();
+                    //dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks, true).ToString();
+                    //dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.FirstBankCode, InvestTypeEnum.ForeignStocks, true).ToString();
                     dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks).ToString();
                     dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks).ToString();
                 });
@@ -291,6 +292,154 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         #endregion 結構型商品
+
+        #region 國外債券
+
+        public IList<BondListDto> GetBondsList()
+        {
+            string sql = @"SELECT
+                           A.[BondCode]
+                           ,A.[ISINCode]
+                           ,A.[BondName]
+                           ,A.[Currency]
+                           ,A.[CurrencyCode]
+                           ,A.[InterestRate]
+                           ,A.[PaymentFrequency]
+                           ,A.[RiskLevel]
+                           ,A.[SalesTarget]
+                           ,A.[MinSubscriptionForeign]
+                           ,A.[MinSubscriptionNTD]
+                           ,A.[MinIncrementAmount]
+                           ,A.[RedemptionDateByIssuer]
+                           ,A.[Issuer]
+                           ,A.[OpenToPublic]
+                           ,A.[Listed]
+                           ,B.[SubscriptionFee]
+                           ,B.[RedemptionFee]                           
+                           ,B.[ReservedColumn]
+                           ,B.[Note]
+                           ,B.[PreviousInterest]
+                           ,B.[SPCreditRating]
+                           ,B.[MoodyCreditRating]
+                           ,B.[FitchCreditRating]
+                           ,B.[YieldRateYTM]
+                           FROM [BondList] AS A WITH (NOLOCK)
+                           LEFT JOIN [BondNav] AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)";
+
+            var bonds = DbManager.Custom.ExecuteIList<BondListDto>(sql, null, CommandType.Text);
+
+            var minDate = bonds
+           .Where(b => !string.IsNullOrEmpty(b.Date))
+           .OrderBy(b => b.Date)
+           .Select(b => b.Date).FirstOrDefault();
+
+            IList<BondHistoryPrice> _bondHistoryPrices = new List<BondHistoryPrice>();
+            if (DateTime.TryParse(minDate, out var fourMonthAgo))
+            {
+                fourMonthAgo = fourMonthAgo.AddMonths(-1).AddDays(-10);
+                _bondHistoryPrices = new BondRepository().GetBondHistoryPriceByDate(fourMonthAgo.ToString("yyyyMMdd"));
+            }
+
+            for (int i = 0; i < bonds.Count; i++)
+            {
+                bonds[i] = MoreInfo(_bondHistoryPrices, bonds[i]);
+            }
+
+            return bonds;
+        }
+
+        private BondListDto MoreInfo(IList<BondHistoryPrice> _bondHistoryPrices, BondListDto bond)
+        {
+            var now = DateTime.Now;
+
+            bond.InterestRate = bond.InterestRate.DecimalNumber(4);
+            bond.SubscriptionFee = bond.SubscriptionFee.DecimalNumber(2);
+            bond.RedemptionFee = bond.RedemptionFee.DecimalNumber(2);
+            bond.PreviousInterest = bond.PreviousInterest.DecimalNumber(4);
+            bond.YieldRateYTM = bond.YieldRateYTM.DecimalNumber(2);
+
+            if (DateTime.TryParse(bond.MaturityDate, out var d))
+            {
+                var diff = d.Subtract(now).TotalDays;
+                if (diff > 0)
+                {
+                    bond.MaturityYear = decimal.Parse((diff / 365).ToString());
+                }
+                else
+                {
+                    bond.MaturityYear = 0;
+                }
+            }
+            else
+            {
+                bond.MaturityYear = 0;
+            }
+
+            bond.MaturityYear = bond.MaturityYear.DecimalNumber(2);
+
+            if (int.TryParse(bond.MinIncrementAmount, out var min))
+            {
+                bond.MinIncrementAmountNumber = min;
+            }
+            else
+            {
+                bond.MinIncrementAmountNumber = 0;
+            }
+
+            if (DateTime.TryParse(bond.Date, out var oneMonthAgo))
+            {
+                oneMonthAgo = oneMonthAgo.AddMonths(-1);
+                bond.UpsAndDownsMonth = GetUpsAndDowns(_bondHistoryPrices, bond, oneMonthAgo.ToString("yyyyMMdd"));
+            }
+
+            bond.UpsAndDownsMonth = bond.UpsAndDownsMonth.DecimalNumber(2);
+            bond.UpsAndDownsSeason = bond.UpsAndDownsSeason.DecimalNumber(2);
+            return bond;
+        }
+
+        private decimal? GetUpsAndDowns(IList<BondHistoryPrice> _bondHistoryPrices, BondListDto bond, string date)
+        {
+            BondHistoryPrice bondHistoryPrice = null;
+
+            if (_bondHistoryPrices != null && _bondHistoryPrices.Any())
+            {
+                bondHistoryPrice = _bondHistoryPrices.FirstOrDefault(b => b.BondCode == bond.BondCode && int.Parse(b.Date) <= int.Parse(date));
+            }
+
+            if (bondHistoryPrice != null)
+            {
+                if (bond.SubscriptionFee.HasValue && bond.SubscriptionFee != 0 && bondHistoryPrice.SubscriptionFee.HasValue && bondHistoryPrice.SubscriptionFee != 0)
+                {
+                    return (bond.SubscriptionFee - bondHistoryPrice.SubscriptionFee) / bondHistoryPrice.SubscriptionFee * 100;
+                }
+                else if (bond.RedemptionFee.HasValue && bond.RedemptionFee != 0 && bondHistoryPrice.RedemptionFee.HasValue && bondHistoryPrice.RedemptionFee != 0)
+                {
+                    return (bond.RedemptionFee - bondHistoryPrice.RedemptionFee) / bondHistoryPrice.RedemptionFee * 100;
+                }
+            }
+
+            return null;
+        }
+
+        public IEnumerable<ForeignBondsResult> MapperForeignBondsResult()
+        {
+            var collection = GetBondsList();
+
+            var config = new TypeAdapterConfig();
+            config.ForType<BondListDto, ForeignBondsResult>()
+                .AfterMapping((src, dest) =>
+                {
+                    //dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds, true).ToString();
+                    //dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.BondCode, InvestTypeEnum.ForeignBonds, true).ToString();
+                    dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds).ToString();
+                    dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds).ToString();
+                });
+
+            var result = collection.Adapt<IEnumerable<ForeignBondsResult>>(config);
+            return result;
+        }
+
+        #endregion 國外債券
 
         #region Method
 

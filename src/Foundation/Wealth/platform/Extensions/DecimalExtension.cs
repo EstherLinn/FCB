@@ -10,6 +10,25 @@ namespace Foundation.Wealth.Extensions
         /// <param name="number"></param>
         /// <param name="dot"></param>
         /// <returns></returns>
+        public static decimal? DecimalNumber(this decimal? number, int dot = 2, bool needAbs = true)
+        {
+            if (number.Equals(null))
+            {
+                return null;
+            }
+            if (needAbs && number < 0)
+            {
+                number = Math.Abs(number.Value);
+            }
+            return decimal.Round(number.Value, dot, MidpointRounding.AwayFromZero);
+        }
+
+        /// <summary>
+        /// decimal取小數位數
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="dot"></param>
+        /// <returns></returns>
         public static string FormatDecimalNumber(this decimal? number, int dot = 2, bool needAbs = true, bool needPercent = false)
         {
             if (number.Equals(null))
