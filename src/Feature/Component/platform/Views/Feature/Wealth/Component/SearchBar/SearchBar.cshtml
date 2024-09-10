@@ -277,8 +277,6 @@
                     formatResult: function (suggestion, currentValue) {
                         let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
 
-                        //"href='#' eh-focus eh-focus-type='ETF' eh-focus-id='EF44' eh-focus-name='VANECK半導體ETF' data-eh='focus-init,focus-click' data-msg='加入關注|取消關注' data-ia='true' eh-focus-add='false' class='o-statusBtn o-statusBtn--like'
-                        //<a href="#popupLogin" eh-focus="" eh-focus-type="Fund" eh-focus-id="56AV" eh-focus-name="統一新亞洲科技能源基金" data-eh="focus-init,focus-click" eh-focus-add="false" class="o-statusBtn o-statusBtn--like" data-tooltip="加入關注" data-popup="true"></a>
                         // like 按鈕
                         let $like = `<a ${suggestion.data.focusBtnHtml}></a>`;
 
@@ -351,6 +349,7 @@
                     let obj = {
                         value: item.ProductCode + ' ' + item.ProductName,
                         data: {
+                            type: getType(),
                             displayName: getType() || $('#SearchCategory option[data-producttype="Fund"]').val(),
                             detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
                             purchase: item.CanOnlineSubscription,
@@ -359,8 +358,7 @@
                             subscribeBtnHtml: item.SubscribeButtonAutoHtml,
                             isCompare: true,
                             id: item.ProductCode,
-                            name: item.ProductName,
-                            type: 'Fund'
+                            name: item.ProductName
                         }
                     };
                     list.push(obj);
@@ -372,6 +370,7 @@
                     let obj = {
                         value: item.FirstBankCode + ' ' + item.ETFName,
                         data: {
+                            type: getType(),
                             displayName: getType() || $('#SearchCategory option[data-producttype="ETF"]').val(),
                             detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
                             purchase: item.CanOnlineSubscription,
@@ -379,8 +378,7 @@
                             subscribeBtnHtml: item.SubscribeButtonAutoHtml,
                             isCompare: true,
                             id: item.FirstBankCode,
-                            name: item.ETFName,
-                            type: 'ETF'
+                            name: item.ETFName
                         }
                     };
                     list.push(obj);
