@@ -122,7 +122,7 @@ namespace Feature.Wealth.Component.Models.TabCards
             this.BannerTarget7 = link7?.Target;
             this.BannerTarget8 = link8?.Target;
 
-            this.FundIDList = ItemUtils.GetMultiLineText(item, _TabCard.Fields.FundIDList)?.Take(3).ToList() ?? new List<string>();
+            this.FundIDList = ItemUtils.GetMultiLineText(item, _TabCard.Fields.FundIDList)?.Where(s => !string.IsNullOrWhiteSpace(s)).Take(3).ToList() ?? new List<string>();
             this.FundIDListHtmlString = new HtmlString(JsonConvert.SerializeObject(this.FundIDList));
         }
     }

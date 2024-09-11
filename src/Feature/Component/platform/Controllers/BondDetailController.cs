@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Feature.Wealth.Component.Models.Bond;
-using Feature.Wealth.Component.Models.USStock;
+﻿using Feature.Wealth.Component.Models.Bond;
 using Feature.Wealth.Component.Repositories;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
-using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -22,7 +20,10 @@ namespace Feature.Wealth.Component.Controllers
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             string id = Sitecore.Web.WebUtil.GetSafeQueryString("id");
-
+            if (string.IsNullOrEmpty(id))
+            {
+                return View("/Views/Feature/Wealth/Component/Bond/BondDetail.cshtml");
+            }
             var bond = this._bondRepository.GetBond(id);
 
             return View("/Views/Feature/Wealth/Component/Bond/BondDetail.cshtml", CreateModel(item, bond));
