@@ -13,9 +13,6 @@ using Foundation.Wealth.Manager;
 using System.Collections.Generic;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
-using Feature.Wealth.ScheduleAgent.Models.SignalStatus;
-using static Sitecore.ContentSearch.Linq.Extensions.ReflectionExtensions;
-using Sitecore.Diagnostics;
 using Foundation.Wealth.Models;
 using Sitecore.Configuration;
 
