@@ -15,6 +15,7 @@ using Xcms.Sitecore.Foundation.Basic.Logging;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Foundation.Wealth.Models;
 using Sitecore.Configuration;
+using Sitecore.Data.Items;
 
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
@@ -23,7 +24,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
     {
 
         private readonly ILoggerService _logger;
+        private readonly Item _Supplementsettings;
 
+        public ProcessRepository(ILoggerService logger, IEnumerable<Item> jobItems)
+        {
+            this._logger = logger;
+            this._Supplementsettings = jobItems.FirstOrDefault(j => j.TemplateID == Templates.SupplementSetting.Id);
+        }
         public ProcessRepository(ILoggerService logger)
         {
             this._logger = logger;
@@ -479,42 +486,75 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         }
 
 
-       
+
 
         ///<summary>
         ///改變紅綠燈狀態
         ///</summary>
+        
         public void TurnTrafficLight(NameofTrafficLight name, TrafficLightStatus status)
         {
-            //先偵測總開關有沒有開
+            // 先偵測總開關有沒有開
             bool masterSwitch = Settings.GetBoolSetting("MasterLightSwitch", false);
 
-            if (masterSwitch)
+            // 如果總開關沒有開，記錄警告並返回
+            if (!masterSwitch)
             {
-                var parameters = new DynamicParameters();
-                parameters.Add("@number", (int)name, DbType.Int32, ParameterDirection.Input);
-                parameters.Add("@status", (int)status, DbType.Int32, ParameterDirection.Input);
-                parameters.Add("@time", DateTime.Now, DbType.DateTime, ParameterDirection.Input);
+                this._logger.Warn("紅綠燈總開關沒開");
+                return;
+            }
+            // 獲取 Supplement Setting 中的 Turn All Lights 值
+            string turnAllLightsSetting = this._Supplementsettings["Turn All Lights"]?.ToString();
 
-                string sql = """
+            TrafficLightStatus effectiveStatus;
+
+            // 根據 Turn All Lights 的設定決定燈號的顏色
+            if (turnAllLightsSetting != null)
+            {
+                // 根據設定的值來決定燈號顏色
+                if (turnAllLightsSetting.Equals("Red", StringComparison.OrdinalIgnoreCase))
+                {
+                    effectiveStatus = TrafficLightStatus.Red;
+                    this._logger.Info("開啟永遠紅燈");
+                }
+                else if (turnAllLightsSetting.Equals("Green", StringComparison.OrdinalIgnoreCase))
+                {
+                    effectiveStatus = TrafficLightStatus.Green;
+                    this._logger.Info("開啟永遠綠燈");
+                }
+                else
+                {
+                    effectiveStatus = status;
+                    this._logger.Info($"Turn On {status}");
+                }
+            }
+            else
+            {
+                effectiveStatus = status;
+                this._logger.Info($"Turn On {status}");
+            }
+
+            //改變資料庫燈號狀態
+            var parameters = new DynamicParameters();
+            parameters.Add("@number", (int)name, DbType.Int32, ParameterDirection.Input);
+            parameters.Add("@status", (int)effectiveStatus, DbType.Int32, ParameterDirection.Input);
+            parameters.Add("@time", DateTime.Now, DbType.DateTime, ParameterDirection.Input);
+
+            string sql = """
                     UPDATE [SignalStatus]
                     SET Status = @status,UpdateTime = @time
                     WHERE Number = @number
                     """;
 
-                try
-                {
-                    DbManager.Custom.ExecuteNonQuery(sql, parameters, CommandType.Text);
-                }
-                catch (Exception ex)
-                {
-                    this._logger.Error(ex.Message, ex);
-                }
-            }
-            else
+            try
             {
-                this._logger.Warn("紅綠燈總開關沒開");
+                DbManager.Custom.ExecuteNonQuery(sql, parameters, CommandType.Text);
+            }
+            catch (Exception ex)
+            {
+                this._logger.Error(ex.Message, ex);
             }
         }
+
     }
 }

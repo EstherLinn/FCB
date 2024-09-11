@@ -14,7 +14,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
     {
         protected override async Task Execute()
         {
-            var _repository = new ProcessRepository(this.Logger);
+            var _repository = new ProcessRepository(this.Logger, this.JobItems);
 
             string sql = "SELECT * FROM [ChangeHistory] WITH (NOLOCK)";
             var results = await DbManager.Custom.ExecuteIListAsync<ChangeHistory>(sql, null, CommandType.Text);

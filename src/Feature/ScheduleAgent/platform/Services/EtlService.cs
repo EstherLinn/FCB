@@ -9,6 +9,7 @@ using Sitecore.Configuration;
 using Sitecore.Data.Items;
 using Sitecore.IO;
 using Sitecore.Services.Core;
+using Sitecore.Shell.Framework.Commands.ContentEditor;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -197,7 +198,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         /// 完成資料插入後，檔案改名加_done
         /// </summary>
         /// <param name="fileName"></param>
-        public void FinishJob(string fileName,DateTime startTime)
+        public void FinishJob(string fileName, DateTime startTime)
         {
             var _repository = new ProcessRepository(this._logger);
             //CSV檔案資料完成後，檔案改名加_done
@@ -215,7 +216,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 this._logger.Info(fileName + " 執行完成");
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
-                _repository.LogChangeHistory(DateTime.UtcNow, fileName, $"{fileName}排程完成", "", 0, duration.TotalSeconds,"Y");
+                _repository.LogChangeHistory(DateTime.UtcNow, fileName, $"{fileName}排程完成", "", 0, duration.TotalSeconds, "Y");
             }
             //補檔案完成，修改後台checkbox設定，改成false
             else if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
@@ -254,7 +255,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         /// <summary>
         /// 檢查Ftps檔案存不存在，以及是否要做補檔
         /// </summary>
-        public async Task<KeyValuePair<string, bool> >ExtractFile(string fileName)
+        public async Task<KeyValuePair<string, bool>> ExtractFile(string fileName)
         {
             if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
             {
@@ -314,7 +315,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                         //下載檔案
                         if (await ftpClient.DownloadFile(localFilePath, filePath, FtpLocalExists.Overwrite) == FtpStatus.Success)
                         {
-                            return new KeyValuePair<string, bool> ("從FTPS下載檔案", true);
+                            return new KeyValuePair<string, bool>("從FTPS下載檔案", true);
                         }
 
                         this._logger.Error($"File {fileName} not found on FTPS server.");

@@ -18,7 +18,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 var startTime = DateTime.UtcNow;
                 this.Logger.Info($"Execution started at {startTime}");
 
-                var _repository = new ProcessRepository(this.Logger);
+                var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
                 string fileName = "SYSJUST-RISK-FUND-2-OVERSEA";
