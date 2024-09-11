@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.ScheduleAgent.Models.Mail;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using log4net;
 using Sitecore.Data.Items;
 using System;
@@ -152,7 +154,10 @@ namespace Feature.Wealth.Component.Repositories
 
         public Branch GetBranch(string employeeCode)
         {
-            string sql = @"SELECT
+            string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
+            string Branch_Data = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Branch_Data);
+
+            string sql = $@"SELECT
                            A.[OfficeOrBranchCode] [BranchCode],
                            A.[OfficeOrBranchName] [BranchName],
                            A.[DepartmentCode] [DepartmentCode],
@@ -165,8 +170,8 @@ namespace Feature.Wealth.Component.Repositories
                            THEN '(' + TRIM(B.[PhoneAreaCode]) + ')' + SUBSTRING(B.[PhoneNumber], 1, 2) + '-' + SUBSTRING(B.[PhoneNumber], 3, 4)
                            ELSE '(' + TRIM(B.[PhoneAreaCode]) + ')' + B.[PhoneNumber]
                            END AS [BranchPhone]
-                           FROM [HRIS] A WITH (NOLOCK)
-                           LEFT JOIN [Branch_Data] B WITH (NOLOCK) ON SUBSTRING(A.OfficeOrBranchCode, 2, 3) = B.BranchCode
+                           FROM {HRIS} A WITH (NOLOCK)
+                           LEFT JOIN {Branch_Data} B WITH (NOLOCK) ON SUBSTRING(A.OfficeOrBranchCode, 2, 3) = B.BranchCode
                            WHERE A.EmployeeCode = @EmployeeCode";
 
             var result = this._dbConnection.Query<Branch>(sql, new { EmployeeCode = employeeCode })?.FirstOrDefault() ?? new Branch();
@@ -363,15 +368,19 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<CustomerInfo> GetCustomerInfos(string employeeCode)
         {
-            string sql = @"SELECT
+            string CIF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CIF);
+            string CFMBSEL = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CFMBSEL);
+            string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
+
+            string sql = $@"SELECT
                            A.CIF_ID AS CIF_ID,
                            A.CIF_CUST_NAME AS CustomerName,
                            C.WebBankId AS WebBankId,
                            D.OfficeOrBranchName AS BranchName
-                           FROM CIF AS A WITH (NOLOCK)
-                           LEFT JOIN CFMBSEL AS B WITH (NOLOCK) ON A.CIF_ID = B.CUST_ID
+                           FROM {CIF} AS A WITH (NOLOCK)
+                           LEFT JOIN {CFMBSEL} AS B WITH (NOLOCK) ON A.CIF_ID = B.CUST_ID
                            LEFT JOIN FCB_Member AS C WITH (NOLOCK) ON B.PROMOTION_CODE COLLATE Latin1_General_CS_AS = C.WebBankId
-                           LEFT JOIN HRIS AS D WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = D.EmployeeCode
+                           LEFT JOIN {HRIS} AS D WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = D.EmployeeCode
                            WHERE C.WebBankId IS NOT NULL AND D.EmployeeCode IS NOT NULL AND D.EmployeeCode = @EmployeeCode";
 
             var result = this._dbConnection.Query<CustomerInfo>(sql, new { EmployeeCode = employeeCode })?.ToList() ?? new List<CustomerInfo>();

@@ -18,6 +18,8 @@ using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Dapper;
 using Feature.Wealth.Account.Models.MemberLog;
+using Foundation.Wealth.Helper;
+using Foundation.Wealth.Models;
 
 namespace Feature.Wealth.Account.Repositories
 {
@@ -195,6 +197,11 @@ namespace Feature.Wealth.Account.Repositories
         public CIFMember GetWebBankUserInfo(string id)
         {
             CIFMember member = null;
+
+            string CIF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CIF);
+            string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
+            string CFMBSEL = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CFMBSEL);
+
             var strSql = @$"DECLARE @@id varchar(33) = @id
                             SELECT
                             A.CIF_CUST_NAME,
@@ -208,9 +215,9 @@ namespace Feature.Wealth.Account.Repositories
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE,
                             A.CIF_ID
-                            FROM [CIF] AS A
-                            LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
-                            LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
+                            FROM {CIF} AS A WITH (NOLOCK)
+                            LEFT JOIN {HRIS} AS B WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
+                            LEFT JOIN {CFMBSEL} AS C WITH (NOLOCK) ON CIF_ID = CUST_ID
                             WHERE CIF_ID = @@id ";
 
             var para = new
@@ -262,6 +269,9 @@ namespace Feature.Wealth.Account.Repositories
         public CIFMember GetAppUserInfo(string promotionCode)
         {
             CIFMember member = null;
+            string CIF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CIF);
+            string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
+            string CFMBSEL = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CFMBSEL);
             var strSql = @$"DECLARE @@promotionCode varchar(24) = @promotionCode
                             SELECT
                             A.CIF_CUST_NAME,
@@ -275,9 +285,9 @@ namespace Feature.Wealth.Account.Repositories
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE,
                             A.CIF_ID
-                            FROM [CIF] AS A
-                            LEFT JOIN [HRIS] AS B ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
-                            LEFT JOIN [CFMBSEL] AS C ON CIF_ID = CUST_ID
+                            FROM {CIF} AS A WITH (NOLOCK)
+                            LEFT JOIN {HRIS} AS B WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
+                            LEFT JOIN {CFMBSEL} AS C WITH (NOLOCK) ON CIF_ID = CUST_ID
                             WHERE C.PROMOTION_CODE COLLATE Latin1_General_CS_AS = @@promotionCode ";
 
             var para = new
@@ -331,6 +341,8 @@ namespace Feature.Wealth.Account.Repositories
         {
             FcbMemberModel fcbMemberModel = null;
             int idLength = 100;
+            string CIF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CIF);
+            string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
             var strSql = @$"DECLARE @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
                             SELECT
                             A.*,
@@ -342,8 +354,8 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeCode AS AdvisrorID,
                             B.CIF_ID
                             FROM [FCB_Member] AS A
-                            LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
+                            LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
+                            LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND ";
 
             if (platFormEunm == PlatFormEunm.WebBank)
@@ -398,6 +410,8 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetRefreshMemberInfo(PlatFormEunm platFormEunm, string id)
         {
             FcbMemberModel fcbMemberModel = null;
+            string CIF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CIF);
+            string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
             var strSql = @$"DECLARE @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
                             SELECT
                             A.*,
@@ -409,8 +423,8 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeCode AS AdvisrorID,
                             B.CIF_ID
                             FROM [FCB_Member] AS A
-                            LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
+                            LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
+                            LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@id";
 
             var para = new
@@ -454,6 +468,8 @@ namespace Feature.Wealth.Account.Repositories
         public FcbMemberModel GetAppMemberInfo(PlatFormEunm platFormEunm, string promotionCode)
         {
             FcbMemberModel fcbMemberModel = null;
+            string CIF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CIF);
+            string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
             var strSql = @$"DECLARE @@platForm varchar(10) = @platForm, @@promotionCode varchar(100) = @promotionCode
                             SELECT
                             A.*,
@@ -464,9 +480,9 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
                             B.CIF_ID
-                            FROM [FCB_Member] AS A
-                            LEFT JOIN [CIF] AS B ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
-                            LEFT JOIN [HRIS] AS C ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
+                            FROM [FCB_Member] AS A 
+                            LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
+                            LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@promotionCode";
 
             var para = new
@@ -867,8 +883,9 @@ namespace Feature.Wealth.Account.Repositories
         private string GetMemberId()
         {
             string id = string.Empty;
+            string CFMBSEL = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CFMBSEL);
             var strSql = @$" Declare @@promotionCode varchar(24) = @promotionCode
-                             SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE　COLLATE Latin1_General_CS_AS = @@promotionCode";
+                             SELECT CUST_ID FROM {CFMBSEL} WITH (NOLOCK) WHERE PROMOTION_CODE　COLLATE Latin1_General_CS_AS = @@promotionCode";
 
             var para = new
             {
@@ -1064,6 +1081,7 @@ namespace Feature.Wealth.Account.Repositories
         public Employee GetEmployeeInfoByEmployeeID(string id)
         {
             Employee member = null;
+            string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
             var strSql = @$"DECLARE @@id varchar(10) = @id
                             SELECT TOP (1)
                             [EmployeeCode]
@@ -1097,7 +1115,7 @@ namespace Feature.Wealth.Account.Repositories
                             ,[SalaryScale]
                             ,IIF(D.PersonalFinanceBusinessPersonnelCategory = '2', CONVERT(bit, 1), CONVERT(bit, 0)) AS IsEmployee
                             ,IIF(D.SupervisorCode <> '9' AND D.EmployeeCode IN (SELECT TOP (1) Supervisor FROM HRIS WITH (NOLOCK) WHERE Supervisor = D.EmployeeCode AND PersonalFinanceBusinessPersonnelCategory = '2'), CONVERT(bit, 1), CONVERT(bit, 0)) AS IsManager
-                            FROM [dbo].[HRIS] AS D WITH (NOLOCK)
+                            FROM {HRIS} AS D WITH (NOLOCK)
                             WHERE [EmployeeID] = @@id ";
             try
             {

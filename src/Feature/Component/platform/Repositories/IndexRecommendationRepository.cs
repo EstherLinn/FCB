@@ -5,7 +5,9 @@ using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.IndexRecommendation;
 using Feature.Wealth.Component.Models.USStock;
 using Foundation.Wealth.Extensions;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -168,7 +170,9 @@ namespace Feature.Wealth.Component.Repositories
         {
             List<USStock> uSStockItems = new List<USStock>();
 
-            string sql = """
+            string Sysjust_USStockList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_USStockList);
+            string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
+            string sql = $@"
                    SELECT 
                    A.[FirstBankCode]
                    ,A.[FundCode]
@@ -189,10 +193,10 @@ namespace Feature.Wealth.Component.Repositories
                    ,CONVERT(decimal(16,2), A.[SixMonthReturn]) [SixMonthReturn]
                    ,B.[OnlineSubscriptionAvailability]
                    ,B.[AvailabilityStatus]
-                   FROM [Sysjust_USStockList] A WITH (NOLOCK)
-                   LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
+                   FROM {Sysjust_USStockList} A WITH (NOLOCK)
+                   LEFT JOIN {WMS_DOC_RECM} B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
                    ORDER BY MonthlyReturn DESC, A.[FirstBankCode] ASC
-                   """;
+                   ";
 
             var results = DbManager.Custom.ExecuteIList<USStock>(sql, null, CommandType.Text);
 

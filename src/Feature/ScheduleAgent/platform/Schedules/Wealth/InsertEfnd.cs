@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Foundation.Wealth.Models;
 using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using System.Linq;
-using System.IO;
-using FixedWidthParserWriter;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using Xcms.Sitecore.Foundation.Basic.Logging;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -20,31 +15,44 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
         {
             if (this.JobItems != null)
             {
-                var _repository = new ProcessRepository(this.Logger);
+                var startTime = DateTime.UtcNow;
+                this.Logger.Info($"Execution started at {startTime}");
+
+                var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
-                string filename = "EFND";
-                bool IsfilePath = await etlService.ExtractFile(filename);
+                string fileName = "EFND";
+                var TrafficLight = NameofTrafficLight.EFND;
 
-                if (IsfilePath)
+                var IsfilePath = await etlService.ExtractFile(fileName);
+
+                if (IsfilePath.Value)
                 {
                     try
                     {
-                        var basic = await etlService.ParseFixedLength<Efnd>(filename);
-                        _repository.BulkInsertToDatabase(basic, "[EFND]", "INVEST_FUND_NO", "DEPOSIT_DAY", "BASE_DAY", filename);
-                        etlService.FinishJob(filename);
+                        string tableName = EnumUtil.GetEnumDescription(TrafficLight);
+                        var datas = await etlService.ParseFixedLength<Efnd>(fileName);
+                        _repository.BulkInsertToDatabase(datas, tableName, "INVEST_FUND_NO", "DEPOSIT_DAY", "BASE_DAY", fileName, startTime);
+                        etlService.FinishJob(fileName, startTime);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.Message, ex);
-                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
+                        _repository.LogChangeHistory(DateTime.UtcNow, fileName, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                     }
                 }
                 else
                 {
-                    this.Logger.Error($"{filename} not found");
-                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
+                    this.Logger.Error($"{fileName} not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, fileName, IsfilePath.Key, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                 }
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                this.Logger.Info($"Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
+            }
+            else
+            {
+                this.Logger.Warn($"Not Setting Any JobItems");
             }
         }
     }

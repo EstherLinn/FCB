@@ -9,5 +9,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         public string ModificationType { get; set; }
         public string DataTable { get; set; }
         public int ModificationLine { get; set; }
+        public double TotalSeconds { get; set; }
+        public string Success { get; set; }
     }
 }

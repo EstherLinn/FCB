@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using Feature.Wealth.Component.Models.GlobalIndex;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,7 +18,8 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<GlobalIndex> GetGlobalIndexList()
         {
-            string sql = @"SELECT
+            string Sysjust_GlobalIndex = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_GlobalIndex);
+            string sql = $@"SELECT
                            [IndexCode]
                            ,[IndexName]
                            ,[IndexCategoryID]
@@ -27,7 +30,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1) [Change]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), [ChangePercentage])) + '%' [ChangePercentage]
                            ,CONVERT(bit, IIF([Change] >= 0, 1, 0)) [UpOrDown]
-                           FROM [Sysjust_GlobalIndex] WITH (NOLOCK)
+                           FROM {Sysjust_GlobalIndex} WITH (NOLOCK)
                            ORDER BY [IndexCode]";
 
             var globalIndexs = this._dbConnection.Query<GlobalIndex>(sql)?.ToList() ?? new List<GlobalIndex>();
@@ -37,7 +40,8 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<GlobalIndex> GetCommonGlobalIndexList()
         {
-            string sql = @"SELECT
+            string Sysjust_GlobalIndex = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_GlobalIndex);
+            string sql = $@"SELECT
                            [IndexCode]
                            ,[IndexName]
                            ,[IndexCategoryID]
@@ -48,7 +52,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(nvarchar, CONVERT(MONEY, [Change]), 1) [Change]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), [ChangePercentage])) + '%' [ChangePercentage]
                            ,CONVERT(bit, IIF([Change] >= 0, 1, 0)) [UpOrDown]
-                           FROM [Sysjust_GlobalIndex] WITH (NOLOCK)
+                           FROM {Sysjust_GlobalIndex} WITH (NOLOCK)
                            WHERE [IndexCode] IN
                            (
                            'EB09999','AI000040','AI000041','AI000220',
@@ -130,7 +134,9 @@ namespace Feature.Wealth.Component.Repositories
 
         public GlobalIndexDetail GetGlobalIndexDetail(string indexCode)
         {
-            string sql = @"SELECT TOP 1
+            string Sysjust_GlobalIndex = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_GlobalIndex);
+            string Sysjust_GlobalIndex_ROI = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_GlobalIndex_ROI);
+            string sql = $@"SELECT TOP 1
                            A.[IndexCode]
                            ,A.[IndexName]
                            ,A.[IndexCategoryID]
@@ -149,8 +155,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[YeartoDateReturn])) + '%' [YeartoDateReturn]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[OneYearReturn])) + '%' [OneYearReturn]
                            ,CONVERT(nvarchar, CONVERT(decimal(16,2), C.[ThreeYearReturn])) + '%' [ThreeYearReturn]
-                           FROM [Sysjust_GlobalIndex] A WITH (NOLOCK)
-                           LEFT JOIN [Sysjust_GlobalIndex_ROI] C WITH (NOLOCK) ON A.[IndexCode] = C.[IndexID]
+                           FROM {Sysjust_GlobalIndex} A WITH (NOLOCK)
+                           LEFT JOIN {Sysjust_GlobalIndex_ROI} C WITH (NOLOCK) ON A.[IndexCode] = C.[IndexID]
                            WHERE A.[IndexCode] = @IndexCode
                            ORDER BY C.[DataDate] DESC";
 

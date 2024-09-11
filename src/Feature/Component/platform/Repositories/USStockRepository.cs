@@ -3,6 +3,7 @@ using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.USStock;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
 using System.Data;
@@ -18,7 +19,9 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<USStock> GetUSStockList()
         {
-            string sql = @"SELECT 
+            string Sysjust_USStockList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_USStockList);
+            string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
+            string sql = $@"SELECT 
                            A.[FirstBankCode]
                            ,A.[FundCode]
                            ,A.[EnglishName]
@@ -38,8 +41,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), A.[SixMonthReturn]) [SixMonthReturn]
                            ,B.[OnlineSubscriptionAvailability]
                            ,B.[AvailabilityStatus]
-                           FROM [Sysjust_USStockList] A WITH (NOLOCK)
-                           LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
+                           FROM {Sysjust_USStockList} A WITH (NOLOCK)
+                           LEFT JOIN {WMS_DOC_RECM} B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
                            ORDER BY A.[MonthlyReturn] DESC, A.[FirstBankCode] ASC";
 
             var uSStocks = this._dbConnection.Query<USStock>(sql)?.ToList() ?? new List<USStock>();
@@ -49,7 +52,9 @@ namespace Feature.Wealth.Component.Repositories
 
         public USStock GetUSStock(string firstBankCode)
         {
-            string sql = @"SELECT 
+            string Sysjust_USStockList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_USStockList);
+            string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
+            string sql = $@"SELECT 
                            A.[FirstBankCode]
                            ,[FundCode]
                            ,[EnglishName]
@@ -68,8 +73,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,CONVERT(decimal(16,2), [SixMonthReturn]) [SixMonthReturn]
                            ,B.[OnlineSubscriptionAvailability]
                            ,B.[AvailabilityStatus]
-                           FROM [Sysjust_USStockList] A WITH (NOLOCK)
-                           LEFT JOIN [WMS_DOC_RECM] B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
+                           FROM {Sysjust_USStockList} A WITH (NOLOCK)
+                           LEFT JOIN {WMS_DOC_RECM} B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
                            WHERE A.[FirstBankCode] = @FirstBankCode";
 
             var uSStock = this._dbConnection.Query<USStock>(sql, new { FirstBankCode = firstBankCode })?.FirstOrDefault() ?? new USStock();

@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Foundation.Wealth.Models;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
@@ -14,33 +15,49 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
         {
             if (this.JobItems != null)
             {
-                var _repository = new ProcessRepository(this.Logger);
+                var startTime = DateTime.UtcNow;
+                this.Logger.Info($"Execution started at {startTime}");
+
+                var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
-                string filename = "SYSJUST-BASIC-ETF-2";
-                bool IsfilePath = await etlService.ExtractFile(filename);
+                string fileName = "SYSJUST-BASIC-ETF-2";
+                var TrafficLight = NameofTrafficLight.Sysjust_Basic_ETF_2;
 
-                if (IsfilePath)
+                var isFilePath = await etlService.ExtractFile(fileName);
+
+                if (isFilePath.Value)
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsv<SysjustBasicEtf2>(filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Basic_ETF_2]", filename);
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Basic_ETF_2_History]", "FirstBankCode", "FirstBankCode", filename);
-                        etlService.FinishJob(filename);
+                        string tableName = EnumUtil.GetEnumDescription(TrafficLight);
+                        var datas = await etlService.ParseCsv<SysjustBasicEtf2>(fileName);
+                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
+                        _repository.BulkInsertToDatabase(datas, tableName + "_History", "FirstBankCode", "FirstBankCode", fileName, startTime);
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                        etlService.FinishJob(fileName, startTime);
                     }
                     catch (Exception ex)
                     {
-                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, "", 0);
+                        this.Logger.Error(ex.Message, ex);
+                        _repository.LogChangeHistory(DateTime.UtcNow, fileName, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                     }
                 }
                 else
                 {
-                     _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
+                    this.Logger.Error($"{fileName} not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, fileName, isFilePath.Key, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                 }
-
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                this.Logger.Info($"Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
             }
-
+            else
+            {
+                this.Logger.Warn($"Not Setting Any JobItems");
+            }
         }
     }
 }

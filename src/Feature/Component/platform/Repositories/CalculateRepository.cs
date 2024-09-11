@@ -6,6 +6,7 @@ using Feature.Wealth.Component.Models.Invest;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using log4net;
 using Newtonsoft.Json;
 using Sitecore.Extensions;
@@ -274,9 +275,11 @@ namespace Feature.Wealth.Component.Repositories
                 item.CompareButtonHtml = PublicHelpers.CompareButton(null, null, item.ProductCode, item.FundName, InvestTypeEnum.Fund, false).ToString();
                 item.FundDetailUrl = $"{FundUrl}?id={item.ProductCode}";
 
+                string tablename = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Nav_Fund);
+
                 string sql = @$"
                  SELECT [NetAssetValue]
-                 FROM [dbo].[Sysjust_Nav_Fund]
+                 FROM {tablename} WITH (NOLOCK)
                  WHERE [FirstBankCode] = '{item.ProductCode}'AND [NetAssetValue] IS NOT NULL
                  ORDER BY [NetAssetValueDate] ASC;";
 
@@ -344,10 +347,11 @@ namespace Feature.Wealth.Component.Repositories
                 item.FocusButtonHtml = PublicHelpers.FocusButton(null, null, item.ProductCode, item.ETFName, InvestTypeEnum.ETF, false).ToString();
                 item.CompareButtonHtml = PublicHelpers.CompareButton(null, null, item.ProductCode, item.ETFName, InvestTypeEnum.ETF, false).ToString();
                 item.ETFDetailUrl = $"{ETFUrl}?id={item.ProductCode}";
+                string tablename = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Nav_ETF);
 
                 string sql = @$"
                  SELECT [NetAssetValue]
-                 FROM [dbo].[Sysjust_Nav_ETF]
+                 FROM {tablename} WITH (NOLOCK)
                  WHERE [FirstBankCode] = '{item.ProductCode}'AND [NetAssetValue] IS NOT NULL
                  ORDER BY [NetAssetValueDate] ASC;";
 

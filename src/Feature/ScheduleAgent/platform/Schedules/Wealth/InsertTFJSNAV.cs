@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Foundation.Wealth.Models;
 using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -14,33 +15,46 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
         {
             if (this.JobItems != null)
             {
-                var _repository = new ProcessRepository(this.Logger);
+                var startTime = DateTime.UtcNow;
+                this.Logger.Info($"Execution started at {startTime}");
+
+                var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
                 var date = DateTime.Now.ToString("yyMMdd");
-                string filename = "TFJSNAV." + date + ".1000.txt";
+                string fileName = "TFJSNAV." + date + ".1000.txt";
+                var TrafficLight = NameofTrafficLight.FUND_NAV_TFJSNAV;
 
-                bool IsfilePath = await etlService.ExtractFile(filename);
 
-                if (IsfilePath)
+                var IsfilePath = await etlService.ExtractFile(fileName);
+
+                if (IsfilePath.Value)
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsv<FundNavTfjsNav>(filename);
-                        _repository.BulkInsertToDatabase(basic, "[FUND_NAV_TFJSNAV]", "DataDate", "BankProductCode", "NetAssetValueDate", filename);
-                        etlService.FinishJob("TFJSNAV");
+                        string tableName = EnumUtil.GetEnumDescription(TrafficLight);
+                        var datas = await etlService.ParseCsv<FundNavTfjsNav>(fileName);
+                        _repository.BulkInsertToDatabase(datas, tableName, "DataDate", "BankProductCode", "NetAssetValueDate", fileName, startTime);
+                        etlService.FinishJob("TFJSNAV", startTime);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.Message, ex);
-                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
+                        _repository.LogChangeHistory(DateTime.UtcNow, fileName, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                     }
                 }
                 else
                 {
-                    this.Logger.Error($"{filename} not found");
-                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
+                    this.Logger.Error($"{fileName} not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, fileName, IsfilePath.Key, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                 }
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                this.Logger.Info($"Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
+            }
+            else
+            {
+                this.Logger.Warn($"Not Setting Any JobItems");
             }
         }
     }

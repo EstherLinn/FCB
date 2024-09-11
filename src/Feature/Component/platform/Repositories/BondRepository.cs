@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.Caching;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Templates = Feature.Wealth.Component.Models.Bond.Template;
+using Foundation.Wealth.Models;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -27,7 +28,9 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<Bond> GetBondList()
         {
-            string sql = @"SELECT
+            string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
+            string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
+            string sql = @$"SELECT
                            A.[BondCode] + ' ' + A.[BondName] AS [FullName]
                            ,A.[BondCode] + ' ' + A.[BondName] AS [value]
                            ,A.[BondCode]
@@ -78,8 +81,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,B.[MoodyCreditRating]
                            ,B.[FitchCreditRating]
                            ,B.[YieldRateYTM]
-                           FROM [BondList] AS A WITH (NOLOCK)
-                           LEFT JOIN [BondNav] AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
+                           FROM {BondList} AS A WITH (NOLOCK)
+                           LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
                            LEFT JOIN [Currency] AS C WITH (NOLOCK) ON A.CurrencyCode = C.CurrencyCode
                            ORDER BY A.BondCode";
 
@@ -111,7 +114,9 @@ namespace Feature.Wealth.Component.Repositories
 
         public Bond GetBond(string bondCode)
         {
-            string sql = @"SELECT
+            string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
+            string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
+            string sql = @$"SELECT
                            A.[BondCode] + ' ' + A.[BondName] AS [FullName]
                            ,A.[BondCode] + ' ' + A.[BondName] AS [value]
                            ,A.[BondCode]
@@ -162,8 +167,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,B.[MoodyCreditRating]
                            ,B.[FitchCreditRating]
                            ,B.[YieldRateYTM]
-                           FROM [BondList] AS A WITH (NOLOCK)
-                           LEFT JOIN [BondNav] AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
+                           FROM {BondList} AS A WITH (NOLOCK)
+                           LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)
                            LEFT JOIN [Currency] AS C WITH (NOLOCK) ON A.CurrencyCode = C.CurrencyCode
                            WHERE A.BondCode = @BondCode";
 

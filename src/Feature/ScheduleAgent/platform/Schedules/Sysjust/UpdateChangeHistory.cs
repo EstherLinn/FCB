@@ -14,21 +14,21 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
     {
         protected override async Task Execute()
         {
-            var _repository = new ProcessRepository(this.Logger);
+            var _repository = new ProcessRepository(this.Logger, this.JobItems);
 
-            string sql = "SELECT * FROM [ChangeHistory]";
+            string sql = "SELECT * FROM [ChangeHistory] WITH (NOLOCK)";
             var results = await DbManager.Custom.ExecuteIListAsync<ChangeHistory>(sql, null, CommandType.Text);
 
             var newresults = results.Where(f => f.ModificationDate >= DateTime.Today.AddMonths(-1));
 
             try
             {
-                _repository.BulkInsertToNewDatabase(newresults, "[ChangeHistory]", sql);
+                _repository.BulkInsertToNewDatabase(newresults, "[ChangeHistory]", sql, DateTime.UtcNow);
             }
             catch (Exception ex)
             {
                 this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, "ChangeHistory", ex.Message, " ", 0);
+                _repository.LogChangeHistory(DateTime.UtcNow, "ChangeHistory", ex.Message, " ", 0, 0, "N");
             }
 
         }

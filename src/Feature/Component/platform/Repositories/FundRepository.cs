@@ -1,5 +1,7 @@
 ﻿using Feature.Wealth.Component.Models.FundDetail;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Foundation.Wealth.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -75,7 +77,8 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public string GetDometicOrOverseas(string fundId)
         {
-            string sql = @"Select DomesticForeignFundIndicator From [FUND_BSC] (NOLOCK) Where  [BankProductCode] =@fundId";
+            string FUND_BSC = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
+            string sql = $@"Select DomesticForeignFundIndicator From {FUND_BSC} (NOLOCK) Where  [BankProductCode] =@fundId";
             var para = new { fundId };
             string indicator = DbManager.Custom.Execute<string>(sql, para, commandType: System.Data.CommandType.Text);
             return indicator;
@@ -129,7 +132,7 @@ namespace Feature.Wealth.Component.Repositories
         public List<FundCloseYearNetValue> GetNetAssetValueWithCloseYear(string fundId)
         {
             string sql = @"SELECT Format([Date],'yyyy-MM-dd') NetAssetValueDate,[NetAssetValue] 
-                            FROM [Sysjust_FUNDNAV_HIS] where [FirstBankCode]=@fundId and CAST([Date] AS date) >= CAST(DATEADD(year, -1, GETDATE())AS date) ORDER BY [Date] ";
+                            FROM [Sysjust_FUNDNAV_HIS] WITH (NOLOCK) where [FirstBankCode]=@fundId and CAST([Date] AS date) >= CAST(DATEADD(year, -1, GETDATE())AS date) ORDER BY [Date] ";
             var para = new { fundId };
             List<FundCloseYearNetValue> fundCloseYearNetValue = DbManager.Custom.ExecuteIList<FundCloseYearNetValue>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundCloseYearNetValue;
@@ -164,14 +167,15 @@ namespace Feature.Wealth.Component.Repositories
 
         public List<FundAnnunalRateOfReturn> GetAnnualRateOfReturn(string fundId)
         {
-            var sql = @"SELECT TOP(5)
+            string Sysjust_Return_Fund_2 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Return_Fund_2);
+            var sql = $@"SELECT TOP(5)
                        [FirstBankCode]
                       ,[Year]
                       ,[AnnualReturnRateOriginalCurrency]
                       ,[AnnualReturnRateTWD]
                       ,[IndicatorIndexPriceChange]
                       ,[AnnualReturnRateOriginalCurrency] - [IndicatorIndexPriceChange] as Difference
-                  FROM [Sysjust_Return_Fund_2] 
+                  FROM {Sysjust_Return_Fund_2} WITH (NOLOCK)
                   where [FirstBankCode] = @fundId 
                   ORDER BY [Year] DESC";
             var para = new { fundId };
@@ -185,7 +189,8 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public FundAccumulationRateOfReturn GetAccumulationRateOfReturn(string fundId)
         {
-            string sql = @"SELECT [FirstBankCode]     
+            string Sysjust_Return_Fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Return_Fund);
+            string sql = $@"SELECT [FirstBankCode]     
                                   ,[OneWeekReturnOriginalCurrency]
                                   ,[MonthtoDateReturnOriginalCurrency]
                                   ,[YeartoDateReturnOriginalCurrency]
@@ -197,7 +202,7 @@ namespace Feature.Wealth.Component.Repositories
                                   ,[ThreeYearReturnOriginalCurrency]
                                   ,[FiveYearReturnOriginalCurrency]
                                   ,[DataDate]
-                              FROM [Sysjust_Return_Fund] where [FirstBankCode] = @fundId";
+                              FROM {Sysjust_Return_Fund} WITH (NOLOCK) where [FirstBankCode] = @fundId";
             var para = new { fundId };
             FundAccumulationRateOfReturn fundAccumulationRateOfReturn = DbManager.Custom.Execute<FundAccumulationRateOfReturn>(sql, para, System.Data.CommandType.Text);
             return fundAccumulationRateOfReturn;
@@ -210,13 +215,14 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundDowJonesIndex> GetDowJonesIndex(string fundId)
         {
-            var sql = @" SELECT TOP(12)
+            string Sysjust_Return_Fund_3 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Return_Fund_3);
+            var sql = $@" SELECT TOP(12)
                           [FirstBankCode]
                           ,FORMAT(CAST([Date] as date),'yyyy/MM')  [Date]
                           ,[MonthlyReturnRate]
                           ,[IndicatorIndexPriceChange]
                           ,[MonthlyReturnRate] - [IndicatorIndexPriceChange] as Difference
-                      FROM [Sysjust_Return_Fund_3]
+                      FROM {Sysjust_Return_Fund_3} WITH (NOLOCK)
                       WHERE [FirstBankCode] = @fundId";
             var para = new { fundId };
             List<FundDowJonesIndex> fundDowJonesIndex = DbManager.Custom.ExecuteIList<FundDowJonesIndex>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
@@ -230,12 +236,13 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundStockHolding> GetFundHoldingStockPercent(string fundId)
         {
-            string sql = @"SELECT  [FirstBankCode]
+            string Sysjust_Holding_Fund_1 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Holding_Fund_1);
+            string sql = $@"SELECT  [FirstBankCode]
                                   ,Format([Date],'yyyy/MM/dd') Date
                                   ,[FundName]
                                   ,[StockName] Category
                                   ,[Shareholding] Holding
-                              FROM [Sysjust_Holding_Fund_1]
+                              FROM {Sysjust_Holding_Fund_1} WITH (NOLOCK)
                               where [FirstBankCode] = @fundId and [StockName]!='合計'
                               order by [Shareholding] desc";
             var para = new { fundId };
@@ -250,13 +257,14 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundStockHolding> GetFundIndustryPercent(string fundId)
         {
-            string sql = @"SELECT  [FirstBankCode]
+            string Sysjust_Holding_Fund_3 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Holding_Fund_3);
+            string sql = $@"SELECT  [FirstBankCode]
                                   ,Format([Date],'yyyy/MM/dd') Date
                                   ,[FundName]
                                   ,[Sector] Category
                                   ,[HoldingSector] Holding
                                   ,[Currency]
-                              FROM [Sysjust_Holding_Fund_3]
+                              FROM {Sysjust_Holding_Fund_3} WITH (NOLOCK)
                               where [FirstBankCode] = @fundId and Sector!='合計'
                               order by [HoldingSector] desc";
             var para = new { fundId };
@@ -270,13 +278,14 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundStockHolding> GetFundAreaPercent(string fundId)
         {
+            string Sysjust_Holding_Fund_2 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Holding_Fund_2);
             string sql = $@"SELECT [FirstBankCode]
                                   ,Format([Date],'yyyy/MM/dd') Date
                                   ,[FundName]
                                   ,[Area] Category
                                   ,[HoldingArea] Holding
                                   ,[Currency]
-                              FROM [Sysjust_Holding_Fund_2]
+                              FROM {Sysjust_Holding_Fund_2} WITH (NOLOCK)
                               where [FirstBankCode] = @fundId and [Area]!='合計'
                               order by [HoldingArea] desc";
             var para = new { fundId };
@@ -291,13 +300,15 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundStockHolding> GetTopTenHoldingFund(string fundId, string domesticOroverseas)
         {
-            string tableName = domesticOroverseas == nameof(FundEnum.D) ? "[Sysjust_Holding_Fund_5]" : "[Sysjust_Holding_Fund_4]";
+            string Sysjust_Holding_Fund_5 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Holding_Fund_5);
+            string Sysjust_Holding_Fund_4 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Holding_Fund_4);
+            string tableName = domesticOroverseas == nameof(FundEnum.D) ? Sysjust_Holding_Fund_5 : Sysjust_Holding_Fund_4;
 
             string sql = $@"SELECT TOP (10)
                                     Format([Date],'yyyy/MM/dd') Date
                                     ,[StockName] FundName
                                     ,[Shareholding] Holding
-                                      FROM {tableName}
+                                      FROM {tableName} WITH (NOLOCK)
                                      WHERE [FirstBankCode] = @fundId
                                      ORDER BY [Shareholding] DESC,[StockName]";
             var para = new { fundId };
@@ -312,7 +323,8 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public FundRiskindicators GetRiskindicators(string fundId)
         {
-            string sql = @"SELECT  [FirstBankCode]
+            string Sysjust_Risk_Fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Risk_Fund);
+            string sql = $@"SELECT  [FirstBankCode]
                       ,Format([Date],'yyyy/MM/dd') Date
                       ,[SixMonthStandardDeviation]
                       ,[OneYearStandardDeviation]
@@ -354,7 +366,7 @@ namespace Feature.Wealth.Component.Repositories
                       ,[ThreeYearVariance]
                       ,[FiveYearVariance]
                       ,[TenYearVariance]
-                  FROM [Sysjust_Risk_Fund]
+                  FROM {Sysjust_Risk_Fund} WITH (NOLOCK)
                 WHERE  [FirstBankCode] = @fundId";
             var para = new { fundId };
             FundRiskindicators fundRiskindicators = DbManager.Custom.Execute<FundRiskindicators>(sql, para, System.Data.CommandType.Text);
@@ -395,7 +407,8 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundYearRateOfReturn> GetYearRateOfReturnCompare(string fundId)
         {
-            var sql = @"SELECT TOP(5)
+            string Sysjust_Risk_Fund_3 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Risk_Fund_3);
+            var sql = $@"SELECT TOP(5)
                           [FirstBankCode]
                           ,[Date]
                           ,[AnnualizedStandardDeviation]
@@ -404,7 +417,7 @@ namespace Feature.Wealth.Component.Repositories
                           ,[InformationRatio]
                           ,[JensenIndex]
                           ,[TreynorIndex]
-                      FROM [Sysjust_Risk_Fund_3] 
+                      FROM {Sysjust_Risk_Fund_3} WITH (NOLOCK)
                       where [FirstBankCode]=@fundId ORDER BY [Date] DESC";
             var para = new { fundId };
             List<FundYearRateOfReturn> fundYearRateOfReturn = DbManager.Custom.ExecuteIList<FundYearRateOfReturn>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
@@ -418,14 +431,15 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundDividendRecord> GetDividendRecord(string fundId)
         {
-            var sql = @" SELECT [FirstBankCode]
+            string Sysjust_Dividend_Fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Dividend_Fund);
+            var sql = $@" SELECT [FirstBankCode]
                               ,FORMAT([ExDividendDate],'yyyy/MM/dd') [ExDividendDate]
                               ,FORMAT([BaseDate],'yyyy/MM/dd')[BaseDate]
                               ,FORMAT([ReleaseDate],'yyyy/MM/dd')[ReleaseDate]
                               ,[Dividend]
                               ,[AnnualizedDividendRate]
                               ,[Currency]
-                          FROM [Sysjust_Dividend_Fund] (NOLOCK) WHERE [FirstBankCode]=@fundId
+                          FROM {Sysjust_Dividend_Fund} WITH (NOLOCK) WHERE [FirstBankCode]=@fundId
                           ORDER BY [ExDividendDate] DESC";
             var para = new { fundId };
             List<FundDividendRecord> fundDividendRecord = DbManager.Custom.ExecuteIList<FundDividendRecord>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
@@ -440,9 +454,11 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public List<FundScaleRecord> GetScaleMove(string fundId, string domesticOroverseas = nameof(FundEnum.D))
         {
-            string tableName = domesticOroverseas == nameof(FundEnum.D) ? "[Sysjust_Fundsize_Fund_2]" : "[Sysjust_Fundsize_Fund_1]";
+            string Sysjust_Fundsize_Fund_2 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Fundsize_Fund_2);
+            string Sysjust_Fundsize_Fund_1 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Fundsize_Fund_1);
+            string tableName = domesticOroverseas == nameof(FundEnum.D) ? Sysjust_Fundsize_Fund_2 : Sysjust_Fundsize_Fund_1;
             var sql = $@" ;WITH CTE AS (
-                             SELECT * FROM {tableName} (NOLOCK)
+                             SELECT * FROM {tableName} WITH (NOLOCK)
                              WHERE [FirstBankCode]=@fundId
                             )
                             SELECT [FirstBankCode]

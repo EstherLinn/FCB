@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Foundation.Wealth.Models;
 using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
-using System.Linq;
-using System.IO;
-using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using CsvHelper.Configuration;
-using CsvHelper;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
@@ -21,33 +15,48 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
         {
             if (this.JobItems != null)
             {
-                var _repository = new ProcessRepository(this.Logger);
+                var startTime = DateTime.UtcNow;
+                this.Logger.Info($"Execution started at {startTime}");
+
+                var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
-                string filename = "SYSJUST-HOLDING-FUND-4";
-                bool IsfilePath = await etlService.ExtractFile(filename);
+                string fileName = "SYSJUST-HOLDING-FUND-4";
+                var TrafficLight = NameofTrafficLight.Sysjust_Holding_Fund_4;
 
-                if (IsfilePath)
+                var IsfilePath = await etlService.ExtractFile(fileName);
+
+                if (IsfilePath.Value)
                 {
                     try
                     {
-                        var basic = await etlService.ParseCsv<SysjustHoldingFund4>(filename);
-
-                        _repository.BulkInsertToDatabase(basic, "[Sysjust_Holding_Fund_4_History]", "StockName", "FirstBankCode", "Date", filename);
-                        _repository.BulkInsertToNewDatabase(basic, "[Sysjust_Holding_Fund_4]", filename);
-                        etlService.FinishJob(filename);
+                        string tableName = EnumUtil.GetEnumDescription(TrafficLight);
+                        var datas = await etlService.ParseCsv<SysjustHoldingFund4>(fileName);
+                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
+                        _repository.BulkInsertToDatabase(datas, tableName + "_History", "StockName", "FirstBankCode", "Date", fileName, startTime);
+                        _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                        etlService.FinishJob(fileName, startTime);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.Message, ex);
-                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, " ", 0);
+                        _repository.LogChangeHistory(DateTime.UtcNow, fileName, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                     }
                 }
                 else
                 {
-                    this.Logger.Error($"{filename} not found");
-                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0);
+                    this.Logger.Error($"{fileName} not found");
+                    _repository.LogChangeHistory(DateTime.UtcNow, fileName, IsfilePath.Key, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
                 }
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                this.Logger.Info($"Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
+            }
+            else
+            {
+                this.Logger.Warn($"Not Setting Any JobItems");
             }
         }
     }
