@@ -1,12 +1,12 @@
 ﻿using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Repositories;
-using Sitecore.Configuration;
 using Sitecore.Mvc.Presentation;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -28,7 +28,6 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult FundDetail()
         {
             var fundViewModel = new FundViewModel();
-
             var fundid = Sitecore.Web.WebUtil.GetSafeQueryString("id");
 
             if (string.IsNullOrEmpty(fundid))
@@ -39,13 +38,28 @@ namespace Feature.Wealth.Component.Controllers
             fundid = fundid.ToUpper();
             var fundIndicator = _fundRepository.GetDometicOrOverseas(fundid);
             fundViewModel = _fundRepository.GetOrSetFundDetailsCache(fundid, fundIndicator);
-
+            var item = RenderingContext.CurrentOrNull?.Rendering.Item;
+            if (item != null)
+            {
+                fundViewModel.Item = item;
+                fundViewModel.Content = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Content.ToString());
+                fundViewModel.Note = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Note.ToString());
+                fundViewModel.Description = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Description.ToString());
+                fundViewModel.LightboxNote = ItemUtils.Field(item, Template.FundDetailsPage.Fields.LightboxNote.ToString());
+                fundViewModel.StandardDeviation = ItemUtils.Field(item, Template.FundDetailsPage.Fields.StandardDeviation.ToString());
+                fundViewModel.Sharpe = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Sharpe.ToString());
+                fundViewModel.Alpha = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Alpha.ToString());
+                fundViewModel.Beta = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Beta.ToString());
+                fundViewModel.Rsquared = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Rsquared.ToString());
+                fundViewModel.IndexCorrelationCoefficient = ItemUtils.Field(item, Template.FundDetailsPage.Fields.IndexCorrelationCoefficient.ToString());
+                fundViewModel.TrackingError = ItemUtils.Field(item, Template.FundDetailsPage.Fields.TrackingError.ToString());
+                fundViewModel.Variance = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Variance.ToString());
+            }
             if (fundViewModel.FundBaseData == null)
             {
                 return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
             }
 
-            fundViewModel.Item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             fundViewModel = _fundRepository.GetDocLinks(fundid, fundViewModel, fundIndicator, _djMoneyApiRespository);
 

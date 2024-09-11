@@ -16,12 +16,6 @@
     var FundDocLinkApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetDocLink");
     var FundRuleTextApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetRuleText");
     var FundReturnAndNetValueApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetReturnAndNetValueTrend");
-
-    var TemplateCanRender = true;
-    if (Model.Item == null)
-    {
-        TemplateCanRender = false;
-    }
     var detailsUrl = FundRelatedSettingModel.GetFundDetailsUrl();
     var closeFiveYearsUrl = FundRelatedSettingModel.GetFundCloseFiveYearsUrl();
     var exposeUrl = FundRelatedSettingModel.GetFundExposeUrl();
@@ -1822,10 +1816,7 @@
                 <div class="c-section__content">
                     <div class="l-flex u-flex-col u-flex-gap-sm">
                         <div class="l-flex__item">
-                            @if (TemplateCanRender)
-                            {
-                                @Html.Sitecore().Field(Template.FundDetailsPage.Fields.Description.ToString(), Model.Item)
-                            }
+                                @Model.Description
                         </div>
                         @if (Model.FundRiskindicators != null)
                         {
@@ -1864,7 +1855,7 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>標準差</td>
+                                                <td>標準差<a href="#StandardDeviation" class="o-icon o-icon--tip o-icon--xs" data-popup="true">i</a></td>
                                                 <td @Model.FundRiskindicators.SixMonthStandardDeviation.DecimalNegativeStyle()>@Model.FundRiskindicators.SixMonthStandardDeviation.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.OneYearStandardDeviation.DecimalNegativeStyle()>@Model.FundRiskindicators.OneYearStandardDeviation.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.ThreeYearStandardDeviation.DecimalNegativeStyle()>@Model.FundRiskindicators.ThreeYearStandardDeviation.FormatDecimalNumber(needAbs: false)</td>
@@ -1872,7 +1863,7 @@
                                                 <td @Model.FundRiskindicators.TenYearStandardDeviation.DecimalNegativeStyle()>@Model.FundRiskindicators.TenYearStandardDeviation.FormatDecimalNumber(needAbs: false)</td>
                                             </tr>
                                             <tr>
-                                                <td>Sharpe</td>
+                                                <td>Sharpe<a href="#Sharpe" class="o-icon o-icon--tip o-icon--xs" data-popup="true">i</a></td>
                                                 <td @Model.FundRiskindicators.SixMonthSharpe.DecimalNegativeStyle()>@Model.FundRiskindicators.SixMonthSharpe.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.OneYearSharpe.DecimalNegativeStyle()>@Model.FundRiskindicators.OneYearSharpe.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.ThreeYearSharpe.DecimalNegativeStyle()>@Model.FundRiskindicators.ThreeYearSharpe.FormatDecimalNumber(needAbs: false)</td>
@@ -1880,7 +1871,7 @@
                                                 <td @Model.FundRiskindicators.TenYearSharpe.DecimalNegativeStyle()>@Model.FundRiskindicators.TenYearSharpe.FormatDecimalNumber(needAbs: false)</td>
                                             </tr>
                                             <tr>
-                                                <td>Alpha</td>
+                                                <td>Alpha<a href="#Alpha" class="o-icon o-icon--tip o-icon--xs" data-popup="true">i</a></td>
                                                 <td @Model.FundRiskindicators.SixMonthAlpha.DecimalNegativeStyle()>@Model.FundRiskindicators.SixMonthAlpha.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.OneYearAlpha.DecimalNegativeStyle()>@Model.FundRiskindicators.OneYearAlpha.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.ThreeYearAlpha.DecimalNegativeStyle()>@Model.FundRiskindicators.ThreeYearAlpha.FormatDecimalNumber(needAbs: false)</td>
@@ -1888,7 +1879,7 @@
                                                 <td @Model.FundRiskindicators.TenYearAlpha.DecimalNegativeStyle()>@Model.FundRiskindicators.TenYearAlpha.FormatDecimalNumber(needAbs: false)</td>
                                             </tr>
                                             <tr>
-                                                <td>Beta</td>
+                                                <td>Beta<a href="#Beta" class="o-icon o-icon--tip o-icon--xs" data-popup="true">i</a></td>
                                                 <td @Model.FundRiskindicators.SixMonthBeta.DecimalNegativeStyle()>@Model.FundRiskindicators.SixMonthBeta.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.OneYearBeta.DecimalNegativeStyle()>@Model.FundRiskindicators.OneYearBeta.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.ThreeYearBeta.DecimalNegativeStyle()>@Model.FundRiskindicators.ThreeYearBeta.FormatDecimalNumber(needAbs: false)</td>
@@ -1896,7 +1887,7 @@
                                                 <td @Model.FundRiskindicators.TenYearBeta.DecimalNegativeStyle()>@Model.FundRiskindicators.TenYearBeta.FormatDecimalNumber(needAbs: false)</td>
                                             </tr>
                                             <tr>
-                                                <td>R-squared</td>
+                                                <td>R-squared<a href="#Rsquared" class="o-icon o-icon--tip o-icon--xs" data-popup="true">i</a></td>
                                                 <td @Model.FundRiskindicators.SixMonthRsquared.DecimalNegativeStyle()>@Model.FundRiskindicators.SixMonthRsquared.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.OneYearRsquared.DecimalNegativeStyle()>@Model.FundRiskindicators.OneYearRsquared.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.ThreeYearRsquared.DecimalNegativeStyle()>@Model.FundRiskindicators.ThreeYearRsquared.FormatDecimalNumber(needAbs: false)</td>
@@ -1905,7 +1896,7 @@
 
                                             </tr>
                                             <tr>
-                                                <td>與指數相關係數</td>
+                                                <td>與指數相關係數<a href="#IndexCorrelationCoefficient" class="o-icon o-icon--tip o-icon--xs" data-popup="true">i</a></td>
                                                 <td @Model.FundRiskindicators.SixMonthCorrelationCoefficientIndex.DecimalNegativeStyle()>@Model.FundRiskindicators.SixMonthCorrelationCoefficientIndex.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.OneYearCorrelationCoefficientIndex.DecimalNegativeStyle()>@Model.FundRiskindicators.OneYearCorrelationCoefficientIndex.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.ThreeYearCorrelationCoefficientIndex.DecimalNegativeStyle()>@Model.FundRiskindicators.ThreeYearCorrelationCoefficientIndex.FormatDecimalNumber(needAbs: false)</td>
@@ -1914,7 +1905,7 @@
 
                                             </tr>
                                             <tr>
-                                                <td>Tracking Error</td>
+                                                <td>Tracking Error<a href="#TrackingError" class="o-icon o-icon--tip o-icon--xs" data-popup="true">i</a></td>
                                                 <td @Model.FundRiskindicators.SixMonthTrackingError.DecimalNegativeStyle()>@Model.FundRiskindicators.SixMonthTrackingError.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.OneYearTrackingError.DecimalNegativeStyle()>@Model.FundRiskindicators.OneYearTrackingError.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.ThreeYearTrackingError.DecimalNegativeStyle()>@Model.FundRiskindicators.ThreeYearTrackingError.FormatDecimalNumber(needAbs: false)</td>
@@ -1923,7 +1914,7 @@
 
                                             </tr>
                                             <tr>
-                                                <td>Variance</td>
+                                                <td>Variance<a href="#Variance" class="o-icon o-icon--tip o-icon--xs" data-popup="true">i</a></td>
                                                 <td @Model.FundRiskindicators.SixMonthVariance.DecimalNegativeStyle()>@Model.FundRiskindicators.SixMonthVariance.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.OneYearVariance.DecimalNegativeStyle()>@Model.FundRiskindicators.OneYearVariance.FormatDecimalNumber(needAbs: false)</td>
                                                 <td @Model.FundRiskindicators.ThreeYearVariance.DecimalNegativeStyle()>@Model.FundRiskindicators.ThreeYearVariance.FormatDecimalNumber(needAbs: false)</td>
@@ -1982,10 +1973,7 @@
                                 <div class="c-collapse__head" data-collapse-button="true">
                                     <span>說明</span>
                                 </div>
-                                @if (TemplateCanRender)
-                                {
-                                    @Html.Sitecore().Field(Template.FundDetailsPage.Fields.Note.ToString(), Model.Item)
-                                }
+                                   @Model.Note
                             </div>
                         </div>
                     </div>
@@ -2559,10 +2547,7 @@
     </div>
 </div>
 <div class="c-notice" data-collapse="true">
-    @if (TemplateCanRender)
-    {
-        @Html.Sitecore().Field(Template.FundDetailsPage.Fields.Content.ToString(), Model.Item)
-    }
+        @Model.Content
 </div>
 
 <div id="popupCurrency" class="c-modal c-modal--xs mfp-hide">
@@ -2571,10 +2556,7 @@
             <h2 class="c-modal__title">幣別提示說明</h2>
         </header>
         <div class="c-modal__content">
-            @if (TemplateCanRender)
-            {
-                @Html.Sitecore().Field(Template.FundDetailsPage.Fields.LightboxNote.ToString(), Model.Item)
-            }
+                @Model.LightboxNote
         </div>
     </div>
 </div>
@@ -2619,7 +2601,9 @@
         </div>
     </div>
 </div>
-
+@{
+    Html.RenderPartial("~/Views/Feature/Wealth/Component/FundDetail/_FundRiskIndexDescription.cshtml",Model);
+}
 
 <script>
     var url = new URL(location.href);
