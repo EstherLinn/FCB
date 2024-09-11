@@ -346,7 +346,7 @@
 
             function getFundResult(list) {
                 $.each(SC_DATA.S_Result.FundProducts, function (i, item) {
-                    let type = 'ETF';
+                    let type = 'Fund';
                     let obj = {
                         value: item.ProductCode + ' ' + item.ProductName,
                         data: {
@@ -411,7 +411,7 @@
                         value: item.BondCode + ' ' + item.BondName,
                         data: {
                             displayName: getName(type),
-                            detailUrl: '@Model.DetailPageLink.ForeignBondsDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
+                            detailUrl: '@Model.DetailPageLink.ForeignBondsDetailPageLink' + '?' + $.param({ id: item.BondCode }),
                         }
                     };
                     list.push(obj);
