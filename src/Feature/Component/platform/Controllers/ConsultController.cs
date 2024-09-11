@@ -113,7 +113,7 @@ namespace Feature.Wealth.Component.Controllers
             {
                 foreach (var c in temps)
                 {
-                    if (info.IsEmployee && !string.IsNullOrEmpty(info.AdvisrorID))
+                    if ((info.IsEmployee || info.IsManager) && !string.IsNullOrEmpty(info.AdvisrorID))
                     {
                         if (info.IsManager)
                         {
@@ -654,7 +654,7 @@ namespace Feature.Wealth.Component.Controllers
                 success = true,
                 block = false
             });
-        }        
+        }
 
         private Item GetMailSetting()
         {
