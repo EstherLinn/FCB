@@ -424,7 +424,7 @@
                     let obj = {
                         value: item.ProductCode + ' ' + item.ProductName,
                         data: {
-                            displayName: getType(type),
+                            displayName: getName(type),
                             detailUrl: '@Model.DetailPageLink.StructuredProductDetailPageLink' + '?' + $.param({ id: item.ProductCode })
                         }
                     };
