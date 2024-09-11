@@ -1,0 +1,132 @@
+﻿@model Feature.Wealth.Component.Models.SiteProductSearch.SiteProductSearchDatasource
+
+<script id="uid-template-fbond" type="text/html">
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+        <td class="c-cardTable__top"></td>
+        @*【債券名稱】*@
+        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+            <div class="c-cardTable__content">
+                <div class="l-target">
+                    <div class="l-target__name">
+                        <a href="@(Model.ForeignBondDetailPageLink)?id=<%= BondCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= FullName %></a>
+                    </div>
+                    @*標籤*@
+                    <% if (DiscountTags != null && DiscountTags.length > 0) { %>
+                    <div class="l-target__additional">
+                        <ul class="l-tag">
+                            <% for (var i = 0; i < DiscountTags.length; i++) { %>
+                            <li class="l-tag__item">
+                                <span class="o-tag"><%= DiscountTags[i] %></span>
+                            </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        @*【幣別】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">
+                幣別
+                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+            </div>
+            <div class="c-cardTable__content">
+                <%= CurrencyHtml %>
+            </div>
+        </td>
+        @*【票面利率】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">票面利率</div>
+            <div class="c-cardTable__content">
+                <% if (typeof InterestRate == "number" && !isNaN(InterestRate)) { %>
+                <span><%= InterestRate.toFixed(2) %>%</span>
+                <% } else { %>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        @*【到期日】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">到期日</div>
+            <div class="c-cardTable__content"><%= MaturityDate %></div>
+        </td>
+        @*【殖利率】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="4">殖利率</div>
+            <div class="c-cardTable__content">
+                <% if (typeof InterestRate == "number" && !isNaN(YieldRateYTM)) { %>
+                <span><%= YieldRateYTM.toFixed(2) %>%</span>
+                <% } else { %>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        @*【參考贖回價】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">參考申購價<br />(含前手息)<br />(報價日期)</div>
+            <div class="c-cardTable__content">
+                <% if (typeof SubscriptionFee == "number" && !isNaN(SubscriptionFee)) { %>
+                <span><%= SubscriptionFee.toFixed(2) %></span>
+                <% } else { %>
+                <span>-</span>
+                <% } %>
+                <br><span class="t-date"><%= Date %></span>
+            </div>
+        </td>
+        @*【漲跌】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">漲跌月%</div>
+            <div class="c-cardTable__content">
+                <% if (typeof UpsAndDownsMonth == "number" && !isNaN(UpsAndDownsMonth) && UpsAndDownsMonth > 0) { %>
+                <span class="o-rise"><%= UpsAndDownsMonth.toFixed(2) %>%</span>
+                <% } else if (typeof UpsAndDownsMonth == "number" && !isNaN(UpsAndDownsMonth) && UpsAndDownsMonth < 0) { %>
+                <span class="o-fall"><%= Math.abs(UpsAndDownsMonth).toFixed(2) %>%</span>
+                <% } else if (typeof UpsAndDownsMonth == "number" && !isNaN(UpsAndDownsMonth) && UpsAndDownsMonth == 0) { %>
+                <span><%= Math.abs(UpsAndDownsMonth).toFixed(2) %>%</span>
+                <% } else { %>
+                <span>-</span>
+                <% } %>
+            </div>
+        </td>
+        @*【英文公開說明書】*@
+        <td class="c-cardTable__body" data-card-table-width="1/2">
+            <div class="c-cardTable__title" data-length="5">英文公開說明書</div>
+            <div class="c-cardTable__content">
+                <%= DocString %>
+            </div>
+        </td>
+        <td class="c-cardTable__space"></td>
+        <% if (OpenToPublic == 'Y' && Listed == 'Y') { %>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <%= FocusButtonHtml %>
+                    </li>
+                </ul>
+            </div>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+                <%= SubscribeButtonHtml %>
+            </div>
+        </td>
+        <% } else { %>
+        <td class="c-cardTable__footer" data-card-table-width="1/1">
+            <div class="c-cardTable__content">
+                <ul class="l-collect l-collect--divider@lt">
+                    <li class="l-collect__item">
+                        <%= FocusButtonHtml %>
+                    </li>
+                </ul>
+            </div>
+        </td>
+        <td class="c-cardTable__footer" data-card-table-width="1/2">
+            <div class="c-cardTable__content">
+            </div>
+        </td>
+        <% } %>
+    </tr>
+</script>

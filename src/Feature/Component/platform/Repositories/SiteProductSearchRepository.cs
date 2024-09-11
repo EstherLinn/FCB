@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Component.Models.ETF;
+﻿using Feature.Wealth.Component.Models.Bond;
+using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Search;
 using Feature.Wealth.Component.Models.ETF.Tag;
 using Feature.Wealth.Component.Models.FundDetail;
@@ -19,6 +20,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -41,7 +43,8 @@ namespace Feature.Wealth.Component.Repositories
                 ETFProducts = MapperETFResult()?.ToList(),
                 FundProducts = MapperFundResult()?.ToList(),
                 StructuredProducts = MapperStructuredProductResult()?.ToList(),
-                ForeignStocks = MapperForeignStockResult()?.ToList()
+                ForeignStocks = MapperForeignStockResult()?.ToList(),
+                ForeignBonds = MapperForeignBondResult()?.OrderByDescending(i => i.UpsAndDownsMonth).ToList() // 排序
             };
             return resp;
         }
@@ -382,6 +385,115 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         #endregion 國外股票
+
+        #region 國外債券
+
+        public IEnumerable<ForeignBondResult> MapperForeignBondResult()
+        {
+            var collection = new BondRepository().GetBondList();
+            var discountTags = GetForeignDiscountDiscountTags();
+            var dic_docs = GetBondDocs();
+
+            Type[] ignoreTypes =
+            [
+                 typeof(List<string>),
+                 typeof(MvcHtmlString)
+            ];
+
+            var config = new TypeAdapterConfig();
+            config.ForType<Bond, ForeignBondResult>()
+                .IgnoreMember((member, side) => ignoreTypes.Contains(member.Type))
+                .AfterMapping((src, dest) =>
+                {
+                    List<string> docList = new List<string>();
+
+                    if (dic_docs.ContainsKey(src.BondCode))
+                    {
+                        docList = dic_docs[src.BondCode];
+                    }
+
+                    if (docList.Any())
+                    {
+                        var docString = string.Empty;
+
+                        foreach (var path in docList)
+                        {
+                            docString += $@"<a href=""{path}"" target=""_blank"" class=""o-prefixLink o-prefixLink--pdf t-bold""></a>";
+                        }
+
+                        dest.DocString = docString;
+                    }
+
+                    dest.DiscountTags = discountTags.Where(i => i.ProductCodeList.Any() && i.ProductCodeList.Contains(src.BondCode))
+                                                    .Select(i => i.TagName).ToArray();
+
+                    dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
+                    dest.FocusButtonHtml = PublicHelpers.FocusButton(null, null, src.BondCode, src.FullName, InvestTypeEnum.ForeignBonds, true).ToString();
+                    dest.SubscribeButtonHtml = PublicHelpers.SubscriptionButton(null, null, src.BondCode, InvestTypeEnum.ForeignBonds, true).ToString();
+                    dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.BondCode, src.FullName, InvestTypeEnum.ForeignBonds).ToString();
+                    dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.BondCode, src.FullName, InvestTypeEnum.ForeignBonds).ToString();
+                });
+
+            var result = collection.Adapt<IEnumerable<ForeignBondResult>>(config);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 取得國外債券優惠標籤
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<ProductTagModel> GetForeignDiscountDiscountTags()
+        {
+            Item categoryItem = ItemUtils.GetContentItem(Models.Bond.Template.BondTagFolder.Children.Discount);
+            var tags = ItemUtils.GetDescendants(categoryItem, Models.Bond.Template.BondTag.Id);
+
+            foreach (Item tagItem in tags)
+            {
+                ProductTagModel productTag = new ProductTagModel()
+                {
+                    TagName = tagItem.GetFieldValue(Models.Bond.Template.BondTag.Fields.TagName),
+                    ProductCodeList = tagItem.GetMultiLineText(Models.Bond.Template.BondTag.Fields.ProductCodeList)?.ToList(),
+                };
+
+                yield return productTag;
+            }
+        }
+
+        /// <summary>
+        /// 取得國外債券文件
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, List<string>> GetBondDocs()
+        {
+            var docs = ItemUtils.GetChildren(ItemUtils.GetItem(Models.Bond.Template.DocFolder.Id));
+            var dic_docs = new Dictionary<string, List<string>>();
+
+            foreach (var doc in docs)
+            {
+                var key = doc.Name.Length > 4 ? doc.Name.Substring(0, 4) : doc.Name;
+
+                if (!dic_docs.ContainsKey(key))
+                {
+                    var paths = new List<string>
+                    {
+                        doc.Url()
+                    };
+
+                    dic_docs.Add(key, paths);
+                }
+                else
+                {
+                    var paths = dic_docs[key];
+                    paths.Add(doc.Url());
+                    dic_docs[key] = paths;
+                }
+            }
+
+            return dic_docs;
+        }
+
+        #endregion 國外債券
 
         #region Method
 
