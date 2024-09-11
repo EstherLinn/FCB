@@ -54,7 +54,7 @@ namespace Feature.Wealth.Component.Controllers
         [ApiAuthentication]
         public async Task<ActionResult> CheckSchedule(string scheduleId, string action, string description)
         {
-            if (ApiAuthenticationAttribute.IsVerify(Session[ApiAuthenticationAttribute.AUTHORIZATION_KEY] as string))
+            if (!ApiAuthenticationAttribute.IsVerify(Session[ApiAuthenticationAttribute.AUTHORIZATION_KEY] as string))
             {
                 return new JsonNetResult(new { statusCode = -1100, statusMsg = "CSRF 驗證失敗" });
             }
