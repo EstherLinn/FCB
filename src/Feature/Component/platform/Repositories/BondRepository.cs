@@ -172,11 +172,13 @@ namespace Feature.Wealth.Component.Repositories
                            LEFT JOIN [Currency] AS C WITH (NOLOCK) ON A.CurrencyCode = C.CurrencyCode
                            WHERE A.BondCode = @BondCode";
 
-            var bond = this._dbConnection.Query<Bond>(sql, new { BondCode = bondCode })?.FirstOrDefault() ?? new Bond();
+            var bond = this._dbConnection.Query<Bond>(sql, new { BondCode = bondCode })?.FirstOrDefault();
 
-            GetBondClass();
-
-            bond = MoreInfo(bond, true);
+            if (bond == null)
+            {
+                GetBondClass();
+                bond = MoreInfo(bond, true);
+            }
 
             return bond;
         }
