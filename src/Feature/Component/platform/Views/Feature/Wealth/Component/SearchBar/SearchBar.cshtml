@@ -349,7 +349,7 @@
                     let obj = {
                         value: item.ProductCode + ' ' + item.ProductName,
                         data: {
-                            type: getType(),
+                            type: SC_DATA.S_ProductType,
                             displayName: getType() || $('#SearchCategory option[data-producttype="Fund"]').val(),
                             detailUrl: '@Model.DetailPageLink.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
                             purchase: item.CanOnlineSubscription,
@@ -370,7 +370,7 @@
                     let obj = {
                         value: item.FirstBankCode + ' ' + item.ETFName,
                         data: {
-                            type: getType(),
+                            type: SC_DATA.S_ProductType,
                             displayName: getType() || $('#SearchCategory option[data-producttype="ETF"]').val(),
                             detailUrl: '@Model.DetailPageLink.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
                             purchase: item.CanOnlineSubscription,

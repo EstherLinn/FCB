@@ -12,11 +12,11 @@ namespace Feature.Wealth.Component.Models
         ETF,
         [Description("國外股票")]
         ForeignStock,
+        [Description("國外債券")]
+        ForeignBonds,
         [Description("結構型商品")]
         StructuredProduct,
         [Description("市場新聞")]
         MarketNews,
-        [Description("國外債券")]
-        Bond,
     }
 }
