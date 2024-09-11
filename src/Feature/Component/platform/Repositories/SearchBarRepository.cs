@@ -427,7 +427,7 @@ namespace Feature.Wealth.Component.Repositories
                 });
 
             var result = collection.Adapt<IEnumerable<ForeignBondsResult>>(config);
-            return result;
+            return result.OrderByDescending(i => i.UpsAndDownsMonth);
         }
 
         #endregion 國外債券
