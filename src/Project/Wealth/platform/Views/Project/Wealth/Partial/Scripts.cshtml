@@ -338,6 +338,7 @@
                 if (id) {
                     if (checkItemExists('focus', id)) {
                         $(self).addClass('is-active');
+                        self.setAttribute('data-tooltip', '取消關注');
                         self.setAttribute('eh-focus-add', true);
                     };
                 } else {
