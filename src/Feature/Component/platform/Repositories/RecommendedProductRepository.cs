@@ -14,9 +14,8 @@ namespace Feature.Wealth.Component.Repositories
 
         public RecommendedProductModel recommendProduct(Item dataSourceItem)
         {
-            var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, Templates.RecommendedProduct.Fields.FundIDLIst);
+            var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, Templates.RecommendedProduct.Fields.FundIDLIst)?.Where(s => !string.IsNullOrWhiteSpace(s));
             var viewModel = new RecommendedProductModel { Item = dataSourceItem };
-
 
             if (multilineField != null)
             {

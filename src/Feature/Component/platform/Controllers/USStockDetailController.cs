@@ -1,8 +1,8 @@
-﻿using System.Web.Mvc;
-using Feature.Wealth.Component.Models.USStock;
+﻿using Feature.Wealth.Component.Models.USStock;
 using Feature.Wealth.Component.Repositories;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
+using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 
@@ -17,7 +17,10 @@ namespace Feature.Wealth.Component.Controllers
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             string firstBankCode = Sitecore.Web.WebUtil.GetSafeQueryString("id");
-
+            if (string.IsNullOrEmpty(firstBankCode))
+            {
+                return View("/Views/Feature/Wealth/Component/USStock/USStockDetail.cshtml");
+            }
             var uSStock = this._uSStockRepository.GetUSStock(firstBankCode);
 
             return View("/Views/Feature/Wealth/Component/USStock/USStockDetail.cshtml", CreateModel(item, uSStock));
