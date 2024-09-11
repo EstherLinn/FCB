@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Feature.Wealth.Component.Models.FundDetail
 {
     public class OverseasFundBase : FundBase
@@ -49,10 +44,6 @@ namespace Feature.Wealth.Component.Models.FundDetail
         /// </summary>
         public string OverseasIssuerWebsite { get; set; }
 
-        /// <summary>
-        /// 指標指數
-        /// </summary>
-        public string IndicatorIndexName { get; set; }
         /// <summary>
         /// 最高經理費
         /// </summary>
