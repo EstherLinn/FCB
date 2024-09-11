@@ -85,6 +85,14 @@
                 </div>
                 <div class="c-sidebox__actions">
                     <a href="@fundEtfCompareUrl" class="o-btn o-btn--primary o-btn--sm o-btn--flat">開始比較</a>
+                    <div class="l-flex u-flex-gap-ultra u-mt-md">
+                        <div class="l-flex__item l-flex__item--auto">
+                            <a href="@fundSearchUrl" class="o-prefixLink o-prefixLink--plus" data-addcompare-btn>加入基金</a>
+                        </div>
+                        <div class="l-flex__item l-flex__item--auto">
+                            <a href="@etfSearchUrl" class="o-prefixLink o-prefixLink--plus" data-addcompare-btn>加入ETF</a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <footer class="c-sidebox__footer" id="compareLimit">
@@ -135,8 +143,10 @@
                     $('[data-compare-count]', '#compareLimit').text(compareStore.length + '/7');
                     if (compareStore.length == 7) {
                         $('[data-compare-msg]', '#compareLimit').text('標的到上限嚕！');
+                        $('[data-addcompare-btn]').addClass('u-hidden');
                     } else {
                         $('[data-compare-msg]', '#compareLimit').text('標的最多加入7檔！');
+                        $('[data-addcompare-btn]').removeClass('u-hidden');
                     }
                     for (var i = 0; i < compareStore.length; i++) {
                         let url = compareStore[i].type.toLowerCase() == "fund" ? "@(fundDetailUrl)" : "@(etfDetailUrl)"
