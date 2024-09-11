@@ -5,7 +5,6 @@ using Sitecore.Mvc.Presentation;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
-
 namespace Feature.Wealth.Component.Controllers
 {
     public class USStockDetailController : Controller
@@ -15,15 +14,12 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
-
             string firstBankCode = Sitecore.Web.WebUtil.GetSafeQueryString("id");
-            if (string.IsNullOrEmpty(firstBankCode))
-            {
-                return View("/Views/Feature/Wealth/Component/USStock/USStockDetail.cshtml");
-            }
-            var uSStock = this._uSStockRepository.GetUSStock(firstBankCode);
 
-            return View("/Views/Feature/Wealth/Component/USStock/USStockDetail.cshtml", CreateModel(item, uSStock));
+            var uSStock = string.IsNullOrEmpty(firstBankCode) ? null : this._uSStockRepository.GetUSStock(firstBankCode);
+
+            var viewName = "/Views/Feature/Wealth/Component/USStock/USStockDetail.cshtml";
+            return uSStock == null ? View(viewName) : View(viewName, CreateModel(item, uSStock));
         }
 
         protected USStockDetailModel CreateModel(Item item, USStock uSStock)

@@ -77,7 +77,7 @@ namespace Feature.Wealth.Component.Repositories
                            LEFT JOIN {WMS_DOC_RECM} B WITH (NOLOCK) ON A.[FirstBankCode] = B.[ProductCode]
                            WHERE A.[FirstBankCode] = @FirstBankCode";
 
-            var uSStock = this._dbConnection.Query<USStock>(sql, new { FirstBankCode = firstBankCode })?.FirstOrDefault() ?? new USStock();
+            var uSStock = this._dbConnection.Query<USStock>(sql, new { FirstBankCode = firstBankCode })?.FirstOrDefault();
 
             return uSStock;
         }

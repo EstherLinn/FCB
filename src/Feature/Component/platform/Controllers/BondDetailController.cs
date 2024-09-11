@@ -18,15 +18,12 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
+            string bondCode = Sitecore.Web.WebUtil.GetSafeQueryString("id");
 
-            string id = Sitecore.Web.WebUtil.GetSafeQueryString("id");
-            if (string.IsNullOrEmpty(id))
-            {
-                return View("/Views/Feature/Wealth/Component/Bond/BondDetail.cshtml");
-            }
-            var bond = this._bondRepository.GetBond(id);
+            var bond = string.IsNullOrEmpty(bondCode) ? null : this._bondRepository.GetBond(bondCode);
 
-            return View("/Views/Feature/Wealth/Component/Bond/BondDetail.cshtml", CreateModel(item, bond));
+            var viewName = "/Views/Feature/Wealth/Component/Bond/BondDetail.cshtml";
+            return bond == null ? View(viewName) : View(viewName, CreateModel(item, bond));
         }
 
         private BondDetailModel CreateModel(Item item, Bond bond)
