@@ -504,7 +504,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 return;
             }
             // 獲取 Supplement Setting 中的 Turn All Lights 值
-            string turnAllLightsSetting = this._Supplementsettings["Turn All Lights"]?.ToString();
+            string turnAllLightsSetting = this._Supplementsettings?["Turn All Lights"]?.ToString();
 
             TrafficLightStatus effectiveStatus;
 

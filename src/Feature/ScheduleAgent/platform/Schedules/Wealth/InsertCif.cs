@@ -25,7 +25,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             var startTime = DateTime.UtcNow;
             this.Logger.Info($"Execution started at {startTime}");
 
-            var _repository = new ProcessRepository(this.Logger, this.JobItems);
+            var _repository = new ProcessRepository(this.Logger);
 
             //CIF 一次性排程 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM WEA_DW_CIF_VIEW";
