@@ -200,14 +200,16 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var data = resp["resultSet"]["result"][0];
 
-                var dates = data["v1"].ToString().Split(',').ToList();
-                var opens = data["v2"].ToString().Split(',').ToList();
-                var highs = data["v3"].ToString().Split(',').ToList();
-                var lows = data["v4"].ToString().Split(',').ToList();
-                var closes = data["v5"].ToString().Split(',').ToList();
-                var values = data["v6"].ToString().Split(',').ToList();
+                var dates = data["v1"]?.ToString().Split(',').ToList() ?? new List<string>();
+                var opens = data["v2"]?.ToString().Split(',').ToList() ?? new List<string>();
+                var highs = data["v3"]?.ToString().Split(',').ToList() ?? new List<string>();
+                var lows = data["v4"]?.ToString().Split(',').ToList() ?? new List<string>();
+                var closes = data["v5"]?.ToString().Split(',').ToList() ?? new List<string>();
+                var values = data["v6"]?.ToString().Split(',').ToList() ?? new List<string>();
 
-                for (int i = 0; i < dates.Count; i++)
+                int count = dates.Count;
+
+                for (int i = 0; i < count; i++)
                 {
                     var priceData = new PriceData();
 
@@ -222,11 +224,11 @@ namespace Feature.Wealth.Component.Repositories
                         continue;
                     }
 
-                    priceData.open = GetDoubleOrZero(opens[i]);
-                    priceData.high = GetDoubleOrZero(highs[i]);
-                    priceData.low = GetDoubleOrZero(lows[i]);
-                    priceData.close = GetDoubleOrZero(closes[i]);
-                    priceData.value = GetDoubleOrZero(values[i]);
+                    priceData.open = GetDoubleOrZero(opens.ElementAtOrDefault(i));
+                    priceData.high = GetDoubleOrZero(highs.ElementAtOrDefault(i));
+                    priceData.low = GetDoubleOrZero(lows.ElementAtOrDefault(i));
+                    priceData.close = GetDoubleOrZero(closes.ElementAtOrDefault(i));
+                    priceData.value = GetDoubleOrZero(values.ElementAtOrDefault(i));
 
                     priceDatas.Add(priceData);
                 }
