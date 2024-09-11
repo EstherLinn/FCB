@@ -169,7 +169,8 @@
                     </div>
                 </div>
             </section>
-            <section class="c-section">
+            @* K線圖 *@
+            <section class="c-section" id="KLine">
                 <div class="c-section__title">K線圖</div>
                 <div class="c-section__content">
                     <div class="l-flex u-flex-col u-flex-gap-sm">
@@ -225,6 +226,23 @@
                                     <div id="kLineChart"></div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            @* 折線圖 *@
+            <section class="c-section u-printBreak" id="LineChart">
+                <div class="c-section__title">價格走勢</div>
+                <div class="c-section__content">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        <div class="l-flex__item" data-chart="marketTrend">
+                            <div class="c-chartBox">
+                                <div class="c-chartBox__chart">
+                                    <div id="marketTrendChart"></div>
+                                </div>
+                            </div>
+                            <div class="l-dataNotes"><span class="t-date">資料日期：</span><span class="t-date" data-update-date="market"></span></div>
                         </div>
                     </div>
                 </div>
@@ -1168,582 +1186,878 @@
     const data_M = @Model.PriceData_M;
     const data_M_success = "@Model.PriceData_M_Success";
 
-    // 技術分析
-    $(function () {
-        $('[data-trend-filter="ma"]').on('change', function () {
-            getParams();
-        });
-        $('[data-trend-filter="ma"]:checked').trigger('change');
-        var chart;
-        var initPointFormatter = false;
+    let NotKLine = false;
 
-        function getParams() {
-            const obj = {
-                type: $('[data-trend-filter="ma"]:checked').val()
-            };
-            if (chart) {
-                chart.showLoading();
-            }
-            initKLine(obj);
+    data_D.forEach(item => {
+        if (item.high === 0.0 && item.low === 0.0 && item.close === 0.0 && item.value === 0.0) {
+            NotKLine = true;
+            $("#KLine").addClass('u-hidden');
+            $("#LineChart").removeClass('u-hidden');
         }
+    });
 
-        async function initKLine(obj) {
-            try {
+    if (NotKLine) {
+        document.addEventListener('DOMContentLoaded', function () {
+            getParams();
+            var chart;
 
-                var data = [];
-                var success;
-
-                if (obj.type == 'day') {
-                    data = data_D;
-                    success = data_D_success;
-                }
-                else if (obj.type == 'week') {
-                    data = data_W;
-                    success = data_W_success;
-                }
-                else if (obj.type == 'month') {
-                    data = data_M;
-                    success = data_M_success;
+            function getParams() {
+                if (chart) {
+                    chart.showLoading();
                 }
 
-                initPointFormatter = false;
+                initTrendChart(data_D);
+            }
 
-                if (success == "Fail") {
-                    $('[data-chart="kLine"]').find('.c-empty').addClass('u-hidden');
-                    $('[data-chart="kLine"]').find('.c-error').removeClass('u-hidden');
-                    $('[data-chart="kLine"]').find('.c-chartBox').addClass('u-hidden');
+            function dateFormat(time) {
+                let date = new Date(time);
+                let formattedDate = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2);
+                return formattedDate;
+            }
 
-                    return;
-                }
+            function roundToTwo(num) {
+                let scale = 2;
+                return +(Math.round(num + 'e+' + scale) + 'e-' + scale);
+            }
 
-                if (data.length != 0) {
-                    let ohlc = [],
-                        volume = [];
+            function checkSameYear(time1, time2) {
+                let year1 = new Date(time1).getFullYear();
+                let year2 = new Date(time2).getFullYear();
+                return year1 === year2;
+            }
 
-                    // 重新組織 API dataSource 給 技術分析圖使用
-                    data.sort((a, b) => { return a.date - b.date; }).forEach(item => {
-                        ohlc.push([item.date, item.open, item.high, item.low, item.close]);
-                        volume.push({
-                            x: item.date,
-                            y: item.value,
-                            color: item.open > item.close ? '#97BA15' : '#F98282'
-                        });
-                    });
-                    let highChartId = '';
+            function checkSameYearAndMonth(time1, time2) {
+                let date1 = new Date(time1);
+                let date2 = new Date(time2);
+                return date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth();
+            }
 
-                    // K線圖 SMA5、SMA20、SMA60、SMA120、SMA240
-                    let kLineSmaData = [{
-                        unit: 5,
-                        color: '#F58220'
-                    }, {
-                        unit: 20,
-                        color: '#A4844E'
-                    }, {
-                        unit: 60,
-                        color: '#948BF2'
-                    }, {
-                        unit: 120,
-                        color: '#FFAD04'
-                    }, {
-                        unit: 240,
-                        color: '#FF77C0'
+            async function initTrendChart(data_D) {
+                if (data_D.length > 0) {
+                    const mapMarketPriceData = data_D.map(item => ({
+                        name: dateFormat(item.date),
+                        x: new Date(item.date).getTime(),
+                        y: roundToTwo(item.open)
+                    }));
+
+                    mapMarketPriceData.sort((a, b) => { return a.x - b.x; });
+
+                    let series = [{
+                        name: '價格',
+                        data: mapMarketPriceData,
+                        legendSymbol: 'rectangle',
+                        turboThreshold: 0,
                     }];
 
-                    // 成交 MA5、MA10
-                    let volumeSmaData = [{
-                        unit: 5,
-                        color: '#DD7676'
-                    }, {
-                        unit: 10,
-                        color: '#ABA1E4'
-                    }];
-                    chart = Highcharts.stockChart('kLineChart', {
+                    if (mapMarketPriceData.length > 0) {
+                        let latestDate = mapMarketPriceData[mapMarketPriceData.length - 1].name;
+                        const updateDate = latestDate.replaceAll('-', '/');
+                        $('[data-update-date="market"]').text(updateDate);
+                    }
+
+                    chart = Highcharts.stockChart('marketTrendChart', {
                         chart: {
-                            height: 964,
-                            spacing: [1, 1, 18, 5],
-                            events: {
-                                load: function () {
-                                    var $container = $(this.container);
-                                    highChartId = this.container.id;
-                                    var maEl = document.createElement('div');
-                                    maEl.classList.add('l-slash');
-                                    maEl.setAttribute('data-id', highChartId + '-tooltips-yAxis1');
-                                    maEl.setAttribute('style', 'position: absolute; top: 316px; left: 5px;');
-                                    $container.append(maEl);
-                                    var kdEl = document.createElement('div');
-                                    kdEl.classList.add('l-slash');
-                                    kdEl.setAttribute('data-id', highChartId + '-tooltips-yAxis2');
-                                    kdEl.setAttribute('style', 'position: absolute; top: 612px; left: 5px;');
-                                    $container.append(kdEl);
-                                },
-                                addSeries: function (event) {
-                                    var arrPoints = ['成交量', 'MA5', 'MA10', 'K(9,3)'];
-                                    if (arrPoints.includes(event.options.name)) {
-                                        var _yAxis = parseInt(event.options.yAxis);
-                                        var $tooltipContainer = $(`[data-id="${highChartId}-tooltips-yAxis${_yAxis}"]`);
-                                        var id = 'tooltip-' + arrPoints[arrPoints.indexOf(event.options.name)];
-                                        if ($tooltipContainer.find('[data-id="' + id + '"]').length === 0) {
-                                            var slashEl = document.createElement('div');
-                                            slashEl.classList.add('l-slash__item');
-                                            slashEl.setAttribute('data-id', id);
-                                            $tooltipContainer.append(slashEl);
-                                        }
-                                    }
-                                },
-                                render: function () {
-                                    const seriesCount = 11; //共要繪製11個Series
-                                    let renderedSeriesCount = 0;
-                                    this.series.forEach(function (series) {
-                                        renderedSeriesCount++;
-                                        if (renderedSeriesCount === seriesCount) {
-                                            //console.log('All series have been rendered.');
-                                            loadTooltip(chart);
-                                        }
-                                    });
+                            zooming: {
+                                mouseWheel: {
+                                    enabled: false
                                 }
                             },
-                            animation: false,
+                            height: 400,
+                            events: {
+                                load: function () {
+                                    var chart = this,
+                                        allPoints = chart.series[0].points,
+                                        maxValue,
+                                        maxPoint,
+                                        minValue,
+                                        minPoint;
+
+                                    allPoints.filter(function (point) {
+                                        if (!maxValue || maxValue < point.y) {
+                                            maxValue = point.y;
+                                            maxPoint = point;
+                                        }
+                                        if (!minValue || minValue > point.y) {
+                                            minValue = point.y;
+                                            minPoint = point;
+                                        }
+                                    });
+
+                                    var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
+                                    var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+
+                                    setTimeout(function () {
+                                        if (maxPoint) {
+                                            maxPoint.update({
+                                                dataLabels: {
+                                                    enabled: true,
+                                                    verticalAlign: 'middle',
+                                                    x: maxPointMoreThanHalf ? -45 : 45,
+                                                    y: -5,
+                                                    formatter: function () {
+                                                        var label = maxPointMoreThanHalf ? `最高 ${this.point.y} →` : `← 最高 ${this.point.y} `;
+                                                        return label;
+                                                    },
+                                                    style: {
+                                                        fontSize: 14,
+                                                        fontWeight: 'normal',
+                                                        textOutline: 'none'
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }, 300);
+                                    setTimeout(function () {
+                                        if (minPoint) {
+                                            minPoint.update({
+                                                dataLabels: {
+                                                    enabled: true,
+                                                    verticalAlign: 'middle',
+                                                    x: minPointMoreThanHalf ? -45 : 45,
+                                                    formatter: function () {
+                                                        var label = minPointMoreThanHalf ? `最低 ${this.point.y} →` : `← 最低 ${this.point.y} `;
+                                                        return label;
+                                                    },
+                                                    style: {
+                                                        fontSize: 14,
+                                                        fontWeight: 'normal',
+                                                        textOutline: 'none'
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }, 300);
+                                }
+                            },
                             rendererType: 'webgl'
                         },
                         credits: {
                             enabled: false
                         },
-                        rangeSelector: false,
-                        xAxis: {
-                            type: 'datetime',
-                            scrollbar: {
-                                enabled: false
-                            },
-                            labels: {
-                                y: 20,
-                                formatter: function () {
-                                    const format = {
-                                        day: '%Y/%m',
-                                        week: '%Y/%m',
-                                        month: '%Y/%m',
-                                        year: '%Y/%m'
-                                    }[this.tickPositionInfo.unitName];
-                                    return Highcharts.dateFormat(format, this.value);
-                                },
-                                style: {
-                                    color: '#6E6E6E',
-                                    fontSize: 12
-                                }
-                            },
-                            tickPosition: 'inside',
-                            lineColor: '#ebebeb',
-                            tickColor: '#ebebeb',
-                            // gridLineWidth: 1,
-                            crosshair: {
-                                width: 1,
-                                color: '#c3c3c3'
-                            }
+                        title: {
+                            text: ''
                         },
-                        yAxis: [{
-                            labels: {
-                                align: 'left',
-                                reserveSpace: true,
-                                x: 8,
-                                y: 4,
-                                style: {
-                                    color: '#6E6E6E',
-                                    fontSize: 12
-                                }
+                        scrollbar: {
+                            enabled: false
+                        },
+                        navigator: {
+                            enabled: false
+                        },
+                        rangeSelector: {
+                            enabled: false
+                        },
+                        legend: {
+                            enabled: true,
+                            align: 'left',
+                            floating: false,
+                            y: 20,
+                            itemStyle: {
+                                fontSize: '1em',
+                                color: '#222',
+                                cursor: 'default'
                             },
-                            top: '54px',
-                            height: '236px',
-                            lineWidth: 2,
-                            resize: {
-                                enabled: true
+                            itemHoverStyle: {
+                                color: '#222'
                             },
-                            // opposite: false,
-                            lineColor: 'transparent',
-                            showLastLabel: true
-                        }, {
-                            labels: {
-                                align: 'left',
-                                reserveSpace: true,
-                                x: 8,
-                                y: 4,
-                                style: {
-                                    color: '#6E6E6E',
-                                    fontSize: 12
-                                }
-                            },
-                            //top: '384px',
-                            top: '384px',
-                            height: '202px',
-                            offset: 0,
-                            lineWidth: 2,
-                            resize: {
-                                enabled: true
-                            },
-                            // opposite: false,
-                            lineColor: 'transparent',
-                            showLastLabel: true
-                        }, {
-                            labels: {
-                                align: 'left',
-                                reserveSpace: true,
-                                x: 8,
-                                y: 4,
-                                style: {
-                                    color: '#6E6E6E',
-                                    fontSize: 12
-                                }
-                            },
-                            top: '680px',
-                            height: '135px',
-                            offset: 0,
-                            lineWidth: 2,
-                            resize: {
-                                enabled: true
-                            },
-                            // opposite: false,
-                            lineColor: 'transparent',
-                            showLastLabel: true
-                        }],
-                        tooltip: {
-                            split: true,
-                            xDateFormat: '%Y-%m-%d',
-                            headerFormat: '{point.key}',
-                            borderColor: 'transparent',
-                            shadow: {
-                                offsetX: 0,
-                                offsetY: 0,
-                                width: 6,
-                                color: 'rgba(0, 0, 0, 0.2)'
-                            },
-                            style: {
-                                zIndex: 5,
-                                color: '#9C9C9C'
-                            },
-                            useHTML: true
+                            symbolHeight: 12,
+                            symbolWidth: 12
                         },
                         plotOptions: {
                             series: {
                                 dataGrouping: {
                                     enabled: false
                                 },
-                                marker: {
-                                    symbol: 'circle',
-                                    states: {
-                                        hover: {
-                                            radius: 3
-                                        }
-                                    },
-                                    lineColor: 'transparent'
-                                },
                                 states: {
                                     hover: {
+                                        enabled: true,
+                                        lineWidth: 2,
                                         halo: {
-                                            size: 6
-                                        },
-                                        lineWidthPlus: 0
+                                            size: 8
+                                        }
                                     }
-                                }
+                                },
+                                events: {
+                                    legendItemClick: function () {
+                                        return false;
+                                    }
+                                },
+                                boost: {
+                                    useGPUTranslations: true,
+                                    seriesThreshold: 1
+                                },
                             }
                         },
-                        series: [],
-                        navigator: {
-                            height: 80,
-                            margin: 28,
-                            handles: {
-                                backgroundColor: '#D9D9D9',
-                                borderColor: '#9C9C9C',
-                                height: 16,
-                                width: 8
+                        tooltip: {
+                            split: false,
+                            shared: true,
+                            outside: true,
+                            useHTML: true,
+                            formatter: function () {
+                                let formattedDate = dateFormat(this.x);
+                                let tooltipText = '';
+                                this.points.forEach(point => {
+                                    tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">'
+                                        + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>'
+                                        + point.series.name + ': ' + point.y + '元(台幣)' + '</div>' + '</div>';
+                                });
+                                return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">'
+                                    + formattedDate + '</div>' + tooltipText + '</div>';
                             },
-                            maskFill: 'rgba(35, 140, 108, 0.4)',
-                            outlineColor: '#EBEBEB',
-                            series: {
-                                lineColor: '#238C6C',
-                                lineWidth: 2,
-                                fillOpacity: 0
+                            shadow: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            tickPosition: 'inside',
+                            tickWidth: 0.5,
+                            tickLength: 7,
+                            labels: {
+                                formatter: function () {
+                                    let unitName = '';
+                                    let output = null;
+
+                                    if (checkSameYear(this.min, this.max)) {
+                                        unitName = 'day';
+                                    } else {
+                                        unitName = 'year';
+                                    }
+
+                                    const format = {
+                                        day: '%m/%d',
+                                        year: '%Y/%m'
+                                    }[unitName];
+
+                                    if (this.isFirst) {
+                                        previousVal = this.value;
+                                        return Highcharts.dateFormat(format, this.value);
+                                    }
+
+                                    let currentVal = this.value;
+
+                                    if (!checkSameYearAndMonth(previousVal, currentVal)) {  // 比較前一個點和當前點的日期
+                                        output = Highcharts.dateFormat(format, currentVal);
+                                    }
+
+                                    previousVal = this.value;
+                                    return output;
+                                },
+                                style: {
+                                    color: '#6e6e6e'
+                                }
                             },
+                            crosshair: {
+                                width: 1,
+                                color: '#c3c3c3'
+                            },
+                            lineColor: '#ebebeb',
+                            tickColor: '#ebebeb'
+                        },
+                        yAxis: {
+                            showLastLabel: true,
+                            opposite: false,
+                            labels: {
+                                y: 4,
+                                formatter: function (value) {
+                                    return value.value;
+                                },
+                                style: {
+                                    color: '#6e6e6e'
+                                }
+                            },
+                            plotLines: [{
+                                color: '#c3c3c3'
+                            }]
+                        },
+                        series: series
+                    });
+
+                    $('[data-chart="marketTrend"]').find('.c-empty').addClass('u-hidden');
+                    $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
+                } else {
+                    $('[data-chart="marketTrend"]').find('.c-empty').removeClass('u-hidden');
+                    $('[data-chart="marketTrend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
+                }
+            }
+        });
+    } else {
+        // 技術分析
+        $(function () {
+            $('[data-trend-filter="ma"]').on('change', function () {
+                getParams();
+            });
+            $('[data-trend-filter="ma"]:checked').trigger('change');
+            var chart;
+            var initPointFormatter = false;
+
+            function getParams() {
+                const obj = {
+                    type: $('[data-trend-filter="ma"]:checked').val()
+                };
+                if (chart) {
+                    chart.showLoading();
+                }
+                initKLine(obj);
+            }
+
+            async function initKLine(obj) {
+                try {
+
+                    var data = [];
+                    var success;
+
+                    if (obj.type == 'day') {
+                        data = data_D;
+                        success = data_D_success;
+                    }
+                    else if (obj.type == 'week') {
+                        data = data_W;
+                        success = data_W_success;
+                    }
+                    else if (obj.type == 'month') {
+                        data = data_M;
+                        success = data_M_success;
+                    }
+
+                    initPointFormatter = false;
+
+                    if (success == "Fail") {
+                        $('[data-chart="kLine"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="kLine"]').find('.c-error').removeClass('u-hidden');
+                        $('[data-chart="kLine"]').find('.c-chartBox').addClass('u-hidden');
+
+                        return;
+                    }
+
+                    if (data.length != 0) {
+                        let ohlc = [],
+                            volume = [];
+
+                        // 重新組織 API dataSource 給 技術分析圖使用
+                        data.sort((a, b) => { return a.date - b.date; }).forEach(item => {
+                            ohlc.push([item.date, item.open, item.high, item.low, item.close]);
+                            volume.push({
+                                x: item.date,
+                                y: item.value,
+                                color: item.open > item.close ? '#97BA15' : '#F98282'
+                            });
+                        });
+                        let highChartId = '';
+
+                        // K線圖 SMA5、SMA20、SMA60、SMA120、SMA240
+                        let kLineSmaData = [{
+                            unit: 5,
+                            color: '#F58220'
+                        }, {
+                            unit: 20,
+                            color: '#A4844E'
+                        }, {
+                            unit: 60,
+                            color: '#948BF2'
+                        }, {
+                            unit: 120,
+                            color: '#FFAD04'
+                        }, {
+                            unit: 240,
+                            color: '#FF77C0'
+                        }];
+
+                        // 成交 MA5、MA10
+                        let volumeSmaData = [{
+                            unit: 5,
+                            color: '#DD7676'
+                        }, {
+                            unit: 10,
+                            color: '#ABA1E4'
+                        }];
+                        chart = Highcharts.stockChart('kLineChart', {
+                            chart: {
+                                height: 964,
+                                spacing: [1, 1, 18, 5],
+                                events: {
+                                    load: function () {
+                                        var $container = $(this.container);
+                                        highChartId = this.container.id;
+                                        var maEl = document.createElement('div');
+                                        maEl.classList.add('l-slash');
+                                        maEl.setAttribute('data-id', highChartId + '-tooltips-yAxis1');
+                                        maEl.setAttribute('style', 'position: absolute; top: 316px; left: 5px;');
+                                        $container.append(maEl);
+                                        var kdEl = document.createElement('div');
+                                        kdEl.classList.add('l-slash');
+                                        kdEl.setAttribute('data-id', highChartId + '-tooltips-yAxis2');
+                                        kdEl.setAttribute('style', 'position: absolute; top: 612px; left: 5px;');
+                                        $container.append(kdEl);
+                                    },
+                                    addSeries: function (event) {
+                                        var arrPoints = ['成交量', 'MA5', 'MA10', 'K(9,3)'];
+                                        if (arrPoints.includes(event.options.name)) {
+                                            var _yAxis = parseInt(event.options.yAxis);
+                                            var $tooltipContainer = $(`[data-id="${highChartId}-tooltips-yAxis${_yAxis}"]`);
+                                            var id = 'tooltip-' + arrPoints[arrPoints.indexOf(event.options.name)];
+                                            if ($tooltipContainer.find('[data-id="' + id + '"]').length === 0) {
+                                                var slashEl = document.createElement('div');
+                                                slashEl.classList.add('l-slash__item');
+                                                slashEl.setAttribute('data-id', id);
+                                                $tooltipContainer.append(slashEl);
+                                            }
+                                        }
+                                    },
+                                    render: function () {
+                                        const seriesCount = 11; //共要繪製11個Series
+                                        let renderedSeriesCount = 0;
+                                        this.series.forEach(function (series) {
+                                            renderedSeriesCount++;
+                                            if (renderedSeriesCount === seriesCount) {
+                                                //console.log('All series have been rendered.');
+                                                loadTooltip(chart);
+                                            }
+                                        });
+                                    }
+                                },
+                                animation: false,
+                                rendererType: 'webgl'
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            rangeSelector: false,
                             xAxis: {
+                                type: 'datetime',
+                                scrollbar: {
+                                    enabled: false
+                                },
                                 labels: {
-                                    align: 'center',
-                                    x: 0,
-                                    y: 18,
+                                    y: 20,
                                     formatter: function () {
                                         const format = {
                                             day: '%Y/%m',
                                             week: '%Y/%m',
                                             month: '%Y/%m',
-                                            year: '%Y'
+                                            year: '%Y/%m'
                                         }[this.tickPositionInfo.unitName];
                                         return Highcharts.dateFormat(format, this.value);
                                     },
                                     style: {
                                         color: '#6E6E6E',
-                                        fontSize: 12,
-                                        opacity: 1
+                                        fontSize: 12
+                                    }
+                                },
+                                tickPosition: 'inside',
+                                lineColor: '#ebebeb',
+                                tickColor: '#ebebeb',
+                                // gridLineWidth: 1,
+                                crosshair: {
+                                    width: 1,
+                                    color: '#c3c3c3'
+                                }
+                            },
+                            yAxis: [{
+                                labels: {
+                                    align: 'left',
+                                    reserveSpace: true,
+                                    x: 8,
+                                    y: 4,
+                                    style: {
+                                        color: '#6E6E6E',
+                                        fontSize: 12
+                                    }
+                                },
+                                top: '54px',
+                                height: '236px',
+                                lineWidth: 2,
+                                resize: {
+                                    enabled: true
+                                },
+                                // opposite: false,
+                                lineColor: 'transparent',
+                                showLastLabel: true
+                            }, {
+                                labels: {
+                                    align: 'left',
+                                    reserveSpace: true,
+                                    x: 8,
+                                    y: 4,
+                                    style: {
+                                        color: '#6E6E6E',
+                                        fontSize: 12
+                                    }
+                                },
+                                //top: '384px',
+                                top: '384px',
+                                height: '202px',
+                                offset: 0,
+                                lineWidth: 2,
+                                resize: {
+                                    enabled: true
+                                },
+                                // opposite: false,
+                                lineColor: 'transparent',
+                                showLastLabel: true
+                            }, {
+                                labels: {
+                                    align: 'left',
+                                    reserveSpace: true,
+                                    x: 8,
+                                    y: 4,
+                                    style: {
+                                        color: '#6E6E6E',
+                                        fontSize: 12
+                                    }
+                                },
+                                top: '680px',
+                                height: '135px',
+                                offset: 0,
+                                lineWidth: 2,
+                                resize: {
+                                    enabled: true
+                                },
+                                // opposite: false,
+                                lineColor: 'transparent',
+                                showLastLabel: true
+                            }],
+                            tooltip: {
+                                split: true,
+                                xDateFormat: '%Y-%m-%d',
+                                headerFormat: '{point.key}',
+                                borderColor: 'transparent',
+                                shadow: {
+                                    offsetX: 0,
+                                    offsetY: 0,
+                                    width: 6,
+                                    color: 'rgba(0, 0, 0, 0.2)'
+                                },
+                                style: {
+                                    zIndex: 5,
+                                    color: '#9C9C9C'
+                                },
+                                useHTML: true
+                            },
+                            plotOptions: {
+                                series: {
+                                    dataGrouping: {
+                                        enabled: false
+                                    },
+                                    marker: {
+                                        symbol: 'circle',
+                                        states: {
+                                            hover: {
+                                                radius: 3
+                                            }
+                                        },
+                                        lineColor: 'transparent'
+                                    },
+                                    states: {
+                                        hover: {
+                                            halo: {
+                                                size: 6
+                                            },
+                                            lineWidthPlus: 0
+                                        }
                                     }
                                 }
+                            },
+                            series: [],
+                            navigator: {
+                                height: 80,
+                                margin: 28,
+                                handles: {
+                                    backgroundColor: '#D9D9D9',
+                                    borderColor: '#9C9C9C',
+                                    height: 16,
+                                    width: 8
+                                },
+                                maskFill: 'rgba(35, 140, 108, 0.4)',
+                                outlineColor: '#EBEBEB',
+                                series: {
+                                    lineColor: '#238C6C',
+                                    lineWidth: 2,
+                                    fillOpacity: 0
+                                },
+                                xAxis: {
+                                    labels: {
+                                        align: 'center',
+                                        x: 0,
+                                        y: 18,
+                                        formatter: function () {
+                                            const format = {
+                                                day: '%Y/%m',
+                                                week: '%Y/%m',
+                                                month: '%Y/%m',
+                                                year: '%Y'
+                                            }[this.tickPositionInfo.unitName];
+                                            return Highcharts.dateFormat(format, this.value);
+                                        },
+                                        style: {
+                                            color: '#6E6E6E',
+                                            fontSize: 12,
+                                            opacity: 1
+                                        }
+                                    }
+                                }
+                            },
+                            scrollbar: {
+                                height: 1,
+                                margin: 0,
+                                barBackgroundColor: 'transparent',
+                                trackBackgroundColor: '#EBEBEB',
+                                trackBorderRadius: 0,
+                                trackBorderWidth: 0
                             }
-                        },
-                        scrollbar: {
-                            height: 1,
-                            margin: 0,
-                            barBackgroundColor: 'transparent',
-                            trackBackgroundColor: '#EBEBEB',
-                            trackBorderRadius: 0,
-                            trackBorderWidth: 0
-                        }
-                    });
+                        });
 
-                    // K線圖
-                    chart.addSeries({
-                        type: 'candlestick',
-                        name: 'AAPL',
-                        id: 'aapl',
-                        zIndex: 6,
-                        data: ohlc,
-                        color: '#97BA15',
-                        upColor: '#F98282',
-                        tooltip: {
-                            pointFormatter: function (tooltip) {
-                                var current = this.series.data[this.index];
-                                var prev = this.series.data[this.index - 1] || current;
-                                if (current === undefined || prev === undefined) {
+                        // K線圖
+                        chart.addSeries({
+                            type: 'candlestick',
+                            name: 'AAPL',
+                            id: 'aapl',
+                            zIndex: 6,
+                            data: ohlc,
+                            color: '#97BA15',
+                            upColor: '#F98282',
+                            tooltip: {
+                                pointFormatter: function (tooltip) {
+                                    var current = this.series.data[this.index];
+                                    var prev = this.series.data[this.index - 1] || current;
+                                    if (current === undefined || prev === undefined) {
+                                        return false;
+                                    }
+                                    var extent = current.close - prev.close;
+                                    var extentPercentage = extent / current.close * 100;
+
+                                    // 日期
+                                    $('[data-id="date"]').text(Highcharts.dateFormat('%Y/%m/%d', new Date(this.x)));
+                                    // 最高
+                                    $('[data-id="highest"]').text(this.high);
+                                    // 最低
+                                    $('[data-id="lowest"]').text(this.low);
+                                    // 開盤
+                                    $('[data-id="open"]').text(this.open);
+                                    // 收盤
+                                    $('[data-id="close"]').text(this.close);
+                                    // 漲跌幅
+                                    $('[data-id="extent"]').html(extent.toFixed(2) + '(' + extentPercentage.toFixed(2) + '%)');
+                                    if (initPointFormatter) {
+                                        // 初始化 K線圖-SMA Points
+                                        initSMAPointFormatter.call(this, 0, kLineSmaData);
+
+                                        // 初始化 成交-MA Points
+                                        initMAPointFormatter.call(this, 1, volumeSmaData);
+
+                                        // 初始化 KD Points
+                                        initKDPointFormatter.call(this, 2);
+                                    }
                                     return false;
                                 }
-                                var extent = current.close - prev.close;
-                                var extentPercentage = extent / current.close * 100;
-
-                                // 日期
-                                $('[data-id="date"]').text(Highcharts.dateFormat('%Y/%m/%d', new Date(this.x)));
-                                // 最高
-                                $('[data-id="highest"]').text(this.high);
-                                // 最低
-                                $('[data-id="lowest"]').text(this.low);
-                                // 開盤
-                                $('[data-id="open"]').text(this.open);
-                                // 收盤
-                                $('[data-id="close"]').text(this.close);
-                                // 漲跌幅
-                                $('[data-id="extent"]').html(extent.toFixed(2) + '(' + extentPercentage.toFixed(2) + '%)');
-                                if (initPointFormatter) {
-                                    // 初始化 K線圖-SMA Points
-                                    initSMAPointFormatter.call(this, 0, kLineSmaData);
-
-                                    // 初始化 成交-MA Points
-                                    initMAPointFormatter.call(this, 1, volumeSmaData);
-
-                                    // 初始化 KD Points
-                                    initKDPointFormatter.call(this, 2);
-                                }
-                                return false;
-                            }
-                        },
-                        enableMouseTracking: true,
-                        marker: {
-                            enabled: false,
-                            states: {
-                                hover: {
-                                    enabled: false
-                                }
-                            }
-                        }
-                    });
-                    kLineSmaData.forEach(item => {
-                        setTimeout(() => {
-                            chart.addSeries({
-                                type: 'sma',
-                                name: `SMA${item.unit}`,
-                                linkedTo: 'aapl',
-                                id: `sma${item.unit}`,
-                                zIndex: 10,
-                                yAxis: 0,
-                                color: item.color,
-                                params: {
-                                    period: item.unit
-                                },
-                                marker: {
-                                    enabled: false
-                                },
-                                tooltip: {
-                                    pointFormatter: function (tooltip) {
-                                        smaPointFormatter.call(this, tooltip, 0);
-                                        return false;
+                            },
+                            enableMouseTracking: true,
+                            marker: {
+                                enabled: false,
+                                states: {
+                                    hover: {
+                                        enabled: false
                                     }
-                                },
-                                animation: false,
-                                rendererType: 'webgl'
-                            });
-                        }, 50);
-                    });
-
-                    // 柱狀圖
-                    chart.addSeries({
-                        type: 'column',
-                        name: '成交量',
-                        id: 'volume',
-                        zIndex: 3,
-                        data: volume,
-                        yAxis: 1,
-                        marker: {
-                            enabled: false,
-                            states: {
-                                hover: {
-                                    enabled: false
                                 }
                             }
-                        },
-                        states: {
-                            hover: {
-                                enabled: false
-                            }
-                        },
-                        tooltip: {
-                            pointFormatter: function (tooltip) {
-                                smaPointFormatter.call(this, tooltip, 1, 0, false);
-                                $('[data-id="volume"]').text(this.y.toLocaleString());
-                                return false;
-                            }
-                        },
-                        animation: false,
-                        rendererType: 'webgl'
-                    });
-                    volumeSmaData.forEach(item => {
-                        setTimeout(() => {
-                            chart.addSeries({
-                                type: 'sma',
-                                name: `MA${item.unit}`,
-                                linkedTo: 'volume',
-                                zIndex: 10,
-                                yAxis: 1,
-                                color: item.color,
-                                params: {
-                                    period: item.unit
-                                },
-                                marker: {
-                                    enabled: false
-                                },
-                                tooltip: {
-                                    pointFormatter: function (tooltip) {
-                                        smaPointFormatter.call(this, tooltip, 1, 0);
-                                        return false;
+                        });
+                        kLineSmaData.forEach(item => {
+                            setTimeout(() => {
+                                chart.addSeries({
+                                    type: 'sma',
+                                    name: `SMA${item.unit}`,
+                                    linkedTo: 'aapl',
+                                    id: `sma${item.unit}`,
+                                    zIndex: 10,
+                                    yAxis: 0,
+                                    color: item.color,
+                                    params: {
+                                        period: item.unit
+                                    },
+                                    marker: {
+                                        enabled: false
+                                    },
+                                    tooltip: {
+                                        pointFormatter: function (tooltip) {
+                                            smaPointFormatter.call(this, tooltip, 0);
+                                            return false;
+                                        }
+                                    },
+                                    animation: false,
+                                    rendererType: 'webgl'
+                                });
+                            }, 50);
+                        });
+
+                        // 柱狀圖
+                        chart.addSeries({
+                            type: 'column',
+                            name: '成交量',
+                            id: 'volume',
+                            zIndex: 3,
+                            data: volume,
+                            yAxis: 1,
+                            marker: {
+                                enabled: false,
+                                states: {
+                                    hover: {
+                                        enabled: false
                                     }
-                                },
-                                animation: false,
-                                rendererType: 'webgl'
-                            });
-                        }, 100);
-                    });
-
-                    // 折線圖-KD值
-                    chart.addSeries({
-                        type: 'slowstochastic',
-                        name: 'K(9,3)',
-                        id: 'kdValue',
-                        linkedTo: 'aapl',
-                        marker: {
-                            enabled: false,
+                                }
+                            },
                             states: {
                                 hover: {
                                     enabled: false
                                 }
-                            }
-                        },
-                        color: '#238C6C',
-                        smoothedLine: {
-                            styles: {
-                                lineColor: '#D0A66C',
-                                lineWidth: '2'
-                            }
-                        },
-                        yAxis: 2,
-                        params: {
-                            periods: [9, 3, 3],
-                            visible: true
-                        },
-                        tooltip: {
-                            pointFormatter: function () {
-                                const $tooltipContainer = $('[data-id="' + this.series.chart.container.id + "-tooltips-yAxis" + 2 + '"]'),
-                                    id = "tooltip-" + this.series.name;
-                                let kValue = this.y != null ? this.y.toFixed(2) : 'N/A';
-                                let dValue = this.smoothed != null ? this.smoothed.toFixed(2) : 'N/A';
-                                let html = '<div class="l-slash__item">' + '<span style="color:' + this.color + '">●</span>' + this.series.name + ': <b>' + kValue + '</b>' + '</div>' + '<div class="l-slash__item">' + '<span style="color:' + '#D0A66C' + '">●</span>' + 'D(9,3)' + ': <b>' + dValue + '</b>' + '</div>';
-                                $tooltipContainer.find('[data-id="' + id + '"]').html(html);
-                                return false;
-                            }
-                        },
-                        animation: false,
-                        rendererType: 'webgl'
-                    });
+                            },
+                            tooltip: {
+                                pointFormatter: function (tooltip) {
+                                    smaPointFormatter.call(this, tooltip, 1, 0, false);
+                                    $('[data-id="volume"]').text(this.y.toLocaleString());
+                                    return false;
+                                }
+                            },
+                            animation: false,
+                            rendererType: 'webgl'
+                        });
+                        volumeSmaData.forEach(item => {
+                            setTimeout(() => {
+                                chart.addSeries({
+                                    type: 'sma',
+                                    name: `MA${item.unit}`,
+                                    linkedTo: 'volume',
+                                    zIndex: 10,
+                                    yAxis: 1,
+                                    color: item.color,
+                                    params: {
+                                        period: item.unit
+                                    },
+                                    marker: {
+                                        enabled: false
+                                    },
+                                    tooltip: {
+                                        pointFormatter: function (tooltip) {
+                                            smaPointFormatter.call(this, tooltip, 1, 0);
+                                            return false;
+                                        }
+                                    },
+                                    animation: false,
+                                    rendererType: 'webgl'
+                                });
+                            }, 100);
+                        });
 
-                    $('[data-chart="kLine"]').find('.c-empty').addClass('u-hidden');
-                    $('[data-chart="kLine"]').find('.c-error').addClass('u-hidden');
-                    $('[data-chart="kLine"]').find('.c-chartBox').removeClass('u-hidden');
+                        // 折線圖-KD值
+                        chart.addSeries({
+                            type: 'slowstochastic',
+                            name: 'K(9,3)',
+                            id: 'kdValue',
+                            linkedTo: 'aapl',
+                            marker: {
+                                enabled: false,
+                                states: {
+                                    hover: {
+                                        enabled: false
+                                    }
+                                }
+                            },
+                            color: '#238C6C',
+                            smoothedLine: {
+                                styles: {
+                                    lineColor: '#D0A66C',
+                                    lineWidth: '2'
+                                }
+                            },
+                            yAxis: 2,
+                            params: {
+                                periods: [9, 3, 3],
+                                visible: true
+                            },
+                            tooltip: {
+                                pointFormatter: function () {
+                                    const $tooltipContainer = $('[data-id="' + this.series.chart.container.id + "-tooltips-yAxis" + 2 + '"]'),
+                                        id = "tooltip-" + this.series.name;
+                                    let kValue = this.y != null ? this.y.toFixed(2) : 'N/A';
+                                    let dValue = this.smoothed != null ? this.smoothed.toFixed(2) : 'N/A';
+                                    let html = '<div class="l-slash__item">' + '<span style="color:' + this.color + '">●</span>' + this.series.name + ': <b>' + kValue + '</b>' + '</div>' + '<div class="l-slash__item">' + '<span style="color:' + '#D0A66C' + '">●</span>' + 'D(9,3)' + ': <b>' + dValue + '</b>' + '</div>';
+                                    $tooltipContainer.find('[data-id="' + id + '"]').html(html);
+                                    return false;
+                                }
+                            },
+                            animation: false,
+                            rendererType: 'webgl'
+                        });
+
+                        $('[data-chart="kLine"]').find('.c-empty').addClass('u-hidden');
+                        $('[data-chart="kLine"]').find('.c-error').addClass('u-hidden');
+                        $('[data-chart="kLine"]').find('.c-chartBox').removeClass('u-hidden');
+                    }
+                    else {
+                        $('[data-chart="kLine"]').find('.c-empty').removeClass('u-hidden');
+                        $('[data-chart="kLine"]').find('.c-error').addClass('u-hidden');
+                        $('[data-chart="kLine"]').find('.c-chartBox').addClass('u-hidden');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
                 }
-                else {
-                    $('[data-chart="kLine"]').find('.c-empty').removeClass('u-hidden');
-                    $('[data-chart="kLine"]').find('.c-error').addClass('u-hidden');
-                    $('[data-chart="kLine"]').find('.c-chartBox').addClass('u-hidden');
+            }
+
+            function initSMAPointFormatter(yAxis, smaDatas) {
+                smaDatas.forEach(function (item) {
+                    var html = '<span style="color:' + item.color + '; margin-right: 2px">\u25CF</span>' + 'SMA' + item.unit + ': <b>N/A</b>';
+                    $('[data-id="tooltip-SMA' + item.unit + '"]').html(html);
+                });
+            }
+
+            function initMAPointFormatter(yAxis, smaDatas) {
+                var $tooltipContainer = $('[data-id="' + this.series.chart.container.id + '-tooltips-yAxis' + yAxis + '"]');
+                smaDatas.forEach(function (item) {
+                    var html = '<span style="color:' + item.color + '; margin-right: 2px">\u25CF</span>' + 'SMA' + item.unit + ': <b>N/A</b>';
+                    $tooltipContainer.find('[data-id="tooltip-MA' + item.unit + '"]').html(html);
+                });
+            }
+
+            function initKDPointFormatter(yAxis) {
+                var $tooltipContainer = $('[data-id="' + this.series.chart.container.id + '-tooltips-yAxis' + yAxis + '"]');
+                let html = '<div class="l-slash__item"><span style="color:#238C6C">●</span>K(9,3): <b>N/A</b></div>' + '<div class="l-slash__item"><span style="color:#D0A66C">●</span>D(9,3): <b>N/A</b></div>';
+                $tooltipContainer.find('[data-id="tooltip-K(9,3)"]').html(html);
+            }
+
+            function smaPointFormatter(tooltip, yAxis) {
+                let decimal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
+                let showDots = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+                let value = this.y.toFixed(decimal);
+                let id = "tooltip-" + this.series.name;
+                let html = '';
+                if (showDots) {
+                    html = '<span style="color:' + this.color + '; margin-right: 2px">\u25CF</span>';
                 }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
+                html += this.series.name + ": <b>" + Number(value).toLocaleString() + '</b>';
+                $('[data-id="' + id + '"]').html(html);
+            };
 
-        function initSMAPointFormatter(yAxis, smaDatas) {
-            smaDatas.forEach(function (item) {
-                var html = '<span style="color:' + item.color + '; margin-right: 2px">\u25CF</span>' + 'SMA' + item.unit + ': <b>N/A</b>';
-                $('[data-id="tooltip-SMA' + item.unit + '"]').html(html);
-            });
-        }
+            function loadTooltip(chart) {
+                var points = [];
+                chart.series.forEach(function (el, i) {
+                    if (el.points.length > 0) {
+                        points.push(el.points[el.points.length - 1]);
+                    }
+                });
+                chart.tooltip.refresh(points);
 
-        function initMAPointFormatter(yAxis, smaDatas) {
-            var $tooltipContainer = $('[data-id="' + this.series.chart.container.id + '-tooltips-yAxis' + yAxis + '"]');
-            smaDatas.forEach(function (item) {
-                var html = '<span style="color:' + item.color + '; margin-right: 2px">\u25CF</span>' + 'SMA' + item.unit + ': <b>N/A</b>';
-                $tooltipContainer.find('[data-id="tooltip-MA' + item.unit + '"]').html(html);
-            });
-        }
-
-        function initKDPointFormatter(yAxis) {
-            var $tooltipContainer = $('[data-id="' + this.series.chart.container.id + '-tooltips-yAxis' + yAxis + '"]');
-            let html = '<div class="l-slash__item"><span style="color:#238C6C">●</span>K(9,3): <b>N/A</b></div>' + '<div class="l-slash__item"><span style="color:#D0A66C">●</span>D(9,3): <b>N/A</b></div>';
-            $tooltipContainer.find('[data-id="tooltip-K(9,3)"]').html(html);
-        }
-
-        function smaPointFormatter(tooltip, yAxis) {
-            let decimal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
-            let showDots = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-            let value = this.y.toFixed(decimal);
-            let id = "tooltip-" + this.series.name;
-            let html = '';
-            if (showDots) {
-                html = '<span style="color:' + this.color + '; margin-right: 2px">\u25CF</span>';
-            }
-            html += this.series.name + ": <b>" + Number(value).toLocaleString() + '</b>';
-            $('[data-id="' + id + '"]').html(html);
-        };
-
-        function loadTooltip(chart) {
-            var points = [];
-            chart.series.forEach(function (el, i) {
-                if (el.points.length > 0) {
-                    points.push(el.points[el.points.length - 1]);
+                // 預先計算最後一筆資料的漲跌幅
+                let kLineData = chart.series[0].data;
+                let kLineCount = kLineData.length;
+                let current = kLineData[kLineCount - 1].options;
+                let prev = kLineData[kLineCount - 2].options || current;
+                if (current !== undefined || prev !== undefined) {
+                    let extent = current.close - prev.close;
+                    let extentPercentage = extent / current.close * 100;
+                    $('[data-id="extent"]').html(extent.toFixed(2) + '(' + extentPercentage.toFixed(2) + '%)');
+                } else {
+                    $('[data-id="extent"]').html('N/A(N/A%)');
                 }
-            });
-            chart.tooltip.refresh(points);
-
-            // 預先計算最後一筆資料的漲跌幅
-            let kLineData = chart.series[0].data;
-            let kLineCount = kLineData.length;
-            let current = kLineData[kLineCount - 1].options;
-            let prev = kLineData[kLineCount - 2].options || current;
-            if (current !== undefined || prev !== undefined) {
-                let extent = current.close - prev.close;
-                let extentPercentage = extent / current.close * 100;
-                $('[data-id="extent"]').html(extent.toFixed(2) + '(' + extentPercentage.toFixed(2) + '%)');
-            } else {
-                $('[data-id="extent"]').html('N/A(N/A%)');
-            }
-            initPointFormatter = true;
-        };
-    });
+                initPointFormatter = true;
+            };
+        });
+    }
 </script>
