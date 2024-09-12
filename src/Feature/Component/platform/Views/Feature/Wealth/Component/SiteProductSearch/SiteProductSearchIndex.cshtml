@@ -470,8 +470,8 @@
                             this.paginator.setCurrentPage(1);
 
                             let isEmpty = result.length == 0;
-                            $(`[data-tab-panel-id="tab-3"] [data-filter-empty=${isEmpty}]`).show();
-                            $(`[data-tab-panel-id="tab-3"] [data-filter-empty=${!isEmpty}]`).hide();
+                            $(`[data-tab-panel-id="tab-5"] [data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-tab-panel-id="tab-5"] [data-filter-empty=${!isEmpty}]`).hide();
 
                             hideLoading();
                         },
@@ -580,8 +580,8 @@
                             this.paginator.setCurrentPage(1);
 
                             let isEmpty = result.length == 0;
-                            $(`[data-tab-panel-id="tab-4"] [data-filter-empty=${isEmpty}]`).show();
-                            $(`[data-tab-panel-id="tab-4"] [data-filter-empty=${!isEmpty}]`).hide();
+                            $(`[data-tab-panel-id="tab-3"] [data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-tab-panel-id="tab-3"] [data-filter-empty=${!isEmpty}]`).hide();
 
                             hideLoading();
                         },
@@ -683,8 +683,8 @@
                             this.paginator.setCurrentPage(1);
 
                             let isEmpty = result.length == 0;
-                            $(`[data-tab-panel-id="tab-5"] [data-filter-empty=${isEmpty}]`).show();
-                            $(`[data-tab-panel-id="tab-5"] [data-filter-empty=${!isEmpty}]`).hide();
+                            $(`[data-tab-panel-id="tab-4"] [data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-tab-panel-id="tab-4"] [data-filter-empty=${!isEmpty}]`).hide();
 
                             hideLoading();
                         },
@@ -852,7 +852,7 @@
                         if (data.FundProducts) {
                             this.FJS.Fund = initFundFilterJS();
                         }
-                        if (data.FundProducts) {
+                        if (data.StructuredProducts) {
                             this.FJS.SIP = initSipFilterJS();
                         }
                         if (data.ForeignStocks) {

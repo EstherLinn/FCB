@@ -30,18 +30,18 @@
                 <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
                 <li><a href="#" class="c-tab__item is-active" target="_self" title="基金" data-tab-target="tab-1" data-filter-switch-columns="fundTable">基金<span class="c-tab__num" data-uid-producttype="fund">0</span></a></li>
                 <li><a href="#" class="c-tab__item" target="_self" title="ETF" data-tab-target="tab-2" data-filter-switch-columns="etfTable">ETF<span class="c-tab__num" data-uid-producttype="etf">0</span></a></li>
-                <li><a href="#" class="c-tab__item" target="_self" title="結構型商品" data-tab-target="tab-3" data-filter-switch-columns="sipTable" data-filter-switch="#uid-template-sip">結構型商品<span class="c-tab__num" data-uid-producttype="sip">0</span></a></li>
-                <li><a href="#" class="c-tab__item" target="_self" title="國外股票" data-tab-target="tab-4" data-filter-switch-columns="foreignstockTable" data-filter-switch="#uid-template-fstock">國外股票<span class="c-tab__num" data-uid-producttype="fstock">0</span></a></li>
-                <li><a href="#" class="c-tab__item" target="_self" title="國外債券" data-tab-target="tab-5" data-filter-switch-columns="foreignbondTable" data-filter-switch="#uid-template-fbond">國外債券<span class="c-tab__num" data-uid-producttype="fbond">0</span></a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="國外股票" data-tab-target="tab-3" data-filter-switch-columns="foreignstockTable" data-filter-switch="#uid-template-fstock">國外股票<span class="c-tab__num" data-uid-producttype="fstock">0</span></a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="國外債券" data-tab-target="tab-4" data-filter-switch-columns="foreignbondTable" data-filter-switch="#uid-template-fbond">國外債券<span class="c-tab__num" data-uid-producttype="fbond">0</span></a></li>
+                <li><a href="#" class="c-tab__item" target="_self" title="結構型商品" data-tab-target="tab-5" data-filter-switch-columns="sipTable" data-filter-switch="#uid-template-sip">結構型商品<span class="c-tab__num" data-uid-producttype="sip">0</span></a></li>
             </ul>
             <div class="c-tab__collapse">
                 <a href="#" class="c-tab__switch"></a>
                 <div class="c-tab__dropdown">
                     <a href="#" class="c-tab__clone is-active" target="_self" title="基金" data-tab-target="tab-1" data-filter-switch-columns="fundTable">基金<span class="c-tab__num" data-uid-producttype="fund">0</span></a>
                     <a href="#" class="c-tab__clone" target="_self" title="ETF" data-tab-target="tab-2" data-filter-switch-columns="etfTable">ETF<span class="c-tab__num" data-uid-producttype="etf">0</span></a>
-                    <a href="#" class="c-tab__clone" target="_self" title="結構型商品" data-tab-target="tab-3" data-filter-switch-columns="sipTable" data-filter-switch="#uid-template-sip">結構型商品<span class="c-tab__num" data-uid-producttype="sip">0</span></a>
-                    <a href="#" class="c-tab__clone" target="_self" title="國外股票" data-tab-target="tab-4" data-filter-switch-columns="foreignstockTable" data-filter-switch="#uid-template-fstock">國外股票<span class="c-tab__num" data-uid-producttype="fstock">0</span></a>
-                    <a href="#" class="c-tab__clone" target="_self" title="國外債券" data-tab-target="tab-5" data-filter-switch-columns="foreignbondTable" data-filter-switch="#uid-template-fbond">國外債券<span class="c-tab__num" data-uid-producttype="fbond">0</span></a>
+                    <a href="#" class="c-tab__clone" target="_self" title="國外股票" data-tab-target="tab-3" data-filter-switch-columns="foreignstockTable" data-filter-switch="#uid-template-fstock">國外股票<span class="c-tab__num" data-uid-producttype="fstock">0</span></a>
+                    <a href="#" class="c-tab__clone" target="_self" title="國外債券" data-tab-target="tab-4" data-filter-switch-columns="foreignbondTable" data-filter-switch="#uid-template-fbond">國外債券<span class="c-tab__num" data-uid-producttype="fbond">0</span></a>
+                    <a href="#" class="c-tab__clone" target="_self" title="結構型商品" data-tab-target="tab-5" data-filter-switch-columns="sipTable" data-filter-switch="#uid-template-sip">結構型商品<span class="c-tab__num" data-uid-producttype="sip">0</span></a>
                 </div>
             </div>
         </div>
@@ -538,144 +538,8 @@
                 </select>
             </div>
         </div>
-        @* 結構型商品 *@
-        <div class="c-tab__panel" data-tab-panel-id="tab-3">
-
-            <div class="c-section" data-filter-empty="true">
-                <div class="c-section__content">
-                    <div class="c-empty">
-                        <div class="c-empty__img">
-                            <img src="~/themes/images/lions/lion-compare.svg" alt="">
-                        </div>
-                        <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="l-flex u-flex-col u-flex-gap-sm" data-filter-empty="false" style="display:none;">
-                <div class="l-flex__item">
-                    <div class="l-flex l-flex--wrap u-flex-gap-sm">
-                        <div class="l-flex__item u-right u-hidden@dt-only">
-                            <div class="o-sortingbox">
-                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
-                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="marketRiskTable" id="uid-sortbox-sip">
-                                    <option value="">排序</option>
-                                    <option value="股票名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">股票名稱高至低</option>
-                                    <option value="股票名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">股票名稱低至高</option>
-                                    <option value="發行機構高至低" data-sorting-column="IssuingInstitutionPair.Value" data-sorting-class="is-desc">發行機構高至低</option>
-                                    <option value="發行機構低至高" data-sorting-column="IssuingInstitutionPair.Value" data-sorting-class="is-asc">發行機構低至高</option>
-                                    <option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
-                                    <option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
-                                    <option value="到期日近至遠" data-sorting-column="ProductMaturityDatePair.Key" data-sorting-class="is-desc">到期日近至遠</option>
-                                    <option value="到期日遠至近" data-sorting-column="ProductMaturityDatePair.Key" data-sorting-class="is-asc">到期日遠至近</option>
-                                    <option value="參考贖回價高至低" data-sorting-column="BankSellPricePair.Key" data-sorting-class="is-desc">參考贖回價高至低</option>
-                                    <option value="參考贖回價低至高" data-sorting-column="BankSellPricePair.Key" data-sorting-class="is-asc">參考贖回價低至高</option>
-                                    <option value="價格日期近至遠" data-sorting-column="PriceBaseDatePair.Key" data-sorting-class="is-desc">價格日期近至遠</option>
-                                    <option value="價格日期遠至近" data-sorting-column="PriceBaseDatePair.Key" data-sorting-class="is-asc">價格日期遠至近</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="l-flex__item">
-                    <div class="l-table">
-                        <table id="sip_table" class="c-table@dt-only c-cardTable@lt">
-                            <colgroup>
-                                <col style="width: auto;">
-                                <col style="width: 1%;">
-                                <col style="width: 1%;">
-                                <col style="width: 1%;">
-                                <col style="width: 1%;">
-                                <col style="width: 1%;">
-                            </colgroup>
-                            <thead>
-                                <tr class="u-nowrap">
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>商品名稱</span>
-                                            <a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>發行機構</span>
-                                            <a href="#" class="o-sorting" data-sorting-column="IssuingInstitutionPair.Value"></a>
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>幣別</span>
-                                            <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-                                            <a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>到期日</span>
-                                            <a href="#" class="o-sorting" data-sorting-column="ProductMaturityDatePair.Key"></a>
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>參考贖回價</span>
-                                            <a href="#" class="o-sorting" data-sorting-column="BankSellPricePair.Key"></a>
-                                        </div>
-                                    </th>
-                                    <th>
-                                        <div class="c-table__title">
-                                            <span>價格日期</span>
-                                            <a href="#" class="o-sorting" data-sorting-column="PriceBaseDatePair.Key"></a>
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="uid-fjs-sip"></tbody>
-                            @{
-                                Html.RenderPartial("/Views/Feature/Wealth/Component/SiteProductSearch/SearchResult/_StructuredProductResultTemplate.cshtml", Model);
-                            }
-                        </table>
-
-                        <div class="l-pagination">
-                            <div class="l-pagination__size" id="uid-perPage-sip">
-                            </div>
-                            <script id="uid-template-perPage-sip" type="text/html">
-                                <span>每頁顯示</span>
-                                <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
-                                <select id="uid-view-perPage-sip" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
-                                    <% for(var i = 0; i < values.length - 1; i++ ) { %>
-                                    <option value="<%= values[i] %>"><%= values[i] %>筆</option>
-                                    <% } %>
-                                    <option value="<%= values[values.length - 1] %>">全部</option>
-                                </select>
-                            </script>
-                            <div class="l-pagination__switch" id="uid-pagination-sip">
-                            </div>
-                            <script id="uid-template-pagination-sip" type="text/html">
-                                <div class="o-pagination">
-                                    <% if (currentPage > 1) { %>
-                                    <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
-                                    <% } else { %>
-                                    <!-- .is-disabled: 停用狀態，無法點擊 -->
-                                    <a href="#" class="o-pagination__prev is-disabled"></a>
-                                    <% } %>
-                                    <span class="o-pagination__pager">
-                                        <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
-                                        <span class="o-pagination__total"><%= totalPages %></span>
-                                    </span>
-                                    <% if (currentPage < totalPages ) { %>
-                                    <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
-                                    <% } else { %>
-                                    <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
-                                    <% } %>
-                                </div>
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         @* 國外股票 *@
-        <div class="c-tab__panel" data-tab-panel-id="tab-4">
+        <div class="c-tab__panel" data-tab-panel-id="tab-3">
 
             <div class="c-section" data-filter-empty="true">
                 <div class="c-section__content">
@@ -841,7 +705,7 @@
             </div>
         </div>
         @* 國外債券 *@
-        <div class="c-tab__panel" data-tab-panel-id="tab-5">
+        <div class="c-tab__panel" data-tab-panel-id="tab-4">
 
             <div class="c-section" data-filter-empty="true">
                 <div class="c-section__content">
@@ -981,6 +845,142 @@
                             <div class="l-pagination__switch" id="uid-pagination-fbond">
                             </div>
                             <script id="uid-template-pagination-fbond" type="text/html">
+                                <div class="o-pagination">
+                                    <% if (currentPage > 1) { %>
+                                    <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+                                    <% } else { %>
+                                    <!-- .is-disabled: 停用狀態，無法點擊 -->
+                                    <a href="#" class="o-pagination__prev is-disabled"></a>
+                                    <% } %>
+                                    <span class="o-pagination__pager">
+                                        <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+                                        <span class="o-pagination__total"><%= totalPages %></span>
+                                    </span>
+                                    <% if (currentPage < totalPages ) { %>
+                                    <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+                                    <% } else { %>
+                                    <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+                                    <% } %>
+                                </div>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* 結構型商品 *@
+        <div class="c-tab__panel" data-tab-panel-id="tab-5">
+
+            <div class="c-section" data-filter-empty="true">
+                <div class="c-section__content">
+                    <div class="c-empty">
+                        <div class="c-empty__img">
+                            <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                        </div>
+                        <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="l-flex u-flex-col u-flex-gap-sm" data-filter-empty="false" style="display:none;">
+                <div class="l-flex__item">
+                    <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                        <div class="l-flex__item u-right u-hidden@dt-only">
+                            <div class="o-sortingbox">
+                                <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="marketRiskTable" id="uid-sortbox-sip">
+                                    <option value="">排序</option>
+                                    <option value="股票名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">股票名稱高至低</option>
+                                    <option value="股票名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">股票名稱低至高</option>
+                                    <option value="發行機構高至低" data-sorting-column="IssuingInstitutionPair.Value" data-sorting-class="is-desc">發行機構高至低</option>
+                                    <option value="發行機構低至高" data-sorting-column="IssuingInstitutionPair.Value" data-sorting-class="is-asc">發行機構低至高</option>
+                                    <option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
+                                    <option value="幣別低至高" data-sorting-column="CurrencyCode" data-sorting-class="is-asc">幣別低至高</option>
+                                    <option value="到期日近至遠" data-sorting-column="ProductMaturityDatePair.Key" data-sorting-class="is-desc">到期日近至遠</option>
+                                    <option value="到期日遠至近" data-sorting-column="ProductMaturityDatePair.Key" data-sorting-class="is-asc">到期日遠至近</option>
+                                    <option value="參考贖回價高至低" data-sorting-column="BankSellPricePair.Key" data-sorting-class="is-desc">參考贖回價高至低</option>
+                                    <option value="參考贖回價低至高" data-sorting-column="BankSellPricePair.Key" data-sorting-class="is-asc">參考贖回價低至高</option>
+                                    <option value="價格日期近至遠" data-sorting-column="PriceBaseDatePair.Key" data-sorting-class="is-desc">價格日期近至遠</option>
+                                    <option value="價格日期遠至近" data-sorting-column="PriceBaseDatePair.Key" data-sorting-class="is-asc">價格日期遠至近</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <div class="l-table">
+                        <table id="sip_table" class="c-table@dt-only c-cardTable@lt">
+                            <colgroup>
+                                <col style="width: auto;">
+                                <col style="width: 1%;">
+                                <col style="width: 1%;">
+                                <col style="width: 1%;">
+                                <col style="width: 1%;">
+                                <col style="width: 1%;">
+                            </colgroup>
+                            <thead>
+                                <tr class="u-nowrap">
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>商品名稱</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>發行機構</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="IssuingInstitutionPair.Value"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>幣別</span>
+                                            <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                            <a href="#" class="o-sorting" data-sorting-column="CurrencyCode"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>到期日</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="ProductMaturityDatePair.Key"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>參考贖回價</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="BankSellPricePair.Key"></a>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="c-table__title">
+                                            <span>價格日期</span>
+                                            <a href="#" class="o-sorting" data-sorting-column="PriceBaseDatePair.Key"></a>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="uid-fjs-sip"></tbody>
+                            @{
+                                Html.RenderPartial("/Views/Feature/Wealth/Component/SiteProductSearch/SearchResult/_StructuredProductResultTemplate.cshtml", Model);
+                            }
+                        </table>
+
+                        <div class="l-pagination">
+                            <div class="l-pagination__size" id="uid-perPage-sip">
+                            </div>
+                            <script id="uid-template-perPage-sip" type="text/html">
+                                <span>每頁顯示</span>
+                                <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+                                <select id="uid-view-perPage-sip" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+                                    <% for(var i = 0; i < values.length - 1; i++ ) { %>
+                                    <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+                                    <% } %>
+                                    <option value="<%= values[values.length - 1] %>">全部</option>
+                                </select>
+                            </script>
+                            <div class="l-pagination__switch" id="uid-pagination-sip">
+                            </div>
+                            <script id="uid-template-pagination-sip" type="text/html">
                                 <div class="o-pagination">
                                     <% if (currentPage > 1) { %>
                                     <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
