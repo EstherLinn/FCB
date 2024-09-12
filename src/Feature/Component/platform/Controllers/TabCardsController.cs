@@ -53,11 +53,13 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             var model = new Tab3CardModel(datasource);
-
-            model.FundCardsInfos = _tabCardsRepository.GetFundCardsInfos((List<string>)model.FundIDList);
-            model.FundCardsInfosHtmlString = new HtmlString(JsonConvert.SerializeObject(model.FundCardsInfos));
-            model.FundCardsNavs = _tabCardsRepository.GetFundCardsNavs((List<string>)model.FundIDList);
-            model.FundCardsNavsHtmlString = new HtmlString(JsonConvert.SerializeObject(model.FundCardsNavs));
+            if (model.FundIDList != null && model.FundIDList.Any())
+            {
+                model.FundCardsInfos = _tabCardsRepository.GetFundCardsInfos((List<string>)model.FundIDList);
+                model.FundCardsInfosHtmlString = new HtmlString(JsonConvert.SerializeObject(model.FundCardsInfos));
+                model.FundCardsNavs = _tabCardsRepository.GetFundCardsNavs((List<string>)model.FundIDList);
+                model.FundCardsNavsHtmlString = new HtmlString(JsonConvert.SerializeObject(model.FundCardsNavs));
+            }
 
             return View("/Views/Feature/Wealth/Component/TabCards/Tab3Card.cshtml", model);
         }

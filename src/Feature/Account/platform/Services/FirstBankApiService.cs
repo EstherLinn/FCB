@@ -68,7 +68,7 @@ namespace Feature.Wealth.Account.Services
         /// <param name="promotionCode"></param>
         /// <param name="productId"></param>
         /// <returns></returns>
-        public async Task SyncTrackListToIleo(string promotionCode, string productId)
+        public async Task SyncTrackListToIleo(string promotionCode, string productId, string productType)
         {
             if (string.IsNullOrEmpty(_route))
             {
@@ -77,14 +77,37 @@ namespace Feature.Wealth.Account.Services
             }
             try
             {
-
+                var type = string.Empty;
+                if (!string.IsNullOrEmpty(productType))
+                {
+                    //基金:F ETF:E 國外股票:S 國外債券:X
+                    switch (productType.ToLower())
+                    {
+                        case "fund":
+                            type = "F";
+                            break;
+                        case "etf":
+                            type = "E";
+                            break;
+                        case "foreignstocks":
+                            type = "S";
+                            break;
+                        case "foreignbonds":
+                            type = "X";
+                            break;
+                        default:
+                            type = "F";
+                            break;
+                    }
+                }
                 var routeWithParams = _route.
                     AppendQueryParam("promotionCode", promotionCode)
                    .AppendQueryParam("channel", "wms")
-                   .AppendQueryParam("fundCode", productId);
+                   .AppendQueryParam("fundCode", productId)
+                   .AppendQueryParam("fundType", type);
 
-                var reqObj = new { promotionCode, channel = "wms", fundCode = productId };
-                Logger.Api.Info($"關注清單API Function開始 理財網同步回ileo,取得promotionCode ={promotionCode},api route ={routeWithParams},帶入參數promotionCode={promotionCode},channel=wms,fundCode={productId}");
+                var reqObj = new { promotionCode, channel = "wms", fundCode = productId, fundType= type };
+                Logger.Api.Info($"關注清單API Function開始 理財網同步回ileo,取得promotionCode ={promotionCode},api route ={routeWithParams},帶入參數promotionCode={promotionCode},channel=wms,fundCode={productId},fundType={type}");
                 var request = await routeWithParams.
                     AllowAnyHttpStatus().
                     PostJsonAsync(reqObj);
@@ -136,11 +159,11 @@ namespace Feature.Wealth.Account.Services
                         //清除ileo已取消關注資料
                         foreach (var item in originData)
                         {
-                                //不存在ileo但理財網還在，刪除
-                                if (!focusListResp.TrackList.Exists(x => x.fundCode == item.Id))
-                                {
-                                    tmpData.RemoveAll(x => x.Id == item.Id);
-                                }
+                            //不存在ileo但理財網還在，刪除
+                            if (!focusListResp.TrackList.Exists(x => x.fundCode == item.Id))
+                            {
+                                tmpData.RemoveAll(x => x.Id == item.Id);
+                            }
                         }
                         originData = tmpData;
                         //加入新的ileo資料

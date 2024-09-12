@@ -33,6 +33,11 @@ namespace Feature.Wealth.Account.Controllers
                 else if(!member.IsManager && !member.IsEmployee)
                 {
                     viewModel.ScheduleMessage = memberRepository.GetMemberScheduleMessage();
+                    viewModel.BranchInfo = memberRepository.GetMainBranchInfoByBranchCode(member.MainBranchCode);
+                }
+                if (member.IsManager || member.IsEmployee)
+                {
+                    viewModel.BranchInfo = memberRepository.GetMainBranchInfoByEmployee(member.AdvisrorID);
                 }
             }
             return View("~/Views/Feature/Wealth/Account/MemberCard/MemberCard.cshtml", viewModel);

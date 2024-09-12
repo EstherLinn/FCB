@@ -54,6 +54,11 @@ namespace Feature.Wealth.Account.Models.OAuth
         public string HRIS_EmployeeCode { get; set; }
 
         /// <summary>
+        /// 主要往來分行
+        /// </summary>
+        public string CIF_MAIN_BRANCH { get; set; }
+
+        /// <summary>
         /// 是否為理顧
         /// </summary>
         public bool IsEmployee { get; set; } = false;
