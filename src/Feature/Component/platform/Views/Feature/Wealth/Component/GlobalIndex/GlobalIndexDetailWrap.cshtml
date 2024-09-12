@@ -170,7 +170,7 @@
                 </div>
             </section>
             @* K線圖 *@
-            <section class="c-section" id="KLine">
+            <section class="c-section u-hidden" id="KLine">
                 <div class="c-section__title">K線圖</div>
                 <div class="c-section__content">
                     <div class="l-flex u-flex-col u-flex-gap-sm">
@@ -232,7 +232,7 @@
             </section>
 
             @* 折線圖 *@
-            <section class="c-section u-printBreak" id="LineChart">
+            <section class="c-section u-printBreak u-hidden" id="LineChart">
                 <div class="c-section__title">價格走勢</div>
                 <div class="c-section__content">
                     <div class="l-flex u-flex-col u-flex-gap-sm">
@@ -1193,6 +1193,9 @@
             NotKLine = true;
             $("#KLine").addClass('u-hidden');
             $("#LineChart").removeClass('u-hidden');
+        }else{
+            $("#KLine").removeClass('u-hidden');
+            $("#LineChart").addClass('u-hidden');
         }
     });
 
