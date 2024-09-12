@@ -65,8 +65,8 @@
 
 <div class="l-flex__item">
     <div class="l-flex u-flex-col@mb-only u-flex-gap-md u-flex-gap-sm@lt">
-
-        @foreach (var fundCard in Model.FundCardsInfos)
+        @if (Model.FundCardsInfos != null && Model.FundCardsInfos.Any()){
+        foreach (var fundCard in Model.FundCardsInfos)
         {
             var fundCardName = fundCard.ProductCode + " " + fundCard.ProductName;
             var fundCardUrl = Model.FundDetailLink + "?id=" + fundCard.ProductCode;
@@ -95,7 +95,7 @@
                 </div>
             </div>
         }
-
+        }
     </div>
 </div>
 

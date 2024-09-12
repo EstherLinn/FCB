@@ -67,6 +67,11 @@ namespace Feature.Wealth.Account.Models.OAuth
         public string PlatFormId { get; set; }
 
         /// <summary>
+        /// 主要往來分行代號
+        /// </summary>
+        public string MainBranchCode { get; set; }
+
+        /// <summary>
         /// 是否為理顧
         /// </summary>
         public bool IsEmployee { get; set; } = false;
@@ -97,7 +102,7 @@ namespace Feature.Wealth.Account.Models.OAuth
         public FcbMemberModel(string webBankId, string memberName, string memberEmail,
             string risk, string advisror, string advisrorID, bool videoInfoOpen,
             bool arrivedInfoOpen, QuoteChangeEunm stockShowColor, PlatFormEunm platForm,
-            string platFormId, DateTime? birthday, string gender, string salFlag,
+            string platFormId, DateTime? birthday, string gender, string salFlag, string mainBranchCode,
             bool isEmployee = false, bool isManager = false)
         {
             this.WebBankId = webBankId;
@@ -116,6 +121,7 @@ namespace Feature.Wealth.Account.Models.OAuth
             this.SalFlag = salFlag;
             this.IsEmployee = isEmployee;
             this.IsManager = isManager;
+            this.MainBranchCode = mainBranchCode;
         }
 
     }

@@ -884,12 +884,12 @@
                 let self = e.target;
                 let cancelId = self.getAttribute('data-cancel-id');
                 let cancelType = self.getAttribute('data-cancel-type');
-                let obj = new CompareObj(cancelId, cancelType);
+                let obj = new FocsuObj(cancelId, cancelType);
                 removeItem('focus', obj);
                 $.ajax({
                     type: "post",
                     url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
-                    data: { "trackList": store.get("focus") || [], "productId": cancelId, "pageUrl": window.location.pathname + window.location.search },
+                    data: { "trackList": store.get("focus") || [], "productId": cancelId, "pageUrl": window.location.pathname + window.location.search, "productType": cancelType },
                     beforeSend: function () { $('.c-loading').loading('show'); },
                     success: function (resp) {
                         if (!resp.success && resp.block) {

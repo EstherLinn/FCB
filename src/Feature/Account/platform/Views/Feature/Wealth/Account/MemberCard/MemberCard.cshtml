@@ -125,6 +125,21 @@
                                     </div>
                                 </div>
                                 }
+                                <div class="c-member__info u-align-start@lt">
+                                    <div class="c-member__title">
+                                        <img src="~/themes/images/icons/member/bank.svg" alt="">
+                                        <span>主要往來分行</span>
+                                    </div>
+                                    <div class="c-member__value">
+                                        @if(Model.BranchInfo != null){
+                                       <b>@Model.BranchInfo.BranchName</b>
+                                       <div class="t-date">電話 : (@Model.BranchInfo.PhoneAreaCode)@Model.BranchInfo.PhoneNumber</div>
+                                        }else
+                                        {
+                                       <b>-</b>
+                                        }
+                                    </div>
+                                </div>
                             }
                         </div>
                     </div>

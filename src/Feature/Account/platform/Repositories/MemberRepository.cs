@@ -20,6 +20,7 @@ using Dapper;
 using Feature.Wealth.Account.Models.MemberLog;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Models;
+using Feature.Wealth.Account.Models.MemberCard;
 
 namespace Feature.Wealth.Account.Repositories
 {
@@ -35,6 +36,7 @@ namespace Feature.Wealth.Account.Repositories
         /// <returns></returns>
         public bool CheckUserExists(PlatFormEunm platForm, string id)
         {
+            string CFMBSEL = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CFMBSEL);
             bool exists = false;
             string strSql = string.Empty;
             int idLength = 100;
@@ -42,7 +44,7 @@ namespace Feature.Wealth.Account.Repositories
             {
                 strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(33) = @id
                     SELECT CAST(CASE WHEN EXISTS (SELECT 1 FROM [FCB_Member] WHERE PlatForm=@@platForm
-                 and PlatFormId COLLATE Latin1_General_CS_AS = (SELECT PROMOTION_CODE FROM CFMBSEL WHERE CUST_ID = @@id )) THEN 1 ELSE 0 END as BIT)";
+                 and PlatFormId COLLATE Latin1_General_CS_AS = (SELECT PROMOTION_CODE FROM {CFMBSEL} WITH (NOLOCK) WHERE CUST_ID = @@id )) THEN 1 ELSE 0 END as BIT)";
                 idLength = 33;
             }
             else
@@ -214,7 +216,8 @@ namespace Feature.Wealth.Account.Repositories
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE,
-                            A.CIF_ID
+                            A.CIF_ID,
+                            A.CIF_MAIN_BRANCH
                             FROM {CIF} AS A WITH (NOLOCK)
                             LEFT JOIN {HRIS} AS B WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
                             LEFT JOIN {CFMBSEL} AS C WITH (NOLOCK) ON CIF_ID = CUST_ID
@@ -284,7 +287,8 @@ namespace Feature.Wealth.Account.Repositories
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE,
-                            A.CIF_ID
+                            A.CIF_ID,
+                            A.CIF_MAIN_BRANCH
                             FROM {CIF} AS A WITH (NOLOCK)
                             LEFT JOIN {HRIS} AS B WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = B.EmployeeCode
                             LEFT JOIN {CFMBSEL} AS C WITH (NOLOCK) ON CIF_ID = CUST_ID
@@ -352,7 +356,8 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_SAL_FLAG AS SalFlag,
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
-                            B.CIF_ID
+                            B.CIF_ID,
+                            B.CIF_MAIN_BRANCH AS MainBranchCode
                             FROM [FCB_Member] AS A
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
@@ -421,7 +426,8 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_SAL_FLAG AS SalFlag,
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
-                            B.CIF_ID
+                            B.CIF_ID,
+                            B.CIF_MAIN_BRANCH AS MainBranchCode
                             FROM [FCB_Member] AS A
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
@@ -479,7 +485,8 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_SAL_FLAG AS SalFlag,
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
-                            B.CIF_ID
+                            B.CIF_ID,
+                            B.CIF_MAIN_BRANCH AS MainBranchCode
                             FROM [FCB_Member] AS A 
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
@@ -1058,6 +1065,45 @@ namespace Feature.Wealth.Account.Repositories
                 msg = "提醒您，您今日有客戶預約遠距諮詢，請準時參與！";
             }
             return msg;
+        }
+        /// <summary>
+        /// 取得分行資訊
+        /// </summary>
+        /// <param name="branchCode">分行代碼</param>
+        /// <returns></returns>
+        public Branch GetMainBranchInfoByBranchCode(string branchCode)
+        {
+            var strSql = @$"
+                            SELECT
+                            BranchCode,
+                            BranchName,
+                            PhoneAreaCode,        
+                            PhoneNumber
+                            FROM [Branch_Data] 
+                            WHERE BranchCode = @branchCode";
+            var branch = DbManager.Custom.Execute<Branch>(strSql, new { branchCode }, commandType: System.Data.CommandType.Text);
+            return branch;
+        }
+        /// <summary>
+        /// 取得員工主要分行資訊
+        /// </summary>
+        /// <param name="employeeCode">員工代號</param>
+        /// <returns></returns>
+        public Branch GetMainBranchInfoByEmployee(string employeeCode)
+        {
+            string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
+            var strSql = @$"
+                            SELECT
+                            B.BranchCode,
+                            B.BranchName,
+                            B.PhoneAreaCode,        
+                            B.PhoneNumber
+                            FROM {HRIS} AS A  WITH (NOLOCK)
+                            LEFT JOIN [Branch_Data] AS B  WITH (NOLOCK) ON SUBSTRING(A.OfficeOrBranchCode, 2, 3) = B.BranchCode
+                            WHERE A.EmployeeCode = @employeeCode";
+
+            var branch = DbManager.Custom.Execute<Branch>(strSql, new { employeeCode }, commandType: System.Data.CommandType.Text);
+            return branch;
         }
 
         public void RecordMemberActionLog(MemberLog memberLog)

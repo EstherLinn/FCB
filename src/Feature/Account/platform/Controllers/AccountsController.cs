@@ -221,7 +221,7 @@ namespace Feature.Wealth.Account.Controllers
                                     cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
                                     true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,
                                     cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
-                                    cifMember.IsEmployee, cifMember.IsManager);
+                                    cifMember.CIF_MAIN_BRANCH,cifMember.IsEmployee, cifMember.IsManager);
 
                                 var createdSuccess = _memberRepository.CreateNewMember(member);
                                 if (!createdSuccess)
@@ -318,7 +318,7 @@ namespace Feature.Wealth.Account.Controllers
                             cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
                             true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,
                             cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
-                            cifMember.IsEmployee, cifMember.IsManager);
+                            cifMember.CIF_MAIN_BRANCH,cifMember.IsEmployee, cifMember.IsManager);
 
                         var createdSuccess = _memberRepository.CreateNewMember(member);
                         if (!createdSuccess)
@@ -343,6 +343,13 @@ namespace Feature.Wealth.Account.Controllers
                         SetCustomPropertyAndLogin(member, user);
                     }
                 }
+                else
+                {
+                    Logger.Account.Info($"網銀登入byApp {step} , promotionCode={qs["promotionCode"]},rtCode={qs["rtCode"]}");
+                    Session["LoginStatus"] = false;
+                    Session["ErrorMsg"] = "網銀App 登入回理財網參數有誤，請聯絡資訊處。";
+                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                }
             }
             catch (Exception ex)
             {
@@ -352,7 +359,8 @@ namespace Feature.Wealth.Account.Controllers
             }
             finally
             {
-                Logger.Account.Info($"網銀登入byApp {step} , promotionCode={qs["promotionCode"]} &&rtCode{qs["rtCode"]} ");
+                Logger.Account.Info($"網銀登入byApp {step} , promotionCode={qs["promotionCode"]} &&rtCode={qs["rtCode"]} ");
+
             }
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
@@ -444,7 +452,7 @@ namespace Feature.Wealth.Account.Controllers
             if (FcbMemberHelper.GetMemberPlatForm() == PlatFormEunm.WebBank)
             {
                 FirstBankApiService firstBankApiService = new();
-                await firstBankApiService.SyncTrackListToIleo(FcbMemberHelper.GetMemberPlatFormId(), productId);
+                await firstBankApiService.SyncTrackListToIleo(FcbMemberHelper.GetMemberPlatFormId(), productId, productType);
             }
             return new JsonNetResult(objReturn);
         }

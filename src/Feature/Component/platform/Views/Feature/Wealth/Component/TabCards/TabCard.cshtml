@@ -11,8 +11,9 @@
         @Html.Partial("~/Views/Feature/Wealth/Component/TabCards/_Carousel.cshtml", Model)
 
         <div class="l-trend__main l-trend__main--row@lt">
-
-            @foreach (var fundCard in Model.FundCardsInfos)
+            @if (Model.FundCardsInfos != null && Model.FundCardsInfos.Any())
+            {
+            foreach (var fundCard in Model.FundCardsInfos)
             {
                 var fundCardName = fundCard.ProductCode + " " + fundCard.ProductName;
                 var fundCardUrl = Model.FundDetailLink + "?id=" + fundCard.ProductCode;
@@ -42,7 +43,7 @@
                     </div>
                 </div>
             }
-
+            }
         </div>
     </div>
 </div>
