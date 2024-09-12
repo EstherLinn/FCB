@@ -19,6 +19,7 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// </summary>
         public string DetailUrl { get; set; }
         public bool Purchase { get; set; }
+        public string AutoCompareButtonHtml { get; set; }
         public string AutoFocusButtonHtml { get; set; }
         public string AutoSubscribeButtonHtml { get; set; }
     }
@@ -265,6 +266,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
         /// </summary>
         public string AvailabilityStatus { get; set; }
 
+        /// <summary>
+        /// 手續費後收型註記 Y:後收型，其餘:前收型
+        /// </summary>
+        public string FeePostCollectionType { get; set; }
+
     }
 
     /// <summary>
@@ -355,6 +361,11 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public string SubscriptionTag { get; set; }
 
         public string CompareTag { get; set; }
+
+        /// <summary>
+        /// 手續費後收型註記 Y:後收型，其餘:前收型
+        /// </summary>
+        public string FeePostCollectionType { get; set; }
     }
 
     public class SearchBarData

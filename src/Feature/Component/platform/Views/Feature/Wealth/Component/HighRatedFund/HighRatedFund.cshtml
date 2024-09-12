@@ -103,74 +103,74 @@
                                     </div>
                                 </th>
 
-								<th>
-									<div class="c-table__title">
-										<span>關注/比較</span>
-									</div>
-								</th>
-								<th>
-									<div class="c-table__title">
-										<span>申購</span>
-									</div>
-								</th>
-							</tr>
-						</thead>
-						<tbody id="result">
-							@foreach (var item in Model.HighRatedFunds)
-							{
-								if (item.ProductCode != null && item.ProductCode != "")
-								{
-									<tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only" data-product-id="@item.ProductCode">
-										<td class="c-cardTable__top"></td>
-										<td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-											<div class="c-cardTable__content">
-												<div class="l-target">
-													<div class="l-target__name">
-														<a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.FundName</a>
-													</div>
-													@if (item.Tags != null)
-													{
-														<div class="l-target__additional">
-															<ul class="l-tag">
-																@foreach (var tag in item.Tags)
-																{
-																	<li class="l-tag__item">
-																		<span class="o-tag">@tag</span>
-																	</li>
-																}
-															</ul>
-														</div>
-													}
-												</div>
-											</div>
-										</td>
-										<td class="c-cardTable__space"></td>
-										<td class="c-cardTable__body" data-card-table-width="1/2">
-											<div class="c-cardTable__title" data-length="5">最新淨值<br>(淨值日)</div>
-											@if (item.NetAssetValue != null)
-											{
-												<div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDateFormat</span></div>
-											}
-											else
-											{
-												<div class="c-cardTable__content">-</div>
-											}
-										</td>
-										<td class="c-cardTable__body" data-card-table-width="1/2">
-											<div class="c-cardTable__title" data-length="5">
-												幣別
-												<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-											</div>
-											@if (item.CurrencyName != null)
-											{
-												<div class="c-cardTable__content">
-													@Html.CurrencyLink(null, item.CurrencyName)
-												</div>
-											}
-											else
-											{
-												<div class="c-cardTable__content">-</div>
-											}
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>關注/比較</span>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="c-table__title">
+                                        <span>申購</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="result">
+                            @foreach (var item in Model.HighRatedFunds)
+                            {
+                                if (item.ProductCode != null && item.ProductCode != "")
+                                {
+                                    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only" data-product-id="@item.ProductCode">
+                                        <td class="c-cardTable__top"></td>
+                                        <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+                                            <div class="c-cardTable__content">
+                                                <div class="l-target">
+                                                    <div class="l-target__name">
+                                                        <a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.FundName</a>
+                                                    </div>
+                                                    @if (item.Tags != null)
+                                                    {
+                                                        <div class="l-target__additional">
+                                                            <ul class="l-tag">
+                                                                @foreach (var tag in item.Tags)
+                                                                {
+                                                                    <li class="l-tag__item">
+                                                                        <span class="o-tag">@tag</span>
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="c-cardTable__space"></td>
+                                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                                            <div class="c-cardTable__title" data-length="5">最新淨值<br>(淨值日)</div>
+                                            @if (item.NetAssetValue != null)
+                                            {
+                                                <div class="c-cardTable__content">@item.NetAssetValue<br><span class="t-date">@item.NetAssetValueDateFormat</span></div>
+                                            }
+                                            else
+                                            {
+                                                <div class="c-cardTable__content">-</div>
+                                            }
+                                        </td>
+                                        <td class="c-cardTable__body" data-card-table-width="1/2">
+                                            <div class="c-cardTable__title" data-length="5">
+                                                幣別
+                                                <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                            </div>
+                                            @if (item.CurrencyName != null)
+                                            {
+                                                <div class="c-cardTable__content">
+                                                    @Html.CurrencyLink(null, item.CurrencyName)
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="c-cardTable__content">-</div>
+                                            }
 
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
@@ -181,6 +181,10 @@
                                                     if (item.PercentageChangeInFundPrice < 0)
                                                     {
                                                         <span class="o-fall">@item.PercentageChangeInFundPrice%</span>
+                                                    }
+                                                    else if (item.PercentageChangeInFundPrice == 0)
+                                                    {
+                                                        <span>@item.PercentageChangeInFundPrice%</span>
                                                     }
                                                     else
                                                     {
@@ -201,6 +205,10 @@
                                                     if (item.SixMonthReturnOriginalCurrency < 0)
                                                     {
                                                         <span class="o-fall">@item.SixMonthReturnOriginalCurrency%</span>
+                                                    }
+                                                    else if (item.SixMonthReturnOriginalCurrency == 0)
+                                                    {
+                                                        <span>@item.SixMonthReturnOriginalCurrency%</span>
                                                     }
                                                     else
                                                     {
@@ -268,8 +276,8 @@
                 let focusAttr = ['eh-focus', 'eh-focus-type', 'eh-focus-id', 'eh-focus-name', 'eh-focus-add'];
                 let compareAttr = ['eh-compare', 'eh-compare-type', 'eh-compare-id', 'eh-compare-name', 'eh-compare-add'];
                 let subscriptionAttr = ['eh-subscription', 'eh-subscription-type', 'eh-subscription-id'];
-				let commonAttr = ['target'];
-				let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
+                let commonAttr = ['target'];
+                let allCustomAttr = focusAttr.concat(compareAttr, subscriptionAttr, commonAttr);
                 data = '<table><tbody>' + data + '</tbody></table>';
                 data = DOMPurify.sanitize(data, { ADD_ATTR: allCustomAttr });
                 data = data.replace('<table><tbody>', '').replace('</tbody></table>', '');

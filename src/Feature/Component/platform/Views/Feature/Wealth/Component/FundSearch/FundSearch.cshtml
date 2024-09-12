@@ -363,6 +363,68 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="l-flex__item">
+                                            <!-- 條件群組[data-filter-group] -->
+                                            <div class="c-filterForm" data-filter-group>
+                                                <!-- 條件群組標題[data-filter-title]，需要顯示在tag的文字請用<span>包起來 -->
+                                                <div class="c-filterForm__title" data-filter-title>
+                                                    <span>前收/後收</span>
+                                                </div>
+                                                <div class="c-filterForm__value">
+                                                    <div class="l-pickGroup" id="FeePostCollectionType">
+                                                        <div class="l-pickGroup__all">
+                                                            <!-- 全部checkbox[data-filter-checkall] -->
+                                                            <label class="o-btnCheckBox">
+                                                                <input class="o-btnCheckBox__input" type="checkbox" checked data-filter-checkall value="all">
+                                                                <div class="o-btnCheckBox__text">全部</div>
+                                                            </label>
+                                                        </div>
+                                                        <div class="l-pickGroup__wrap">
+                                                            <!-- 展開收合功能最外層[data-overflow-hide="相對應ID"] -->
+                                                            <div class="l-pickCollapse" data-overflow-hide="feepost">
+                                                                <!-- 高度過高內容區[data-overflow-content="相對應ID"] -->
+                                                                <div class="l-pickCollapse__content" data-overflow-content="feepost">
+                                                                    <div class="l-pickGroup">
+                                                                        <div class="l-pickGroup__item">
+                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="N">
+                                                                                <div class="o-btnCheckBox__text" data-filter-value="前收型"></div>
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="l-pickGroup__item">
+                                                                            <label class="o-btnCheckBox" data-filter-checkbox>
+                                                                                <input class="o-btnCheckBox__input" type="checkbox" value="Y">
+                                                                                <div class="o-btnCheckBox__text" data-filter-value="後收型"></div>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="l-pickCollapse__expand">
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                        <!-- 展開收合觸發點[data-overflow-action="相對應ID"] -->
+                                                                        <a href="#" class="o-prefixLink o-prefixLink--down o-prefixLink--sm" data-overflow-action="feepost">展開</a>
+                                                                    </div>
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                        <!-- 展開收合觸發點[data-overflow-action="相對應ID"] -->
+                                                                        <a href="#" class="o-collapseBtn o-collapseBtn--down" data-overflow-action="feepost"></a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="l-pickCollapse__collapse">
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--pc">
+                                                                        <!-- 展開收合觸發點[data-overflow-action="相對應ID"] -->
+                                                                        <a href="#" class="o-prefixLink o-prefixLink--up o-prefixLink--sm" data-overflow-action="feepost">收合</a>
+                                                                    </div>
+                                                                    <div class="l-pickCollapse__btn l-pickCollapse__btn--mb">
+                                                                        <!-- 展開收合觸發點[data-overflow-action="相對應ID"] -->
+                                                                        <a href="#" class="o-collapseBtn o-collapseBtn--up" data-overflow-action="feepost"></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- 大網收合區域[data-filter-hide="desktop"] -->
@@ -1329,7 +1391,9 @@
                             <div class="c-cardTable__title" data-length="4">1個月</div>
                             <div class="c-cardTable__content">
                                 <% if (OneMonthReturnOriginalCurrency.Value!=null) { %>
-                                <% if (OneMonthReturnOriginalCurrency.Key) { %>
+                                <% if (OneMonthReturnOriginalCurrency.Value == 0) { %>
+                                <span><%= OneMonthReturnOriginalCurrency.Text %>%</span>
+                                <% } else if (OneMonthReturnOriginalCurrency.Key) { %>
                                 <span class="o-rise"><%= OneMonthReturnOriginalCurrency.Text %>%</span>
                                 <% } else { %>
                                 <span class="o-fall"><%= OneMonthReturnOriginalCurrency.Text %>%</span>
@@ -1343,7 +1407,9 @@
                             <div class="c-cardTable__title" data-length="4">3個月</div>
                             <div class="c-cardTable__content">
                                 <% if (ThreeMonthReturnOriginalCurrency.Value!=null) { %>
-                                <% if (ThreeMonthReturnOriginalCurrency.Key) { %>
+                                <% if (ThreeMonthReturnOriginalCurrency.Value == 0) { %>
+                                <span><%= ThreeMonthReturnOriginalCurrency.Text %>%</span>
+                                <% } else if (ThreeMonthReturnOriginalCurrency.Key) { %>
                                 <span class="o-rise"><%= ThreeMonthReturnOriginalCurrency.Text %>%</span>
                                 <% } else { %>
                                 <span class="o-fall"><%= ThreeMonthReturnOriginalCurrency.Text %>%</span>
@@ -1357,7 +1423,9 @@
                             <div class="c-cardTable__title" data-length="4">6個月</div>
                             <div class="c-cardTable__content">
                                 <% if (SixMonthReturnOriginalCurrency.Value!=null) { %>
-                                <% if (SixMonthReturnOriginalCurrency.Key) { %>
+                                <% if (SixMonthReturnOriginalCurrency.Value == 0) { %>
+                                <span><%= SixMonthReturnOriginalCurrency.Text %>%</span>
+                                <% } else if (SixMonthReturnOriginalCurrency.Key) { %>
                                 <span class="o-rise"><%= SixMonthReturnOriginalCurrency.Text %>%</span>
                                 <% } else { %>
                                 <span class="o-fall"><%= SixMonthReturnOriginalCurrency.Text %>%</span>
@@ -1371,7 +1439,9 @@
                             <div class="c-cardTable__title" data-length="4">1年</div>
                             <div class="c-cardTable__content">
                                 <% if (OneYearReturnOriginalCurrency.Value!=null) { %>
-                                <% if (OneYearReturnOriginalCurrency.Key) { %>
+                                <% if (OneYearReturnOriginalCurrency.Value == 0) { %>
+                                <span><%= OneYearReturnOriginalCurrency.Text %>%</span>
+                                <% } else if (OneYearReturnOriginalCurrency.Key) { %>
                                 <span class="o-rise"><%= OneYearReturnOriginalCurrency.Text %>%</span>
                                 <% } else { %>
                                 <span class="o-fall"><%= OneYearReturnOriginalCurrency.Text %>%</span>
@@ -1456,7 +1526,9 @@
                             <div class="c-cardTable__title" data-length="4">1個月</div>
                             <div class="c-cardTable__content">
                                 <% if (OneMonthReturnTWD.Value!=null) { %>
-                                <% if (OneMonthReturnTWD.Key) { %>
+                                <% if (OneMonthReturnTWD.Value == 0) { %>
+                                <span><%= OneMonthReturnTWD.Text %>%</span>
+                                <% } else if (OneMonthReturnTWD.Key) { %>
                                 <span class="o-rise"><%= OneMonthReturnTWD.Text %>%</span>
                                 <% } else { %>
                                 <span class="o-fall"><%= OneMonthReturnTWD.Text %>%</span>
@@ -1470,7 +1542,9 @@
                             <div class="c-cardTable__title" data-length="4">3個月</div>
                             <div class="c-cardTable__content">
                                 <% if (ThreeMonthReturnTWD.Value!=null) { %>
-                                <% if (ThreeMonthReturnTWD.Key) { %>
+                                <% if (ThreeMonthReturnTWD.Value == 0) { %>
+                                <span><%= ThreeMonthReturnTWD.Text %>%</span>
+                                <% } else if (ThreeMonthReturnTWD.Key) { %>
                                 <span class="o-rise"><%= ThreeMonthReturnTWD.Text %>%</span>
                                 <% } else { %>
                                 <span class="o-fall"><%= ThreeMonthReturnTWD.Text %>%</span>
@@ -1484,7 +1558,9 @@
                             <div class="c-cardTable__title" data-length="4">6個月</div>
                             <div class="c-cardTable__content">
                                 <% if (SixMonthReturnTWD.Value!=null) { %>
-                                <% if (SixMonthReturnTWD) { %>
+                                <% if (SixMonthReturnTWD.Value == 0) { %>
+                                <span><%= SixMonthReturnTWD.Text %>%</span>
+                                <% } else if (SixMonthReturnTWD.Key) { %>
                                 <span class="o-rise"><%= SixMonthReturnTWD.Text %>%</span>
                                 <% } else { %>
                                 <span class="o-fall"><%= SixMonthReturnTWD.Text %>%</span>
@@ -1498,7 +1574,9 @@
                             <div class="c-cardTable__title" data-length="4">1年</div>
                             <div class="c-cardTable__content">
                                 <% if (OneYearReturnTWD.Value!=null) { %>
-                                <% if (OneYearReturnTWD.Key) { %>
+                                <% if (OneYearReturnTWD.Value == 0) { %>
+                                <span><%= OneYearReturnTWD.Text %>%</span>
+                                <% } else if (OneYearReturnTWD.Key) { %>
                                 <span class="o-rise"><%= OneYearReturnTWD.Text %>%</span>
                                 <% } else { %>
                                 <span class="o-fall"><%= OneYearReturnTWD.Text %>%</span>
@@ -1582,7 +1660,9 @@
                             <div class="c-cardTable__title" data-length="4">漲跌幅</div>
                             <div class="c-cardTable__content">
                                 <% if (PercentageChangeInFundPrice.Value!=null) { %>
-                                <% if (PercentageChangeInFundPrice.Key) { %>
+                                <% if (PercentageChangeInFundPrice.Value == 0) { %>
+                                <span><%= PercentageChangeInFundPrice.Text %>%</span>
+                                <% } else if (PercentageChangeInFundPrice.Key) { %>
                                 <span class="o-rise"><%= PercentageChangeInFundPrice.Text %>%</span>
                                 <% } else { %>
                                 <span class="o-fall"><%= PercentageChangeInFundPrice.Text %>%</span>
@@ -1855,94 +1935,94 @@
             }
         }
 
-		function initBind() {
-			// 拉霸
-			$('[data-slider-bar="size"]').sliderBar({
-				start: [0, 302],
+        function initBind() {
+            // 拉霸
+            $('[data-slider-bar="size"]').sliderBar({
+                start: [0, 302],
                 margin: 5,
-				connect: true,
-				range: {
-					'min': [0, 2],
-					'17%': [2, 8],
-					'33.5%': [10, 20],
-					'50%': [30, 70],
-					'66.5%': [100, 200],
-					'83%': [300, 2],
-					'max': 302
-				},
-				pips: {
-					mode: 'positions',
-					values: [0, 17, 33.5, 50, 66.5, 83, 100],
-					density: -1,
-					format: wNumb({
-						suffix: '百萬'
-					})
-				}
-			});
-			$('[data-slider-bar="returnRate"]').sliderBar({
-				start: [-5, 20],
-				step: 5,
+                connect: true,
+                range: {
+                    'min': [0, 2],
+                    '17%': [2, 8],
+                    '33.5%': [10, 20],
+                    '50%': [30, 70],
+                    '66.5%': [100, 200],
+                    '83%': [300, 2],
+                    'max': 302
+                },
+                pips: {
+                    mode: 'positions',
+                    values: [0, 17, 33.5, 50, 66.5, 83, 100],
+                    density: -1,
+                    format: wNumb({
+                        suffix: '百萬'
+                    })
+                }
+            });
+            $('[data-slider-bar="returnRate"]').sliderBar({
+                start: [-5, 20],
+                step: 5,
                 margin: 5,
-				connect: true,
-				range: {
-					'min': -5,
-					'max': 20
-				},
-				pips: {
-					mode: 'steps',
-					density: -1,
-					format: wNumb({
-						suffix: '%'
-					})
-				}
-			});
-			$('[data-slider-bar="sharpe"]').sliderBar({
-				start: [-0.5, 2],
-				step: 0.5,
+                connect: true,
+                range: {
+                    'min': -5,
+                    'max': 20
+                },
+                pips: {
+                    mode: 'steps',
+                    density: -1,
+                    format: wNumb({
+                        suffix: '%'
+                    })
+                }
+            });
+            $('[data-slider-bar="sharpe"]').sliderBar({
+                start: [-0.5, 2],
+                step: 0.5,
                 margin: 0.5,
-				connect: true,
-				range: {
-					'min': -0.5,
-					'max': 2
-				},
-				pips: {
-					mode: 'steps',
-					density: -1,
-					format: wNumb({})
-				}
-			});
-			$('[data-slider-bar="beta"]').sliderBar({
-				start: [-0.5, 2],
-				step: 0.5,
+                connect: true,
+                range: {
+                    'min': -0.5,
+                    'max': 2
+                },
+                pips: {
+                    mode: 'steps',
+                    density: -1,
+                    format: wNumb({})
+                }
+            });
+            $('[data-slider-bar="beta"]').sliderBar({
+                start: [-0.5, 2],
+                step: 0.5,
                 margin: 0.5,
-				connect: true,
-				range: {
-					'min': -0.5,
-					'max': 2
-				},
-				pips: {
-					mode: 'steps',
-					density: -1,
-					format: wNumb({})
-				}
-			});
-			$('[data-slider-bar="standardDeviation"]').sliderBar({
-				start: [-5, 20],
-				step: 5,
+                connect: true,
+                range: {
+                    'min': -0.5,
+                    'max': 2
+                },
+                pips: {
+                    mode: 'steps',
+                    density: -1,
+                    format: wNumb({})
+                }
+            });
+            $('[data-slider-bar="standardDeviation"]').sliderBar({
+                start: [-5, 20],
+                step: 5,
                 margin: 5,
-				connect: true,
-				range: {
-					'min': -5,
-					'max': 20
-				},
-				pips: {
-					mode: 'steps',
-					density: -1,
-					format: wNumb({
-						suffix: '%'
-					})
-				}
-			});
+                connect: true,
+                range: {
+                    'min': -5,
+                    'max': 20
+                },
+                pips: {
+                    mode: 'steps',
+                    density: -1,
+                    format: wNumb({
+                        suffix: '%'
+                    })
+                }
+            });
 
             // 報酬率組合
             $('[data-filter-part="returnRate"] input').on('change.returnRate', function () {
@@ -1987,7 +2067,7 @@
                             return new RegExp(query, 'gi').test(item.value);
                         });
                     }
-					done({ suggestions: result.slice(0, 5).sort((a, b) => (a.value > b.value ? 1 : -1)) });
+                    done({ suggestions: result.slice(0, 5).sort((a, b) => (a.value > b.value ? 1 : -1)) });
                 },
                 onSearchComplete: function (query, suggestions) {
                     var autocomplete = $(this).autocomplete();
@@ -2022,6 +2102,8 @@
                 formatResult: function (suggestion, currentValue) {
                     let detailUrl = suggestion.Data.DetailUrl ? suggestion.Data.DetailUrl : '#';
 
+                     let $compare = ` ${suggestion.Data.AutoCompareButtonHtml} `;
+
                     // like 按鈕
                     let $like = `<a ${suggestion.Data.AutoFocusButtonHtml}></a>`;
 
@@ -2032,6 +2114,7 @@
 
                                                                                                             <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
                                                                                                         </a>
+                                                                                                        <div class="c-itemKeyword__collections">${$compare}</div>
                                                                                                         <div class="c-itemKeyword__collections">${$like}</div>
                                                                                                         ${$purchase}
                                                                                                     </div>`;
@@ -2080,6 +2163,7 @@
                         { field: 'FundCompanyName', ele: '#companies_criteria input:checkbox' }, { field: 'FundCompanyName', ele: '#companies_criteria input:checkbox', all: 'all', selector: ':not(:checked)' },
                         { field: 'InvestmentTargetName', ele: '#target_criteria input:checkbox' }, { field: 'InvestmentTargetName', ele: '#target_criteria input:checkbox', all: 'all', selector: ':not(:checked)' },
                         { field: 'DividendFrequencyName', ele: '#DividendFrequencyName input:checkbox' }, { field: 'DividendFrequencyName', ele: '#DividendFrequencyName input:checkbox', all: 'all', selector: ':not(:checked)' },
+                        { field: 'FeePostCollectionType', ele: '#FeePostCollectionType input:checkbox' }, { field: 'FeePostCollectionType', ele: '#FeePostCollectionType input:checkbox', all: 'all', selector: ':not(:checked)' },
                         { field: 'RiskRewardLevel', ele: '#RiskRewardLevel input:checkbox' }, { field: 'RiskRewardLevel', ele: '#RiskRewardLevel input:checkbox', all: 'all', selector: ':not(:checked)' },
                         { field: 'FundType', ele: '#fundtype_criteria input:checkbox' }, { field: 'FundType', ele: '#fundtype_criteria input:checkbox', all: 'all', selector: ':not(:checked)' },
                         { field: 'InvestmentRegionName', ele: '#region_criteria input:checkbox' }, { field: 'InvestmentRegionName', ele: '#region_criteria input:checkbox', all: 'all', selector: ':not(:checked)' },

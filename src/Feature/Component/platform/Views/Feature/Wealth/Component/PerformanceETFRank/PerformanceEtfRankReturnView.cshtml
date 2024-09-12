@@ -54,10 +54,16 @@
 			</td>
 			<td class="c-cardTable__body" data-card-table-width="1/2">
 				<div class="c-cardTable__title" data-length="5">折溢價</div>
-				@if (item.DiscountPremium >= 0)
+				@if (item.DiscountPremium > 0)
 				{
 					<div class="c-cardTable__content">
 						<span class="o-rise">@item.DiscountPremium%</span>
+					</div>
+				}
+				else if (item.DiscountPremium == 0)
+				{
+					<div class="c-cardTable__content">
+						<span>@item.DiscountPremium%</span>
 					</div>
 				}
 				else
@@ -70,10 +76,16 @@
 			<td class="c-cardTable__body" data-card-table-width="1/2">
 
 				<div class="c-cardTable__title" data-length="5">6個月報酬</div>
-				@if (item.SixMonthReturnMarketPriceOriginalCurrency >= 0)
+				@if (item.SixMonthReturnMarketPriceOriginalCurrency > 0)
 				{
 					<div class="c-cardTable__content">
 						<span class="o-rise">@item.SixMonthReturnMarketPriceOriginalCurrency%</span>
+					</div>
+				}
+				else if (item.SixMonthReturnMarketPriceOriginalCurrency == 0)
+				{
+					<div class="c-cardTable__content">
+						<span>@item.SixMonthReturnMarketPriceOriginalCurrency%</span>
 					</div>
 				}
 				else

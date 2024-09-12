@@ -77,10 +77,16 @@
 					<div class="c-cardTable__title" data-length="5">折溢價</div>
 					@if (item.DiscountPremiumFormat != null)
 					{
-						if (item.DiscountPremiumFormat >= 0)
+						if (item.DiscountPremiumFormat > 0)
 						{
 							<div class="c-cardTable__content">
 								<span class="o-rise">@item.DiscountPremiumFormat%</span>
+							</div>
+						}
+						else if (item.DiscountPremiumFormat == 0)
+						{
+							<div class="c-cardTable__content">
+								<span>@item.DiscountPremiumFormat%</span>
 							</div>
 						}
 						else
@@ -102,10 +108,16 @@
 					<div class="c-cardTable__title" data-length="5">6個月報酬</div>
 					@if (item.SixMonthReturnMarketPriceOriginalCurrencyFormat != null)
 					{
-						if (item.SixMonthReturnMarketPriceOriginalCurrencyFormat >= 0)
+						if (item.SixMonthReturnMarketPriceOriginalCurrencyFormat > 0)
 						{
 							<div class="c-cardTable__content">
 								<span class="o-rise">@item.SixMonthReturnMarketPriceOriginalCurrencyFormat%</span>
+							</div>
+						}
+						else if (item.SixMonthReturnMarketPriceOriginalCurrencyFormat == 0)
+						{
+							<div class="c-cardTable__content">
+								<span>@item.SixMonthReturnMarketPriceOriginalCurrencyFormat%</span>
 							</div>
 						}
 						else

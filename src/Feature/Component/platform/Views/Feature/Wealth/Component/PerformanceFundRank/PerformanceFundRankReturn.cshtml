@@ -72,6 +72,10 @@
 						{
 							<span class="o-fall">@item.PercentageChangeInFundPrice%</span>
 						}
+						else if (item.PercentageChangeInFundPrice == 0)
+						{
+							<span>@item.PercentageChangeInFundPrice%</span>
+						}
 						else
 						{
 							<span class="o-rise">@item.PercentageChangeInFundPrice%</span>
@@ -92,6 +96,10 @@
 						{
 							<span class="o-fall return-original">@item.SixMonthReturnOriginalCurrency%</span>
 						}
+						else if (item.SixMonthReturnOriginalCurrency == 0)
+						{
+							<span class="return-original">@item.SixMonthReturnOriginalCurrency%</span>
+						}
 						else
 						{
 							<span class="o-rise return-original">@item.SixMonthReturnOriginalCurrency%</span>
@@ -106,6 +114,10 @@
 						if (item.SixMonthReturnTWD < 0)
 						{
 							<span class="o-fall return-twd" style="display:none">@item.SixMonthReturnTWD%</span>
+						}
+						else if (item.SixMonthReturnTWD == 0)
+						{
+							<span class="return-twd" style="display:none">@item.SixMonthReturnTWD%</span>
 						}
 						else
 						{
