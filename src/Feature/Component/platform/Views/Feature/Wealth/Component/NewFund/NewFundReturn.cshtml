@@ -78,6 +78,10 @@
 						{
 							<span class="o-fall">@item.PercentageChangeInFundPrice%</span>
 						}
+						else if (item.PercentageChangeInFundPrice == 0)
+						{
+							<span>@item.PercentageChangeInFundPrice%</span>
+						}
 						else
 						{
 							<span class="o-rise">@item.PercentageChangeInFundPrice%</span>
@@ -97,6 +101,10 @@
 						if (item.SixMonthReturnOriginalCurrency < 0)
 						{
 							<span class="o-fall">@item.SixMonthReturnOriginalCurrency%</span>
+						}
+						else if (item.SixMonthReturnOriginalCurrency == 0)
+						{
+							<span>@item.SixMonthReturnOriginalCurrency%</span>
 						}
 						else
 						{

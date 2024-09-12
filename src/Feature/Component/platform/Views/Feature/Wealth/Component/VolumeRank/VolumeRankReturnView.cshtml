@@ -50,6 +50,10 @@
 				{
 					<span class="o-fall">@item.DiscountPremium%</span>
 				}
+				else if (item.DiscountPremium == 0)
+				{
+					<span>@item.DiscountPremium%</span>
+				}
 				else
 				{
 					<span class="o-rise">@item.DiscountPremium%</span>

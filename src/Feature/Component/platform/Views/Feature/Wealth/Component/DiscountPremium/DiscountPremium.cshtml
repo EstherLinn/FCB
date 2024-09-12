@@ -319,7 +319,9 @@
 				<div class="c-cardTable__title" data-length="5">折溢價</div>
 				<div class="c-cardTable__content">
 					<% if (DiscountPremium.Value!=null) { %>
-					<% if (DiscountPremium.Key) { %>
+					<% if (DiscountPremium.Value == 0) { %>
+					<span><%= DiscountPremium.Text %>%</span>
+					<% } else if (DiscountPremium.Key) { %>
 					<span class="o-rise"><%= DiscountPremium.Text %>%</span>
 					<% } else { %>
 					<span class="o-fall"><%= DiscountPremium.Text %>%</span>
