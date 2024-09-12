@@ -293,7 +293,9 @@ namespace Feature.Wealth.Component.Repositories
 
         public IList<BondListDto> GetBondsList()
         {
-            string sql = @"SELECT
+            string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
+            string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
+            string sql = @$"SELECT
                            A.[BondCode]
                            ,A.[ISINCode]
                            ,A.[BondName]
@@ -319,8 +321,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,B.[MoodyCreditRating]
                            ,B.[FitchCreditRating]
                            ,B.[YieldRateYTM]
-                           FROM [BondList] AS A WITH (NOLOCK)
-                           LEFT JOIN [BondNav] AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)";
+                           FROM {BondList} AS A WITH (NOLOCK)
+                           LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)";
 
             var bonds = DbManager.Custom.ExecuteIList<BondListDto>(sql, null, CommandType.Text);
 
