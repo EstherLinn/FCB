@@ -106,7 +106,7 @@ namespace Feature.Wealth.Component.Repositories
 
             for (int i = 0; i < bonds.Count; i++)
             {
-                bonds[i] = MoreInfo(bonds[i], false);
+                bonds[i] = DataFormat(bonds[i], false);
             }
 
             return bonds;
@@ -177,7 +177,7 @@ namespace Feature.Wealth.Component.Repositories
             if (bond == null)
             {
                 GetBondClass();
-                bond = MoreInfo(bond, true);
+                bond = DataFormat(bond, true);
             }
 
             return bond;
@@ -212,7 +212,7 @@ namespace Feature.Wealth.Component.Repositories
             }
         }
 
-        private Bond MoreInfo(Bond bond, bool single)
+        private Bond DataFormat(Bond bond, bool single)
         {
             var now = DateTime.Now;
 
