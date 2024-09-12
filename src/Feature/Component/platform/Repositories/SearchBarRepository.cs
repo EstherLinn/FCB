@@ -338,13 +338,13 @@ namespace Feature.Wealth.Component.Repositories
 
             for (int i = 0; i < bonds.Count; i++)
             {
-                bonds[i] = MoreInfo(_bondHistoryPrices, bonds[i]);
+                bonds[i] = DataFormat(_bondHistoryPrices, bonds[i]);
             }
 
             return bonds;
         }
 
-        private BondListDto MoreInfo(IList<BondHistoryPrice> _bondHistoryPrices, BondListDto bond)
+        private BondListDto DataFormat(IList<BondHistoryPrice> _bondHistoryPrices, BondListDto bond)
         {
             var now = DateTime.Now;
 
@@ -389,7 +389,7 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             bond.UpsAndDownsMonth = bond.UpsAndDownsMonth.DecimalNumber(2);
-            bond.UpsAndDownsSeason = bond.UpsAndDownsSeason.DecimalNumber(2);
+
             return bond;
         }
 
