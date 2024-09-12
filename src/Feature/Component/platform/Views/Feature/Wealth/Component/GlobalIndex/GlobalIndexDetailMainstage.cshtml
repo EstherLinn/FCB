@@ -35,9 +35,16 @@
                                         <div class="c-numerical__title u-left@dt-only"><span>漲跌 / 漲跌幅</span></div>
                                         @if (Model.GlobalIndexDetail.UpOrDown)
                                         {
-                                            <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span class="o-rise"> @(Model.GlobalIndexDetail.Change) / @(Model.GlobalIndexDetail.ChangePercentage)</span></div>
+                                            if (Model.GlobalIndexDetail.Change == "0.00")
+                                            {
+                                                <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span> @(Model.GlobalIndexDetail.Change) / @(Model.GlobalIndexDetail.ChangePercentage)</span></div>
+                                            }
+                                            else
+                                            {
+                                                <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span class="o-rise"> @(Model.GlobalIndexDetail.Change) / @(Model.GlobalIndexDetail.ChangePercentage)</span></div>
+                                            }                                            
                                         }
-                                        @if (!Model.GlobalIndexDetail.UpOrDown)
+                                        else
                                         {
                                             <div class="c-numerical__content c-numerical__content--xl u-left@dt-only"><span class="o-fall">@(Model.GlobalIndexDetail.Change) / @(Model.GlobalIndexDetail.ChangePercentage)</span></div>
                                         }

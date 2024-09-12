@@ -11,9 +11,16 @@
     <td>
         @if (Model.UpOrDown)
         {
-            <span class="o-rise">@Model.Change</span>
+            if (Model.Change == "0.00")
+            {
+                <span>@Model.Change</span>
+            }
+            else
+            {
+                <span class="o-rise">@Model.Change</span>
+            }            
         }
-        @if (!Model.UpOrDown)
+        else
         {
             <span class="o-fall">@Model.Change.Replace("-", "")</span>
         }
@@ -21,9 +28,16 @@
     <td>
         @if (Model.UpOrDown)
         {
-            <span class="o-rise">@Model.ChangePercentage</span>
+            if (Model.ChangePercentage == "0.00%")
+            {
+                <span>@Model.ChangePercentage</span>
+            }
+            else
+            {
+                <span class="o-rise">@Model.ChangePercentage</span>
+            }            
         }
-        @if (!Model.UpOrDown)
+        else
         {
             <span class="o-fall">@Model.ChangePercentage.Replace("-", "")</span>
         }
