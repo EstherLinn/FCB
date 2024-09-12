@@ -97,7 +97,7 @@ namespace Feature.Wealth.Component.Repositories
                 vm.FundType = f.FormatFundType ?? string.Empty;
 
                 vm.DividendFrequencyName = f.DividendDistributionFrequency ?? string.Empty;
-
+                
                 //風險指標
                 vm.RiskRewardLevel = f.RiskRewardLevel ?? string.Empty;
                 vm.Sharpe = Round4(f.Sharpe);
@@ -118,6 +118,7 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     vm.InvestmentRegionName = [string.Empty];
                 }
+                vm.FeePostCollectionType = (f.FeePostCollectionType == "Y") ? "Y" : "N";
 
                 vm.value = f.ProductCode + " " + FullWidthToHalfWidth(f.FundName);
 
@@ -125,6 +126,7 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl() + "?id=" + f.ProductCode,
                     Purchase = vm.IsOnlineSubscriptionAvailability,
+                    AutoCompareButtonHtml = PublicHelpers.CompareButton(null, null, f.ProductCode, f.FundName, InvestTypeEnum.Fund, true).ToString(),
                     AutoFocusButtonHtml = PublicHelpers.FocusTag(null, null, f.ProductCode, f.FundName, InvestTypeEnum.Fund).ToString(),
                     AutoSubscribeButtonHtml = PublicHelpers.SubscriptionTag(null, null, f.ProductCode, f.FundName, InvestTypeEnum.Fund).ToString()
                 };
