@@ -326,6 +326,11 @@ namespace Feature.Wealth.Component.Repositories
 
             var bonds = DbManager.Custom.ExecuteIList<BondListDto>(sql, null, CommandType.Text);
 
+            if (bonds == null || bonds.Any() == false)
+            {
+                return new List<BondListDto>();
+            }
+
             var minDate = bonds
            .Where(b => !string.IsNullOrEmpty(b.Date))
            .OrderBy(b => b.Date)

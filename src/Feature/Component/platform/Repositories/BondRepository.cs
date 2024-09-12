@@ -88,6 +88,11 @@ namespace Feature.Wealth.Component.Repositories
 
             var bonds = this._dbConnection.Query<Bond>(sql)?.ToList() ?? new List<Bond>();
 
+            if (bonds == null || bonds.Any() == false)
+            {
+                return new List<Bond>();
+            }
+
             GetBondClass();
 
             var minDate = bonds
@@ -174,7 +179,7 @@ namespace Feature.Wealth.Component.Repositories
 
             var bond = this._dbConnection.Query<Bond>(sql, new { BondCode = bondCode })?.FirstOrDefault();
 
-            if (bond == null)
+            if (bond != null)
             {
                 GetBondClass();
                 bond = DataFormat(bond, true);
