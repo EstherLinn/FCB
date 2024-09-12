@@ -39,7 +39,7 @@ namespace Feature.Wealth.Component.Models.SearchBar
                 EtfDetailPageLink = EtfRelatedLinkSetting.GetETFDetailUrl(),
                 FundDetailPageLink = FundRelatedSettingModel.GetFundDetailsUrl(),
                 StructuredProductDetailPageLink = StructuredProductRelatedLinkSetting.GetStructuredProductDetailUrl(),
-                ForeignBondsDetailPageLink = BondRelatedLinkSetting.GetBondDetailUrl(),
+                ForeignBondDetailPageLink = BondRelatedLinkSetting.GetBondDetailUrl(),
                 ForeignStockDetailPageLink = USStockRelatedLinkSetting.GetUSStockDetailUrl()
             };
         }

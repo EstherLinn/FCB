@@ -417,19 +417,19 @@ namespace Feature.Wealth.Component.Repositories
             return null;
         }
 
-        public IEnumerable<ForeignBondsResult> MapperForeignBondsResult()
+        public IEnumerable<ForeignBondResult> MapperForeignBondsResult()
         {
             var collection = GetBondsList();
 
             var config = new TypeAdapterConfig();
-            config.ForType<BondListDto, ForeignBondsResult>()
+            config.ForType<BondListDto, ForeignBondResult>()
                 .AfterMapping((src, dest) =>
                 {
                     dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds).ToString();
                     dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds).ToString();
                 });
 
-            var result = collection.Adapt<IEnumerable<ForeignBondsResult>>(config);
+            var result = collection.Adapt<IEnumerable<ForeignBondResult>>(config);
             return result.OrderByDescending(i => i.UpsAndDownsMonth);
         }
 
