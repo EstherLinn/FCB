@@ -21,13 +21,13 @@ namespace Feature.Wealth.Component.Models.SiteProductSearch
         public List<StructuredProductResult> StructuredProducts { get; set; }
 
         /// <summary>
-        /// 國外債券
-        /// </summary>
-        public List<ForeignBondsResult> ForeignBonds { get; set; }
-
-        /// <summary>
         /// 國外股票
         /// </summary>
         public List<ForeignStockResult> ForeignStocks { get; set; }
+
+        /// <summary>
+        /// 國外債券
+        /// </summary>
+        public List<ForeignBondResult> ForeignBonds { get; set; }
     }
 }

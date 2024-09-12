@@ -75,7 +75,8 @@
                         Fund: [],
                         ETF: [],
                         SIP: [],
-                        FStock: []
+                        FStock: [],
+                        FBond: []
                     }
                 }
             }
@@ -469,8 +470,8 @@
                             this.paginator.setCurrentPage(1);
 
                             let isEmpty = result.length == 0;
-                            $(`[data-tab-panel-id="tab-3"] [data-filter-empty=${isEmpty}]`).show();
-                            $(`[data-tab-panel-id="tab-3"] [data-filter-empty=${!isEmpty}]`).hide();
+                            $(`[data-tab-panel-id="tab-5"] [data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-tab-panel-id="tab-5"] [data-filter-empty=${!isEmpty}]`).hide();
 
                             hideLoading();
                         },
@@ -579,8 +580,8 @@
                             this.paginator.setCurrentPage(1);
 
                             let isEmpty = result.length == 0;
-                            $(`[data-tab-panel-id="tab-4"] [data-filter-empty=${isEmpty}]`).show();
-                            $(`[data-tab-panel-id="tab-4"] [data-filter-empty=${!isEmpty}]`).hide();
+                            $(`[data-tab-panel-id="tab-3"] [data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-tab-panel-id="tab-3"] [data-filter-empty=${!isEmpty}]`).hide();
 
                             hideLoading();
                         },
@@ -643,6 +644,109 @@
                 });
 
                 $('#uid-view-perPage-fstock').on('change.pagesize', fnToFirstPage).sizebox();
+                $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
+
+                return fjs;
+            }
+
+            function initForeignBondFilterJS() {
+                var resultList = window.ProductSearch.Result.List.FBond;
+                var fjs = FilterJS(resultList, '#uid-fjs-fbond', {
+                    template: '#uid-template-fbond',
+                    search: {
+                        ele: '#uid-searchbox', fields: ['BondCode', 'BondName'],
+                        start_length: 2, bindEvent: false,
+                        multi: function () {
+                            let texts = [];
+                            $('[data-filter-tag="關鍵字"] .o-pickedTag__text').each(function (i, ele) {
+                                let matches = ele.innerHTML.match(/關鍵字\s+(.+)/);
+                                let text = matches && matches[1];
+                                texts.push(text);
+                            });
+                            return texts;
+                        }
+                    },
+                    pagination: {
+                        container: '#uid-pagination-fbond',
+                        paginationView: '#uid-template-pagination-fbond',
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, resultList.length],
+                            container: '#uid-perPage-fbond',
+                            perPageView: '#uid-template-perPage-fbond'
+                        }
+                    },
+                    callbacks: {
+                        afterFilter: function (result) {
+                            $('[data-uid-producttype="fbond"]').text(result.length);
+                            //totalCount();
+                            this.paginator.setCurrentPage(1);
+
+                            let isEmpty = result.length == 0;
+                            $(`[data-tab-panel-id="tab-4"] [data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-tab-panel-id="tab-4"] [data-filter-empty=${!isEmpty}]`).hide();
+
+                            hideLoading();
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
+                            $('[eh-compare]').trigger('exec');
+                            $('[eh-focus]').trigger('exec');
+                            $('[eh-subscription-type]').trigger('exec');
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: 'select#uid-sortbox-fbond' }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') {
+                            } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order == 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+                        }
+                    }
+                });
+
+                fjs.bindEvent('[data-filter-reset]', 'click.reset');
+                fjs.bindEvent('[data-tag-close]', 'click.tag');
+                fjs.bindEvent('[data-keyword-submit]', 'click.loading');
+
+                function fnScrollUp() {
+                    loading();
+                    $('#fbond_table').scrollPosition('scroll');
+                }
+
+                function fnToFirstPage() {
+                    loading();
+                    $('#fbond_table').scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
+
+                $containgerPagination = $('#uid-pagination-fbond');
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+
+                $('#uid-view-perPage-fbond').on('change.pagesize', fnToFirstPage).sizebox();
                 $('.l-mainstage input:not([data-keyword-input])').on('change.loading', loading);
 
                 return fjs;
@@ -722,7 +826,8 @@
                     ETF: null,
                     Fund: null,
                     SIP: null,
-                    FStock: null
+                    FStock: null,
+                    FBond: null
                 },
                 Result: new SearchResultRespList(),
                 SearchKeyword: new SearchKeywordDataRespList(),
@@ -737,7 +842,8 @@
                             ETF: data.ETFProducts,
                             Fund: data.FundProducts,
                             SIP: data.StructuredProducts,
-                            FStock: data.ForeignStocks
+                            FStock: data.ForeignStocks,
+                            FBond: data.ForeignBonds
                         };
 
                         if (data.ETFProducts) {
@@ -746,11 +852,14 @@
                         if (data.FundProducts) {
                             this.FJS.Fund = initFundFilterJS();
                         }
-                        if (data.FundProducts) {
+                        if (data.StructuredProducts) {
                             this.FJS.SIP = initSipFilterJS();
                         }
                         if (data.ForeignStocks) {
                             this.FJS.FStock = initForeignStockFilterJS();
+                        }
+                        if (data.ForeignBonds) {
+                            this.FJS.FBond = initForeignBondFilterJS();
                         }
 
                         this.GenerateSearchKeywordList();
@@ -820,6 +929,20 @@
                                     type: 'FStock',
                                     detailUrl: '@Model.SearchResultModel.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
                                     purchase: item.CanOnlineSubscription,
+                                    focusBtnHtml: item.FocusButtonAutoHtml,
+                                    subscribeBtnHtml: item.SubscribeButtonAutoHtml
+                                }
+                            };
+                            list.push(obj);
+                        });
+
+                        $.each(this.Result.List.FBond, function (i, item) {
+                            let obj = {
+                                value: item.FullName,
+                                data: {
+                                    type: 'FBond',
+                                    detailUrl: '@Model.SearchResultModel.ForeignBondDetailPageLink' + '?' + $.param({ id: item.BondCode }),
+                                    purchase: item.OpenToPublic == 'Y' && item.Listed == 'Y',
                                     focusBtnHtml: item.FocusButtonAutoHtml,
                                     subscribeBtnHtml: item.SubscribeButtonAutoHtml
                                 }
@@ -1125,6 +1248,62 @@
             });
 
             //#endregion Foreign Stock
+
+            //#region Foreign Bond
+
+            // table 排序功能
+            $('#fbond_table').on('click.sorting', '.o-sorting', function (e) {
+                e.preventDefault();
+                // 呼叫 loading
+                showLoading();
+                var $this = $(this);
+                var orderby = '';
+                if ($this.hasClass('is-asc')) {
+                    $this.removeClass('is-asc').addClass('is-desc');
+                    orderby = 'is-desc';
+                } else {
+                    $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                    $this.addClass('is-asc');
+                    orderby = 'is-asc';
+                }
+
+                // 連動 sortingbox
+                var $sortingbox = $('#uid-sortbox-fbond');
+                var sortingColumn = $this.data('sorting-column');
+                let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+
+                if ($option.length > 0) {
+                    $option.prop('selected', true);
+                    $sortingbox.trigger('change');
+                } else {
+                    $sortingbox.val(null).trigger('change');
+                }
+
+                // 因展示，使用 setTimeout 延遲關閉 loading
+                setTimeout(() => {
+                    // 關閉loading
+                    hideLoading();
+                }, 300);
+            });
+
+            // 手機版分頁排序功能
+            $('#uid-sortbox-fbond').on('change.sorting', function (e) {
+                let self = this;
+                let $self = $(this);
+
+                var sorting = $self.val();
+                var $linkTable = $('#fbond_table');
+                var sortingColumn = $('option:selected', self).data('sorting-column');
+                var orderby = $('option:selected', self).data('sorting-class');
+
+                // 連動 table
+                $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                console.log(`排序：${sorting}`);
+            });
+
+            //#endregion Foreign Bond
+
 
             window.ProductSearch.QueryList();
         });
