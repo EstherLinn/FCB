@@ -169,54 +169,69 @@
                         </div>
                     </div>
                     <div class="c-tab__panel" data-tab-panel-id="tab-status-3">
-                        <div class="l-table">
-                            <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
-                                <colgroup>
-                                    <col style="width: 1%;">
-                                    <col style="width: 1%;">
-                                    <col style="width: 2%;">
-                                    <col style="width: 1%;">
-                                    <col style="width: 1%;">
-                                </colgroup>
-                                <thead>
-                                    <tr class="u-nowrap">
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>預約日期</span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>預約時段</span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>電子信箱</span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>預約狀態</span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>預約明細</span>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody2">
-                                </tbody>
-                            </table>
-                            <div class="l-pagination">
-                                <div class="l-pagination__size" id="uid-perPage-2">
-                                </div>
-                                <div class="l-pagination__switch" id="uid-pagination-2">
+                        <div class="l-flex u-flex-col u-flex-gap-sm">
+                            <div class="l-flex__item u-right u-hidden@dt-only">
+                                <div class="o-sortingbox">
+                                    <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                    <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="consultationListTable2">
+                                        <option value="">排序</option>
+                                        <option value="預約狀態高至低" data-sorting-column="StatusCode" data-sorting-class="is-desc">預約狀態高至低</option>
+                                        <option value="預約狀態低至高" data-sorting-column="StatusCode" data-sorting-class="is-asc">預約狀態低至高</option>
+                                    </select>
                                 </div>
                             </div>
-                        </div>
+                            <div class="l-flex__item">
+                                <div class="l-table">
+                                    <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra" data-table-name="consultationListTable2" id="consultationListTable2">
+                                        <colgroup>
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 2%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr class="u-nowrap">
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>預約日期</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>預約時段</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>電子信箱</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>預約狀態</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="StatusCode"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>預約明細</span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody2">
+                                        </tbody>
+                                    </table>
+                                    <div class="l-pagination">
+                                        <div class="l-pagination__size" id="uid-perPage-2">
+                                        </div>
+                                        <div class="l-pagination__switch" id="uid-pagination-2">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                                
                     </div>
                 </div>
             </div>
@@ -612,8 +627,29 @@
             search: {},
             order: {
                 default_sort: 'asc',
-                sorts: [],
-                onSortEvent: function (f, e) { },
+                sorts: [
+                    { field: 'group1', ele: 'select[data-sorting-linkto="consultationListTable2"]' }
+                ],
+                onSortEvent: function (f, e) {
+                    let $self = $(this);
+                    if (e.type === 'click') {
+
+                    } else if (e.type === 'change') {
+                        let $selected = $self.find(':selected');
+                        let field = $selected.data('sorting-column');
+                        let order = $selected.data('sorting-class');
+                        f.field = field;
+                        if (!!order) {
+                            if (order === 'is-desc') {
+                                f.order = 'desc';
+                            } else if (order === 'is-asc') {
+                                f.order = 'asc';
+                            }
+                        } else {
+                            f.order = f.order === 'desc' ? 'asc' : 'desc';
+                        }
+                    }
+                },
             },
             pagination: {
                 //headerView: '#uid-filter-header',
@@ -629,6 +665,36 @@
                 }
             }
         });
+
+        $('#consultationListTable2').on('click.sorting', '.o-sorting', function (e) {
+            e.preventDefault();
+            // 呼叫 loading
+            window.loading('show');
+            var $this = $(this);
+            var orderby = '';
+            if ($this.hasClass('is-asc')) {
+                $this.removeClass('is-asc').addClass('is-desc');
+                orderby = 'is-desc';
+            } else {
+                $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                $this.addClass('is-asc');
+                orderby = 'is-asc';
+            }
+
+            // 連動 sortingbox
+            var tableName = $(this).closest('[data-table-name]').data('table-name');
+            var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+            var sortingColumn = $(this).data('sorting-column');
+            $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+            $sortingbox.trigger('change');
+
+            // 因展示，使用 setTimeout 延遲關閉 loading
+            setTimeout(() => {
+                // 關閉loading
+                window.loading('hide');
+            }, 300);
+        });
+
 
         function setPopup(id) {
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
