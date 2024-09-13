@@ -474,25 +474,29 @@
 
 			let int = '1';
 			var token = $('input[name="__RequestVerificationToken"]').val();
-
+			window.loading = () => 0;//蓋掉window.loading function
 			$.ajax({
 				url: '@ClientRoute.GenerateUrl(this, "TftfuCttShr", "GetAllFunds")',
 				type: 'POST',
 				data: { __RequestVerificationToken: token },
-			}).done(function (data, textStatus, jqXHR) {
-				initFilter(data, '1');
-
-				console.log(data);
-			}).fail(function (jqXHR, textStatus, errorThrown) {
-			}).always(function () {
-				window.loading('hide');
+				success: function (data) {
+					initFilter(data, '1');
+				},
+				complete: function () {
+					$('.c-loading').loading('hide');
+					window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
+				},
+				error: function (err) {
+					console.log(err);
+					$('.c-loading').loading('hide');
+				}
 			});
 
 			$.ajax({
 				url: '@ClientRoute.GenerateUrl(this, "TftfuCttShr", "GetAllFunds2")',
 				type: 'POST',
 				data: { __RequestVerificationToken: token },
-				success: (function (data) {
+				success: function (data) {
 					initFilter(data, '2');
 				},
 				complete: function() {
@@ -501,8 +505,8 @@
 				},
 				error: function (err) {
 					console.log(err);
-					$('.c-loading').loading('hide')
-				},
+					$('.c-loading').loading('hide');
+				}
 			});
 
 			function initFilter(data, int) {
