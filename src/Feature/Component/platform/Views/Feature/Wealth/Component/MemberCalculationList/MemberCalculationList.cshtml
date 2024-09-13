@@ -158,6 +158,14 @@
 
                     $('#downloadPdf').append(data.Description);
 
+                    var $imgElement = $('.c-calcLecture__img');
+
+                    if ($imgElement.length) {
+                        var src = $imgElement.attr('src');
+                        var cleanSrc = src.split('?')[0];
+                        $imgElement.attr('src', cleanSrc);
+                    }
+
                     for (var i = 0; i < data.EarningsChart.length; i++) {
                         $('#downloadPdf').append('<section class="c-section downloadPdf_Wrap"><div class="l-wrap">' + data.EarningsChart[i] + '</div></section>');
                     }
