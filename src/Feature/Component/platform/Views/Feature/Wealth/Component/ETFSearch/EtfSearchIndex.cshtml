@@ -562,6 +562,8 @@
                     formatResult: function (suggestion, currentValue) {
                         let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
 
+                        // 比較 按鈕
+                        let $compare = suggestion.data.compareBtnHtml ? suggestion.data.compareBtnHtml : '';
                         // like 按鈕
                         let $like = `<a ${suggestion.data.focusBtnHtml}></a>`;
                         // 申購按鈕
@@ -571,6 +573,7 @@
                                 <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
                                     <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
                                 </a>
+                                <div class="c-itemKeyword__collections">${$compare}</div>
                                 <div class="c-itemKeyword__collections">${$like}</div>
                                 ${$purchase}
                             </div>`;
@@ -620,6 +623,7 @@
                                     type: 'ETF',
                                     detailUrl: url + '?' + $.param({ id: item.FirstBankCode }),
                                     purchase: item.CanOnlineSubscription,
+                                    compareBtnHtml: item.CompareButtonHtml,
                                     focusBtnHtml: item.FocusButtonAutoHtml,
                                     subscribeBtnHtml: item.SubscribeButtonAutoHtml
                                 }
