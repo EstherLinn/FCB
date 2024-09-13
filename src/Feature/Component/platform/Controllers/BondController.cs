@@ -19,31 +19,27 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            var bondList = this._bondRepository.GetBondList();
-
-            return View("/Views/Feature/Wealth/Component/Bond/Bond.cshtml", CreateModel(item, bondList));
+            return View("/Views/Feature/Wealth/Component/Bond/Bond.cshtml", CreateModel(item));
         }
 
         public ActionResult UpDownRank()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            var bondList = this._bondRepository.GetBondList();
-
-            return View("/Views/Feature/Wealth/Component/Bond/UpDownRank.cshtml", CreateModel(item, bondList));
+            return View("/Views/Feature/Wealth/Component/Bond/UpDownRank.cshtml", CreateModel(item));
         }
 
         public ActionResult BondPrice()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            var bondList = this._bondRepository.GetBondList();
-
-            return View("/Views/Feature/Wealth/Component/Bond/BondPrice.cshtml", CreateModel(item, bondList));
+            return View("/Views/Feature/Wealth/Component/Bond/BondPrice.cshtml", CreateModel(item));
         }
 
-        protected BondModel CreateModel(Item item, IList<Bond> bondList)
+        protected BondModel CreateModel(Item item)
         {
+            var bondList = this._bondRepository.GetBondList();
+
             var hotKeywordTags = ItemUtils.GetMultiListValueItems(item, Template.Bond.Fields.HotKeyword);
             var keywords = hotKeywordTags.Select(f => ItemUtils.GetFieldValue(f, Template.BondTag.Fields.TagName)).ToList();
             var hotProductTags = ItemUtils.GetMultiListValueItems(item, Template.Bond.Fields.HotProduct);
@@ -73,26 +69,28 @@ namespace Feature.Wealth.Component.Controllers
                 }
             }
 
-            for (int i = 0; i < bondList.Count; i++)
+            if (bondList != null && bondList.Any())
             {
-                var bondCode = bondList[i].BondCode;
-                if (dic_docs.ContainsKey(bondCode))
+                for (int i = 0; i < bondList.Count; i++)
                 {
-                    bondList[i].DocPaths = dic_docs[bondList[i].BondCode];
-                }
-
-                if(bondList[i].DocPaths.Count > 0)
-                {
-                    var docString = string.Empty;
-
-                    foreach(var path in bondList[i].DocPaths)
+                    var bondCode = bondList[i].BondCode;
+                    if (dic_docs.ContainsKey(bondCode))
                     {
-                        docString += $@"<a href=""{path}"" target=""_blank"" class=""o-prefixLink o-prefixLink--pdf t-bold""></a>";
+                        bondList[i].DocPaths = dic_docs[bondList[i].BondCode];
                     }
 
-                    bondList[i].DocString = docString;
-                }
+                    if (bondList[i].DocPaths.Count > 0)
+                    {
+                        var docString = string.Empty;
 
+                        foreach (var path in bondList[i].DocPaths)
+                        {
+                            docString += $@"<a href=""{path}"" target=""_blank"" class=""o-prefixLink o-prefixLink--pdf t-bold""></a>";
+                        }
+
+                        bondList[i].DocString = docString;
+                    }
+                }
             }
 
             var model = new BondModel

@@ -251,7 +251,7 @@ namespace Feature.Wealth.Component.Repositories
 
             var bonds = this._repository.GetVisitRecords(query, "id");
 
-            if (bonds == null || !bonds.Any())
+            if (bonds == null || !bonds.Any() || bondData == null || bondData.Any())
             {
                 return new List<Bond>();
             }
