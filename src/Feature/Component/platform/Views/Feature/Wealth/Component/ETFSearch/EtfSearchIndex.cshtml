@@ -615,7 +615,7 @@
                     if (Object.keys(this.Result.List).length != 0) {
                         $.each(this.Result.List, function (i, item) {
                             let obj = {
-                                value: item.FirstBankCode + ' ' + item.ETFName,
+                                value: item.ExchangeCode.Value + ' ' + item.FirstBankCode + ' ' + item.ETFName,
                                 data: {
                                     type: 'ETF',
                                     detailUrl: url + '?' + $.param({ id: item.FirstBankCode }),
