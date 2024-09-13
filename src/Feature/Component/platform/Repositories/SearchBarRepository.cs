@@ -16,6 +16,7 @@ using Sitecore.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Text;
@@ -295,31 +296,16 @@ namespace Feature.Wealth.Component.Repositories
         {
             string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
             string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
+
             string sql = @$"SELECT
                            A.[BondCode]
-                           ,A.[ISINCode]
                            ,A.[BondName]
-                           ,A.[Currency]
-                           ,A.[CurrencyCode]
                            ,A.[InterestRate]
-                           ,A.[PaymentFrequency]
-                           ,A.[RiskLevel]
-                           ,A.[SalesTarget]
-                           ,A.[MinSubscriptionForeign]
-                           ,A.[MinSubscriptionNTD]
                            ,A.[MinIncrementAmount]
-                           ,A.[RedemptionDateByIssuer]
-                           ,A.[Issuer]
-                           ,A.[OpenToPublic]
-                           ,A.[Listed]
                            ,B.[SubscriptionFee]
-                           ,B.[RedemptionFee]                           
-                           ,B.[ReservedColumn]
-                           ,B.[Note]
+                           ,B.[RedemptionFee]
+                           ,B.[Date]
                            ,B.[PreviousInterest]
-                           ,B.[SPCreditRating]
-                           ,B.[MoodyCreditRating]
-                           ,B.[FitchCreditRating]
                            ,B.[YieldRateYTM]
                            FROM {BondList} AS A WITH (NOLOCK)
                            LEFT JOIN {BondNav} AS B WITH (NOLOCK) ON A.BondCode = SUBSTRING(B.BondCode, 1, 4)";
@@ -337,7 +323,8 @@ namespace Feature.Wealth.Component.Repositories
            .Select(b => b.Date).FirstOrDefault();
 
             IList<BondHistoryPrice> _bondHistoryPrices = new List<BondHistoryPrice>();
-            if (DateTime.TryParse(minDate, out var fourMonthAgo))
+
+            if (DateTime.TryParseExact(minDate, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var fourMonthAgo))
             {
                 fourMonthAgo = fourMonthAgo.AddMonths(-1).AddDays(-10);
                 _bondHistoryPrices = new BondRepository().GetBondHistoryPriceByDate(fourMonthAgo.ToString("yyyyMMdd"));
@@ -353,43 +340,7 @@ namespace Feature.Wealth.Component.Repositories
 
         private BondListDto DataFormat(IList<BondHistoryPrice> _bondHistoryPrices, BondListDto bond)
         {
-            var now = DateTime.Now;
-
-            bond.InterestRate = bond.InterestRate.DecimalNumber(4);
-            bond.SubscriptionFee = bond.SubscriptionFee.DecimalNumber(2);
-            bond.RedemptionFee = bond.RedemptionFee.DecimalNumber(2);
-            bond.PreviousInterest = bond.PreviousInterest.DecimalNumber(4);
-            bond.YieldRateYTM = bond.YieldRateYTM.DecimalNumber(2);
-
-            if (DateTime.TryParse(bond.MaturityDate, out var d))
-            {
-                var diff = d.Subtract(now).TotalDays;
-                if (diff > 0)
-                {
-                    bond.MaturityYear = decimal.Parse((diff / 365).ToString());
-                }
-                else
-                {
-                    bond.MaturityYear = 0;
-                }
-            }
-            else
-            {
-                bond.MaturityYear = 0;
-            }
-
-            bond.MaturityYear = bond.MaturityYear.DecimalNumber(2);
-
-            if (int.TryParse(bond.MinIncrementAmount, out var min))
-            {
-                bond.MinIncrementAmountNumber = min;
-            }
-            else
-            {
-                bond.MinIncrementAmountNumber = 0;
-            }
-
-            if (DateTime.TryParse(bond.Date, out var oneMonthAgo))
+            if (DateTime.TryParseExact(bond.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var oneMonthAgo))
             {
                 oneMonthAgo = oneMonthAgo.AddMonths(-1);
                 bond.UpsAndDownsMonth = GetUpsAndDowns(_bondHistoryPrices, bond, oneMonthAgo.ToString("yyyyMMdd"));
