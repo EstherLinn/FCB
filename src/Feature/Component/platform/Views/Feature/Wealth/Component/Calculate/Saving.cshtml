@@ -3054,6 +3054,11 @@
             function renderChartsRevenues(chartsRevenues) {
                 chartsRevenues.forEach(item => {
                     Highcharts.chart(item.id, {
+                        boost: {
+                            useGPUTranslations: true,
+                            // 使用 GPU 提升效能
+                            seriesThreshold: 1 // 當有 1 個以上系列時啟用 boost
+                        },
                         chart: {
                             type: 'pie'
                         },
@@ -3097,6 +3102,9 @@
                                         }
                                     }
                                 }
+                            },
+                            series: {
+                                turboThreshold: 0 // 停用 turboThreshold，讓 Highcharts 不限制資料點數
                             }
                         },
                         series: [{

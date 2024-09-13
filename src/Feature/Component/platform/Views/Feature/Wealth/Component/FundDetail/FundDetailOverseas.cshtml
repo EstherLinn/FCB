@@ -3870,6 +3870,11 @@
                                 total.y = (total.y + selfData[0][rateField]) / data.body.length + 1;
                                 const zh = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
                                 chart = Highcharts.chart('riskChart', {
+                                    boost: {
+                                        useGPUTranslations: true,
+                                        // 使用 GPU 提升效能
+                                        seriesThreshold: 1 // 當有 1 個以上系列時啟用 boost
+                                    },
                                     chart: {
                                         type: "scatter",
                                         zooming: {
@@ -3877,7 +3882,15 @@
                                                 enabled: false
                                             }
                                         },
-                                        height: 446
+                                        height: 446,
+                                        events: {
+                                        render() {
+                                            const svgs = this.container.querySelectorAll('svg');
+                                            svgs.forEach(function(svg) {
+                                                svg.setAttribute('shape-rendering', 'geometricPrecision');
+                                            });
+                                        }
+                                    }
                                     },
                                     credits: {
                                         enabled: false
