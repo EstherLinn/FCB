@@ -846,11 +846,11 @@
                             FBond: data.ForeignBonds
                         };
 
-                        if (data.ETFProducts) {
-                            this.FJS.ETF = initEtfFilterJS();
-                        }
                         if (data.FundProducts) {
                             this.FJS.Fund = initFundFilterJS();
+                        }
+                        if (data.ETFProducts) {
+                            this.FJS.ETF = initEtfFilterJS();
                         }
                         if (data.StructuredProducts) {
                             this.FJS.SIP = initSipFilterJS();
@@ -883,12 +883,13 @@
                     let list = [];
 
                     if (Object.keys(this.Result.List).length != 0) {
-                        $.each(this.Result.List.ETF, function (i, item) {
+
+                        $.each(this.Result.List.Fund, function (i, item) {
                             let obj = {
-                                value: item.ExchangeCode.Value + ' ' + item.FirstBankCode + ' ' + item.ETFName,
+                                value: item.ProductCode + ' ' + item.ProductName,
                                 data: {
-                                    type: 'ETF',
-                                    detailUrl: '@Model.SearchResultModel.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
+                                    type: 'Fund',
+                                    detailUrl: '@Model.SearchResultModel.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
                                     purchase: item.CanOnlineSubscription,
                                     focusBtnHtml: item.FocusButtonAutoHtml,
                                     subscribeBtnHtml: item.SubscribeButtonAutoHtml
@@ -897,12 +898,12 @@
                             list.push(obj);
                         });
 
-                        $.each(this.Result.List.Fund, function (i, item) {
+                        $.each(this.Result.List.ETF, function (i, item) {
                             let obj = {
-                                value: item.ProductCode + ' ' + item.ProductName,
+                                value: item.ExchangeCode.Value + ' ' + item.FirstBankCode + ' ' + item.ETFName,
                                 data: {
-                                    type: 'Fund',
-                                    detailUrl: '@Model.SearchResultModel.FundDetailPageLink' + '?' + $.param({ id: item.ProductCode }),
+                                    type: 'ETF',
+                                    detailUrl: '@Model.SearchResultModel.EtfDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
                                     purchase: item.CanOnlineSubscription,
                                     focusBtnHtml: item.FocusButtonAutoHtml,
                                     subscribeBtnHtml: item.SubscribeButtonAutoHtml
