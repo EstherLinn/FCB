@@ -773,9 +773,19 @@
                         fjs1.removeRecords({ ScheduleID: id });
                     }
 
+                    var c = consultSchedules.find(c => c.ScheduleID == id);
+                    c.StatusCode = "3";
+                    fjs2.addRecords([c], true);
+
                     var event = calendar.getEventById(id);
                     if (event) {
-                        event.remove();
+                        event.setProp("title", "歷史紀錄");
+                        event.setExtendedProp("type", "history");
+                        event.setExtendedProp("categoryColor", "#c3c3c3ff");
+                        event.setExtendedProp("popupColor", "#9C9C9C");
+                        event.setExtendedProp("release", false);
+
+                        calendar.render();
                     }
                 }
                 else {
