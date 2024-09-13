@@ -51,7 +51,7 @@ namespace Feature.Wealth.Component.Models.USStock
         public List<string> HotProductTags { get; set; } = new List<string>();
         public List<string> Discount { get; set; } = new List<string>();
         /// <summary>
-        /// 同 FullName 但是是 Autocomplete 要用的
+        /// Autocomplete 要用的 FundCode + FullName
         /// </summary>
         public string value { get; set; }
         public bool IsLogin { get; set; }

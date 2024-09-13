@@ -27,7 +27,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,A.[EnglishName]
                            ,A.[ChineseName]
                            ,A.[FirstBankCode] + ' ' + A.[ChineseName] + ' ' + A.[EnglishName] [FullName]
-                           ,A.[FirstBankCode] + ' ' + A.[ChineseName] + ' ' + A.[EnglishName] [value]
+                           ,A.[FundCode] + ' ' + A.[FirstBankCode] + ' ' + A.[ChineseName] + ' ' + A.[EnglishName] [value]
                            ,REPLACE(CONVERT(char(10), A.[DataDate],126),'-','/') [DataDate]
                            ,A.[ClosingPrice]
                            ,CONVERT(nvarchar, CONVERT(MONEY, A.[ClosingPrice]), 1) [ClosingPriceText]
