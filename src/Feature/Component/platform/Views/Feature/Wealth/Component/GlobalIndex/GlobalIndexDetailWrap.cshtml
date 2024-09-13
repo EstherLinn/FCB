@@ -38,7 +38,14 @@
                                     }
                                     else if (!Model.GlobalIndexDetail.DailyReturn.Contains('-'))
                                     {
-                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.DailyReturn</span></div>
+                                        if(Model.GlobalIndexDetail.DailyReturn == "0.00%")
+                                        {
+                                            <div class="c-numerical__content"><span>@Model.GlobalIndexDetail.DailyReturn</span></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.DailyReturn</span></div>
+                                        }                                        
                                     }
                                     else if (Model.GlobalIndexDetail.DailyReturn.Contains('-'))
                                     {
@@ -55,7 +62,14 @@
                                     }
                                     else if (!Model.GlobalIndexDetail.WeeklyReturn.Contains('-'))
                                     {
-                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.WeeklyReturn</span></div>
+                                        if(Model.GlobalIndexDetail.WeeklyReturn == "0.00%")
+                                        {
+                                            <div class="c-numerical__content"><span >@Model.GlobalIndexDetail.WeeklyReturn</span></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.WeeklyReturn</span></div>
+                                        }                                        
                                     }
                                     else if (Model.GlobalIndexDetail.WeeklyReturn.Contains('-'))
                                     {
@@ -72,7 +86,14 @@
                                     }
                                     else if (!Model.GlobalIndexDetail.OneMonthReturn.Contains('-'))
                                     {
-                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.OneMonthReturn</span></div>
+                                        if(Model.GlobalIndexDetail.OneMonthReturn == "0.00%")
+                                        {
+                                            <div class="c-numerical__content"><span>@Model.GlobalIndexDetail.OneMonthReturn</span></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.OneMonthReturn</span></div>
+                                        }                                        
                                     }
                                     else if (Model.GlobalIndexDetail.OneMonthReturn.Contains('-'))
                                     {
@@ -89,7 +110,15 @@
                                     }
                                     else if (!Model.GlobalIndexDetail.ThreeMonthReturn.Contains('-'))
                                     {
-                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.ThreeMonthReturn</span></div>
+                                        if(Model.GlobalIndexDetail.ThreeMonthReturn == "0.00%")
+                                        {
+                                            <div class="c-numerical__content"><span>@Model.GlobalIndexDetail.ThreeMonthReturn</span></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.ThreeMonthReturn</span></div>
+                                        }
+                                        
                                     }
                                     else if (Model.GlobalIndexDetail.ThreeMonthReturn.Contains('-'))
                                     {
@@ -106,7 +135,14 @@
                                     }
                                     else if (!Model.GlobalIndexDetail.SixMonthReturn.Contains('-'))
                                     {
-                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.SixMonthReturn</span></div>
+                                        if(Model.GlobalIndexDetail.SixMonthReturn == "0.00%")
+                                        {
+                                            <div class="c-numerical__content"><span>@Model.GlobalIndexDetail.SixMonthReturn</span></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.SixMonthReturn</span></div>
+                                        }                                        
                                     }
                                     else if (Model.GlobalIndexDetail.SixMonthReturn.Contains('-'))
                                     {
@@ -123,7 +159,14 @@
                                     }
                                     else if (!Model.GlobalIndexDetail.OneYearReturn.Contains('-'))
                                     {
-                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.OneYearReturn</span></div>
+                                        if(Model.GlobalIndexDetail.OneYearReturn == "0.00%")
+                                        {
+                                            <div class="c-numerical__content"><span>@Model.GlobalIndexDetail.OneYearReturn</span></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.OneYearReturn</span></div>
+                                        }                                        
                                     }
                                     else if (Model.GlobalIndexDetail.OneYearReturn.Contains('-'))
                                     {
@@ -140,7 +183,14 @@
                                     }
                                     else if (!Model.GlobalIndexDetail.YeartoDateReturn.Contains('-'))
                                     {
-                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.YeartoDateReturn</span></div>
+                                        if(Model.GlobalIndexDetail.YeartoDateReturn == "0.00%")
+                                        {
+                                            <div class="c-numerical__content"><span>@Model.GlobalIndexDetail.YeartoDateReturn</span></div>
+                                        }
+                                        else
+                                        {
+                                           <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.YeartoDateReturn</span></div> 
+                                        }                                        
                                     }
                                     else if (Model.GlobalIndexDetail.YeartoDateReturn.Contains('-'))
                                     {
@@ -157,7 +207,14 @@
                                     }
                                     else if (!Model.GlobalIndexDetail.ThreeYearReturn.Contains('-'))
                                     {
-                                        <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.ThreeYearReturn</span></div>
+                                        if(Model.GlobalIndexDetail.ThreeYearReturn == "0.00%")
+                                        {
+                                            <div class="c-numerical__content"><span>@Model.GlobalIndexDetail.ThreeYearReturn</span></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="c-numerical__content"><span class="o-rise">@Model.GlobalIndexDetail.ThreeYearReturn</span></div>
+                                        }                                        
                                     }
                                     else if (Model.GlobalIndexDetail.ThreeYearReturn.Contains('-'))
                                     {
@@ -712,73 +769,89 @@
             </div>
         </td>
         <td>
-            <% if (typeof d1 == "number" && !isNaN(d1) && d1 >= 0) { %>
+            <% if (typeof d1 == "number" && !isNaN(d1) && d1 > 0) { %>
                 <span class="o-rise"><%= d1.toFixed(2) %>%</span>
             <% } else if (typeof d1 == "number" && !isNaN(d1) && d1 < 0) { %>
                 <span class="o-fall"><%= Math.abs(d1).toFixed(2) %>%</span>
+            <% } else if (typeof d1 == "number" && !isNaN(d1) && d1 == 0) { %>
+                <span><%= d1.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof d7 == "number" && !isNaN(d7) && d7 >= 0) { %>
+            <% if (typeof d7 == "number" && !isNaN(d7) && d7 > 0) { %>
                 <span class="o-rise"><%= d7.toFixed(2) %>%</span>
             <% } else if (typeof d7 == "number" && !isNaN(d7) && d7 < 0) { %>
                 <span class="o-fall"><%= Math.abs(d7).toFixed(2) %>%</span>
+            <% } else if (typeof d7 == "number" && !isNaN(d7) && d7 == 0) { %>
+                <span><%= d7.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof m1 == "number" && !isNaN(m1) && m1 >= 0) { %>
+            <% if (typeof m1 == "number" && !isNaN(m1) && m1 > 0) { %>
                 <span class="o-rise"><%= m1.toFixed(2) %>%</span>
             <% } else if (typeof m1 == "number" && !isNaN(m1) && m1 < 0) { %>
                 <span class="o-fall"><%= Math.abs(m1).toFixed(2) %>%</span>
+            <% } else if (typeof m1 == "number" && !isNaN(m1) && m1 == 0) { %>
+                <span><%= m1.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof m3 == "number" && !isNaN(m3) && m3 >= 0) { %>
+            <% if (typeof m3 == "number" && !isNaN(m3) && m3 > 0) { %>
                 <span class="o-rise"><%= m3.toFixed(2) %>%</span>
             <% } else if (typeof m3 == "number" && !isNaN(m3) && m3 < 0) { %>
                 <span class="o-fall"><%= Math.abs(m3).toFixed(2) %>%</span>
+            <% } else if (typeof m3 == "number" && !isNaN(m3) && m3 == 0) { %>
+                <span><%= m3.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof m6 == "number" && !isNaN(m6) && m6 >= 0) { %>
+            <% if (typeof m6 == "number" && !isNaN(m6) && m6 > 0) { %>
                 <span class="o-rise"><%= m6.toFixed(2) %>%</span>
             <% } else if (typeof m6 == "number" && !isNaN(m6) && m6 < 0) { %>
                 <span class="o-fall"><%= Math.abs(m6).toFixed(2) %>%</span>
+            <% } else if (typeof m6 == "number" && !isNaN(m6) && m6 == 0) { %>
+                <span><%= m6.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof y1 == "number" && !isNaN(y1) && y1 >= 0) { %>
+            <% if (typeof y1 == "number" && !isNaN(y1) && y1 > 0) { %>
                 <span class="o-rise"><%= y1.toFixed(2) %>%</span>
             <% } else if (typeof y1 == "number" && !isNaN(y1) && y1 < 0) { %>
                 <span class="o-fall"><%= Math.abs(y1).toFixed(2) %>%</span>
+            <% } else if (typeof y1 == "number" && !isNaN(y1) && y1 == 0) { %>
+                <span><%= y1.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof ytd == "number" && !isNaN(ytd) && ytd >= 0) { %>
+            <% if (typeof ytd == "number" && !isNaN(ytd) && ytd > 0) { %>
                 <span class="o-rise"><%= ytd.toFixed(2) %>%</span>
             <% } else if (typeof ytd == "number" && !isNaN(ytd) && ytd < 0) { %>
                 <span class="o-fall"><%= Math.abs(ytd).toFixed(2) %>%</span>
+            <% } else if (typeof ytd == "number" && !isNaN(ytd) && ytd == 0) { %>
+                <span><%= ytd.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof y3 == "number" && !isNaN(y3) && y3 >= 0) { %>
+            <% if (typeof y3 == "number" && !isNaN(y3) && y3 > 0) { %>
                 <span class="o-rise"><%= y3.toFixed(2) %>%</span>
             <% } else if (typeof y3 == "number" && !isNaN(y3) && y3 < 0) { %>
                 <span class="o-fall"><%= Math.abs(y3).toFixed(2) %>%</span>
+            <% } else if (typeof y3 == "number" && !isNaN(y3) && y3 == 0) { %>
+                <span><%= y3.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
@@ -798,73 +871,89 @@
             </div>
         </td>
         <td>
-            <% if (typeof d1 == "number" && !isNaN(d1) && d1 >= 0) { %>
+            <% if (typeof d1 == "number" && !isNaN(d1) && d1 > 0) { %>
                 <span class="o-rise"><%= d1.toFixed(2) %>%</span>
             <% } else if (typeof d1 == "number" && !isNaN(d1) && d1 < 0) { %>
                 <span class="o-fall"><%= Math.abs(d1).toFixed(2) %>%</span>
+            <% } else if (typeof d1 == "number" && !isNaN(d1) && d1 == 0) { %>
+                <span><%= d1.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof d7 == "number" && !isNaN(d7) && d7 >= 0) { %>
+            <% if (typeof d7 == "number" && !isNaN(d7) && d7 > 0) { %>
                 <span class="o-rise"><%= d7.toFixed(2) %>%</span>
             <% } else if (typeof d7 == "number" && !isNaN(d7) && d7 < 0) { %>
                 <span class="o-fall"><%= Math.abs(d7).toFixed(2) %>%</span>
+            <% } else if (typeof d7 == "number" && !isNaN(d7) && d7 == 0) { %>
+                <span><%= d7.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof m1 == "number" && !isNaN(m1) && m1 >= 0) { %>
+            <% if (typeof m1 == "number" && !isNaN(m1) && m1 > 0) { %>
                 <span class="o-rise"><%= m1.toFixed(2) %>%</span>
             <% } else if (typeof m1 == "number" && !isNaN(m1) && m1 < 0) { %>
                 <span class="o-fall"><%= Math.abs(m1).toFixed(2) %>%</span>
+            <% } else if (typeof m1 == "number" && !isNaN(m1) && m1 == 0) { %>
+                <span><%= m1.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof m3 == "number" && !isNaN(m3) && m3 >= 0) { %>
+            <% if (typeof m3 == "number" && !isNaN(m3) && m3 > 0) { %>
                 <span class="o-rise"><%= m3.toFixed(2) %>%</span>
             <% } else if (typeof m3 == "number" && !isNaN(m3) && m3 < 0) { %>
                 <span class="o-fall"><%= Math.abs(m3).toFixed(2) %>%</span>
+            <% } else if (typeof m3 == "number" && !isNaN(m3) && m3 == 0) { %>
+                <span><%= m3.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof m6 == "number" && !isNaN(m6) && m6 >= 0) { %>
+            <% if (typeof m6 == "number" && !isNaN(m6) && m6 > 0) { %>
                 <span class="o-rise"><%= m6.toFixed(2) %>%</span>
             <% } else if (typeof m6 == "number" && !isNaN(m6) && m6 < 0) { %>
                 <span class="o-fall"><%= Math.abs(m6).toFixed(2) %>%</span>
+            <% } else if (typeof m6 == "number" && !isNaN(m6) && m6 == 0) { %>
+                <span><%= m6.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof y1 == "number" && !isNaN(y1) && y1 >= 0) { %>
+            <% if (typeof y1 == "number" && !isNaN(y1) && y1 > 0) { %>
                 <span class="o-rise"><%= y1.toFixed(2) %>%</span>
             <% } else if (typeof y1 == "number" && !isNaN(y1) && y1 < 0) { %>
                 <span class="o-fall"><%= Math.abs(y1).toFixed(2) %>%</span>
+            <% } else if (typeof y1 == "number" && !isNaN(y1) && y1 == 0) { %>
+                <span><%= y1.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof ytd == "number" && !isNaN(ytd) && ytd >= 0) { %>
+            <% if (typeof ytd == "number" && !isNaN(ytd) && ytd > 0) { %>
                 <span class="o-rise"><%= ytd.toFixed(2) %>%</span>
             <% } else if (typeof ytd == "number" && !isNaN(ytd) && ytd < 0) { %>
                 <span class="o-fall"><%= Math.abs(ytd).toFixed(2) %>%</span>
+            <% } else if (typeof ytd == "number" && !isNaN(ytd) && ytd == 0) { %>
+                <span><%= ytd.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>
         </td>
         <td>
-            <% if (typeof y3 == "number" && !isNaN(y3) && y3 >= 0) { %>
+            <% if (typeof y3 == "number" && !isNaN(y3) && y3 > 0) { %>
                 <span class="o-rise"><%= y3.toFixed(2) %>%</span>
             <% } else if (typeof y3 == "number" && !isNaN(y3) && y3 < 0) { %>
                 <span class="o-fall"><%= Math.abs(y3).toFixed(2) %>%</span>
+            <% } else if (typeof y3 == "number" && !isNaN(y3) && y3 == 0) { %>
+                <span><%= y3.toFixed(2) %>%</span>
             <% } else { %>
                 <span>-</span>
             <% } %>

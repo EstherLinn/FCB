@@ -13,10 +13,18 @@
                     <span class="t-small">
                         @if (Model.UpOrDown)
                         {
-                            <span class="t-rise">漲跌幅</span>
-                            <span class="o-rise">@Model.ChangePercentage</span>
+                            if (Model.ChangePercentage == "0.00%")
+                            {
+                                <span>漲跌幅</span>
+                                <span>@Model.ChangePercentage</span>
+                            }
+                            else
+                            {
+                                <span class="t-rise">漲跌幅</span>
+                                <span class="o-rise">@Model.ChangePercentage</span>
+                            }                            
                         }
-                        @if (!Model.UpOrDown)
+                        else
                         {
                             <span class="t-fall">漲跌幅</span>
                             <span class="o-fall">@Model.ChangePercentage</span>
@@ -28,9 +36,16 @@
                     <!-- [data-chart="mini"]: charts圖表，參考下方script邏輯 -->
                     @if (Model.UpOrDown)
                     {
-                        <div id="@Model.IndexCode" class="o-charts o-charts--rise" data-chart="mini"></div>
+                        if (Model.ChangePercentage == "0.00%")
+                        {
+                            <div id="@Model.IndexCode" class="o-charts" data-chart="mini"></div>
+                        }
+                        else
+                        {
+                            <div id="@Model.IndexCode" class="o-charts o-charts--rise" data-chart="mini"></div>
+                        }
                     }
-                    @if (!Model.UpOrDown)
+                    else
                     {
                         <div id="@Model.IndexCode" class="o-charts o-charts--fall" data-chart="mini"></div>
                     }
