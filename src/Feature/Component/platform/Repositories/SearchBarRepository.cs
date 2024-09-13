@@ -3,6 +3,7 @@ using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Search;
 using Feature.Wealth.Component.Models.FundSearch;
 using Feature.Wealth.Component.Models.Invest;
+using Feature.Wealth.Component.Models.SearchBar;
 using Feature.Wealth.Component.Models.SiteProductSearch;
 using Feature.Wealth.Component.Models.SiteProductSearch.Product;
 using Feature.Wealth.Component.Models.StructuredProduct;
@@ -41,7 +42,7 @@ namespace Feature.Wealth.Component.Repositories
                     FundProducts = MapperFundResult()?.ToList(),
                     ETFProducts = MapperETFResult()?.ToList(),
                     ForeignStocks = MapperForeignStockResult()?.ToList(),
-                    ForeignBonds = MapperForeignBondsResult()?.ToList(),
+                    ForeignBonds = MapperForeignBondsResult()?.OrderByDescending(i => i.UpsAndDownsMonth).ToList(),
                     StructuredProducts = MapperStructuredProductResult()?.ToList(),
                 };
                 _cache.Set(SearchBarCache, product, new CommonRepository().GetCacheExpireTime(Settings.GetSetting(CacheTime)));
@@ -380,7 +381,7 @@ namespace Feature.Wealth.Component.Repositories
             var collection = GetBondsList();
 
             var config = new TypeAdapterConfig();
-            config.ForType<BondListDto, ForeignBondResult>()
+            config.ForType<BondListDto, ForeignBondsResult>()
                 .AfterMapping((src, dest) =>
                 {
                     dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds).ToString();
@@ -388,7 +389,7 @@ namespace Feature.Wealth.Component.Repositories
                 });
 
             var result = collection.Adapt<IEnumerable<ForeignBondResult>>(config);
-            return result.OrderByDescending(i => i.UpsAndDownsMonth);
+            return result;
         }
 
         #endregion 國外債券
