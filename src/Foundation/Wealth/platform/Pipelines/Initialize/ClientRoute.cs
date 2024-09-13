@@ -11,6 +11,7 @@ namespace Foundation.Wealth.Pipelines.Initialize
         protected override void Register(RouteCollection routes)
         {
             routes.MapRoute(this.RouteName, "api/client/{controller}/{action}", new { param = UrlParameter.Optional });
+            routes.MapRoute("Services", "wealthapi/services/{controller}/{action}", new { param = UrlParameter.Optional });
         }
     }
 }
