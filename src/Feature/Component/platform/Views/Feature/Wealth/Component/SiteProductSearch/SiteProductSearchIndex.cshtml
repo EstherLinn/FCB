@@ -924,7 +924,7 @@
 
                         $.each(this.Result.List.FStock, function (i, item) {
                             let obj = {
-                                value: item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
+                                value: item.FundCodePair.Key + ' ' + item.FirstBankCode + ' ' + item.ChineseName + ' ' + item.EnglishName,
                                 data: {
                                     type: 'FStock',
                                     detailUrl: '@Model.SearchResultModel.ForeignStockDetailPageLink' + '?' + $.param({ id: item.FirstBankCode }),
