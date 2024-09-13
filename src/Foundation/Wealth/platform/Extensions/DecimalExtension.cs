@@ -10,7 +10,7 @@ namespace Foundation.Wealth.Extensions
         /// <param name="number"></param>
         /// <param name="dot"></param>
         /// <returns></returns>
-        public static decimal? DecimalNumber(this decimal? number, int dot = 2, bool needAbs = true)
+        public static decimal? DecimalNumber(this decimal? number, int dot = 2, bool needAbs = false)
         {
             if (number.Equals(null))
             {
