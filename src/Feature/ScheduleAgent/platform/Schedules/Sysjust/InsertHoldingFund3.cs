@@ -35,7 +35,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                         _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
-                        _repository.BulkInsertToDatabase(datas, tableName + "_History", "Sector", "FirstBankCode", "Date", fileName, startTime);
+                        _repository.BulkInsertToDatabase(datas, tableName + "_History", "FirstBankCode", "Date", "Sector", fileName, startTime);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                         etlService.FinishJob(fileName, startTime);
                     }

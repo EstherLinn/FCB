@@ -23,7 +23,7 @@ namespace Foundation.Wealth.Helper
 
                 //查sp或function在sql裡面return table名稱
                 string sql = """
-                            SELECT Name
+                            SELECT *
                             FROM [SignalStatus] WITH (NOLOCK)
                             WHERE Number = @number
                             """;
