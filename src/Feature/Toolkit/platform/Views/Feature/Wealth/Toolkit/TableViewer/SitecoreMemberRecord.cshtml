@@ -1,11 +1,11 @@
 ﻿@using Foundation.Wealth.Helper;
-@model Feature.Wealth.Toolkit.Models.TableViewer.UserRecordModel
+@model Feature.Wealth.Toolkit.Models.TableViewer.SitecoreMemberRecord.SitecoreMemberRecordModel
 <script>
-    document.title = '@ViewBag.Title Usage log';
+    document.title = '@ViewBag.Title Member Usage log';
 
     var method = {
         select: {
-            api: '@ClientRoute.GenerateUrl(this, "TableViewer", "GetUserRecord")',
+            api: '@ClientRoute.GenerateUrl(this, "TableViewer", "GetSitecoreMemberRecord")',
             path: '@Model.Path'
         }
     };
@@ -167,7 +167,7 @@
 
         $.ajax({
             type: 'GET',
-            url: '@ClientRoute.GenerateUrl(this, "TableViewer", "GetUserRecordFile")',
+            url: '@ClientRoute.GenerateUrl(this, "TableViewer", "GetSitecoreMemberRecordFile")',
             data: param,
             xhrFields: {
                 responseType: 'blob'
@@ -180,7 +180,7 @@
                     return;
                 }
 
-                var fileName = 'Usage Log_' + getCurrentDateTime() + '.xlsx';
+                var fileName = 'Member Usage Log_' + getCurrentDateTime() + '.xlsx';
                 var blob = response;
                 downloadURI(window.URL.createObjectURL(blob), fileName);
             },
@@ -248,17 +248,10 @@
         <div class="navbar-content">
             <label class="o-select select-2">
                 <select id="ddlColumeName" class="w3-select">
-                    <option value="11">Created</option>
+                    <option value="4">Created</option>
                     <option value="1">Id</option>
-                    <option value="2">Category</option>
-                    <option value="3">Action</option>
-                    <option value="4">ItemId</option>
-                    <option value="5">ItemLanguage</option>
-                    <option value="6">ItemVersion</option>
-                    <option value="7">ItemPath</option>
-                    <option value="8">UserName</option>
-                    <option value="9">TaskStack</option>
-                    <option value="10">AdditionalInfo</option>
+                    <option value="2">Action</option>
+                    <option value="3">UserName</option>
                 </select>
             </label>
             <label class="o-select select-2">
@@ -318,16 +311,9 @@
                         <label class="o-select select-2">
                             <select class="w3-select" style="width:98%;">
                                 <option value="1">Id</option>
-                                <option value="2">Category</option>
-                                <option value="3">Action</option>
-                                <option value="4">ItemId</option>
-                                <option value="5">ItemLanguage</option>
-                                <option value="6">ItemVersion</option>
-                                <option value="7">ItemPath</option>
-                                <option value="8">UserName</option>
-                                <option value="9">TaskStack</option>
-                                <option value="10">AdditionalInfo</option>
-                                <option value="11">Created</option>
+                                <option value="2">Action</option>
+                                <option value="3">UserName</option>
+                                <option value="4">Created</option>
                             </select>
                         </label>
                     </td>
@@ -419,15 +405,8 @@
                 <thead>
                     <tr>
                         <th scope="col">Id</th>
-                        <th scope="col">Category</th>
                         <th scope="col">Action</th>
-                        <th scope="col">ItemId</th>
-                        <th scope="col">ItemLanguage</th>
-                        <th scope="col">ItemVersion</th>
-                        <th scope="col">ItemPath</th>
                         <th scope="col">UserName</th>
-                        <th scope="col">TaskStack</th>
-                        <th scope="col">AdditionalInfo</th>
                         <th scope="col">Created</th>
                     </tr>
                 </thead>
@@ -473,7 +452,7 @@
                             <th scope="col">DOMAIN_NAME</th>*@
                     </tr>
                     <tr>
-                        @*<td>Sitecore_Master</td>
+                        @*<td>AuthenticationHistory</td>
                             <td>dbo</td>
                             <td>History</td>*@
                         <td>Id</td>
@@ -498,10 +477,10 @@
                             <td>&nbsp;</td>*@
                     </tr>
                     <tr>
-                        @*<td>Sitecore_Master</td>
+                        @*<td>AuthenticationHistory</td>
                             <td>dbo</td>
                             <td>History</td>*@
-                        <td>Category</td>
+                        <td>Action</td>
                         <td>2</td>
                         <td>&nbsp;</td>
                         <td>NO</td>
@@ -523,136 +502,11 @@
                             <td>&nbsp;</td>*@
                     </tr>
                     <tr>
-                        @*<td>Sitecore_Master</td>
-                            <td>dbo</td>
-                            <td>History</td>*@
-                        <td>Action</td>
-                        <td>3</td>
-                        <td>&nbsp;</td>
-                        <td>NO</td>
-                        <td>varchar</td>
-                        <td>50</td>
-                        <td>50</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        @*<td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>cp950</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>*@
-                    </tr>
-                    <tr>
-                        @*<td>Sitecore_Master</td>
-                            <td>dbo</td>
-                            <td>History</td>*@
-                        <td>ItemId</td>
-                        <td>4</td>
-                        <td>&nbsp;</td>
-                        <td>NO</td>
-                        <td>uniqueidentifier</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        @*<td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>*@
-                    </tr>
-                    <tr>
-                        @*<td>Sitecore_Master</td>
-                            <td>dbo</td>
-                            <td>History</td>*@
-                        <td>ItemLanguage</td>
-                        <td>5</td>
-                        <td>&nbsp;</td>
-                        <td>NO</td>
-                        <td>varchar</td>
-                        <td>50</td>
-                        <td>50</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        @*<td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>cp950</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>*@
-                    </tr>
-                    <tr>
-                        @*<td>Sitecore_Master</td>
-                            <td>dbo</td>
-                            <td>History</td>*@
-                        <td>ItemVersion</td>
-                        <td>6</td>
-                        <td>&nbsp;</td>
-                        <td>NO</td>
-                        <td>int</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>10</td>
-                        <td>10</td>
-                        <td>0</td>
-                        <td>&nbsp;</td>
-                        @*<td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>*@
-                    </tr>
-                    <tr>
-                        @*<td>Sitecore_Master</td>
-                            <td>dbo</td>
-                            <td>History</td>*@
-                        <td>ItemPath</td>
-                        <td>7</td>
-                        <td>('')</td>
-                        <td>NO</td>
-                        <td>nvarchar</td>
-                        <td>-1</td>
-                        <td>-1</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        @*<td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>UNICODE</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>*@
-                    </tr>
-                    <tr>
-                        @*<td>Sitecore_Master</td>
+                        @*<td>AuthenticationHistory</td>
                             <td>dbo</td>
                             <td>History</td>*@
                         <td>UserName</td>
-                        <td>8</td>
+                        <td>3</td>
                         <td>&nbsp;</td>
                         <td>NO</td>
                         <td>nvarchar</td>
@@ -673,61 +527,11 @@
                             <td>&nbsp;</td>*@
                     </tr>
                     <tr>
-                        @*<td>Sitecore_Master</td>
-                            <td>dbo</td>
-                            <td>History</td>*@
-                        <td>TaskStack</td>
-                        <td>9</td>
-                        <td>('')</td>
-                        <td>NO</td>
-                        <td>varchar</td>
-                        <td>-1</td>
-                        <td>-1</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        @*<td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>cp950</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>*@
-                    </tr>
-                    <tr>
-                        @*<td>Sitecore_Master</td>
-                            <td>dbo</td>
-                            <td>History</td>*@
-                        <td>AdditionalInfo</td>
-                        <td>10</td>
-                        <td>('')</td>
-                        <td>NO</td>
-                        <td>nvarchar</td>
-                        <td>-1</td>
-                        <td>-1</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        @*<td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>UNICODE</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>*@
-                    </tr>
-                    <tr>
-                        @*<td>Sitecore_Master</td>
+                        @*<td>AuthenticationHistory</td>
                             <td>dbo</td>
                             <td>History</td>*@
                         <td>Created</td>
-                        <td>11</td>
+                        <td>4</td>
                         <td>&nbsp;</td>
                         <td>NO</td>
                         <td>datetime</td>
