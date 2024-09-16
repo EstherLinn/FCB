@@ -2,9 +2,7 @@
 using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.ETF.Search;
 using Feature.Wealth.Component.Models.FundSearch;
-using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.SearchBar;
-using Feature.Wealth.Component.Models.SiteProductSearch;
 using Feature.Wealth.Component.Models.SiteProductSearch.Product;
 using Feature.Wealth.Component.Models.StructuredProduct;
 using Feature.Wealth.Component.Models.USStock;
@@ -31,19 +29,19 @@ namespace Feature.Wealth.Component.Repositories
         private readonly string SearchBarCache = $"Fcb_SearchBarCache";
         private readonly string CacheTime = $"SearchBarCacheTime";
 
-        public RespProduct GetResultList()
+        public RespSearch GetResultList()
         {
-            var product = _cache.Get(SearchBarCache) as RespProduct;
+            var product = _cache.Get(SearchBarCache) as RespSearch;
 
             if (product == null)
             {
-                product = new RespProduct
+                product = new RespSearch
                 {
                     FundProducts = MapperFundResult()?.ToList(),
                     ETFProducts = MapperETFResult()?.ToList(),
-                    ForeignStocks = MapperForeignStockResult()?.ToList(),
-                    ForeignBonds = MapperForeignBondsResult()?.OrderByDescending(i => i.UpsAndDownsMonth).ToList(),
-                    StructuredProducts = MapperStructuredProductResult()?.ToList(),
+                    ForeignStocks = MapperForeignStockResult().ToList(),
+                    ForeignBonds = MapperForeignBondsResult().ToList(),
+                    StructuredProducts = MapperStructuredProductResult().ToList(),
                 };
                 _cache.Set(SearchBarCache, product, new CommonRepository().GetCacheExpireTime(Settings.GetSetting(CacheTime)));
             }
@@ -53,7 +51,7 @@ namespace Feature.Wealth.Component.Repositories
 
         #region 基金
 
-        public IEnumerable<FundProductResult> MapperFundResult()
+        public IEnumerable<Dictionary<string, object>> MapperFundResult()
         {
             var collection = new FundSearchRepository().GetFundSearchData();
 
@@ -92,21 +90,25 @@ namespace Feature.Wealth.Component.Repositories
                     bool onlinePurchaseAvailability = IsAvailability(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
 
-                    dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                    dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
-                    dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
+                    //dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
+                    //dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
+                    //dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
                 });
 
             var result = collection.Adapt<IEnumerable<FundProductResult>>(config);
 
-            return result;
+            return result.Select(x => new Dictionary<string, object> {
+                { "ProductCode", x.ProductCode },
+                { "ProductName", x.ProductName },
+                { "CanOnlineSubscription", x.CanOnlineSubscription },
+            });
         }
 
         #endregion 基金
 
         #region ETF
 
-        public IEnumerable<EtfProductResult> MapperETFResult()
+        public IEnumerable<Dictionary<string, object>> MapperETFResult()
         {
             var collection = new EtfSearchRepository().QueryBasicData();
 
@@ -174,14 +176,18 @@ namespace Feature.Wealth.Component.Repositories
                     bool onlinePurchaseAvailability = IsAvailability(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
 
-                    dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                    dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
-                    dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
+                    //dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
+                    //dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
+                    //dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
                 });
 
             var result = collection.Adapt<IEnumerable<EtfProductResult>>(config);
 
-            return result;
+            return result.Select(x => new Dictionary<string, object> {
+                { "FirstBankCode", x.FirstBankCode },
+                { "ETFName", x.ETFName },
+                { "CanOnlineSubscription", x.CanOnlineSubscription },
+            });
         }
 
         #endregion ETF
@@ -218,7 +224,7 @@ namespace Feature.Wealth.Component.Repositories
             return collection;
         }
 
-        public IEnumerable<ForeignStockResult> MapperForeignStockResult()
+        public IEnumerable<Dictionary<string, object>> MapperForeignStockResult()
         {
             var collection = QueryForeignStockData();
 
@@ -226,8 +232,6 @@ namespace Feature.Wealth.Component.Repositories
             config.ForType<USStockListDto, ForeignStockResult>()
                 .AfterMapping((src, dest) =>
                 {
-                    dest.FundCodePair = new KeyValuePair<string, string>(src.FundCode, string.IsNullOrEmpty(src.FundCode) ? "-" : src.FundCode);
-                    dest.ClosingPrice = new KeyValuePair<decimal?, string>(src.ClosingPrice, src.ClosingPrice.HasValue ? src.ClosingPrice.Value.ToString() : "-");
                     dest.DataDate = DateTimeExtensions.FormatDate(src.DataDate);
                     dest.DailyReturn = ParseReturnToKeyValue(src.DailyReturn);
                     dest.WeeklyReturn = ParseReturnToKeyValue(src.WeeklyReturn);
@@ -242,58 +246,27 @@ namespace Feature.Wealth.Component.Repositories
                     bool onlinePurchaseAvailability = IsAvailability(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
 
-                    string fullName = string.Concat(src.FirstBankCode, src.ChineseName, src.EnglishName);
+                    //string fullName = string.Concat(src.FirstBankCode, src.ChineseName, src.EnglishName);
 
-                    dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks).ToString();
-                    dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks).ToString();
+                    //dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks).ToString();
+                    //dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks).ToString();
                 });
 
             var result = collection.Adapt<IEnumerable<ForeignStockResult>>(config);
 
-            return result;
+            return result.Select(x => new Dictionary<string, object> {
+                { "FirstBankCode", x.FirstBankCode },
+                { "ChineseName", x.ChineseName },
+                { "EnglishName", x.EnglishName },
+                { "CanOnlineSubscription", x.CanOnlineSubscription },
+            });
         }
 
         #endregion 國外股票
 
-        #region 結構型商品
-
-        public IList<BasicStructuredProductDto> QueryStructuredProductBasicData()
-        {
-            string sqlQuery = """
-                SELECT *
-                FROM [vw_StructProduct]
-                """;
-            var collection = DbManager.Custom.ExecuteIList<BasicStructuredProductDto>(sqlQuery, null, CommandType.Text);
-            return collection;
-        }
-
-        public IEnumerable<StructuredProductResult> MapperStructuredProductResult()
-        {
-            var collection = QueryStructuredProductBasicData();
-
-            var config = new TypeAdapterConfig();
-            config.ForType<BasicStructuredProductDto, StructuredProductResult>()
-                .AfterMapping((src, dest) =>
-                {
-                    dest.IssuingInstitutionPair = new KeyValuePair<string, string>(src.IssuingInstitution, string.IsNullOrEmpty(src.IssuingInstitution) ? "-" : src.IssuingInstitution);
-                    dest.ProductMaturityDatePair = new KeyValuePair<string, string>(src.ProductMaturityDate, string.IsNullOrEmpty(src.ProductMaturityDate) ? "-" : src.ProductMaturityDate);
-                    dest.CurrencyPair = new KeyValuePair<string, string>(src.CurrencyCode, src.CurrencyName);
-                    dest.BankSellPricePair = new KeyValuePair<string, string>(src.BankSellPrice, string.IsNullOrEmpty(src.BankSellPrice) ? "-" : src.BankSellPrice);
-                    dest.PriceBaseDatePair = new KeyValuePair<string, string>(src.PriceBaseDate, string.IsNullOrEmpty(src.PriceBaseDate) ? "-" : src.PriceBaseDate);
-
-                    dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                });
-
-            var result = collection.Adapt<IEnumerable<StructuredProductResult>>(config);
-
-            return result;
-        }
-
-        #endregion 結構型商品
-
         #region 國外債券
 
-        public IList<BondListDto> GetBondsList()
+        public IEnumerable<BondListDto> GetBondsList()
         {
             string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
             string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
@@ -303,6 +276,8 @@ namespace Feature.Wealth.Component.Repositories
                            ,A.[BondName]
                            ,A.[InterestRate]
                            ,A.[MinIncrementAmount]
+                           ,A.[OpenToPublic]
+                           ,A.[Listed]
                            ,B.[SubscriptionFee]
                            ,B.[RedemptionFee]
                            ,B.[Date]
@@ -313,7 +288,7 @@ namespace Feature.Wealth.Component.Repositories
 
             var bonds = DbManager.Custom.ExecuteIList<BondListDto>(sql, null, CommandType.Text);
 
-            if (bonds == null || bonds.Any() == false)
+            if (!bonds.Any())
             {
                 return new List<BondListDto>();
             }
@@ -336,7 +311,7 @@ namespace Feature.Wealth.Component.Repositories
                 bonds[i] = DataFormat(_bondHistoryPrices, bonds[i]);
             }
 
-            return bonds;
+            return bonds.OrderByDescending(i => i.UpsAndDownsMonth);
         }
 
         private BondListDto DataFormat(IList<BondHistoryPrice> _bondHistoryPrices, BondListDto bond)
@@ -376,23 +351,53 @@ namespace Feature.Wealth.Component.Repositories
             return null;
         }
 
-        public IEnumerable<ForeignBondResult> MapperForeignBondsResult()
+        public IEnumerable<Dictionary<string, string>> MapperForeignBondsResult()
         {
             var collection = GetBondsList();
-
-            var config = new TypeAdapterConfig();
-            config.ForType<BondListDto, ForeignBondsResult>()
-                .AfterMapping((src, dest) =>
+            var result = collection.Select(
+                item => new Dictionary<string, string>
                 {
-                    dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds).ToString();
-                    dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.BondCode, dest.BondName, InvestTypeEnum.ForeignBonds).ToString();
-                });
+                    { "BondCode", item.BondCode },
+                    { "BondName", item.BondName },
+                    { "OpenToPublic", item.OpenToPublic },
+                    { "Listed", item.Listed },
+                    //{ "FocusButtonAutoHtml", PublicHelpers.FocusTag(null, null, item.BondCode, item.BondName, InvestTypeEnum.ForeignBonds).ToString() },
+                    //{ "SubscribeButtonAutoHtml", PublicHelpers.SubscriptionTag(null, null, item.BondCode, item.BondName, InvestTypeEnum.ForeignBonds).ToString() },
+                }
+            );
 
-            var result = collection.Adapt<IEnumerable<ForeignBondResult>>(config);
             return result;
         }
 
         #endregion 國外債券
+
+        #region 結構型商品
+
+        public IList<BasicStructuredProductDto> QueryStructuredProductBasicData()
+        {
+            string sqlQuery = """
+                SELECT *
+                FROM [vw_StructProduct]
+                """;
+            var collection = DbManager.Custom.ExecuteIList<BasicStructuredProductDto>(sqlQuery, null, CommandType.Text);
+            return collection;
+        }
+
+        public IEnumerable<Dictionary<string, string>> MapperStructuredProductResult()
+        {
+            var collection = QueryStructuredProductBasicData();
+            var result = collection.Select(
+                item => new Dictionary<string, string>
+                {
+                    { "ProductCode", item.ProductCode },
+                    { "ProductName", item.ProductName },
+                }
+            );
+
+            return result;
+        }
+
+        #endregion 結構型商品
 
         #region Method
 
