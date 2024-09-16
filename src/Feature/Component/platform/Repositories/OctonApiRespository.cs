@@ -16,6 +16,8 @@ namespace Feature.Wealth.Component.Repositories
     public class OctonApiRespository
     {
         private readonly string _route = Settings.GetSetting("OctonApiRoute");
+        private readonly string _tenant = Settings.GetSetting("OctonApiTenant");
+        private readonly string _sysCode = Settings.GetSetting("OctonApiSysCode");
         private readonly ILog _log = Logger.Api;
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 var request = _route.
                 AppendPathSegments("mmccmedia", "GetWebURL").
-                SetQueryParams($"Tenant=YJI304&SysCode=Octon&dnis={octonRequestData.dnis}&Date={octonRequestData.Date}&Start={HttpUtility.UrlEncode(octonRequestData.Start)}&End={HttpUtility.UrlEncode(octonRequestData.End)}&EmployeeCode={octonRequestData.EmployeeCode}&EmployeeName={octonRequestData.EmployeeName}&BranchCode={octonRequestData.BranchCode}&BranchName={octonRequestData.BranchName}&BranchPhone={octonRequestData.BranchPhone}").
+                SetQueryParams($"Tenant={_tenant}&SysCode={_sysCode}&dnis={octonRequestData.dnis}&Date={octonRequestData.Date}&Start={HttpUtility.UrlEncode(octonRequestData.Start)}&End={HttpUtility.UrlEncode(octonRequestData.End)}&EmployeeCode={octonRequestData.EmployeeCode}&EmployeeName={octonRequestData.EmployeeName}&BranchCode={octonRequestData.BranchCode}&BranchName={octonRequestData.BranchName}&BranchPhone={octonRequestData.BranchPhone}").
                 WithHeader("Authorization", octonRequestData.id).
                 WithHeader("ContentType", "application/x-www-form-urlencoded;charset=utf-8").
                 AllowAnyHttpStatus().

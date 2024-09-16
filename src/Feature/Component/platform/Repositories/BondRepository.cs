@@ -276,6 +276,21 @@ namespace Feature.Wealth.Component.Repositories
 
             bond.BondClass = this._bondClasses.Where(c => c.BondCode == bond.BondCode).Select(c => c.Class).FirstOrDefault() ?? null;
 
+            if (string.IsNullOrEmpty(bond.CurrencyName))
+            {
+                bond.CurrencyName = "無幣別";
+            }
+
+            if (string.IsNullOrEmpty(bond.BondClass))
+            {
+                bond.BondClass = "無分類";
+            }
+
+            if (string.IsNullOrEmpty(bond.PaymentFrequencyName))
+            {
+                bond.PaymentFrequencyName = "無配息頻率";
+            }
+
             return bond;
         }
 
