@@ -44,6 +44,7 @@ namespace Feature.Wealth.Component.Models.BigAndSmallCards
             this.IsOpenLoginLightBox1 = ItemUtils.IsChecked(item, Templates.BigAndSmallCards.Fields.OpenLoginLightBox1);
             this.IsOpenLoginLightBox2 = ItemUtils.IsChecked(item, Templates.BigAndSmallCards.Fields.OpenLoginLightBox2);
             this.IsLogin = FcbMemberHelper.CheckMemberLogin();
+        }
     }
 
     public struct Templates
