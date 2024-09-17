@@ -11,17 +11,9 @@ namespace Feature.Wealth.Component.Controllers
     {
         public ActionResult Index()
         {
-            var dataSource = RenderingContext.CurrentOrNull?.Rendering.Item;
+            var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            IEnumerable<DiscountTabItem> tabList = dataSource.GetChildren(Templates.DiscountTabItem.ID)
-            .Where(children => dataSource.GetChildren(Templates.DiscountTabItem.ID).Any())
-            .Select(x => new DiscountTabItem { Item = x });
-
-            var model = new DiscountTabModel()
-            {
-                DataSource = dataSource,
-                TabList = tabList
-            };
+            var model = new DiscountTabModel(item);
 
             return View("/Views/Feature/Wealth/Component/DiscountTab/DiscountTab.cshtml", model);
         }

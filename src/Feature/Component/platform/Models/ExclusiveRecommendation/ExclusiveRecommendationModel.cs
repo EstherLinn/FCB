@@ -21,11 +21,16 @@ namespace Feature.Wealth.Component.Models.ExclusiveRecommendation
 
         public ExclusiveRecommendationModel(Item item)
         {
-            Item = item;
-            MainTitle = ItemUtils.GetFieldValue(item, Templates.ExclusiveRecommendation.Fields.MainTitle);
-            SubTitle = ItemUtils.GetFieldValue(item, Templates.ExclusiveRecommendation.Fields.SubTitle);
-            ImagePCUrl = ItemUtils.ImageUrl(item, Templates.ExclusiveRecommendation.Fields.ImagePC, new Sitecore.Links.UrlBuilders.MediaUrlBuilderOptions() { Height = null, Width = null });
-            ImageMobileUrl = ItemUtils.ImageUrl(item, Templates.ExclusiveRecommendation.Fields.ImageMobile, new Sitecore.Links.UrlBuilders.MediaUrlBuilderOptions() { Height = null, Width = null });
+            if (item == null)
+            {
+                return;
+            }
+
+            this.Item = item;
+            this.MainTitle = ItemUtils.GetFieldValue(item, Templates.ExclusiveRecommendation.Fields.MainTitle);
+            this.SubTitle = ItemUtils.GetFieldValue(item, Templates.ExclusiveRecommendation.Fields.SubTitle);
+            this.ImagePCUrl = ItemUtils.ImageUrl(item, Templates.ExclusiveRecommendation.Fields.ImagePC, new Sitecore.Links.UrlBuilders.MediaUrlBuilderOptions() { Height = null, Width = null });
+            this.ImageMobileUrl = ItemUtils.ImageUrl(item, Templates.ExclusiveRecommendation.Fields.ImageMobile, new Sitecore.Links.UrlBuilders.MediaUrlBuilderOptions() { Height = null, Width = null });
         }
     }
 

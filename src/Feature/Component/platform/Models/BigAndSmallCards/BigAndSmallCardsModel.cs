@@ -1,5 +1,7 @@
-﻿using Sitecore.Data;
+﻿using Feature.Wealth.Account.Helpers;
+using Sitecore.Data;
 using Sitecore.Data.Items;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.BigAndSmallCards
 {
@@ -20,6 +22,28 @@ namespace Feature.Wealth.Component.Models.BigAndSmallCards
         public bool IsOpenLoginLightBox1 { get; set; }
         public bool IsOpenLoginLightBox2 { get; set; }
         public bool IsLogin { get; set; }
+        public BigAndSmallCardsModel(Item item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            this.Item = item;
+            this.ImageUrl1 = ItemUtils.ImageUrl(item, Templates.BigAndSmallCards.Fields.Image1);
+            this.ImageUrl2 = ItemUtils.ImageUrl(item, Templates.BigAndSmallCards.Fields.Image2);
+            this.ImageUrl3 = ItemUtils.ImageUrl(item, Templates.BigAndSmallCards.Fields.Image3);
+            this.ButtonLink1 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.ButtonLink1)?.Url;
+            this.ButtonLink2 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.ButtonLink2)?.Url;
+            this.ButtonLink3 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.ButtonLink3)?.Url;
+            this.BigImageUrl = ItemUtils.ImageUrl(item, Templates.BigAndSmallCards.Fields.BigImage);
+            this.BigButtonText1 = ItemUtils.GetFieldValue(item, Templates.BigAndSmallCards.Fields.BigButtonText1);
+            this.BigButtonText2 = ItemUtils.GetFieldValue(item, Templates.BigAndSmallCards.Fields.BigButtonText2);
+            this.BigButtonLink1 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.BigButtonLink1)?.Url;
+            this.BigButtonLink2 = ItemUtils.GeneralLink(item, Templates.BigAndSmallCards.Fields.BigButtonLink2)?.Url;
+            this.IsOpenLoginLightBox1 = ItemUtils.IsChecked(item, Templates.BigAndSmallCards.Fields.OpenLoginLightBox1);
+            this.IsOpenLoginLightBox2 = ItemUtils.IsChecked(item, Templates.BigAndSmallCards.Fields.OpenLoginLightBox2);
+            this.IsLogin = FcbMemberHelper.CheckMemberLogin();
     }
 
     public struct Templates

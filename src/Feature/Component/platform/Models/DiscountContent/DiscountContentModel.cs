@@ -1,5 +1,7 @@
-﻿using Sitecore.Data;
+﻿using Feature.Wealth.Component.Repositories;
+using Sitecore.Data;
 using Sitecore.Data.Items;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.DiscountContent
 {
@@ -11,6 +13,20 @@ namespace Feature.Wealth.Component.Models.DiscountContent
         public string DisplayDate { get; set; }
         public string DisplayTag { get; set; }
         public string ButtonLink { get; set; }
+        public DiscountContentModel(Item item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            this.DataSource = item;
+            this.PCBannerSrc = ItemUtils.ImageUrl(item, Templates.DiscountContentDatasource.Fields.PCBanner);
+            this.MobileBannerSrc = ItemUtils.ImageUrl(item, Templates.DiscountContentDatasource.Fields.MobileBanner);
+            this.DisplayDate = DiscountContentRepository.GetDisplayDate(item);
+            this.DisplayTag = DiscountContentRepository.GetDisplayTag(item);
+            this.ButtonLink = ItemUtils.GeneralLink(item, Templates.DiscountContentDatasource.Fields.ButtonLink).Url;
+        }
     }
 
     public struct Templates

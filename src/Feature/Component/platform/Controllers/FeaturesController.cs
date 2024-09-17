@@ -1,4 +1,5 @@
 ﻿using Feature.Wealth.Component.Models.Features;
+using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,10 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
-            var childItems = ItemUtils.GetChildren(dataSourceItem).ToList();
+            var childItems = ItemUtils.GetChildren(dataSourceItem);
 
             var items = new List<FeaturesModel.Features>();
-
-            foreach (var childItem in childItems)
+            foreach (var childItem in childItems ?? Enumerable.Empty<Item>())
             {
 
                 items.Add(new FeaturesModel.Features(childItem));
