@@ -14,6 +14,7 @@ namespace Feature.Wealth.Component.Repositories
     {
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly string FundDetailsCacheKey = $"Fcb_FundDetailsCache";
+        private readonly string FundDetailTempCacheKey = $"Fcb_FundDetailTemp";
 
         public FundViewModel GetOrSetFundDetailsCache(string fundId, string indicator)
         {
@@ -476,25 +477,16 @@ namespace Feature.Wealth.Component.Repositories
         public FundViewModel GetDocLinks(string fundId, FundViewModel fundViewModel, string fundIndicator, DjMoneyApiRespository djMoneyApiRespository)
         {
             //嘗試撈取暫存
-            string sqlSelect = @"SELECT * FROM FundDetailTemp WITH (NOLOCK) WHERE FundID = @fundId";
+            FundViewModel temp = (FundViewModel)this._cache.Get(this.FundDetailTempCacheKey + "_" + fundId) ?? null;
 
-            var fundDetailTemp = DbManager.Custom.Execute<FundDetailTemp>(sqlSelect, new { fundId }, System.Data.CommandType.Text);
-
-            var temp = new FundViewModel();
-            var updateDateTime = DateTime.Now;
-
-            if (fundDetailTemp != null && DateTime.Now.Subtract(fundDetailTemp.DataDate).TotalMinutes < 30)
+            if (temp != null)
             {
-                temp = JsonConvert.DeserializeObject<FundViewModel>(fundDetailTemp.Data);
-
                 fundViewModel.OpenDoc = temp.OpenDoc;
                 fundViewModel.FinancialReportDoc = temp.FinancialReportDoc;
                 fundViewModel.EasyOpenDoc = temp.EasyOpenDoc;
                 fundViewModel.MonthReportDoc = temp.MonthReportDoc;
                 fundViewModel.InvestExclusiveDoc = temp.InvestExclusiveDoc;
                 fundViewModel.InvestNomnalDoc = temp.InvestNomnalDoc;
-
-                updateDateTime = fundDetailTemp.DataDate;
             }
             else
             {
@@ -514,39 +506,17 @@ namespace Feature.Wealth.Component.Repositories
                     fundViewModel.InvestNomnalDoc = GetDocLink(djMoneyApiRespository, fundId, "7");
                 }
 
-                temp.OpenDoc = fundViewModel.OpenDoc;
-                temp.FinancialReportDoc = fundViewModel.FinancialReportDoc;
-                temp.EasyOpenDoc = fundViewModel.EasyOpenDoc;
-                temp.MonthReportDoc = fundViewModel.MonthReportDoc;
-                temp.InvestExclusiveDoc = fundViewModel.InvestExclusiveDoc;
-                temp.InvestNomnalDoc = fundViewModel.InvestNomnalDoc;
-            }
+                temp = new FundViewModel
+                {
+                    OpenDoc = fundViewModel.OpenDoc,
+                    FinancialReportDoc = fundViewModel.FinancialReportDoc,
+                    EasyOpenDoc = fundViewModel.EasyOpenDoc,
+                    MonthReportDoc = fundViewModel.MonthReportDoc,
+                    InvestExclusiveDoc = fundViewModel.InvestExclusiveDoc,
+                    InvestNomnalDoc = fundViewModel.InvestNomnalDoc
+                };
 
-            //寫入DB暫存
-            if (fundDetailTemp == null)
-            {
-                // 新增紀錄
-                string sqlInsert = @"INSERT INTO [FundDetailTemp]
-                                     ([FundID]
-                                     ,[Data]
-                                     ,[DataDate])
-                                     VALUES
-                                     (@fundId
-                                     ,@Data
-                                     ,@DataDate)"
-                ;
-
-                DbManager.Custom.ExecuteNonQuery(sqlInsert, new { fundId, Data = JsonConvert.SerializeObject(temp), DataDate = updateDateTime }, commandType: System.Data.CommandType.Text);
-            }
-            else
-            {
-                // 更新紀錄
-                string sqlUpdate = @"UPDATE [FundDetailTemp]
-                                     SET [Data] = @Data,
-                                     [DataDate] = @DataDate
-                                     WHERE [FundID] = @fundId";
-
-                DbManager.Custom.ExecuteNonQuery(sqlUpdate, new { fundId, Data = JsonConvert.SerializeObject(temp), DataDate = updateDateTime }, commandType: System.Data.CommandType.Text);
+                this._cache.Set(this.FundDetailTempCacheKey + "_" + fundId, temp, DateTimeOffset.Now.AddMinutes(600));
             }
 
             return fundViewModel;

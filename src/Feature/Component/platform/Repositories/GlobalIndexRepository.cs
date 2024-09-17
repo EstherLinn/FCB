@@ -3,11 +3,11 @@ using Feature.Wealth.Component.Models.GlobalIndex;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.Caching;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -15,6 +15,9 @@ namespace Feature.Wealth.Component.Repositories
     {
         private readonly IDbConnection _dbConnection = DbManager.Custom.DbConnection();
         private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
+
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly string GlobalIndexHistoryCacheKey = $"Fcb_GlobalIndexHistoryCache";
 
         public IList<GlobalIndex> GetGlobalIndexList()
         {
@@ -69,15 +72,11 @@ namespace Feature.Wealth.Component.Repositories
 
         public List<float> GetGlobalIndexHistoryList(string indexCode)
         {
-            List<float> result = new List<float>();
+            var result = (List<float>)this._cache.Get(this.GlobalIndexHistoryCacheKey + "_" + indexCode) ?? new List<float>();
 
-            string sqlSelect = @"SELECT * FROM GlobalIndexTempHistory WITH (NOLOCK) WHERE IndexCode = @IndexCode";
-
-            var globalIndexTempHistory = this._dbConnection.Query<GlobalIndexTempHistory>(sqlSelect, new { IndexCode = indexCode })?.FirstOrDefault() ?? null;
-
-            if (globalIndexTempHistory != null && globalIndexTempHistory.DataDate.Date == DateTime.Now.Date)
+            if (result.Any())
             {
-                result = JsonConvert.DeserializeObject<List<float>>(globalIndexTempHistory.Data);
+                return result;
             }
             else
             {
@@ -101,32 +100,8 @@ namespace Feature.Wealth.Component.Repositories
                 {
 
                 }
-            }
 
-            if (globalIndexTempHistory == null)
-            {
-                // 新增紀錄
-                string sqlInsert = @"INSERT INTO [GlobalIndexTempHistory]
-                                     ([IndexCode]
-                                     ,[Data]
-                                     ,[DataDate])
-                                     VALUES
-                                     (@IndexCode
-                                     ,@Data
-                                     ,@DataDate)"
-                ;
-
-                this._dbConnection.Execute(sqlInsert, new { IndexCode = indexCode, Data = JsonConvert.SerializeObject(result), DataDate = DateTime.Now });
-            }
-            else
-            {
-                // 更新紀錄
-                string sqlUpdate = @"UPDATE [GlobalIndexTempHistory]
-                                     SET [Data] = @Data,
-                                     [DataDate] = @DataDate
-                                     WHERE [IndexCode] = @IndexCode";
-
-                this._dbConnection.Execute(sqlUpdate, new { IndexCode = indexCode, Data = JsonConvert.SerializeObject(result), DataDate = DateTime.Now });
+                this._cache.Set(this.GlobalIndexHistoryCacheKey + "_" + indexCode, result, DateTimeOffset.Now.AddMinutes(600));
             }
 
             return result;
