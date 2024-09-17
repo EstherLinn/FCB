@@ -13,6 +13,7 @@ namespace Feature.WorkBox
         {
             public const string Draft = "{C3692B28-F467-43F5-93B5-21AFB23D2BBA}";
             public const string Approval = "{67DC6D04-021E-41E5-82F1-833416E51E17}";
+            public const string Publish = "{0AC0D403-095B-4660-B79B-1B44DDCCD79C}";
         }
 
         public struct DraftAction
