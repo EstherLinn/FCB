@@ -1,8 +1,7 @@
 ﻿@model Feature.Wealth.Component.Models.ArticleContent.ArticleContentModel
 @using Feature.Wealth.Component.Models.ArticleContent
-@using Foundation.Wealth.Helper
 
-@if (Model == null)
+@if (Model.DataSource == null)
 {
     return;
 }

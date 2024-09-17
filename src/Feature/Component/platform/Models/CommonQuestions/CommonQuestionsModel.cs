@@ -14,6 +14,11 @@ namespace Feature.Wealth.Component.Models.CommonQuestions
 
         public CommonQuestionsModel(Item item)
         {
+            if (item == null)
+            {
+                return;
+            }
+
             this.DataSource = item;
             this.SubItems = ItemUtils.GetChildren(item)?.Select(x => new SubItem(x)).ToList();
         }

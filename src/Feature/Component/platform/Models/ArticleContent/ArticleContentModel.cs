@@ -1,5 +1,7 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Items;
+using System;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.ArticleContent
 {
@@ -12,6 +14,22 @@ namespace Feature.Wealth.Component.Models.ArticleContent
         public string Content1 { get; set; }
         public string Introduction { get; set; }
         public string Content2 { get; set; }
+        public ArticleContentModel(Item item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            this.DataSource = item;
+            this.MainTitle = ItemUtils.GetFieldValue(item, Templates.ArticleContentDatasource.Fields.MainTitle);
+            var date = ItemUtils.GetLocalDateFieldValue(item, Templates.ArticleContentDatasource.Fields.Date) ?? DateTime.MinValue;
+            this.Date = date != DateTime.MinValue ? date.ToString("yyyy/MM/dd") : string.Empty;
+            this.Image = ItemUtils.ImageUrl(item, Templates.ArticleContentDatasource.Fields.Image);
+            this.Content1 = ItemUtils.GetFieldValue(item, Templates.ArticleContentDatasource.Fields.Content1);
+            this.Introduction = ItemUtils.GetFieldValue(item, Templates.ArticleContentDatasource.Fields.Introduction);
+            this.Content2 = ItemUtils.GetFieldValue(item, Templates.ArticleContentDatasource.Fields.Content2);
+        }
     }
 
     public struct Templates
