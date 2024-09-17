@@ -1,4 +1,10 @@
 ﻿@inherits Xcms.Sitecore.Foundation.Basic.MVC.EditorCompatibleView<IEnumerable<Xcms.Sitecore.Feature.Navigation.Models.Breadcrumb>>
+
+@if (Model == null)
+{
+    return;
+}
+
 <div class="l-navbar__breadcrumb">
     <ul class="o-breadcrumb">
         @{

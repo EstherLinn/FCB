@@ -1,26 +1,31 @@
 ﻿@using Feature.Wealth.Component.Models.CommonQuestions
 @model CommonQuestionsModel
 
+@if (Model.DataSource == null)
+{
+    return;
+}
 <div class="c-section">
     <div class="c-section__title u-left">@Html.Sitecore().Field(Templates.CommonQuestionsDataSource.Fields.MainTitle.ToString(), Model.DataSource)</div>
     <div class="c-section__content">
         <div class="l-flex u-flex-col u-flex-gap-sm">
             @if (Model.CanRender)
-            {  foreach (var item in Model.SubItems)
+            {
+                foreach (var item in Model.SubItems)
                 {
                     <div class="l-flex__item">
                         <div class="c-collapse" data-collapse="true">
-                    <div class="c-collapse__head" data-collapse-button="true">
-                        <span>@Html.Sitecore().Field(Templates.CommonQuestionsItem.Fields.Title.ToString(),item)</span>
-                    </div>
-                    <div class="c-collapse__content" data-collapse-content="true">
-                        <div class="c-collapse__inner">
-                            @Html.Sitecore().Field(Templates.CommonQuestionsItem.Fields.Content.ToString(),item)
+                            <div class="c-collapse__head" data-collapse-button="true">
+                                <span>@Html.Sitecore().Field(Templates.CommonQuestionsItem.Fields.Title.ToString(), item)</span>
+                            </div>
+                            <div class="c-collapse__content" data-collapse-content="true">
+                                <div class="c-collapse__inner">
+                                    @Html.Sitecore().Field(Templates.CommonQuestionsItem.Fields.Content.ToString(), item)
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            }
+                }
             }
         </div>
     </div>

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using Sitecore.Mvc.Presentation;
-using System.Collections.Generic;
+﻿using Feature.Wealth.Component.Models.DiscountPremium;
 using Feature.Wealth.Component.Repositories;
+using Sitecore.Mvc.Presentation;
+using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Feature.Wealth.Component.Models.FundDetail;
-using Feature.Wealth.Component.Models.DiscountPremium;
-using static Feature.Wealth.Component.Models.DiscountPremium.DiscountPremiumModel;
-using Feature.Wealth.Component.Models.ETF;
 
 namespace Feature.Wealth.Component.Controllers
 {

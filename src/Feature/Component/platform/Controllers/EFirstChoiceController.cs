@@ -19,7 +19,7 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
-            var multilineField = ItemUtils.GetMultiLineText(dataSourceItem, Template.eFirstChoice.Fields.FundID);
+            var multilineField = dataSourceItem?.GetMultiLineText(Template.eFirstChoice.Fields.FundID);
             var viewModel = new EFirstChoiceModel { Item = dataSourceItem };
             if (multilineField != null)
             {
