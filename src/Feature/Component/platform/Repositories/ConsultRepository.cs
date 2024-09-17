@@ -189,13 +189,13 @@ namespace Feature.Wealth.Component.Repositories
                 && c.StartTime == consultSchedule.StartTime
                 && c.StatusCode != "3").Select(c => c.DNIS).ToList();
 
-            foreach(var d in this._dnis)
+            foreach (var d in this._dnis)
             {
-                if(usedDNIS == null || !usedDNIS.Any())
+                if (usedDNIS == null || !usedDNIS.Any())
                 {
                     return d;
                 }
-                else if(!usedDNIS.Contains(d))
+                else if (!usedDNIS.Contains(d))
                 {
                     return d;
                 }
