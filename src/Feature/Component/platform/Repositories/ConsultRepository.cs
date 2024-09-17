@@ -5,6 +5,7 @@ using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
 using log4net;
+using Sitecore.Configuration;
 using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace Feature.Wealth.Component.Repositories
     {
         private readonly IDbConnection _dbConnection = DbManager.Custom.DbConnection();
         private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
+
+        private readonly List<string> _dnis = Settings.GetSetting("OctonApiDNISList").Split(',').ToList();
 
         public IList<ConsultSchedule> GetConsultScheduleList()
         {
@@ -181,32 +184,24 @@ namespace Feature.Wealth.Component.Repositories
 
         public string GetDNIS(ConsultSchedule consultSchedule)
         {
-            var dnis = new List<string>
-            {
-                "1003",
-                "1004",
-                "1005",
-                "1006",
-                "1007"
-            };
-
             var usedDNIS = GetConsultScheduleList()
                 .Where(c => c.ScheduleDate == consultSchedule.ScheduleDate
                 && c.StartTime == consultSchedule.StartTime
                 && c.StatusCode != "3").Select(c => c.DNIS).ToList();
 
-            if (usedDNIS != null && usedDNIS.Count > 0)
+            foreach(var d in this._dnis)
             {
-                foreach (string d in usedDNIS)
+                if(usedDNIS == null || !usedDNIS.Any())
                 {
-                    if (dnis.Contains(d))
-                    {
-                        dnis.Remove(d);
-                    }
+                    return d;
+                }
+                else if(!usedDNIS.Contains(d))
+                {
+                    return d;
                 }
             }
 
-            return dnis.Count > 0 ? dnis[0] : null;
+            return null;
         }
 
         public bool CheckEmployeeSchedule(ConsultSchedule consultSchedule)
