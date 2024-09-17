@@ -125,10 +125,12 @@ namespace Feature.Wealth.Component.Models.FundDetail
         public string InvestNomnalDoc { get; set; }
     }
 
+    /// <summary>
+    /// 已廢棄
+    /// </summary>
     public class FundDetailTemp
     {
         public string FundID { get; set; }
         public string Data { get; set; }
-        public DateTime DataDate { get; set; }
     }
 }

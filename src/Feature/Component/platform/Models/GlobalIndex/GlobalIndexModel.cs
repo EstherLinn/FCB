@@ -84,6 +84,9 @@ namespace Feature.Wealth.Component.Models.GlobalIndex
         public string ThreeYearReturn { get; set; }
     }
 
+    /// <summary>
+    /// 已廢棄
+    /// </summary>
     public class GlobalIndexTempHistory
     {
         public string IndexCode { get; set; }
