@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Account.SingleSignOn.PageCodeBehind
 {
@@ -74,6 +75,10 @@ namespace Feature.Wealth.Account.SingleSignOn.PageCodeBehind
                         startPage += $"?sc_lang={scUser.Profile.ClientLanguage}";
                     }
                     this.Response.Redirect(startPage);
+                }
+                else
+                {
+                    MemberUtils.Authentication.LogOutUser();
                 }
 
                 ErrorMessage(login.Message);

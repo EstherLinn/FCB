@@ -12,6 +12,7 @@ using Sitecore.Globalization;
 using Sitecore.Pipelines;
 using Sitecore.Pipelines.GetWorkflowCommentsDisplay;
 using Sitecore.Resources;
+using Sitecore.Security.Accounts;
 using Sitecore.Shell.Data;
 using Sitecore.Shell.Feeds;
 using Sitecore.Shell.Framework;
@@ -68,6 +69,16 @@ namespace Foundation.WorkBox.Applications.Workflows
         private const string DRAFT = WorkBoxTemplates.WorkflowsState.Draft;
 
         /// <summary>
+        /// 審核狀態
+        /// </summary>
+        private const string APPROVAL = WorkBoxTemplates.WorkflowsState.Approval;
+
+        /// <summary>
+        /// 發佈狀態
+        /// </summary>
+        private const string PUBLISH = WorkBoxTemplates.WorkflowsState.Publish;
+
+        /// <summary>
         /// 檢驗是否為第一銀行使用者
         /// </summary>
         private bool IsFcbUser
@@ -79,14 +90,38 @@ namespace Foundation.WorkBox.Applications.Workflows
         }
 
         /// <summary>
-        /// 檢驗是否為第一銀行使用者
+        /// 取得部門代號
+        /// </summary>
+        private string DepartmentCode
+        {
+            get
+            {
+                return Context.User.Profile.GetCustomProperty("DepartmentCode");
+            }
+        }
+
+        /// <summary>
+        /// 是否為編輯中
         /// </summary>
         private bool IsDraft(string state) => DRAFT.Equals(state);
 
         /// <summary>
-        /// 檢驗是否為第一銀行使用者可檢視枝節點
+        /// 是否為可檢視
         /// </summary>
-        private bool IsFcb(string state) => IsFcbUser && !IsDraft(state);
+        private bool IsApproval(string state) => APPROVAL.Equals(state) || PUBLISH.Equals(state);
+
+        /// <summary>
+        /// 檢驗是否為第一銀行使用者可檢視之節點
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        private bool IsFcb(string state) => this.IsFcbUser && !IsDraft(state);
+
+        /// <summary>
+        /// 檢驗是否為第一銀行可檢視之節點(同部門)
+        /// </summary>
+        /// <returns></returns>
+        private bool IsFcbView(string state, string code, string user) => this.IsFcbUser && IsApproval(state) && CheckSameDepartment(code, user);
 
         /// <summary>
         /// Gets or sets the size of the page.
@@ -115,6 +150,25 @@ namespace Foundation.WorkBox.Applications.Workflows
                 UrlString urlString = new UrlString(WebUtil.GetRawUrl());
                 return urlString["reload"] == "1";
             }
+        }
+
+        /// <summary>
+        /// 同部門檢查
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        private bool CheckSameDepartment(string code, string user)
+        {
+            if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(user))
+            {
+                var submittedUser = User.FromName(user, false);
+                var process = new Actions.Workflows.EmailAction();
+                var departmentCode = process.ProcessString(code);
+
+                return departmentCode == process.ProcessString(submittedUser?.Profile.GetCustomProperty("DepartmentCode"));
+            }
+            return false;
         }
 
         /// <summary>
@@ -1050,10 +1104,11 @@ namespace Foundation.WorkBox.Applications.Workflows
             bool flag = items.Length > Settings.Workbox.StateCommandFilteringItemThreshold;
             if (items != null)
             {
+                var departmentCode = this.DepartmentCode;
                 foreach (DataUri dataUri in items)
                 {
                     Item item = Context.ContentDatabase.GetItem(dataUri);
-                    if (item != null && item.Access.CanRead() && item.Access.CanReadLanguage() && item.Access.CanWriteLanguage() && (IsFcb(state.StateID) || Context.IsAdministrator || item.Locking.CanLock() || item.Locking.HasLock()))
+                    if (item != null && item.Access.CanRead() && item.Access.CanReadLanguage() && item.Access.CanWriteLanguage() && (Context.IsAdministrator || item.Locking.CanLock() || item.Locking.HasLock() || IsFcbView(state.StateID, departmentCode, item["__Submitted by"])))
                     {
                         list.Add(item);
                         if (!flag)
