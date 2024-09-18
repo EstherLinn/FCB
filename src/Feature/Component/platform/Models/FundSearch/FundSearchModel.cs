@@ -448,6 +448,8 @@ namespace Feature.Wealth.Component.Models.FundSearch
                 public static readonly string AlphaContent = "{B948143F-D632-4CC5-AD86-FF6B77162AE5}";
 
                 public static readonly string StandardDeviationContent = "{53D1B3AD-6E5E-4B34-8B00-00137950C121}";
+
+                public static readonly string AnnualizedStandardDeviationContent = "{5807F079-A06E-4E98-94D8-7DA3BF36E5E6}";
             }
         }
         

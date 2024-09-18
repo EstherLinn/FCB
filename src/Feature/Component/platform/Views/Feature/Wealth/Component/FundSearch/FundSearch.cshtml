@@ -1322,7 +1322,7 @@
                         <th data-filter-switch-columns="3">
                             <div class="c-table__title">
                                 <span>年化標準差</span>
-                                <a href="#standardDeviationContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                <a href="#annualizedStandardDeviationContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
                                 <a href="#" class="o-sorting" data-sorting-column="AnnualizedStandardDeviation"></a>
                             </div>
                         </th>
@@ -1796,7 +1796,7 @@
                         </td>
                         <td class="c-cardTable__body" data-card-table-width="1/2">
                             <div class="c-cardTable__title" data-length="5">年化標準差
-                                <a href="#standardDeviationContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                <a href="#annualizedStandardDeviationContent" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
                             </div>
                             
                             <% if (AnnualizedStandardDeviation != null) { %>
@@ -1893,7 +1893,16 @@
         </div>
     </div>
 </div>
-
+<div id="annualizedStandardDeviationContent" class="c-modal c-modal mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">年化標準差</h2>
+        </header>
+        <div class="c-modal__content">
+            <p>@Model.AnnualizedStandardDeviationContent</p>
+        </div>
+    </div>
+</div>
 <script>
     (function ($, window, document, undefined) {
         function loading() {

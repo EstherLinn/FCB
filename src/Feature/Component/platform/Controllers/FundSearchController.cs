@@ -40,6 +40,7 @@ namespace Feature.Wealth.Component.Controllers
             HtmlString betacontent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.BetaContent);
             HtmlString alphacontent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.AlphaContent);
             HtmlString standardDeviationContent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.StandardDeviationContent);
+            HtmlString annualizedStandardDeviationContent = ItemUtils.Field(dataSourceItem, Template.FundSearch.Fields.AnnualizedStandardDeviationContent);
 
             var topicnames = _tagrepository.GetFundTenTagNameData();
 
@@ -87,7 +88,8 @@ namespace Feature.Wealth.Component.Controllers
                 SharpeContent = sharpecontent,
                 BetaContent = betacontent,
                 AlphaContent = alphacontent,
-                StandardDeviationContent = standardDeviationContent
+                StandardDeviationContent = standardDeviationContent,
+                AnnualizedStandardDeviationContent = annualizedStandardDeviationContent
             };
 
             return View("/Views/Feature/Wealth/Component/FundSearch/FundSearch.cshtml", viewModel);
