@@ -126,7 +126,7 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl() + "?id=" + f.ProductCode,
                     Purchase = vm.IsOnlineSubscriptionAvailability,
-                    AutoCompareButtonHtml = PublicHelpers.CompareButton(null, null, f.ProductCode, f.FundName, InvestTypeEnum.Fund, true).ToString(),
+                    AutoCompareButtonHtml = PublicHelpers.CompareTag(null, null, f.ProductCode, f.FundName, InvestTypeEnum.Fund).ToString(),
                     AutoFocusButtonHtml = PublicHelpers.FocusTag(null, null, f.ProductCode, f.FundName, InvestTypeEnum.Fund).ToString(),
                     AutoSubscribeButtonHtml = PublicHelpers.SubscriptionTag(null, null, f.ProductCode, f.FundName, InvestTypeEnum.Fund).ToString()
                 };

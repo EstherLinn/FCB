@@ -2102,7 +2102,7 @@
                 formatResult: function (suggestion, currentValue) {
                     let detailUrl = suggestion.Data.DetailUrl ? suggestion.Data.DetailUrl : '#';
 
-                     let $compare = ` ${suggestion.Data.AutoCompareButtonHtml} `;
+                    let $compare = `<a ${suggestion.Data.AutoCompareButtonHtml}></a>`;
 
                     // like 按鈕
                     let $like = `<a ${suggestion.Data.AutoFocusButtonHtml}></a>`;
@@ -2114,8 +2114,8 @@
 
                                                                                                             <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
                                                                                                         </a>
-                                                                                                        <div class="c-itemKeyword__collections">${$compare}</div>
                                                                                                         <div class="c-itemKeyword__collections">${$like}</div>
+                                                                                                        <div class="c-itemKeyword__collections">${$compare}</div>
                                                                                                         ${$purchase}
                                                                                                     </div>`;
                 }

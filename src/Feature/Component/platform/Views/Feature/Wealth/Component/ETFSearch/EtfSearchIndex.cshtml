@@ -563,9 +563,9 @@
                         let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
 
                         // 比較 按鈕
-                        let $compare = suggestion.data.compareBtnHtml ? suggestion.data.compareBtnHtml : '';
+                        let $compare = suggestion.data.compareBtnHtml ? `<a ${suggestion.data.compareBtnHtml}></a>` : '';
                         // like 按鈕
-                        let $like = `<a ${suggestion.data.focusBtnHtml}></a>`;
+                        let $like = suggestion.data.focusBtnHtml ? `<a ${suggestion.data.focusBtnHtml}></a>` : '';
                         // 申購按鈕
                         let $purchase = suggestion.data.purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.data.subscribeBtnHtml}>申購</a></div>` : '';
 
@@ -623,7 +623,7 @@
                                     type: 'ETF',
                                     detailUrl: url + '?' + $.param({ id: item.FirstBankCode }),
                                     purchase: item.CanOnlineSubscription,
-                                    compareBtnHtml: item.CompareButtonHtml,
+                                    compareBtnHtml: item.CompareButtonAutoHtml,
                                     focusBtnHtml: item.FocusButtonAutoHtml,
                                     subscribeBtnHtml: item.SubscribeButtonAutoHtml
                                 }

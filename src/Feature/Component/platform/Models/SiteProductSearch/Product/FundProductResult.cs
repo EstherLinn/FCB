@@ -102,6 +102,11 @@ namespace Feature.Wealth.Component.Models.SiteProductSearch.Product
         public string SubscribeButtonHtml { get; set; }
 
         /// <summary>
+        /// Autocomplete 比較按鈕 HTML
+        /// </summary>
+        public string CompareButtonAutoHtml { get; set; }
+
+        /// <summary>
         /// Autocomplete 申購按鈕 HTML
         /// </summary>
         public string SubscribeButtonAutoHtml { get; set; }
