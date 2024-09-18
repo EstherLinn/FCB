@@ -275,10 +275,14 @@ namespace Feature.Wealth.Component.Controllers
                 PersonalInformationLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.PersonalInformationLink).Url,
             };
 
+            var customerInfos = new List<CustomerInfo>();
+
             if (info.IsEmployee && !string.IsNullOrEmpty(info.AdvisrorID))
             {
-                consultModel.CustomerInfosHtmlString = new HtmlString(JsonConvert.SerializeObject(this._consultRepository.GetCustomerInfos(info.AdvisrorID)));
+                customerInfos = this._consultRepository.GetCustomerInfos(info.AdvisrorID).ToList();
             }
+
+            consultModel.CustomerInfosHtmlString = new HtmlString(JsonConvert.SerializeObject(customerInfos));
 
             var subjects = ItemUtils.GetMultiListValueItems(item, Template.ConsultSchedule.Fields.SubjectList);
 
