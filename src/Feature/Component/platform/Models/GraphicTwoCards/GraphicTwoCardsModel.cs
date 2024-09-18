@@ -19,7 +19,7 @@ namespace Feature.Wealth.Component.Models.GraphicTwoCards
         public string ButtonLink2 { get; set; }
         public GraphicTwoCardsModel(Item item)
         {
-            if (item == null)
+            if (item == null || item.TemplateID != Templates.GraphicTwoCardsDatasource.Id)
             {
                 return;
             }
@@ -29,12 +29,12 @@ namespace Feature.Wealth.Component.Models.GraphicTwoCards
             this.Title1 = ItemUtils.GetFieldValue(item, Templates.GraphicTwoCardsDatasource.Fields.Title1);
             this.Content1 = ItemUtils.GetFieldValue(item, Templates.GraphicTwoCardsDatasource.Fields.Content1);
             this.ButtonText1 = ItemUtils.GetFieldValue(item, Templates.GraphicTwoCardsDatasource.Fields.ButtonText1);
-            this.ButtonLink1 = ItemUtils.GeneralLink(item, Templates.GraphicTwoCardsDatasource.Fields.ButtonLink1).Url;
+            this.ButtonLink1 = ItemUtils.GeneralLink(item, Templates.GraphicTwoCardsDatasource.Fields.ButtonLink1)?.Url;
             this.ImageUrl2 = ItemUtils.ImageUrl(item, Templates.GraphicTwoCardsDatasource.Fields.Image2);
             this.Title2 = ItemUtils.GetFieldValue(item, Templates.GraphicTwoCardsDatasource.Fields.Title2);
             this.Content2 = ItemUtils.GetFieldValue(item, Templates.GraphicTwoCardsDatasource.Fields.Content2);
             this.Content2 = ItemUtils.GetFieldValue(item, Templates.GraphicTwoCardsDatasource.Fields.ButtonText2);
-            this.ButtonLink2 = ItemUtils.GeneralLink(item, Templates.GraphicTwoCardsDatasource.Fields.ButtonLink2).Url;
+            this.ButtonLink2 = ItemUtils.GeneralLink(item, Templates.GraphicTwoCardsDatasource.Fields.ButtonLink2)?.Url;
         }
     }
 
