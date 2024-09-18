@@ -1,7 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.HorizontalGraphics;
 using Sitecore.Mvc.Presentation;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -12,11 +11,11 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
-            var childItems = ItemUtils.GetChildren(dataSourceItem).ToList();
+            var childItems = ItemUtils.GetChildren(dataSourceItem);
 
             var items = new List<HorizontalGraphicsModel.HorizontalGraphics>();
 
-            foreach (var childItem in childItems)
+            foreach (var childItem in childItems ?? [])
             {
                 var image = ItemUtils.ImageUrl(childItem, Templates.HorizontalGraphics.Fields.Image);
 

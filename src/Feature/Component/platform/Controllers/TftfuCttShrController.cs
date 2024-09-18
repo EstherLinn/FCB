@@ -1,8 +1,8 @@
-﻿using System.Web.Mvc;
-using Sitecore.Mvc.Presentation;
+﻿using Feature.Wealth.Component.Models.TftfuStg;
 using Feature.Wealth.Component.Repositories;
+using Sitecore.Mvc.Presentation;
+using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Feature.Wealth.Component.Models.TftfuStg;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -12,7 +12,7 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult Index()
         {
-            var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
             var viewModel = new TftfuStgModel { Item = dataSourceItem };
 
             return View("/Views/Feature/Wealth/Component/TftfuCttShr/TftfuCttShr.cshtml", viewModel);

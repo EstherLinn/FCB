@@ -1,7 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.VideoCarousel;
 using Sitecore.Mvc.Presentation;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -16,11 +15,11 @@ namespace Feature.Wealth.Component.Controllers
             var imageUrl = ItemUtils.ImageUrl(dataSourceItem, Templates.VideoCarouselIndex.Fields.Image);
             var linkText = ItemUtils.GetFieldValue(dataSourceItem, Templates.VideoCarouselIndex.Fields.LinkText);
             var linkUrl = ItemUtils.GeneralLink(dataSourceItem, Templates.VideoCarouselIndex.Fields.Link)?.Url;
-            var childItems = ItemUtils.GetChildren(dataSourceItem).ToList();
+            var childItems = ItemUtils.GetChildren(dataSourceItem);
 
             var items = new List<VideoCarouselModel.VideoCarousel>();
 
-            foreach (var childItem in childItems)
+            foreach (var childItem in childItems ?? [])
             {
                 var vimageUrl = ItemUtils.ImageUrl(childItem, Templates.VideoCarouselVideos.Fields.Image);
                 bool vcheckedShowIcon = ItemUtils.IsChecked(childItem, Templates.VideoCarouselVideos.Fields.ShowIcon);

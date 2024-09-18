@@ -24,7 +24,7 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult Index()
         {
-            var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             var etf = _repository.GetFundData();
             var newETF = etf.Where(f => f.ListingDateFormat >= DateTime.Today.AddYears(-1));

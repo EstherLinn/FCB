@@ -5,6 +5,7 @@
 
 @{
     var modelitem = Model.Item;
+    if (modelitem == null) { return; }
 }
 
 <div class="l-mainstage">
@@ -133,19 +134,19 @@
                                                 <div class="l-target__name">
                                                     <a href="@Model.DetailLink?id=@item.ProductCode" class="o-contentLink t-bold u-ellipsis-2" target="_blank">@item.ProductCode @item.FundName</a>
                                                 </div>
-												@if (item.Tags != null)
-												{
-													<div class="l-target__additional">
-														<ul class="l-tag">
-															@foreach (var tag in item.Tags)
-															{
-																<li class="l-tag__item">
-																	<span class="o-tag">@tag</span>
-																</li>
-															}
-														</ul>
-													</div>
-												}
+                                                @if (item.Tags != null)
+                                                {
+                                                    <div class="l-target__additional">
+                                                        <ul class="l-tag">
+                                                            @foreach (var tag in item.Tags)
+                                                            {
+                                                                <li class="l-tag__item">
+                                                                    <span class="o-tag">@tag</span>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                     </td>
@@ -169,11 +170,11 @@
                                             @if (item.PercentageChangeInFundPrice < 0)
                                             {
                                                 <span class="o-fall">@item.PercentageChangeInFundPrice%</span>
-											}
-											else if (item.PercentageChangeInFundPrice == 0)
-											{
-												<span>@item.PercentageChangeInFundPrice%</span>
-											}
+                                            }
+                                            else if (item.PercentageChangeInFundPrice == 0)
+                                            {
+                                                <span>@item.PercentageChangeInFundPrice%</span>
+                                            }
                                             else
                                             {
                                                 <span class="o-rise">@item.PercentageChangeInFundPrice%</span>
@@ -186,11 +187,11 @@
                                             @if (item.SixMonthReturnOriginalCurrency < 0)
                                             {
                                                 <span class="o-fall">@item.SixMonthReturnOriginalCurrency%</span>
-											}
-											else if (item.SixMonthReturnOriginalCurrency == 0)
-											{
-												<span>@item.SixMonthReturnOriginalCurrency%</span>
-											}
+                                            }
+                                            else if (item.SixMonthReturnOriginalCurrency == 0)
+                                            {
+                                                <span>@item.SixMonthReturnOriginalCurrency%</span>
+                                            }
                                             else
                                             {
                                                 <span class="o-rise">@item.SixMonthReturnOriginalCurrency%</span>

@@ -2,6 +2,7 @@
 using Sitecore.Data.Items;
 using System.Collections.Generic;
 using System.Web;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.MarketTrend
 {
@@ -32,6 +33,30 @@ namespace Feature.Wealth.Component.Models.MarketTrend
         public HtmlString BondRelevantETFHtmlString { get; set; }
         public HtmlString IndustryRelevantFundHtmlString { get; set; }
         public HtmlString IndustryRelevantETFHtmlString { get; set; }
+
+        public MarketTrendModel(Item item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            this.Item = item;
+            this.IndexLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.IndexLink)?.Url;
+            this.FundLink = Models.FundDetail.FundRelatedSettingModel.GetFundDetailsUrl();
+            this.ETFLink = Models.ETF.EtfRelatedLinkSetting.GetETFDetailUrl();
+            this.NewsLink = Models.News.MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl();
+            this.MoreNewsButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreNewsButtonText);
+            this.MoreNewsButtonLink = Models.News.MarketNewsRelatedLinkSetting.GetMarketNewsListUrl();
+            this.MoreETFButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreETFButtonText);
+            this.MoreETFButtonLink = Models.ETF.EtfRelatedLinkSetting.GetETFSearchUrl();
+            this.MoreFundButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreFundButtonText);
+            this.MoreFundButtonLink = Models.FundDetail.FundRelatedSettingModel.GetFundSearchUrl();
+            this.ReportTitle = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.ReportTitle);
+            this.ReportText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.ReportText);
+            this.ReportButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.ReportButtonText);
+            this.ReportButtonLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.ReportButtonLink)?.Url;
+        }
     }
 
     public class MarketTrend

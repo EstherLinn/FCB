@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Feature.Wealth.Component.Models.FundDetail;
+using Feature.Wealth.Component.Models.PerformanceFundRank;
+using Feature.Wealth.Component.Repositories;
+using Sitecore.Mvc.Presentation;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Sitecore.Mvc.Presentation;
-using System.Collections.Generic;
-using Feature.Wealth.Component.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Feature.Wealth.Component.Models.FundDetail;
-using Feature.Wealth.Component.Models.PerformanceFundRank;
 using static Feature.Wealth.Component.Models.PerformanceFundRank.PerformanceFundRankModel;
 
 namespace Feature.Wealth.Component.Controllers
@@ -17,7 +17,7 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult Index()
         {
-            var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
             var performanceFund = _performanceFundRankRepository.GetFundData();
             var domesticfunds = performanceFund.Where(f => f.DomesticForeignFundIndicator == "D").ToList();
             var foreignfunds = performanceFund.Where(f => f.DomesticForeignFundIndicator == "O").ToList();

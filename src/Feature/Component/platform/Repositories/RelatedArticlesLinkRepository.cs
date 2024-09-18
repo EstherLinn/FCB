@@ -9,7 +9,7 @@ namespace Feature.Wealth.Component.Repositories
         public RelatedArticlesLinkModel RelatedArticleLink()
         {
             var renderingContext = RenderingContext.CurrentOrNull;
-            var dataSource = renderingContext.ContextItem;
+            var dataSource = renderingContext?.ContextItem;
 
             if (dataSource == null || dataSource.TemplateID != Templates.RelatedArticles.Id)
             {

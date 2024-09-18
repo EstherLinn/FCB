@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Feature.Wealth.Component.Models.FundDetail;
+using Feature.Wealth.Component.Models.NewFund;
+using Feature.Wealth.Component.Repositories;
+using Sitecore.Mvc.Presentation;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Sitecore.Mvc.Presentation;
-using System.Collections.Generic;
-using Feature.Wealth.Component.Repositories;
-using Feature.Wealth.Component.Models.NewFund;
 using static Feature.Wealth.Component.Models.NewFund.NewFundModel;
-using Feature.Wealth.Component.Models.FundDetail;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -16,7 +16,7 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult Index()
         {
-            var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             var fund = _repository.GetOrSetNewFundCache();
             var newfund = fund.Where(f => f.ListingDateFormat >= DateTime.Today.AddYears(-1));
