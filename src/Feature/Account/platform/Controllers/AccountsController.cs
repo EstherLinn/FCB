@@ -202,53 +202,65 @@ namespace Feature.Wealth.Account.Controllers
                             //{
                             step = "Step2 第e個網登入";
                             //網銀登入
-                            var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, id);
-                            if (!isExist)
+                            var IsMoreThanOneUser = _memberRepository.CheckCFMBSELTableMoreThanOneUser("pc", id);
+                            step = "Step2-1 第e個網登入 確認CFMBSEL Table有無重複資料";
+                            if (!IsMoreThanOneUser)
                             {
-                                step = "Step3 第e個網登入 取得理財網db cif客戶資料";
-                                //創建會員
-                                var cifMember = _memberRepository.GetWebBankUserInfo(id);
-                                if (cifMember == null)
+                                var isExist = _memberRepository.CheckUserExists(PlatFormEunm.WebBank, id);
+                                if (!isExist)
                                 {
-                                    step = "Step3-3 第e個網登入 cifMember:null";
-                                    Session["LoginStatus"] = false;
-                                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
-                                }
-                                //創建會員
-                                step = "Step4 第e個網登入 創建會員並登入";
-                                FcbMemberModel member = new FcbMemberModel(
-                                    cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME, cifMember.CIF_E_MAIL_ADDRESS,
-                                    cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
-                                    true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,
-                                    cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
-                                    cifMember.CIF_MAIN_BRANCH,cifMember.IsEmployee, cifMember.IsManager);
+                                    step = "Step3 第e個網登入 取得理財網db cif客戶資料";
+                                    //創建會員
+                                    var cifMember = _memberRepository.GetWebBankUserInfo(id);
+                                    if (cifMember == null)
+                                    {
+                                        step = "Step3-3 第e個網登入 cifMember:null";
+                                        Session["LoginStatus"] = false;
+                                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                                    }
+                                    //創建會員
+                                    step = "Step4 第e個網登入 創建會員並登入";
+                                    FcbMemberModel member = new FcbMemberModel(
+                                        cifMember.CIF_PROMO_CODE, cifMember.CIF_CUST_NAME, cifMember.CIF_E_MAIL_ADDRESS,
+                                        cifMember.CIF_EMP_RISK, cifMember.CIF_AO_EMPName, cifMember.HRIS_EmployeeCode,
+                                        true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,
+                                        cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
+                                        cifMember.CIF_MAIN_BRANCH,cifMember.IsEmployee, cifMember.IsManager);
 
-                                var createdSuccess = _memberRepository.CreateNewMember(member);
-                                if (!createdSuccess)
-                                {
-                                    Session["LoginStatus"] = false;
-                                    Session["ErrorMsg"] = "網銀 登入創建理財網會員有誤，請聯絡資訊處。";
-                                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                                    var createdSuccess = _memberRepository.CreateNewMember(member);
+                                    if (!createdSuccess)
+                                    {
+                                        Session["LoginStatus"] = false;
+                                        Session["ErrorMsg"] = "網銀 登入創建理財網會員有誤，請聯絡資訊處。";
+                                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                                    }
+                                    User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
+                                    SetCustomPropertyAndLogin(member, user);
                                 }
-                                User user = Authentication.BuildVirtualUser("extranet", cifMember.CIF_PROMO_CODE, true);
-                                SetCustomPropertyAndLogin(member, user);
+                                else
+                                {
+                                    step = "Step3 第e個網登入 已有會員直接登入";
+                                    //登入
+                                    FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, id);
+                                    if (member == null)
+                                    {
+                                        step = $"Step3 理財網已有會員，直接登入，取得會員資料有誤";
+                                        Session["LoginStatus"] = false;
+                                        Session["ErrorMsg"] = "理財網取得會員資料有誤，請聯絡資訊處";
+                                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                                    }
+                                    User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
+                                    SetCustomPropertyAndLogin(member, user);
+                                }
+                                //}
                             }
                             else
                             {
-                                step = "Step3 第e個網登入 已有會員直接登入";
-                                //登入
-                                FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, id);
-                                if (member == null)
-                                {
-                                    step = $"Step3 理財網已有會員，直接登入，取得會員資料有誤";
-                                    Session["LoginStatus"] = false;
-                                    Session["ErrorMsg"] = "理財網取得會員資料有誤，請聯絡資訊處";
-                                    return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
-                                }
-                                User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
-                                SetCustomPropertyAndLogin(member, user);
+                                Logger.Account.Info($"個網登入回理財網 {step} ,CFMBSEL Table有重複資料 id={id}");
+                                Session["LoginStatus"] = false;
+                                Session["ErrorMsg"] = "理財網有重複會員資料，請聯絡資訊處確認";
+                                return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                             }
-                            //}
                         }
                         else
                         {
@@ -263,8 +275,6 @@ namespace Feature.Wealth.Account.Controllers
                 }
                 else
                 {
-                    Session["LoginStatus"] = false;
-                    Session["ErrorMsg"] = "理財網登入佇列序號過期，請嘗試重新登入。";
                     step = "Step 1-1 取得 cache queueId, queueId no contain,queueId =" + queueId;
                 }
             }
@@ -299,6 +309,10 @@ namespace Feature.Wealth.Account.Controllers
                 {
                     step = $"Step2 promotionCode和rtCode通過，確認會員是否存在理財網";
                     var code = qs["promotionCode"];
+                    var IsMoreThanOneUser = _memberRepository.CheckCFMBSELTableMoreThanOneUser("app", code);
+                    step = $"Step2 promotionCode和rtCode通過，確認CFMBSEL Table是否有重複資料";
+                    if (!IsMoreThanOneUser)
+                    {                     
                     var isExists = _memberRepository.CheckAppUserExists(PlatFormEunm.WebBank, code);
                     User user = Authentication.BuildVirtualUser("extranet", code, true);
                     if (!isExists)
@@ -342,6 +356,13 @@ namespace Feature.Wealth.Account.Controllers
                         }
                         SetCustomPropertyAndLogin(member, user);
                     }
+                    }
+                    else
+                    {
+                        Logger.Account.Info($"網銀登入byApp {step} ,CFMBSEL Table有重複資料 promotionCode={code}");
+                        Session["LoginStatus"] = false;
+                        Session["ErrorMsg"] = "理財網有重複會員資料，請聯絡資訊處確認";
+                    }
                 }
                 else
                 {
@@ -360,7 +381,6 @@ namespace Feature.Wealth.Account.Controllers
             finally
             {
                 Logger.Account.Info($"網銀登入byApp {step} , promotionCode={qs["promotionCode"]} &&rtCode={qs["rtCode"]} ");
-
             }
             return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
         }
