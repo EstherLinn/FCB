@@ -35,8 +35,7 @@ namespace Feature.Wealth.Component.Repositories
 
             var _tagsRepository = new FundTagRepository();
             var tags = _tagsRepository.GetFundTagData();
-
-            foreach (var item in results)
+            foreach (var item in results ?? Enumerable.Empty<Funds>())
             {
                 ProcessFundFilterDatas(item);
                 item.Tags = [];
@@ -45,7 +44,6 @@ namespace Feature.Wealth.Component.Repositories
                                    select tagModel.TagName);
                 fundItems.Add(item);
             }
-
             return fundItems;
 
         }
@@ -111,7 +109,7 @@ namespace Feature.Wealth.Component.Repositories
 
             var results = DbManager.Custom.ExecuteIList<ETFs>(sql, null, CommandType.Text);
 
-            foreach (var item in results)
+            foreach (var item in results ?? Enumerable.Empty<ETFs>())
             {
                 item.ProductName = item.ProductName.Normalize(NormalizationForm.FormKC);
                 etfsItems.Add(item);
@@ -199,8 +197,7 @@ namespace Feature.Wealth.Component.Repositories
                    ";
 
             var results = DbManager.Custom.ExecuteIList<USStock>(sql, null, CommandType.Text);
-
-            for (int i = 0; i < results.Count; i++)
+            for (int i = 0; i < (results?.Count ?? 0); i++)
             {
                 var uSStock = results[i];
                 uSStock.DetailLink = USStockRelatedLinkSetting.GetUSStockDetailUrl() + "?id=" + uSStock.FirstBankCode;
