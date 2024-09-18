@@ -8,7 +8,9 @@ using Sitecore.Configuration;
 using System;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Logging;
-
+using Foundation.Wealth.Extensions;
+using System.Reflection;
+using System.Diagnostics;
 namespace Feature.Wealth.Component.Repositories
 {
     /// <summary>
@@ -26,35 +28,30 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetSameLevelFund(string fundId)
         {
             JObject result = null;
+            var url = string.Empty;
             try
             {
-                var request = await _route.
+                url = _route.
+                    AppendPathSegments("api", "fund", fundId, "most-recent-five-year-roi-and-fee");
+                var request = await url.
                     AppendPathSegments("api", "fund", fundId, "most-recent-five-year-roi-and-fee").
                     WithOAuthBearerToken(_token).
                     AllowAnyHttpStatus().
-                    GetAsync();
+                    GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url);
 
-                if (request.StatusCode < 300)
+                var resp = await request.GetStringAsync();
+                if (!string.IsNullOrEmpty(resp))
                 {
-                    var resp = await request.GetStringAsync();
-                    if (!string.IsNullOrEmpty(resp))
-                    {
-                        result = JObject.Parse(resp);
-                    }
-                }
-                else
-                {
-                    var error = await request.GetStringAsync();
-                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    result = JObject.Parse(resp);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex.Message);
+                DjMoneyExceptionLog(ex, url);
             }
             return result;
         }
@@ -62,40 +59,35 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetGetCloseYearPerformance(string fundId)
         {
             JObject result = null;
+            var url = string.Empty;
             try
             {
-                var request = await _route.
-               AppendPathSegments("api", "fund", fundId, "roi-duringdate").
-               SetQueryParams(new
-               {
-                   startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddDays(-1).AddYears(-1)).ToString("yyyy/MM/dd"),
-                   enddate = Convert.ToDateTime(_today).AddDays(-1).ToString("yyyy/MM/dd"),
-                   getTWD = 0
-               }).
-               WithOAuthBearerToken(_token).
-               AllowAnyHttpStatus().
-               GetAsync();
-                if (request.StatusCode < 300)
+                url = _route.
+                        AppendPathSegments("api", "fund", fundId, "roi-duringdate").
+                        SetQueryParams(new
+                        {
+                            startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddDays(-1).AddYears(-1)).ToString("yyyy/MM/dd"),
+                            enddate = Convert.ToDateTime(_today).AddDays(-1).ToString("yyyy/MM/dd"),
+                            getTWD = 0
+                        });
+                var request = await url.
+                WithOAuthBearerToken(_token).
+                AllowAnyHttpStatus().
+                GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url);
+
+                var resp = await request.GetStringAsync();
+                if (!string.IsNullOrEmpty(resp))
                 {
-                    var resp = await request.GetStringAsync();
-                    if (!string.IsNullOrEmpty(resp))
-                    {
-                        result = JObject.Parse(resp);
-                    }
-                }
-                else
-                {
-                    var error = await request.GetStringAsync();
-                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    result = JObject.Parse(resp);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex.Message);
+                DjMoneyExceptionLog(ex, url);
             }
             return result;
         }
@@ -103,37 +95,32 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetDocLink(string fundId, string idx)
         {
             JObject result = null;
+            var url = string.Empty;
             try
             {
-                var request = await _route.
-               AppendPathSegments("api", "fund", fundId, "funddoc").
-               SetQueryParams(new
-               {
-                   idx = idx,
-               }).WithOAuthBearerToken(_token).
+                url = _route.
+                AppendPathSegments("api", "fund", fundId, "funddoc").
+                SetQueryParams(new
+                {
+                    idx,
+                });
+                var request = await url
+               .WithOAuthBearerToken(_token).
                AllowAnyHttpStatus().
-               GetAsync();
-                if (request.StatusCode < 300)
+               GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url);
+                var resp = await request.GetStringAsync();
+                if (!string.IsNullOrEmpty(resp))
                 {
-                    var resp = await request.GetStringAsync();
-                    if (!string.IsNullOrEmpty(resp))
-                    {
-                        result = JObject.Parse(resp);
-                    }
-                }
-                else
-                {
-                    var error = await request.GetStringAsync();
-                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    result = JObject.Parse(resp);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex.Message);
+                DjMoneyExceptionLog(ex, url);
             }
             return result;
         }
@@ -141,38 +128,33 @@ namespace Feature.Wealth.Component.Repositories
         public JObject GetDocLink2(string fundId, string idx)
         {
             JObject result = null;
+            var url = string.Empty;
             try
             {
-                var request = _route.
+                url = _route.
                     AppendPathSegments("api", "fund", fundId, "funddoc").
                     SetQueryParams(new
                     {
                         idx = idx,
-                    }).WithOAuthBearerToken(_token).
+                    });
+                var request = url
+                    .WithOAuthBearerToken(_token).
                     AllowAnyHttpStatus().
-                    GetAsync().Result;
+                    GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url).
+                    ReceiveString().Result;
 
-                if (request.StatusCode < 300)
+                if (!string.IsNullOrEmpty(request))
                 {
-                    var resp = request.GetStringAsync().Result;
-                    if (!string.IsNullOrEmpty(resp))
-                    {
-                        result = JObject.Parse(resp);
-                    }
-                }
-                else
-                {
-                    var error = request.GetStringAsync().Result;
-                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    result = JObject.Parse(request);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex.Message);
+                DjMoneyExceptionLog(ex, url);
             }
             return result;
         }
@@ -180,36 +162,30 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetRuleText(string fundId, string type, string indicator)
         {
             JObject result = null;
+            var url = string.Empty;
             try
             {
                 var route = indicator == nameof(FundEnum.D) ? "fundtraderule" : "wfundtraderule";
                 var isOverseas = indicator == nameof(FundEnum.D) ? "domestic" : "foreign";
-                var request = await _route.
-                 AppendPathSegments("api", "fund", isOverseas, fundId, route, type).
+                url = _route.
+                 AppendPathSegments("api", "fund", isOverseas, fundId, route, type);
+                var request = await url.
                  WithOAuthBearerToken(_token).
                  AllowAnyHttpStatus().
-                 GetAsync();
-                if (request.StatusCode < 300)
+                 GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url);
+                var resp = await request.GetStringAsync();
+                if (!string.IsNullOrEmpty(resp))
                 {
-                    var resp = await request.GetStringAsync();
-                    if (!string.IsNullOrEmpty(resp))
-                    {
-                        result = JObject.Parse(resp);
-                    }
-                }
-                else
-                {
-                    var error = await request.GetStringAsync();
-                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    result = JObject.Parse(resp);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex.Message);
+                DjMoneyExceptionLog(ex, url);
             }
             return result;
         }
@@ -219,6 +195,7 @@ namespace Feature.Wealth.Component.Repositories
             JObject result = null;
             var route = string.Empty;
             FlurlResponse request = null;
+            var url = string.Empty;
             try
             {
                 switch (trend.ToLower())
@@ -267,61 +244,60 @@ namespace Feature.Wealth.Component.Repositories
                 switch (trend.ToLower())
                 {
                     case nameof(FundRateTrendEnum.ori):
-                        request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
+                        url = _route.AppendPathSegments("api", "fund", fundId, route)
                          .SetQueryParams(new
                          {
                              startdate = startdate,
                              enddate = enddate,
                              getTWD = 0
-                         }).WithOAuthBearerToken(_token).
+                         });
+                        request = (FlurlResponse)await url.
+                            WithOAuthBearerToken(_token).
                             AllowAnyHttpStatus().
-                            GetAsync();
+                            GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url);
                         break;
 
                     case nameof(FundRateTrendEnum.twd):
-                        request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
+                        url = _route.AppendPathSegments("api", "fund", fundId, route)
                        .SetQueryParams(new
                        {
                            startdate = startdate,
                            enddate = enddate,
                            getTWD = 1
-                       }).WithOAuthBearerToken(_token).
+                       });
+                        request = (FlurlResponse)await url.
+                            WithOAuthBearerToken(_token).
                             AllowAnyHttpStatus().
-                            GetAsync();
+                            GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url);
                         break;
 
                     case nameof(FundRateTrendEnum.networth):
-                        request = (FlurlResponse)await _route.AppendPathSegments("api", "fund", fundId, route)
+                        url = _route.AppendPathSegments("api", "fund", fundId, route)
                        .SetQueryParams(new
                        {
                            startdate = startdate,
                            enddate = enddate,
-                       }).WithOAuthBearerToken(_token).
+                       });
+                        request = (FlurlResponse)await url.
+                            WithOAuthBearerToken(_token).
                             AllowAnyHttpStatus().
-                            GetAsync();
+                            GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url);
                         break;
                 }
-                if (request.StatusCode < 300)
+
+                var resp = await request.GetStringAsync();
+                if (!string.IsNullOrEmpty(resp))
                 {
-                    var resp = await request.GetStringAsync();
-                    if (!string.IsNullOrEmpty(resp))
-                    {
-                        result = JObject.Parse(resp);
-                    }
-                }
-                else
-                {
-                    var error = await request.GetStringAsync();
-                    this._log.Info("StatusCode :" + request.StatusCode + "response :" + error);
+                    result = JObject.Parse(resp);
                 }
             }
             catch (FlurlHttpException ex)
             {
-                this._log.Error($"Error returned from {ex.Call.Request.Url} , Error Message : {ex.Message}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex.Message);
+                DjMoneyExceptionLog(ex, url);
             }
             return result;
         }
@@ -331,14 +307,15 @@ namespace Feature.Wealth.Component.Repositories
         public JObject GetBondClass()
         {
             JObject result = null;
-
+            var url = string.Empty;
             try
             {
-                var request = _route.
-                AppendPathSegments("api", "bond", "Class").
+                url = _route.
+                AppendPathSegments("api", "bond", "Class");
+                var request = url.
                 WithOAuthBearerToken(_token).
                 AllowAnyHttpStatus().
-                GetAsync().
+                GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url).
                 ReceiveString().Result;
 
                 if (!string.IsNullOrEmpty(request))
@@ -348,13 +325,11 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                var status = ex.StatusCode;
-                var resp = ex.GetResponseStringAsync().Result;
-                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex);
+                DjMoneyExceptionLog(ex, url);
             }
 
             return result;
@@ -363,14 +338,15 @@ namespace Feature.Wealth.Component.Repositories
         public JObject GetGlobalInedxRelevantInformation(string indexCode, int type)
         {
             JObject result = null;
-
+            var url = string.Empty;
             try
             {
-                var request = _route.
-                AppendPathSegments("api", "Finance", "finance", "Related", indexCode, type).
+                url = _route.
+                AppendPathSegments("api", "Finance", "finance", "Related", indexCode, type);
+                var request = url.
                 WithOAuthBearerToken(_token).
                 AllowAnyHttpStatus().
-                GetAsync().
+                GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url).
                 ReceiveString().Result;
 
                 if (!string.IsNullOrEmpty(request))
@@ -380,15 +356,12 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                var status = ex.StatusCode;
-                var resp = ex.GetResponseStringAsync().Result;
-                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
-                throw ex;
+                DjMoneyExceptionLog(ex, url);
+
             }
             catch (Exception ex)
             {
-                this._log.Error(ex);
-                throw ex;
+                DjMoneyExceptionLog(ex, url);
             }
 
             return result;
@@ -397,14 +370,15 @@ namespace Feature.Wealth.Component.Repositories
         public JObject GetGlobalInedxPriceData(string indexCode, string cycle)
         {
             JObject result = null;
-
+            var url = string.Empty;
             try
             {
-                var request = _route.
-                AppendPathSegments("api", "Finance", "finance", "Price", indexCode, cycle).
+                url = _route.
+                AppendPathSegments("api", "Finance", "finance", "Price", indexCode, cycle);
+                var request = url.
                 WithOAuthBearerToken(_token).
                 AllowAnyHttpStatus().
-                GetAsync().
+                GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url).
                 ReceiveString().Result;
 
                 if (!string.IsNullOrEmpty(request))
@@ -414,37 +388,47 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                var status = ex.StatusCode;
-                var resp = ex.GetResponseStringAsync().Result;
-                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
-                throw ex;
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex);
-                throw ex;
+                DjMoneyExceptionLog(ex, url);
             }
-
             return result;
         }
 
         public JObject GetMarketNewsData(string id, string count, string startDatetime, string endDatetime)
         {
             JObject result = null;
-            var request = _route.
+            var url = string.Empty;
+            try
+            {
+                url = _route.
                 AppendPathSegments("api", "News", "kmdjnews", "type", id, count).
                 SetQueryParams(new
                 {
                     StartDatetime = startDatetime,
                     EndDatetime = endDatetime
-                }).
-                WithOAuthBearerToken(_token).
-                GetAsync().
-                ReceiveString().Result;
+                });
+                var request = url.
+                    WithOAuthBearerToken(_token).
+                    AllowAnyHttpStatus().
+                    GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url).
+                    ReceiveString().Result;
 
-            if (!string.IsNullOrEmpty(request))
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
+
+            }
+            catch (FlurlHttpException ex)
             {
-                result = JObject.Parse(request);
+                DjMoneyExceptionLog(ex, url);
+            }
+            catch (Exception ex)
+            {
+                DjMoneyExceptionLog(ex, url);
             }
             return result;
         }
@@ -452,15 +436,29 @@ namespace Feature.Wealth.Component.Repositories
         public JObject GetMarketNewsDetailData(string guid)
         {
             JObject result = null;
-            var request = _route.
-               AppendPathSegments("api", "News", "kmdjnews", "content", guid).
-               WithOAuthBearerToken(_token).
-               GetAsync().
-               ReceiveString().Result;
-
-            if (!string.IsNullOrEmpty(request))
+            var url = string.Empty;
+            try
             {
-                result = JObject.Parse(request);
+                url = _route.
+                   AppendPathSegments("api", "News", "kmdjnews", "content", guid);
+                var request = url.
+                   WithOAuthBearerToken(_token).
+                   AllowAnyHttpStatus().
+                   GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url).
+                   ReceiveString().Result;
+
+                if (!string.IsNullOrEmpty(request))
+                {
+                    result = JObject.Parse(request);
+                }
+            }
+            catch (FlurlHttpException ex)
+            {
+                DjMoneyExceptionLog(ex, url);
+            }
+            catch (Exception ex)
+            {
+                DjMoneyExceptionLog(ex, url);
             }
             return result;
         }
@@ -479,23 +477,28 @@ namespace Feature.Wealth.Component.Repositories
         {
             JObject result = null;
             var request = string.Empty;
+            var url = string.Empty;
             try
             {
                 switch (type)
                 {
                     case EtfReturnTrend.MarketPrice:
-                        request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
-                            .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 1 })
+                        url = _route.AppendPathSegments("api", "etf", "getreturnchartdata")
+                            .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 1 });
+                        request = await url
                             .WithOAuthBearerToken(_token)
-                            .GetAsync()
+                            .AllowAnyHttpStatus()
+                            .GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url)
                             .ReceiveString();
                         break;
 
                     case EtfReturnTrend.NetAssetValue:
-                        request = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
-                            .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 2 })
+                        url = _route.AppendPathSegments("api", "etf", "getreturnchartdata")
+                            .SetQueryParams(new { etfId = etfId, startdate = startdate, enddate = enddate, flag = 2 });
+                        request = await url
                             .WithOAuthBearerToken(_token)
-                            .GetAsync()
+                            .AllowAnyHttpStatus()
+                            .GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url)
                             .ReceiveString();
                         break;
                 }
@@ -507,13 +510,11 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                var status = ex.StatusCode;
-                var resp = await ex.GetResponseStringAsync();
-                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex);
+                DjMoneyExceptionLog(ex, url);
             }
             return result;
         }
@@ -526,12 +527,15 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetPerformanceTrend(string etfId)
         {
             JObject result = null;
+            var url = string.Empty;
             try
             {
-                var response = await _route.AppendPathSegments("api", "etf", "getreturnchartdata")
-                    .SetQueryParams(new { etfId = etfId, startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddYears(-1)).ToString("yyyy/MM/dd"), enddate = _today })
+                url = _route.AppendPathSegments("api", "etf", "getreturnchartdata")
+                    .SetQueryParams(new { etfId = etfId, startdate = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow.AddYears(-1)).ToString("yyyy/MM/dd"), enddate = _today });
+                var response = await url
                     .WithOAuthBearerToken(_token)
-                    .GetAsync()
+                    .AllowAnyHttpStatus()
+                    .GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url)
                     .ReceiveString();
 
                 if (!string.IsNullOrEmpty(response))
@@ -541,13 +545,11 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                var status = ex.StatusCode;
-                var resp = await ex.GetResponseStringAsync();
-                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex);
+                DjMoneyExceptionLog(ex, url);
             }
 
             return result;
@@ -562,7 +564,7 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetKLineChart(string etfId, string type)
         {
             var period = string.Empty;
-
+            var url = string.Empty;
             if (Enum.TryParse(type, false, out EtfKLineChart kLineType))
             {
                 period = Xcms.Sitecore.Foundation.Basic.Extensions.EnumUtil.GetEnumDescription(kLineType);
@@ -571,10 +573,12 @@ namespace Feature.Wealth.Component.Repositories
             JObject result = null;
             try
             {
-                var response = await _route.AppendPathSegments("api", "etf", "kline")
-                    .SetQueryParams(new { etfId = etfId, period = period })
+                url = _route.AppendPathSegments("api", "etf", "kline")
+                    .SetQueryParams(new { etfId = etfId, period = period });
+                var response = await url
                     .WithOAuthBearerToken(_token)
-                    .GetAsync()
+                    .AllowAnyHttpStatus()
+                    .GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url)
                     .ReceiveString();
 
                 if (!string.IsNullOrEmpty(response))
@@ -584,13 +588,11 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                var status = ex.StatusCode;
-                var resp = await ex.GetResponseStringAsync();
-                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex);
+                DjMoneyExceptionLog(ex, url);
             }
 
             return result;
@@ -612,12 +614,15 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetEtfDocLink(string etfId, string idx)
         {
             JObject result = null;
+            var url = string.Empty;
             try
             {
-                var response = await _route.AppendPathSegments("api", "etf", etfId, "etfdoc")
-                    .SetQueryParams(new { idx = idx })
+                url = _route.AppendPathSegments("api", "etf", etfId, "etfdoc")
+                    .SetQueryParams(new { idx = idx });
+                var response = await url
                     .WithOAuthBearerToken(_token)
-                    .GetAsync()
+                    .AllowAnyHttpStatus()
+                    .GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url)
                     .ReceiveString();
 
                 if (!string.IsNullOrEmpty(response))
@@ -627,13 +632,11 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                var status = ex.StatusCode;
-                var resp = await ex.GetResponseStringAsync();
-                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                DjMoneyExceptionLog(ex, url);
             }
             catch (Exception ex)
             {
-                this._log.Error(ex);
+                DjMoneyExceptionLog(ex, url);
             }
 
             return result;
@@ -648,12 +651,15 @@ namespace Feature.Wealth.Component.Repositories
         public async Task<JObject> GetBenchmarkROIDuringDate(string id, string startdate, string enddate)
         {
             JObject result = null;
+            var url = string.Empty;
             try
             {
-                var response = await _route.AppendPathSegments("api", "fund", id, "benchmark-roi-duringdate-all")
-                    .SetQueryParams(new { startdate = startdate, enddate = enddate })
+                url = _route.AppendPathSegments("api", "fund", id, "benchmark-roi-duringdate-all")
+                    .SetQueryParams(new { startdate = startdate, enddate = enddate });
+                var response = await url
                     .WithOAuthBearerToken(_token)
-                    .GetAsync()
+                    .AllowAnyHttpStatus()
+                    .GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url)
                     .ReceiveString();
 
                 if (!string.IsNullOrEmpty(response))
@@ -663,16 +669,30 @@ namespace Feature.Wealth.Component.Repositories
             }
             catch (FlurlHttpException ex)
             {
-                var status = ex.StatusCode;
-                var resp = await ex.GetResponseStringAsync();
-                this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                DjMoneyExceptionLog(ex, url);
+
             }
             catch (Exception ex)
             {
-                this._log.Error(ex);
+                DjMoneyExceptionLog(ex, url);
             }
 
             return result;
+        }
+
+        private void DjMoneyExceptionLog(Exception ex, string requestUrl)
+        {
+            MethodBase method = (new StackFrame(1)).GetMethod();
+            if (ex is FlurlHttpException flurlEx)
+            {
+                var status = flurlEx.StatusCode;
+                var resp = flurlEx.GetResponseStringAsync();
+                this._log.Error($"[Function] {method.DeclaringType.FullName} {Environment.NewLine} [Request Url] {requestUrl} {Environment.NewLine},Error returned  from {flurlEx.Call.Request.Url} {Environment.NewLine} [Message] {ex.ToString()} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+            }
+            else
+            {
+                this._log.Error($"[Function] {method.DeclaringType.FullName} {Environment.NewLine} [Request Url] {requestUrl} {Environment.NewLine} [Exception] {ex.ToString()}");
+            }
         }
     }
 }
