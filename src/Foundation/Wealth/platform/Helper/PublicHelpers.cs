@@ -37,6 +37,51 @@ namespace Foundation.Wealth.Helper
             }
             return MvcHtmlString.Create(builder.ToString(TagRenderMode.Normal));
         }
+
+        /// <summary>
+        /// 比較按鈕attributes
+        /// </summary>
+        /// <param name="helper"></param>
+        /// <param name="attributes"></param>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="investType"></param>
+        /// <returns></returns>
+        public static HtmlString CompareTag(this HtmlHelper helper, object attributes, string id, string name, object investType)
+        {
+            StringBuilder sbBuilder = new StringBuilder();
+            sbBuilder.Append(string.Format("href='{0}' ", "#"));
+            sbBuilder.Append("eh-compare ");
+            sbBuilder.Append(string.Format("eh-compare-type='{0}' ", investType.ToString()));
+            sbBuilder.Append(string.Format("eh-compare-id='{0}' ", id));
+            sbBuilder.Append(string.Format("eh-compare-name='{0}' ", name));
+            sbBuilder.Append(string.Format("data-eh='{0}' ", "compare-init,compare-click"));
+            sbBuilder.Append(string.Format("data-msg='{0}' ", "加入比較|取消比較"));
+            sbBuilder.Append(string.Format("data-ia='{0}' ", "true"));
+            sbBuilder.Append(string.Format("eh-compare-add='{0}' ", "false"));
+
+            if (attributes != null)
+            {
+                var attr = HtmlHelper.AnonymousObjectToHtmlAttributes(attributes);
+                foreach (var item in attr)
+                {
+                    sbBuilder.Append(string.Format("{0}='{1}' ", item.Key, item.Value));
+                }
+                if (!attr.ContainsKey("class"))
+                {
+                    sbBuilder.Append(string.Format("class='{0}' ", "o-statusBtn o-statusBtn--compare"));
+                }
+            }
+            else
+            {
+                //defalut class
+                sbBuilder.Append(string.Format("class='{0}' ", "o-statusBtn o-statusBtn--compare"));
+            }
+
+            return new HtmlString(sbBuilder.ToString());
+        }
+
+
         /// <summary>
         /// 關注按鈕
         /// </summary>
