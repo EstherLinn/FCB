@@ -198,6 +198,7 @@ namespace Foundation.WorkBox.Actions.Workflows
                         var workboxUrlStringWithoutQuery = workboxUrlString.GetUrl();
                         workboxUrlString.Append("sc_bw", "1");
                         workboxUrlString.Append("reload", "1");
+                        workboxUrlString.Append("sc_lang", "zh-TW");
                         var workboxUrl = workboxUrlString.GetUrl();
                         switch (statusName)
                         {
