@@ -18,5 +18,6 @@ namespace Feature.Wealth.Component.Models.FundSearch
         public HtmlString BetaContent { get; set; }
         public HtmlString AlphaContent { get; set; }
         public HtmlString StandardDeviationContent { get; set; }
+        public HtmlString AnnualizedStandardDeviationContent { get; set; }
     }
 }
