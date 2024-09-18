@@ -109,6 +109,44 @@ namespace Feature.Wealth.Account.Repositories
         }
 
         /// <summary>
+        /// 確認CFMBSEL Table User是否超過一人
+        /// </summary>
+        /// <param name="PcOrApp">個網或app</param>
+        /// <param name="promotionCodeOrId">6碼或id</param>
+        /// <returns></returns>
+        public bool CheckCFMBSELTableMoreThanOneUser(string PcOrApp, string promotionCodeOrId)
+        {
+            bool moreThanOne = false;
+
+            string CFMBSEL = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CFMBSEL);
+            //個網登入用id
+            if (PcOrApp.ToLower() == "pc")
+            {
+                string strSql = $@" Declare @@id varchar(33) = @id
+                                     Select COUNT(PROMOTION_CODE) From {CFMBSEL} WITH (NOLOCK) WHERE CUST_ID = @@id";
+                var para = new
+                {
+                    id = new DbString() { Value = promotionCodeOrId, IsAnsi = true, Length = 33 },
+                };
+                var count = DbManager.Custom.ExecuteScalar<int>(strSql, para, commandType: System.Data.CommandType.Text);
+                moreThanOne = count > 1;
+            }
+            else
+            {
+                //App用6碼
+                string strSql = $@" Declare @@promotionCode varchar(24) = @promotionCode
+                                     Select COUNT(CUST_ID) From {CFMBSEL} WITH (NOLOCK)  WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = @@promotionCode";
+                var para = new
+                {
+                    promotionCode = new DbString() { Value = promotionCodeOrId, IsAnsi = true, Length = 24 },
+                };
+                var count = DbManager.Custom.ExecuteScalar<int>(strSql, para, commandType: System.Data.CommandType.Text);
+                moreThanOne = count > 1;
+            }
+            return moreThanOne;
+        }
+
+        /// <summary>
         /// 創建會員
         /// </summary>
         /// <param name="fcbMemberModel"></param>
