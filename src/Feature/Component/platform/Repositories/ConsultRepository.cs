@@ -179,6 +179,11 @@ namespace Feature.Wealth.Component.Repositories
 
             var result = this._dbConnection.Query<Branch>(sql, new { EmployeeCode = employeeCode })?.FirstOrDefault() ?? new Branch();
 
+            if (!string.IsNullOrEmpty(result.BranchName))
+            {
+                result.BranchName = result.BranchName.Trim().Replace("    ", string.Empty).Replace("　", string.Empty);
+            }
+
             return result;
         }
 
@@ -367,16 +372,16 @@ namespace Feature.Wealth.Component.Repositories
             string CFMBSEL = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CFMBSEL);
             string HRIS = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.HRIS);
 
-            string sql = $@"SELECT
-                           A.CIF_ID AS CIF_ID,
-                           A.CIF_CUST_NAME AS CustomerName,
-                           C.WebBankId AS WebBankId,
-                           D.OfficeOrBranchName AS BranchName
-                           FROM {CIF} AS A WITH (NOLOCK)
-                           LEFT JOIN {CFMBSEL} AS B WITH (NOLOCK) ON A.CIF_ID = B.CUST_ID
-                           LEFT JOIN FCB_Member AS C WITH (NOLOCK) ON B.PROMOTION_CODE COLLATE Latin1_General_CS_AS = C.WebBankId
-                           LEFT JOIN {HRIS} AS D WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = D.EmployeeCode
-                           WHERE C.WebBankId IS NOT NULL AND D.EmployeeCode IS NOT NULL AND D.EmployeeCode = @EmployeeCode";
+            string sql = $@"SELECT DISTINCT
+                            A.CIF_ID AS CIF_ID,
+                            A.CIF_CUST_NAME AS CustomerName,
+                            C.WebBankId AS WebBankId,
+                            D.OfficeOrBranchName AS BranchName
+                            FROM {CIF} AS A WITH (NOLOCK)
+                            LEFT JOIN {CFMBSEL} AS B WITH (NOLOCK) ON A.CIF_ID = B.CUST_ID
+                            LEFT JOIN FCB_Member AS C WITH (NOLOCK) ON B.PROMOTION_CODE COLLATE Latin1_General_CS_AS = C.WebBankId
+                            LEFT JOIN {HRIS} AS D WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(A.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = D.EmployeeCode
+                            WHERE C.WebBankId IS NOT NULL AND D.EmployeeCode IS NOT NULL AND D.EmployeeCode = @EmployeeCode";
 
             var result = this._dbConnection.Query<CustomerInfo>(sql, new { EmployeeCode = employeeCode })?.ToList() ?? new List<CustomerInfo>();
 
@@ -387,7 +392,16 @@ namespace Feature.Wealth.Component.Repositories
                     if (result[i].CIF_ID.Length >= 10)
                     {
                         result[i].CIF_ID = result[i].CIF_ID.Substring(0, 3) + "XXX" + result[i].CIF_ID.Substring(6, 4);
-                        result[i].CustomerName = result[i].CustomerName.Trim();
+                    }
+
+                    if (!string.IsNullOrEmpty(result[i].CustomerName))
+                    {
+                        result[i].CustomerName = result[i].CustomerName.Trim().Replace("    ", string.Empty).Replace("　", string.Empty);
+                    }
+
+                    if (!string.IsNullOrEmpty(result[i].BranchName))
+                    {
+                        result[i].BranchName = result[i].BranchName.Trim().Replace("    ", string.Empty).Replace("　", string.Empty);
                     }
                 }
             }
