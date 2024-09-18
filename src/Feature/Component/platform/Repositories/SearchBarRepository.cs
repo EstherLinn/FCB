@@ -266,7 +266,7 @@ namespace Feature.Wealth.Component.Repositories
 
         #region 國外債券
 
-        public IEnumerable<BondListDto> GetBondsList()
+        public IEnumerable<SafeBondListDto> GetBondsList()
         {
             string BondList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondList);
             string BondNav = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.BondNav);
@@ -290,7 +290,7 @@ namespace Feature.Wealth.Component.Repositories
 
             if (!bonds.Any())
             {
-                return new List<BondListDto>();
+                return new List<SafeBondListDto>();
             }
 
             var minDate = bonds
@@ -308,13 +308,23 @@ namespace Feature.Wealth.Component.Repositories
 
             for (int i = 0; i < bonds.Count; i++)
             {
-                bonds[i] = DataFormat(_bondHistoryPrices, bonds[i]);
+                DataFormat(_bondHistoryPrices, bonds[i]);
             }
 
-            return bonds.OrderByDescending(i => i.UpsAndDownsMonth);
+            var collection = bonds.OrderByDescending(i => i.UpsAndDownsMonth);
+
+            var config = new TypeAdapterConfig();
+            config.ForType<BondListDto, SafeBondListDto>()
+                .AfterMapping((src, dest) =>
+                {
+                    src.WithoutSensitiveData();
+                });
+
+            var result = collection.Adapt<IEnumerable<SafeBondListDto>>(config);
+            return result;
         }
 
-        private BondListDto DataFormat(IList<BondHistoryPrice> _bondHistoryPrices, BondListDto bond)
+        private void DataFormat(IList<BondHistoryPrice> _bondHistoryPrices, BondListDto bond)
         {
             if (DateTime.TryParseExact(bond.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var oneMonthAgo))
             {
@@ -323,8 +333,6 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             bond.UpsAndDownsMonth = bond.UpsAndDownsMonth.DecimalNumber(2);
-
-            return bond;
         }
 
         private decimal? GetUpsAndDowns(IList<BondHistoryPrice> _bondHistoryPrices, BondListDto bond, string date)
@@ -351,23 +359,15 @@ namespace Feature.Wealth.Component.Repositories
             return null;
         }
 
-        public IEnumerable<Dictionary<string, string>> MapperForeignBondsResult()
-        {
-            var collection = GetBondsList();
-            var result = collection.Select(
+        public IEnumerable<Dictionary<string, string>> MapperForeignBondsResult() => GetBondsList()
+            .Select(
                 item => new Dictionary<string, string>
                 {
                     { "BondCode", item.BondCode },
                     { "BondName", item.BondName },
                     { "OpenToPublic", item.OpenToPublic },
                     { "Listed", item.Listed },
-                    //{ "FocusButtonAutoHtml", PublicHelpers.FocusTag(null, null, item.BondCode, item.BondName, InvestTypeEnum.ForeignBonds).ToString() },
-                    //{ "SubscribeButtonAutoHtml", PublicHelpers.SubscriptionTag(null, null, item.BondCode, item.BondName, InvestTypeEnum.ForeignBonds).ToString() },
-                }
-            );
-
-            return result;
-        }
+                });
 
         #endregion 國外債券
 
