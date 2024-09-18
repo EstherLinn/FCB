@@ -8,7 +8,6 @@ using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
-using Sitecore.Shell.Framework.Commands;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
