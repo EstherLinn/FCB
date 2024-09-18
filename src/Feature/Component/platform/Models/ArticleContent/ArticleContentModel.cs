@@ -16,7 +16,7 @@ namespace Feature.Wealth.Component.Models.ArticleContent
         public string Content2 { get; set; }
         public ArticleContentModel(Item item)
         {
-            if (item == null)
+            if (item == null || item.TemplateID != Templates.ArticleContentDatasource.ID)
             {
                 return;
             }

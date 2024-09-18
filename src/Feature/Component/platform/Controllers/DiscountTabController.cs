@@ -1,9 +1,6 @@
 ﻿using Feature.Wealth.Component.Models.DiscountTab;
 using Sitecore.Mvc.Presentation;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
-using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Controllers
 {

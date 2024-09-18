@@ -13,7 +13,7 @@ namespace Feature.Wealth.Component.Models.DiscountTab
         public IEnumerable<DiscountTabItem> TabList { get; set; }
         public DiscountTabModel(Item item)
         {
-            if (item == null)
+            if (item == null || item.TemplateID != Templates.DiscountTabDatasource.ID)
             {
                 return;
             }
@@ -32,6 +32,11 @@ namespace Feature.Wealth.Component.Models.DiscountTab
 
     public class Templates
     {
+        public struct DiscountTabDatasource
+        {
+            public static readonly ID ID = new ID("{4429B401-642B-4C87-86AA-62BAC14DC98C}");
+        }
+
         public struct DiscountTabItem
         {
             public static readonly ID ID = new ID("{F4E1680A-AAA7-4DF7-A7EF-197EA911B882}");

@@ -15,7 +15,7 @@ namespace Feature.Wealth.Component.Models.DiscountContent
         public string ButtonLink { get; set; }
         public DiscountContentModel(Item item)
         {
-            if (item == null)
+            if (item == null || item.TemplateID != Templates.DiscountContentDatasource.Id)
             {
                 return;
             }
@@ -25,7 +25,7 @@ namespace Feature.Wealth.Component.Models.DiscountContent
             this.MobileBannerSrc = ItemUtils.ImageUrl(item, Templates.DiscountContentDatasource.Fields.MobileBanner);
             this.DisplayDate = DiscountContentRepository.GetDisplayDate(item);
             this.DisplayTag = DiscountContentRepository.GetDisplayTag(item);
-            this.ButtonLink = ItemUtils.GeneralLink(item, Templates.DiscountContentDatasource.Fields.ButtonLink).Url;
+            this.ButtonLink = ItemUtils.GeneralLink(item, Templates.DiscountContentDatasource.Fields.ButtonLink)?.Url;
         }
     }
 
