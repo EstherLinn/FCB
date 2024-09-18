@@ -101,118 +101,112 @@ namespace Foundation.Wealth.Models
         [Description("Sysjust_Nav_ETF")]
         Sysjust_Nav_ETF = 27,
 
-        [Description("Sysjust_ETFNAV_HIS")]
-        Sysjust_ETFNAV_HIS = 28,
-
         [Description("Sysjust_Nav_Fund")]
-        Sysjust_Nav_Fund = 29,
-
-        [Description("Sysjust_FUNDNAV_HIS")]
-        Sysjust_FUNDNAV_HIS = 30,
+        Sysjust_Nav_Fund = 28,
 
         [Description("Sysjust_Return_ETF")]
-        Sysjust_Return_ETF = 31,
+        Sysjust_Return_ETF = 29,
 
         [Description("Sysjust_Return_ETF_2")]
-        Sysjust_Return_ETF_2 = 32,
+        Sysjust_Return_ETF_2 = 30,
 
         [Description("Sysjust_Return_ETF_3")]
-        Sysjust_Return_ETF_3 = 33,
+        Sysjust_Return_ETF_3 = 31,
 
         [Description("Sysjust_Return_Fund")]
-        Sysjust_Return_Fund = 34,
+        Sysjust_Return_Fund = 32,
 
         [Description("Sysjust_Return_Fund_2")]
-        Sysjust_Return_Fund_2 = 35,
+        Sysjust_Return_Fund_2 = 33,
 
         [Description("Sysjust_Return_Fund_3")]
-        Sysjust_Return_Fund_3 = 36,
+        Sysjust_Return_Fund_3 = 34,
 
         [Description("Sysjust_Risk_ETF")]
-        Sysjust_Risk_ETF = 37,
+        Sysjust_Risk_ETF = 35,
 
         [Description("Sysjust_Risk_ETF_2")]
-        Sysjust_Risk_ETF_2 = 38,
+        Sysjust_Risk_ETF_2 = 36,
 
         [Description("Sysjust_Risk_Fund")]
-        Sysjust_Risk_Fund = 39,
+        Sysjust_Risk_Fund = 37,
 
         [Description("Sysjust_Risk_Fund_2_Domestic")]
-        Sysjust_Risk_Fund_2_Domestic = 40,
+        Sysjust_Risk_Fund_2_Domestic = 38,
 
         [Description("Sysjust_Risk_Fund_2_Oversea")]
-        Sysjust_Risk_Fund_2_Oversea = 41,
+        Sysjust_Risk_Fund_2_Oversea = 39,
 
         [Description("Sysjust_Risk_Fund_3")]
-        Sysjust_Risk_Fund_3 = 42,
+        Sysjust_Risk_Fund_3 = 40,
 
         [Description("Sysjust_Risk_Fund_4")]
-        Sysjust_Risk_Fund_4 = 43,
+        Sysjust_Risk_Fund_4 = 41,
 
         [Description("Sysjust_Shareholder_fund_1")]
-        Sysjust_Shareholder_fund_1 = 44,
+        Sysjust_Shareholder_fund_1 = 42,
 
         [Description("Sysjust_Shareholder_fund_2")]
-        Sysjust_Shareholder_fund_2 = 45,
+        Sysjust_Shareholder_fund_2 = 43,
 
         [Description("Sysjust_USStockList")]
-        Sysjust_USStockList = 46,
+        Sysjust_USStockList = 44,
 
         [Description("BondList")]
-        BondList = 47,
+        BondList = 45,
 
         [Description("BondNav")]
-        BondNav = 48,
+        BondNav = 46,
 
         [Description("Branch_Data")]
-        Branch_Data = 49,
+        Branch_Data = 47,
 
         [Description("EFND")]
-        EFND = 50,
+        EFND = 48,
 
         [Description("FUND_BSC")]
-        FUND_BSC = 51,
+        FUND_BSC = 49,
 
         [Description("FUND_ETF")]
-        FUND_ETF = 52,
+        FUND_ETF = 50,
 
         [Description("Fund_HighRated")]
-        Fund_HighRated = 53,
+        Fund_HighRated = 51,
 
         [Description("FundTagsList")]
-        FundTagsList = 54,
+        FundTagsList = 52,
 
         [Description("FUND_SIZE")]
-        FUND_SIZE = 55,
+        FUND_SIZE = 53,
 
         [Description("FUNDTRB")]
-        FUNDTRB = 56,
+        FUNDTRB = 54,
 
         [Description("HRIS")]
-        HRIS = 57,
+        HRIS = 55,
 
         [Description("ETF_NAV_TFJENAV")]
-        ETF_NAV_TFJENAV = 58,
+        ETF_NAV_TFJENAV = 56,
 
         [Description("FUND_NAV_TFJSNAV")]
-        FUND_NAV_TFJSNAV = 59,
+        FUND_NAV_TFJSNAV = 57,
 
         [Description("WMS_DOC_RECM")]
-        WMS_DOC_RECM = 60,
+        WMS_DOC_RECM = 58,
 
         [Description("Wms_age_profile_d_mf")]
-        Wms_age_profile_d_mf = 61,
+        Wms_age_profile_d_mf = 59,
 
         [Description("Wms_zodiac_profile_d_mf")]
-        Wms_zodiac_profile_d_mf = 62,
+        Wms_zodiac_profile_d_mf = 60,
 
         [Description("CIF")]
-        CIF = 63,
+        CIF = 61,
 
         [Description("CFMBSEL")]
-        CFMBSEL = 64,
+        CFMBSEL = 62,
 
         [Description("TFTFU_STG")]
-        TFTFU_STG = 65
+        TFTFU_STG = 63
     }
 }
