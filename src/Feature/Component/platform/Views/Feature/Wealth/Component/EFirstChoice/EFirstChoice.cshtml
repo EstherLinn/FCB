@@ -3,12 +3,9 @@
 @using Feature.Wealth.Component.Models.EFirstChoice
 @model EFirstChoiceModel
 
-@if (Model.Item == null)
-{
-    return;
-}
 @{
     var modelitem = Model.Item;
+    if (modelitem == null) { return; }
 }
 
 <div class="l-mainstage">

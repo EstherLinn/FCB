@@ -1,5 +1,7 @@
-﻿using Sitecore.Data;
+﻿using Feature.Wealth.Account.Helpers;
+using Sitecore.Data;
 using Sitecore.Data.Items;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.GraphicCards
 {
@@ -19,6 +21,28 @@ namespace Feature.Wealth.Component.Models.GraphicCards
         public bool IsOpenLoginLightBox2 { get; set; }
         public bool IsOpenLoginLightBox3 { get; set; }
         public bool IsLogin { get; set; }
+
+        public GraphicCardsModel(Item item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            this.ImageUrl1 = ItemUtils.ImageUrl(item, Templates.GraphicCards.Fields.Image1);
+            this.ImageUrl2 = ItemUtils.ImageUrl(item, Templates.GraphicCards.Fields.Image2);
+            this.ImageUrl3 = ItemUtils.ImageUrl(item, Templates.GraphicCards.Fields.Image3);
+            this.ButtonLink1 = ItemUtils.GeneralLink(item, Templates.GraphicCards.Fields.ButtonLink1)?.Url;
+            this.ButtonLink2 = ItemUtils.GeneralLink(item, Templates.GraphicCards.Fields.ButtonLink2)?.Url;
+            this.ButtonLink3 = ItemUtils.GeneralLink(item, Templates.GraphicCards.Fields.ButtonLink3)?.Url;
+            this.ButtonText1 = ItemUtils.GetFieldValue(item, Templates.GraphicCards.Fields.ButtonText1);
+            this.ButtonText2 = ItemUtils.GetFieldValue(item, Templates.GraphicCards.Fields.ButtonText2);
+            this.ButtonText3 = ItemUtils.GetFieldValue(item, Templates.GraphicCards.Fields.ButtonText3);
+            this.IsOpenLoginLightBox1 = ItemUtils.IsChecked(item, Templates.GraphicCards.Fields.OpenLoginLightBox1);
+            this.IsOpenLoginLightBox2 = ItemUtils.IsChecked(item, Templates.GraphicCards.Fields.OpenLoginLightBox2);
+            this.IsOpenLoginLightBox3 = ItemUtils.IsChecked(item, Templates.GraphicCards.Fields.OpenLoginLightBox3);
+            this.IsLogin = FcbMemberHelper.CheckMemberLogin();
+        }
     }
 
     public struct Templates

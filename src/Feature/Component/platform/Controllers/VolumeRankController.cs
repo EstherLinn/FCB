@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Feature.Wealth.Component.Models.ETF;
+using Feature.Wealth.Component.Models.VolumeRank;
+using Feature.Wealth.Component.Repositories;
+using Sitecore.Mvc.Presentation;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Sitecore.Mvc.Presentation;
-using System.Collections.Generic;
-using Feature.Wealth.Component.Repositories;
-using Feature.Wealth.Component.Models.FundDetail;
-using Feature.Wealth.Component.Models.VolumeRank;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using static Feature.Wealth.Component.Models.VolumeRank.VolumeRankModel;
-using Feature.Wealth.Component.Models.ETF;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -18,7 +17,7 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult Index()
         {
-            var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             var etfs = _repository.GetFundData();
             var viewModel = new VolumeRankModel
@@ -30,7 +29,6 @@ namespace Feature.Wealth.Component.Controllers
 
             return View("/Views/Feature/Wealth/Component/VolumeRank/VolumeRank.cshtml", viewModel);
         }
-
 
         [HttpPost]
         public ActionResult GetSortedVolumeRank(string orderby, string desc)

@@ -1,7 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using Feature.Wealth.Component.Models.CTA;
 using Sitecore.Mvc.Presentation;
-using Feature.Wealth.Component.Models.CTA;
-using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using System.Web.Mvc;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -11,21 +10,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
 
-            string imagePcUrl = ItemUtils.ImageUrl(item,Template.CTA.Fields.ImagePc);
-            string imageMbUrl = ItemUtils.ImageUrl(item,Template.CTA.Fields.ImageMb);
-            string btnLink = ItemUtils.GeneralLink(item, Template.CTA.Fields.ButtonLink)?.Url;
-            bool showIcon = ItemUtils.IsChecked(item, Template.CTA.Fields.ShowIcon);
-            string btnText = ItemUtils.GetFieldValue(item, Template.CTA.Fields.ButtonText);
-
-            var model = new CTAModel()
-            {
-                Item = item,
-                ImagePcUrl = imagePcUrl,
-                ImageMbUrl = imageMbUrl,
-                ButtonLink = btnLink,
-                ButtonText = btnText,
-                ShowIcon = showIcon
-            };
+            var model = new CTAModel(item);
 
             return View("/Views/Feature/Wealth/Component/CTA/CTA.cshtml", model);
         }

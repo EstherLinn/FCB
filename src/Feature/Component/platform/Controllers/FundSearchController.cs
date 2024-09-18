@@ -1,15 +1,13 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using Sitecore.Mvc.Presentation;
-using System.Web.UI.WebControls;
-using System.Collections.Generic;
+﻿using Feature.Wealth.Component.Models.FundSearch;
 using Feature.Wealth.Component.Repositories;
-using Feature.Wealth.Component.Models.FundSearch;
+using Sitecore.Mvc.Presentation;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
-using Sitecore.Mvc.Extensions;
-using System.Web;
-
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -20,7 +18,7 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult Index()
         {
-            var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
             var hotkeywordtags = ItemUtils.GetMultiListValueItems(dataSourceItem, Template.FundSearch.Fields.HotKeywordtags);
             var keywords = new List<string>();
             foreach (var item in hotkeywordtags)

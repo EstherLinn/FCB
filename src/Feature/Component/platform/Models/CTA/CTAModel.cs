@@ -1,5 +1,6 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Items;
+using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.CTA
 {
@@ -11,6 +12,21 @@ namespace Feature.Wealth.Component.Models.CTA
         public string ButtonLink { get; set; }
         public string ButtonText { get; set; }
         public bool ShowIcon { get; set; }
+        public CTAModel(Item item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            this.Item = item;
+            this.ImagePcUrl = ItemUtils.ImageUrl(item, Template.CTA.Fields.ImagePc);
+            this.ImageMbUrl = ItemUtils.ImageUrl(item, Template.CTA.Fields.ImageMb);
+            this.ButtonLink = ItemUtils.GeneralLink(item, Template.CTA.Fields.ButtonLink)?.Url;
+            this.ButtonText = ItemUtils.GetFieldValue(item, Template.CTA.Fields.ButtonText);
+            this.ShowIcon = ItemUtils.IsChecked(item, Template.CTA.Fields.ShowIcon);
+        }
+
     }
 
     public struct Template

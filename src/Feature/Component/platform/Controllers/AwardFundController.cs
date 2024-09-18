@@ -1,15 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Sitecore.Mvc.Presentation;
-using Feature.Wealth.Component.Repositories;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Feature.Wealth.Component.Models.AwardFund;
-using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
+﻿using Feature.Wealth.Component.Models.AwardFund;
 using Feature.Wealth.Component.Models.FundDetail;
-
+using Feature.Wealth.Component.Repositories;
+using Sitecore.Mvc.Presentation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
+using static Feature.Wealth.Component.Models.AwardFund.AwardFundModel;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -18,7 +17,7 @@ namespace Feature.Wealth.Component.Controllers
         private static AwardFundRepository _repository = new AwardFundRepository();
         public ActionResult Index()
         {
-            var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
             var viewModel = new AwardFundModel { Item = dataSourceItem };
 
             List<Funds> awardFunds = _repository.GetOrSetAwardFundCache();

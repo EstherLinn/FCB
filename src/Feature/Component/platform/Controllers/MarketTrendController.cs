@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Feature.Wealth.Component.Models.Invest;
+﻿using Feature.Wealth.Component.Models.Invest;
 using Feature.Wealth.Component.Models.MarketTrend;
 using Feature.Wealth.Component.Repositories;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.ComponentTemplates;
 
@@ -41,24 +41,7 @@ namespace Feature.Wealth.Component.Controllers
 
         protected MarketTrendModel CreateModel(Item item)
         {
-            var model = new MarketTrendModel
-            {
-                Item = item,
-                IndexLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.IndexLink)?.Url,
-                FundLink = Models.FundDetail.FundRelatedSettingModel.GetFundDetailsUrl(),
-                ETFLink = Models.ETF.EtfRelatedLinkSetting.GetETFDetailUrl(),
-                NewsLink = Models.News.MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl(),
-                MoreNewsButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreNewsButtonText),
-                MoreNewsButtonLink = Models.News.MarketNewsRelatedLinkSetting.GetMarketNewsListUrl(),
-                MoreETFButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreETFButtonText),
-                MoreETFButtonLink = Models.ETF.EtfRelatedLinkSetting.GetETFSearchUrl(),
-                MoreFundButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.MoreFundButtonText),
-                MoreFundButtonLink = Models.FundDetail.FundRelatedSettingModel.GetFundSearchUrl(),
-                ReportTitle = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.ReportTitle),
-                ReportText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.ReportText),
-                ReportButtonText = ItemUtils.GetFieldValue(item, Template.MarketTrend.Fields.ReportButtonText),
-                ReportButtonLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.ReportButtonLink)?.Url
-            };
+            var model = new MarketTrendModel(item);
 
             var stockFolder = ItemUtils.GetItem(Template.Stock.Id);
             var bondFolder = ItemUtils.GetItem(Template.Bond.Id);
@@ -95,10 +78,8 @@ namespace Feature.Wealth.Component.Controllers
             string indexLink = ItemUtils.GeneralLink(item, Template.MarketTrend.Fields.IndexLink)?.Url;
             string fundLink = Models.FundDetail.FundRelatedSettingModel.GetFundDetailsUrl();
             string etfLink = Models.ETF.EtfRelatedLinkSetting.GetETFDetailUrl();
-            var newsLinkItem = ItemUtils.GetReferenceFieldItem(item, Template.MarketTrend.Fields.NewsLink);
-            string newsLink = newsLinkItem.Url();
 
-            foreach (var child in children)
+            foreach (var child in children ?? [])
             {
                 var marketTrend = new MarketTrend
                 {

@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Feature.Wealth.Component.Models.EFirstChoice;
+using Feature.Wealth.Component.Models.FundDetail;
+using Feature.Wealth.Component.Repositories;
+using Sitecore.Mvc.Presentation;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Sitecore.Mvc.Presentation;
-using System.Collections.Generic;
-using Feature.Wealth.Component.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
-using Feature.Wealth.Component.Models.EFirstChoice;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using static Feature.Wealth.Component.Models.EFirstChoice.EFirstChoiceModel;
-using Feature.Wealth.Component.Models.FundDetail;
 using Template = Feature.Wealth.Component.Models.EFirstChoice.Template;
 
 namespace Feature.Wealth.Component.Controllers
@@ -18,7 +18,7 @@ namespace Feature.Wealth.Component.Controllers
         private EFirstChoiceRepository _repository = new EFirstChoiceRepository();
         public ActionResult Index()
         {
-            var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
             var multilineField = dataSourceItem?.GetMultiLineText(Template.eFirstChoice.Fields.FundID);
             var viewModel = new EFirstChoiceModel { Item = dataSourceItem };
             if (multilineField != null)

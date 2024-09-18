@@ -1,10 +1,10 @@
 ﻿@using Foundation.Wealth.Helper
-@using Feature.Wealth.Component.Models.Invest
 @using Feature.Wealth.Component.Models.TftfuStg
 @model TftfuStgModel
 
 @{
 	var modelitem = Model.Item;
+	if (modelitem == null) { return; }
 }
 
 <div class="l-mainstage">

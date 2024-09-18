@@ -12,7 +12,7 @@ namespace Feature.Wealth.Component.Controllers
 
         public ActionResult Index()
         {
-            var dataSourceItem = RenderingContext.CurrentOrNull.Rendering.Item;
+            var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
 
             var viewModel = new DiscountPremiumModel
             {
