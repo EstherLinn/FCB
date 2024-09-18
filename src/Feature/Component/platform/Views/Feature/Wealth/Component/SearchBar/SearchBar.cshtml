@@ -266,12 +266,12 @@
                         let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
 
                         // like 按鈕
-                        let $like = `<a href="#" eh-focus eh-focus-type="${suggestion.data.type}" eh-focus-id="${suggestion.data.id}" eh-focus-name="${suggestion.data.name}" data-eh="focus-init,focus-click" data-msg="加入關注|取消關注" data-ia="true" eh-focus-add="false" class="o-statusBtn o-statusBtn--like"></a>`;
+                        let $like = `<div class="c-itemKeyword__collections"><a href="#" eh-focus eh-focus-type="${suggestion.data.type}" eh-focus-id="${suggestion.data.id}" eh-focus-name="${suggestion.data.name}" data-eh="focus-init,focus-click" data-msg="加入關注|取消關注" data-ia="true" eh-focus-add="false" class="o-statusBtn o-statusBtn--like"></a></div>`;
                         
                         // 比較 按鈕
                         let $compare = suggestion.data.isCompare == true ?
                             // <!-- [data-ia]: 展示 icon 的互動操作功能 -->
-                            `<a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-eh="compare-init,compare-click" data-ia="true" eh-compare="" eh-compare-add="false" eh-compare-id="${suggestion.data.id}" eh-compare-name="${suggestion.data.name}" eh-compare-type="${suggestion.data.type}"></a>` : '';
+                            `<div class="c-itemKeyword__collections"><a href="#" class="o-statusBtn o-statusBtn--compare" data-after-lt="比較" data-msg="加入比較|取消比較" data-eh="compare-init,compare-click" data-ia="true" eh-compare="" eh-compare-add="false" eh-compare-id="${suggestion.data.id}" eh-compare-name="${suggestion.data.name}" eh-compare-type="${suggestion.data.type}"></a></div>` : '';
 
                         // 申購按鈕
                         let $purchase = suggestion.data.purchase ?
@@ -282,8 +282,8 @@
                                 <div class="c-itemKeyword__type">${suggestion.data.displayName}</div>
                                 <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
                             </a>
-                            <div class="c-itemKeyword__collections">${$compare}</div>
-                            <div class="c-itemKeyword__collections">${$like}</div>
+                            ${$like}
+                            ${$compare}
                             ${$purchase}
                         </div>`;
                     }

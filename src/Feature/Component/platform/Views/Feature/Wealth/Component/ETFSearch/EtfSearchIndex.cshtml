@@ -562,10 +562,10 @@
                     formatResult: function (suggestion, currentValue) {
                         let detailUrl = suggestion.data.detailUrl ? suggestion.data.detailUrl : '#';
 
-                        // 比較 按鈕
-                        let $compare = suggestion.data.compareBtnHtml ? `<a ${suggestion.data.compareBtnHtml}></a>` : '';
                         // like 按鈕
-                        let $like = suggestion.data.focusBtnHtml ? `<a ${suggestion.data.focusBtnHtml}></a>` : '';
+                        let $like = suggestion.data.focusBtnHtml ? `<div class="c-itemKeyword__collections"><a ${suggestion.data.focusBtnHtml}></a></div>` : '';
+                        // 比較 按鈕
+                        let $compare = suggestion.data.compareBtnHtml ? `<div class="c-itemKeyword__collections"><a ${suggestion.data.compareBtnHtml}></a></div>` : '';
                         // 申購按鈕
                         let $purchase = suggestion.data.purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.data.subscribeBtnHtml}>申購</a></div>` : '';
 
@@ -573,8 +573,8 @@
                                 <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
                                     <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
                                 </a>
-                                <div class="c-itemKeyword__collections">${$compare}</div>
-                                <div class="c-itemKeyword__collections">${$like}</div>
+                                ${$like}
+                                ${$compare}
                                 ${$purchase}
                             </div>`;
                     }
