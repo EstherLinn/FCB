@@ -13,5 +13,7 @@
     <PackageReference Include="Oracle.ManagedDataAccess" />
     <PackageReference Include="FluentFTP" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="Flurl" />
+    <PackageReference Include="Flurl.Http" />
   </ItemGroup>
 </Project>
