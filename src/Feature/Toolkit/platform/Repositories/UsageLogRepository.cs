@@ -108,9 +108,9 @@ namespace Feature.Wealth.Toolkit.Repositories
                 sheet.CreateRow(rowCounter);
                 var headerRow = sheet.GetRow(rowCounter);
                 headerRow.CreateCell(0).SetCellValue("Id");
-                headerRow.CreateCell(1).SetCellValue("Action");
-                headerRow.CreateCell(2).SetCellValue("UserName");
-                headerRow.CreateCell(3).SetCellValue("Created");
+                headerRow.CreateCell(1).SetCellValue("執行動作");
+                headerRow.CreateCell(2).SetCellValue("使用者名稱");
+                headerRow.CreateCell(3).SetCellValue("建立時間");
 
                 // Excel 資料
                 List<AuthenticationHistory> historyData = objects.OfType<AuthenticationHistory>().ToList();
