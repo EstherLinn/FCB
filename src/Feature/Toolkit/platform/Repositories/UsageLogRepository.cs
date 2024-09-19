@@ -41,16 +41,16 @@ namespace Feature.Wealth.Toolkit.Repositories
                 sheet.CreateRow(rowCounter);
                 var headerRow = sheet.GetRow(rowCounter);
                 headerRow.CreateCell(0).SetCellValue("Id");
-                headerRow.CreateCell(1).SetCellValue("Category");
-                headerRow.CreateCell(2).SetCellValue("Action");
-                headerRow.CreateCell(3).SetCellValue("ItemId");
-                headerRow.CreateCell(4).SetCellValue("ItemLanguage");
-                headerRow.CreateCell(5).SetCellValue("ItemVersion");
-                headerRow.CreateCell(6).SetCellValue("ItemPath");
-                headerRow.CreateCell(7).SetCellValue("UserName");
-                headerRow.CreateCell(8).SetCellValue("TaskStack");
-                headerRow.CreateCell(9).SetCellValue("AdditionalInfo");
-                headerRow.CreateCell(10).SetCellValue("Created");
+                headerRow.CreateCell(1).SetCellValue("類別");
+                headerRow.CreateCell(2).SetCellValue("執行動作");
+                headerRow.CreateCell(3).SetCellValue("項目Id");
+                headerRow.CreateCell(4).SetCellValue("項目語言");
+                headerRow.CreateCell(5).SetCellValue("項目版本號");
+                headerRow.CreateCell(6).SetCellValue("項目路徑");
+                headerRow.CreateCell(7).SetCellValue("使用者名稱");
+                headerRow.CreateCell(8).SetCellValue("任務堆疊資訊");
+                headerRow.CreateCell(9).SetCellValue("附加資訊");
+                headerRow.CreateCell(10).SetCellValue("建立時間");
 
                 // Excel 資料
                 List<History> historyData = objects.OfType<History>().ToList();
