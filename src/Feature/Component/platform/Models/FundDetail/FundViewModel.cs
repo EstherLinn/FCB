@@ -123,6 +123,10 @@ namespace Feature.Wealth.Component.Models.FundDetail
         /// 投資人須知(一般資訊)
         /// </summary>
         public string InvestNomnalDoc { get; set; }
+        /// <summary>
+        /// 後收級別費用結構聲明書
+        /// </summary>
+        public string BackLevelFee { get; set; }
     }
 
     /// <summary>

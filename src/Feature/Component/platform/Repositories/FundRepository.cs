@@ -487,6 +487,7 @@ namespace Feature.Wealth.Component.Repositories
                 fundViewModel.MonthReportDoc = temp.MonthReportDoc;
                 fundViewModel.InvestExclusiveDoc = temp.InvestExclusiveDoc;
                 fundViewModel.InvestNomnalDoc = temp.InvestNomnalDoc;
+                fundViewModel.BackLevelFee = temp.BackLevelFee;
             }
             else
             {
@@ -504,6 +505,7 @@ namespace Feature.Wealth.Component.Repositories
                     fundViewModel.MonthReportDoc = GetDocLink(djMoneyApiRespository, fundId, "5");
                     fundViewModel.InvestExclusiveDoc = GetDocLink(djMoneyApiRespository, fundId, "6");
                     fundViewModel.InvestNomnalDoc = GetDocLink(djMoneyApiRespository, fundId, "7");
+                    fundViewModel.BackLevelFee = GetDocLink(djMoneyApiRespository, fundId, "8");
                 }
 
                 temp = new FundViewModel
@@ -513,7 +515,8 @@ namespace Feature.Wealth.Component.Repositories
                     EasyOpenDoc = fundViewModel.EasyOpenDoc,
                     MonthReportDoc = fundViewModel.MonthReportDoc,
                     InvestExclusiveDoc = fundViewModel.InvestExclusiveDoc,
-                    InvestNomnalDoc = fundViewModel.InvestNomnalDoc
+                    InvestNomnalDoc = fundViewModel.InvestNomnalDoc,
+                    BackLevelFee = fundViewModel.BackLevelFee
                 };
 
                 this._cache.Set(this.FundDetailTempCacheKey + "_" + fundId, temp, DateTimeOffset.Now.AddMinutes(600));

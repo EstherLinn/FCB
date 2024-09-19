@@ -1429,11 +1429,11 @@
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
                                     @{
-                                        if (!string.IsNullOrEmpty(BasicData.ListingDate) && BasicData.ListingDate != "N/A")
+                                        DateTime onParsedDate;
+                                        bool isOnDate = DateTime.TryParseExact(BasicData.ListingDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out onParsedDate);
+                                        if (isOnDate)
                                         {
-                                            DateTime parseDate = DateTime.ParseExact(BasicData.ListingDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
-                                            string listingDate = parseDate.ToString("yyyy/MM/dd");
-                                            @listingDate
+                                            @onParsedDate.ToString("yyyy/MM/dd")
                                         }
                                         else
                                         {
@@ -1456,11 +1456,11 @@
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
                                     @{
-                                        if (!string.IsNullOrEmpty(BasicData.DelistingDate) && BasicData.DelistingDate != "N/A")
+                                        DateTime offParsedDate;
+                                        bool isOffDate = DateTime.TryParseExact(BasicData.DelistingDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out offParsedDate);
+                                        if (isOffDate)
                                         {
-                                            DateTime parseDate = DateTime.ParseExact(BasicData.DelistingDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
-                                            string DelistingDate = parseDate.ToString("yyyy/MM/dd");
-                                            @DelistingDate
+                                            @offParsedDate.ToString("yyyy/MM/dd")
                                         }
                                         else
                                         {

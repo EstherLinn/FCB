@@ -1432,11 +1432,11 @@
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
                                     @{
-                                        if (!string.IsNullOrEmpty(BasicData.ListingDate) && BasicData.ListingDate != "N/A")
+                                        DateTime onParsedDate;
+                                        bool isOnDate = DateTime.TryParseExact(BasicData.ListingDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out onParsedDate);
+                                        if (isOnDate)
                                         {
-                                            DateTime parseDate = DateTime.ParseExact(BasicData.ListingDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
-                                            string listingDate = parseDate.ToString("yyyy/MM/dd");
-                                            @listingDate
+                                            @onParsedDate.ToString("yyyy/MM/dd")
                                         }
                                         else
                                         {
@@ -1459,11 +1459,11 @@
                             <div class="c-zebraList__content">
                                 <span class="t-bold">
                                     @{
-                                        if (!string.IsNullOrEmpty(BasicData.DelistingDate) && BasicData.DelistingDate != "N/A")
+                                        DateTime offParsedDate;
+                                        bool isOffDate = DateTime.TryParseExact(BasicData.DelistingDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out offParsedDate);
+                                        if (isOffDate)
                                         {
-                                            DateTime parseDate = DateTime.ParseExact(BasicData.DelistingDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
-                                            string DelistingDate = parseDate.ToString("yyyy/MM/dd");
-                                            @DelistingDate
+                                            @offParsedDate.ToString("yyyy/MM/dd")
                                         }
                                         else
                                         {
@@ -1704,6 +1704,14 @@
                             <div class="l-linkBox__item" id="financialReportDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
                                     <a href="@Model.FinancialReportDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>財務報告書</span></a>
+                                </div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.BackLevelFee))
+                        {
+                            <div class="l-linkBox__item" id="backLevelFee">
+                                <div class="c-box c-box--link u-shadow-animation">
+                                    <a href="@Model.BackLevelFee" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>後收級別費用結構聲明書</span></a>
                                 </div>
                             </div>
                         }
