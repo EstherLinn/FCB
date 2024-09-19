@@ -758,14 +758,14 @@
                 <div class="l-form__item">
                     <div class="l-selectbox u-justify-center">
                         <div class="l-selectbox__item">
-                            <select class="o-selectbox o-selectbox--full o-selectbox--form" data-placeholder="選擇指數" data-stock-select data-width="200px" data-selection-css-class="select2-selection--form" data-selectbox="true">
-                                <option value=""></option>
-                                @foreach (var item in Model.GlobalIndexList)
-                                {
-                                    <option value="@item.IndexCode">@item.IndexName</option>
-                                }
-                            </select>
-                        </div>
+                            <select class="o-selectbox o-selectbox--full o-selectbox--form select2-dropdown--noNative" data-placeholder="選擇指數" data-stock-select data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" data-minimum-results-for-search="0" data-dropdown-parent="#popupAddIndex" data-dropdown-css-class="select2-dropdown--noNative">
+                                    <option value=""></option>
+                                    @foreach (var item in Model.GlobalIndexList)
+                                    {
+                                        <option value="@item.IndexCode">@item.IndexName</option>
+                                    }
+                                </select>
+</div>
                     </div>
                 </div>
                 <div class="l-form__error u-center">
@@ -2349,6 +2349,7 @@
                                         $('[data-table-name="' + template + '"]').attr('data-fixed-columns', true).fixedColumns();
                                         break;
                                 }
+                                OrderColumn(template, template, 'id', 'is-asc', true);
                             }
                         }
                     },

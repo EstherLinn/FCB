@@ -255,9 +255,8 @@
         * @@parmm {string} orderType 排序方式
         * @@param {string} isTrigger 是否觸發功能,ajax可能第一次Call才需觸發
         */
-        window.OrderColumn = function (linkSelect,tableName, defaultColumn,orderType,isTrigger) {
-            if (isTrigger)
-            {
+        window.OrderColumn = function (linkSelect, tableName, defaultColumn, orderType, isTrigger) {
+            if (isTrigger) {
                 //預設樣式
                 $(`[data-sorting-column="${defaultColumn}"]`, `[data-table-name="${tableName}"]`).addClass(orderType);
                 let $sortingbox = $(`[data-sorting-linkto="${linkSelect}"]`);
@@ -268,7 +267,7 @@
                     $sortingbox.trigger('change');
                 }
             }
-        };
+        }
 
         EventHandler.AddOnExec('compare-init', function (e) {
             let self = e.target;
