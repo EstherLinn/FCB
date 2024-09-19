@@ -118,19 +118,23 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     if ((info.IsEmployee || info.IsManager) && !string.IsNullOrEmpty(info.AdvisrorID))
                     {
-                        if (info.IsManager)
+                        // 理顧跟主管不顯示未確認的預約
+                        if(c.StatusCode != "0")
                         {
-                            var branch = this._consultRepository.GetBranch(info.AdvisrorID);
-                            if (c.BranchCode == branch.BranchCode)
+                            if (info.IsManager)
                             {
-                                consultScheduleList.Add(c);
+                                var branch = this._consultRepository.GetBranch(info.AdvisrorID);
+                                if (c.BranchCode == branch.BranchCode)
+                                {
+                                    consultScheduleList.Add(c);
+                                }
                             }
-                        }
-                        else
-                        {
-                            if (c.EmployeeID == info.AdvisrorID)
+                            else
                             {
-                                consultScheduleList.Add(c);
+                                if (c.EmployeeID == info.AdvisrorID)
+                                {
+                                    consultScheduleList.Add(c);
+                                }
                             }
                         }
                     }
