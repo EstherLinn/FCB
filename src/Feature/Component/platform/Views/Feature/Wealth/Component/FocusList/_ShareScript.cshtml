@@ -7,6 +7,10 @@
             if (!jQuery) {
                 return;
             }
+            let isFundFirstCall = true;
+            let isEtfFirstCall = true;
+            let isStockFirstCall = true;
+            let isBondFirstCall = true;
             let urlParams = new URLSearchParams(window.location.search);
             let focusId = DOMPurify.sanitize(decodeURIComponent(urlParams.get('id')));
             let ehTag = '[eh-info-id="' + focusId.toUpperCase() + '"]';
@@ -28,6 +32,8 @@
                         $('[data-focusfund]').removeClass('u-hidden');
                         $('[data-nofocusfund]').addClass('u-hidden');
                         initFilter(data);
+                        window.OrderColumn('FundListTable', 'FundListTable', 'SixMonthReturnOriginalCurrency', isFundFirstCall);
+                        isFundFirstCall = false;
                         $('.c-loading').loading('hide');
                     } else {
                         $('[id="fundTrackTotal"]').text(0);
@@ -170,7 +176,7 @@
 
                 // 連動 sortingbox
                 let $sortingbox = $('#uid-sortbox', '[data-focusfund]');
-                var sortingColumn = $this.data('sorting-column');
+                var sortingColumn = $this.data('sorting-column').trim();
                 let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
                 if ($option.length != 0) {
                     $option.prop('selected', true);
@@ -238,6 +244,8 @@
                         $('[data-focusetf]').removeClass('u-hidden');
                         $('[data-nofocusetf]').addClass('u-hidden');
                         initFilter2(data);
+                        window.OrderColumn('EtfListTable', 'EtfListTable', 'SixMonthReturnMarketPriceOriginalCurrency', isEtfFirstCall);
+                        isEtfFirstCall = false;
                         $('.c-loading').loading('hide');
                     } else {
                         $('[id="etfTrackTotal"]').text(0);
@@ -377,7 +385,7 @@
 
                 // 連動 sortingbox
                 let $sortingbox = $('#uid-etf-sortbox', '[data-focusetf]');
-                var sortingColumn = $this.data('sorting-column');
+                var sortingColumn = $this.data('sorting-column').trim();
                 let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
                 if ($option.length != 0) {
                     $option.prop('selected', true);
@@ -445,6 +453,8 @@
                         $('[data-focusforeignStock]').removeClass('u-hidden');
                         $('[data-nofocusforeignStock]').addClass('u-hidden');
                         initFilter3(data);
+                        window.OrderColumn('foreignStockListTable', 'foreignStockListTable', 'MonthlyReturn', isStockFirstCall);
+                        isStockFirstCall = false;
                         $('.c-loading').loading('hide');
                     } else {
                         $('[id="foreignStockTrackTotal"]').text(0);
@@ -578,7 +588,7 @@
 
                 // 連動 sortingbox
                 let $sortingbox = $('#uid-foreignStock-sortbox', '[data-focusforeignStock]');
-                var sortingColumn = $this.data('sorting-column');
+                var sortingColumn = $this.data('sorting-column').trim();
                 let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
                 if ($option.length != 0) {
                     $option.prop('selected', true);
@@ -646,6 +656,8 @@
                         $('[data-focusforeignBond]').removeClass('u-hidden');
                         $('[data-nofocusforeignBond]').addClass('u-hidden');
                         initFilter4(data);
+                        window.OrderColumn('foreignBondListTable', 'foreignBondListTable', 'UpsAndDownsMonth', isBondFirstCall);
+                        isBondFirstCall = false;
                         $('.c-loading').loading('hide');
                     } else {
                         $('[id="foreignStockTrackTotal"]').text(0);
@@ -758,7 +770,7 @@
 
                 // 連動 sortingbox
                 let $sortingbox = $('#uid-foreignBond-sortbox', '[data-focusforeignBond]');
-                var sortingColumn = $this.data('sorting-column');
+                var sortingColumn = $this.data('sorting-column').trim();
                 let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
                 if ($option.length != 0) {
                     $option.prop('selected', true);
