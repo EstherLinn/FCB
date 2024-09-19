@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Foundation.Wealth.Manager;
 using log4net;
-using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
 using Sitecore.Mvc.Presentation;
 using Sitecore.Web;
@@ -16,9 +15,9 @@ using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
-namespace Feature.Wealth.Toolkit.Models.TableViewer
+namespace Feature.Wealth.Toolkit.Models.TableViewer.SitecoreMemberRecord
 {
-    public class UserRecordModel
+    public class SitecoreMemberRecordModel
     {
         private readonly ILog _log = Logger.General;
 
@@ -87,8 +86,8 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
             this.Count = iCount;
             this.Order = iOrder;
             this.OrderColumeName = columeName;
-            this.SqlHistoryComm = $@"SELECT {str_TopCount} [Id],[Category],[Action],[ItemId],[ItemLanguage],[ItemVersion],[ItemPath],[UserName],[TaskStack],[AdditionalInfo],[Created]
-                                     FROM [dbo].[History] WITH(NOLOCK) {result} {sqlOrder}";
+            this.SqlAuthComm = $@"SELECT {str_TopCount}  [Id], [Action], [UserName], [Created]
+                                  FROM [dbo].[AuthenticationHistory] WITH(NOLOCK) {result} {sqlOrder}";
 
             this.Dictionary = sqlParams.ToDictionary(x => x.ParameterName, y => y.Value);
             this.IsManager = CheckIsManager();
@@ -112,7 +111,7 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
 
             try
             {
-                Item configItem = ItemUtils.GetItem(ConfigItemID.UserRecord);
+                var configItem = ItemUtils.GetItem(ConfigItemID.UserRecord);
 
                 if (configItem == null)
                 {
@@ -147,42 +146,14 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
                     break;
 
                 case 2:
-                    columeName = "Category";
-                    break;
-
-                case 3:
                     columeName = "Action";
                     break;
 
-                case 4:
-                    columeName = "ItemId";
-                    break;
-
-                case 5:
-                    columeName = "ItemLanguage";
-                    break;
-
-                case 6:
-                    columeName = "ItemVersion";
-                    break;
-
-                case 7:
-                    columeName = "ItemPath";
-                    break;
-
-                case 8:
+                case 3:
                     columeName = "UserName";
                     break;
 
-                case 9:
-                    columeName = "TaskStack";
-                    break;
-
-                case 10:
-                    columeName = "AdditionalInfo";
-                    break;
-
-                case 11:
+                case 4:
                     columeName = "Created";
                     break;
             }
@@ -275,16 +246,15 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
             return @operator;
         }
 
-        public IEnumerable<object> GetData(CommandType commandType = CommandType.Text) => GetData(this.SqlHistoryComm, this.Dictionary, commandType);
+        public IEnumerable<object> GetData(CommandType commandType = CommandType.Text) => GetData(this.SqlAuthComm, this.Dictionary, commandType);
 
         private IEnumerable<object> GetData(string sqlComm, Dictionary<string, object> dictionary, CommandType commandType)
         {
-            var history = new List<History>();
-            // master db 欄位比 customer db 欄位多, 有時查詢欄位在master存在但在customer不存在
+            var history = new List<AuthenticationHistory>();
             try
             {
                 var parameters = new DynamicParameters(dictionary);
-                history = this.MasterSQL.ExecuteIList<History>(sqlComm, parameters, commandType).ToList();
+                history = this.CustomSQL.ExecuteIList<AuthenticationHistory>(sqlComm, parameters, commandType).ToList();
             }
             catch (Exception ex)
             {
@@ -292,7 +262,7 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
             }
 
             string param = this.OrderColumeName;
-            var propertyInfo = typeof(History).GetProperty(param);
+            var propertyInfo = typeof(AuthenticationHistory).GetProperty(param);
 
             if (this.Order == 0)
             {
@@ -382,7 +352,7 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
                 string groupOpening = ddlGroupOpening;
                 string groupClosing = ddlGroupClosing;
 
-                var columnDataType = CheckColumeDataType(this.MasterSQL, ddlFieldName, TableName);
+                var columnDataType = CheckColumeDataType(this.CustomSQL, ddlFieldName, TableName);
                 // Field value cannot be empty for these operations
                 if (comparisonOperator != "DISTINCT" && comparisonOperator != "REDUNDENT" && comparisonOperator != "EMPTY" && comparisonOperator != "NOT EMPTY" &&
                     comparisonOperator != "VALID ASCII" && comparisonOperator != "INVALID ASCII" && comparisonOperator != "VALID CPIS" && comparisonOperator != "INVALID CPIS")
@@ -624,7 +594,7 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
 
         private Dictionary<string, object> Dictionary { get; set; }
 
-        private string SqlHistoryComm { get; set; }
+        private string SqlAuthComm { get; set; }
 
         private int Count { get; set; }
 
@@ -637,8 +607,6 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer
         public string Path { get; set; }
 
         public bool IsManager { get; set; }
-
-        private IDataAccess MasterSQL => DbManager.Master;
 
         private IDataAccess CustomSQL => DbManager.Custom;
 
