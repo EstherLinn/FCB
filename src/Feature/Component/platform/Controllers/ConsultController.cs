@@ -8,12 +8,14 @@ using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.Component.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Mail;
+using log4net;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
 using Sitecore.Mvc.Presentation;
 using Sitecore.SecurityModel;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Controllers
@@ -23,6 +25,7 @@ namespace Feature.Wealth.Component.Controllers
         private readonly ConsultRepository _consultRepository = new ConsultRepository();
         private readonly OctonApiRespository _octonApiRespository = new OctonApiRespository();
         private readonly IMVPApiRespository _iMVPApiRespository = new IMVPApiRespository();
+        private readonly ILog _log = Logger.General;
 
         public ActionResult Consult()
         {
@@ -556,34 +559,42 @@ namespace Feature.Wealth.Component.Controllers
             //TODO 呼叫 IMVP 失敗不新增預約
             this._consultRepository.InsertConsultSchedule(consultSchedule);
 
-            MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
-
-            var currentRequestUrl = Request.Url;
-            var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl();
-
-            if (info.IsEmployee)
+            // 發信失敗依然要讓前端頁面正常處理
+            try
             {
-                mail.Topic = this._consultRepository.GetSuccessMailTopic();
-                mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
-            }
-            else
-            {
-                mail.Topic = this._consultRepository.GetWaitMailTopic();
-                mail.Content = this._consultRepository.GetWaitMailContent(consultSchedule);
-            }
+                MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
 
-            using (new SecurityDisabler())
-            {
-                using (new LanguageSwitcher("en"))
+                var currentRequestUrl = Request.Url;
+                var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl();
+
+                if (info.IsEmployee)
                 {
-                    this._consultRepository.SendMail(mail, GetMailSetting());
+                    mail.Topic = this._consultRepository.GetSuccessMailTopic();
+                    mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
+                }
+                else
+                {
+                    mail.Topic = this._consultRepository.GetWaitMailTopic();
+                    mail.Content = this._consultRepository.GetWaitMailContent(consultSchedule);
+                }
 
-                    if (info.IsEmployee)
+                using (new SecurityDisabler())
+                {
+                    using (new LanguageSwitcher("en"))
                     {
-                        var mailRecord = this._consultRepository.GetMailRecord(consultSchedule, url);
-                        this._consultRepository.InsertMailRecords(new List<MailRecord>() { mailRecord });
+                        this._consultRepository.SendMail(mail, GetMailSetting());
+
+                        if (info.IsEmployee)
+                        {
+                            var mailRecord = this._consultRepository.GetMailRecord(consultSchedule, url);
+                            this._consultRepository.InsertMailRecords(new List<MailRecord>() { mailRecord });
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
             }
 
             return new JsonNetResult(true);
