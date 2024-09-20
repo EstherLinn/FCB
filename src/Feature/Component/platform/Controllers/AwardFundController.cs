@@ -40,11 +40,11 @@ namespace Feature.Wealth.Component.Controllers
             var property = typeof(Funds).GetProperty(orderby);
             if (desc.Equals("is-desc", StringComparison.OrdinalIgnoreCase))
             {
-                awardFunds = awardFunds.OrderByDescending(f => property.GetValue(f, null)).ToList();
+                awardFunds = awardFunds.OrderByDescending(f => property.GetValue(f, null)).ThenBy(a => a.AwardName).ThenBy(a => a.ProductCode).ToList();
             }
             else
             {
-                awardFunds = awardFunds.OrderBy(f => property.GetValue(f, null)).ToList();
+                awardFunds = awardFunds.OrderBy(f => property.GetValue(f, null)).ThenBy(a => a.AwardName).ThenBy(a => a.ProductCode).ToList();
             }
 
             var viewModel = new AwardFundModel
