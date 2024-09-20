@@ -53,7 +53,7 @@ namespace Feature.Wealth.Component.Repositories
 
         public IEnumerable<Dictionary<string, object>> MapperFundResult()
         {
-            var collection = new FundSearchRepository().GetFundSearchData().OrderByDescending(i => i.SixMonthReturnOriginalCurrency.Value);
+            var collection = new FundSearchRepository().GetFundSearchData().OrderByDescending(i => i.SixMonthReturnOriginalCurrency);
 
             var config = new TypeAdapterConfig();
             config.ForType<FundSearchModel, FundProductResult>()
