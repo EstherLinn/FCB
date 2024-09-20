@@ -7,10 +7,6 @@
             if (!jQuery) {
                 return;
             }
-            let isFundFirstCall = true;
-            let isEtfFirstCall = true;
-            let isStockFirstCall = true;
-            let isBondFirstCall = true;
             let urlParams = new URLSearchParams(window.location.search);
             let focusId = DOMPurify.sanitize(decodeURIComponent(urlParams.get('id')));
             let ehTag = '[eh-info-id="' + focusId.toUpperCase() + '"]';
@@ -32,8 +28,7 @@
                         $('[data-focusfund]').removeClass('u-hidden');
                         $('[data-nofocusfund]').addClass('u-hidden');
                         initFilter(data);
-                        window.OrderColumn('FundListTable', 'SixMonthReturnOriginalCurrency','is-desc', isFundFirstCall);
-                        isFundFirstCall = false;
+                        window.OrderColumn('FundListTable', 'SixMonthReturnOriginalCurrency','is-desc', true);
                         $('.c-loading').loading('hide');
                     } else {
                         $('[id="fundTrackTotal"]').text(0);
@@ -244,8 +239,7 @@
                         $('[data-focusetf]').removeClass('u-hidden');
                         $('[data-nofocusetf]').addClass('u-hidden');
                         initFilter2(data);
-                        window.OrderColumn('EtfListTable', 'SixMonthReturnMarketPriceOriginalCurrency', 'is-desc', isEtfFirstCall);
-                        isEtfFirstCall = false;
+                        window.OrderColumn('EtfListTable', 'SixMonthReturnMarketPriceOriginalCurrency', 'is-desc', true);
                         $('.c-loading').loading('hide');
                     } else {
                         $('[id="etfTrackTotal"]').text(0);
@@ -453,8 +447,7 @@
                         $('[data-focusforeignStock]').removeClass('u-hidden');
                         $('[data-nofocusforeignStock]').addClass('u-hidden');
                         initFilter3(data);
-                        window.OrderColumn('foreignStockListTable', 'MonthlyReturn','is-desc', isStockFirstCall);
-                        isStockFirstCall = false;
+                        window.OrderColumn('foreignStockListTable', 'MonthlyReturn','is-desc', true);
                         $('.c-loading').loading('hide');
                     } else {
                         $('[id="foreignStockTrackTotal"]').text(0);
@@ -656,8 +649,7 @@
                         $('[data-focusforeignBond]').removeClass('u-hidden');
                         $('[data-nofocusforeignBond]').addClass('u-hidden');
                         initFilter4(data);
-                        window.OrderColumn('foreignBondListTable', 'UpsAndDownsMonth', 'is-desc', isBondFirstCall);
-                        isBondFirstCall = false;
+                        window.OrderColumn('foreignBondListTable', 'UpsAndDownsMonth', 'is-desc', true);
                         $('.c-loading').loading('hide');
                     } else {
                         $('[id="foreignStockTrackTotal"]').text(0);
