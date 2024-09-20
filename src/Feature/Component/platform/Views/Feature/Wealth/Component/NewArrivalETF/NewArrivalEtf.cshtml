@@ -198,6 +198,9 @@
                                     $(this).text(number);
                                 }
                             });
+                            if (orderby === undefined) {
+                                OrderColumn("newTable", 'SixMonthReturnMarketPriceOriginalCurrency', 'is-desc', true);
+                            }
                             $('[data-popup]').magnificPopup();
                             $('[eh-compare]').trigger('exec');
                             $('[eh-focus]').trigger('exec');

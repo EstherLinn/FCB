@@ -488,7 +488,10 @@
                                     $(this).text(number);
                                 }
                             });
-
+                            if (orderby === undefined) {
+                                OrderColumn("foreignTable", 'SixMonthReturnOriginalCurrency', 'is-desc', true);
+                                OrderColumn("domesticTable", 'SixMonthReturnOriginalCurrency', 'is-desc', true);
+                            }
                             if (total === 0) {
                                 $('[data-filter-empty="false"]').hide();
                                 $('[data-filter-empty="true"]').show();
@@ -501,7 +504,7 @@
                             console.error("Empty response received from the server.");
                         }
                     },
-                    complete: function () { 
+                    complete: function () {
                         $('.c-loading').loading('hide');
                         window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
                     },
