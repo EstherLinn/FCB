@@ -248,6 +248,27 @@
             });
         }
         /**
+       * OrderColumn 表格預設排序Style-
+       * @@param {string} linkSelect Select選單data-tag
+       * @@param {string} tableName 表格 data-tag
+       * @@param {string} defaultColumn 預設排序欄位
+       * @@parmm {string} orderType 排序方式
+       * @@param {string} isTrigger 是否觸發功能,ajax可能第一次Call才需觸發
+       */
+        window.OrderColumnStyle = function (linkSelect, tableName, defaultColumn, orderType, isTrigger) {
+            if (isTrigger) {
+                //預設樣式
+                $(`[data-sorting-column="${defaultColumn}"]`, `[data-table-name="${tableName}"]`).addClass(orderType);
+                let $sortingbox = $(`[data-sorting-linkto="${linkSelect}"]`);
+                let $option = $(`option[data-sorting-column="${defaultColumn}"][data-sorting-class="${orderType}"]`, $sortingbox);
+                //同步行動板下拉選單
+                if ($option.length != 0) {
+                    $option.prop('selected', true);
+                    $sortingbox.trigger('change');
+                }
+            }
+        };
+        /**
         * OrderColumn 表格預設排序
         * @@param {string} tableName 表格 data-tag
         * @@param {string} defaultColumn 預設排序欄位
