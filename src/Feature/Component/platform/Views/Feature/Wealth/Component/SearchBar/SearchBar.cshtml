@@ -183,7 +183,7 @@
                 insertKeywords();
 
                 let option = SC_DATA.S_Option;
-                redirect(option.data('advance-url') + '?word=' + DOMPurify.sanitize(input.value));
+                redirect(option.data('advance-url') + '?kw=' + DOMPurify.sanitize(input.value));
             }
 
             function redirect(url) {
