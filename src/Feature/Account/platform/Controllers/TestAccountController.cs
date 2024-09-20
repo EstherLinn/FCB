@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Sitecore.Configuration;
 using Sitecore.Security.Accounts;
 using System;
+using System.ComponentModel;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using static Xcms.Sitecore.Foundation.Basic.SitecoreExtensions.MemberUtils;
@@ -20,27 +21,47 @@ namespace Feature.Wealth.Account.Controllers
         {
             this._memberRepository = new MemberRepository();
         }
+        public enum TestRoleType
+        {
+            [Description("普通會員無理顧")]
+            NormalUserWithOutAdvisror = 1,
+            [Description("普通會員有理顧")]
+            NormalUserWithAdvisror = 2,
+            [Description("理顧")]
+            Advisror = 3,
+            [Description("主管")]
+            Supervisor = 4
+        }
         public ActionResult Index()
         {
+            //預設登入普通會員無理顧
             var id = Settings.GetSetting("StressTestId");
-
-            string isEmployee = Sitecore.Web.WebUtil.GetSafeQueryString("IsEmployee");
-            string isManager = Sitecore.Web.WebUtil.GetSafeQueryString("IsManager");
-
+            string roleType = Sitecore.Web.WebUtil.GetSafeQueryString("RoleType");
+            int roleTypeInt;
+            bool success = int.TryParse(roleType, out roleTypeInt);
+            
+            if (success)
+            {
+                switch (roleTypeInt)
+                {
+                    case (int)TestRoleType.NormalUserWithOutAdvisror:
+                        id = "A1231231230";
+                        break;
+                    case (int)TestRoleType.NormalUserWithAdvisror:
+                        id = "B1231231230";
+                        break;
+                    case (int)TestRoleType.Advisror:
+                        id = "L1234567890";
+                        break;
+                    case (int)TestRoleType.Supervisor:
+                        id = "M1234567890";
+                        break;
+                }
+            }
             FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, id);
             User user = Authentication.BuildVirtualUser("extranet", member.WebBankId, true);
             user.Profile.Name = member.MemberName;
             user.Profile.Email = member.MemberEmail;
-
-            if(string.IsNullOrEmpty(isEmployee) == false)
-            {
-                member.IsEmployee = isEmployee == "1";
-            }
-
-            if (string.IsNullOrEmpty(isManager) == false)
-            {
-                member.IsManager = isManager == "1";
-            }
 
             string objToJson = JsonConvert.SerializeObject(member);
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
