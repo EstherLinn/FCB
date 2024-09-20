@@ -765,7 +765,7 @@
                                         <option value="@item.IndexCode">@item.IndexName</option>
                                     }
                                 </select>
-</div>
+                        </div>
                     </div>
                 </div>
                 <div class="l-form__error u-center">
@@ -2346,11 +2346,10 @@
                                     case 'shareholdingTable':
                                         break;
                                     default:
-                                        $('[data-table-name="' + template + '"]').attr('data-fixed-columns', true).fixedColumns();
+                                        $('[data-table-name="' + template + '"]').attr('data-fixed-columns', true).fixedColumns();                                        
                                         break;
-                                }
-                                OrderColumnStyle(template,template, 'id', 'is-asc', true);
-                            }
+                                }                                
+                            }                            
                         }
                     },
                     search: {},
@@ -2380,6 +2379,8 @@
                         }
                     }
                 });
+
+                OrderColumnStyle(template, template, 'id', 'is-asc', isInit);
             }
 
             // table 排序功能
