@@ -2146,6 +2146,9 @@
                 data: { __RequestVerificationToken: token },
                 success: function (data, textStatus, jqXHR) {
                     initFilter(data);
+                    data.sort((a, b) => {
+                        return b.SixMonthReturnOriginalCurrency.Value - a.SixMonthReturnOriginalCurrency.Value;
+                    });
                     initAutocomplete(data);
                     QueryStringSearch();
 
