@@ -47,7 +47,7 @@ namespace Feature.Wealth.Component.Repositories
             string sqlQuery = """
                 SELECT *
                 FROM [vw_BasicETF]
-                ORDER BY [SixMonthReturnMarketPriceOriginalCurrency] DESC, [FirstBankCode] ASC
+                ORDER BY [FirstBankCode] ASC
                 """;
             var collection = DbManager.Custom.ExecuteIList<BasicEtfDto>(sqlQuery, null, CommandType.Text);
             return collection;

@@ -41,10 +41,10 @@ namespace Feature.Wealth.Component.Repositories
             RespProduct resp = new RespProduct
             {
                 ETFProducts = MapperETFResult()?.ToList(),
-                FundProducts = MapperFundResult()?.OrderByDescending(i => i.SixMonthReturnOriginalCurrency.Value).ToList(),
+                FundProducts = MapperFundResult()?.ToList(),
                 StructuredProducts = MapperStructuredProductResult()?.ToList(),
                 ForeignStocks = MapperForeignStockResult()?.ToList(),
-                ForeignBonds = MapperForeignBondResult()?.OrderByDescending(i => i.UpsAndDownsMonth).ToList() // 排序
+                ForeignBonds = MapperForeignBondResult()?.ToList()
             };
             return resp;
         }
@@ -60,17 +60,6 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         #region ETF
-
-        public IList<BasicEtfDto> QueryETFBasicData()
-        {
-            string sqlQuery = """
-                SELECT *
-                FROM [vw_BasicETF]
-                ORDER BY [SixMonthReturnMarketPriceOriginalCurrency] DESC, [FirstBankCode] ASC
-                """;
-            var collection = DbManager.Custom.ExecuteIList<BasicEtfDto>(sqlQuery, null, CommandType.Text);
-            return collection;
-        }
 
         private IEnumerable<EtfProductResult> MapperETFResult()
         {
