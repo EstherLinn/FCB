@@ -502,8 +502,8 @@
                         initAutocomplete(data);
 
                         var urlParams = new URLSearchParams(window.location.search);
-                        var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('word')));
-                        var hotkeyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('hotword')));
+                        var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('kw')));
+                        var hotkeyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('hotkw')));
                         var hotproduct = DOMPurify.sanitize(decodeURIComponent(urlParams.get('hotproduct')));
 
                         if (keyword && keyword != "null") {
