@@ -259,8 +259,8 @@
                             <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
                             <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="searchTable" id="uid-sortbox">
                                 <option value="">排序</option>
-                                <option value="股票名稱高至低" data-sorting-column="ProductDisplayName" data-sorting-class="is-desc">股票名稱高至低</option>
-                                <option value="股票名稱低至高" data-sorting-column="ProductDisplayName" data-sorting-class="is-asc">股票名稱低至高</option>
+                                <option value="商品名稱高至低" data-sorting-column="ProductDisplayName" data-sorting-class="is-desc">商品名稱高至低</option>
+                                <option value="商品名稱低至高" data-sorting-column="ProductDisplayName" data-sorting-class="is-asc">商品名稱低至高</option>
                                 <option value="發行機構高至低" data-sorting-column="IssuingInstitution" data-sorting-class="is-desc">發行機構高至低</option>
                                 <option value="發行機構低至高" data-sorting-column="IssuingInstitution" data-sorting-class="is-asc">發行機構低至高</option>
                                 <option value="幣別高至低" data-sorting-column="CurrencyCode" data-sorting-class="is-desc">幣別高至低</option>
@@ -498,6 +498,7 @@
 
                     if (data != null && data.length != 0) {
                         initFilter(data);
+                        OrderColumn("searchTable", 'ProductDisplayName', 'is-desc', true);
                         initAutocomplete(data);
 
                         var urlParams = new URLSearchParams(window.location.search);
