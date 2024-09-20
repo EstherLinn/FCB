@@ -851,18 +851,23 @@
 
                         if (data.FundProducts) {
                             this.FJS.Fund = initFundFilterJS();
+                            this.InitializeTableSort('#uid-sortbox-fund', 'SixMonthReturnOriginalCurrency.Value', 'is-desc');
                         }
                         if (data.ETFProducts) {
                             this.FJS.ETF = initEtfFilterJS();
+                            this.InitializeTableSort('#uid-sortbox-etf', 'SixMonthReturnMarketPriceOriginalCurrency.Value', 'is-desc');
                         }
                         if (data.StructuredProducts) {
                             this.FJS.SIP = initSipFilterJS();
+                            this.InitializeTableSort('#uid-sortbox-sip', 'ProductCode', 'is-asc');
                         }
                         if (data.ForeignStocks) {
                             this.FJS.FStock = initForeignStockFilterJS();
+                            this.InitializeTableSort('#uid-sortbox-fstock', 'MonthlyReturn.Value', 'is-desc');
                         }
                         if (data.ForeignBonds) {
                             this.FJS.FBond = initForeignBondFilterJS();
+                            this.InitializeTableSort('#uid-sortbox-fbond', 'UpsAndDownsMonth', 'is-desc');
                         }
 
                         this.GenerateSearchKeywordList();
@@ -957,6 +962,16 @@
                         });
 
                         this.SearchKeyword.List = list;
+                    }
+                },
+                InitializeTableSort: function (sortingbox, sortingColumn, orderby) {
+                    var $sortingbox = $(sortingbox);
+                    var $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+
+                    if ($option.length > 0) {
+
+                        $option.prop('selected', true);
+                        $option.trigger('change');
                     }
                 }
             };
