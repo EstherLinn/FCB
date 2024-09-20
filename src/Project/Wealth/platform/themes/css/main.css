@@ -4264,10 +4264,10 @@ select {
 }
 
 @media only screen and (max-width: 767px) {
-  [data-selectbox] {
+  [data-selectbox]:not(.select2-dropdown--noNative) {
     display: block;
   }
-  [data-selectbox] + .select2 {
+  [data-selectbox]:not(.select2-dropdown--noNative) + .select2 {
     display: none;
   }
   .select2-dropdown--selectbox {

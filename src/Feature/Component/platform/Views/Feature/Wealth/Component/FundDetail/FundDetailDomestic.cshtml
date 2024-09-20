@@ -27,11 +27,27 @@
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__toolbar">
             <div class="l-flex">
-                <div class="l-flex__item" id="fundSelect">
-                    <select class="o-selectbox o-selectbox--funds" data-selection-css-class="select2-selection--funds" data-selectbox="true" data-width="auto" data-placeholder="切換基金級別" data-dropdown-auto-width="true" data-dropdown-css-class="select2-dropdown--autoWidth">
+                <div class="l-flex__item">
+                <div class="l-selectbox">
+                   <div class="l-selectbox__item" id="fundSelect">
+                            <select class="o-selectbox o-selectbox--funds" data-selection-css-class="select2-selection--funds" data-selectbox="true" data-width="auto" data-dropdown-auto-width="true" data-dropdown-css-class="select2-dropdown--autoWidth">
                         <option>切換基金級別</option>
                     </select>
-                </div>
+                  </div>
+                <div class="l-selectbox__item" id="fundCompanySelect">
+                      <select class="o-selectbox o-selectbox--funds" data-selection-css-class="select2-selection--funds" data-selectbox="true" data-width="auto" data-dropdown-auto-width="true" data-dropdown-css-class="select2-dropdown--autoWidth">
+                            <option value="">切換同公司基金</option>
+                            @if(Model.SameCompanyFunds.Any())
+                            {
+                                foreach (var item in Model.SameCompanyFunds)
+                                {
+                                    <option value="@item.ProductCode">@(item.ProductCode + " " + item.ProductName)</option>
+                                }
+                            }
+                      </select>
+                 </div>
+              </div>
+              </div>
                 <div class="l-flex__item u-right u-hidden@lt">
                     <a href="javascript:window.print()" class="o-prefixLink o-prefixLink--printer">列印</a>
                 </div>
@@ -2619,6 +2635,10 @@
             }
             $('body').addClass("has-bottomTool");
             activateTabFromUrl();
+            $('#fundCompanySelect').find("select").on('change', function () {
+                            let value = $(this).val();
+                            window.location.href = location.pathname + "?id=" + value;
+                });
             function emptyValueToDash(str) {
                 if (str == null || str.replace(/\s/g, "").length == 0) {
                     return "-"

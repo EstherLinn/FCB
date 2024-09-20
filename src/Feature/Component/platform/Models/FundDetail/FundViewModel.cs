@@ -95,6 +95,10 @@ namespace Feature.Wealth.Component.Models.FundDetail
         public Dictionary<FundTagEnum, List<string>> TagsDic { get; set; }
 
         /// <summary>
+        /// 同公司基金
+        /// </summary>
+        public List<FundBase> SameCompanyFunds { get; set; }
+        /// <summary>
         /// 公開說明書
         /// </summary>
         public string OpenDoc { get; set; }
