@@ -850,6 +850,7 @@
                         };
 
                         if (data.FundProducts) {
+                            this.Result.List.Fund.sort((a, b) => { return a.SixMonthReturnOriginalCurrency.Value - b.SixMonthReturnOriginalCurrency.Value });
                             this.FJS.Fund = initFundFilterJS();
                             this.InitializeTableSort('#uid-sortbox-fund', 'SixMonthReturnOriginalCurrency.Value', 'is-desc');
                         }
