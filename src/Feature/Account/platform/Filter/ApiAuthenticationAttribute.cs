@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Sitecore.Configuration;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Web;
@@ -53,7 +54,7 @@ namespace Feature.Wealth.Account.Filter
             }
         }
 
-        public static bool IsVerify(string token)
+        public static bool IsVerify(List<string> tokens)
         {
             // 從請求標頭中提取 Authorization 標頭
             var authHeader = HttpContext.Current.Request.Headers["Authorization"]?.ToString() ?? string.Empty;
@@ -61,7 +62,7 @@ namespace Feature.Wealth.Account.Filter
             {
                 // 提取 Bearer token
                 string jwtToken = authHeader.Substring("Bearer ".Length).Trim();
-                return token == jwtToken;
+                return tokens.Contains(jwtToken);
             }
             return false;
         }

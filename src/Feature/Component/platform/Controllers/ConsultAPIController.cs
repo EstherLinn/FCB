@@ -22,6 +22,7 @@ namespace Feature.Wealth.Component.Controllers
     public class ConsultApiController : JsonNetController
     {
         private readonly ConsultRepository _consultRepository = new ConsultRepository();
+        private List<string> Tokens => Session[ApiAuthenticationAttribute.AUTHORIZATION_KEY] as List<string> ?? new List<string>();
 
         [HttpPost]
         [IMVPAuthenticationFilter]
@@ -46,7 +47,7 @@ namespace Feature.Wealth.Component.Controllers
                             expires: DateTime.Now.AddDays(1),
                             signingCredentials: credentials);
             var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
-            Session[ApiAuthenticationAttribute.AUTHORIZATION_KEY] = jwt_token;
+            AddTokenToSession(jwt_token);
             var returnObj = new { token = jwt_token };
             return new JsonNetResult(returnObj);
         }
@@ -54,7 +55,7 @@ namespace Feature.Wealth.Component.Controllers
         [ApiAuthentication]
         public async Task<ActionResult> CheckSchedule(string scheduleId, string action, string description)
         {
-            if (!ApiAuthenticationAttribute.IsVerify(Session[ApiAuthenticationAttribute.AUTHORIZATION_KEY] as string))
+            if (!ApiAuthenticationAttribute.IsVerify(Tokens))
             {
                 return new JsonNetResult(new { statusCode = -1100, statusMsg = "CSRF 驗證失敗" });
             }
@@ -137,5 +138,33 @@ namespace Feature.Wealth.Component.Controllers
         {
             return ItemUtils.GetItem(Template.SmtpSettings.id);
         }
+
+        private void AddTokenToSession(string token)
+        {
+            var key = ApiAuthenticationAttribute.AUTHORIZATION_KEY;
+            // 檢查 Session 是否包含 List<string>
+            if (Session[key] != null)
+            {
+                // 從 Session 取出 List<string>
+                List<string> stringList = (List<string>)Session[key];
+
+                // 檢查 List 是否為空
+                if (stringList.Count > 0)
+                {
+                    // 向 List 中添加一個新的字串 "token"
+                    stringList.Add(token);
+
+                    // 將修改後的 List 存回 Session
+                    Session[key] = stringList;
+                }
+            }
+            else
+            {
+                // 如果 Session 中沒有 List<string>，初始化一個新的 List 幾存入 Session
+                List<string> stringList = new List<string>();
+                Session[key] = stringList;
+            }
+        }        
+
     }
 }
