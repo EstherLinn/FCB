@@ -53,7 +53,7 @@ namespace Feature.Wealth.Component.Repositories
 
         public IEnumerable<Dictionary<string, object>> MapperFundResult()
         {
-            var collection = new FundSearchRepository().GetFundSearchData();
+            var collection = new FundSearchRepository().GetFundSearchData().OrderByDescending(i => i.SixMonthReturnOriginalCurrency);
 
             var config = new TypeAdapterConfig();
             config.ForType<FundSearchModel, FundProductResult>()
@@ -89,10 +89,6 @@ namespace Feature.Wealth.Component.Repositories
                     bool availability = IsAvailability(src.AvailabilityStatus);
                     bool onlinePurchaseAvailability = IsAvailability(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
-
-                    //dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                    //dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
-                    //dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.ProductCode, dest.ProductName, InvestTypeEnum.Fund).ToString();
                 });
 
             var result = collection.Adapt<IEnumerable<FundProductResult>>(config);
@@ -175,10 +171,6 @@ namespace Feature.Wealth.Component.Repositories
                     bool availability = IsAvailability(src.AvailabilityStatus);
                     bool onlinePurchaseAvailability = IsAvailability(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
-
-                    //dest.CurrencyHtml = PublicHelpers.CurrencyLink(null, null, src.CurrencyName).ToString();
-                    //dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
-                    //dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, dest.ETFName, InvestTypeEnum.ETF).ToString();
                 });
 
             var result = collection.Adapt<IEnumerable<EtfProductResult>>(config);
@@ -245,11 +237,6 @@ namespace Feature.Wealth.Component.Repositories
                     bool availability = IsAvailability(src.AvailabilityStatus);
                     bool onlinePurchaseAvailability = IsAvailability(src.OnlineSubscriptionAvailability) || string.IsNullOrEmpty(src.OnlineSubscriptionAvailability);
                     dest.CanOnlineSubscription = availability && onlinePurchaseAvailability;
-
-                    //string fullName = string.Concat(src.FirstBankCode, src.ChineseName, src.EnglishName);
-
-                    //dest.FocusButtonAutoHtml = PublicHelpers.FocusTag(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks).ToString();
-                    //dest.SubscribeButtonAutoHtml = PublicHelpers.SubscriptionTag(null, null, src.FirstBankCode, fullName, InvestTypeEnum.ForeignStocks).ToString();
                 });
 
             var result = collection.Adapt<IEnumerable<ForeignStockResult>>(config);
