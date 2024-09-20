@@ -650,6 +650,7 @@
                     }).done(function (data, textStatus, jqXHR) {
                         var fjs = initFilter(data);
                         window.NewsList.FJS = fjs;
+                        OrderColumn('newsTable', 'DatePair.Key', 'is-desc', true);
                         initAutocomplete(data);
 
                         $('[data-tab] [data-tab-target]').first().trigger('switch');
