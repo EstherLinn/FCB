@@ -593,6 +593,7 @@
                         console.log(data);
                         this.Result.List = data;
                         if (data) {
+                            this.Result.List.sort((a, b) => { return a.SixMonthReturnMarketPriceOriginalCurrency.Value - b.SixMonthReturnMarketPriceOriginalCurrency.Value })
                             var fjs = initFilterJS();
                             this.FJS = fjs;
                         }
