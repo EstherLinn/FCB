@@ -57,7 +57,7 @@
             function checkKeywordQueryString() {
 
                 var urlParams = new URLSearchParams(window.location.search);
-                var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('word')));
+                var keyword = DOMPurify.sanitize(decodeURIComponent(urlParams.get('kw')));
 
                 if (keyword && keyword != "null") {
                     $('[data-keyword-input]').val(keyword);
