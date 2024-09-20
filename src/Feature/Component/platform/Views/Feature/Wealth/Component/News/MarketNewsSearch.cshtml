@@ -564,6 +564,7 @@
                     return;
                 }
 
+                let isMarketNewsFirstCall = true;
                 let queryStringProcessed = false;
 
                 let fjs;
@@ -740,7 +741,16 @@
                         console.log(data);
 
                         initFilter(data);
-                        OrderColumn("newsTable", 'NewsDate', 'is-desc', true);
+
+                        if (isMarketNewsFirstCall) {
+                            OrderColumn('newsTable', 'NewsDate', 'is-desc', true);
+                            isMarketNewsFirstCall = false;
+                        } else {
+                            let column = $('option:selected', $('[data-sortingbox="true"]')).data('sorting-column');
+                            let orderType = $('option:selected', $('[data-sortingbox="true"]')).data('sorting-class');
+                            OrderColumn('newsTable', column, orderType, true);
+                        }
+
                         initAutocomplete(data);
                         $('[data-filter-switch="#uid-template"]').trigger('change');
 
