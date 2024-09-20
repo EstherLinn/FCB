@@ -69,6 +69,10 @@ namespace Feature.Wealth.Component.Repositories
             fundViewModel.FundYearRateOfReturn = GetYearRateOfReturnCompare(fundId);
             fundViewModel.FundDividendRecords = GetDividendRecord(fundId);
             fundViewModel.FundScaleRecords = GetScaleMove(fundId, indicator);
+            if (fundViewModel.FundBaseData != null)
+            {
+                fundViewModel.SameCompanyFunds = GetSameCompanyFunds(fundId, fundViewModel.FundBaseData.FundCompanyID);
+            }
             return fundViewModel;
         }
         /// <summary>
@@ -472,6 +476,22 @@ namespace Feature.Wealth.Component.Repositories
             var para = new { fundId };
             List<FundScaleRecord> fundScaleMove = DbManager.Custom.ExecuteIList<FundScaleRecord>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             return fundScaleMove;
+        }
+
+        public List<FundBase> GetSameCompanyFunds(string fundId, string companyId)
+        {
+            string FUND_BSC = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
+            string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
+            var sameCompanyFunds = new List<FundBase>();
+            var sql = $@" 
+                            SELECT A.BankProductCode as [ProductCode],A.FundName as [ProductName] FROM {FUND_BSC} AS A
+                            inner join {WMS_DOC_RECM} as B on A.BankProductCode = B.ProductCode
+                            where  FundCompanyID =@companyId
+                            and BankProductCode is not null and BankProductCode != @fundId ORDER BY BankProductCode";
+            var para = new { companyId, fundId };
+            sameCompanyFunds = DbManager.Custom.ExecuteIList<FundBase>(sql, para, commandType: System.Data.CommandType.Text)
+                ?.ToList();
+            return sameCompanyFunds;
         }
 
         public FundViewModel GetDocLinks(string fundId, FundViewModel fundViewModel, string fundIndicator, DjMoneyApiRespository djMoneyApiRespository)

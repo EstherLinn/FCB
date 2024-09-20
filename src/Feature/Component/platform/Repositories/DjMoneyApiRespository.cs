@@ -33,8 +33,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 url = _route.
                     AppendPathSegments("api", "fund", fundId, "most-recent-five-year-roi-and-fee");
-                var request = await url.
-                    AppendPathSegments("api", "fund", fundId, "most-recent-five-year-roi-and-fee").
+                var request = await url.                   
                     WithOAuthBearerToken(_token).
                     AllowAnyHttpStatus().
                     GetAsync().LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, url);
