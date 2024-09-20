@@ -249,23 +249,21 @@
         }
         /**
         * OrderColumn 表格預設排序
-        * @@param {string} linkSelect Select選單data-tag
         * @@param {string} tableName 表格 data-tag
         * @@param {string} defaultColumn 預設排序欄位
         * @@parmm {string} orderType 排序方式
         * @@param {string} isTrigger 是否觸發功能,ajax可能第一次Call才需觸發
         */
-        window.OrderColumn = function (linkSelect, tableName, defaultColumn, orderType, isTrigger) {
+        window.OrderColumn = function (tableName, defaultColumn, orderType, isTrigger) {
             if (isTrigger) {
-                //預設樣式
+                //預先給相反的class，點擊後才會是預想的排序方式
+                orderType = orderType == "is-desc" ? "is-asc" : "is-desc";
+                window.loading = () => 0;//蓋掉window.loading function，防止小獅子重複出現
+                //預先給相反的class
                 $(`[data-sorting-column="${defaultColumn}"]`, `[data-table-name="${tableName}"]`).addClass(orderType);
-                let $sortingbox = $(`[data-sorting-linkto="${linkSelect}"]`);
-                let $option = $(`option[data-sorting-column="${defaultColumn}"][data-sorting-class="${orderType}"]`, $sortingbox);
-                //同步行動板下拉選單
-                if ($option.length != 0) {
-                    $option.prop('selected', true);
-                    $sortingbox.trigger('change');
-                }
+                //觸發click，行動版下拉選單會跟著同步
+                $(`[data-sorting-column="${defaultColumn}"]`, `[data-table-name="${tableName}"]`).trigger('click.sorting');
+                window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
             }
         }
 

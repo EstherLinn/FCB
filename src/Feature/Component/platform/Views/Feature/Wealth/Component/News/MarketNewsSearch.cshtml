@@ -740,6 +740,7 @@
                         console.log(data);
 
                         initFilter(data);
+                        OrderColumn("newsTable", 'NewsDate', 'is-desc', true);
                         initAutocomplete(data);
                         $('[data-filter-switch="#uid-template"]').trigger('change');
 

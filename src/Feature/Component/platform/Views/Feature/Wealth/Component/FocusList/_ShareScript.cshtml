@@ -32,7 +32,7 @@
                         $('[data-focusfund]').removeClass('u-hidden');
                         $('[data-nofocusfund]').addClass('u-hidden');
                         initFilter(data);
-                        window.OrderColumn('FundListTable', 'FundListTable', 'SixMonthReturnOriginalCurrency','is-desc', isFundFirstCall);
+                        window.OrderColumn('FundListTable', 'SixMonthReturnOriginalCurrency','is-desc', isFundFirstCall);
                         isFundFirstCall = false;
                         $('.c-loading').loading('hide');
                     } else {
@@ -244,7 +244,7 @@
                         $('[data-focusetf]').removeClass('u-hidden');
                         $('[data-nofocusetf]').addClass('u-hidden');
                         initFilter2(data);
-                        window.OrderColumn('EtfListTable', 'EtfListTable', 'SixMonthReturnMarketPriceOriginalCurrency', 'is-desc', isEtfFirstCall);
+                        window.OrderColumn('EtfListTable', 'SixMonthReturnMarketPriceOriginalCurrency', 'is-desc', isEtfFirstCall);
                         isEtfFirstCall = false;
                         $('.c-loading').loading('hide');
                     } else {
@@ -453,7 +453,7 @@
                         $('[data-focusforeignStock]').removeClass('u-hidden');
                         $('[data-nofocusforeignStock]').addClass('u-hidden');
                         initFilter3(data);
-                        window.OrderColumn('foreignStockListTable', 'foreignStockListTable', 'MonthlyReturn','is-desc', isStockFirstCall);
+                        window.OrderColumn('foreignStockListTable', 'MonthlyReturn','is-desc', isStockFirstCall);
                         isStockFirstCall = false;
                         $('.c-loading').loading('hide');
                     } else {
@@ -656,7 +656,7 @@
                         $('[data-focusforeignBond]').removeClass('u-hidden');
                         $('[data-nofocusforeignBond]').addClass('u-hidden');
                         initFilter4(data);
-                        window.OrderColumn('foreignBondListTable', 'foreignBondListTable', 'UpsAndDownsMonth', 'is-desc', isBondFirstCall);
+                        window.OrderColumn('foreignBondListTable', 'UpsAndDownsMonth', 'is-desc', isBondFirstCall);
                         isBondFirstCall = false;
                         $('.c-loading').loading('hide');
                     } else {
