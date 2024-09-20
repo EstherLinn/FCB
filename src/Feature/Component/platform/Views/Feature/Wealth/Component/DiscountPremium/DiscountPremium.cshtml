@@ -371,163 +371,165 @@
 </script>
 
 <script>
-	(function ($, window, document, undefined) {
-		document.addEventListener('DOMContentLoaded', function () {
-			if (!jQuery) {
-				return;
-			}
-			let fjs;
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+            let fjs;
 
-			let int = '1';
-			var token = $('input[name="__RequestVerificationToken"]').val();
+            let int = '1';
+            var token = $('input[name="__RequestVerificationToken"]').val();
 
-			window.loading = () => 0;
-			$.ajax({
-				url: '@ClientRoute.GenerateUrl(this, "DiscountPremium", "GetAllEtfs")',
-				type: 'POST',
-				data: { __RequestVerificationToken: token },
-				success: function (data) {
-				initFilter(data, '1');
-				},
-				complete: function () {
-					$('.c-loading').loading('hide');
-					window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
-				},
-				error: function (xhr, status, error) {
-					console.error(error);
-				}
-			});
+            window.loading = () => 0;
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "DiscountPremium", "GetAllEtfs")',
+                type: 'POST',
+                data: { __RequestVerificationToken: token },
+                success: function (data) {
+                    initFilter(data, '1');
+                },
+                complete: function () {
+                    $('.c-loading').loading('hide');
+                    window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
 
-			$.ajax({
-				url: '@ClientRoute.GenerateUrl(this, "DiscountPremium", "GetAllEtfs2")',
-				type: 'POST',
-				data: { __RequestVerificationToken: token },
-			}).done(function (data, textStatus, jqXHR) {
-				initFilter(data, '2');
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "DiscountPremium", "GetAllEtfs2")',
+                type: 'POST',
+                data: { __RequestVerificationToken: token },
+            }).done(function (data, textStatus, jqXHR) {
+                initFilter(data, '2');
 
-				console.log(data);
-			}).fail(function (jqXHR, textStatus, errorThrown) {
-			}).always(function () {
-				window.loading('hide');
-			});
-			function initFilter(data, int) {
-				let uid = 'select#uid-sortbox' + int;
-				let result = '#result' + int;
-				let table = '#table' + int;
-				let opts = {
-					template: '#template',
-					callbacks: {
-						beforeRecordRender: function (record) {
-							const dot2 = 2;
-							record.DiscountPremium.Text = Math.abs(record.DiscountPremium.Value).toFixed(dot2);
-						},
-						afterFilter: function (result) {
-							let isEmpty = result.length == 0;
-							$(`[data-filter-empty=${isEmpty}]`).show();
-							$(`[data-filter-empty=${!isEmpty}]`).hide();
-							window.loading('hide');
-							$('[data-popup]').magnificPopup();
-							$('[eh-compare]').trigger('exec');
-							$('[eh-focus]').trigger('exec');
-							$('[eh-subscription-type]').trigger('exec');
-						}
-					},
-					order: {
-						default_sort: 'asc',
-						sorts: [
-							{ field: 'group1', ele: uid }
-						],
-						onSortEvent: function (f, e) {
-							let $self = $(this);
-							if (e.type === 'click') { } else if (e.type === 'change') {
-								let $selected = $self.find(':selected');
-								let field = $selected.data('sorting-column');
-								let order = $selected.data('sorting-class');
-								f.field = field;
-								if (!!order) {
-									if (order === 'is-desc') {
-										f.order = 'desc';
-									} else if (order === 'is-asc') {
-										f.order = 'asc';
-									}
-								} else {
-									f.order = f.order === 'desc' ? 'asc' : 'desc';
-								}
-							}
-						}
-					}
-				};
-				fjs = FilterJS(data, result, opts);
-				$('[data-popup]').magnificPopup();
-				$('[eh-compare]').trigger('exec');
-				$('[eh-focus]').trigger('exec');
-				$('[eh-subscription-type]').trigger('exec');
-			}
+                console.log(data);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function () {
+                window.loading('hide');
+            });
+            function initFilter(data, int) {
+                let uid = 'select#uid-sortbox' + int;
+                let result = '#result' + int;
+                let table = '#table' + int;
+                let opts = {
+                    template: '#template',
+                    callbacks: {
+                        beforeRecordRender: function (record) {
+                            const dot2 = 2;
+                            record.DiscountPremium.Text = Math.abs(record.DiscountPremium.Value).toFixed(dot2);
+                        },
+                        afterFilter: function (result) {
+                            let isEmpty = result.length == 0;
+                            $(`[data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-filter-empty=${!isEmpty}]`).hide();
+                            window.loading('hide');
+                            $('[data-popup]').magnificPopup();
+                            $('[eh-compare]').trigger('exec');
+                            $('[eh-focus]').trigger('exec');
+                            $('[eh-subscription-type]').trigger('exec');
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: uid }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') { } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order === 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+                        }
+                    }
+                };
+                fjs = FilterJS(data, result, opts);
+                $('[data-popup]').magnificPopup();
+                $('[eh-compare]').trigger('exec');
+                $('[eh-focus]').trigger('exec');
+                $('[eh-subscription-type]').trigger('exec');
+            }
 
-			// table 排序功能
-			function initializeSorting(tableId, sortingBoxId, datasortingBox) {
-				$(tableId).on('click.sorting', '.o-sorting', function (e) {
-					e.preventDefault();
-					window.loading('show');
-					var $this = $(this);
-					var orderby = '';
+            // table 排序功能
+            function initializeSorting(tableId, sortingBoxId, datasortingBox) {
+                $(tableId).on('click.sorting', '.o-sorting', function (e) {
+                    e.preventDefault();
+                    window.loading('show');
+                    var $this = $(this);
+                    var orderby = '';
 
-					if ($this.hasClass('is-asc')) {
-						$this.removeClass('is-asc').addClass('is-desc');
-						orderby = 'is-desc';
-					} else {
-						$this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
-						$this.addClass('is-asc');
-						orderby = 'is-asc';
-					}
+                    if ($this.hasClass('is-asc')) {
+                        $this.removeClass('is-asc').addClass('is-desc');
+                        orderby = 'is-desc';
+                    } else {
+                        $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                        $this.addClass('is-asc');
+                        orderby = 'is-asc';
+                    }
 
-					// 連動 sortingbox
-					let $sortingbox = $(sortingBoxId);
-					var sortingColumn = $this.data('sorting-column');
-					let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
-					if ($option.length != 0) {
-						$option.prop('selected', true);
-						$sortingbox.trigger('change');
-					} else {
-						$sortingbox.val(null).trigger('change');
-					}
+                    // 連動 sortingbox
+                    let $sortingbox = $(sortingBoxId);
+                    var sortingColumn = $this.data('sorting-column');
+                    let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+                    if ($option.length != 0) {
+                        $option.prop('selected', true);
+                        $sortingbox.trigger('change');
+                    } else {
+                        $sortingbox.val(null).trigger('change');
+                    }
 
-					// 因展示，使用 setTimeout 延遲關閉 loading
-					setTimeout(() => {
-						window.loading('hide');
-					}, 300);
-				});
+                    // 因展示，使用 setTimeout 延遲關閉 loading
+                    setTimeout(() => {
+                        window.loading('hide');
+                    }, 300);
+                });
 
-				$(sortingBoxId).on('change.select2', function (e) {
-					let self = this;
-					let $self = $(this);
-					let sorting = $self.val();
-					let $linkTable = $(tableId);
-					let sortingColumn = $('option:selected', self).data('sorting-column');
-					let orderby = $('option:selected', self).data('sorting-class');
+                OrderColumn("hotTable", 'DiscountPremium.Value', 'is-desc', true);
+                OrderColumn("hotTable2", 'DiscountPremium.Value', 'is-asc', true);
+                $(sortingBoxId).on('change.select2', function (e) {
+                    let self = this;
+                    let $self = $(this);
+                    let sorting = $self.val();
+                    let $linkTable = $(tableId);
+                    let sortingColumn = $('option:selected', self).data('sorting-column');
+                    let orderby = $('option:selected', self).data('sorting-class');
 
-					// 連動 table
-					$('.o-sorting', $linkTable).removeClass('is-asc is-desc');
-					$(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
+                    // 連動 table
+                    $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                    $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
 
-					let $linkedBox = $(datasortingBox).not(self);
-					for (box of $linkedBox) {
-						let $box = $(box);
-						let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
-						if ($option.length != 0) {
-							$option.prop('selected', true);
-							$box.trigger('change.select2');
-						} else {
-							$box.val(null).trigger('change.select2');
-						}
-					}
-				});
-			}
+                    let $linkedBox = $(datasortingBox).not(self);
+                    for (box of $linkedBox) {
+                        let $box = $(box);
+                        let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                        if ($option.length != 0) {
+                            $option.prop('selected', true);
+                            $box.trigger('change.select2');
+                        } else {
+                            $box.val(null).trigger('change.select2');
+                        }
+                    }
+                });
+            }
 
-			initializeSorting('#table1', '#uid-sortbox1', '[data-sortingbox1]');
-			initializeSorting('#table2', '#uid-sortbox2', '[data-sortingbox2]');
-		});
-	})(jQuery, window, document);
+            initializeSorting('#table1', '#uid-sortbox1', '[data-sortingbox1]');
+            initializeSorting('#table2', '#uid-sortbox2', '[data-sortingbox2]');
+        });
+    })(jQuery, window, document);
 </script>
 
 
