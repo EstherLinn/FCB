@@ -598,6 +598,7 @@
                         }
                         this.GenerateSearchKeywordList();
                         initAutocomplete();
+                        this.InitializeTableSort();
 
                         $('[data-tab] [data-tab-target]').first().trigger('switch');
                         $('[data-filter-switch="#uid-template-marketPrice-original"]').trigger('change');
@@ -632,6 +633,17 @@
                         })
 
                         this.SearchKeyword.List = list;
+                    }
+                },
+                InitializeTableSort: function () {
+                    var $sortingbox = $('#uid-sortbox');
+                    var sortingColumn = 'SixMonthReturnMarketPriceOriginalCurrency.Value';
+                    var orderby = 'is-desc';
+                    var $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+
+                    if ($option.length > 0) {
+                        $option.prop('selected', true);
+                        $option.trigger('change');
                     }
                 }
             };
