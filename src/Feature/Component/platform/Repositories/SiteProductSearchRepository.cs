@@ -41,7 +41,7 @@ namespace Feature.Wealth.Component.Repositories
             RespProduct resp = new RespProduct
             {
                 ETFProducts = MapperETFResult()?.ToList(),
-                FundProducts = MapperFundResult()?.ToList(),
+                FundProducts = MapperFundResult()?.OrderByDescending(i => i.SixMonthReturnOriginalCurrency).ToList(),
                 StructuredProducts = MapperStructuredProductResult()?.ToList(),
                 ForeignStocks = MapperForeignStockResult()?.ToList(),
                 ForeignBonds = MapperForeignBondResult()?.OrderByDescending(i => i.UpsAndDownsMonth).ToList() // 排序
