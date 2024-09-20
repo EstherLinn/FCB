@@ -44,16 +44,16 @@ namespace Feature.Wealth.Account.Controllers
             {
                 switch (roleTypeInt)
                 {
-                    case 1:
+                    case (int)TestRoleType.NormalUserWithOutAdvisror:
                         id = "A1231231230";
                         break;
-                    case 2:
+                    case (int)TestRoleType.NormalUserWithAdvisror:
                         id = "B1231231230";
                         break;
-                    case 3:
+                    case (int)TestRoleType.Advisror:
                         id = "L1234567890";
                         break;
-                    case 4:
+                    case (int)TestRoleType.Supervisor:
                         id = "M1234567890";
                         break;
                 }
