@@ -217,7 +217,7 @@
             <div class="c-cardTable__title" data-length="4">票面利率</div>
             <div class="c-cardTable__content">
                 <% if (typeof InterestRate == "number" && !isNaN(InterestRate)) { %>
-                    <span><%= InterestRate.toFixed(2) %>%</span>
+                    <span><%= InterestRate.toFixed(4) %>%</span>
                 <% } else { %>
                     <span>-</span>
                 <% } %>
