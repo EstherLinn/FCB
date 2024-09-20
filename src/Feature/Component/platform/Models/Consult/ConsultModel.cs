@@ -50,6 +50,7 @@ namespace Feature.Wealth.Component.Models.Consult
     {
         public Item Item { get; set; }
         public List<QandA> QandAList { get; set; } = new List<QandA>();
+        public bool Needbr { get; set; } = false;
     }
 
     public class QandA
