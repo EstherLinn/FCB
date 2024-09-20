@@ -897,7 +897,7 @@
                     }
                 });
             });
-            OrderColumn("bondTable", 'UpsAndDownsMonth', 'is-desc', true);
+
             // table 排序功能
             $('.o-sorting').on('click.sorting', function (e) {
                 e.preventDefault();
@@ -927,7 +927,7 @@
                     window.loading('hide');
                 }, 300);
             });
-
+            OrderColumn("bondTable", 'UpsAndDownsMonth', 'is-desc', true);
             // 手機版分頁筆數功能
             $('[data-sortingbox="true"]').on('change.sorting', function (e) {
                 // 呼叫 loading
