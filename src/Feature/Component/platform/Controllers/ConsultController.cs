@@ -76,8 +76,16 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult QandAList()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
+            var model = CreateQandAListModel(item);
 
-            return View("/Views/Feature/Wealth/Component/Consult/QandAList.cshtml", CreateQandAListModel(item));
+            var param = RenderingContext.CurrentOrNull?.Rendering.Parameters;
+
+            if(param != null && param["needbr"] == "1")
+            {
+                model.Needbr = true;
+            }
+
+            return View("/Views/Feature/Wealth/Component/Consult/QandAList.cshtml", model);
         }
 
         private QandAListModel CreateQandAListModel(Item item)
