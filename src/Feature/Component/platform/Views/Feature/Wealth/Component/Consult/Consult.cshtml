@@ -465,7 +465,7 @@
 
                 var s = currentConsultSchedule.StartTime + '~' + currentConsultSchedule.EndTime;
 
-                if (d1.getHours < 12) {
+                if (d1.getHours() < 12) {
                     s = '上午 ' + s;
                 }
                 else {

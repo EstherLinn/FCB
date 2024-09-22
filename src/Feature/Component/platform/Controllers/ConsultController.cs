@@ -171,7 +171,8 @@ namespace Feature.Wealth.Component.Controllers
                         other = consultSchedule.Description,
                         start = consultSchedule.ScheduleDate.ToString("yyyy-MM-dd") + "T" + consultSchedule.StartTime,
                         end = consultSchedule.ScheduleDate.ToString("yyyy-MM-dd") + "T" + consultSchedule.EndTime,
-                        release = consultSchedule.Start
+                        release = consultSchedule.Start,
+                        StatusCode = consultSchedule.StatusCode
                     };
 
                     if (consultSchedule.StatusCode == "0")
