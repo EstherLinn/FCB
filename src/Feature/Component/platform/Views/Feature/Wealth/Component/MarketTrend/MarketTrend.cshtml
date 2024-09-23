@@ -1884,6 +1884,13 @@
             }, 300);
         });
 
+        OrderColumn("fundTable-stock", 'M6Change', 'is-desc', true);
+        OrderColumn("etfTable-stock", 'M6Change', 'is-desc', true);
+        OrderColumn("fundTable-bond", 'M6Change', 'is-desc', true);
+        OrderColumn("etfTable-bond", 'M6Change', 'is-desc', true);
+        OrderColumn("fundTable-industry", 'M6Change', 'is-desc', true);
+        OrderColumn("etfTable-industry", 'M6Change', 'is-desc', true);
+
         // 手機版分頁筆數功能
         $('[data-sortingbox="true"]').on('change.sorting', function (e) {
             // 呼叫 loading

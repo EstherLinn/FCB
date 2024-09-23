@@ -200,6 +200,10 @@ namespace Feature.Wealth.Component.Models.Consult
         /// 判斷是否可以開始視訊(已棄用)
         /// </summary>
         public bool release { get; set; }
+        /// <summary>
+        /// 0：未確認、1：已確認、2：已完成、3：已取消
+        /// </summary>
+        public string StatusCode { get; set; }
     }
 
 

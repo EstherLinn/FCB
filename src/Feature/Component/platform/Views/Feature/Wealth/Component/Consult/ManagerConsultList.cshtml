@@ -252,6 +252,14 @@
                         <div class="c-eventPopup__content">
                             <div class="l-info">
                                 <div class="l-info__item">
+                                    <div class="l-info__title">預約理專</div>
+                                    <div class="l-info__val">${EmployeeName}</div>
+                                </div>
+                                <div class="l-info__item">
+                                    <div class="l-info__title">預約客戶</div>
+                                    <div class="l-info__val">${CustomerName}</div>
+                                </div>
+                                <div class="l-info__item">
                                     <div class="l-info__title">預約狀態</div>
                                     <div class="l-info__val">${Title}</div>
                                 </div>
@@ -695,7 +703,7 @@
                 window.loading('hide');
             }, 300);
         });
-
+        OrderColumn("consultationListTable1", 'ScheduleDate', 'is-asc', true);
         $('#consultationListTable2').on('click.sorting', '.o-sorting', function (e) {
             e.preventDefault();
             // 呼叫 loading
@@ -724,7 +732,7 @@
                 window.loading('hide');
             }, 300);
         });
-
+        OrderColumn("consultationListTable2", 'ScheduleDate', 'is-asc', true);
         function setPopup(id) {
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
 
@@ -784,6 +792,7 @@
                         event.setExtendedProp("categoryColor", "#c3c3c3ff");
                         event.setExtendedProp("popupColor", "#9C9C9C");
                         event.setExtendedProp("release", false);
+                        event.setExtendedProp("StatusCode", "3");
 
                         calendar.render();
                     }
@@ -1017,6 +1026,7 @@
                     $('[data-date=' + dateStr + ']').find('.fc-daygrid-day-events').html('<div class="o-eventBall"></div>');
                 }
             },
+            eventOrder: ["StatusCode", "start"],
             // 行事曆資料
             events: dataSource
         });
