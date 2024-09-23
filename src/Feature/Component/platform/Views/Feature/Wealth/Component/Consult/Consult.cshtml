@@ -37,7 +37,7 @@
                             <div class="l-formBlock__wrap l-formBlock__wrap--time">
                                 <div class="l-formBlock__item">
                                     <div class="c-form c-form--time">
-                                        <div class="c-form__title">選擇日期</div>
+                                        <div class="c-form__title c-form__title--required">選擇日期</div>
                                         <div class="c-form__content">
                                             <div class="l-form" id="l-form-date">
                                                 <div class="l-form__item">
@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="l-formBlock__item">
                                     <div class="c-form c-form--time">
-                                        <div class="c-form__title">選擇時段</div>
+                                        <div class="c-form__title c-form__title--required">選擇時段</div>
                                         <div class="c-form__content">
                                             <div class="l-form" id="l-form-time">
                                                 <div class="l-form__item">
@@ -186,7 +186,7 @@
                             </div>
                             <div class="l-formBlock__item">
                                 <div class="c-form">
-                                    <div class="c-form__title">聯絡電話</div>
+                                    <div class="c-form__title c-form__title--required">聯絡電話</div>
                                     <div class="c-form__content">
                                         <div class="l-form" id="l-form-phone">
                                             <div class="l-form__input">
@@ -201,7 +201,7 @@
                             </div>
                             <div class="l-formBlock__item">
                                 <div class="c-form">
-                                    <div class="c-form__title">電子信箱</div>
+                                    <div class="c-form__title c-form__title--required">電子信箱</div>
                                     <div class="c-form__content">
                                         <div class="l-form" id="l-form-mail">
                                             <div class="l-form__input">
@@ -219,7 +219,7 @@
                             </div>
                             <div class="l-formBlock__item">
                                 <div class="c-form">
-                                    <div class="c-form__title">諮詢主題(可複選)</div>
+                                    <div class="c-form__title c-form__title--required">諮詢主題(可複選)</div>
                                     <div class="c-form__content">
                                         <div class="l-form" id="l-form-subject">
                                             <div class="l-form__item">
@@ -427,7 +427,6 @@
     const reserveds = @Model.ReservedsHtmlString;
     const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六'];
     const emailReg = /^[a-zA-Z0-9_.+-]+@@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-    const phoneReg = /(\d{2,3}-?|\(\d{2,3}\))\d{3,4}-?\d{4}|09\d{2}(\d{6}|-\d{3}-\d{3})/;
 
     var currentConsultSchedule = {
         CustomerID: '',
@@ -709,7 +708,24 @@
         }
 
         function validatePhone(phone) {
-            return phoneReg.test(phone);
+            //可接受的電話格式，以下A、O、X皆為數字
+            //市話 區碼2~4碼，可(AA)或AA-，後面1~4碼+4碼，可OOOOXXXX也可OOOO-XXXX
+            //手機 09開頭，可09AAOOOXXX或09AA-OOO-XXX
+            //最後一碼必為數字，除去()與-最多只能10碼，目前市話區碼大於2碼的後面號碼都小於8碼
+            var flag = true;
+
+            if (phone.startsWith('09')){
+                let cellPhoneReg = /^09\d{2}(\d{6}|-\d{3}-\d{3})$/;
+                flag = cellPhoneReg.test(phone);    
+            }
+            else {              
+                let phoneReg = /^(\(0\d{1,3}\)|0\d{1,3}-?)\d{1,4}-?\d{4}$/;
+                flag = phoneReg.test(phone);  
+            }
+
+            flag = flag && phone.replaceAll('(','').replaceAll(')','').replaceAll('-','').length <= 10;
+
+            return flag;
         }
 
         $('[data-subject]').on('click', function (e) {
