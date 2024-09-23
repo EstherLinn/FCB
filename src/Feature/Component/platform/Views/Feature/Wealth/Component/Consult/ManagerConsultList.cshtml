@@ -317,12 +317,20 @@
         <div class="c-modal__content">
             <div class="l-info">
                 <div class="l-info__item">
+                    <div class="l-info__title">預約理專</div>
+                    <div class="l-info__val" data-detail="EmployeeName"></div>
+                </div>
+                <div class="l-info__item">
                     <div class="l-info__title">預約日期</div>
                     <div class="l-info__val" data-detail="ScheduleDate"></div>
                 </div>
                 <div class="l-info__item">
                     <div class="l-info__title">預約時段</div>
                     <div class="l-info__val" data-detail="ScheduleTime"></div>
+                </div>                
+                <div class="l-info__item">
+                    <div class="l-info__title">預約客戶</div>
+                    <div class="l-info__val" data-detail="CustomerName"></div>
                 </div>
                 <div class="l-info__item">
                     <div class="l-info__title">聯絡電話</div>
@@ -363,6 +371,10 @@
                 <div class="l-info__item">
                     <div class="l-info__title">預約時段</div>
                     <div class="l-info__val" data-detail="ScheduleTime"></div>
+                </div>                
+                <div class="l-info__item">
+                    <div class="l-info__title">預約客戶</div>
+                    <div class="l-info__val" data-detail="CustomerName"></div>
                 </div>
                 <div class="l-info__item">
                     <div class="l-info__title">聯絡電話</div>
@@ -741,13 +753,14 @@
                 window.loading('hide');
             }, 300);
         });
-        OrderColumn("consultationListTable2", 'ScheduleDate', 'is-asc', true);
+        OrderColumn("consultationListTable2", 'ScheduleDate', 'is-desc', true);
         function setPopup(id) {
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
 
             $('[data-detail="EmployeeName"]').text(consultSchedule.EmployeeName);
             $('[data-detail="ScheduleDate"]').text(consultSchedule.ScheduleDateString);
             $('[data-detail="ScheduleTime"]').text(consultSchedule.StartTime + '~' + consultSchedule.EndTime);
+            $('[data-detail="CustomerName"]').text(consultSchedule.CustomerName);
             $('[data-detail="Phone"]').text(consultSchedule.Phone);
             $('[data-detail="Mail"]').text(consultSchedule.Mail);
             $('[data-detail="Subject"]').text(consultSchedule.Subject);
