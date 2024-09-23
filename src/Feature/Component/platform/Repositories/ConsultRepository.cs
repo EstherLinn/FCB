@@ -181,7 +181,7 @@ namespace Feature.Wealth.Component.Repositories
 
             if (!string.IsNullOrEmpty(result.BranchName))
             {
-                result.BranchName = result.BranchName.Trim().Replace("    ", string.Empty).Replace("　", string.Empty);
+                result.BranchName = result.BranchName.Trim().Replace("\t", string.Empty).Replace("　", string.Empty);
             }
 
             return result;
