@@ -5032,6 +5032,15 @@ select {
   width: 124px;
   padding-top: 4px;
 }
+.c-form__title--required {
+  position: relative;
+}
+.c-form__title--required::before {
+  content: "*";
+  color: #F58220;
+  position: absolute;
+  right: 100%;
+}
 .c-form__content {
   flex: 1;
 }
@@ -5085,6 +5094,9 @@ select {
   .c-form__title {
     width: auto;
     padding-top: 0;
+  }
+  .c-form__title--required::before {
+    position: static;
   }
   .c-form--time .c-form__title, .c-form--trial .c-form__title {
     width: auto;
