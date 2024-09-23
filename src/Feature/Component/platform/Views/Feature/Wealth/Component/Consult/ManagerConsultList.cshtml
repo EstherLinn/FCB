@@ -243,57 +243,65 @@
                 </div>
             </div>
             <div class="c-tab__panel" data-tab-panel-id="tab-icon-2">
-                <template id="tmpl">
-                    <div class="c-eventPopup">
-                        <div class="c-eventPopup__header" style="background-color: ${PopupColor};">
-                            <span>預約明細</span>
-                            <a href="#" data-quick-close=""><img src="~/themes/images/icons/white/x-lg.svg" alt=""></a>
-                        </div>
-                        <div class="c-eventPopup__content">
-                            <div class="l-info">
-                                <div class="l-info__item">
-                                    <div class="l-info__title">預約理專</div>
-                                    <div class="l-info__val">${EmployeeName}</div>
-                                </div>
-                                <div class="l-info__item">
-                                    <div class="l-info__title">預約客戶</div>
-                                    <div class="l-info__val">${CustomerName}</div>
-                                </div>
-                                <div class="l-info__item">
-                                    <div class="l-info__title">預約狀態</div>
-                                    <div class="l-info__val">${Title}</div>
-                                </div>
-                                <div class="l-info__item">
-                                    <div class="l-info__title">預約日期</div>
-                                    <div class="l-info__val">${StartDay}</div>
-                                </div>
-                                <div class="l-info__item">
-                                    <div class="l-info__title">預約時段</div>
-                                    <div class="l-info__val">${StartTime}</div>
-                                </div>
-                                <div class="l-info__item">
-                                    <div class="l-info__title">聯絡電話</div>
-                                    <div class="l-info__val">${Phone}</div>
-                                </div>
-                                <div class="l-info__item">
-                                    <div class="l-info__title">電子信箱</div>
-                                    <div class="l-info__val">${Email}</div>
-                                </div>
-                                <div class="l-info__item">
-                                    <div class="l-info__title">諮詢主題</div>
-                                    <div class="l-info__val">${Topic}</div>
-                                </div>
-                                <div class="l-info__item">
-                                    <div class="l-info__title">其他諮詢內容</div>
-                                    <div class="l-info__val">${Other}</div>
+                <div class="l-flex__item">
+                    <div class="o-actionbox o-actionbox--md">
+                        <input type="text" class="o-actionbox__input" id="search-calendar" placeholder="輸入理專姓名">
+                        <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit3></button>
+                    </div>
+                </div>
+                <div class="l-flex__item">
+                    <template id="tmpl">
+                        <div class="c-eventPopup">
+                            <div class="c-eventPopup__header" style="background-color: ${PopupColor};">
+                                <span>預約明細</span>
+                                <a href="#" data-quick-close=""><img src="~/themes/images/icons/white/x-lg.svg" alt=""></a>
+                            </div>
+                            <div class="c-eventPopup__content">
+                                <div class="l-info">
+                                    <div class="l-info__item">
+                                        <div class="l-info__title">預約理專</div>
+                                        <div class="l-info__val">${staffName}</div>
+                                    </div>
+                                    <div class="l-info__item">
+                                        <div class="l-info__title">預約客戶</div>
+                                        <div class="l-info__val">${userName}</div>
+                                    </div>
+                                    <div class="l-info__item">
+                                        <div class="l-info__title">預約狀態</div>
+                                        <div class="l-info__val">${Title}</div>
+                                    </div>
+                                    <div class="l-info__item">
+                                        <div class="l-info__title">預約日期</div>
+                                        <div class="l-info__val">${StartDay}</div>
+                                    </div>
+                                    <div class="l-info__item">
+                                        <div class="l-info__title">預約時段</div>
+                                        <div class="l-info__val">${StartTime}</div>
+                                    </div>
+                                    <div class="l-info__item">
+                                        <div class="l-info__title">聯絡電話</div>
+                                        <div class="l-info__val">${Phone}</div>
+                                    </div>
+                                    <div class="l-info__item">
+                                        <div class="l-info__title">電子信箱</div>
+                                        <div class="l-info__val">${Email}</div>
+                                    </div>
+                                    <div class="l-info__item">
+                                        <div class="l-info__title">諮詢主題</div>
+                                        <div class="l-info__val">${Topic}</div>
+                                    </div>
+                                    <div class="l-info__item">
+                                        <div class="l-info__title">其他諮詢內容</div>
+                                        <div class="l-info__val">${Other}</div>
+                                    </div>
                                 </div>
                             </div>
+                            ${footer}
                         </div>
-                        ${footer}
-                    </div>
-                </template>
-                <div id="calendar" class="c-schedule"></div>
-                <div class="c-calendarList"></div>
+                    </template>
+                    <div id="calendar" class="c-schedule"></div>
+                    <div class="c-calendarList"></div>
+                </div>                
             </div>
         </div>
     </div>
@@ -520,6 +528,7 @@
     const dataSource = @Model.ConsultScheduleForCalendarsHtmlString;
     const dayNamesZh = ['日', '一', '二', '三', '四', '五', '六']
     let calendar;
+    let calendarData = [];
 
     let popoverElement;
     const dateObj = new Date();
@@ -762,6 +771,42 @@
             });
         }
 
+        function filterCalendarData() {
+            var word = $('#search-calendar').val();
+
+            if (word) {
+                return dataSource.filter((data) => data.staffName.indexOf(word) > -1);
+            }
+            else {
+                return dataSource;
+            }
+        }
+
+        function searchCalendar() {
+            calendarData = filterCalendarData();
+
+            var events = calendar.getEvents();
+            events.forEach((event) => {
+                event.remove();
+            });
+
+            calendarData.forEach((data) => {
+                calendar.addEvent(data);
+            });
+
+            calendar.render();
+        }
+
+        $('[data-keyword-submit3]').on('click.loading', function (e) {
+            searchCalendar();
+        });
+
+        $('#search-calendar').on('keypress.loading', function (e) {
+            if (e.which === 13) {
+                searchCalendar();
+            }
+        });
+
         function cancelConsultSchedule(id) {            
             window.loading('show');
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
@@ -785,17 +830,38 @@
                     c.StatusCode = "3";
                     fjs2.addRecords([c], true);
 
-                    var event = calendar.getEventById(id);
-                    if (event) {
-                        event.setProp("title", "歷史紀錄");
-                        event.setExtendedProp("type", "history");
-                        event.setExtendedProp("categoryColor", "#c3c3c3ff");
-                        event.setExtendedProp("popupColor", "#9C9C9C");
-                        event.setExtendedProp("release", false);
-                        event.setExtendedProp("StatusCode", "3");
+                    // var event = calendar.getEventById(id);
+                    // if (event) {
+                    //     event.setProp("title", "歷史紀錄");
+                    //     event.setExtendedProp("type", "history");
+                    //     event.setExtendedProp("categoryColor", "#c3c3c3ff");
+                    //     event.setExtendedProp("popupColor", "#9C9C9C");
+                    //     event.setExtendedProp("release", false);
+                    //     event.setExtendedProp("StatusCode", "3");
 
-                        calendar.render();
-                    }
+                    //     calendar.render();
+                    // }
+
+                    var d = dataSource.find(d => d.id == id);
+                    d.title = "歷史紀錄";
+                    d.type = "history";
+                    d.categoryColor = "#c3c3c3ff";
+                    d.popupColor = "#9C9C9C";
+                    d.release = false;
+                    d.StatusCode = "3";
+
+                    calendarData = filterCalendarData();
+
+                    var events = calendar.getEvents();
+                    events.forEach((event) => {
+                        event.remove();
+                    });
+
+                    calendarData.forEach((data) => {
+                        calendar.addEvent(data);
+                    });
+
+                    calendar.render();
                 }
                 else {
                     if (data.block) {
@@ -885,6 +951,7 @@
                     let data = {
                         title: info.event.title,
                         start: info.event.start,
+						end: info.event.end,
                         ...info.event.extendedProps
                     };
                     if (!$('.c-eventPopup').length) {
@@ -1011,7 +1078,7 @@
                     let tmpl = `
                                     <div class="c-event" style="background-color:${info.event.extendedProps.categoryColor}">
                                         <div class="c-event__details">
-                                            <div>${info.event.title}</div>
+                                                <div>${info.event.extendedProps.userName} ${info.event.title}</div>
                                             <div>${moment(info.event.start).format("HH:mm")}</div>
                                         </div>
                                     </div>`;
@@ -1079,7 +1146,7 @@
         // 設定單筆行程泡泡內容
         function setEventPopupContent(data) {
             var $floatingEl = document.getElementById('tmpl').innerHTML;
-            $floatingEl = $floatingEl.replace('${PopupColor}', data.popupColor).replace('${Title}', data.title).replace('${StartDay}', moment(data.start).format('YYYY/MM/DD (dd)')).replace('${StartTime}', `${moment(data.start).format('AHH:mm')}~${moment(data.end).format('HH:mm')}`).replace('${Phone}', data.phone).replace('${Email}', data.email).replace('${Topic}', data.topic).replace('${Other}', data.other);
+            $floatingEl = $floatingEl.replace('${PopupColor}', data.popupColor).replace('${Title}', data.title).replace('${StartDay}', moment(data.start).format('YYYY/MM/DD (dd)')).replace('${StartTime}', `${moment(data.start).format('AHH:mm')}~${moment(data.end).format('HH:mm')}`).replace('${Phone}', data.phone).replace('${Email}', data.email).replace('${Topic}', data.topic).replace('${Other}', data.other).replace('${userName}', data.userName).replace('${staffName}', data.staffName);
             var footerBtnSuccess = `
                             <div class="l-action l-action--inline" data-footer-tmpl="success">
                                 <div class="l-action__item">
