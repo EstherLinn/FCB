@@ -1062,7 +1062,7 @@
                     $('.fc-daygrid-event-harness').css('display', 'none');
                     $('.fc-daygrid-day-bottom').css('display', 'none');
                     const dateObj = new Date(info.event.start);
-                    const dateStr = `${dateObj.getUTCFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+                    const dateStr = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
                     $('[data-date=' + dateStr + ']').find('.fc-daygrid-day-events').html('<div class="o-eventBall"></div>');
                 }
             },
@@ -1073,6 +1073,9 @@
         setDateTitle(new Date());
         resizeSelectTableEvent();
         calendar.render();
+
+        var $datepicker;
+
         initBindDatePicker();
 
         // set日期到自訂義btn
@@ -1083,16 +1086,21 @@
                 ...customButtonsOption,
                 datePicker: {
                     ...customButtonsOption.datePicker,
-                    text: `${dateObj.getUTCFullYear()}年${dateObj.getMonth() + 1}月`
+                    text: `${dateObj.getFullYear()}年${dateObj.getMonth() + 1}月`
                 }
             });
             $('.fc-datePicker-button').addClass('btn');
+
+            if($datepicker){
+                $datepicker.datepicker('update', date);
+            }
         }
 
         // 綁定日期套件到header date title
         function initBindDatePicker() {
             $('.fc-datePicker-button').addClass('btn');
-            $('.fc-toolbar-chunk').eq(1).addClass('date').datepicker({
+
+            $datepicker = $('.fc-toolbar-chunk').eq(1).addClass('date').datepicker({
                 autoclose: true,
                 minViewMode: 'months',
                 startView: 'months',
@@ -1101,10 +1109,12 @@
                 orientation: 'bottom auto'
             }).on('changeDate', e => {
                 const dateObj = new Date(e.date);
-                const dateStr = `${dateObj.getUTCFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+                const dateStr = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
                 setDateTitle(e.date);
                 calendar.gotoDate(dateStr);
-            });
+            }).on('hide', e => {
+                $(e.target).datepicker('update', e.date);
+            }).datepicker('update', new Date);;
         }
 
         // 調整行事曆事件
