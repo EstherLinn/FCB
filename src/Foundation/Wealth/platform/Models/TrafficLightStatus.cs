@@ -207,6 +207,9 @@ namespace Foundation.Wealth.Models
         CFMBSEL = 62,
 
         [Description("TFTFU_STG")]
-        TFTFU_STG = 63
+        TFTFU_STG = 63,
+
+        [Description("Wms_focus_profile")]
+        Wms_focus_profile = 64
     }
 }
