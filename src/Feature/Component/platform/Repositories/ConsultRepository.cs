@@ -141,17 +141,17 @@ namespace Feature.Wealth.Component.Repositories
             this._dbConnection.Execute(sql, consultSchedule);
         }
 
-        public IList<Calendar> GetCalendar()
+        public IList<IMVP_HOLIDAY> GetHoliday()
         {
-            string sql = @"SELECT TOP 30
-                           [Date]
-                           ,[Week]
-                           ,[IsHoliday]
-                           ,[Description]
-                           ,CONVERT(char(10), [RealDate], 126) [RealDate]
-                           FROM [Calendar] WITH (NOLOCK) WHERE [RealDate] > GETDATE()";
+            string IMVP_HOLIDAY = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.IMVP_HOLIDAY);
 
-            var result = this._dbConnection.Query<Calendar>(sql)?.ToList() ?? new List<Calendar>();
+            string sql = $@"SELECT [CALENDAR_DATE]
+                            ,CONVERT(date, [CALENDAR_DATE]) [RealDate]
+                            FROM {IMVP_HOLIDAY} WITH (NOLOCK)
+                            WHERE [CALENDAR_DATE] > CONVERT(varchar, GETDATE(), 112)
+                            AND [CALENDAR_DATE] < CONVERT(varchar, DATEADD(month, 1, GETDATE()), 112)";
+
+            var result = this._dbConnection.Query<IMVP_HOLIDAY>(sql)?.ToList() ?? new List<IMVP_HOLIDAY>();
             return result;
         }
 
