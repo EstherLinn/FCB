@@ -16,6 +16,7 @@
     var FundDocLinkApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetDocLink");
     var FundRuleTextApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetRuleText");
     var FundReturnAndNetValueApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetReturnAndNetValueTrend");
+    var FundReferenceIndexApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetReferenceIndex");
     var detailsUrl = FundRelatedSettingModel.GetFundDetailsUrl();
     var closeFiveYearsUrl = FundRelatedSettingModel.GetFundCloseFiveYearsUrl();
     var exposeUrl = FundRelatedSettingModel.GetFundExposeUrl();
@@ -28,26 +29,26 @@
         <div class="l-mainstage__toolbar">
             <div class="l-flex">
                 <div class="l-flex__item">
-                <div class="l-selectbox">
-                   <div class="l-selectbox__item" id="fundSelect">
+                    <div class="l-selectbox">
+                        <div class="l-selectbox__item" id="fundSelect">
                             <select class="o-selectbox o-selectbox--funds" data-selection-css-class="select2-selection--funds" data-selectbox="true" data-width="auto" data-dropdown-auto-width="true" data-dropdown-css-class="select2-dropdown--autoWidth">
-                        <option>切換基金級別</option>
-                    </select>
-                  </div>
-                <div class="l-selectbox__item" id="fundCompanySelect">
-                      <select class="o-selectbox o-selectbox--funds" data-selection-css-class="select2-selection--funds" data-selectbox="true" data-width="auto" data-dropdown-auto-width="true" data-dropdown-css-class="select2-dropdown--autoWidth">
-                            <option value="">切換同公司基金</option>
-                            @if(Model.SameCompanyFunds.Any())
-                            {
-                                foreach (var item in Model.SameCompanyFunds)
+                                <option>切換基金級別</option>
+                            </select>
+                        </div>
+                        <div class="l-selectbox__item" id="fundCompanySelect">
+                            <select class="o-selectbox o-selectbox--funds" data-selection-css-class="select2-selection--funds" data-selectbox="true" data-width="auto" data-dropdown-auto-width="true" data-dropdown-css-class="select2-dropdown--autoWidth">
+                                <option value="">切換同公司基金</option>
+                                @if (Model.SameCompanyFunds.Any())
                                 {
-                                    <option value="@item.ProductCode">@(item.ProductCode + " " + item.ProductName)</option>
+                                    foreach (var item in Model.SameCompanyFunds)
+                                    {
+                                        <option value="@item.ProductCode">@(item.ProductCode + " " + item.ProductName)</option>
+                                    }
                                 }
-                            }
-                      </select>
-                 </div>
-              </div>
-              </div>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="l-flex__item u-right u-hidden@lt">
                     <a href="javascript:window.print()" class="o-prefixLink o-prefixLink--printer">列印</a>
                 </div>
@@ -1832,7 +1833,7 @@
                 <div class="c-section__content">
                     <div class="l-flex u-flex-col u-flex-gap-sm">
                         <div class="l-flex__item">
-                                @Model.Description
+                            @Model.Description
                         </div>
                         @if (Model.FundRiskindicators != null)
                         {
@@ -1989,7 +1990,7 @@
                                 <div class="c-collapse__head" data-collapse-button="true">
                                     <span>說明</span>
                                 </div>
-                                   @Model.Note
+                                @Model.Note
                             </div>
                         </div>
                     </div>
@@ -2563,7 +2564,7 @@
     </div>
 </div>
 <div class="c-notice" data-collapse="true">
-        @Model.Content
+    @Model.Content
 </div>
 
 <div id="popupCurrency" class="c-modal c-modal--xs mfp-hide">
@@ -2572,7 +2573,7 @@
             <h2 class="c-modal__title">幣別提示說明</h2>
         </header>
         <div class="c-modal__content">
-                @Model.LightboxNote
+            @Model.LightboxNote
         </div>
     </div>
 </div>
@@ -2618,7 +2619,7 @@
     </div>
 </div>
 @{
-    Html.RenderPartial("~/Views/Feature/Wealth/Component/FundDetail/_FundRiskIndexDescription.cshtml",Model);
+    Html.RenderPartial("~/Views/Feature/Wealth/Component/FundDetail/_FundRiskIndexDescription.cshtml", Model);
 }
 
 <script>
@@ -3281,7 +3282,6 @@
                 }
                 let text = "";
                 switch (obj.trend) {
-
                     case "ori":
                         text = "績效(原幣)"
                         break;
@@ -3324,33 +3324,58 @@
                         fundId: fundId,
                         ...obj
                     };
-                    $.ajax({
-                        url: '@FundReturnAndNetValueApiUrl',
-                        method: 'post',
-                        data: params,
-                        success: function (data) {
-                            let mapData = [];
-                            if (Object.keys(data.resultSet.result).length != 0) {
+                    const indexParams ={
+                    indexCode: '@BasicData.IndicatorIndexCode',
+                        ...obj
+                    };
+                    let p = [];
+                     let mapData = [];
+                     let mapData2 = [];
+                      p.push( $.ajax({url: '@FundReturnAndNetValueApiUrl', method: 'post',data: params}));
+                      p.push( $.ajax({url: '@FundReferenceIndexApiUrl', method: 'post',data: indexParams}));
+                       Promise.all(p).then(values => {
+                        $.each( values, function( index, value ) {
+                        let data = value;
+                        if(index === 0){
+                          if (Object.keys(data.resultSet.result).length != 0) {
                                 mapData = data.resultSet.result.map(item => {
                                     return {
                                         x: new Date(item.v1.replaceAll('/', '-')).getTime(),
+                                        upDown: Number(item.v2) < 0 ? 'down' : 'up',
                                         name: item.v1.replaceAll('/', '-'),
-                                        y: roundToTwo(item.v2)
+                                        y: roundToTwo(item.v2),
+                                        type: obj.trend == "netWorth" ? '淨值' : ''
                                     };
                                 });
                                 mapData.reverse();
                             }
-                            //const updateDate = data.body.updateDate.replaceAll('-', '/');
-                            //// 資料日期
-                            //$('[data-update-date="trend"]').text(updateDate);
-
-                            let series = {
+                        }else{
+                             if (Object.keys(data.resultSet.result).length != 0) {
+                                mapData2 = data.resultSet.result.map(item => {
+                                    return {
+                                        x: new Date(item.v1.replaceAll('/', '-')).getTime(),
+                                        upDown: Number(item.v2) < 0 ? 'down' : 'up',
+                                        name: item.v1.replaceAll('/', '-'),
+                                        y: roundToTwo(item.v2)
+                                    };
+                                });
+                                mapData2.reverse();
+                            }
+                        }
+                       });
+                            let series = [{
                                 name: text,
                                 data: mapData,
                                 legendSymbol: 'rectangle',
-                                color: obj.netWorth ? '#A4844E' : '#238C6C',
+                                color: obj.trend == "netWorth"  ? '#A4844E' : '#238C6C',
                                 turboThreshold: 0,
-                            };
+                                }, {
+                                name: '@BasicData.IndicatorIndexName',
+                                data: mapData2,
+                                legendSymbol: 'rectangle',
+                                turboThreshold: 0,
+                                color: '#F58220'
+                            }];
                             chart = Highcharts.stockChart('trendChart', {
                                 chart: {
                                     zooming: {
@@ -3413,17 +3438,33 @@
                                     }
                                 },
                                 tooltip: {
-                                    split: false,
-                                    useHTML: true,
-                                    formatter: function () {
-                                        var percentage = obj.trend == "netWorth" ? '' : '%';
-                                        const tooltip = '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.point.x) + '</div>' + '<span style="display:inline-block; color: ' + this.point.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + this.point.series.name + ': ' + this.point.y + percentage + '</div>';
-                                        return tooltip;
-                                    },
-                                    shadow: {
-                                        color: 'rgba(0, 0, 0, 0.1)'
-                                    }
+                                split: false,
+                                shared: true,
+                                outside: true,
+                                useHTML: true,
+                                formatter: function() {
+                                    let percentage = '%';
+                                    let tooltipText = '';
+                                    this.points.forEach(point => {
+                                        let upDownClass = '';
+                                        if (point.point.upDown === 'up') {
+                                            upDownClass = 'o-rise';
+                                        } else {
+                                            upDownClass = 'o-fall';
+                                        }
+                                        if(point.point.type === '淨值'){
+                                            percentage = '';
+                                        }else{
+                                            percentage = '%';
+                                        }
+                                        tooltipText += '<div style="display: flex;">' + '<div style="margin-right: 4px">' + '<span style="color: ' + point.series.color + '; font-size: 18px; margin-right: 3px">\u25CF</span>' + '<span>' + point.series.name + ': ' + '</span>' + '</div>' + '<span class="' + upDownClass + '">' + Math.abs(point.y) + percentage +'</span>' + '</div>';
+                                    });
+                                    return '<div style="font-size: 14px">' + '<div style="margin-bottom: 8px; color: #9C9C9C">' + Highcharts.dateFormat('%Y/%m/%d', this.x) + '</div>' + tooltipText + '</div>';
                                 },
+                                shadow: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
                                 xAxis: {
                                     type: 'datetime',
                                     tickPosition: 'inside',
@@ -3473,19 +3514,11 @@
                                         color: '#c3c3c3'
                                     }]
                                 },
-                                series: [series]
+                                series: series
                             });
                             $('[data-chart="trend"]').find('.c-empty').addClass('u-hidden');
                             $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').removeClass('u-hidden');
-                        },
-                        error: function (err) {
-                            $('[data-chart="trend"]').find('.c-empty').removeClass('u-hidden');
-                            $('[data-chart="trend"]').find('.c-chartBox, .l-dataNotes').addClass('u-hidden');
-                            console.log(err)
-                        },
                     });
-
-
                 } catch (error) {
                     console.error('Error:', error);
                 }

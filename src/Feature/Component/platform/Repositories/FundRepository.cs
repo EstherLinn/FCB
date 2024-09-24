@@ -72,6 +72,7 @@ namespace Feature.Wealth.Component.Repositories
             if (fundViewModel.FundBaseData != null)
             {
                 fundViewModel.SameCompanyFunds = GetSameCompanyFunds(fundId, fundViewModel.FundBaseData.FundCompanyID);
+                fundViewModel.FundBaseData.IndicatorIndexCode = GetIndicatorIndexCode(fundId, indicator);
             }
             return fundViewModel;
         }
@@ -492,6 +493,18 @@ namespace Feature.Wealth.Component.Repositories
             sameCompanyFunds = DbManager.Custom.ExecuteIList<FundBase>(sql, para, commandType: System.Data.CommandType.Text)
                 ?.ToList();
             return sameCompanyFunds;
+        }
+
+        public string GetIndicatorIndexCode(string fundId, string indicator)
+        {
+            string Sysjust_Basic_Fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Basic_Fund);
+            string Sysjust_Basic_Fund_2 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Basic_Fund_2);
+            string tableName = indicator == nameof(FundEnum.D) ? Sysjust_Basic_Fund : Sysjust_Basic_Fund_2;
+            string indexCode = string.Empty;
+            var sql = $@" SELECT IndicatorIndexCode FROM {tableName} WHERE FirstBankCode=@fundId";
+            var para = new { fundId };
+            indexCode = DbManager.Custom.Execute<string>(sql, para, commandType: System.Data.CommandType.Text);
+            return indexCode;
         }
 
         public FundViewModel GetDocLinks(string fundId, FundViewModel fundViewModel, string fundIndicator, DjMoneyApiRespository djMoneyApiRespository)
