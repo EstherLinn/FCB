@@ -3,7 +3,7 @@
 namespace Feature.Wealth.ScheduleAgent.Models.Wealth
 {
     /// <summary>
-    /// 專屬推薦-同星座(wms_zodiac_profile_d_mf)，檔案名稱：wms_zodiac_profile_d_mf.txt
+    /// 此元件會在客戶在基金搜尋查無結果時，顯示6筆最多人關注的基金。檔案名稱：wms_focus_profile.txt
     /// </summary>
     [Delimiter("\t")]
     [HasHeaderRecord(true)]
