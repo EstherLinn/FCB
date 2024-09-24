@@ -228,7 +228,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logger.Error($"到價通知Mail發送失敗:{ex.ToString}");
+                                    _logger.Error($"到價通知Mail發送失敗 To {item.MailTo} Exception:{ex}");
                                     //發信有問題，不記錄到table
                                     string[] topicWord = ["收盤價", "漲幅", "跌幅"];
                                     if (item.Topic.Contains("基金商品最新淨值"))
