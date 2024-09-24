@@ -197,7 +197,7 @@ namespace Feature.Wealth.Component.Models.Consult
         /// </summary>
         public string popupColor { get; set; }
         /// <summary>
-        /// 判斷是否可以開始視訊(已棄用)
+        /// 判斷是否可以開始視訊
         /// </summary>
         public bool release { get; set; }
         /// <summary>
