@@ -314,7 +314,7 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             // 取得近30日假日           
-            string[] holidays = this._consultRepository.GetCalendar().Where(c => c.IsHoliday).Select(c => c.RealDate).ToArray();
+            string[] holidays = this._consultRepository.GetHoliday().Select(c => c.RealDate).ToArray();
 
             var now = DateTime.Now.AddDays(1);
 

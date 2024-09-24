@@ -211,12 +211,12 @@ namespace Feature.Wealth.Component.Models.Consult
     }
 
 
-    public class Calendar
+    public class IMVP_HOLIDAY
     {
-        public string Date { get; set; }
-        public string Week { get; set; }
-        public bool IsHoliday { get; set; }
-        public string Description { get; set; }
+        public string CALENDAR_DATE { get; set; }
+        /// <summary>
+        /// yyyy-MM-dd
+        /// </summary>
         public string RealDate { get; set; }
     }
 
