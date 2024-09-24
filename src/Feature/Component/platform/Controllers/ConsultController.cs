@@ -181,6 +181,7 @@ namespace Feature.Wealth.Component.Controllers
                         consultScheduleForCalendar.type = "reserving";
                         consultScheduleForCalendar.categoryColor = "#fdce5eff";
                         consultScheduleForCalendar.popupColor = "#F4B00F";
+                        consultScheduleForCalendar.StatusOrder = "1";
                     }
                     else if (consultSchedule.StatusCode == "1")
                     {
@@ -188,6 +189,7 @@ namespace Feature.Wealth.Component.Controllers
                         consultScheduleForCalendar.type = "success";
                         consultScheduleForCalendar.categoryColor = "#7dd4a4ff";
                         consultScheduleForCalendar.popupColor = "#56B280";
+                        consultScheduleForCalendar.StatusOrder = "0";
                     }
                     else
                     {
@@ -195,6 +197,7 @@ namespace Feature.Wealth.Component.Controllers
                         consultScheduleForCalendar.type = "history";
                         consultScheduleForCalendar.categoryColor = "#c3c3c3ff";
                         consultScheduleForCalendar.popupColor = "#9C9C9C";
+                        consultScheduleForCalendar.StatusOrder = "2";
                     }
 
                     consultScheduleForCalendarList.Add(consultScheduleForCalendar);
