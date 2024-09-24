@@ -1,0 +1,205 @@
+﻿@using Feature.Wealth.Component.Models.InterestedFund
+@using Foundation.Wealth.Helper;
+@model InterestedFundModle
+
+@{
+var FundCloseYearPerformanceApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetCloseYearPerformance");
+var InterestedFundApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetInterestedFund");
+}
+
+<div class="c-section" id="interestedFund">
+    <div class="c-section__title">你可能也有興趣</div>
+    <div class="c-section__content">
+        <div class="swiper c-swiper c-swiper--recommend interestedFunds">
+            <div class="swiper-wrapper c-swiper__wrapper">
+            </div>
+            <div class="swiper-button-next c-swiper__next"></div>
+            <div class="swiper-button-prev c-swiper__prev"></div>
+            <div class="swiper-pagination c-swiper__pagination"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+
+            let event = $('.interestedFunds .swiper-wrapper ');  // 對應到 .swiper-wrapper 的元素
+            let eventString = '.interestedFunds';  // Swiper 初始化時的選擇器
+
+            getFundData(event, eventString);
+        });
+
+        //請求基金資料
+        function getFundData(event, eventString) {
+            $.ajax({
+                url: '@InterestedFundApiUrl',
+                method: 'POST',
+                success: function (data) {
+                    if (data != null && data.length != 0) {
+                        realrenderRecommendedFunds(event, data);
+                        fundinitializeSwiper(eventString);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        //請求績效線圖資料並繪圖
+        function initCharts() {
+            $('[data-chart="mini"]').each(function (i, el) {
+                var $chartElement = $(el);
+                var fundId = $chartElement.data('fund-id');
+
+                $.ajax({
+                    url: '@FundCloseYearPerformanceApiUrl',
+                    method: 'POST',
+                    data: {
+                        fundId: fundId
+                    },
+                    success: function (res) {
+                        if (res && res.resultSet && res.resultSet.result && res.resultSet.result.length !== 0) {
+                            const dataValues = res.resultSet.result.map(item => parseFloat(item.v2));
+                            dataValues.reverse();
+
+                            $chartElement.highcharts({
+                                chart: {
+                                    type: 'area',
+                                    margin: [0, 0, 0, 0],
+                                    backgroundColor: 'transparent'
+                                },
+                                title: { text: undefined },
+                                legend: { enabled: false },
+                                plotOptions: {
+                                    series: {
+                                        enableMouseTracking: false,
+                                        marker: { enabled: false }
+                                    }
+                                },
+                                credits: { enabled: false },
+                                xAxis: { visible: false },
+                                yAxis: { visible: false },
+                                series: [{
+                                    fillOpacity: 0.06,
+                                    data: dataValues
+                                }]
+                            });
+                        } else {
+                            console.log('沒有資料，fundId:', fundId);
+                        }
+                    },
+                    error: function (err) {
+                        console.error('AJAX 請求失敗，fundId:', fundId, err);
+                    }
+                });
+            });
+        }
+
+        //初始化Swiper套件
+        function fundinitializeSwiper(eventString) {
+            window.mySwiper = new Swiper(eventString, {
+                slidesPerGroup: 1,
+                slidesPerView: 1,
+                grid: {
+                    rows: 1
+                },
+                spaceBetween: 16,
+                autoplay: false,
+                loop:true,
+                breakpoints: {
+                    1200: {
+                        slidesPerGroup: 3,
+                        slidesPerView: 3,
+                        grid: {
+                            rows: 2
+                        },
+                        spaceBetween: 20
+                    }
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                },
+                speed:1000,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                    disabledClass: 'swiper-button-disabled'
+                }
+            });
+        }
+
+        function realrenderRecommendedFunds(event, fundData) {
+            var dataIsFormSitecore = fundData.some(item => item.DataIsFormSitecore);
+
+            const $swiperWrapper = event;
+            $swiperWrapper.empty();
+            let fundHTML = '';
+            let style1, style2, style3;
+
+            fundData.forEach((fund, index) => {
+                let SubscribeButtonHtml = '';
+
+                if (fund.RateOfRetuen >= 0) {
+                    style1 = "t-rise";
+                    style2 = "o-rise o-rise--sm";
+                    style3 = "o-charts--rise";
+                } else {
+                    style1 = "t-fall";
+                    style2 = "o-fall o-fall--sm";
+                    style3 = "o-charts--fall";
+                }
+
+                if (fund.SubscribeButtonHtml != null && fund.SubscribeButtonHtml != "") {
+                    SubscribeButtonHtml = `<li class="l-collect__item l-collect__item--btn">${fund.SubscribeButtonHtml}</li>`;
+                }
+
+                // 將 fund.FundId 設置到 data-fund-id 屬性
+                fundHTML += `
+                <div class="swiper-slide c-swiper__slide">
+                    <div class="c-box c-box--goods">
+                        <div class="c-box__main">
+                            <div class="c-cardFund">
+                                <a href="${fund.DetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                    ${fund.FundId} ${fund.FundName}
+                                </a>
+                                <div class="c-cardFund__trend">
+                                    <div class="c-cardFund__rate">
+                                        <span class="t-small">
+                                            <span class="${style1}">月報酬率</span>
+                                            <span class="${style2}">${fund.RateOfRetuen}%</span>
+                                        </span>
+                                    </div>
+                                    <div class="c-cardFund__charts">
+                                        <!-- 在這裡設置 data-fund-id -->
+                                        <div class="o-charts ${style3}" data-chart="mini" data-fund-id="${fund.FundId}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-box__actions">
+                            <ul class="l-collect l-collect--divider">
+                                <li class="l-collect__item">
+                                    ${fund.FocusButtonHtml}
+                                </li>
+                                <li class="l-collect__item">
+                                    ${fund.CompareButtonHtml}
+                                </li>
+                                ${SubscribeButtonHtml}
+                            </ul>
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            // 插入生成的基金 HTML
+            $swiperWrapper.append(fundHTML);
+
+            // 渲染完基金後初始化圖表
+            initCharts();
+        }
+    })(jQuery, window, document);
+
+</script>
