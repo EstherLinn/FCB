@@ -146,5 +146,12 @@ namespace Feature.Wealth.Component.Controllers
             return new JsonNetResult(resp);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> GetReferenceIndex(string indexCode,string range, string startdate, string enddate)
+        {
+            var resp = await _djMoneyApiRespository.GetBenchmarkROIDuringDateForFund(indexCode.ToUpper(), range, startdate, enddate);
+            return new JsonNetResult(resp);
+        }
+
     }
 }

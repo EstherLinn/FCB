@@ -219,5 +219,10 @@ namespace Feature.Wealth.Component.Models.FundDetail
         /// </summary>
         public string IndicatorIndexName { get; set; }
 
+        /// <summary>
+        /// 指標指數Code
+        /// </summary>
+        public string IndicatorIndexCode { get; set; }
+
     }
 }
