@@ -149,7 +149,7 @@ namespace Feature.Wealth.Component.Controllers
                 List<string> stringList = (List<string>)Session[key];
 
                 // 檢查 List 是否為空
-                if (stringList.Count > 0)
+                if (!stringList.Contains(token))
                 {
                     // 向 List 中添加一個新的字串 "token"
                     stringList.Add(token);
@@ -161,10 +161,10 @@ namespace Feature.Wealth.Component.Controllers
             else
             {
                 // 如果 Session 中沒有 List<string>，初始化一個新的 List 幾存入 Session
-                List<string> stringList = new List<string>();
+                List<string> stringList = [token];
                 Session[key] = stringList;
             }
-        }        
+        }
 
     }
 }
