@@ -197,13 +197,17 @@ namespace Feature.Wealth.Component.Models.Consult
         /// </summary>
         public string popupColor { get; set; }
         /// <summary>
-        /// 判斷是否可以開始視訊(已棄用)
+        /// 判斷是否可以開始視訊
         /// </summary>
         public bool release { get; set; }
         /// <summary>
         /// 0：未確認、1：已確認、2：已完成、3：已取消
         /// </summary>
         public string StatusCode { get; set; }
+        /// <summary>
+        /// 行事曆狀態排序用 0：預約成功、1：預約中、2：歷史紀錄
+        /// </summary>
+        public string StatusOrder { get; set; }
     }
 
 
