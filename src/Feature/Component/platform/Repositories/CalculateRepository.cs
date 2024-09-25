@@ -384,9 +384,9 @@ namespace Feature.Wealth.Component.Repositories
                     B.[AvailabilityStatus], 
                     B.[OnlineSubscriptionAvailability]
                 FROM 
-                    {Sysjust_USStockList} A
+                    {Sysjust_USStockList} A WITH (NOLOCK)
                 JOIN 
-                    {WMS_DOC_RECM} B
+                    {WMS_DOC_RECM} B WITH (NOLOCK)
                 ON 
                     A.[FirstBankCode] = B.[ProductCode]
                 ORDER BY 
@@ -404,9 +404,9 @@ namespace Feature.Wealth.Component.Repositories
                     B.[AvailabilityStatus], 
                     B.[OnlineSubscriptionAvailability]
                 FROM 
-                    {Sysjust_USStockList} A
+                    {Sysjust_USStockList} A WITH (NOLOCK)
                 JOIN 
-                    {WMS_DOC_RECM} B
+                    {WMS_DOC_RECM} B WITH (NOLOCK)
                 ON 
                     A.[FirstBankCode] = B.[ProductCode]
                 WHERE 
@@ -428,9 +428,9 @@ namespace Feature.Wealth.Component.Repositories
                     B.[AvailabilityStatus], 
                     B.[OnlineSubscriptionAvailability]
                 FROM 
-                    {Sysjust_USStockList} A
+                    {Sysjust_USStockList} A WITH (NOLOCK)
                 JOIN 
-                    {WMS_DOC_RECM} B
+                    {WMS_DOC_RECM} B WITH (NOLOCK)
                 ON 
                     A.[FirstBankCode] = B.[ProductCode]
                 ORDER BY 
