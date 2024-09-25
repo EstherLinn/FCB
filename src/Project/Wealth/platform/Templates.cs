@@ -25,6 +25,7 @@ namespace Project.Wealth.Platform
             public struct Fields
             {
                 public static readonly ID ErrorMessage = new ID("{C6896022-AA88-4341-B1BA-EE54E771B274}");
+                public static readonly ID ServerErrorMessage = new ID("{498DB32D-A282-44B9-8FB8-2ABE9F40456E}");
             }
         }
     }

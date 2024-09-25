@@ -498,9 +498,10 @@
 {
     var item =  ItemUtils.GetItem(Templates.LoginErrorMesaage.Root);
     var defaultMsg = ItemUtils.GetFieldValue(item, Templates.LoginErrorMesaage.Fields.ErrorMessage);
-    if(Session["ErrorMsg"] != null){
-        defaultMsg = Session["ErrorMsg"].ToString();
-        Session["ErrorMsg"] = null;
+    var serverErrorMsg = ItemUtils.GetFieldValue(item, Templates.LoginErrorMesaage.Fields.ServerErrorMessage);
+    if(Session["ServerError"] != null){
+        defaultMsg = serverErrorMsg;
+        Session["ServerError"] = null;
     }
     <script>
         $('[data-errormsg]', '#loginFail').text("@defaultMsg");
