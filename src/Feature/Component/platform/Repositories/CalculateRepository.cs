@@ -3,6 +3,7 @@ using Feature.Wealth.Component.Models.Calculate;
 using Feature.Wealth.Component.Models.ETF;
 using Feature.Wealth.Component.Models.FundDetail;
 using Feature.Wealth.Component.Models.Invest;
+using Feature.Wealth.Component.Models.USStock;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
@@ -290,7 +291,7 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 
+        /// 取得ETF資料
         /// </summary>
         /// <param name="ExpectedRoi">預期投資報酬率</param>
         /// <param name="RiskLevel">風險屬性</param>
@@ -359,6 +360,116 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             return (List<EtfModel>)EtfData;
+        }
+        /// <summary>
+        /// 取得國外股票資料
+        /// </summary>
+        /// <param name="ExpectedRoi"></param>
+        /// <returns></returns>
+        public List<StockModel> GetStockData(string ExpectedRoi)
+        {
+            var StockUrl = USStockRelatedLinkSetting.GetUSStockSearchUrl();
+            string StockDataSql;
+            string Sysjust_USStockList = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_USStockList);
+            string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
+
+
+            if (string.IsNullOrEmpty(ExpectedRoi))
+            {
+                StockDataSql = @$"
+                SELECT TOP 3
+                    A.[FirstBankCode], 
+                    A.[ChineseName], 
+                    A.[MonthlyReturn],
+                    B.[AvailabilityStatus], 
+                    B.[OnlineSubscriptionAvailability]
+                FROM 
+                    {Sysjust_USStockList} A
+                JOIN 
+                    {WMS_DOC_RECM} B
+                ON 
+                    A.[FirstBankCode] = B.[ProductCode]
+                ORDER BY 
+                    A.[OneYearReturn] DESC, 
+                    A.[FirstBankCode] ASC
+                ";
+            }
+            else
+            {
+                StockDataSql = @$"
+                SELECT TOP 3
+                    A.[FirstBankCode], 
+                    A.[ChineseName], 
+                    A.[MonthlyReturn],
+                    B.[AvailabilityStatus], 
+                    B.[OnlineSubscriptionAvailability]
+                FROM 
+                    {Sysjust_USStockList} A
+                JOIN 
+                    {WMS_DOC_RECM} B
+                ON 
+                    A.[FirstBankCode] = B.[ProductCode]
+                WHERE 
+                    A.[OneYearReturn] >= '{ExpectedRoi}'
+                ORDER BY 
+                    A.[OneYearReturn] DESC, 
+                    A.[FirstBankCode] ASC
+                ";
+            }
+            var StockData = DbManager.Custom.ExecuteIList<StockModel>(StockDataSql, null, CommandType.Text);
+
+            if (StockData.Count < 3)
+            {
+                StockDataSql = @$"
+                SELECT TOP 3
+                    A.[FirstBankCode], 
+                    A.[ChineseName], 
+                    A.[MonthlyReturn],
+                    B.[AvailabilityStatus], 
+                    B.[OnlineSubscriptionAvailability]
+                FROM 
+                    {Sysjust_USStockList} A
+                JOIN 
+                    {WMS_DOC_RECM} B
+                ON 
+                    A.[FirstBankCode] = B.[ProductCode]
+                ORDER BY 
+                    A.[OneYearReturn] DESC, 
+                    A.[FirstBankCode] ASC
+                ";
+
+                StockData = DbManager.Custom.ExecuteIList<StockModel>(StockDataSql, null, CommandType.Text);
+            }
+
+            foreach (var item in StockData)
+            {
+                item.DisplayMonthlyReturn = item.MonthlyReturn.FormatDecimalNumber(2);
+
+                //「是否上架」= Y 且「是否可於網路申購」= Y或空白, 顯示申購鈕
+                if (item.AvailabilityStatus == "Y" &&
+                    (item.OnlineSubscriptionAvailability == "Y" ||
+                    string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
+                {
+                    item.SubscribeButtonHtml = PublicHelpers.SubscriptionButtonForCard(null, null, item.FirstBankCode, InvestTypeEnum.ForeignStocks).ToString();
+                }
+                else
+                {
+                    item.SubscribeButtonHtml = string.Empty;
+                }
+
+                item.FocusButtonHtml = PublicHelpers.FocusButton(null, null, item.FirstBankCode, item.ChineseName, InvestTypeEnum.ForeignStocks, false).ToString();
+                item.StockDetailUrl = $"{StockUrl}/stock-details?id={item.FirstBankCode}";
+
+                string sql = @$"
+                 SELECT [ClosingPrice]
+                 FROM [Sysjust_USStockList_History] WITH (NOLOCK)
+                 WHERE [FirstBankCode] = '{item.FirstBankCode}'AND [ClosingPrice] IS NOT NULL
+                 ORDER BY [DataDate] ASC;";
+
+                item.ClosingPrice = (List<decimal>)DbManager.Custom.ExecuteIList<decimal>(sql, null, CommandType.Text);
+            }
+
+            return (List<StockModel>)StockData;
         }
     }
 }
