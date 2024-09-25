@@ -111,5 +111,19 @@ namespace Feature.Wealth.Component.Controllers
 
             return new JsonNetResult(datas);
         }
+
+        /// <summary>
+        /// 獲取國外股票資料
+        /// </summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GetStockData(string ExpectedRoi)
+        {
+            List<StockModel> datas;
+
+            datas = _calculateRepository.GetStockData(ExpectedRoi);
+
+            return new JsonNetResult(datas);
+        }
     }
 }

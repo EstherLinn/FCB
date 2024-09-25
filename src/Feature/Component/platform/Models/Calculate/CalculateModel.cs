@@ -115,6 +115,7 @@ namespace Feature.Wealth.Component.Models.Calculate
     {
         public List<FundModel> FundData { get; set; }
         public List<EtfModel> ETFData { get; set; }
+        public List<StockModel> StockData { get; set; }
     }
 
     public class FundModel
@@ -146,5 +147,20 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string FocusButtonHtml { get; set; }
         public string CompareButtonHtml { get; set; }
         public string SubscribeButtonHtml { get; set; }
+    }
+
+    public class StockModel
+    {
+        public string FirstBankCode { get; set; }
+        public string ChineseName { get; set; }
+        public decimal? MonthlyReturn { get; set; }
+        public List<decimal> ClosingPrice { get; set; }
+        public string AvailabilityStatus { get; set; }
+        public string OnlineSubscriptionAvailability { get; set; }
+        public string DisplayMonthlyReturn { get; set; }
+        public string StockDetailUrl { get; set; }
+        public string FocusButtonHtml { get; set; }
+        public string SubscribeButtonHtml { get; set; }
+
     }
 }
