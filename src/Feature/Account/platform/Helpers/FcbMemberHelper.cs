@@ -1,6 +1,9 @@
 ﻿using Feature.Wealth.Account.Models.OAuth;
 using Newtonsoft.Json;
 using System;
+using Feature.Wealth.Account.Models.Consult;
+using System.Linq;
+using Feature.Wealth.Account.Repositories;
 
 namespace Feature.Wealth.Account.Helpers
 {
@@ -51,6 +54,34 @@ namespace Feature.Wealth.Account.Helpers
         public static string GetMemberSalFalg()
         {
             return fcbMemberModel.SalFlag;
+        }
+
+        public static bool BranchCanUseConsult()
+        {
+            // 找分行代碼白名單
+            var branchCodeList = ConsultRelatedLinkSetting.BranchCodeList();
+
+            // 沒輸入就是全開放
+            if(branchCodeList == null || !branchCodeList.Any())
+            {
+                return true;
+            }
+
+            if(fcbMemberModel == null)
+            {
+                return false;
+            }
+
+            if(string.IsNullOrEmpty(fcbMemberModel.AdvisrorID))
+            {
+                return branchCodeList.Contains(fcbMemberModel.MainBranchCode);
+            }
+            else
+            {
+                MemberRepository memberRepository = new MemberRepository();
+                var branch = memberRepository.GetMainBranchInfoByEmployee(fcbMemberModel.AdvisrorID);
+                return branchCodeList.Contains(branch.BranchCode);
+            }
         }
     }
 }
