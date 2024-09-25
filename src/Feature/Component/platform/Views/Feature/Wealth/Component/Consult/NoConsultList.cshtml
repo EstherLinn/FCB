@@ -1,0 +1,37 @@
+﻿@using Foundation.Wealth.Helper
+@using Feature.Wealth.Component.Models.Consult
+@model ConsultListModel
+
+@if (Model == null)
+{
+    @* 第三方登入隱藏tab *@
+    <div class="c-section" data-consultlist></div>
+    <script>
+        let panelId = $('[data-consultlist]').parent().attr('data-tab-panel-id');
+        $('.c-tab__navs').find('[data-tab-target=' + panelId + ']').parent().remove();
+    </script>
+
+    return;
+}
+
+<div class="c-section">
+    <div class="c-section__content">
+        <div class="l-flex u-flex-col u-flex-gap-xs">
+            <div class="l-flex__item">
+                <div class="c-empty">
+                    <div class="c-empty__img">
+                        <img src="~/themes/images/lions/lion-filter.svg" alt="">
+                    </div>
+                    <div class="c-empty__desc">
+                        您目前還沒有預約<br>立即線上預約，體驗貴賓專屬理財諮詢服務！
+                    </div>
+                </div>
+            </div>
+            <div class="l-flex__item u-center">
+                <a href="@Model.ConsultLink" class="o-btn o-btn--secondary o-btn--sm o-btn--flat">立即預約</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Sitecore().Placeholder("NoConsultList")
