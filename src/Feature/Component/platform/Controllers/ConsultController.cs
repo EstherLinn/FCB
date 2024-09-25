@@ -249,6 +249,7 @@ namespace Feature.Wealth.Component.Controllers
                                 StartTime = c.StartTime,
                                 EndTime = c.EndTime,
                                 DNIS = c.DNIS,
+                                BranchCode = c.BranchCode
                             };
 
                             consultScheduleList.Add(clone);
@@ -272,6 +273,7 @@ namespace Feature.Wealth.Component.Controllers
                                 StartTime = c.StartTime,
                                 EndTime = c.EndTime,
                                 DNIS = c.DNIS,
+                                BranchCode = c.BranchCode
                             };
 
                             consultScheduleList.Add(clone);
@@ -376,7 +378,9 @@ namespace Feature.Wealth.Component.Controllers
 
             // 把對應理顧已預約時間加入已佔用時間
             var employeeID = string.IsNullOrEmpty(info.AdvisrorID) ? string.Empty : info.AdvisrorID;
-            var temp = consultScheduleList.Where(c => c.EmployeeID == employeeID && c.StatusCode != "3" && DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0);
+            var branchCode = string.IsNullOrEmpty(info.AdvisrorID) ? string.Empty : this._consultRepository.GetBranch(info.AdvisrorID).BranchCode;
+            // 20240925 增加判斷同分行同一時段只能有一筆預約，因此同分行預約即判斷為已佔用時間
+            var temp = consultScheduleList.Where(c => (c.EmployeeID == employeeID || c.BranchCode == branchCode) && c.StatusCode != "3" && DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0);
 
             if (temp != null && temp.Any())
             {

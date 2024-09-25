@@ -146,7 +146,7 @@ namespace Feature.Wealth.Component.Repositories
             string IMVP_HOLIDAY = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.IMVP_HOLIDAY);
 
             string sql = $@"SELECT [CALENDAR_DATE]
-                            ,CONVERT(date, [CALENDAR_DATE]) [RealDate]
+                            ,CONVERT(char(10), CONVERT(date, [CALENDAR_DATE]), 126) [RealDate]
                             FROM {IMVP_HOLIDAY} WITH (NOLOCK)
                             WHERE [CALENDAR_DATE] > CONVERT(varchar, GETDATE(), 112)
                             AND [CALENDAR_DATE] < CONVERT(varchar, DATEADD(month, 1, GETDATE()), 112)";

@@ -139,12 +139,19 @@
                         </div>
                         <div class="l-formBlock__group">
                             <div class="l-formBlock__item">
-                                <label class="o-checkbox">
-                                    <input class="o-checkbox__input" type="checkbox" id="picheck">
-                                    <div class="o-checkbox__text">
-                                        為保護您的權益，請詳細閱讀<a href="@Model.PersonalInformationLink" class="o-link" target="_blank">@Model.PersonalInformationText</a>，當表單送出時，即視同您已充分了解與同意。
+                                <div class="l-form" id="l-form-picheck">
+                                    <div class="l-form__item">
+                                        <label class="o-checkbox">
+                                            <input class="o-checkbox__input" type="checkbox" id="picheck">
+                                            <div class="o-checkbox__text">
+                                                為保護您的權益，請詳細閱讀<a href="@Model.PersonalInformationLink" class="o-link" target="_blank">@Model.PersonalInformationText</a>，當表單送出時，即視同您已充分了解與同意。
+                                            </div>
+                                        </label>
                                     </div>
-                                </label>
+                                    <div class="l-form__text l-form__text--error">
+                                        <div class="o-errorText"><span class="s4">請完整閱讀並同意上述條款</span></div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="l-formBlock__action">
                                 <a href="#" class="o-btn o-btn--primary o-btn--lg" data-next>下一步</a>
@@ -594,6 +601,7 @@
             }
             else {
                 flag = false;
+                $('#l-form-picheck').addClass('is-error');
             }
 
             return flag;
@@ -793,6 +801,13 @@
         });
 
         $('#picheck').on('click', function (e) {
+            if ($('#picheck').prop("checked")) {
+                $('#l-form-picheck').removeClass('is-error');
+            }
+            else{
+                $('#l-form-picheck').addClass('is-error');
+            }
+
             bindText();
         });
 
