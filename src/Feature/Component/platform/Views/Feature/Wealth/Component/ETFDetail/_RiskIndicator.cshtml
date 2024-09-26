@@ -420,7 +420,7 @@
                                 boost: {
                                     useGPUTranslations: true,
                                     // 使用 GPU 提升效能
-                                    seriesThreshold: 1 // 當有 1 個以上系列時啟用 boost
+                                    //seriesThreshold: 1 // 當有 1 個以上系列時啟用 boost
                                 },
                                 chart: {
                                     type: 'scatter',
@@ -530,7 +530,7 @@
                                                 hover: {
                                                     enabled: true,
                                                     fillColor: '#F58220',
-                                                    lineWidth: 4,
+                                                    //lineWidth: 4,
                                                     radius: 10
                                                 }
                                             }
@@ -579,19 +579,19 @@
                                     name: selfData[0].FirstBankCode + ' ' + selfData[0].ETFName,
                                     color: '#238C6C',
                                     showInLegend: true,
-                                    marker: {
-                                        symbol: 'circle',
-                                        radius: 8,
-                                        lineWidth: 4,
-                                        lineColor: '#FFFFFF',
-                                        states: {
-                                            hover: {
-                                                enabled: true,
-                                                fillColor: '#F58220',
-                                                radius: 10
-                                            }
-                                        }
-                                    },
+                                    // marker: {
+                                    //     symbol: 'circle',
+                                    //     radius: 8,
+                                    //     lineWidth: 4,
+                                    //     lineColor: '#FFFFFF',
+                                    //     states: {
+                                    //         hover: {
+                                    //             enabled: true,
+                                    //             fillColor: '#F58220',
+                                    //             radius: 10
+                                    //         }
+                                    //     }
+                                    // },
                                     data: [{
                                         id: selfData[0].FirstBankCode,
                                         name: selfData[0].FirstBankCode + ' ' + selfData[0].ETFName,

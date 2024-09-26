@@ -3120,7 +3120,7 @@
                         boost: {
                             useGPUTranslations: true,
                             // 使用 GPU 提升效能
-                            seriesThreshold: 1 // 當有 1 個以上系列時啟用 boost
+                            //seriesThreshold: 1 // 當有 1 個以上系列時啟用 boost
                         },
                         chart: {
                             type: 'pie'
@@ -3157,14 +3157,15 @@
                             pie: {
                                 showInLegend: true,
                                 dataLabels: false,
-                                height: 246,
+                                height: 246,                                
                                 point: {
                                     events: {
                                         legendItemClick: function (e) {
                                             e.preventDefault();
                                         }
                                     }
-                                }
+                                },
+                                borderWidth: 0
                             },
                             series: {
                                 turboThreshold: 0 // 停用 turboThreshold，讓 Highcharts 不限制資料點數
@@ -3368,6 +3369,7 @@
                                 stacking: 'normal',
                                 groupPadding: 0.1,
                                 maxPointWidth: 80,
+                                borderWidth: 0,
                                 events: {
                                     legendItemClick: function () {
                                         return false;
