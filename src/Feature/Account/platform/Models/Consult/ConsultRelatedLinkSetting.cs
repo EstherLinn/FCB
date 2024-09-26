@@ -18,7 +18,7 @@ namespace Feature.Wealth.Account.Models.Consult
 
             if (!string.IsNullOrEmpty(branchCodeListString))
             {
-                result = branchCodeListString.Split(new string[] { "\r\n" }, StringSplitOptions.None).ToList();
+                result = branchCodeListString.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
             }
 
             return result;
