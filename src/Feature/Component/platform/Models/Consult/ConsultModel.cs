@@ -36,6 +36,7 @@ namespace Feature.Wealth.Component.Models.Consult
     public class ConsultListModel
     {
         public Item Item { get; set; }
+        public string ConsultLink { get; set; }
         public string ConsultScheduleLink { get; set; }
 
         public IList<ConsultSchedule> ConsultSchedules { get; set; }

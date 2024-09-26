@@ -36,6 +36,11 @@ namespace Feature.Wealth.Component.Controllers
                 return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", null);
             }
 
+            if(!FcbMemberHelper.BranchCanUseConsult())
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", null);
+            }
+
             if (FcbMemberHelper.fcbMemberModel.IsEmployee)
             {
                 return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", CreateConsultModel(item));
@@ -55,21 +60,35 @@ namespace Feature.Wealth.Component.Controllers
                 return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", null);
             }
 
+            if (!FcbMemberHelper.BranchCanUseConsult())
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", null);
+            }
+
+            var model = CreateConsultListModel(item);
+
             if (FcbMemberHelper.fcbMemberModel.IsManager)
             {
-                return View("/Views/Feature/Wealth/Component/Consult/ManagerConsultList.cshtml", CreateConsultListModel(item));
+                return View("/Views/Feature/Wealth/Component/Consult/ManagerConsultList.cshtml", model);
             }
             else if (FcbMemberHelper.fcbMemberModel.IsEmployee)
             {
-                return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsultList.cshtml", CreateConsultListModel(item));
+                return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsultList.cshtml", model);
             }
             else if (string.IsNullOrEmpty(FcbMemberHelper.fcbMemberModel.AdvisrorID))
             {
-                return View("/Views/Feature/Wealth/Component/Consult/NoEmployeeConsultList.cshtml", CreateConsultListModel(item));
+                return View("/Views/Feature/Wealth/Component/Consult/NoEmployeeConsultList.cshtml", model);
             }
             else
-            {
-                return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", CreateConsultListModel(item));
+            {                
+                if(model.ConsultSchedules != null && model.ConsultSchedules.Any())
+                {
+                    return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", model);
+                }
+                else
+                {
+                    return View("/Views/Feature/Wealth/Component/Consult/NoConsultList.cshtml", model);
+                }
             }
         }
 
@@ -207,6 +226,7 @@ namespace Feature.Wealth.Component.Controllers
             var consultListModel = new ConsultListModel
             {
                 Item = item,
+                ConsultLink = ConsultRelatedLinkSetting.GetConsultUrl(),
                 ConsultScheduleLink = ConsultRelatedLinkSetting.GetConsultScheduleUrl(),
                 ConsultSchedules = consultScheduleList,
                 ConsultSchedulesHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleList)),

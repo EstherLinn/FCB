@@ -45,6 +45,8 @@ namespace Feature.Wealth.Component.Repositories
                 if (!string.IsNullOrEmpty(request))
                 {
                     result = JObject.Parse(request);
+
+                    this._log.Info("IMVPApiRespository Verification result：" + request);
                 }
             }
             catch (FlurlHttpException ex)
@@ -95,6 +97,8 @@ namespace Feature.Wealth.Component.Repositories
                 if (!string.IsNullOrEmpty(request))
                 {
                     result = JObject.Parse(request);
+
+                    this._log.Info("IMVPApiRespository GetReserved result：" + request);
                 }
             }
             catch (FlurlHttpException ex)
@@ -149,6 +153,8 @@ namespace Feature.Wealth.Component.Repositories
                 if (!string.IsNullOrEmpty(request))
                 {
                     result = JObject.Parse(request);
+
+                    this._log.Info("IMVPApiRespository Reserved result：" + request);
                 }
             }
             catch (FlurlHttpException ex)
