@@ -5,6 +5,7 @@ using Feature.Wealth.ScheduleAgent.Services;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using System.Linq;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 {
@@ -28,8 +29,20 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     try
                     {
                         var basic = (IList<SysjustFundNavHis>)await etlService.ParseCsv<SysjustFundNavHis>(filename);
-                        _repository.BulkInsertToEncryptedDatabase(basic, "[Sysjust_FUNDNAV_HIS]", filename, startTime);
+                        int batchSize = 10000;
+                        var isTrancate = false;
+                        for (int i = 0; i < basic.Count; i += batchSize)
+                        {
+                            if (!isTrancate)
+                            {
+                                _repository.TrancateTable("[Sysjust_FUNDNAV_HIS]");
+                                isTrancate = true;
+                            }
+                            var batch = basic.Skip(i).Take(batchSize).ToList();
+                            await _repository.BulkInsertFromOracle(batch, "[Sysjust_FUNDNAV_HIS]");
+                        }
                         etlService.FinishJob(filename, startTime);
+
                     }
                     catch (Exception ex)
                     {
