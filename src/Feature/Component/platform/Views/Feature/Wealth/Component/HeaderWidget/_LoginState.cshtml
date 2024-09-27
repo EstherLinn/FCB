@@ -77,7 +77,7 @@
                             <img src="~/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
                             </a>
                             </li> *@
-                            @if (!string.IsNullOrEmpty(member.WebBankId))
+                            @if (!string.IsNullOrEmpty(member.WebBankId) && FcbMemberHelper.BranchCanUseConsult())
                             {
                                 <li class="c-listGroup__item">
                                     <a href="@MemberRelatedLinkHelper.GetRemoteFinancialConsultingUrl()" class="o-itemLink">
