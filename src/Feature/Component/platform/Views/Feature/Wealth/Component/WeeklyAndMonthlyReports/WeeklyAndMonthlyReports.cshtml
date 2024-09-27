@@ -151,13 +151,19 @@
 
                 function fnScrollUp() {
                     loading();
-
                     $('#table').scrollPosition('scroll');
                 }
                 $containgerPagination = $('#uid-pagination');
                 $containgerPagination.on('click', '[data-page]', fnScrollUp);
-                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
-                    if (e.which === 13) {
+
+                // 清除旧事件
+                $containgerPagination.off('keypress'); 
+
+                // 重新绑定 keypress 事件
+                $containgerPagination.on("keypress", "[data-page-input]", function (i) {
+                    if (13 === i.which) {
+                        var a = parseInt($(this).val());
+                        !isNaN(a) && a >= 1 && a <= fjs.paginator.totalPages() ? fjs.paginator.setCurrentPage(a) : $(this).val(fjs.paginator.currentPage);
                         fnScrollUp();
                     }
                 });
