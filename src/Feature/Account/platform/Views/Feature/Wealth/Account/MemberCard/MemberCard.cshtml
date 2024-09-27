@@ -96,7 +96,7 @@
                                         }
                                     </div>
                                 </div>
-                                if(!member.IsEmployee && !member.IsManager)
+                                if (FcbMemberHelper.BranchCanUseConsult() && !member.IsEmployee && !member.IsManager )
                                 {
                                 <div class="c-member__info">
                                     <div class="c-member__title">
