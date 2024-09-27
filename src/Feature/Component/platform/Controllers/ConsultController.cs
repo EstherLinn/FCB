@@ -36,7 +36,7 @@ namespace Feature.Wealth.Component.Controllers
                 return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", null);
             }
 
-            if(!FcbMemberHelper.BranchCanUseConsult())
+            if (!FcbMemberHelper.BranchCanUseConsult())
             {
                 return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", null);
             }
@@ -80,8 +80,8 @@ namespace Feature.Wealth.Component.Controllers
                 return View("/Views/Feature/Wealth/Component/Consult/NoEmployeeConsultList.cshtml", model);
             }
             else
-            {                
-                if(model.ConsultSchedules != null && model.ConsultSchedules.Any())
+            {
+                if (model.ConsultSchedules != null && model.ConsultSchedules.Any())
                 {
                     return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", model);
                 }
@@ -99,7 +99,7 @@ namespace Feature.Wealth.Component.Controllers
 
             var param = RenderingContext.CurrentOrNull?.Rendering.Parameters;
 
-            if(param != null && param["needbr"] == "1")
+            if (param != null && param["needbr"] == "1")
             {
                 model.Needbr = true;
             }
@@ -146,7 +146,7 @@ namespace Feature.Wealth.Component.Controllers
                     if ((info.IsEmployee || info.IsManager) && !string.IsNullOrEmpty(info.AdvisrorID))
                     {
                         // 理顧跟主管不顯示未確認的預約
-                        if(c.StatusCode != "0")
+                        if (c.StatusCode != "0")
                         {
                             if (info.IsManager)
                             {
@@ -709,6 +709,50 @@ namespace Feature.Wealth.Component.Controllers
                 success = true,
                 block = false
             });
+        }
+
+        [ValidateAntiForgeryToken]
+        public ActionResult GetVideoUrl(string id)
+        {
+            JsonNetResult result;
+
+            try
+            {
+                var url = this._octonApiRespository.GetVideoURL(id);
+
+                if (string.IsNullOrEmpty(url))
+                {
+                    result = new JsonNetResult(new
+                    {
+                        success = false,
+                        url = string.Empty,
+                        message = "查無錄影連結",
+                        errorMessage = string.Empty
+                    });
+                }
+                else
+                {
+                    result = new JsonNetResult(new
+                    {
+                        success = true,
+                        url = url,
+                        message = string.Empty,
+                        errorMessage = string.Empty
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                result = new JsonNetResult(new
+                {
+                    success = false,
+                    url = string.Empty,
+                    message = "發生錯誤無法取得錄影連結",
+                    errorMessage = ex.ToString()
+                });
+            }
+
+            return result;
         }
 
         private Item GetMailSetting()

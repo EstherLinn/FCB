@@ -404,6 +404,30 @@
     </div>
 </div>
 
+<div id="popupFail" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">發生錯誤</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-flex u-flex-col u-flex-gap-min u-center">
+                <div class="l-flex__item">
+                    <img src="~/themes/images/icons/status/fail.svg" alt="">
+                </div>
+                <div class="l-flex__item" id="message">
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a class="o-btn o-btn--primary o-btn--sm" data-edit>確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script id="template1" type="text/html">
     <tr class="c-cardTable__item u-center@dt-only">
         <td class="c-cardTable__space"></td>
@@ -496,7 +520,7 @@
             <div class="c-cardTable__title" data-length="5">錄影紀錄</div>
             <div class="c-cardTable__content">
                 <% if (StatusCode == '2') { %>
-                    <a href="#" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult">查看錄影</a>
+                    <a href="#" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult" data-video data-id="<%= ScheduleID %>">查看錄影</a>
                 <% } else { %>
                 <% } %>
             </div>
@@ -894,6 +918,51 @@
             e.preventDefault();
             var id = $(this).attr('data-id')
             cancelConsultSchedule(id);
+        });
+
+        function getVideoUrl(id) {
+            window.loading('show');
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "Consult", "GetVideoUrl")',
+                type: 'POST',
+                data: { id: id, __RequestVerificationToken: token }
+            }).done(function (data, textStatus, jqXHR) {
+                $.magnificPopup.close();
+                if (data.success) {
+                    window.open(data.url, "_blank");
+                }
+                else {
+                    if (data.message) {
+                        $('#message').text(data.message);
+                        $.magnificPopup.open({
+                            items: {
+                                src: '#popupFail'
+                            },
+                            closeOnBgClick: false,
+                            callbacks: {
+                                afterClose: function () {
+                                }
+                            }
+                        });
+                    }
+
+                    if (data.errorMessage) {
+                        console.log(data.errorMessage);
+                    }
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function () {
+                window.loading('hide');
+            });
+        }
+
+        $('[data-video]').on('click', function (e) {
+            e.preventDefault();
+            var id = $(this).attr('data-id')
+            getVideoUrl(id);
         });
 
         moment.locale('zh-tw', {
