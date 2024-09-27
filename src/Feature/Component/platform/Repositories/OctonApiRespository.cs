@@ -77,7 +77,7 @@ namespace Feature.Wealth.Component.Repositories
                 var row1 = doc1.SelectSingleNode("RaiseEvent").SelectSingleNode("Body").SelectSingleNode("Data").SelectSingleNode("Row");
                 var row2 = doc2.SelectSingleNode("RaiseEvent").SelectSingleNode("Body").SelectSingleNode("Data").SelectSingleNode("Row");
 
-                if(row1 != null && row2 != null)
+                if (row1 != null && row2 != null)
                 {
                     var url1 = row1.SelectSingleNode("FILE_NAME").Value;
                     var url2 = row2.SelectSingleNode("FILE_NAME").Value;
