@@ -1,0 +1,53 @@
+﻿@using Feature.Wealth.Component.Models.AnnouncementPopup
+@using Foundation.Wealth.Helper
+@model AnnouncementPopupModel
+@{
+    if (Model == null || Model.DataSource == null)
+    {
+        return;
+    }
+    if (!Model.IsShow)
+    {
+        return;
+    }
+}
+
+<div id="announcementPopup" class="c-modal  mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">@Model.Title</h2>
+        </header>
+        <div class="c-modal__content">
+                <p>@Model.Content</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            const token = $('input[name="__RequestVerificationToken"]').val();
+            $.magnificPopup.open({
+                items: {
+                    src: '#announcementPopup'
+                },
+                type: 'inline',
+                callbacks: {
+                    close: function UpdateAnnouncement() {
+                        $.ajax({
+                            type: "post",
+                            url: "@ClientRoute.GenerateUrl(this, "AnnouncementPopup", "UpdateAnnouncement")",
+                            data: { __RequestVerificationToken: token },
+                            success: function (data) {
+                                if (data.success == true) {}
+                            },
+                            error: function (xhr, status, error) {
+                                console.log(data.message);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    })(jQuery, window, document);
+</script>
