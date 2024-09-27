@@ -5191,7 +5191,7 @@ select {
 }
 .l-info__title {
   flex: 0 0 auto;
-  width: 66px;
+  width: 100px;
 }
 .l-info__val {
   flex: 1;
