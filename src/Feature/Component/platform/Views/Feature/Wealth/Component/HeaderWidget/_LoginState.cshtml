@@ -88,7 +88,7 @@
                             }
                         </ul>
                     </nav>
-                    @if (!string.IsNullOrEmpty(member.WebBankId) && !string.IsNullOrEmpty(member.Advisror) && !member.IsManager)
+                    @if (FcbMemberHelper.BranchCanUseConsult() &&　!string.IsNullOrEmpty(member.WebBankId) && !string.IsNullOrEmpty(member.Advisror) && !member.IsManager)
                     {
                         @*網銀身分及網銀身分有理專及不是主管,顯示預約按鈕*@
                         <div class="c-popover__footer">
