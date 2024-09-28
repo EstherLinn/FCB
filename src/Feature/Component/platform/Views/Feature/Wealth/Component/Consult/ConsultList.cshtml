@@ -744,7 +744,7 @@
                 data: consultSchedule
             }).done(function (data, textStatus, jqXHR) {
                 $.magnificPopup.close();
-                if (data.success) {
+                if (data.Success) {
                     if (data0.length > 0) {
                         fjs0.removeRecords({ ScheduleID: id });
                     }
@@ -789,12 +789,18 @@
                     });                 
 
                     calendar.render();
+
+                    $('.c-calendarList').empty();
                 }
                 else {
-                    if (data.block) {
-                        window.VerifyLoginRedirctToHome(data.success);
+                    if (data.Block) {
+                        window.VerifyLoginRedirctToHome(data.Success);
                         return;
                     }
+                }
+
+                if (data.ErrorMessage) {
+                    console.log(data.ErrorMessage);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
             }).always(function () {
@@ -904,6 +910,26 @@
             dateClick(arg) {
                 if (window.innerWidth < 1200) {
                     const datas = dataSource.filter(item => item.start.split('T')[0] === arg.dateStr);
+                    datas.sort((a,b) => {
+                        if (a.StatusOrder > b.StatusOrder) {
+                            return 1;
+                        }
+                        else if (a.StatusOrder < b.StatusOrder) {
+                           return -1;
+                        }
+                        else{
+                            if (a.start > b.start){
+                                return 1;
+                            }
+                            else if (a.start < b.start){
+                                return -1;
+                            }
+                            else{
+                                return 0;
+                            }
+                        }
+                    });
+
                     let html = '';
 
                     // 需下事件點選單筆行程跳出泡泡

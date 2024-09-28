@@ -315,6 +315,15 @@ namespace Feature.Wealth.Component.Models.Consult
         public string BranchName { get; set; }
     }
 
+    public class ConsultApiResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public string ErrorMessage { get; set; } = string.Empty;
+        public bool Block { get; set; }
+        public string Url { get; set; } = string.Empty;
+    }
+
     public struct Template
     {
         public readonly struct ConsultSchedule

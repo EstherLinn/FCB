@@ -54,10 +54,12 @@ namespace Feature.Wealth.Component.Repositories
                 var status = ex.StatusCode;
                 var resp = ex.GetResponseStringAsync().Result;
                 this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                throw ex;
             }
             catch (Exception ex)
             {
                 this._log.Error(ex);
+                throw ex;
             }
 
             return result;
@@ -106,10 +108,12 @@ namespace Feature.Wealth.Component.Repositories
                 var status = ex.StatusCode;
                 var resp = ex.GetResponseStringAsync().Result;
                 this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                throw ex;
             }
             catch (Exception ex)
             {
                 this._log.Error(ex);
+                throw ex;
             }
 
             return result;
@@ -162,10 +166,12 @@ namespace Feature.Wealth.Component.Repositories
                 var status = ex.StatusCode;
                 var resp = ex.GetResponseStringAsync().Result;
                 this._log.Error($"Error returned from {ex.Call.Request.Url} {Environment.NewLine}[Message] {ex.Message} {Environment.NewLine}[StatusCode] {status}{Environment.NewLine}[Response] {resp}");
+                throw ex;
             }
             catch (Exception ex)
             {
                 this._log.Error(ex);
+                throw ex;
             }
 
             return result;
