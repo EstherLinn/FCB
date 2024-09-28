@@ -858,7 +858,7 @@
                 data: consultSchedule
             }).done(function (data, textStatus, jqXHR) {
                 $.magnificPopup.close();
-                if (data.success) {
+                if (data.Success) {
                     if (data1.length > 0) {
                         fjs1.removeRecords({ ScheduleID: id });
                     }
@@ -899,12 +899,18 @@
                     });
 
                     calendar.render();
+
+                    $('.c-calendarList').empty();
                 }
                 else {
-                    if (data.block) {
-                        window.VerifyLoginRedirctToHome(data.success);
+                    if (data.Block) {
+                        window.VerifyLoginRedirctToHome(data.Success);
                         return;
                     }
+                }
+
+                if (data.ErrorMessage) {
+                    console.log(data.ErrorMessage);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
             }).always(function () {
@@ -931,12 +937,12 @@
                 data: { id: id, __RequestVerificationToken: token }
             }).done(function (data, textStatus, jqXHR) {
                 $.magnificPopup.close();
-                if (data.success) {
-                    window.open(data.url, "_blank");
+                if (data.Success) {
+                    window.open(data.Url, "_blank");
                 }
                 else {
-                    if (data.message) {
-                        $('#message').text(data.message);
+                    if (data.Message) {
+                        $('#message').text(data.Message);
                         $.magnificPopup.open({
                             items: {
                                 src: '#popupFail'
@@ -948,10 +954,10 @@
                             }
                         });
                     }
+                }                
 
-                    if (data.errorMessage) {
-                        console.log(data.errorMessage);
-                    }
+                if (data.ErrorMessage) {
+                    console.log(data.ErrorMessage);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
             }).always(function () {
