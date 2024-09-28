@@ -567,7 +567,7 @@ namespace Feature.Wealth.Component.Controllers
             if (string.IsNullOrEmpty(consultSchedule.DNIS))
             {
                 result.Success = false;
-                result.Message = "因您選取的時段已有其他貴賓預約，請重新預約其他時段，\r\n不便之處敬請見諒。";
+                result.Message = "因您選取的時段已有其他貴賓預約，請重新預約其他時段，不便之處敬請見諒。";
                 result.ErrorMessage = "分機號碼已用盡";
 
                 return new JsonNetResult(result);
@@ -576,7 +576,7 @@ namespace Feature.Wealth.Component.Controllers
             if (this._consultRepository.CheckEmployeeSchedule(consultSchedule))
             {
                 result.Success = false;
-                result.Message = "因您選取的時段已有其他貴賓預約，請重新預約其他時段，\r\n不便之處敬請見諒。";
+                result.Message = "因您選取的時段已有其他貴賓預約，請重新預約其他時段，不便之處敬請見諒。";
                 result.ErrorMessage = "該理顧已被別人預約";
 
                 return new JsonNetResult(result);
