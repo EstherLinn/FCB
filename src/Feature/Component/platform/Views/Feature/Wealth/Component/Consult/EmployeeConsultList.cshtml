@@ -794,7 +794,7 @@
                 data: consultSchedule
             }).done(function (data, textStatus, jqXHR) {
                 $.magnificPopup.close();
-                if (data.success) {
+                if (data.Success) {
                     if (data1.length > 0) {
                         fjs1.removeRecords({ ScheduleID: id });
                     }
@@ -835,12 +835,18 @@
                     });
 
                     calendar.render();
+
+                    $('.c-calendarList').empty();
                 }
                 else {
-                    if (data.block) {
-                        window.VerifyLoginRedirctToHome(data.success);
+                    if (data.Block) {
+                        window.VerifyLoginRedirctToHome(data.Success);
                         return;
                     }
+                }
+
+                if (data.ErrorMessage) {
+                    console.log(data.ErrorMessage);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
             }).always(function () {

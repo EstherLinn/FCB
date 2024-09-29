@@ -79,8 +79,8 @@ namespace Feature.Wealth.Component.Repositories
 
                 if (row1 != null && row2 != null)
                 {
-                    var url1 = row1.SelectSingleNode("FILE_NAME").Value;
-                    var url2 = row2.SelectSingleNode("FILE_NAME").Value;
+                    var url1 = row1.SelectSingleNode("FILE_NAME").InnerText;
+                    var url2 = row2.SelectSingleNode("FILE_NAME").InnerText;
 
                     result = $@"{this._routeVideo}/RecordingQueryWeb/Record/Recording_Inquire_vtm.jsp?file1={url1}&file2={url2}";
                 }

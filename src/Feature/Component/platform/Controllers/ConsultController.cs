@@ -369,32 +369,39 @@ namespace Feature.Wealth.Component.Controllers
             //呼叫 IMVP API 取得理顧已佔用時間
             var reserveds = new List<Reserved>();
 
-            var respons = this._iMVPApiRespository.Verification();
-
-            if (respons != null && respons.ContainsKey("token"))
+            try
             {
-                var token = respons["token"];
-                if (token != null)
-                {
-                    var respons2 = this._iMVPApiRespository.GetReserved(
-                        token.ToString(), info.AdvisrorID, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.AddDays(30).ToString("yyyyMMdd")
-                        );
+                var respons = this._iMVPApiRespository.Verification();
 
-                    if (respons2 != null && respons2.ContainsKey("data"))
+                if (respons != null && respons.ContainsKey("token"))
+                {
+                    var token = respons["token"];
+                    if (token != null)
                     {
-                        var data = respons2["data"];
-                        for (int i = 0; i < data.Count(); i++)
+                        var respons2 = this._iMVPApiRespository.GetReserved(
+                            token.ToString(), info.AdvisrorID, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.AddDays(30).ToString("yyyyMMdd")
+                            );
+
+                        if (respons2 != null && respons2.ContainsKey("data"))
                         {
-                            reserveds.Add(new Reserved
+                            var data = respons2["data"];
+                            for (int i = 0; i < data.Count(); i++)
                             {
-                                Date = data[i]["date"].ToString().Insert(6, "-").Insert(4, "-"),
-                                StartTime = data[i]["startTime"].ToString().Insert(2, ":"),
-                                EndTime = data[i]["endTime"].ToString().Insert(2, ":")
-                            });
+                                reserveds.Add(new Reserved
+                                {
+                                    Date = data[i]["date"].ToString().Insert(6, "-").Insert(4, "-"),
+                                    StartTime = data[i]["startTime"].ToString().Insert(2, ":"),
+                                    EndTime = data[i]["endTime"].ToString().Insert(2, ":")
+                                });
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                // TODO LOG
+            }            
 
             // 把對應理顧已預約時間加入已佔用時間
             var employeeID = string.IsNullOrEmpty(info.AdvisrorID) ? string.Empty : info.AdvisrorID;
@@ -523,7 +530,18 @@ namespace Feature.Wealth.Component.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateConsultSchedule(ConsultSchedule consultSchedule)
         {
+            var result = new ConsultApiResult();
+
             consultSchedule.ScheduleID = Guid.NewGuid();
+
+            if(!FcbMemberHelper.CheckMemberLogin())
+            {
+                result.Success = false;
+                result.Message = "您已登出，請重新登入再預約。";
+                result.ErrorMessage = "您已登出，請重新登入再預約。";
+
+                return new JsonNetResult(result);
+            }
 
             var info = FcbMemberHelper.GetMemberAllInfo();
 
@@ -542,22 +560,26 @@ namespace Feature.Wealth.Component.Controllers
                 consultSchedule.CustomerID = info.WebBankId;
                 consultSchedule.CustomerName = info.MemberName;
             }
-            else
-            {
-                //TODO 驗證使用者資訊
-            }
 
             consultSchedule.ScheduleDate = DateTime.Parse(consultSchedule.ScheduleDateString);
             consultSchedule.DNIS = this._consultRepository.GetDNIS(consultSchedule);
 
             if (string.IsNullOrEmpty(consultSchedule.DNIS))
             {
-                return new JsonNetResult(false);
+                result.Success = false;
+                result.Message = "因您選取的時段已有其他貴賓預約，請重新預約其他時段，不便之處敬請見諒。";
+                result.ErrorMessage = "分機號碼已用盡";
+
+                return new JsonNetResult(result);
             }
 
             if (this._consultRepository.CheckEmployeeSchedule(consultSchedule))
             {
-                return new JsonNetResult(false);
+                result.Success = false;
+                result.Message = "因您選取的時段已有其他貴賓預約，請重新預約其他時段，不便之處敬請見諒。";
+                result.ErrorMessage = "該理顧已被別人預約";
+
+                return new JsonNetResult(result);
             }
 
             // 避免 DB 出現 NULL
@@ -566,37 +588,63 @@ namespace Feature.Wealth.Component.Controllers
                 consultSchedule.Description = string.Empty;
             }
 
+            var errorMessage = string.Empty;
+
             //呼叫 IMVP API 新增
             if (info.IsEmployee == false)
             {
-                var respons = this._iMVPApiRespository.Verification();
-
-                if (respons != null && respons.ContainsKey("token"))
+                try
                 {
-                    var token = respons["token"];
-                    if (token != null)
-                    {
-                        IMVPRequestData imvpRequestData = new IMVPRequestData
-                        {
-                            token = token.ToString(),
-                            scheduleId = consultSchedule.ScheduleID.ToString(),
-                            action = "1",
-                            empId = consultSchedule.EmployeeID,
-                            type = "1",
-                            date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
-                            startTime = consultSchedule.StartTime.Replace(":", string.Empty),
-                            endTime = consultSchedule.EndTime.Replace(":", string.Empty),
-                            custId = consultSchedule.CustomerID,
-                            subject = consultSchedule.Subject,
-                            description = consultSchedule.Description
-                        };
+                    var respons = this._iMVPApiRespository.Verification();
 
-                        var respons2 = this._iMVPApiRespository.Reserved(imvpRequestData);
+                    if (respons != null && respons.ContainsKey("token"))
+                    {
+                        errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Verification 有拿到 token。";
+
+                        var token = respons["token"];
+                        if (token != null)
+                        {
+                            IMVPRequestData imvpRequestData = new IMVPRequestData
+                            {
+                                token = token.ToString(),
+                                scheduleId = consultSchedule.ScheduleID.ToString(),
+                                action = "1",
+                                empId = consultSchedule.EmployeeID,
+                                type = "1",
+                                date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
+                                startTime = consultSchedule.StartTime.Replace(":", string.Empty),
+                                endTime = consultSchedule.EndTime.Replace(":", string.Empty),
+                                custId = consultSchedule.CustomerID,
+                                subject = consultSchedule.Subject,
+                                description = consultSchedule.Description
+                            };
+
+                            var respons2 = this._iMVPApiRespository.Reserved(imvpRequestData);
+
+                            errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Reserved respons2：" + JsonConvert.SerializeObject(respons2);
+                        }
+                        else
+                        {
+                            errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Verification token 空值，respon：" + JsonConvert.SerializeObject(respons);
+                        }
                     }
+                    else if (respons != null)
+                    {
+                        errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Verification 沒拿到 token，respon：" + JsonConvert.SerializeObject(respons);
+                    }
+                    else
+                    {
+                        errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Verification respon：NULL";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this._log.Error(ex);
+                    errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP 錯誤：" + ex.ToString();
                 }
             }
 
-            //TODO 呼叫 IMVP 失敗不新增預約
+            // TODO 呼叫 IMVP 失敗不新增預約
             this._consultRepository.InsertConsultSchedule(consultSchedule);
 
             // 發信失敗依然要讓前端頁面正常處理
@@ -635,9 +683,13 @@ namespace Feature.Wealth.Component.Controllers
             catch (Exception ex)
             {
                 this._log.Error(ex);
+                errorMessage = errorMessage + Environment.NewLine + "發信發生錯誤：" + ex.Message;
             }
 
-            return new JsonNetResult(true);
+            result.Success = true;
+            result.ErrorMessage = errorMessage;
+
+            return new JsonNetResult(result);
         }
 
         [HttpPost]
@@ -645,14 +697,15 @@ namespace Feature.Wealth.Component.Controllers
         [MemberAuthenticationFilter]
         public ActionResult CancelConsultSchedule(ConsultSchedule consultSchedule)
         {
+            var result = new ConsultApiResult();
+
             //驗證使用者資訊
             if (!FcbMemberHelper.CheckMemberLogin())
             {
-                return new JsonNetResult(new
-                {
-                    success = false,
-                    block = true
-                });
+                result.Success = false;
+                result.Block = true;
+
+                return new JsonNetResult(result);
             }
 
             if (consultSchedule != null && Guid.TryParse(consultSchedule.ScheduleID.ToString(), out var scheduleID))
@@ -661,60 +714,77 @@ namespace Feature.Wealth.Component.Controllers
             }
             else
             {
-                return new JsonNetResult(false);
+                result.Success = false;
+                result.ErrorMessage = "參數不正確";
+
+                return new JsonNetResult(result);
             }
 
-            MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
-
-            mail.Topic = this._consultRepository.GetCancelMailTopic();
-            mail.Content = this._consultRepository.GetCancelMailContent(consultSchedule);
-
-            using (new SecurityDisabler())
+            try
             {
-                using (new LanguageSwitcher("en"))
+                MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
+
+                mail.Topic = this._consultRepository.GetCancelMailTopic();
+                mail.Content = this._consultRepository.GetCancelMailContent(consultSchedule);
+
+                using (new SecurityDisabler())
                 {
-                    this._consultRepository.SendMail(mail, GetMailSetting());
+                    using (new LanguageSwitcher("en"))
+                    {
+                        this._consultRepository.SendMail(mail, GetMailSetting());
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                this._log.Error(ex);
+                result.ErrorMessage = result.ErrorMessage + Environment.NewLine + "發信發生錯誤：" + ex.Message;
             }
 
             //呼叫 IMVP API 取消
-            var respons = this._iMVPApiRespository.Verification();
-
-            if (respons != null && respons.ContainsKey("token"))
+            try
             {
-                var token = respons["token"];
-                if (token != null)
-                {
-                    IMVPRequestData imvpRequestData = new IMVPRequestData
-                    {
-                        token = token.ToString(),
-                        scheduleId = consultSchedule.ScheduleID.ToString(),
-                        action = "2",
-                        empId = consultSchedule.EmployeeID,
-                        type = "1",
-                        date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
-                        startTime = consultSchedule.StartTime.Replace(":", string.Empty),
-                        endTime = consultSchedule.EndTime.Replace(":", string.Empty),
-                        custId = consultSchedule.CustomerID,
-                        subject = consultSchedule.Subject,
-                        description = consultSchedule.Description
-                    };
+                var respons = this._iMVPApiRespository.Verification();
 
-                    var respons2 = this._iMVPApiRespository.Reserved(imvpRequestData);
+                if (respons != null && respons.ContainsKey("token"))
+                {
+                    var token = respons["token"];
+                    if (token != null)
+                    {
+                        IMVPRequestData imvpRequestData = new IMVPRequestData
+                        {
+                            token = token.ToString(),
+                            scheduleId = consultSchedule.ScheduleID.ToString(),
+                            action = "2",
+                            empId = consultSchedule.EmployeeID,
+                            type = "1",
+                            date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
+                            startTime = consultSchedule.StartTime.Replace(":", string.Empty),
+                            endTime = consultSchedule.EndTime.Replace(":", string.Empty),
+                            custId = consultSchedule.CustomerID,
+                            subject = consultSchedule.Subject,
+                            description = consultSchedule.Description
+                        };
+
+                        var respons2 = this._iMVPApiRespository.Reserved(imvpRequestData);
+                    }
                 }
             }
-
-            return new JsonNetResult(new
+            catch (Exception ex)
             {
-                success = true,
-                block = false
-            });
+                // TODO Log
+            }
+
+            result.Success = true;
+            result.Block = false;
+
+            return new JsonNetResult(result);
         }
 
         [ValidateAntiForgeryToken]
         public ActionResult GetVideoUrl(string id)
         {
-            JsonNetResult result;
+            var result = new ConsultApiResult();
 
             try
             {
@@ -722,37 +792,23 @@ namespace Feature.Wealth.Component.Controllers
 
                 if (string.IsNullOrEmpty(url))
                 {
-                    result = new JsonNetResult(new
-                    {
-                        success = false,
-                        url = string.Empty,
-                        message = "查無錄影連結",
-                        errorMessage = string.Empty
-                    });
+                    result.Success = false;
+                    result.Message = "查無錄影連結";
                 }
                 else
                 {
-                    result = new JsonNetResult(new
-                    {
-                        success = true,
-                        url = url,
-                        message = string.Empty,
-                        errorMessage = string.Empty
-                    });
+                    result.Success = true;
+                    result.Url = url;
                 }
             }
             catch (Exception ex)
             {
-                result = new JsonNetResult(new
-                {
-                    success = false,
-                    url = string.Empty,
-                    message = "發生錯誤無法取得錄影連結",
-                    errorMessage = ex.ToString()
-                });
+                result.Success = false;
+                result.Message = "發生錯誤無法取得錄影連結";
+                result.ErrorMessage = ex.ToString();
             }
 
-            return result;
+            return new JsonNetResult(result);
         }
 
         private Item GetMailSetting()

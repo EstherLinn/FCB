@@ -412,9 +412,7 @@
                 <div class="l-flex__item">
                     <img src="~/themes/images/icons/status/fail.svg" alt="">
                 </div>
-                <div class="l-flex__item">
-                    因您選取的時段已有其他貴賓預約，請重新預約其他時段
-                    ，不便之處敬請見諒。
+                <div class="l-flex__item" id="message">
                 </div>
             </div>
         </div>
@@ -771,7 +769,7 @@
                 data: currentConsultSchedule
             }).done(function (data, textStatus, jqXHR) {
                 $.magnificPopup.close();
-                if (data) {
+                if (data.Success) {
                     $.magnificPopup.open({
                         items: {
                             src: '#popupSuccess'
@@ -785,6 +783,7 @@
                     });
                 }
                 else {
+                    $('#message').text(data.Message);
                     $.magnificPopup.open({
                         items: {
                             src: '#popupFail'
@@ -797,6 +796,10 @@
                             }
                         }
                     });
+                }
+
+                if (data.ErrorMessage) {
+                    console.log(data.ErrorMessage);
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
             }).always(function () {
