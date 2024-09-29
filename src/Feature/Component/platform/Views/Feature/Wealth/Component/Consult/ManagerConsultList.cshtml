@@ -1257,13 +1257,26 @@
                                     <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-cancel-btn>取消預約</a>
                                 </div>
                             </div>`;
+            var footerBtnHistory = `
+                            <div class="l-action l-action--inline" data-footer-tmpl="history">
+                                <div class="l-action__item">
+                                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-event-id="{cid}" data-video-btn>查看錄影</a>
+                                </div>
+                            </div>`;
             var $footerWrapper = `
                             <div class="c-eventPopup__footer">
                                 {btns}
                             </div>`;
             switch (data.type) {
                 case 'history':
-                    $floatingEl = $floatingEl.replace('${footer}', '');
+                    footerBtnHistory.replaceAll('{cid}', data.cid);
+                    if (data.StatusCode == '2'){
+                        $footerWrapper = $footerWrapper.replace('{btns}', footerBtnHistory);
+                        $floatingEl = $floatingEl.replace('${footer}', $footerWrapper);
+                    }
+                    else {
+                        $floatingEl = $floatingEl.replace('${footer}', '');
+                    }
                     break;
                 case 'success':
                     // 只在預約時段時顯示「開始諮詢」，尚未到來皆顯示「等待中」
@@ -1304,9 +1317,16 @@
         $('body').on('click.start', '[data-start-btn]', function (e) {
             e.preventDefault();
 
-            // 開始諮詢的該筆資料
             let id = $(this).data('eventId');
             window.open('@(Model.ConsultScheduleLink)?id=' + id + '&type=Employee', "_blank");
+        });
+
+        // 開始諮詢
+        $('body').on('click.video', '[data-video-btn]', function (e) {
+            e.preventDefault();
+
+            let id = $(this).data('eventId');
+            getVideoUrl(id);
         });
     });
 </script>
