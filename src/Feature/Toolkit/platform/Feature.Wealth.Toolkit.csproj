@@ -6,6 +6,9 @@
     <SitecoreRoleType>platform</SitecoreRoleType>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Areas\Tools\Views\CacheManager\keepalive.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectCapability Include="SupportsSystemWeb" />
   </ItemGroup>
   <ItemGroup>
