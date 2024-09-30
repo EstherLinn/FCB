@@ -33,7 +33,7 @@ namespace Feature.Wealth.Component.Repositories
                 {
                     FundId = item.FundId,
                     RateOfRetuen = item.OneMonthReturnOriginalCurrency.FormatDecimalNumber(2),
-                    FundName = item.FundName,
+                    FundName = item.FundName ?? "",
                     DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl() + "?id=" + item.FundId,
                     SubscribeButtonHtml = (item.AvailabilityStatus == "Y" &&
                           (item.OnlineSubscriptionAvailability == "Y" ||
