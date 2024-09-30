@@ -634,7 +634,7 @@ namespace Feature.Wealth.Component.Controllers
                     }
                     else
                     {
-                        errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Verification respon：NULL";
+                        errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Verification respon：" + JsonConvert.SerializeObject(respons);
                     }
                 }
                 catch (Exception ex)
