@@ -6,7 +6,7 @@ namespace Feature.Wealth.Toolkit.Areas.Tools.Controllers
     {
         public ActionResult Index()
         {
-            return View("~/Areas/Tools/Views/CacheManager/keepalive.cshtml");
+            return View("~/Areas/Tools/Views/Keepalive/Index.cshtml");
         }
     }
 }
