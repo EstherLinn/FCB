@@ -421,7 +421,7 @@
         <div class="c-modal__action">
             <div class="l-action l-action--inline">
                 <div class="l-action__item">
-                    <a class="o-btn o-btn--primary o-btn--sm" data-edit>確定</a>
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true">確定</a>
                 </div>
             </div>
         </div>
@@ -1269,7 +1269,7 @@
                             </div>`;
             switch (data.type) {
                 case 'history':
-                    footerBtnHistory.replaceAll('{cid}', data.cid);
+                    footerBtnHistory = footerBtnHistory.replaceAll('{cid}', data.cid);
                     if (data.StatusCode == '2'){
                         $footerWrapper = $footerWrapper.replace('{btns}', footerBtnHistory);
                         $floatingEl = $floatingEl.replace('${footer}', $footerWrapper);
