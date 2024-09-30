@@ -131,7 +131,7 @@ namespace Feature.Wealth.Component.Repositories
 
                 var request = flurlClient.
                     Request().
-                    AppendPathSegments("api", "rest", "fm", "getReserved").
+                    AppendPathSegments("api", "rest", "fm", "reserve").
                     WithHeader("ContentType", "application/json").
                     AllowAnyHttpStatus().
                     PostJsonAsync(new
