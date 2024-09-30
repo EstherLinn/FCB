@@ -766,7 +766,7 @@
                     lookup: function (query, done) {
                         // Do Ajax call or lookup locally, when done,
                         // call the callback and pass your results:
-                        query = query.trim();
+                        query = query?.trim();
                         query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
                         let data = window.ProductSearch.SearchKeyword.List;
                         let result;
