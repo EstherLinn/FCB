@@ -603,21 +603,14 @@
                     showNoSuggestionNotice: true,
                     noSuggestionNotice: $('#tmplKeywordNotFound').html(),
                     lookup: function (query, done) {
+                        query = query?.trim();
                         query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
                         if (query.length == 0) {
-                            result = USStockList.slice(0, 5).sort((a, b) => {
-                                if (a.FirstBankCode < b.FirstBankCode) {
-                                    return -1;
-                                } else if (a.FirstBankCode > b.FirstBankCode) {
-                                    return 1;
-                                }
-                                // a must be equal to b
-                                return 0;
-                            });
+                            result = USStockList.slice(0, 5);
                         } else {
                             result = USStockList.filter(function (item) {
                                 return new RegExp(query, 'gi').test(item.value);
-                            }).slice(0, 5).sort((a, b) => {
+                            }).sort((a, b) => {
                                 if (a.FirstBankCode < b.FirstBankCode) {
                                     return -1;
                                 } else if (a.FirstBankCode > b.FirstBankCode) {
@@ -628,7 +621,7 @@
                             });
                         }
                         done({
-                            suggestions: result
+                            suggestions: result.slice(0, 5)
                         });
                     },
                     onSearchComplete: function (query, suggestions) {
