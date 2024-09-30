@@ -3,8 +3,8 @@
 @model InterestedFundModle
 
 @{
-var FundCloseYearPerformanceApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetCloseYearPerformance");
-var InterestedFundApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetInterestedFund");
+    var FundCloseYearPerformanceApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetCloseYearPerformance");
+    var InterestedFundApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetInterestedFund");
 }
 
 <div class="c-section" id="interestedFund">
@@ -107,7 +107,7 @@ var InterestedFundApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetI
                 },
                 spaceBetween: 16,
                 autoplay: false,
-                loop:true,
+                loop: true,
                 breakpoints: {
                     1200: {
                         slidesPerGroup: 3,
@@ -122,7 +122,7 @@ var InterestedFundApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetI
                     el: '.swiper-pagination',
                     clickable: true
                 },
-                speed:1000,
+                speed: 1000,
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
@@ -141,57 +141,61 @@ var InterestedFundApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetI
 
             fundData.forEach((fund, index) => {
                 let SubscribeButtonHtml = '';
+                let rateOfReturnText = "";
 
-                if (fund.RateOfRetuen >= 0) {
+                if (fund.RateOfRetuen === "-") {
+                    rateOfReturnText = "";
+                } else if (fund.RateOfRetuen >= 0) {
                     style1 = "t-rise";
                     style2 = "o-rise o-rise--sm";
                     style3 = "o-charts--rise";
-                } else {
+                    rateOfReturnText = Math.abs(fund.RateOfRetuen).toFixed(2);
+                } else if (fund.RateOfRetuen < 0) {
                     style1 = "t-fall";
                     style2 = "o-fall o-fall--sm";
                     style3 = "o-charts--fall";
+                    rateOfReturnText = Math.abs(fund.RateOfRetuen).toFixed(2);
                 }
-
                 if (fund.SubscribeButtonHtml != null && fund.SubscribeButtonHtml != "") {
                     SubscribeButtonHtml = `<li class="l-collect__item l-collect__item--btn">${fund.SubscribeButtonHtml}</li>`;
                 }
 
                 // 將 fund.FundId 設置到 data-fund-id 屬性
                 fundHTML += `
-                <div class="swiper-slide c-swiper__slide">
-                    <div class="c-box c-box--goods">
-                        <div class="c-box__main">
-                            <div class="c-cardFund">
-                                <a href="${fund.DetailUrl}" class="c-cardFund__name u-ellipsis-2">
-                                    ${fund.FundId} ${fund.FundName}
-                                </a>
-                                <div class="c-cardFund__trend">
-                                    <div class="c-cardFund__rate">
-                                        <span class="t-small">
-                                            <span class="${style1}">月報酬率</span>
-                                            <span class="${style2}">${fund.RateOfRetuen}%</span>
-                                        </span>
-                                    </div>
-                                    <div class="c-cardFund__charts">
-                                        <!-- 在這裡設置 data-fund-id -->
-                                        <div class="o-charts ${style3}" data-chart="mini" data-fund-id="${fund.FundId}"></div>
+                    <div class="swiper-slide c-swiper__slide">
+                        <div class="c-box c-box--goods">
+                            <div class="c-box__main">
+                                <div class="c-cardFund">
+                                    <a href="${fund.DetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                        ${fund.FundId} ${fund.FundName}
+                                    </a>
+                                    <div class="c-cardFund__trend">
+                                        <div class="c-cardFund__rate">
+                                            <span class="t-small">
+                                                <span class="${style1}">月報酬率</span>
+                                                <span class="${style2}">${rateOfReturnText}%</span>
+                                            </span>
+                                        </div>
+                                        <div class="c-cardFund__charts">
+                                            <!-- 在這裡設置 data-fund-id -->
+                                            <div class="o-charts ${style3}" data-chart="mini" data-fund-id="${fund.FundId}"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="c-box__actions">
+                                <ul class="l-collect l-collect--divider">
+                                    <li class="l-collect__item">
+                                        ${fund.FocusButtonHtml}
+                                    </li>
+                                    <li class="l-collect__item">
+                                        ${fund.CompareButtonHtml}
+                                    </li>
+                                    ${SubscribeButtonHtml}
+                                </ul>
+                            </div>
                         </div>
-                        <div class="c-box__actions">
-                            <ul class="l-collect l-collect--divider">
-                                <li class="l-collect__item">
-                                    ${fund.FocusButtonHtml}
-                                </li>
-                                <li class="l-collect__item">
-                                    ${fund.CompareButtonHtml}
-                                </li>
-                                ${SubscribeButtonHtml}
-                            </ul>
-                        </div>
-                    </div>
-                </div>`;
+                    </div>`;
             });
 
             // 插入生成的基金 HTML

@@ -5,11 +5,8 @@ using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -32,7 +29,7 @@ namespace Feature.Wealth.Component.Repositories
                 .Select(item => new Fund
                 {
                     FundId = item.FundId,
-                    RateOfRetuen = item.OneMonthReturnOriginalCurrency.FormatDecimalNumber(2),
+                    RateOfRetuen = item.OneMonthReturnOriginalCurrency.FormatDecimalNumber(2, false, false),
                     FundName = item.FundName ?? "",
                     DetailUrl = FundRelatedSettingModel.GetFundDetailsUrl() + "?id=" + item.FundId,
                     SubscribeButtonHtml = (item.AvailabilityStatus == "Y" &&
