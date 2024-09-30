@@ -805,6 +805,12 @@
                 e.preventDefault();
 
                 setPopup($(this).attr('data-id'));
+            });            
+
+            $('[data-video]').on('click', function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-id')
+                getVideoUrl(id);
             });
         }
 
@@ -964,12 +970,6 @@
                 window.loading('hide');
             });
         }
-
-        $('[data-video]').on('click', function (e) {
-            e.preventDefault();
-            var id = $(this).attr('data-id')
-            getVideoUrl(id);
-        });
 
         moment.locale('zh-tw', {
             weekdaysMin: dayNamesZh,
