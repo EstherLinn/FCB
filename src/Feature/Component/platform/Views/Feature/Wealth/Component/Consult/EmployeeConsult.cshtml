@@ -619,7 +619,7 @@
             var schedules = [];
 
             // 判斷每日至多可預約2個時段
-            schedules = consultSchedules.filter(c => c.ScheduleDateString == stringDate && c.CustomerID.toLowerCase() == currentConsultSchedule.CustomerID.toLowerCase())
+            schedules = consultSchedules.filter(c => c.ScheduleDateString == stringDate && c.CustomerID == currentConsultSchedule.CustomerID)
 
             if (schedules.length > 1) {
                 // 提示訊息
