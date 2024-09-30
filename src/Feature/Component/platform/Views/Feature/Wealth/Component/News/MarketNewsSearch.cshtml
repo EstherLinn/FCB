@@ -489,6 +489,7 @@
                     showNoSuggestionNotice: true,
                     noSuggestionNotice: $('#tmplKeywordNotFound').html(),
                     lookup: function (query, done) {
+                        query = query?.trim();
                         query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
                         if (query.length == 0) {
                             result = data.slice(0, 5);
