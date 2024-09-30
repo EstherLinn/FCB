@@ -105,37 +105,48 @@
                 })
             }
         }
-
-        const tabIdentifier = Date.now().toString();
-        const storageKey = 'tabs' + dayjs().format('YYYY-MM-DD');
-        //刪除前一天的localstorage
-        const beforeOneDayKey = "tabs" + dayjs(Date.now() - (24 * 60 * 60 * 1000)).format('YYYY-MM-DD');
-        store.remove(beforeOneDayKey);
-        //載入頁面時加一個tab戳記
-        ['DOMContentLoaded'].forEach(function (event) {
-            window.addEventListener(event, function (e) {
-                const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
-                openTabs.push(tabIdentifier);
-                localStorage.setItem(storageKey, JSON.stringify(openTabs));
-                //如果登入狀態但已經關閉過頁面則登出
-                if (isLogin && updatedTabs.length === 0  && sessionStorage.getItem("visit") == null) {
-                    let logOutRoute = new URL(location.protocol + "//" + location.host + "@ClientRoute.GenerateUrl(this, "Accounts", "Logout")");
-                    location.href = logOutRoute;
-                }
-                sessionStorage.setItem("visit", true);
+        /**
+        * IsMobile 判斷是否為行動裝置
+        */
+        window.IsMobile = function () {
+            const userAgent = navigator.userAgent;
+            const isAndroid = /Android/i.test(userAgent);
+            const isMobileUserAgent = /Mobi|iPhone|iPad|iPod|Macintosh|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+            // 檢查視窗寬度
+            const isSmallScreen = window.matchMedia("only screen and (max-width: 1200px)").matches;
+            return (isAndroid || isMobileUserAgent) && isSmallScreen
+        }
+        if (!IsMobile()) {
+            const tabIdentifier = Date.now().toString();
+            const storageKey = 'tabs' + dayjs().format('YYYY-MM-DD');
+            //刪除前一天的localstorage
+            const beforeOneDayKey = "tabs" + dayjs(Date.now() - (24 * 60 * 60 * 1000)).format('YYYY-MM-DD');
+            store.remove(beforeOneDayKey);
+            //載入頁面時加一個tab戳記
+            ['DOMContentLoaded'].forEach(function (event) {
+                window.addEventListener(event, function (e) {
+                    const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                    const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
+                    openTabs.push(tabIdentifier);
+                    localStorage.setItem(storageKey, JSON.stringify(openTabs));
+                    //如果登入狀態但已經關閉過頁面則登出
+                    if (isLogin && updatedTabs.length === 0 && sessionStorage.getItem("visit") == null) {
+                        let logOutRoute = new URL(location.protocol + "//" + location.host + "@ClientRoute.GenerateUrl(this, "Accounts", "Logout")");
+                        location.href = logOutRoute;
+                    }
+                    sessionStorage.setItem("visit", true);
+                });
             });
-        });
 
-        //離開頁面後砍一個tab戳記
-        ['unload'].forEach(function (event) {
-            window.addEventListener(event, function (e) {
-                const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
-                localStorage.setItem(storageKey, JSON.stringify(updatedTabs));
+            //離開頁面後砍一個tab戳記
+            ['unload'].forEach(function (event) {
+                window.addEventListener(event, function (e) {
+                    const openTabs = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                    const updatedTabs = openTabs.filter(id => id.toString() !== tabIdentifier);
+                    localStorage.setItem(storageKey, JSON.stringify(updatedTabs));
+                });
             });
-        });
-
+        }
         window.CompareObj = function (id, type, name) {
             this.id = id;
             this.type = type;

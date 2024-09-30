@@ -492,6 +492,12 @@ namespace Feature.Wealth.Account.Controllers
                 };
                 _memberRepository.RecordMemberActionLog(memberLog);
             }
+            if (string.IsNullOrEmpty(callBackUrl))
+            {
+                //回首頁
+                var domain = string.IsNullOrEmpty(Sitecore.Context.Site.TargetHostName) ? Request.Url.Host : Sitecore.Context.Site.TargetHostName;
+                return Redirect("https://" + domain);
+            }
             return Redirect(callBackUrl);
         }
 
