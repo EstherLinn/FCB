@@ -24,6 +24,7 @@ namespace Feature.Wealth.Component.Models.Consult
         public string PersonalInformationLink { get; set; }
         public List<string> SubjectList { get; set; } = new List<string>();
         public HtmlString CustomerInfosHtmlString { get; set; }
+        public string GetReservedLog { get; set; } = string.Empty;
     }
 
     public class ConsultScheduleModel

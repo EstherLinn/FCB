@@ -75,6 +75,12 @@ namespace Feature.Wealth.Component.Repositories
         {
             JObject result = null;
 
+            // IMVP 要得員工編號只要 6 碼
+            if (empId.Length == 8)
+            {
+                empId = empId.Substring(2, 6);
+            }
+
             try
             {
                 var flurlClient = new FlurlClientBuilder(this._route).Build();
@@ -124,6 +130,12 @@ namespace Feature.Wealth.Component.Repositories
         public JObject Reserved(IMVPRequestData imvpRequestData)
         {
             JObject result = null;
+
+            // IMVP 要的員工編號只要 6 碼
+            if (imvpRequestData.empId.Length == 8)
+            {
+                imvpRequestData.empId = imvpRequestData.empId.Substring(2, 6);
+            }
 
             try
             {
