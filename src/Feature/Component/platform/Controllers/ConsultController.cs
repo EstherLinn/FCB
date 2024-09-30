@@ -382,6 +382,8 @@ namespace Feature.Wealth.Component.Controllers
                             token.ToString(), info.AdvisrorID, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.AddDays(30).ToString("yyyyMMdd")
                             );
 
+                        consultModel.GetReservedLog = "呼叫 IMVP Reserved respons2：" + JsonConvert.SerializeObject(respons2);
+
                         if (respons2 != null && respons2.ContainsKey("data"))
                         {
                             var data = respons2["data"];
