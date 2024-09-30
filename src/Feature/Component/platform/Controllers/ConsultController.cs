@@ -616,7 +616,7 @@ namespace Feature.Wealth.Component.Controllers
                                 date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
                                 startTime = consultSchedule.StartTime.Replace(":", string.Empty),
                                 endTime = consultSchedule.EndTime.Replace(":", string.Empty),
-                                custId = consultSchedule.CustomerID,
+                                custId = this._consultRepository.GetCIF_ID(consultSchedule.CustomerID),
                                 subject = consultSchedule.Subject,
                                 description = consultSchedule.Description
                             };
@@ -763,7 +763,7 @@ namespace Feature.Wealth.Component.Controllers
                             date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
                             startTime = consultSchedule.StartTime.Replace(":", string.Empty),
                             endTime = consultSchedule.EndTime.Replace(":", string.Empty),
-                            custId = consultSchedule.CustomerID,
+                            custId = this._consultRepository.GetCIF_ID(consultSchedule.CustomerID),
                             subject = consultSchedule.Subject,
                             description = consultSchedule.Description
                         };
