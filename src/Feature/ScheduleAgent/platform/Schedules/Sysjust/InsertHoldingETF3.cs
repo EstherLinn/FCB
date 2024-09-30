@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Foundation.Wealth.Models;
 using Feature.Wealth.ScheduleAgent.Services;
@@ -40,8 +41,14 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         //執行匯入主資料表
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
+
+                        var thirtyDaysAgo = DateTime.Today.AddDays(-30);
+                        var thirtyDaysData = datas
+                            .Where(n => DateTime.TryParse(n.Date, out var date) && date > thirtyDaysAgo)
+                            .ToList();
+
                         //執行匯入歷史資料表(History)
-                        _repository.BulkInsertToDatabaseFor30Days(datas, tableName + "_History", "FirstBankCode", "StockName", "Percentage", fileName, "Date", startTime);
+                        _repository.BulkInsertToDatabaseFor30Days(thirtyDaysData, tableName + "_History", "FirstBankCode", "StockName", "Percentage", fileName, "Date", startTime);
                         //匯入完成後轉為綠燈
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                         //完成匯入更改檔案名稱_done

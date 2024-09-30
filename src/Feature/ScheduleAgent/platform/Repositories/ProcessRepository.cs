@@ -90,7 +90,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             MERGE INTO {tableName} AS target
             USING (VALUES ({parameters})) AS source ({columns})
             ON
-            (target.{key} > DATEADD(DAY, -30, GETDATE()))
+            (target.{key} > DATEADD(DAY, -60, GETDATE()))
             AND (source.{uniqueColumn} IS NULL
             AND target.{uniqueColumn} IS NULL
             OR target.{uniqueColumn} = source.{uniqueColumn})

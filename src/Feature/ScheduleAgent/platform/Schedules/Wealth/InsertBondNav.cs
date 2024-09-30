@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Foundation.Wealth.Models;
 using Feature.Wealth.ScheduleAgent.Services;
@@ -37,7 +38,13 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                         _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
-                        _repository.BulkInsertToDatabaseForHIS(datastoHis, "[BondHistoryPrice]", "BondCode", "Date", fileName, startTime);
+
+                        var thirtyDaysAgo = DateTime.Today.AddDays(-30);
+                        var thirtyDaysData = datastoHis?
+                            .Where(n => DateTime.TryParse(n.Date, out var date) && date > thirtyDaysAgo)
+                            .ToList();
+
+                        _repository.BulkInsertToDatabaseForHIS(thirtyDaysData, "[BondHistoryPrice]", "BondCode", "Date", fileName, startTime);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                         etlService.FinishJob(fileName, startTime);
                     }
