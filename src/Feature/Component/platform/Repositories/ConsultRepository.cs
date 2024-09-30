@@ -409,6 +409,17 @@ namespace Feature.Wealth.Component.Repositories
             return result;
         }
 
+        public string GetCIF_ID(string id)
+        {
+            var sql = $@"SELECT TOP 1 [CUST_ID]
+                         FROM [CFMBSEL] WITH (NOLOCK)
+                         WHERE PROMOTION_CODE = @PROMOTION_CODE";
+
+            var result = this._dbConnection.Query<string>(sql, new { PROMOTION_CODE = id })?.FirstOrDefault() ?? string.Empty;
+
+            return result;
+        }
+
         public void InsertMailRecords(List<MailRecord> mailRecords)
         {
             var sql = $"INSERT INTO MailRecord (PlatFormId, MailInfoType,InfoContent,InfoLink,InfoDateTime,HaveRead) " +
