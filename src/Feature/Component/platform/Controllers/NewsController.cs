@@ -20,7 +20,9 @@ namespace Feature.Wealth.Component.Controllers
         private readonly string MarketNewsCacheKey = $"Fcb_MarketNewsCache";
         private readonly string MarketNewsDetailCacheKey = $"Fcb_MarketNewsDetailCache_NewsId=";
         private readonly string HeadlineNewsCacheKey = $"Fcb_HeadlineNewsCache";
+        private readonly string HomeHeadlinesCacheKey = $"Fcb_HomeHeadlinesCache";
         private readonly string cacheTime = Settings.GetSetting("NewsCacheTime");
+        private readonly string homeHeadlinesTime = Settings.GetSetting("HomeHeadlinesTime");
 
         public ActionResult NewsDetails()
         {
@@ -133,11 +135,20 @@ namespace Feature.Wealth.Component.Controllers
         {
             HomeHeadlinesModel datas;
 
-            // 取得 HomeHeadlines 資料庫資料
-            var _datas = (List<HomeHeadlinesData>)_newsRespository.GetHomeHeadlinesDbData();
+            // 取得 HomeHeadlinesCache 資料
+            datas = (HomeHeadlinesModel)_cache.Get(HomeHeadlinesCacheKey);
 
-            // 整理 HomeHeadlines 資料庫資料
-            datas = _newsRespository.OrganizeHomeHeadlinesDbData(_datas);
+            if (datas == null)
+            {
+                // 取得 HomeHeadlines 資料庫資料
+                var _datas = (List<HomeHeadlinesData>)_newsRespository.GetHomeHeadlinesDbData();
+
+                // 整理 HomeHeadlines 資料庫資料
+                datas = _newsRespository.OrganizeHomeHeadlinesDbData(_datas);
+
+                // 儲存 HomeHeadlinesCache
+                _cache.Set(HomeHeadlinesCacheKey, datas, _commonRespository.GetCacheExpireTime(homeHeadlinesTime));
+            }
 
             return View("/Views/Feature/Wealth/Component/News/HomeHeadlines.cshtml", datas);
         }

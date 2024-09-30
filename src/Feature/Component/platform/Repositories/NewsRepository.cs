@@ -206,39 +206,37 @@ namespace Feature.Wealth.Component.Repositories
             // 构建 SQL 查询
             string query = @"
             WITH CTE AS (
+                SELECT
+                    nl.[NewsDate],
+                    nl.[NewsTime],
+                    nl.[NewsTitle],
+                    nl.[NewsSerialNumber],
+                    nd.[NewsDetailDate],
+                    nd.[NewsContent],
+                    nd.[NewsRelatedProducts],
+                    nd.[NewsType]
+                FROM
+                    [dbo].[NewsList] nl WITH (NOLOCK)
+                LEFT JOIN
+                    [dbo].[NewsDetail] nd
+                    ON nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
+            )
             SELECT
-                nl.[NewsDate],
-                nl.[NewsTime],
-                nl.[NewsTitle],
-                nl.[NewsSerialNumber],
-                nd.[NewsDetailDate],
-                nd.[NewsContent],
-                nd.[NewsRelatedProducts],
-                nd.[NewsType],
-                ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC) AS RowNum
+                [NewsDate],
+                [NewsTime],
+                [NewsTitle],
+                [NewsSerialNumber],
+                [NewsDetailDate],
+                [NewsContent],
+                [NewsRelatedProducts],
+                [NewsType]
             FROM
-                [dbo].[NewsList] nl
-            LEFT JOIN
-                [dbo].[NewsDetail] nd
-                ON nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-        )
-        SELECT
-            [NewsDate],
-            [NewsTime],
-            [NewsTitle],
-            [NewsSerialNumber],
-            [NewsDetailDate],
-            [NewsContent],
-            [NewsRelatedProducts],
-            [NewsType]
-        FROM
-            CTE
-        WHERE
-            RowNum = 1
-            AND [NewsType] IS NOT NULL
-        ORDER BY
-            [NewsDate] DESC,
-            [NewsTime] DESC;";
+                CTE
+            WHERE
+                [NewsType] IS NOT NULL
+            ORDER BY
+                [NewsDate] DESC,
+                [NewsTime] DESC";
 
             return DbManager.Custom.ExecuteIList<MarketNewsModel>(query, null, CommandType.Text);
         }
@@ -564,39 +562,36 @@ namespace Feature.Wealth.Component.Repositories
 
             string query = @"
             WITH CTE AS (
-                SELECT
-                    nl.[NewsDate],
-                    nl.[NewsTime],
-                    nl.[NewsTitle],
-                    nl.[NewsSerialNumber],
-                    nd.[NewsDetailDate],
-                    nd.[NewsContent],
-                    nd.[NewsRelatedProducts],
-                    nd.[NewsType],
-                    ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC) AS RowNum
+                 SELECT TOP 5
+                     nl.[NewsDate],
+                     nl.[NewsTime],
+                     nl.[NewsTitle],
+                     nl.[NewsSerialNumber],
+                     nd.[NewsDetailDate],
+                     nd.[NewsContent],
+                     nd.[NewsRelatedProducts],
+                     nd.[NewsType]
+                 FROM
+                     [dbo].[NewsList]  nl WITH (NOLOCK)
+                 LEFT JOIN
+                     [dbo].[NewsDetail] nd
+                     ON nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
+                  WHERE  [NewsType] LIKE @HeadlineNewsType
+                  ORDER BY
+                     [NewsDate] DESC,
+                     [NewsTime] DESC
+                )
+                SELECT 
+                     [NewsDate],
+                     [NewsTime],
+                     [NewsTitle],
+                     [NewsSerialNumber],
+                     [NewsDetailDate],
+                     [NewsContent],
+                     [NewsRelatedProducts],
+                     [NewsType]
                 FROM
-                    [dbo].[NewsList] nl
-                LEFT JOIN
-                    [dbo].[NewsDetail] nd
-                    ON nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-            )
-            SELECT TOP 5
-                [NewsDate],
-                [NewsTime],
-                [NewsTitle],
-                [NewsSerialNumber],
-                [NewsDetailDate],
-                [NewsContent],
-                [NewsRelatedProducts],
-                [NewsType]
-            FROM
-                CTE
-            WHERE
-                RowNum = 1
-                AND [NewsType] LIKE @HeadlineNewsType
-            ORDER BY
-                [NewsDate] DESC,
-                [NewsTime] DESC;";
+                     CTE";
 
             var result = DbManager.Custom.ExecuteIList<HeadlineNewsData>(query, new { HeadlineNewsType = '%' + headlineNewsType[0] + '%' }, CommandType.Text);
 
@@ -680,45 +675,42 @@ namespace Feature.Wealth.Component.Repositories
         FROM [dbo].[NewsType]
         WHERE [TypeNumber] = '2'";
 
-            var headlineNewsType = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
+            var homeHeadlinesType = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
 
             string query = @"
             WITH CTE AS (
-                SELECT
-                    nl.[NewsDate],
-                    nl.[NewsTime],
-                    nl.[NewsTitle],
-                    nl.[NewsSerialNumber],
-                    nd.[NewsDetailDate],
-                    nd.[NewsContent],
-                    nd.[NewsRelatedProducts],
-                    nd.[NewsType],
-                    ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC) AS RowNum
+                 SELECT TOP 4
+                     nl.[NewsDate],
+                     nl.[NewsTime],
+                     nl.[NewsTitle],
+                     nl.[NewsSerialNumber],
+                     nd.[NewsDetailDate],
+                     nd.[NewsContent],
+                     nd.[NewsRelatedProducts],
+                     nd.[NewsType]
+                 FROM
+                     [dbo].[NewsList]  nl WITH (NOLOCK)
+                 LEFT JOIN
+                     [dbo].[NewsDetail] nd
+                     ON nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
+                  WHERE  [NewsType] LIKE @HomeHeadlinesType
+                  ORDER BY
+                     [NewsDate] DESC,
+                     [NewsTime] DESC
+                )
+                SELECT 
+                     [NewsDate],
+                     [NewsTime],
+                     [NewsTitle],
+                     [NewsSerialNumber],
+                     [NewsDetailDate],
+                     [NewsContent],
+                     [NewsRelatedProducts],
+                     [NewsType]
                 FROM
-                    [dbo].[NewsList] nl
-                LEFT JOIN
-                    [dbo].[NewsDetail] nd
-                    ON nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-            )
-            SELECT TOP 4
-                [NewsDate],
-                [NewsTime],
-                [NewsTitle],
-                [NewsSerialNumber],
-                [NewsDetailDate],
-                [NewsContent],
-                [NewsRelatedProducts],
-                [NewsType]
-            FROM
-                CTE
-            WHERE
-                RowNum = 1
-                AND [NewsType] LIKE @HeadlineNewsType
-            ORDER BY
-                [NewsDate] DESC,
-                [NewsTime] DESC;";
+                     CTE";
 
-            var result = DbManager.Custom.ExecuteIList<HomeHeadlinesData>(query, new { HeadlineNewsType = '%' + headlineNewsType[0] + '%' }, CommandType.Text);
+            var result = DbManager.Custom.ExecuteIList<HomeHeadlinesData>(query, new { HomeHeadlinesType = '%' + homeHeadlinesType[0] + '%' }, CommandType.Text);
 
             return result;
         }
