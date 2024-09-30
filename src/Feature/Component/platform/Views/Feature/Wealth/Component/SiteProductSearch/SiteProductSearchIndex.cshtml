@@ -766,12 +766,23 @@
                     lookup: function (query, done) {
                         // Do Ajax call or lookup locally, when done,
                         // call the callback and pass your results:
+                        query = query?.trim();
                         query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
-                        let result = window.ProductSearch.SearchKeyword.List.filter(function (item) {
-                            return query.length == 0 || new RegExp(query, 'gi').test(item.value);
-                        });
+                        let data = window.ProductSearch.SearchKeyword.List;
+                        let result;
+
+                        if (query.length == 0) {
+                            result = data;
+                        } else {
+                            result = data.filter(function (item) {
+                                return new RegExp(query, 'gi').test(item.value);
+                            });
+
+                            result.sort((a, b) => (a.value > b.value ? 1 : -1));
+                        }
+
                         done({
-                            suggestions: result.slice(0, 5).sort((a, b) => (a.value > b.value ? 1 : -1))
+                            suggestions: result.slice(0, 5)
                         });
                     },
                     onSearchComplete: function (query, suggestions) {
