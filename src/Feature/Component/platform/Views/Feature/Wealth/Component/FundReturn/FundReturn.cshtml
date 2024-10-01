@@ -164,6 +164,7 @@
 
                     //快速搜尋使用: 產品代號+空格+產品名稱，建議清單顯示最多5筆
                     lookup: function (query, done) {
+                        query = query?.trim();
                         query = query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
                         let result = [];
                         for (let i = 0; i < data.length; i++) {
