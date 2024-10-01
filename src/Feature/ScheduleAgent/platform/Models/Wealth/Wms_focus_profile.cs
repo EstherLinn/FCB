@@ -12,13 +12,13 @@ namespace Feature.Wealth.ScheduleAgent.Models.Wealth
         /// <summary>
         /// 基金代號
         /// </summary>
-        [Index(1)]
+        [Index(0)]
         public string FUND_ID { get; set; }
 
         /// <summary>
         /// 關注人數
         /// </summary>
-        [Index(0)]
+        [Index(1)]
         public string FOCUS_NUMS { get; set; }
 
         /// <summary>
