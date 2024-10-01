@@ -892,7 +892,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             var ip = GetIPAddress();
 
-            return !ip.StartsWith("10");
+            return !ip.StartsWith("10.10");
         }
     }
 }
