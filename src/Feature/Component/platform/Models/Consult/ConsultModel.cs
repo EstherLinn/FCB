@@ -25,6 +25,7 @@ namespace Feature.Wealth.Component.Models.Consult
         public List<string> SubjectList { get; set; } = new List<string>();
         public HtmlString CustomerInfosHtmlString { get; set; }
         public string GetReservedLog { get; set; } = string.Empty;
+        public bool NeedEmployeeCode { get; set; } = false;
     }
 
     public class ConsultScheduleModel
@@ -46,6 +47,7 @@ namespace Feature.Wealth.Component.Models.Consult
         public HtmlString ConsultScheduleForCalendarsHtmlString { get; set; }
         public bool IsEmployee { get; set; } = false;
         public bool IsManager { get; set; } = false;
+        public bool NeedEmployeeCode { get; set; } = false;
     }
 
     public class QandAListModel

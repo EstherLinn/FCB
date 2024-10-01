@@ -136,7 +136,7 @@
     </div>
 </div>
 
-<div class="l-wrap" id="step02" style="display: none;">
+<div class="l-wrap u-hidden" id="step02">
     <div class="l-stage">
         <div class="l-formWrap">
             <div class="l-flex u-flex-col u-flex-gap-max">
@@ -642,8 +642,8 @@
             }
 
             if ($('[data-time]:checked').val()) {
-                $('#step01').hide();
-                $('#step02').show();
+                $('#step01').addClass('u-hidden');
+                $('#step02').removeClass('u-hidden');
             }
             else {
                 //顯示沒選擇時段錯誤訊息
@@ -682,8 +682,8 @@
         $('[data-edit]').on('click', function (e) {
             e.preventDefault();
 
-            $('#step01').show();
-            $('#step02').hide();
+            $('#step01').removeClass('u-hidden');
+            $('#step02').addClass('u-hidden');
         });
 
         $('[data-done]').on('click', function (e) {
@@ -791,8 +791,8 @@
                         closeOnBgClick: false,
                         callbacks: {
                             afterClose: function () {
-                                $('#step01').show();
-                                $('#step02').hide();
+                                 $('#step01').removeClass('u-hidden');
+                                 $('#step02').addClass('u-hidden');
                             }
                         }
                     });

@@ -15,6 +15,8 @@ namespace Feature.Wealth.Component.Repositories
     public class IMVPApiRespository
     {
         private readonly string _route = Settings.GetSetting("IMVPApiRoute");
+        private readonly string _appId = Settings.GetSetting("IMVPApiAppId");
+        private readonly string _appKey = Settings.GetSetting("IMVPApiAppKey");
         private readonly ILog _log = Logger.Api;
 
         /// <summary>
@@ -36,8 +38,8 @@ namespace Feature.Wealth.Component.Repositories
                     AllowAnyHttpStatus().
                     PostJsonAsync(new
                     {
-                        appId = "WEA_APP",
-                        appKey = "wea1234",
+                        appId = this._appId,
+                        appKey = this._appKey,
                     }).ReceiveString().Result;
 
                 if (!string.IsNullOrEmpty(request))
@@ -87,7 +89,7 @@ namespace Feature.Wealth.Component.Repositories
 
                 var request = flurlClient.
                     Request().
-                    AppendPathSegments("api", "rest", "fm", "reserve").
+                    AppendPathSegments("api", "rest", "fm", "getReserved").
                     WithHeader("ContentType", "application/json").
                     AllowAnyHttpStatus().
                     PostJsonAsync(new
