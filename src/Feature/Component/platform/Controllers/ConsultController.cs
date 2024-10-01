@@ -237,19 +237,27 @@ namespace Feature.Wealth.Component.Controllers
             return consultListModel;
         }
 
+        private readonly List<int> TimePeriods = new List<int>
+        {
+            1000,1030,1100,1130,
+            1200,1230,1300,1330,
+            1400,1430,1500,1530,
+            1600,1630,1700,1730,
+        };
+
         private ConsultModel CreateConsultModel(Item item)
         {
             var info = FcbMemberHelper.GetMemberAllInfo();
 
-            var temps = this._consultRepository.GetConsultScheduleList();
+            var templist = this._consultRepository.GetConsultScheduleList();
 
-            temps = temps.Where(c => DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0 && c.StatusCode != "3").ToList();
+            templist = templist.Where(c => DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0 && c.StatusCode != "3").ToList();
 
             var consultScheduleList = new List<ConsultSchedule>();
 
-            if (temps != null && temps.Any())
+            if (templist != null && templist.Any())
             {
-                foreach (var c in temps)
+                foreach (var c in templist)
                 {
                     if (info.IsEmployee && !string.IsNullOrEmpty(info.AdvisrorID))
                     {
@@ -378,9 +386,10 @@ namespace Feature.Wealth.Component.Controllers
                     var token = respons["token"];
                     if (token != null)
                     {
-                        var respons2 = this._iMVPApiRespository.GetReserved(
-                            token.ToString(), info.AdvisrorID, DateTime.Now.ToString("yyyyMMdd"), DateTime.Now.AddDays(30).ToString("yyyyMMdd")
-                            );
+                        var start = DateTime.Now.ToString("yyyyMMdd");
+                        var end = DateTime.Now.AddDays(30).ToString("yyyyMMdd");
+
+                        var respons2 = this._iMVPApiRespository.GetReserved(token.ToString(), info.AdvisrorID, start, end);
 
                         consultModel.GetReservedLog = "呼叫 IMVP Reserved respons2：" + JsonConvert.SerializeObject(respons2);
 
@@ -389,12 +398,22 @@ namespace Feature.Wealth.Component.Controllers
                             var data = respons2["data"];
                             for (int i = 0; i < data.Count(); i++)
                             {
-                                reserveds.Add(new Reserved
+                                var date = data[i]["date"].ToString().Insert(6, "-").Insert(4, "-");
+                                var startTime = int.Parse(data[i]["startTime"].ToString());
+                                var endTime = int.Parse(data[i]["endTime"].ToString());
+
+                                foreach (var time in this.TimePeriods)
                                 {
-                                    Date = data[i]["date"].ToString().Insert(6, "-").Insert(4, "-"),
-                                    StartTime = data[i]["startTime"].ToString().Insert(2, ":"),
-                                    EndTime = data[i]["endTime"].ToString().Insert(2, ":")
-                                });
+                                    if (time >= startTime && time < endTime)
+                                    {
+                                        reserveds.Add(new Reserved
+                                        {
+                                            Date = date,
+                                            StartTime = time.ToString().Insert(2, ":"),
+                                            EndTime = (time + 20).ToString().Insert(2, ":")
+                                        });
+                                    }
+                                }
                             }
                         }
                     }
@@ -403,17 +422,17 @@ namespace Feature.Wealth.Component.Controllers
             catch (Exception ex)
             {
                 // TODO LOG
-            }            
+            }
 
             // 把對應理顧已預約時間加入已佔用時間
             var employeeID = string.IsNullOrEmpty(info.AdvisrorID) ? string.Empty : info.AdvisrorID;
             var branchCode = string.IsNullOrEmpty(info.AdvisrorID) ? string.Empty : this._consultRepository.GetBranch(info.AdvisrorID).BranchCode;
             // 20240925 增加判斷同分行同一時段只能有一筆預約，因此同分行預約即判斷為已佔用時間
-            var temp = consultScheduleList.Where(c => (c.EmployeeID == employeeID || c.BranchCode == branchCode) && c.StatusCode != "3" && DateTime.Compare(c.ScheduleDate, DateTime.Now) > 0);
+            var tempList2 = consultScheduleList.Where(c => c.EmployeeID == employeeID || c.BranchCode == branchCode);
 
-            if (temp != null && temp.Any())
+            if (tempList2 != null && tempList2.Any())
             {
-                foreach (var c in temp)
+                foreach (var c in tempList2)
                 {
                     reserveds.Add(new Reserved { Date = c.ScheduleDateString, StartTime = c.StartTime, EndTime = c.EndTime });
                 }
@@ -536,7 +555,7 @@ namespace Feature.Wealth.Component.Controllers
 
             consultSchedule.ScheduleID = Guid.NewGuid();
 
-            if(!FcbMemberHelper.CheckMemberLogin())
+            if (!FcbMemberHelper.CheckMemberLogin())
             {
                 result.Success = false;
                 result.Message = "您已登出，請重新登入再預約。";
