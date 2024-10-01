@@ -232,7 +232,7 @@ namespace Feature.Wealth.Component.Controllers
                 ConsultSchedulesHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleList)),
                 ConsultScheduleForCalendars = consultScheduleForCalendarList,
                 ConsultScheduleForCalendarsHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleForCalendarList)),
-                NeedEmployeeCode = ConsultRelatedLinkSetting.GetNeedEmployeeIPCheck() ? CheckIP() : false,
+                NeedEmployeeCode = ConsultRelatedLinkSetting.GetNeedEmployeeIPCheck() ? CheckIP() : true,
             };
 
             return consultListModel;
@@ -323,7 +323,7 @@ namespace Feature.Wealth.Component.Controllers
                 CustomerName = info.MemberName,
                 PersonalInformationText = ItemUtils.GetFieldValue(item, Template.ConsultSchedule.Fields.PersonalInformationText),
                 PersonalInformationLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.PersonalInformationLink).Url,
-                NeedEmployeeCode = ConsultRelatedLinkSetting.GetNeedEmployeeIPCheck() ? CheckIP() : false,
+                NeedEmployeeCode = ConsultRelatedLinkSetting.GetNeedEmployeeIPCheck() ? CheckIP() : true,
             };
 
             var customerInfos = new List<CustomerInfo>();
@@ -892,7 +892,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             var ip = GetIPAddress();
 
-            return !ip.StartsWith("10");
+            return !ip.StartsWith("10.10");
         }
     }
 }
