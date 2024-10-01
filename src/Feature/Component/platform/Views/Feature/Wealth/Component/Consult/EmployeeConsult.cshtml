@@ -15,7 +15,25 @@
     </div>
 </div>
 
-<div class="l-wrap" id="step01">
+@if (Model.NeedEmployeeCode)
+{
+    <div class="l-wrap" id="step00">
+        <div class="c-calcLocker__icon">
+            <img src="~/themes/images/icons/others/lock.svg" alt="">
+        </div>
+        <div class="c-calcLocker__desc t2 t-bold">需輸入八碼員編才能使用遠距理財諮詢功能</div>
+        <div class="c-calcLocker__desc" style="display: grid;justify-content: center;">
+            <div class="l-form__input">
+                <input id="input-employee" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入八碼員編">
+            </div>
+        </div>
+        <div class="c-calcLocker__actions">
+            <div class="c-calcLocker__btn"><a class="o-btn o-btn--primary o-btn--lg" id="send-employee">送出</a></div>
+        </div>
+    </div>
+}
+
+<div class="l-wrap @(Model.NeedEmployeeCode ? "u-hidden" : "")" id="step01">
     <div class="l-stage">
         <div class="l-formWrap">
             <div class="l-flex u-flex-col u-flex-gap-max">
@@ -164,7 +182,7 @@
     </div>
 </div>
 
-<div class="l-wrap" id="step02" style="display: none;">
+<div class="l-wrap u-hidden" id="step02">
     <div class="l-stage">
         <div class="l-formWrap">
             <div class="l-flex u-flex-col u-flex-gap-max">
@@ -415,6 +433,30 @@
             <div class="l-action l-action--inline">
                 <div class="l-action__item">
                     <a class="o-btn o-btn--primary o-btn--sm" data-edit>確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="popupFail2" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">送出失敗</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="l-flex u-flex-col u-flex-gap-min u-center">
+                <div class="l-flex__item">
+                    <img src="~/themes/images/icons/status/fail.svg" alt="">
+                </div>
+                <div class="l-flex__item" id="message2">
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true">確定</a>
                 </div>
             </div>
         </div>
@@ -710,8 +752,8 @@
             e.preventDefault();
 
             if (verify()) {
-                $('#step01').hide();
-                $('#step02').show();
+                $('#step01').addClass('u-hidden');
+                $('#step02').removeClass('u-hidden');
             }
         });
 
@@ -844,8 +886,8 @@
                         closeOnBgClick: false,
                         callbacks: {
                             afterClose: function () {
-                                $('#step01').show();
-                                $('#step02').hide();
+                                $('#step01').removeClass('u-hidden');
+                                $('#step02').addClass('u-hidden');
                             }
                         }
                     });
@@ -1034,5 +1076,58 @@
                 }, 0);
             }
         }
+
+        function checkEmployee(){
+            window.loading('show');
+
+            var code = $('#input-employee').val();
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "Consult", "CheckEmployee")',
+                type: 'POST',
+                data: {code: code, __RequestVerificationToken : token }
+            }).done(function (data, textStatus, jqXHR) {
+                $.magnificPopup.close();
+                if (data.Success) {
+                    $('#consultlistLocker').removeClass('c-section--locker');
+                    $('#consultlistLocker').addClass('u-hidden');
+                    $('#step00').addClass('u-hidden');
+                    $('#step01').removeClass('u-hidden');
+                }
+                else {
+                    if (data.Block) {
+                        window.VerifyLoginRedirctToHome(data.Success);
+                        return;
+                    }
+
+                    $('#message2').text(data.Message);
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#popupFail2'
+                        },
+                        closeOnBgClick: false,
+                        callbacks: {
+                            afterClose: function () {
+                            }
+                        }
+                    });
+                }
+
+                if (data.ErrorMessage) {
+                    console.log(data.ErrorMessage);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function () {
+                window.loading('hide');
+            });
+        }
+
+        $('#send-employee').on('click', function (e) {
+            e.preventDefault();
+
+            checkEmployee();
+        });
     });
 </script>

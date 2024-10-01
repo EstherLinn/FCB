@@ -1,4 +1,5 @@
-﻿using Sitecore.Data;
+﻿using Feature.Wealth.Account.Models.OAuth;
+using Sitecore.Data;
 using Sitecore.Data.Items;
 using System.Collections.Generic;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -55,6 +56,12 @@ namespace Feature.Wealth.Component.Models.Consult
             return ConsultSchedulePage()?.TargetItem;
         }
 
+        public static bool GetNeedEmployeeIPCheck()
+        {
+            Item item = ItemUtils.GetItem(Template.ConsultRelatedLink.Root);
+            return item.GetFieldValue(Template.ConsultRelatedLink.Fields.NeedEmployeeIPCheck) == "1";
+        }
+
         public struct Template
         {
             public struct ConsultRelatedLink
@@ -66,6 +73,8 @@ namespace Feature.Wealth.Component.Models.Consult
                     public static readonly ID ConsultLink = new ID("{23DB4C97-B0FA-4229-BAE2-A15FF7260A89}");
                     public static readonly ID ConsultListLink = new ID("{E770630B-C8E6-443C-8387-1D3525B11151}");
                     public static readonly ID ConsultScheduleLink = new ID("{E10AE7C2-4C31-4A92-AB8D-DD82898DFCD1}");
+
+                    public static readonly ID NeedEmployeeIPCheck = new ID("{616A86FF-47D3-48C6-B682-EB879AD80194}");
                 }
             }
 

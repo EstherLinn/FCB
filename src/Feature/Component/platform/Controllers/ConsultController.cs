@@ -232,6 +232,7 @@ namespace Feature.Wealth.Component.Controllers
                 ConsultSchedulesHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleList)),
                 ConsultScheduleForCalendars = consultScheduleForCalendarList,
                 ConsultScheduleForCalendarsHtmlString = new HtmlString(JsonConvert.SerializeObject(consultScheduleForCalendarList)),
+                NeedEmployeeCode = ConsultRelatedLinkSetting.GetNeedEmployeeIPCheck() ? CheckIP() : false,
             };
 
             return consultListModel;
@@ -322,6 +323,7 @@ namespace Feature.Wealth.Component.Controllers
                 CustomerName = info.MemberName,
                 PersonalInformationText = ItemUtils.GetFieldValue(item, Template.ConsultSchedule.Fields.PersonalInformationText),
                 PersonalInformationLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.PersonalInformationLink).Url,
+                NeedEmployeeCode = ConsultRelatedLinkSetting.GetNeedEmployeeIPCheck() ? CheckIP() : false,
             };
 
             var customerInfos = new List<CustomerInfo>();
@@ -391,7 +393,7 @@ namespace Feature.Wealth.Component.Controllers
 
                         var respons2 = this._iMVPApiRespository.GetReserved(token.ToString(), info.AdvisrorID, start, end);
 
-                        consultModel.GetReservedLog = "呼叫 IMVP Reserved respons2：" + JsonConvert.SerializeObject(respons2);
+                        consultModel.GetReservedLog = "呼叫 IMVP getReserved respons2：" + JsonConvert.SerializeObject(respons2);
 
                         if (respons2 != null && respons2.ContainsKey("data"))
                         {
@@ -832,9 +834,65 @@ namespace Feature.Wealth.Component.Controllers
             return new JsonNetResult(result);
         }
 
+        [ValidateAntiForgeryToken]
+        public ActionResult CheckEmployee(string code)
+        {
+            var result = new ConsultApiResult();
+
+            //驗證使用者資訊
+            if (!FcbMemberHelper.CheckMemberLogin())
+            {
+                result.Success = false;
+                result.Block = true;
+
+                return new JsonNetResult(result);
+            }
+            else
+            {
+                var info = FcbMemberHelper.GetMemberAllInfo();
+
+                if (!string.IsNullOrEmpty(info.AdvisrorID) && info.AdvisrorID == code.Trim())
+                {
+                    result.Success = true;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Block = false;
+                    result.Message = "員工編號輸入不一致";
+                    result.ErrorMessage = "員工編號輸入不一致";
+                }
+            }
+
+            return new JsonNetResult(result);
+        }
+
         private Item GetMailSetting()
         {
             return ItemUtils.GetItem(Template.SmtpSettings.id);
+        }
+
+        private string GetIPAddress()
+        {
+            string ipAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+
+            if (!string.IsNullOrEmpty(ipAddress))
+            {
+                string[] addresses = ipAddress.Split(',');
+                if (addresses.Length != 0)
+                {
+                    return addresses[0];
+                }
+            }
+
+            return Request.ServerVariables["REMOTE_ADDR"];
+        }
+
+        private bool CheckIP()
+        {
+            var ip = GetIPAddress();
+
+            return !ip.StartsWith("10");
         }
     }
 }
