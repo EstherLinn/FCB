@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace Feature.Wealth.ScheduleAgent.Models.Wealth
 {
+    [Delimiter(",")]
+    [HasHeaderRecord(false)]
     public class BondNavToHis
     {
         [Index(0)]
