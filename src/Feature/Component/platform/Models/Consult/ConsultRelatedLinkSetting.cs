@@ -62,6 +62,12 @@ namespace Feature.Wealth.Component.Models.Consult
             return item.GetFieldValue(Template.ConsultRelatedLink.Fields.NeedEmployeeIPCheck) == "1";
         }
 
+        public static bool GetSkipIMVPAPI()
+        {
+            Item item = ItemUtils.GetItem(Template.ConsultRelatedLink.Root);
+            return item.GetFieldValue(Template.ConsultRelatedLink.Fields.SkipIMVPAPI) == "1";
+        }
+
         public struct Template
         {
             public struct ConsultRelatedLink
@@ -75,6 +81,7 @@ namespace Feature.Wealth.Component.Models.Consult
                     public static readonly ID ConsultScheduleLink = new ID("{E10AE7C2-4C31-4A92-AB8D-DD82898DFCD1}");
 
                     public static readonly ID NeedEmployeeIPCheck = new ID("{616A86FF-47D3-48C6-B682-EB879AD80194}");
+                    public static readonly ID SkipIMVPAPI = new ID("{CBC2E5FE-FFA1-47E5-8ECB-B8692DA96E6F}");
                 }
             }
 

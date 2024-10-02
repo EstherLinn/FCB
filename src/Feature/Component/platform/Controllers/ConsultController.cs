@@ -379,52 +379,73 @@ namespace Feature.Wealth.Component.Controllers
             //呼叫 IMVP API 取得理顧已佔用時間
             var reserveds = new List<Reserved>();
 
-            try
+            var errorMessage = string.Empty;
+
+            if (ConsultRelatedLinkSetting.GetSkipIMVPAPI() == false)
             {
-                var respons = this._iMVPApiRespository.Verification();
-
-                if (respons != null && respons.ContainsKey("token"))
+                try
                 {
-                    var token = respons["token"];
-                    if (token != null)
+                    var respons = this._iMVPApiRespository.Verification();
+
+                    if (respons != null && respons.ContainsKey("statusCode") && respons["statusCode"].ToString() == "0")
                     {
-                        var start = DateTime.Now.ToString("yyyyMMdd");
-                        var end = DateTime.Now.AddDays(30).ToString("yyyyMMdd");
-
-                        var respons2 = this._iMVPApiRespository.GetReserved(token.ToString(), info.AdvisrorID, start, end);
-
-                        consultModel.GetReservedLog = "呼叫 IMVP getReserved respons2：" + JsonConvert.SerializeObject(respons2);
-
-                        if (respons2 != null && respons2.ContainsKey("data"))
+                        var token = respons["token"];
+                        if (token != null && string.IsNullOrEmpty(token.ToString()) == false)
                         {
-                            var data = respons2["data"];
-                            for (int i = 0; i < data.Count(); i++)
-                            {
-                                var date = data[i]["date"].ToString().Insert(6, "-").Insert(4, "-");
-                                var startTime = int.Parse(data[i]["startTime"].ToString());
-                                var endTime = int.Parse(data[i]["endTime"].ToString());
+                            var start = DateTime.Now.ToString("yyyyMMdd");
+                            var end = DateTime.Now.AddDays(30).ToString("yyyyMMdd");
 
-                                foreach (var time in this.TimePeriods)
+                            var respons2 = this._iMVPApiRespository.GetReserved(token.ToString(), info.AdvisrorID, start, end);
+
+                            if (respons2 != null && respons2.ContainsKey("statusCode") && respons2["statusCode"].ToString() == "0")
+                            {
+                                if (respons2.ContainsKey("data"))
                                 {
-                                    if (time >= startTime && time < endTime)
+                                    var data = respons2["data"];
+                                    for (int i = 0; i < data.Count(); i++)
                                     {
-                                        reserveds.Add(new Reserved
+                                        var date = data[i]["date"].ToString().Insert(6, "-").Insert(4, "-");
+                                        var startTime = int.Parse(data[i]["startTime"].ToString());
+                                        var endTime = int.Parse(data[i]["endTime"].ToString());
+
+                                        foreach (var time in this.TimePeriods)
                                         {
-                                            Date = date,
-                                            StartTime = time.ToString().Insert(2, ":"),
-                                            EndTime = (time + 20).ToString().Insert(2, ":")
-                                        });
+                                            if (time >= startTime && time < endTime)
+                                            {
+                                                reserveds.Add(new Reserved
+                                                {
+                                                    Date = date,
+                                                    StartTime = time.ToString().Insert(2, ":"),
+                                                    EndTime = (time + 20).ToString().Insert(2, ":")
+                                                });
+                                            }
+                                        }
                                     }
                                 }
                             }
+                            else
+                            {
+                                errorMessage = "呼叫 IMVP GetReserved 發生錯誤 respons2：" + JsonConvert.SerializeObject(respons2);
+                            }
+                        }
+                        else
+                        {
+                            errorMessage = "呼叫 IMVP Verification token 空值，respon：" + JsonConvert.SerializeObject(respons);
                         }
                     }
+                    else
+                    {
+                        errorMessage = "呼叫 IMVP Verification 發生錯誤 respon：" + JsonConvert.SerializeObject(respons);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this._log.Error(ex);
+                    errorMessage = "呼叫 IMVP 錯誤：" + ex.ToString();
                 }
             }
-            catch (Exception ex)
-            {
-                // TODO LOG
-            }
+
+            consultModel.GetReservedLog = errorMessage;
 
             // 把對應理顧已預約時間加入已佔用時間
             var employeeID = string.IsNullOrEmpty(info.AdvisrorID) ? string.Empty : info.AdvisrorID;
@@ -612,20 +633,24 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             var errorMessage = string.Empty;
+            var imvpFlag = false;
 
-            //呼叫 IMVP API 新增
-            if (info.IsEmployee == false)
+
+            if (info.IsEmployee || ConsultRelatedLinkSetting.GetSkipIMVPAPI())
             {
+                imvpFlag = true;
+            }
+            else
+            {
+                //呼叫 IMVP API 新增
                 try
                 {
                     var respons = this._iMVPApiRespository.Verification();
 
-                    if (respons != null && respons.ContainsKey("token"))
+                    if (respons != null && respons.ContainsKey("statusCode") && respons["statusCode"].ToString() == "0")
                     {
-                        errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Verification 有拿到 token。";
-
                         var token = respons["token"];
-                        if (token != null)
+                        if (token != null && string.IsNullOrEmpty(token.ToString()) == false)
                         {
                             IMVPRequestData imvpRequestData = new IMVPRequestData
                             {
@@ -644,30 +669,42 @@ namespace Feature.Wealth.Component.Controllers
 
                             var respons2 = this._iMVPApiRespository.Reserved(imvpRequestData);
 
-                            errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Reserved respons2：" + JsonConvert.SerializeObject(respons2);
+                            if (respons2 != null && respons2.ContainsKey("statusCode") && respons2["statusCode"].ToString() == "0")
+                            {
+                                imvpFlag = true;
+                            }
+                            else
+                            {
+                                errorMessage = "呼叫 IMVP Reserved 發生錯誤 respons2：" + JsonConvert.SerializeObject(respons2);
+                            }
                         }
                         else
                         {
-                            errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Verification token 空值，respon：" + JsonConvert.SerializeObject(respons);
+                            errorMessage = "呼叫 IMVP Verification token 空值，respon：" + JsonConvert.SerializeObject(respons);
                         }
-                    }
-                    else if (respons != null)
-                    {
-                        errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Verification 沒拿到 token，respon：" + JsonConvert.SerializeObject(respons);
                     }
                     else
                     {
-                        errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP Verification respon：" + JsonConvert.SerializeObject(respons);
+                        errorMessage = "呼叫 IMVP Verification 發生錯誤 respon：" + JsonConvert.SerializeObject(respons);
                     }
                 }
                 catch (Exception ex)
                 {
                     this._log.Error(ex);
-                    errorMessage = errorMessage + Environment.NewLine + "呼叫 IMVP 錯誤：" + ex.ToString();
+                    errorMessage = "呼叫 IMVP 錯誤：" + ex.ToString();
                 }
             }
 
-            // TODO 呼叫 IMVP 失敗不新增預約
+            // 呼叫 IMVP 失敗不新增預約
+            if(imvpFlag == false)
+            {
+                result.Success = false;
+                result.Message = "新增預約失敗：呼叫 IMVP 錯誤";
+                result.ErrorMessage = errorMessage;
+
+                return new JsonNetResult(result);
+            }
+
             this._consultRepository.InsertConsultSchedule(consultSchedule);
 
             // 發信失敗依然要讓前端頁面正常處理
@@ -731,17 +768,88 @@ namespace Feature.Wealth.Component.Controllers
                 return new JsonNetResult(result);
             }
 
-            if (consultSchedule != null && Guid.TryParse(consultSchedule.ScheduleID.ToString(), out var scheduleID))
-            {
-                this._consultRepository.CancelConsultSchedule(scheduleID);
-            }
-            else
+            if (consultSchedule == null || Guid.TryParse(consultSchedule.ScheduleID.ToString(), out var scheduleID) == false)
             {
                 result.Success = false;
+                result.Message = "參數不正確";
                 result.ErrorMessage = "參數不正確";
 
                 return new JsonNetResult(result);
             }
+
+            var errorMessage = string.Empty;
+            var imvpFlag = false;
+
+            if (ConsultRelatedLinkSetting.GetSkipIMVPAPI() || consultSchedule.Type == "2")
+            {
+                imvpFlag = true;
+            }
+            else
+            {
+                //呼叫 IMVP API 取消
+                try
+                {
+                    var respons = this._iMVPApiRespository.Verification();
+
+                    if (respons != null && respons.ContainsKey("statusCode") && respons["statusCode"].ToString() == "0")
+                    {
+                        var token = respons["token"];
+                        if (token != null && string.IsNullOrEmpty(token.ToString()) == false)
+                        {
+                            IMVPRequestData imvpRequestData = new IMVPRequestData
+                            {
+                                token = token.ToString(),
+                                scheduleId = consultSchedule.ScheduleID.ToString(),
+                                action = "2",
+                                empId = consultSchedule.EmployeeID,
+                                type = "1",
+                                date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
+                                startTime = consultSchedule.StartTime.Replace(":", string.Empty),
+                                endTime = consultSchedule.EndTime.Replace(":", string.Empty),
+                                custId = this._consultRepository.GetCIF_ID(consultSchedule.CustomerID),
+                                subject = consultSchedule.Subject,
+                                description = consultSchedule.Description
+                            };
+
+                            var respons2 = this._iMVPApiRespository.Reserved(imvpRequestData);
+
+                            if (respons2 != null && respons2.ContainsKey("statusCode") && respons2["statusCode"].ToString() == "0")
+                            {
+                                imvpFlag = true;
+                            }
+                            else
+                            {
+                                errorMessage = "呼叫 IMVP Reserved 發生錯誤 respons2：" + JsonConvert.SerializeObject(respons2);
+                            }
+                        }
+                        else
+                        {
+                            errorMessage = "呼叫 IMVP Verification token 空值，respon：" + JsonConvert.SerializeObject(respons);
+                        }
+                    }
+                    else
+                    {
+                        errorMessage = "呼叫 IMVP Verification 發生錯誤 respon：" + JsonConvert.SerializeObject(respons);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this._log.Error(ex);
+                    errorMessage = "呼叫 IMVP 錯誤：" + ex.ToString();
+                }
+            }
+
+            // 呼叫 IMVP 失敗不新增預約
+            if (imvpFlag == false)
+            {
+                result.Success = false;
+                result.Message = "取消預約失敗：呼叫 IMVP 錯誤";
+                result.ErrorMessage = errorMessage;
+
+                return new JsonNetResult(result);
+            }
+
+            this._consultRepository.CancelConsultSchedule(scheduleID);
 
             try
             {
@@ -762,40 +870,6 @@ namespace Feature.Wealth.Component.Controllers
             {
                 this._log.Error(ex);
                 result.ErrorMessage = result.ErrorMessage + Environment.NewLine + "發信發生錯誤：" + ex.Message;
-            }
-
-            //呼叫 IMVP API 取消
-            try
-            {
-                var respons = this._iMVPApiRespository.Verification();
-
-                if (respons != null && respons.ContainsKey("token"))
-                {
-                    var token = respons["token"];
-                    if (token != null)
-                    {
-                        IMVPRequestData imvpRequestData = new IMVPRequestData
-                        {
-                            token = token.ToString(),
-                            scheduleId = consultSchedule.ScheduleID.ToString(),
-                            action = "2",
-                            empId = consultSchedule.EmployeeID,
-                            type = "1",
-                            date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
-                            startTime = consultSchedule.StartTime.Replace(":", string.Empty),
-                            endTime = consultSchedule.EndTime.Replace(":", string.Empty),
-                            custId = this._consultRepository.GetCIF_ID(consultSchedule.CustomerID),
-                            subject = consultSchedule.Subject,
-                            description = consultSchedule.Description
-                        };
-
-                        var respons2 = this._iMVPApiRespository.Reserved(imvpRequestData);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // TODO Log
             }
 
             result.Success = true;
