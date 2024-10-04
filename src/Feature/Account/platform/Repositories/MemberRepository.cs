@@ -46,14 +46,14 @@ namespace Feature.Wealth.Account.Repositories
             if (platForm == PlatFormEunm.WebBank)
             {
                 strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(33) = @id
-                    SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WHERE PlatForm=@@platForm
+                    SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WITH (NOLOCK) WHERE PlatForm=@@platForm
                  and PlatFormId COLLATE Latin1_General_CS_AS = (SELECT TOP 1 PROMOTION_CODE FROM {CFMBSEL} WITH (NOLOCK) WHERE CUST_ID = @@id )) THEN 1 ELSE 0 END as BIT)";
                 idLength = 33;
             }
             else
             {
                 strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
-                SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WHERE PlatForm=@@platForm
+                SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WITH (NOLOCK) WHERE PlatForm=@@platForm
                  and PlatFormId COLLATE Latin1_General_CS_AS = @@id ) THEN 1 ELSE 0 END as BIT)
                 ";
 
@@ -89,7 +89,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             bool exists = false;
             string strSql = @$" Declare @@platForm varchar(10) = @platForm, @@promotionCode varchar(100) = @promotionCode
-                 SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WHERE PlatForm=@@platForm
+                 SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WITH (NOLOCK) WHERE PlatForm=@@platForm
                  and PlatFormId COLLATE Latin1_General_CS_AS = @@promotionCode) THEN 1 ELSE 0 END as BIT)";
             var para = new
             {
@@ -409,7 +409,7 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_EMP_PI_RISK_ATTR,
                             B.CIF_HIGH_ASSET_FLAG,
                             B.CIF_HIGH_ASSET_DATE
-                            FROM [FCB_Member] AS A
+                            FROM [FCB_Member]  AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND ";
@@ -483,7 +483,7 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_EMP_PI_RISK_ATTR,
                             B.CIF_HIGH_ASSET_FLAG,
                             B.CIF_HIGH_ASSET_DATE
-                            FROM [FCB_Member] AS A
+                            FROM [FCB_Member] AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@id";
@@ -546,7 +546,7 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_EMP_PI_RISK_ATTR,
                             B.CIF_HIGH_ASSET_FLAG,
                             B.CIF_HIGH_ASSET_DATE
-                            FROM [FCB_Member] AS A 
+                            FROM [FCB_Member] AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@promotionCode";
@@ -773,7 +773,7 @@ namespace Feature.Wealth.Account.Repositories
             CommonFuncrionsResp commonResp = new();
             try
             {
-                var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId COLLATE Latin1_General_CS_AS =@id ";
+                var strSql = @$"Select CommonFunction from FCB_Member WITH (NOLOCK) where PlatFormId COLLATE Latin1_General_CS_AS =@id ";
                 var para = new { id };
                 var jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
                 if (jsonStr != null)
@@ -837,7 +837,7 @@ namespace Feature.Wealth.Account.Repositories
             CommonToolsRespResp commonResp = new();
             try
             {
-                var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId COLLATE Latin1_General_CS_AS =@id";
+                var strSql = @$"Select CommonFunction from FCB_Member WITH (NOLOCK) where PlatFormId COLLATE Latin1_General_CS_AS =@id";
                 var para = new { id };
                 var jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
                 if (jsonStr != null)
