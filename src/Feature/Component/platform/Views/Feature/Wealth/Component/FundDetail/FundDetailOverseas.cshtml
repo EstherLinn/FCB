@@ -1536,7 +1536,7 @@
                                     @BasicData.AgentCompanyName.CheckNullOrEmptyString()<br>
                                     @if (!string.IsNullOrEmpty(BasicData.GeneralAgentWebsite))
                                     {
-                                        <a href="@BasicData.GeneralAgentWebsite" class="o-link" target="_blank">@BasicData.GeneralAgentWebsite</a>
+                                        <a href="@BasicData.GeneralAgentWebsite" class="o-link" target="_blank" rel="noopener noreferrer">@BasicData.GeneralAgentWebsite</a>
                                     }
                                 </span>
                             </div>
@@ -1550,11 +1550,11 @@
                                     {
                                         if (BasicData.OverseasIssuerWebsite.IndexOf("http") == -1)
                                         {
-                                            <a href="@("http://" + BasicData.OverseasIssuerWebsite)" class="o-link" target="_blank">@BasicData.OverseasIssuerWebsite</a>
+                                            <a href="@("http://" + BasicData.OverseasIssuerWebsite)" class="o-link" target="_blank" rel="noopener noreferrer">@BasicData.OverseasIssuerWebsite</a>
                                         }
                                         else
                                         {
-                                            <a href="@BasicData.OverseasIssuerWebsite" class="o-link" target="_blank">@BasicData.OverseasIssuerWebsite</a>
+                                            <a href="@BasicData.OverseasIssuerWebsite" class="o-link" target="_blank" rel="noopener noreferrer">@BasicData.OverseasIssuerWebsite</a>
                                         }
                                     }
                                 </span>
@@ -1673,7 +1673,7 @@
                         {
                             <div class="l-linkBox__item" id="openDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@Model.OpenDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>公開說明書</span></a>
+                                    <a href="@Model.OpenDoc" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>公開說明書</span></a>
                                 </div>
                             </div>
                         }
@@ -1682,7 +1682,7 @@
                         {
                             <div class="l-linkBox__item" id="monthReportDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@Model.MonthReportDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>基金月報</span></a>
+                                    <a href="@Model.MonthReportDoc" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>基金月報</span></a>
                                 </div>
                             </div>
                         }
@@ -1691,7 +1691,7 @@
                         {
                             <div class="l-linkBox__item" id="fundRouteDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@(exposeUrl+ "?id=" + BasicData.ProductCode)" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold">
+                                    <a href="@(exposeUrl+ "?id=" + BasicData.ProductCode)" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold">
                                         <span>基金通路報酬揭露</span>
                                     </a>
                                 </div>
@@ -1702,7 +1702,7 @@
                         {
                             <div class="l-linkBox__item" id="investExclusiveDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@Model.InvestExclusiveDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>投資人須知(專屬資訊)</span></a>
+                                    <a href="@Model.InvestExclusiveDoc" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>投資人須知(專屬資訊)</span></a>
                                 </div>
                             </div>
                         }
@@ -1711,7 +1711,7 @@
                         {
                             <div class="l-linkBox__item" id="investNomnalDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@Model.InvestNomnalDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>投資人須知(一般資訊)</span></a>
+                                    <a href="@Model.InvestNomnalDoc" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>投資人須知(一般資訊)</span></a>
                                 </div>
                             </div>
                         }
@@ -1737,7 +1737,7 @@
                         {
                             <div class="l-linkBox__item ">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@(closeFiveYearsUrl + "?id=" + BasicData.ProductCode)" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold"><span>近五年費用率及報酬率</span></a>
+                                    <a href="@(closeFiveYearsUrl + "?id=" + BasicData.ProductCode)" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold"><span>近五年費用率及報酬率</span></a>
                                 </div>
                             </div>
                         }

@@ -32,6 +32,14 @@
             try {
                 let url = new URL(node.href);
 
+                // 檢查是否為外站連結並需要添加 rel="noopener noreferrer"
+                if (node.target === '_blank') {
+                    let hostName = location.hostname;
+                    if (url.hostname !== hostName && !/noopener|noreferrer/.test(node.rel)) {
+                        node.rel = "noopener noreferrer";
+                    }
+                }
+
                 let predict = BLOCKLIST.find(domain => {
                     let reg = new RegExp(domain, 'gi');
                     return reg.test(`${url.hostname}${url.pathname}`);
