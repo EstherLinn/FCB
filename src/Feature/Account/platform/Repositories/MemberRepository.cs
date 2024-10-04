@@ -21,6 +21,9 @@ using Feature.Wealth.Account.Models.MemberLog;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Models;
 using Feature.Wealth.Account.Models.MemberCard;
+using Microsoft.Owin;
+using System.Globalization;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 
 namespace Feature.Wealth.Account.Repositories
 {
@@ -43,14 +46,14 @@ namespace Feature.Wealth.Account.Repositories
             if (platForm == PlatFormEunm.WebBank)
             {
                 strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(33) = @id
-                    SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WHERE PlatForm=@@platForm
+                    SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WITH (NOLOCK) WHERE PlatForm=@@platForm
                  and PlatFormId COLLATE Latin1_General_CS_AS = (SELECT TOP 1 PROMOTION_CODE FROM {CFMBSEL} WITH (NOLOCK) WHERE CUST_ID = @@id )) THEN 1 ELSE 0 END as BIT)";
                 idLength = 33;
             }
             else
             {
                 strSql = @$" Declare @@platForm varchar(10) = @platForm, @@id varchar(100) = @id
-                SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WHERE PlatForm=@@platForm
+                SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WITH (NOLOCK) WHERE PlatForm=@@platForm
                  and PlatFormId COLLATE Latin1_General_CS_AS = @@id ) THEN 1 ELSE 0 END as BIT)
                 ";
 
@@ -86,7 +89,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             bool exists = false;
             string strSql = @$" Declare @@platForm varchar(10) = @platForm, @@promotionCode varchar(100) = @promotionCode
-                 SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WHERE PlatForm=@@platForm
+                 SELECT CAST(CASE WHEN EXISTS (SELECT TOP 1 PlatFormId FROM [FCB_Member] WITH (NOLOCK) WHERE PlatForm=@@platForm
                  and PlatFormId COLLATE Latin1_General_CS_AS = @@promotionCode) THEN 1 ELSE 0 END as BIT)";
             var para = new
             {
@@ -251,6 +254,10 @@ namespace Feature.Wealth.Account.Repositories
                             A.CIF_SAL_FLAG,
                             SUBSTRING(A.CIF_EMP_RISK,1,1) AS CIF_EMP_RISK,
                             A.CIF_AO_EMPNO,
+                            A.CIF_KYC_EXPIR_DATE,
+                            A.CIF_EMP_PI_RISK_ATTR,
+                            A.CIF_HIGH_ASSET_FLAG,
+                            A.CIF_HIGH_ASSET_DATE,
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE,
@@ -297,9 +304,7 @@ namespace Feature.Wealth.Account.Repositories
                     }
                 }
             }
-
-            return member;
-
+            return CheckUserIdentity(member);
         }
 
         /// <summary>
@@ -322,6 +327,10 @@ namespace Feature.Wealth.Account.Repositories
                             A.CIF_SAL_FLAG,
                             SUBSTRING(A.CIF_EMP_RISK,1,1) AS CIF_EMP_RISK,
                             A.CIF_AO_EMPNO,
+                            A.CIF_KYC_EXPIR_DATE,
+                            A.CIF_EMP_PI_RISK_ATTR,
+                            A.CIF_HIGH_ASSET_FLAG,
+                            A.CIF_HIGH_ASSET_DATE,
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE,
@@ -369,7 +378,7 @@ namespace Feature.Wealth.Account.Repositories
                 }
             }
 
-            return member;
+            return CheckUserIdentity(member);
 
         }
 
@@ -395,8 +404,12 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
                             B.CIF_ID,
-                            B.CIF_MAIN_BRANCH AS MainBranchCode
-                            FROM [FCB_Member] AS A
+                            B.CIF_MAIN_BRANCH AS MainBranchCode,
+                            B.CIF_KYC_EXPIR_DATE,
+                            B.CIF_EMP_PI_RISK_ATTR,
+                            B.CIF_HIGH_ASSET_FLAG,
+                            B.CIF_HIGH_ASSET_DATE
+                            FROM [FCB_Member]  AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND ";
@@ -441,7 +454,7 @@ namespace Feature.Wealth.Account.Repositories
                 fcbMemberModel.CIF_ID = string.Empty;
             }
 
-            return fcbMemberModel;
+            return CheckUserIdentity(fcbMemberModel);
         }
 
         /// <summary>
@@ -465,8 +478,12 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
                             B.CIF_ID,
-                            B.CIF_MAIN_BRANCH AS MainBranchCode
-                            FROM [FCB_Member] AS A
+                            B.CIF_MAIN_BRANCH AS MainBranchCode,
+                            B.CIF_KYC_EXPIR_DATE,
+                            B.CIF_EMP_PI_RISK_ATTR,
+                            B.CIF_HIGH_ASSET_FLAG,
+                            B.CIF_HIGH_ASSET_DATE
+                            FROM [FCB_Member] AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@id";
@@ -500,7 +517,7 @@ namespace Feature.Wealth.Account.Repositories
                 fcbMemberModel.CIF_ID = string.Empty;
             }
 
-            return fcbMemberModel;
+            return CheckUserIdentity(fcbMemberModel);
         }
 
         /// <summary>
@@ -524,8 +541,12 @@ namespace Feature.Wealth.Account.Repositories
                             C.EmployeeName AS Advisror,
                             C.EmployeeCode AS AdvisrorID,
                             B.CIF_ID,
-                            B.CIF_MAIN_BRANCH AS MainBranchCode
-                            FROM [FCB_Member] AS A 
+                            B.CIF_MAIN_BRANCH AS MainBranchCode,
+                            B.CIF_KYC_EXPIR_DATE,
+                            B.CIF_EMP_PI_RISK_ATTR,
+                            B.CIF_HIGH_ASSET_FLAG,
+                            B.CIF_HIGH_ASSET_DATE
+                            FROM [FCB_Member] AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
                             WHERE PlatForm = @@Platform AND PlatFormId COLLATE Latin1_General_CS_AS = @@promotionCode";
@@ -559,7 +580,7 @@ namespace Feature.Wealth.Account.Repositories
                 fcbMemberModel.CIF_ID = string.Empty;
             }
 
-            return fcbMemberModel;
+            return CheckUserIdentity(fcbMemberModel);
         }
 
         /// <summary>
@@ -752,7 +773,7 @@ namespace Feature.Wealth.Account.Repositories
             CommonFuncrionsResp commonResp = new();
             try
             {
-                var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId COLLATE Latin1_General_CS_AS =@id ";
+                var strSql = @$"Select CommonFunction from FCB_Member WITH (NOLOCK) where PlatFormId COLLATE Latin1_General_CS_AS =@id ";
                 var para = new { id };
                 var jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
                 if (jsonStr != null)
@@ -816,7 +837,7 @@ namespace Feature.Wealth.Account.Repositories
             CommonToolsRespResp commonResp = new();
             try
             {
-                var strSql = @$"Select CommonFunction from FCB_Member where PlatFormId COLLATE Latin1_General_CS_AS =@id";
+                var strSql = @$"Select CommonFunction from FCB_Member WITH (NOLOCK) where PlatFormId COLLATE Latin1_General_CS_AS =@id";
                 var para = new { id };
                 var jsonStr = DbManager.Custom.Execute<string>(strSql, para, commandType: System.Data.CommandType.Text);
                 if (jsonStr != null)
@@ -1213,6 +1234,104 @@ namespace Feature.Wealth.Account.Repositories
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
+            }
+            return member;
+        }
+
+        /// <summary>
+        /// 判斷高資產身分、專業投資人給風險屬性 For CIFMember
+        /// </summary>
+        /// <returns></returns>
+        private CIFMember CheckUserIdentity(CIFMember member)
+        {
+            //判斷有無風險屬性及風險屬性有效日期
+            if (!string.IsNullOrEmpty(member.CIF_EMP_RISK) && !string.IsNullOrEmpty(member.CIF_KYC_EXPIR_DATE))
+            {
+                DateTime today = DateTime.Today;
+                DateTime kycDate;
+                bool isKycValidDate = DateTime.TryParseExact(member.CIF_KYC_EXPIR_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out kycDate);
+                if (isKycValidDate)
+                {
+                    //風險屬性逾期
+                    if (kycDate < today)
+                    {
+                        member.CIF_EMP_RISK = "4";
+                        return member;
+                    }
+                    //專業投資人並且風險屬性有效
+                    if (!string.IsNullOrEmpty(member.CIF_EMP_PI_RISK_ATTR) && member.CIF_EMP_PI_RISK_ATTR != "0")
+                    {
+                        member.CIF_EMP_RISK = "3";
+                        return member;
+                    }
+                    //判斷是否為高資產客戶
+                    if (member.CIF_HIGH_ASSET_FLAG.ToBoolean() && !string.IsNullOrEmpty(member.CIF_HIGH_ASSET_DATE))
+                    {
+                        DateTime highAssetDate;
+                        bool isHighAssetDate = DateTime.TryParseExact(member.CIF_HIGH_ASSET_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out highAssetDate);
+                        if (isHighAssetDate && highAssetDate >= today)
+                        {
+                            //風險屬性及高資產皆有效
+                            member.CIF_EMP_RISK = "3";
+                            return member;
+                        }
+                    }
+                }
+                else
+                {
+                    //風險屬性非正常日期格式
+                    member.CIF_EMP_RISK = null;
+                    return member;
+                }
+            }
+            return member;
+        }
+
+        /// <summary>
+        /// 判斷高資產身分、專業投資人給風險屬性 For FcbMemberModel
+        /// </summary>
+        /// <returns></returns>
+        private FcbMemberModel CheckUserIdentity(FcbMemberModel member)
+        {
+            //判斷有無風險屬性及風險屬性有效日期
+            if (!string.IsNullOrEmpty(member.Risk) && !string.IsNullOrEmpty(member.CIF_KYC_EXPIR_DATE))
+            {
+                DateTime today = DateTime.Today;
+                DateTime kycDate;
+                bool isKycValidDate = DateTime.TryParseExact(member.CIF_KYC_EXPIR_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out kycDate);
+                if (isKycValidDate)
+                {
+                    //風險屬性逾期
+                    if (kycDate < today)
+                    {
+                        member.Risk = "4";
+                        return member;
+                    }
+                    //專業投資人並且風險屬性有效
+                    if (!string.IsNullOrEmpty(member.CIF_EMP_PI_RISK_ATTR) && member.CIF_EMP_PI_RISK_ATTR != "0")
+                    {
+                        member.Risk = "3";
+                        return member;
+                    }
+                    //判斷是否為高資產客戶
+                    if (member.CIF_HIGH_ASSET_FLAG.ToBoolean() && !string.IsNullOrEmpty(member.CIF_HIGH_ASSET_DATE))
+                    {
+                        DateTime highAssetDate;
+                        bool isHighAssetDate = DateTime.TryParseExact(member.CIF_HIGH_ASSET_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out highAssetDate);
+                        if (isHighAssetDate && highAssetDate >= today)
+                        {
+                            //風險屬性及高資產皆有效
+                            member.Risk = "3";
+                            return member;
+                        }
+                    }
+                }
+                else
+                {
+                    //風險屬性非正常日期格式
+                    member.Risk = null;
+                    return member;
+                }
             }
             return member;
         }

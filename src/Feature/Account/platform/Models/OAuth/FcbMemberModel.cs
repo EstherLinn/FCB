@@ -81,6 +81,27 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// </summary>
         public bool IsManager { get; set; } = false;
 
+
+        /// <summary>
+        /// 風險屬性　有效日期
+        /// </summary>
+        public string CIF_KYC_EXPIR_DATE { get; set; }
+
+        /// <summary>
+        /// 專業投資人　非0均為專業投資人
+        /// </summary>
+        public string CIF_EMP_PI_RISK_ATTR { get; set; }
+
+        /// <summary>
+        /// 高資產註記　Y/N
+        /// </summary>
+        public string CIF_HIGH_ASSET_FLAG { get; set; }
+
+        /// <summary>
+        /// 高資產到期日
+        /// </summary>
+        public string CIF_HIGH_ASSET_DATE { get; set; }
+
         public string CIF_ID { get; set; }
 
         public FcbMemberModel()
@@ -103,6 +124,7 @@ namespace Feature.Wealth.Account.Models.OAuth
             string risk, string advisror, string advisrorID, bool videoInfoOpen,
             bool arrivedInfoOpen, QuoteChangeEunm stockShowColor, PlatFormEunm platForm,
             string platFormId, DateTime? birthday, string gender, string salFlag, string mainBranchCode,
+            string kycData, string piRisk, string highAssetFlag, string highAssetDate,
             bool isEmployee = false, bool isManager = false)
         {
             this.WebBankId = webBankId;
@@ -122,6 +144,10 @@ namespace Feature.Wealth.Account.Models.OAuth
             this.IsEmployee = isEmployee;
             this.IsManager = isManager;
             this.MainBranchCode = mainBranchCode;
+            this.CIF_KYC_EXPIR_DATE = kycData;
+            this.CIF_EMP_PI_RISK_ATTR = piRisk;
+            this.CIF_HIGH_ASSET_FLAG = highAssetFlag;
+            this.CIF_HIGH_ASSET_DATE = highAssetDate;
         }
 
     }

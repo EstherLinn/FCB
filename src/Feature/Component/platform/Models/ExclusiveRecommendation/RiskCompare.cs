@@ -11,7 +11,8 @@ namespace Feature.Wealth.Component.Models.ExclusiveRecommendation
     {
         { "1", new List<string> { "RR1", "RR2"} },
         { "2", new List<string> { "RR1", "RR2","RR3","RR4" } },
-        { "3", new List<string> { "RR1", "RR2","RR3","RR4","RR5" }  }
+        { "3", new List<string> { "RR1", "RR2","RR3","RR4","RR5" }  },
+        { "4", new List<string> { "RR1" }  }
     };
     }
 }

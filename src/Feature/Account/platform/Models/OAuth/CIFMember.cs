@@ -40,6 +40,16 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// 風險屬性
         /// </summary>
         public string CIF_EMP_RISK { get; set; }
+
+        /// <summary>
+        /// 風險屬性　有效日期
+        /// </summary>
+        public string CIF_KYC_EXPIR_DATE { get; set; }
+
+        /// <summary>
+        /// 專業投資人　非0均為專業投資人
+        /// </summary>
+        public string CIF_EMP_PI_RISK_ATTR { get; set; }
         /// <summary>
         /// 所屬理專ID
         /// </summary>
@@ -48,6 +58,16 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// 所屬理專姓名
         /// </summary>
         public string CIF_AO_EMPName { get; set; }
+
+        /// <summary>
+        /// 高資產註記　Y/N
+        /// </summary>
+        public string CIF_HIGH_ASSET_FLAG { get; set; }
+
+        /// <summary>
+        /// 高資產到期日
+        /// </summary>
+        public string CIF_HIGH_ASSET_DATE { get; set; }
         /// <summary>
         /// HRIS 員工代號 對應 所屬理專ID
         /// </summary>
