@@ -8,12 +8,14 @@ using Feature.Wealth.Account.Helpers;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.Component.Repositories;
 using Feature.Wealth.ScheduleAgent.Models.Mail;
+using Foundation.Wealth.Helper;
 using log4net;
 using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
 using Sitecore.Mvc.Presentation;
 using Sitecore.SecurityModel;
+using Sitecore.Web;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
@@ -235,6 +237,11 @@ namespace Feature.Wealth.Component.Controllers
                 NeedEmployeeCode = ConsultRelatedLinkSetting.GetNeedEmployeeIPCheck() ? CheckIP() : true,
             };
 
+            if (string.IsNullOrEmpty(WebUtil.GetCookieValue("EmployeeCodeChecked")) == false)
+            {
+                consultListModel.NeedEmployeeCode = false;
+            }
+
             return consultListModel;
         }
 
@@ -325,6 +332,11 @@ namespace Feature.Wealth.Component.Controllers
                 PersonalInformationLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.PersonalInformationLink).Url,
                 NeedEmployeeCode = ConsultRelatedLinkSetting.GetNeedEmployeeIPCheck() ? CheckIP() : true,
             };
+
+            if (string.IsNullOrEmpty(WebUtil.GetCookieValue("EmployeeCodeChecked")) == false)
+            {
+                consultModel.NeedEmployeeCode = false;
+            }
 
             var customerInfos = new List<CustomerInfo>();
 
@@ -939,6 +951,44 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             return new JsonNetResult(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateCookie()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(WebUtil.GetCookieValue("EmployeeCodeChecked")))
+                {
+                    this.Response.SetSameSiteCookie("EmployeeCodeChecked", "1");
+                    var objReturn = new
+                    {
+                        success = true
+                    };
+
+                    return new JsonNetResult(objReturn);
+                }
+                else
+                {
+                    var objReturn = new
+                    {
+                        success = false
+                    };
+
+                    return new JsonNetResult(objReturn);
+                }
+            }
+            catch (Exception ex)
+            {
+                var objReturn = new
+                {
+                    success = false,
+                    message = ex.Message
+                };
+
+                return new JsonNetResult(objReturn);
+            }
         }
 
         private Item GetMailSetting()

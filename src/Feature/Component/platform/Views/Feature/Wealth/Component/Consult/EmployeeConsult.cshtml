@@ -1095,6 +1095,8 @@
                     $('#consultlistLocker').addClass('u-hidden');
                     $('#step00').addClass('u-hidden');
                     $('#step01').removeClass('u-hidden');
+
+                    updateCookie();
                 }
                 else {
                     if (data.Block) {
@@ -1129,5 +1131,23 @@
 
             checkEmployee();
         });
+
+        function updateCookie(){
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                type: "POST",
+                data: { __RequestVerificationToken: token },
+                url: '@ClientRoute.GenerateUrl(this, "Consult", "UpdateCookie")',
+                success: function (data) {
+                    if (data.success == true) {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(data.message);
+                }
+            });
+        }
     });
 </script>
