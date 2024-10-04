@@ -236,7 +236,7 @@
                             <div class="c-zebraList__content"><span class="t-bold">@BasicData.FundTypeName.CheckNullOrEmptyString()</span></div>
                         </div>
                         <div class="c-zebraList__item">
-                            <div class="c-zebraList__title">基金評等 <a href="https://www.moneydj.com/funddj/notes/FundRating/Fund_Page.htm" target="_blank" class="o-icon o-icon--external o-icon--xs"></a></div>
+                            <div class="c-zebraList__title">基金評等 <a href="https://www.moneydj.com/funddj/notes/FundRating/Fund_Page.htm" target="_blank" rel="noopener noreferrer" class="o-icon o-icon--external o-icon--xs"></a></div>
                             <div class="c-zebraList__content">
                                 <div class="o-starLevel o-starLevel--sm">
                                     @{
@@ -1507,11 +1507,11 @@
                                     {
                                         if (BasicData.FundCompanyWebSite.IndexOf("http") == -1)
                                         {
-                                            <a href="@("http://" +BasicData.FundCompanyWebSite)" class="o-link" target="_blank">@BasicData.FundCompanyWebSite</a>
+                                            <a href="@("http://" + BasicData.FundCompanyWebSite)" class="o-link" target="_blank" rel="noopener noreferrer">@BasicData.FundCompanyWebSite</a>
                                         }
                                         else
                                         {
-                                            <a href="BasicData.FundCompanyWebSite" class="o-link" target="_blank">@BasicData.FundCompanyWebSite</a>
+                                            <a href="BasicData.FundCompanyWebSite" class="o-link" target="_blank" rel="noopener noreferrer">@BasicData.FundCompanyWebSite</a>
                                         }
                                     }
                                 </span>
@@ -1643,7 +1643,7 @@
                         {
                             <div class="l-linkBox__item" id="openDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@Model.OpenDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>公開說明書</span></a>
+                                    <a href="@Model.OpenDoc" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>公開說明書</span></a>
                                 </div>
                             </div>
                         }
@@ -1652,7 +1652,7 @@
                         {
                             <div class="l-linkBox__item" id="easyopenDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@Model.EasyOpenDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>簡式公開說明書</span></a>
+                                    <a href="@Model.EasyOpenDoc" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>簡式公開說明書</span></a>
                                 </div>
                             </div>
                         }
@@ -1661,7 +1661,7 @@
                         {
                             <div class="l-linkBox__item" id="monthReportDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@Model.MonthReportDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>基金月報</span></a>
+                                    <a href="@Model.MonthReportDoc" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>基金月報</span></a>
                                 </div>
                             </div>
                         }
@@ -1670,7 +1670,7 @@
                         {
                             <div class="l-linkBox__item" id="fundRouteDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@(exposeUrl+ "?id=" + BasicData.ProductCode)" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold">
+                                    <a href="@(exposeUrl+ "?id=" + BasicData.ProductCode)" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold">
                                         <span>基金通路報酬揭露</span>
                                     </a>
                                 </div>
@@ -1681,7 +1681,7 @@
                         {
                             <div class="l-linkBox__item" id="financialReportDoc">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@Model.FinancialReportDoc" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>財務報告書</span></a>
+                                    <a href="@Model.FinancialReportDoc" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--pdf t-bold"><span>財務報告書</span></a>
                                 </div>
                             </div>
                         }
@@ -1690,7 +1690,7 @@
                         {
                             <div class="l-linkBox__item ">
                                 <div class="c-box c-box--link u-shadow-animation">
-                                    <a href="@(closeFiveYearsUrl + "?id=" + BasicData.ProductCode)" target="_blank" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold"><span>近五年費用率及報酬率</span></a>
+                                    <a href="@(closeFiveYearsUrl + "?id=" + BasicData.ProductCode)" target="_blank" rel="noopener noreferrer" class="o-prefixLink o-prefixLink--insidebox o-prefixLink--link t-bold"><span>近五年費用率及報酬率</span></a>
                                 </div>
                             </div>
                         }
