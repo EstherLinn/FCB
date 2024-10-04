@@ -2,6 +2,7 @@
 using Feature.Wealth.Account.Models.ReachInfo;
 using Foundation.Wealth.Manager;
 using log4net;
+using Sitecore.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,13 +14,13 @@ using Xcms.Sitecore.Foundation.Basic.Logging;
 
 namespace Feature.Wealth.Account.Repositories
 {
-  public  class ReachInfoRepository
+    public class ReachInfoRepository
     {
         private ILog Log { get; } = Logger.Account;
-        public List<ReachInfo> GetProductReachInfosByType(string platFormId, string type )
+        public List<ReachInfo> GetProductReachInfosByType(string platFormId, string type)
         {
             string sql = $@" Select * FROM MemberReachInfo Where PlatFormId COLLATE Latin1_General_CS_AS = @id and InvestType =@type";
-            var para = new { id =  FcbMemberHelper.GetMemberPlatFormId(), type =type};
+            var para = new { id = FcbMemberHelper.GetMemberPlatFormId(), type = type };
             var results = DbManager.Custom.ExecuteIList<ReachInfo>(sql, para, CommandType.Text)?.ToList();
             return results;
         }
@@ -79,5 +80,11 @@ WHEN NOT MATCHED BY TARGET THEN INSERT (PlatFormId,InvestType,InvestId,PriceValu
             return success;
         }
 
+        public void DeleteCancelFocusRenchInfo(string investId)
+        {
+            string sql = $@"Delete From MemberReachInfo Where InvestId =@InvestId and PlatFormId COLLATE Latin1_General_CS_AS = @PlatFormId";
+            var para = new { InvestId = investId, PlatFormId = FcbMemberHelper.GetMemberPlatFormId() };
+            DbManager.Custom.ExecuteNonQuery(sql, para, CommandType.Text);
+        }
     }
 }
