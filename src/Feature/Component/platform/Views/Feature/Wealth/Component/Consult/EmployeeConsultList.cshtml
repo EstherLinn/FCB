@@ -7,8 +7,9 @@
     @* 第三方登入隱藏tab *@
     <div class="c-section" data-consultlist></div>
     <script>
-        let panelId = $('[data-consultlist]').parent().attr('data-tab-panel-id');
-        $('.c-tab__navs').find('[data-tab-target=' + panelId + ']').parent().remove();
+        let panelId_consultlist = $('[data-consultlist]').parent().attr('data-tab-panel-id');
+        $('.c-tab__navs').find('[data-tab-target=' + panelId_consultlist + ']').parent().remove();
+        $('.c-tab__dropdown').find('[data-tab-target=' + panelId_consultlist + ']').remove();
     </script>
 
     return;
@@ -924,6 +925,8 @@
                 if (data.Success) {
                     $('#consultlistLocker').removeClass('c-section--locker');
                     $('#consultlistLocker').addClass('u-hidden');
+
+                    updateCookie();
                 }
                 else {
                     if (data.Block) {
@@ -958,6 +961,24 @@
 
             checkEmployee();
         });
+
+        function updateCookie(){
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                type: "POST",
+                data: { __RequestVerificationToken: token },
+                url: '@ClientRoute.GenerateUrl(this, "Consult", "UpdateCookie")',
+                success: function (data) {
+                    if (data.success == true) {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(data.message);
+                }
+            });
+        }
 
         moment.locale('zh-tw', {
             weekdaysMin: dayNamesZh,
