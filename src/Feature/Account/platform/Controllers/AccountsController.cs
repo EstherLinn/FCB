@@ -533,6 +533,11 @@ namespace Feature.Wealth.Account.Controllers
                 FirstBankApiService firstBankApiService = new();
                 await firstBankApiService.SyncTrackListToIleo(FcbMemberHelper.GetMemberPlatFormId(), productId, productType);
             }
+            if (!trackList.Exists(x => x.Id == productId))
+            {
+                ReachInfoRepository reachInfoRepository = new();
+                reachInfoRepository.DeleteCancelFocusRenchInfo(productId);
+            }
             return new JsonNetResult(objReturn);
         }
 

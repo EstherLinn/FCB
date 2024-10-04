@@ -40,6 +40,7 @@ namespace Feature.Wealth.Component.Models.FocusList
         public decimal? FallPercent { get; set; }
         public bool ReachValueOpen { get; set; }
         public bool QuoteChangeOpen { get; set; }
-
+        public string ReachValueSetDate { get; set; }
+        public string QuoteChangeSetDate { get; set; }
     }
 }
