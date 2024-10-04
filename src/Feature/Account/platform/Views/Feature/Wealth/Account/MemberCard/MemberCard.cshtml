@@ -69,11 +69,14 @@
                                                 case "3":
                                                     riskName = "積極型";
                                                     break;
+                                                case "4":
+                                                    riskName = "已逾期";
+                                                    break;
 
                                             }
                                             <b>@riskName</b>
-                                            <a href="@WebKycLink" target="_blank" rel="noopener noreferrer" class="o-link t4 u-hidden" id="GoKYC">進行風險屬性評估</a>
-
+                                            <br>
+                                            <a href="@WebKycLink" target="_blank" rel="noopener noreferrer" class="o-link t4 @(member.Risk == "4" ? string.Empty : "u-hidden")" id="GoKYC">進行風險屬性評估</a>
                                         }
                                         else
                                         {
