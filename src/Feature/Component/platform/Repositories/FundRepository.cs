@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
@@ -69,6 +70,7 @@ namespace Feature.Wealth.Component.Repositories
             fundViewModel.FundYearRateOfReturn = GetYearRateOfReturnCompare(fundId);
             fundViewModel.FundDividendRecords = GetDividendRecord(fundId);
             fundViewModel.FundScaleRecords = GetScaleMove(fundId, indicator);
+            fundViewModel.FeePostCollectionType = GetFeePostCollectionType(fundId);
             if (fundViewModel.FundBaseData != null)
             {
                 fundViewModel.SameCompanyFunds = GetSameCompanyFunds(fundId, fundViewModel.FundBaseData.FundCompanyID);
@@ -88,6 +90,19 @@ namespace Feature.Wealth.Component.Repositories
             var para = new { fundId };
             string indicator = DbManager.Custom.Execute<string>(sql, para, commandType: System.Data.CommandType.Text);
             return indicator;
+        }
+        /// <summary>
+        /// 取得前後收型
+        /// </summary>
+        /// <param name="fundId"></param>
+        /// <returns></returns>
+        public string GetFeePostCollectionType(string fundId)
+        {
+            string FUNDTRB = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUNDTRB);
+            string sql = $@"Select FeePostCollectionType From {FUNDTRB} (NOLOCK) Where  [ProductCode] =@fundId";
+            var para = new { fundId };
+            string type = DbManager.Custom.Execute<string>(sql, para, commandType: System.Data.CommandType.Text);
+            return type;
         }
 
         public Dictionary<FundTagEnum, List<string>> GetTagsById(string fundId)
@@ -538,7 +553,11 @@ namespace Feature.Wealth.Component.Repositories
                     fundViewModel.MonthReportDoc = GetDocLink(djMoneyApiRespository, fundId, "5");
                     fundViewModel.InvestExclusiveDoc = GetDocLink(djMoneyApiRespository, fundId, "6");
                     fundViewModel.InvestNomnalDoc = GetDocLink(djMoneyApiRespository, fundId, "7");
-                    fundViewModel.BackLevelFee = GetDocLink(djMoneyApiRespository, fundId, "8");
+                    //境外基金，為後收型別才需取api
+                    if (!string.IsNullOrEmpty(fundViewModel.FeePostCollectionType) && fundViewModel.FeePostCollectionType.ToBoolean())
+                    {
+                        fundViewModel.BackLevelFee = GetDocLink(djMoneyApiRespository, fundId, "8");
+                    }
                 }
 
                 temp = new FundViewModel
