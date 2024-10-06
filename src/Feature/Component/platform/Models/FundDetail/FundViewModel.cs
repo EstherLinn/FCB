@@ -131,6 +131,11 @@ namespace Feature.Wealth.Component.Models.FundDetail
         /// 後收級別費用結構聲明書
         /// </summary>
         public string BackLevelFee { get; set; }
+
+        /// <summary>
+        /// 手續費後收型註記 Y:後收型，其餘:前收型
+        /// </summary>
+        public string FeePostCollectionType { get; set; }
     }
 
     /// <summary>
