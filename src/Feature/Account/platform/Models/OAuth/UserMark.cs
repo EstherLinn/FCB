@@ -29,10 +29,19 @@ namespace Feature.Wealth.Account.Models.OAuth
             MarkInfo tmpMarkInfo;
             if (this.MarkInfos.TryGetValue(txReqId, out tmpMarkInfo))
             {
-                tmpMarkInfo.UserId = userId;             
+                tmpMarkInfo.UserId = userId;
             }
         }
-        public string GetUserIdByQueueId(string queueId) => this.MarkInfos.Values.Where(user => user.QueueId == queueId).FirstOrDefault()?.UserId;
+        public string GetUserIdByQueueId(string queueId)
+        {
+            var MarkInfo = this.MarkInfos.Values.Where(user => user.QueueId == queueId).FirstOrDefault();
+            string userId = MarkInfo?.UserId;
+            if (userId != null)
+            {
+                this.RemoveMarkInfo(MarkInfo);
+            }
+            return userId;
+        }
 
     }
 
