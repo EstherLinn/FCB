@@ -25,6 +25,11 @@ namespace Feature.Wealth.Component.Models.SiteProductSearch.Product
         public string CurrencyCode { get; set; }
 
         /// <summary>
+        /// 幣別名稱
+        /// </summary>
+        public string CurrencyName { get; set; }
+
+        /// <summary>
         /// 票面利率
         /// </summary>
         public decimal? InterestRate { get; set; }

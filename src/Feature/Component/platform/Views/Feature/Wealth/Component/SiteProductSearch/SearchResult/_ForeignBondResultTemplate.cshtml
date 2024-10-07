@@ -33,7 +33,11 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
+                <% if (CurrencyName == "無幣別") { %>
+                <span>-</span>
+                <% } else { %>
                 <%= CurrencyHtml %>
+                <% } %>
             </div>
         </td>
         @*【票面利率】*@
@@ -56,7 +60,7 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">殖利率</div>
             <div class="c-cardTable__content">
-                <% if (typeof InterestRate == "number" && !isNaN(YieldRateYTM)) { %>
+                <% if (typeof YieldRateYTM == "number" && !isNaN(YieldRateYTM)) { %>
                 <span><%= YieldRateYTM.toFixed(2) %>%</span>
                 <% } else { %>
                 <span>-</span>
