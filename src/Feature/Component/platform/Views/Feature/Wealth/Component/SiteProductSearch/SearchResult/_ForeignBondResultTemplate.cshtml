@@ -33,7 +33,11 @@
                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
             </div>
             <div class="c-cardTable__content">
+                <% if (CurrencyName == "無幣別") { %>
+                <span>-</span>
+                <% } else { %>
                 <%= CurrencyHtml %>
+                <% } %>
             </div>
         </td>
         @*【票面利率】*@
