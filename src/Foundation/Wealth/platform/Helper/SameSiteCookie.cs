@@ -19,7 +19,7 @@ namespace Foundation.Wealth.Helper
 
             }
             cookie.Value = value;
-            cookie.SameSite = SameSiteMode.Lax;
+            cookie.SameSite = SameSiteMode.Strict;
             cookie.Expires = System.DateTime.MinValue;
             cookie.HttpOnly = true;
             cookie.Secure = true;
