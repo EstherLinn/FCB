@@ -173,8 +173,9 @@
                             <div class="l-flex__item">
                                 <div class="o-actionbox o-actionbox--md">
                                     <input type="text" class="o-actionbox__input" id="search-table2" placeholder="輸入理專姓名">
-                                    <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit2></button>
+                                    <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit2></button>                                    
                                 </div>
+                                <button class="o-btn o-btn--primary o-btn--flat o-btn--sm" data-export>匯出列表</button>
                             </div>
                             <div class="l-flex__item u-right u-hidden@dt-only">
                                 <div class="o-sortingbox">
@@ -1423,6 +1424,33 @@
 
             let id = $(this).data('eventId');
             getVideoUrl(id);
+        });        
+
+        $('[data-export]').on('click', function(){
+            let exportData = consultSchedules.filter(c => c.StatusCode == '2' || c.StatusCode == '3');
+            let csvContent = '預約日期,預約時段,預約理專,預約客戶,預約狀態,聯絡電話,電子信箱,諮詢主題,其他諮詢內容\n';
+
+            exportData.forEach(data => {
+                let dataString ='';
+
+                if(data.StatusCode == '2') {
+                    dataString = data.ScheduleDateString + ',' + data.StartTime + '~' + data.EndTime + ',' + data.EmployeeName + ',' + data.CustomerName + ',' + '預約成功' + ',' + data.Phone + ',' + data.Mail + ',' + data.Subject + ',' + data.Description + '\n';
+                }
+                else {
+                    dataString = data.ScheduleDateString + ',' + data.StartTime + '~' + data.EndTime + ',' + data.EmployeeName + ',' + data.CustomerName + ',' + '預約取消' + ',' + data.Phone + ',' + data.Mail + ',' + data.Subject + ',' + data.Description + '\n';
+                }
+
+                csvContent += dataString;
+            });
+
+             // 下載的檔案名稱
+             let fileName = '匯出列表_' + (new Date()).getTime() + '.csv';
+
+             // 建立一個 a，並點擊它
+             let link = document.createElement('a');
+             link.setAttribute('href', 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvContent));
+             link.setAttribute('download', fileName);
+             link.click();
         });
     });
 </script>
