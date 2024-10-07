@@ -56,7 +56,7 @@
         <td class="c-cardTable__body" data-card-table-width="1/2">
             <div class="c-cardTable__title" data-length="4">殖利率</div>
             <div class="c-cardTable__content">
-                <% if (typeof InterestRate == "number" && !isNaN(YieldRateYTM)) { %>
+                <% if (typeof YieldRateYTM == "number" && !isNaN(YieldRateYTM)) { %>
                 <span><%= YieldRateYTM.toFixed(2) %>%</span>
                 <% } else { %>
                 <span>-</span>
