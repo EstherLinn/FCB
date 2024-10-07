@@ -1,12 +1,11 @@
-﻿using Flurl;
+﻿using Feature.Wealth.Account.Models.OAuth;
+using Flurl;
 using Flurl.Http;
 using Foundation.Wealth.Helper;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Sitecore.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Caching;
 using System.Threading.Tasks;
 using System.Web;
 using Xcms.Sitecore.Foundation.Basic.Logging;
@@ -18,7 +17,6 @@ namespace Feature.Wealth.Account.Services
         private readonly string _route = Settings.GetSetting("AppPay.VerifyUrl");
         private readonly string _id = Settings.GetSetting("AppPay.Id");
         private readonly string _key = Settings.GetSetting("AppPay.Key");
-        private readonly MemoryCache _cache = MemoryCache.Default;
         public async Task<object> UserVerifyRequest(string callBackUrl, string getQueueId)
         {
             //default return
@@ -73,7 +71,11 @@ namespace Feature.Wealth.Account.Services
                     }
                     var computeStr2 = string.Format("merchantId={0}&txReqId={1}&key={2}",
                     _id, txReqIdString, _key);
-                    _cache.Set(getQueueId, txReqIdString, DateTimeOffset.Now.AddMinutes(5));
+                    UserMark userMark = new UserMark();
+                    MarkInfo markInfo = new MarkInfo();
+                    markInfo.QueueId = getQueueId;
+                    markInfo.TxReqId = txReqIdString;
+                    userMark.AddMarkInfo(markInfo);
                     //success return
                     objReturn = new
                     {
