@@ -103,7 +103,8 @@
                                                                             var link = pageLinkLv.Item.GeneralLink(Templates.ImageNavigationLink.Fields.ButtonLink);
                                                                             if (link != null && !string.IsNullOrEmpty(link.Url))
                                                                             {
-                                                                                <a href="@(link?.Url)" target="@(link?.Target)" class="o-btn o-btn--primary o-btn--thin o-btn--auto">@pageLinkLv.Item.Field(Templates.ImageNavigationLink.Fields.ButtonText)</a>
+                                                                                var html = link.Url.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
+                                                                                <a href="@(link?.Url)" target="@(link?.Target)"@html class="o-btn o-btn--primary o-btn--thin o-btn--auto">@pageLinkLv.Item.Field(Templates.ImageNavigationLink.Fields.ButtonText)</a>
                                                                             }
                                                                         }
                                                                     </div>
