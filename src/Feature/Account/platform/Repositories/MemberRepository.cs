@@ -257,7 +257,6 @@ namespace Feature.Wealth.Account.Repositories
                             A.CIF_KYC_EXPIR_DATE,
                             A.CIF_EMP_PI_RISK_ATTR,
                             A.CIF_HIGH_ASSET_FLAG,
-                            A.CIF_HIGH_ASSET_DATE,
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE,
@@ -304,7 +303,8 @@ namespace Feature.Wealth.Account.Repositories
                     }
                 }
             }
-            return CheckUserIdentity(member);
+            return member;
+            //return CheckUserIdentity(member);
         }
 
         /// <summary>
@@ -330,7 +330,6 @@ namespace Feature.Wealth.Account.Repositories
                             A.CIF_KYC_EXPIR_DATE,
                             A.CIF_EMP_PI_RISK_ATTR,
                             A.CIF_HIGH_ASSET_FLAG,
-                            A.CIF_HIGH_ASSET_DATE,
                             B.EmployeeName AS CIF_AO_EMPName,
                             B.EmployeeCode AS HRIS_EmployeeCode,
                             C.PROMOTION_CODE AS CIF_PROMO_CODE,
@@ -377,8 +376,8 @@ namespace Feature.Wealth.Account.Repositories
                     }
                 }
             }
-
-            return CheckUserIdentity(member);
+            return member;
+            //return CheckUserIdentity(member);
 
         }
 
@@ -407,8 +406,7 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_MAIN_BRANCH AS MainBranchCode,
                             B.CIF_KYC_EXPIR_DATE,
                             B.CIF_EMP_PI_RISK_ATTR,
-                            B.CIF_HIGH_ASSET_FLAG,
-                            B.CIF_HIGH_ASSET_DATE
+                            B.CIF_HIGH_ASSET_FLAG
                             FROM [FCB_Member]  AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
@@ -453,8 +451,8 @@ namespace Feature.Wealth.Account.Repositories
                 // FcbMemberModel 不要保留 CIF_ID
                 fcbMemberModel.CIF_ID = string.Empty;
             }
-
-            return CheckUserIdentity(fcbMemberModel);
+            return fcbMemberModel;
+            //return CheckUserIdentity(fcbMemberModel);
         }
 
         /// <summary>
@@ -481,8 +479,7 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_MAIN_BRANCH AS MainBranchCode,
                             B.CIF_KYC_EXPIR_DATE,
                             B.CIF_EMP_PI_RISK_ATTR,
-                            B.CIF_HIGH_ASSET_FLAG,
-                            B.CIF_HIGH_ASSET_DATE
+                            B.CIF_HIGH_ASSET_FLAG
                             FROM [FCB_Member] AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
@@ -517,7 +514,8 @@ namespace Feature.Wealth.Account.Repositories
                 fcbMemberModel.CIF_ID = string.Empty;
             }
 
-            return CheckUserIdentity(fcbMemberModel);
+            return fcbMemberModel;
+            //return CheckUserIdentity(fcbMemberModel);
         }
 
         /// <summary>
@@ -544,8 +542,7 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_MAIN_BRANCH AS MainBranchCode,
                             B.CIF_KYC_EXPIR_DATE,
                             B.CIF_EMP_PI_RISK_ATTR,
-                            B.CIF_HIGH_ASSET_FLAG,
-                            B.CIF_HIGH_ASSET_DATE
+                            B.CIF_HIGH_ASSET_FLAG
                             FROM [FCB_Member] AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
@@ -580,7 +577,8 @@ namespace Feature.Wealth.Account.Repositories
                 fcbMemberModel.CIF_ID = string.Empty;
             }
 
-            return CheckUserIdentity(fcbMemberModel);
+            return fcbMemberModel;
+            //return CheckUserIdentity(fcbMemberModel);
         }
 
         /// <summary>
