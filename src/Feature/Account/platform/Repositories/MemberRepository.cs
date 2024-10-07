@@ -1244,6 +1244,10 @@ namespace Feature.Wealth.Account.Repositories
         /// <returns></returns>
         private CIFMember CheckUserIdentity(CIFMember member)
         {
+            if (member == null)
+            {
+                return null;
+            }
             //判斷有無風險屬性及風險屬性有效日期
             if (!string.IsNullOrEmpty(member.CIF_EMP_RISK) && !string.IsNullOrEmpty(member.CIF_KYC_EXPIR_DATE))
             {
@@ -1293,6 +1297,9 @@ namespace Feature.Wealth.Account.Repositories
         /// <returns></returns>
         private FcbMemberModel CheckUserIdentity(FcbMemberModel member)
         {
+            if (member == null) {
+                return null;
+            }
             //判斷有無風險屬性及風險屬性有效日期
             if (!string.IsNullOrEmpty(member.Risk) && !string.IsNullOrEmpty(member.CIF_KYC_EXPIR_DATE))
             {
