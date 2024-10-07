@@ -861,6 +861,8 @@
             });
 
             calendar.render();
+
+            $('.c-calendarList').empty();
         }
 
         $('[data-keyword-submit3]').on('click.loading', function (e) {
@@ -1158,7 +1160,7 @@
             // 小網點日期把資料append到行事曆底下列表
             dateClick(arg) {
                 if (window.innerWidth < 1200) {
-                    const datas = dataSource.filter(item => item.start.split('T')[0] === arg.dateStr);
+                    const datas = filterCalendarData().filter(item => item.start.split('T')[0] === arg.dateStr);
                     let html = '';
 
                     // 需下事件點選單筆行程跳出泡泡
