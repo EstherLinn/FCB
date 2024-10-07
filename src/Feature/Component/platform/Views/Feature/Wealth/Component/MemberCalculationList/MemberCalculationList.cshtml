@@ -215,9 +215,15 @@
                                 $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(2).find('span').eq(0).css('width', '90px');
                                 $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(2).find('span').eq(1).css('width', contentWidth3 + 'px');
 
-                                var contentWidth4 = ContentTotalWidth - 36 - 18;
-                                $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(3).find('span').eq(0).css('width', '36px');
-                                $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(3).find('span').eq(1).css('width', contentWidth4 + 'px');
+                                if (type != 'RetirementPreparationList') {
+                                    var contentWidth4 = ContentTotalWidth - 36 - 18;
+                                    $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(3).find('span').eq(0).css('width', '36px');
+                                    $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(3).find('span').eq(1).css('width', contentWidth4 + 'px');
+                                } else {
+                                    var contentWidth4 = ContentTotalWidth - 126 - 18;
+                                    $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(3).find('span').eq(0).css('width', '126px');
+                                    $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(3).find('span').eq(1).css('width', contentWidth4 + 'px');
+                                }
 
                                 generateMBPDF(type, 1.3);
                             } else {
