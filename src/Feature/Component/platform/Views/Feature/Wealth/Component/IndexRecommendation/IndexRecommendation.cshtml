@@ -776,7 +776,14 @@
                                                 <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
                                             </div>
                                             <div class="c-cardTable__content">
-                                                @Html.CurrencyLink(null, item.CurrencyName)
+                                                @if(item.CurrencyName == "無幣別")
+                                                {
+                                                    <span>-</span>
+                                                }
+                                                else
+                                                {
+                                                    @Html.CurrencyLink(null, item.CurrencyName)
+                                                }                                                
                                             </div>
                                         </td>
                                         <td class="c-cardTable__body" data-card-table-width="1/2">
