@@ -106,7 +106,7 @@ namespace Feature.Wealth.Component.Repositories
 
         public IEnumerable<Dictionary<string, object>> MapperETFResult()
         {
-            var collection = new EtfSearchRepository().QueryBasicData();
+            var collection = new EtfSearchRepository().QueryBasicData().OrderByDescending(i => i.SixMonthReturnMarketPriceOriginalCurrency);
 
             Type[] ignoreTypes =
             [
@@ -372,7 +372,7 @@ namespace Feature.Wealth.Component.Repositories
 
         public IEnumerable<Dictionary<string, string>> MapperStructuredProductResult()
         {
-            var collection = QueryStructuredProductBasicData();
+            var collection = QueryStructuredProductBasicData().OrderBy(i => i.ProductCode);
             var result = collection.Select(
                 item => new Dictionary<string, string>
                 {
