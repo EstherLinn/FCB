@@ -51,7 +51,9 @@
             <div class="c-cardTable__title" data-length="4">1個月</div>
             <div class="c-cardTable__content">
                 <% if (OneMonthReturnOriginalCurrency.Value != null) { %>
-                <% if (OneMonthReturnOriginalCurrency.Key) { %>
+                <% if (OneMonthReturnOriginalCurrency.Value == 0) { %>
+                <span><%= OneMonthReturnOriginalCurrency.Text %>%</span>
+                <% } else if (OneMonthReturnOriginalCurrency.Key) { %>
                 <span class="o-rise"><%= OneMonthReturnOriginalCurrency.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= OneMonthReturnOriginalCurrency.Text %>%</span>
@@ -65,7 +67,9 @@
             <div class="c-cardTable__title" data-length="4">3個月</div>
             <div class="c-cardTable__content">
                 <% if (ThreeMonthReturnOriginalCurrency.Value != null) { %>
-                <% if (ThreeMonthReturnOriginalCurrency.Key) { %>
+                <% if (ThreeMonthReturnOriginalCurrency.Value == 0) { %>
+                <span><%= ThreeMonthReturnOriginalCurrency.Text %>%</span>
+                <% } else if (ThreeMonthReturnOriginalCurrency.Key) { %>
                 <span class="o-rise"><%= ThreeMonthReturnOriginalCurrency.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= ThreeMonthReturnOriginalCurrency.Text %>%</span>
@@ -79,7 +83,9 @@
             <div class="c-cardTable__title" data-length="4">6個月</div>
             <div class="c-cardTable__content">
                 <% if (SixMonthReturnOriginalCurrency.Value != null) { %>
-                <% if (SixMonthReturnOriginalCurrency.Key) { %>
+                <% if (SixMonthReturnOriginalCurrency.Value == 0) { %>
+                <span><%= SixMonthReturnOriginalCurrency.Text %>%</span>
+                <% } else if (SixMonthReturnOriginalCurrency.Key) { %>
                 <span class="o-rise"><%= SixMonthReturnOriginalCurrency.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= SixMonthReturnOriginalCurrency.Text %>%</span>
@@ -93,7 +99,9 @@
             <div class="c-cardTable__title" data-length="4">1年</div>
             <div class="c-cardTable__content">
                 <% if (OneYearReturnOriginalCurrency.Value != null) { %>
-                <% if (OneYearReturnOriginalCurrency.Key) { %>
+                <% if (OneYearReturnOriginalCurrency.Value == 0) { %>
+                <span><%= OneYearReturnOriginalCurrency.Text %>%</span>
+                <% } else if (OneYearReturnOriginalCurrency.Key) { %>
                 <span class="o-rise"><%= OneYearReturnOriginalCurrency.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= OneYearReturnOriginalCurrency.Text %>%</span>
@@ -179,7 +187,9 @@
             <div class="c-cardTable__title" data-length="4">1個月</div>
             <div class="c-cardTable__content">
                 <% if (OneMonthReturnTWD.Value != null) { %>
-                <% if (OneMonthReturnTWD.Key) { %>
+                <% if (OneMonthReturnTWD.Value == 0) { %>
+                <span><%= OneMonthReturnTWD.Text %>%</span>
+                <% } else if (OneMonthReturnTWD.Key) { %>
                 <span class="o-rise"><%= OneMonthReturnTWD.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= OneMonthReturnTWD.Text %>%</span>
@@ -193,7 +203,9 @@
             <div class="c-cardTable__title" data-length="4">3個月</div>
             <div class="c-cardTable__content">
                 <% if (ThreeMonthReturnTWD.Value != null) { %>
-                <% if (ThreeMonthReturnTWD.Key) { %>
+                <% if (ThreeMonthReturnTWD.Value == 0) { %>
+                <span><%= ThreeMonthReturnTWD.Text %>%</span>
+                <% } else if (ThreeMonthReturnTWD.Key) { %>
                 <span class="o-rise"><%= ThreeMonthReturnTWD.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= ThreeMonthReturnTWD.Text %>%</span>
@@ -207,7 +219,9 @@
             <div class="c-cardTable__title" data-length="4">6個月</div>
             <div class="c-cardTable__content">
                 <% if (SixMonthReturnTWD.Value != null) { %>
-                <% if (SixMonthReturnTWD) { %>
+                <% if (SixMonthReturnTWD.Value == 0) { %>
+                <span><%= SixMonthReturnTWD.Text %>%</span>
+                <% } else if (SixMonthReturnTWD) { %>
                 <span class="o-rise"><%= SixMonthReturnTWD.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= SixMonthReturnTWD.Text %>%</span>
@@ -221,7 +235,9 @@
             <div class="c-cardTable__title" data-length="4">1年</div>
             <div class="c-cardTable__content">
                 <% if (OneYearReturnTWD.Value != null) { %>
-                <% if (OneYearReturnTWD.Key) { %>
+                <% if (OneYearReturnTWD.Value == 0) { %>
+                <span><%= OneYearReturnTWD.Text %>%</span>
+                <% } else if (OneYearReturnTWD.Key) { %>
                 <span class="o-rise"><%= OneYearReturnTWD.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= OneYearReturnTWD.Text %>%</span>
