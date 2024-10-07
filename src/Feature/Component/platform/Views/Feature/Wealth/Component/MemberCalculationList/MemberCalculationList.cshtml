@@ -124,11 +124,11 @@
     </div>
 </div>
 
-<div id="downloadPdf" style="visibility:hidden"></div>
-
 <script>
     (function ($, window, document, undefined) {
         document.addEventListener("DOMContentLoaded", function () {
+
+            $('body').append('<main id="downloadPdf" style="visibility:hidden"></main>');
 
             var _data = @(new HtmlString(JsonHelper.SerializeObject(Model)));
 
@@ -158,12 +158,20 @@
 
                     $('#downloadPdf').append(data.Description);
 
-                    var $imgElement = $('.c-calcLecture__img');
+                    var $imgElement1 = $('#resultSuccessMain .c-calcLecture__img');
 
-                    if ($imgElement.length) {
-                        var src = $imgElement.attr('src');
+                    if ($imgElement1.length) {
+                        var src = $imgElement1.attr('src');
                         var cleanSrc = src.split('?')[0];
-                        $imgElement.attr('src', cleanSrc);
+                        $imgElement1.attr('src', cleanSrc);
+                    }
+
+                    var $imgElement2 = $('#resultUnsuccessfulMain .c-calcLecture__img');
+
+                    if ($imgElement2.length) {
+                        var src = $imgElement2.attr('src');
+                        var cleanSrc = src.split('?')[0];
+                        $imgElement2.attr('src', cleanSrc);
                     }
 
                     for (var i = 0; i < data.EarningsChart.length; i++) {
@@ -193,11 +201,30 @@
                             if ($(window).width() < 768) {
                                 $('#resultContent').css('padding-bottom', '10px');
 
+                                var ContentTotalWidth = $('ul.c-pipeList.s3.t-bold').width();
+
+                                var contentWidth1 = ContentTotalWidth - 90 - 18;
+                                $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(0).find('span').eq(0).css('width', '90px');
+                                $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(0).find('span').eq(1).css('width', contentWidth1 + 'px');
+
+                                var contentWidth2 = ContentTotalWidth - 72 - 18;
+                                $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(1).find('span').eq(0).css('width', '72px');
+                                $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(1).find('span').eq(1).css('width', contentWidth2 + 'px');
+
+                                var contentWidth3 = ContentTotalWidth - 90 - 18;
+                                $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(2).find('span').eq(0).css('width', '90px');
+                                $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(2).find('span').eq(1).css('width', contentWidth3 + 'px');
+
+                                var contentWidth4 = ContentTotalWidth - 36 - 18;
+                                $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(3).find('span').eq(0).css('width', '36px');
+                                $('ul.c-pipeList.s3.t-bold').find('.c-pipeList__item').eq(3).find('span').eq(1).css('width', contentWidth4 + 'px');
+
                                 generateMBPDF(type, 1.3);
                             } else {
                                 generateMBPDF(type, 1.15);
                             }
                         } else {
+                            $('#downloadPdf').css('width', '1200px');
                             generatePCPDF(type);
                         }
                     }, 2500);
