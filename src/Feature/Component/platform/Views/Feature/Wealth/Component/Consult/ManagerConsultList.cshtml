@@ -23,10 +23,10 @@
                 <div class="c-calcLocker__icon">
                     <img src="~/themes/images/icons/others/lock.svg" alt="">
                 </div>
-                <div class="c-calcLocker__desc t2 t-bold">需輸入八碼員編才能使用遠距理財諮詢功能</div>
+                <div class="c-calcLocker__desc t2 t-bold">請輸入8碼員編，以使用「遠距理財諮詢」功能。</div>
                 <div class="c-calcLocker__desc" style="display: grid;justify-content: center;">
                     <div class="l-form__input">
-                        <input id="input-employee" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入八碼員編">
+                        <input id="input-employee" class="o-textbox o-textbox--full o-textbox--form" placeholder="輸入8碼員編">
                     </div>
                 </div>
                 <div class="c-calcLocker__actions">
@@ -861,6 +861,8 @@
             });
 
             calendar.render();
+
+            $('.c-calendarList').empty();
         }
 
         $('[data-keyword-submit3]').on('click.loading', function (e) {
@@ -1158,7 +1160,7 @@
             // 小網點日期把資料append到行事曆底下列表
             dateClick(arg) {
                 if (window.innerWidth < 1200) {
-                    const datas = dataSource.filter(item => item.start.split('T')[0] === arg.dateStr);
+                    const datas = filterCalendarData().filter(item => item.start.split('T')[0] === arg.dateStr);
                     let html = '';
 
                     // 需下事件點選單筆行程跳出泡泡
