@@ -316,7 +316,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 pair.Style = pair.IsUp ? "o-rise" : "o-fall";
 
-                if (number.Value == 0)
+                if (pair.Value.Value == 0.00m)
                 {
                     pair.Style = string.Empty;
                 }
