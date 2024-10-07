@@ -515,6 +515,11 @@ namespace Feature.Wealth.Component.Repositories
             if (number.HasValue)
             {
                 pair.Style = pair.IsUp ? "o-rise" : "o-fall";
+
+                if (number.Value == 0)
+                {
+                    pair.Style = string.Empty;
+                }
             }
             return pair;
         }

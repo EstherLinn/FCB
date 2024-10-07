@@ -43,7 +43,9 @@
             <div class="c-cardTable__title" data-length="5">1日績效</div>
             <div class="c-cardTable__content">
                 <% if (DailyReturn.Value != null) { %>
-                <% if (DailyReturn.Key) { %>
+                <% if (DailyReturn.Value == 0) { %>
+                <span><%= DailyReturn.Text %>%</span>
+                <% } else if (DailyReturn.Key) { %>
                 <span class="o-rise"><%= DailyReturn.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= DailyReturn.Text %>%</span>
@@ -58,7 +60,9 @@
             <div class="c-cardTable__title" data-length="4">1週績效</div>
             <div class="c-cardTable__content">
                 <% if (WeeklyReturn.Value != null) { %>
-                <% if (WeeklyReturn.Key) { %>
+                <% if (WeeklyReturn.Value == 0) { %>
+                <span><%= WeeklyReturn.Text %>%</span>
+                <% } else if (WeeklyReturn.Key) { %>
                 <span class="o-rise"><%= WeeklyReturn.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= WeeklyReturn.Text %>%</span>
@@ -73,7 +77,9 @@
             <div class="c-cardTable__title" data-length="5">1月績效</div>
             <div class="c-cardTable__content">
                 <% if (MonthlyReturn.Value != null) { %>
-                <% if (MonthlyReturn.Key) { %>
+                <% if (MonthlyReturn.Value == 0) { %>
+                <span><%= MonthlyReturn.Text %>%</span>
+                <% } else if (MonthlyReturn.Key) { %>
                 <span class="o-rise"><%= MonthlyReturn.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= MonthlyReturn.Text %>%</span>
@@ -88,7 +94,9 @@
             <div class="c-cardTable__title" data-length="4">1季績效</div>
             <div class="c-cardTable__content">
                 <% if (ThreeMonthReturn.Value != null) { %>
-                <% if (ThreeMonthReturn.Key) { %>
+                <% if (ThreeMonthReturn.Value == 0) { %>
+                <span><%= ThreeMonthReturn.Text %>%</span>
+                <% } else if (ThreeMonthReturn.Key) { %>
                 <span class="o-rise"><%= ThreeMonthReturn.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= ThreeMonthReturn.Text %>%</span>
@@ -103,7 +111,9 @@
             <div class="c-cardTable__title" data-length="5">1年績效</div>
             <div class="c-cardTable__content">
                 <% if (OneYearReturn.Value != null) { %>
-                <% if (OneYearReturn.Key) { %>
+                <% if (OneYearReturn.Value == 0) { %>
+                <span><%= OneYearReturn.Text %>%</span>
+                <% } else if (OneYearReturn.Key) { %>
                 <span class="o-rise"><%= OneYearReturn.Text %>%</span>
                 <% } else { %>
                 <span class="o-fall"><%= OneYearReturn.Text %>%</span>
