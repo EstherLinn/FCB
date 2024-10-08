@@ -1,16 +1,16 @@
-﻿using Feature.Wealth.Account.Models.OAuth;
-using Feature.Wealth.Account.Repositories;
+﻿using Feature.Wealth.Account.Repositories;
 using Flurl;
 using Flurl.Http;
+using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Newtonsoft.Json;
 using Sitecore.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using Xcms.Sitecore.Foundation.Basic.Logging;
-
 namespace Feature.Wealth.Account.Services
 {
     public class WebBankService
@@ -58,8 +58,8 @@ namespace Feature.Wealth.Account.Services
                 };
                 step = $"Step2  call 0201";
                 //form post
-                var resp = await routeWithParms.PostMultipartAsync(m =>
-                m.AddStringParts(formData));
+                var resp = await routeWithParms.AllowAnyHttpStatus().PostMultipartAsync(m =>
+                m.AddStringParts(formData)).LogIfError(MethodBase.GetCurrentMethod().DeclaringType.FullName, routeWithParms);
 
                 if (resp.StatusCode < 300)
                 {
@@ -68,12 +68,17 @@ namespace Feature.Wealth.Account.Services
                     var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(msg);
                     if (!data.TryGetValue("txReqId", out string txReqIdString))
                     {
+                        Logger.Account.Info($"網銀0201 {step} ，無取得txReqId");
                         return objReturn;
                     }
                     var computeStr2 = string.Format("merchantId={0}&txReqId={1}&key={2}",
                     _id, txReqIdString, _key);
                     LoginSharedRepository loginSharedRepository = new LoginSharedRepository();
-                    loginSharedRepository.RecordTansaction(getQueueId, txReqIdString);
+                    var successRecord =  await loginSharedRepository.RecordTansaction(getQueueId, txReqIdString);
+                    if (!successRecord)
+                    {
+                        Logger.Account.Info($"網銀0201 {step} 取得交易序號，但無寫入資料庫");
+                    }
                     //success return
                     objReturn = new
                     {
