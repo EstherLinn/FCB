@@ -31,29 +31,29 @@ namespace Feature.Wealth.Component.Models.MemberCalculationList
 
     public class ReadingbarData
     {
-        public int target { get; set; }
-        public int current { get; set; }
-        public int gap { get; set; }
+        public decimal target { get; set; }
+        public decimal current { get; set; }
+        public decimal gap { get; set; }
     }
 
     public class ChartsRevenuesData
     {
         public string id { get; set; }
-        public int gap { get; set; }
-        public int revenue { get; set; }
-        public int invest { get; set; }
-        public int prepared { get; set; }
-        public int retire { get; set; }
+        public decimal gap { get; set; }
+        public decimal revenue { get; set; }
+        public decimal invest { get; set; }
+        public decimal prepared { get; set; }
+        public decimal retire { get; set; }
     }
 
     public class ChartsRewardsData
     {
         public string id { get; set; }
-        public int target { get; set; }
-        public List<int?> gap { get; set; }
-        public List<int> revenue { get; set; }
-        public List<int> invest { get; set; }
-        public List<int> prepared { get; set; }
-        public List<int> retire { get; set; }
+        public decimal target { get; set; }
+        public List<decimal?> gap { get; set; }
+        public List<decimal> revenue { get; set; }
+        public List<decimal> invest { get; set; }
+        public List<decimal> prepared { get; set; }
+        public List<decimal> retire { get; set; }
     }
 }
