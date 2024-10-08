@@ -6,20 +6,28 @@ using Sitecore.Mvc.Presentation;
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using Sitecore.Configuration;
+using System.Runtime.Caching;
 
 namespace Feature.Wealth.Component.Controllers
 {
     public class IndexRecommendationController : Controller
     {
         private readonly IndexRecommendationRepository _repository = new IndexRecommendationRepository();
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private static readonly object CacheLock = new object();
+        private readonly string FundsCacheKey = $"Fcb_FundsCache";
+        private readonly string ETFsCacheKey = $"Fcb_ETFsCache";
+        private readonly string USStocksCacheKey = $"Fcb_USStocksCache";
+        private readonly string BondsCacheKey = $"Fcb_BondsCache";
 
         public ActionResult Index()
         {
             var dataSourceItem = RenderingContext.CurrentOrNull?.Rendering.Item;
-            var funds = this._repository.GetFundsDatas();
-            var etfs = this._repository.GetETFDatas();
-            var usStocks = this._repository.GetUSStockDatas();
-            var bonds = this._repository.GetBondDatas();
+            var funds = GetOrSetCache(FundsCacheKey, () => this._repository.GetFundsDatas(), 30);
+            var etfs = GetOrSetCache(ETFsCacheKey, () => this._repository.GetETFDatas(), 30);
+            var usStocks = GetOrSetCache(USStocksCacheKey, () => this._repository.GetUSStockDatas(), 30);
+            var bonds = GetOrSetCache(BondsCacheKey, () => this._repository.GetBondDatas(), 30);
 
             var viewModel = new IndexRecommendationModel
             {
@@ -38,6 +46,31 @@ namespace Feature.Wealth.Component.Controllers
 
 
             return View("/Views/Feature/Wealth/Component/IndexRecommendation/IndexRecommendation.cshtml", viewModel);
+        }
+        public T GetOrSetCache<T>(string cacheKey, Func<T> getDataFunction, int cacheTime)
+        {
+            var cachedData = _cache.Get(cacheKey);
+            if (cachedData != null)
+            {
+                return (T)cachedData;
+            }
+
+            lock (CacheLock)
+            {
+                cachedData = _cache.Get(cacheKey);
+                if (cachedData != null)
+                {
+                    return (T)cachedData;
+                }
+
+                var data = getDataFunction();
+                if (data is not null)
+                {
+                    _cache.Set(cacheKey, data, DateTimeOffset.Now.AddMinutes(cacheTime));
+                }
+
+                return data;
+            }
         }
     }
 }

@@ -3,11 +3,13 @@ using Feature.Wealth.Component.Repositories;
 using Sitecore.Mvc.Presentation;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using Sitecore.Configuration;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -15,6 +17,11 @@ namespace Feature.Wealth.Component.Controllers
     {
         private FundSearchRepository _fundsearchrepository = new FundSearchRepository();
         private FundTagRepository _tagrepository = new FundTagRepository();
+        private readonly CommonRepository _commonRespository = new CommonRepository();
+
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly string FundSearchCacheKey = $"Fcb_FundSearchCache";
+        private readonly string cacheTime = Settings.GetSetting("FundSearchCacheTime");
 
         public ActionResult Index()
         {
@@ -103,8 +110,21 @@ namespace Feature.Wealth.Component.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult GetAllFunds()
         {
-            var items = _fundsearchrepository.GetFundSearchData();
-            var funds = _fundsearchrepository.GetFundRenderData(items);
+            List<Funds> funds;
+            funds = (List<Funds>)_cache.Get(FundSearchCacheKey);
+
+            if (funds == null)
+            {
+                var items = _fundsearchrepository.GetFundSearchData();
+                if (items != null && items.Any())
+                {
+                    funds = _fundsearchrepository.GetFundRenderData(items);
+                    if (funds != null && funds.Any())
+                    {
+                        _cache.Set(FundSearchCacheKey, funds, _commonRespository.GetCacheExpireTime(cacheTime));
+                    }
+                }
+            }
             return new JsonNetResult(funds);
         }
     }
