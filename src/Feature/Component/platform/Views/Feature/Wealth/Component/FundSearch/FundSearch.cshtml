@@ -2,6 +2,12 @@
 @using Feature.Wealth.Component.Models.Invest
 @model Feature.Wealth.Component.Models.FundSearch.FundSearchViewModel
 
+<style>
+    .interested-hidden {
+        visibility: hidden;
+    }
+</style>
+
 <div class="l-mainstage">
     <div class="l-mainstage__wrap">
         <div class="l-mainstage__title">
@@ -988,8 +994,8 @@
     </div>
 </div>
 <div class="l-wrap">
-    <div class="c-tab c-tab--wide" data-filter-empty="true">
-        <div class="c-tab__panel is-active">
+    <div class="c-tab c-tab--wide">
+        <div class="c-tab__panel is-active" data-filter-empty="true">
             <div class="c-section">
                 <div class="c-section__content">
                     <div class="c-empty">
@@ -1000,8 +1006,8 @@
                     </div>
                 </div>
             </div>
-            @Html.Sitecore().Placeholder("InterestedFund")
         </div>
+        @Html.Sitecore().Placeholder("InterestedFund")
     </div>
 
     <div class="c-tab c-tab--wide" data-tab="true" data-filter-empty="false" style="display:none;">
@@ -2220,9 +2226,20 @@
                             $('[id="uid-total"]').text(result.length);
 
                             let isEmpty = result.length == 0;
+
+                            $('#interestedFund').addClass('interested-hidden');
+                            $('#interestedFund').show();
+
+                            setTimeout(() => {
+                                if (isEmpty) {
+                                    $('#interestedFund').removeClass('interested-hidden');
+                                } else {
+                                    $('#interestedFund').hide();
+                                }
+                            }, 300);
+
                             $(`[data-filter-empty=${isEmpty}]`).show();
                             $(`[data-filter-empty=${!isEmpty}]`).hide();
-
 
                             window.loading('hide');
                         },
