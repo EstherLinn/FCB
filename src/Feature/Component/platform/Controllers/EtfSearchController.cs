@@ -26,6 +26,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetSearchResultData()
         {
             IEnumerable<EtfSearchResult> resp;

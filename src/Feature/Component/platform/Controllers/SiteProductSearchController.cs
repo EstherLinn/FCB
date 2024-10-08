@@ -25,6 +25,7 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetSearchResultData()
         {
             RespProduct resp;
