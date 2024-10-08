@@ -95,9 +95,10 @@ namespace Feature.Wealth.Component.Controllers
 
                 // 整理 MarketNewsDetail 資料
                 datas = _newsRespository.OrganizeMarketNewsDetailDbData(dbData);
-
-                // 儲存 MarketNewsDetailCache
-                _cache.Set(MarketNewsDetailCacheKey + newsId, datas, _commonRespository.GetCacheExpireTime(cacheTime));
+                if (datas.MarketNewsDetailData != null) {
+                    // 儲存 MarketNewsDetailCache
+                    _cache.Set(MarketNewsDetailCacheKey + newsId, datas, _commonRespository.GetCacheExpireTime(cacheTime));
+                } 
             }
 
             return View("/Views/Feature/Wealth/Component/News/MarketNewsDetail.cshtml", datas);
