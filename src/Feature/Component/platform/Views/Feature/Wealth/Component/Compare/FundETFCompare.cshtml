@@ -759,12 +759,12 @@
                     <div class="l-selectbox u-justify-center">
                         <div class="l-selectbox__item">
                             <select class="o-selectbox o-selectbox--full o-selectbox--form select2-dropdown--noNative" data-placeholder="選擇指數" data-stock-select data-width="100%" data-selection-css-class="select2-selection--form" data-selectbox="true" data-minimum-results-for-search="0" data-dropdown-parent="#popupAddIndex" data-dropdown-css-class="select2-dropdown--noNative">
-                                    <option value=""></option>
-                                    @foreach (var item in Model.GlobalIndexList)
-                                    {
-                                        <option value="@item.IndexCode">@item.IndexName</option>
-                                    }
-                                </select>
+                                <option value=""></option>
+                                @foreach (var item in Model.GlobalIndexList)
+                                {
+                                    <option value="@item.IndexCode">@item.IndexName</option>
+                                }
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -796,66 +796,90 @@
         </td>
         <td>
             <% if (oneDay) { %>
-            <% if (oneDayStyle) { %>
+            <% if (parseFloat(oneDay) == 0) { %>
+            <span><%= parseFloat(oneDay).toFixed(2) %>%</span>
+            <% } else if (oneDayStyle) { %>
             <span class="<%= oneDayStyle %>"><%= oneDay %></span>
             <% } else { %>
             <span class="<%= oneDay < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneDay) %>%</span>
             <% } %>
+            <% } else if (oneDay == 0) { %>
+            <span><%= Math.abs(oneDay).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (oneWeek) { %>
-            <% if (oneWeekStyle) { %>
+            <% if (parseFloat(oneWeek) == 0) { %>
+            <span><%= parseFloat(oneWeek).toFixed(2) %>%</span>
+            <% } else if (oneWeekStyle) { %>
             <span class="<%= oneWeekStyle %>"><%= oneWeek %></span>
             <% } else { %>
             <span class="<%= oneWeek < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneWeek) %>%</span>
             <% } %>
+            <% } else if (oneWeek == 0) { %>
+            <span><%= Math.abs(oneWeek).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (oneMonth) { %>
-            <% if (oneMonthStyle) { %>
+            <% if (parseFloat(oneMonth) == 0) { %>
+            <span><%= parseFloat(oneMonth).toFixed(2) %>%</span>
+            <% } else if (oneMonthStyle) { %>
             <span class="<%= oneMonthStyle %>"><%= oneMonth %></span>
             <% } else { %>
             <span class="<%= oneMonth < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneMonth) %>%</span>
             <% } %>
+            <% } else if (oneMonth == 0) { %>
+            <span><%= Math.abs(oneMonth).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (threeMonth) { %>
-            <% if (threeMonthStyle) { %>
+            <% if (parseFloat(threeMonth) == 0) { %>
+            <span><%= parseFloat(threeMonth).toFixed(2) %>%</span>
+            <% } else if (threeMonthStyle) { %>
             <span class="<%= threeMonthStyle %>"><%= threeMonth %></span>
             <% } else { %>
             <span class="<%= threeMonth < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(threeMonth) %>%</span>
             <% } %>
+            <% } else if (threeMonth == 0) { %>
+            <span><%= Math.abs(threeMonth).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (sixMonth) { %>
-            <% if (sixMonthStyle) { %>
+            <% if (parseFloat(sixMonth) == 0) { %>
+            <span><%= parseFloat(sixMonth).toFixed(2) %>%</span>
+            <% } else if (sixMonthStyle) { %>
             <span class="<%= sixMonthStyle %>"><%= sixMonth %></span>
             <% } else { %>
             <span class="<%= sixMonth < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(sixMonth) %>%</span>
             <% } %>
+            <% } else if (sixMonth == 0) { %>
+            <span><%= Math.abs(sixMonth).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (year) { %>
-            <% if (yearStyle) { %>
+            <% if (parseFloat(year) == 0) { %>
+            <span><%= parseFloat(year).toFixed(2) %>%</span>
+            <% } else if (yearStyle) { %>
             <span class="<%= yearStyle %>"><%= year %></span>
             <% } else { %>
             <span class="<%= year < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(year) %>%</span>
             <% } %>
+            <% } else if (year == 0) { %>
+            <span><%= Math.abs(year).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
@@ -873,66 +897,90 @@
         </td>
         <td>
             <% if (oneYear) { %>
-            <% if (oneYearStyle) { %>
+            <% if (parseFloat(oneYear) == 0) { %>
+            <span><%= parseFloat(oneYear).toFixed(2) %>%</span>
+            <% } else if (oneYearStyle) { %>
             <span class="<%= oneYearStyle %>"><%= oneYear %></span>
             <% } else { %>
             <span class="<%= oneYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(oneYear) %>%</span>
             <% } %>
+            <% } else if (oneYear == 0) { %>
+            <span><%= Math.abs(oneYear).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (twoYear) { %>
-            <% if (twoYearStyle) { %>
+            <% if (parseFloat(twoYear) == 0) { %>
+            <span><%= parseFloat(twoYear).toFixed(2) %>%</span>
+            <% } else if (twoYearStyle) { %>
             <span class="<%= twoYearStyle %>"><%= twoYear %></span>
             <% } else { %>
             <span class="<%= twoYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(twoYear) %>%</span>
             <% } %>
+            <% } else if (twoYear == 0) { %>
+            <span><%= Math.abs(twoYear).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (threeYear) { %>
-            <% if (threeYearStyle) { %>
+            <% if (parseFloat(threeYear) == 0) { %>
+            <span><%= parseFloat(threeYear).toFixed(2) %>%</span>
+            <% } else if (threeYearStyle) { %>
             <span class="<%= threeYearStyle %>"><%= threeYear %></span>
             <% } else { %>
             <span class="<%= threeYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(threeYear) %>%</span>
             <% } %>
+            <% } else if (threeYear == 0) { %>
+            <span><%= Math.abs(threeYear).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (fiveYear) { %>
-            <% if (fiveYearStyle) { %>
+            <% if (parseFloat(fiveYear) == 0) { %>
+            <span><%= parseFloat(fiveYear).toFixed(2) %>%</span>
+            <% } else if (fiveYearStyle) { %>
             <span class="<%= fiveYearStyle %>"><%= fiveYear %></span>
             <% } else { %>
             <span class="<%= fiveYear < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(fiveYear) %>%</span>
             <% } %>
+            <% } else if (fiveYear == 0) { %>
+            <span><%= Math.abs(fiveYear).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (year) { %>
-            <% if (yearStyle) { %>
+            <% if (parseFloat(year) == 0) { %>
+            <span><%= parseFloat(year).toFixed(2) %>%</span>
+            <% } else if (yearStyle) { %>
             <span class="<%= yearStyle %>"><%= year %></span>
             <% } else { %>
             <span class="<%= year < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(year) %>%</span>
             <% } %>
+            <% } else if (year == 0) { %>
+            <span><%= Math.abs(year).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
         </td>
         <td>
             <% if (established) { %>
-            <% if (establishedStyle) { %>
+            <% if (parseFloat(established) == 0) { %>
+            <span><%= parseFloat(established).toFixed(2) %>%</span>
+            <% } else if (establishedStyle) { %>
             <span class="<%= establishedStyle %>"><%= established %></span>
             <% } else { %>
             <span class="<%= established < 0 ? 'o-fall': 'o-rise' %>"><%= Math.abs(established) %>%</span>
             <% } %>
+            <% } else if (established == 0) { %>
+            <span><%= Math.abs(established).toFixed(2) %>%</span>
             <% } else { %>
             <span class="c-legend__name">-</span>
             <% } %>
@@ -2346,10 +2394,10 @@
                                     case 'shareholdingTable':
                                         break;
                                     default:
-                                        $('[data-table-name="' + template + '"]').attr('data-fixed-columns', true).fixedColumns();                                        
+                                        $('[data-table-name="' + template + '"]').attr('data-fixed-columns', true).fixedColumns();
                                         break;
-                                }                                
-                            }                            
+                                }
+                            }
                         }
                     },
                     search: {},
