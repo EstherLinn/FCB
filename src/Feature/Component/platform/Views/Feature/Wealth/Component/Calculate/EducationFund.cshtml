@@ -2515,7 +2515,7 @@
             //#region 顯示試算結果 - 描述區塊
             function renderResultDescription(result, educationalFund, years) {
                 let educationalFundVal = parseFloat(educationalFund) * 10000;
-                let educationalFundFormatVal = educationalFundVal.toLocaleString();
+                let educationalFundFormatVal = formatValue(educationalFundVal);
                 let InsufficientAmountVal;
                 let InsufficientAmountFormatVal;
                 let current;
@@ -2526,7 +2526,7 @@
                     resultHasGap = false;
                 } else {
                     InsufficientAmountVal = educationalFundVal - result;
-                    InsufficientAmountFormatVal = (InsufficientAmountVal).toLocaleString();
+                    InsufficientAmountFormatVal = formatValue(InsufficientAmountVal);
                     resultHasGap = true;
                 }
 
@@ -2554,7 +2554,7 @@
 
             //#region 顯示試算結果 - tab1區塊
             function renderResultTab1(result, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi) {
-                let resultFormatVal = result.toLocaleString();
+                let resultFormatVal = formatValue(result);
                 let currentYear = new Date().getFullYear() + parseFloat(years) - 1;
 
                 let educationalFundVal = parseFloat(educationalFund) * 10000;
@@ -2572,13 +2572,13 @@
                 // 預期總收益
                 $("#tab1_Total").text(resultFormatVal + "元");
                 // 已準備金額
-                $("#tab1_AmountPrepared").text(parseFloat(amountPrepared).toLocaleString() + " 萬元");
+                $("#tab1_AmountPrepared").text(formatValue(parseFloat(amountPrepared)) + " 萬元");
                 // 每月投入
-                $("#tab1_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + "萬元");
+                $("#tab1_MonthlyInvestment").text(formatValue(parseFloat(monthlyInvestment)) + "萬元");
                 // 投資報酬率
-                $("#tab1_ExpectedRoi").text(expectedRoi + " %");
+                $("#tab1_ExpectedRoi").text(formatValue(expectedRoi) + " %");
                 // 投資
-                $("#tab1_Years").text(years + " 年");
+                $("#tab1_Years").text(formatValue(years) + " 年");
                 // 預期收益標題
                 $("#tab1_ExpectedReturnTitle").text(currentYear + "年預期收益");
 
@@ -2660,7 +2660,7 @@
                 let resultFormatVal = result / 10000;
                 let currentYear = new Date().getFullYear() + parseFloat(years) - 1;
                 let total = planningCompute(years, amountPrepared, resultFormatVal, expectedRoi);
-                let totalFormatVal = total.toLocaleString();
+                let totalFormatVal = formatValue(total);
 
                 let invest = result * parseFloat(years) * 12;
                 let prepared = parseFloat(amountPrepared) * 10000;
@@ -2668,13 +2668,13 @@
                 // 預期總收益
                 $("#tab2_Total").text(totalFormatVal + "元");
                 // 已準備金額
-                $("#tab2_AmountPrepared").text(parseFloat(amountPrepared).toLocaleString() + " 萬元");
+                $("#tab2_AmountPrepared").text(formatValue(parseFloat(amountPrepared)) + " 萬元");
                 //每月投入
-                $("#tab2_MonthlyInvestment").text(resultFormatVal.toLocaleString() + "萬元");
+                $("#tab2_MonthlyInvestment").text(formatValue(resultFormatVal) + "萬元");
                 //投資報酬率
-                $("#tab2_ExpectedRoi").text(expectedRoi + " %");
+                $("#tab2_ExpectedRoi").text(formatValue(expectedRoi) + " %");
                 //投資
-                $("#tab2_Years").text(years + " 年");
+                $("#tab2_Years").text(formatValue(years) + " 年");
                 // 預期收益標題
                 $("#tab2_ExpectedReturnTitle").text(currentYear + "年預期收益");
 
@@ -2748,7 +2748,7 @@
                 let resultFormatVal = (result * 100).toFixed(2);
                 let currentYear = new Date().getFullYear() + parseFloat(years) - 1;
                 let total = planningCompute(years, amountPrepared, monthlyInvestment, resultFormatVal);
-                let totalFormatVal = total.toLocaleString();
+                let totalFormatVal = formatValue(total);
 
                 let invest = (parseFloat(monthlyInvestment) * 10000) * parseFloat(years) * 12;
                 let prepared = parseFloat(amountPrepared) * 10000;
@@ -2756,13 +2756,13 @@
                 // 預期總收益
                 $("#tab3_Total").text(totalFormatVal + "元");
                 // 已準備金額
-                $("#tab3_AmountPrepared").text(parseFloat(amountPrepared).toLocaleString() + " 萬元");
+                $("#tab3_AmountPrepared").text(formatValue(parseFloat(amountPrepared)) + " 萬元");
                 //每月投入
-                $("#tab3_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + "萬元");
+                $("#tab3_MonthlyInvestment").text(formatValue(parseFloat(monthlyInvestment)) + "萬元");
                 //投資報酬率
-                $("#tab3_ExpectedRoi").text(resultFormatVal + " %");
+                $("#tab3_ExpectedRoi").text(formatValue(resultFormatVal) + " %");
                 //投資
-                $("#tab3_Years").text(years + " 年");
+                $("#tab3_Years").text(formatValue(years) + " 年");
                 // 預期收益標題
                 $("#tab3_ExpectedReturnTitle").text(currentYear + "年預期收益");
 
@@ -2835,7 +2835,7 @@
             function renderResultTab4(result, educationalFund, amountPrepared, monthlyInvestment, expectedRoi) {
                 let currentYear = new Date().getFullYear() + result - 1;
                 let total = planningCompute(result, amountPrepared, monthlyInvestment, expectedRoi);
-                let totalFormatVal = total.toLocaleString();
+                let totalFormatVal = formatValue(total);
 
                 let invest = (parseFloat(monthlyInvestment) * 10000) * parseFloat(result) * 12;
                 let prepared = parseFloat(amountPrepared) * 10000;
@@ -2843,13 +2843,13 @@
                 // 預期總收益
                 $("#tab4_Total").text(totalFormatVal + "元");
                 // 已準備金額
-                $("#tab4_AmountPrepared").text(parseFloat(amountPrepared).toLocaleString() + " 萬元");
+                $("#tab4_AmountPrepared").text(formatValue(parseFloat(amountPrepared)) + " 萬元");
                 //每月投入
-                $("#tab4_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + "萬元");
+                $("#tab4_MonthlyInvestment").text(formatValue(parseFloat(monthlyInvestment)) + "萬元");
                 //投資報酬率
-                $("#tab4_ExpectedRoi").text(expectedRoi + " %");
+                $("#tab4_ExpectedRoi").text(formatValue(expectedRoi) + " %");
                 //投資
-                $("#tab4_Years").text(result + " 年");
+                $("#tab4_Years").text(formatValue(result) + " 年");
                 // 預期收益標題
                 $("#tab4_ExpectedReturnTitle").text(currentYear + "年預期收益");
 
@@ -2920,7 +2920,7 @@
 
             //#region 顯示試算結果 - tab5區塊
             function renderResultTab5(result, educationalFund, years, amountPrepared, monthlyInvestment, expectedRoi) {
-                let resultFormatVal = result.toLocaleString();
+                let resultFormatVal = formatValue(result);
                 let expectedRoiFormatVal = parseFloat(expectedRoi).toFixed(2);
                 let currentYear = new Date().getFullYear() + parseFloat(years) - 1;
                 let educationalFundVal = parseFloat(educationalFund) * 10000;
@@ -2930,13 +2930,13 @@
                 // 預期總收益
                 $("#tab5_Total").text(resultFormatVal + "元");
                 // 已準備金額
-                $("#tab5_AmountPrepared").text(parseFloat(amountPrepared).toLocaleString() + " 萬元");
+                $("#tab5_AmountPrepared").text(formatValue(parseFloat(amountPrepared)) + " 萬元");
                 // 每月投入
-                $("#tab5_MonthlyInvestment").text(parseFloat(monthlyInvestment).toLocaleString() + "萬元");
+                $("#tab5_MonthlyInvestment").text(formatValue(parseFloat(monthlyInvestment)) + "萬元");
                 // 投資報酬率
-                $("#tab5_ExpectedRoi").text(expectedRoiFormatVal + " %");
+                $("#tab5_ExpectedRoi").text(formatValue(expectedRoiFormatVal) + " %");
                 // 投資
-                $("#tab5_Years").text(years + " 年");
+                $("#tab5_Years").text(formatValue(years) + " 年");
                 // 預期收益標題
                 $("#tab5_ExpectedReturnTitle").text(currentYear + "年預期收益");
 
@@ -3002,6 +3002,18 @@
                     $('#tab5ETF').addClass('u-hidden');
                     $('#tab5Stock').addClass('u-hidden');
                 }
+            }
+            //#endregion
+
+            //#region 每三位數加"，"方法
+            function formatValue(Val) {
+                let [integerPart, decimalPart] = Val.toString().split('.');
+
+                let formattedIntegerPart = parseInt(integerPart).toLocaleString();
+
+                let formattedVal = decimalPart ? `${formattedIntegerPart}.${decimalPart}` : formattedIntegerPart;
+
+                return formattedVal;
             }
             //#endregion
 
