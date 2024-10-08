@@ -71,6 +71,9 @@ namespace Feature.Wealth.Component.Repositories
                 XmlDocument doc1 = new XmlDocument();
                 XmlDocument doc2 = new XmlDocument();
 
+                doc1.XmlResolver = null;
+                doc2.XmlResolver = null;
+
                 doc1.Load(xmlUrl1);
                 doc2.Load(xmlUrl2);
 
