@@ -220,8 +220,12 @@ namespace Feature.Wealth.Account.Controllers
             var queueId = query.Get("queueId");
             try
             {
+                step = "Step 1 取得 queueId";
                 if (string.IsNullOrEmpty(queueId))
                 {
+                    Session["LoginStatus"] = false;
+                    Session["ServerError"] = true;
+                    errorDescription = "queueId = nullorEmpty";
                     return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                 }
                 //防止網銀身分重複登入
@@ -229,11 +233,11 @@ namespace Feature.Wealth.Account.Controllers
                 {
                     return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
                 }
-                UserMark userMark = new UserMark();
-                var id = userMark.GetUserIdByQueueId(queueId);
-                step = "Step 1-1 取得 Application user id";
+                LoginSharedRepository loginSharedRepository = new LoginSharedRepository();
+                var id = loginSharedRepository.GetUserIdByTansaction(queueId);
                 if (!string.IsNullOrEmpty(id))
                 {
+                    id = AESHelper.Decrypt(id);
                     //網銀登入
                     step = "Step2-1 確認CFMBSEL Table有無重複資料";
                     var IsMoreThanOneUser = _memberRepository.CheckCFMBSELTableMoreThanOneUser("pc", id);
@@ -452,8 +456,15 @@ namespace Feature.Wealth.Account.Controllers
                 }
                 else
                 {
-                    UserMark userMark = new UserMark();
-                    userMark.UpdateMarkInfo(txReqId, id);
+                    LoginSharedRepository loginSharedRepository = new LoginSharedRepository();
+                    if (loginSharedRepository.IsTansactionTimeExpired(txReqId))
+                    {
+                        Logger.Account.Info("User 操作時間過長已逾期");
+                    }
+                    else
+                    {
+                        loginSharedRepository.UpdateUserId(txReqId, AESHelper.Encrypt(id));
+                    }
                     Logger.Account.Info("個網登入0203回應:" + obj + ",custData UrlDecode:" + HttpUtility.UrlDecode(getCustData));
                 }
             }
