@@ -61,9 +61,9 @@ namespace Feature.Wealth.Account.Repositories
             }
             else
             {
-                tansactionTime.Value.AddMinutes(Convert.ToInt16(tansactionLimit));
+                var delayTime = tansactionTime.Value.AddMinutes(Convert.ToInt16(tansactionLimit));
                 DateTime currentTime = DateTime.Now;
-                int result = DateTime.Compare(currentTime, (DateTime)tansactionTime);
+                int result = DateTime.Compare(currentTime, (DateTime)delayTime);
                 if (result < 0 || result == 0)
                 {
                     return false;
