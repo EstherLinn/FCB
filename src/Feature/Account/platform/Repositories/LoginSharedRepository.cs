@@ -1,21 +1,25 @@
 ﻿using Foundation.Wealth.Manager;
+using Sitecore.Collections;
 using Sitecore.Configuration;
 using System;
+using System.Threading.Tasks;
 
 namespace Feature.Wealth.Account.Repositories
 {
     public class LoginSharedRepository
     {
-        public void RecordTansaction(string queueId, string txReqId)
+        public async Task<bool> RecordTansaction(string queueId, string txReqId)
         {
+            int affectedRow = 0;
             string strSql = $@"INSERT INTO [LoginShared] (QueueId,TxReqId,TansactionTime) values (@QueueId,@TxReqId,@TansactionTime)";
             var para = new
             {
                 QueueId = queueId,
                 TxReqId = txReqId,
-                TansactionTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                TansactionTime = DateTime.Now
             };
-            DbManager.Custom.ExecuteNonQuery(strSql, para, commandType: System.Data.CommandType.Text);
+            affectedRow = await DbManager.Custom.ExecuteNonQueryAsync(strSql, para, commandType: System.Data.CommandType.Text);
+            return affectedRow > 0;
         }
 
         public void UpdateUserId(string txReqId, string userId)
