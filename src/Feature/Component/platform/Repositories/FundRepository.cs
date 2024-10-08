@@ -1,4 +1,5 @@
 ﻿using Feature.Wealth.Component.Models.FundDetail;
+using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
@@ -17,6 +18,81 @@ namespace Feature.Wealth.Component.Repositories
         private readonly string FundDetailsCacheKey = $"Fcb_FundDetailsCache";
         private readonly string FundDetailTempCacheKey = $"Fcb_FundDetailTemp";
 
+        /// <summary>
+        /// 新元件使用
+        /// </summary>
+        /// <param name="fundId"></param>
+        /// <param name="indicator"></param>
+        /// <returns></returns>
+        public FundViewModel GetOrSetFundDetailsCacheNew(string fundId, string indicator)
+        {
+            var FundDic = (Dictionary<string, FundViewModel>)_cache.Get(FundDetailsCacheKey) ?? new Dictionary<string, FundViewModel>();
+            FundViewModel FundFullData;
+            if (!FundDic.Any())
+            {
+                FundDic.Add(fundId, CreateFundDetailsDataNew(fundId, indicator));
+                _cache.Set(FundDetailsCacheKey, FundDic, DateTimeOffset.Now.AddMinutes(60));
+            }
+            else
+            {
+                if (FundDic.TryGetValue(fundId, out FundFullData))
+                {
+                    return FundFullData;
+                }
+                else
+                {
+                    FundDic.Add(fundId, CreateFundDetailsDataNew(fundId, indicator));
+                }
+            }
+            FundFullData = FundDic[fundId];
+            return FundFullData;
+        }
+
+        /// <summary>
+        /// 新元件使用
+        /// </summary>
+        /// <param name="fundId"></param>
+        /// <param name="indicator"></param>
+        /// <returns></returns>
+        private FundViewModel CreateFundDetailsDataNew(string fundId, string indicator)
+        {
+            FundViewModel fundViewModel = new FundViewModel();
+            if (indicator == nameof(FundEnum.D))
+            {
+                fundViewModel.FundBaseData = GetDomesticFundBasic(fundId);
+                fundViewModel.FundAccordingStockHoldings = GetFundHoldingStockPercent(fundId);
+                fundViewModel.FundTypeRanks = GetSameTypeFundListDatas(GetSameTypeFundList(fundId), fundId);
+
+            }
+            else
+            {
+                fundViewModel.FundBaseData = GetOverseasFundBasic(fundId);
+                fundViewModel.FundTypeRanks = GetSameTypeFundListDatas(GetSameTypeFundListByOverseas(fundId), fundId);
+            }
+
+            fundViewModel.TagsDic = GetTagsById(fundId);
+            fundViewModel.FundCloseYearsNetValue = GetNetAssetValueWithCloseYear(fundId);
+            fundViewModel.FundRateOfReturn = GetRateOfReturn(fundId);
+            fundViewModel.FundThiryDaysNetValue = GetThrityDaysNetValue(fundId);
+            fundViewModel.FundAnnunalRateOfReturn = GetAnnualRateOfReturn(fundId);
+            fundViewModel.FundAccumulationRateOfReturn = GetAccumulationRateOfReturn(fundId);
+            fundViewModel.FundDowJonesIndexs = GetDowJonesIndex(fundId);
+            fundViewModel.FundStockHoldings = GetFundIndustryPercent(fundId);
+            fundViewModel.FundStockAreaHoldings = GetFundAreaPercent(fundId);
+            fundViewModel.FundTopTenStockHolding = GetTopTenHoldingFund(fundId, indicator);
+            fundViewModel.FundRiskindicators = GetRiskindicators(fundId);
+            fundViewModel.FundReturnCompare = GetRateOfReturnCompare(fundId, indicator);
+            fundViewModel.FundYearRateOfReturn = GetYearRateOfReturnCompare(fundId);
+            fundViewModel.FundDividendRecords = GetDividendRecord(fundId);
+            fundViewModel.FundScaleRecords = GetScaleMove(fundId, indicator);
+            fundViewModel.FeePostCollectionType = GetFeePostCollectionType(fundId);
+            if (fundViewModel.FundBaseData != null)
+            {
+                fundViewModel.SameCompanyFunds = GetSameCompanyFunds(fundId, fundViewModel.FundBaseData.FundCompanyID);
+                fundViewModel.FundBaseData.IndicatorIndexCode = GetIndicatorIndexCode(fundId, indicator);
+            }
+            return fundViewModel;
+        }
         public FundViewModel GetOrSetFundDetailsCache(string fundId, string indicator)
         {
             var FundDic = (Dictionary<string, FundViewModel>)_cache.Get(FundDetailsCacheKey) ?? new Dictionary<string, FundViewModel>();
@@ -160,12 +236,137 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 取得同類型基金排行
+        /// 取得同類基金list 國內
+        /// </summary>
+        /// <param name="fundId">基金id</param>
+        /// <returns></returns>
+        public List<string> GetSameTypeFundList(string fundId)
+        {
+            string Sysjust_Basic_Fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Basic_Fund);
+            string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
+
+            List<string> fundList = new List<string>();
+            string planA_Sql = $@"DECLARE @var1 nvarchar(100), @var2 nvarchar(100), @var3 nvarchar(100);
+                            SELECT @var1 = [FundType], @var2 = [InvestmentRegionName], @var3 = [PrimaryInvestmentRegion]
+                            FROM {Sysjust_Basic_Fund} with (nolock)
+                             where FirstBankCode = @fundId
+
+                            select FirstBankCode from {Sysjust_Basic_Fund} as a  with (nolock)
+                            inner join {WMS_DOC_RECM}  as b  with (nolock) on a.FirstBankCode = b.ProductCode
+                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3";
+            var para = new { fundId };
+            fundList = DbManager.Custom.ExecuteIList<string>(planA_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            //方案A有達6檔且不超過9檔
+            if (fundList != null && fundList.Count >= 6 && fundList.Count <= 9)
+            {
+                return fundList;
+            }
+            //方案A超過9檔，執行方案B
+            if (fundList != null && fundList.Count > 9)
+            {
+
+                string planB_Sql = $@"DECLARE @var1 nvarchar(100), @var2 nvarchar(100), @var3 nvarchar(100), @var4 nvarchar(100);
+                            SELECT @var1 = [FundType], @var2 = [InvestmentRegionName], @var3 = [PrimaryInvestmentRegion], @var4 = [IndicatorIndexCode]
+                            FROM {Sysjust_Basic_Fund} with (nolock)
+                             where FirstBankCode = @fundId
+
+                            select FirstBankCode from {Sysjust_Basic_Fund} as a  with (nolock)
+                            inner join {WMS_DOC_RECM}  as b  with (nolock) on a.FirstBankCode = b.ProductCode
+                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3 and IndicatorIndexCode = @var4 ";
+                fundList = DbManager.Custom.ExecuteIList<string>(planB_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+                //方案B有達6檔
+                if (fundList != null && fundList.Count >= 6)
+                {
+                    return fundList;
+                }
+            }
+            //方案A未滿6檔，執行方案C
+            else if (fundList != null && fundList.Count < 6)
+            {
+                string planC_Sql = $@"DECLARE @var1 nvarchar(100), @var2 nvarchar(100), @var3 nvarchar(100), @var4 nvarchar(100);
+                            SELECT @var1 = [FundType], @var2 = [InvestmentRegionName], @var3 = [PrimaryInvestmentRegion], @var4 = [IndicatorIndexCode]
+                            FROM {Sysjust_Basic_Fund} with (nolock)
+                             where FirstBankCode = @fundId
+
+                            select FirstBankCode from {Sysjust_Basic_Fund} as a  with (nolock)
+                            inner join {WMS_DOC_RECM}  as b  with (nolock) on a.FirstBankCode = b.ProductCode
+                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3 and IndicatorIndexCode = @var4 ";
+                fundList = DbManager.Custom.ExecuteIList<string>(planC_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+
+            }
+            return fundList;
+        }
+
+        /// <summary>
+        /// 取得同類基金list 境外
+        /// </summary>
+        /// <param name="fundId"></param>
+        /// <returns></returns>
+        public List<string> GetSameTypeFundListByOverseas(string fundId)
+        {
+            string FUND_BSC = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
+            string Sysjust_Basic_Fund_2 = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Basic_Fund_2);
+            string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
+            string planA_Sql = $@"DECLARE @var1 nvarchar(100), @var2 nvarchar(100), @var3 nvarchar(100);
+                            SELECT @var1 = FundTypeName FROM  {FUND_BSC}  with (nolock) where BankProductCode = @fundId
+							 SELECT @var2 = InvestmentRegionName, @var3 = IndicatorIndexName FROM  {Sysjust_Basic_Fund_2} with (nolock)  where FirstBankCode = @fundId
+							 SELECT FirstBankCode FROM {Sysjust_Basic_Fund_2} as a  with (nolock)
+							 left join {FUND_BSC} as b  with (nolock)  on a.FirstBankCode = b.BankProductCode
+							 inner join {WMS_DOC_RECM} as c with (nolock) on b.BankProductCode = c.ProductCode
+							 where A.InvestmentRegionName =@var2 and A.IndicatorIndexName = @var3 and B.FundTypeName =@var1";
+            var para = new { fundId };
+            return DbManager.Custom.ExecuteIList<string>(planA_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+        }
+
+        /// <summary>
+        /// 取得同類基金排行資料
+        /// </summary>
+        /// <param name="fundIds">同類基金list</param>
+        /// <param name="fundId">該基金</param>
+        /// <returns></returns>
+        public List<FundTypeRank> GetSameTypeFundListDatas(List<string> fundIds, string fundId)
+        {
+            string Sysjust_Nav_Fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Nav_Fund);
+            string Sysjust_Return_Fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Return_Fund);
+            string FUND_BSC = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
+
+            string sql = $@" ;WITH CTE AS
+                              (
+                             select top 6 A.FirstBankCode,B.FundName,A.SixMonthReturnOriginalCurrency,
+                             ROW_NUMBER() OVER (order by SixMonthReturnOriginalCurrency desc) RowNumber
+                             from {Sysjust_Return_Fund}  AS A with (nolock)
+                             LEFT JOIN {FUND_BSC}  AS B  with (nolock) ON  A.FirstBankCode = B.BankProductCode
+                             where A.FirstBankCode  IN @fundIds and BankProductCode <> '' and BankProductCode <> @fundId  and A.SixMonthReturnOriginalCurrency is not null
+                             )
+                              , CTE2 AS
+                             (
+                             SELECT *,ROW_NUMBER() OVER ( order by NetAssetValueDate desc) DateRowNumber
+                             FROM {Sysjust_Nav_Fund}  AS A with (nolock)
+                             WHERE FirstBankCode in (select FirstBankCode from CTE AS B WHERE B.RowNumber < 7)  
+                             AND NetAssetValueDate =(select max(NetAssetValueDate) from {Sysjust_Nav_Fund} as B with (nolock)
+                             WHERE A.FirstBankCode=B.FirstBankCode)
+                             )
+ 
+                              SELECT 
+                             A.FirstBankCode, 
+                             A.FundName,
+                             A.SixMonthReturnOriginalCurrency,
+                             B.NetAssetValue,
+                             B.NetAssetValueDate,
+                             a.RowNumber
+                             FROM CTE AS A 
+                             LEFT JOIN CTE2 AS B ON A.FirstBankCode = B.FirstBankCode 
+                             Order by RowNumber";
+            var para = new { fundIds, fundId };
+            return DbManager.Custom.ExecuteIList<FundTypeRank>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+        }
+
+        /// <summary>
+        /// 取得同類型基金排行sp
         /// </summary>
         /// <param name="fundId"></param>
         /// <returns></returns>
         public List<FundTypeRank> GetSameTypeFundRank(string fundId) => DbManager.Custom.ExecuteIList<FundTypeRank>("sp_FundSameTypeRank", new { fundId }, commandType: System.Data.CommandType.StoredProcedure)?.ToList();
-
         /// <summary>
         /// 取得近30日淨值
         /// </summary>

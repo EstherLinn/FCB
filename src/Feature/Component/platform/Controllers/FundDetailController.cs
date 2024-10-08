@@ -74,6 +74,54 @@ namespace Feature.Wealth.Component.Controllers
 
         }
 
+        public ActionResult FundDetailNew()
+        {
+            var fundViewModel = new FundViewModel();
+            var fundid = Sitecore.Web.WebUtil.GetSafeQueryString("id");
+
+            if (string.IsNullOrEmpty(fundid))
+            {
+                return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
+            }
+
+            fundid = fundid.ToUpper();
+            var fundIndicator = _fundRepository.GetDometicOrOverseas(fundid);
+            fundViewModel = _fundRepository.GetOrSetFundDetailsCacheNew(fundid, fundIndicator);
+            var item = RenderingContext.CurrentOrNull?.Rendering.Item;
+            if (item != null)
+            {
+                fundViewModel.Item = item;
+                fundViewModel.Content = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Content.ToString());
+                fundViewModel.Note = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Note.ToString());
+                fundViewModel.Description = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Description.ToString());
+                fundViewModel.LightboxNote = ItemUtils.Field(item, Template.FundDetailsPage.Fields.LightboxNote.ToString());
+                fundViewModel.StandardDeviation = ItemUtils.Field(item, Template.FundDetailsPage.Fields.StandardDeviation.ToString());
+                fundViewModel.Sharpe = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Sharpe.ToString());
+                fundViewModel.Alpha = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Alpha.ToString());
+                fundViewModel.Beta = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Beta.ToString());
+                fundViewModel.Rsquared = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Rsquared.ToString());
+                fundViewModel.IndexCorrelationCoefficient = ItemUtils.Field(item, Template.FundDetailsPage.Fields.IndexCorrelationCoefficient.ToString());
+                fundViewModel.TrackingError = ItemUtils.Field(item, Template.FundDetailsPage.Fields.TrackingError.ToString());
+                fundViewModel.Variance = ItemUtils.Field(item, Template.FundDetailsPage.Fields.Variance.ToString());
+            }
+            if (fundViewModel.FundBaseData == null)
+            {
+                return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
+            }
+
+
+            fundViewModel = _fundRepository.GetDocLinks(fundid, fundViewModel, fundIndicator, _djMoneyApiRespository);
+
+            if (fundIndicator == nameof(FundEnum.D))
+            {
+                return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailDomestic.cshtml", fundViewModel);
+            }
+            else
+            {
+                return PartialView("~/Views/Feature/Wealth/Component/FundDetail/FundDetailOverseas.cshtml", fundViewModel);
+            }
+
+        }
         public ActionResult FundCloseFiveYears()
         {
             var getTarget = Sitecore.Web.WebUtil.GetSafeQueryString("target");
