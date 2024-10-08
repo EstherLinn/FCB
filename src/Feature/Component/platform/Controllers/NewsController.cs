@@ -4,6 +4,7 @@ using Feature.Wealth.Component.Repositories;
 using Sitecore.Configuration;
 using Sitecore.Mvc.Presentation;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Caching;
 using System.Web;
 using System.Web.Mvc;
@@ -62,9 +63,11 @@ namespace Feature.Wealth.Component.Controllers
             {
                 // 取得 MarketNews 資料庫資料
                 _datas = (List<MarketNewsModel>)_newsRespository.GetMarketNewsDbData();
-
-                // 儲存 MarketNewsCache
-                _cache.Set(MarketNewsCacheKey, _datas, _commonRespository.GetCacheExpireTime(cacheTime));
+                if (_datas != null && _datas.Any())
+                {
+                    // 儲存 MarketNewsCache
+                    _cache.Set(MarketNewsCacheKey, _datas, _commonRespository.GetCacheExpireTime(cacheTime));
+                }
             }
 
             // 整理 MarketNews 資料庫資料
@@ -114,9 +117,11 @@ namespace Feature.Wealth.Component.Controllers
 
                 // 整理 HeadlineNews 資料庫資料
                 datas = _newsRespository.OrganizeHeadlineNewsDbData(_datas);
-
-                // 儲存 HeadlineNewsCache
-                _cache.Set(HeadlineNewsCacheKey, datas, _commonRespository.GetCacheExpireTime(cacheTime));
+                if (datas.LatestHeadlines != null && datas.Headlines.Count == 4)
+                {
+                    // 儲存 HeadlineNewsCache
+                    _cache.Set(HeadlineNewsCacheKey, datas, _commonRespository.GetCacheExpireTime(cacheTime));
+                }
             }
 
             // 取得 HeadlineNews 瀏覽人次
@@ -146,8 +151,11 @@ namespace Feature.Wealth.Component.Controllers
                 // 整理 HomeHeadlines 資料庫資料
                 datas = _newsRespository.OrganizeHomeHeadlinesDbData(_datas);
 
-                // 儲存 HomeHeadlinesCache
-                _cache.Set(HomeHeadlinesCacheKey, datas, _commonRespository.GetCacheExpireTime(homeHeadlinesTime));
+                if (datas.LatestHeadlines != null && datas.Headlines.Count == 3)
+                {
+                    // 儲存 HomeHeadlinesCache
+                    _cache.Set(HomeHeadlinesCacheKey, datas, _commonRespository.GetCacheExpireTime(homeHeadlinesTime));
+                }                   
             }
 
             return View("/Views/Feature/Wealth/Component/News/HomeHeadlines.cshtml", datas);

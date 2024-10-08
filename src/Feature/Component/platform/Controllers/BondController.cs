@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.Bond;
@@ -8,12 +9,18 @@ using Newtonsoft.Json;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using Sitecore.Configuration;
 
 namespace Feature.Wealth.Component.Controllers
 {
     public class BondController : Controller
     {
         private readonly BondRepository _bondRepository = new BondRepository();
+        private readonly CommonRepository _commonRespository = new CommonRepository();
+
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly string BondSearchCacheKey = $"Fcb_BondSearchCache";
+        private readonly string cacheTime = Settings.GetSetting("BondSearchCacheTime");
 
         public ActionResult Index()
         {
@@ -38,7 +45,15 @@ namespace Feature.Wealth.Component.Controllers
 
         protected BondModel CreateModel(Item item)
         {
-            var bondList = this._bondRepository.GetBondList();
+            IList<Bond> bondList;
+            bondList = (IList<Bond>)_cache.Get(BondSearchCacheKey);
+
+            if (bondList == null) {
+                bondList = this._bondRepository.GetBondList();
+                if (bondList != null && bondList.Any()) {
+                    _cache.Set(BondSearchCacheKey, bondList, _commonRespository.GetCacheExpireTime(cacheTime));
+                }
+            }
 
             var hotKeywordTags = ItemUtils.GetMultiListValueItems(item, Template.Bond.Fields.HotKeyword);
             var keywords = hotKeywordTags.Select(f => ItemUtils.GetFieldValue(f, Template.BondTag.Fields.TagName)).ToList();

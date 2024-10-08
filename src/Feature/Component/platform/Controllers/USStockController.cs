@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Web;
 using System.Web.Mvc;
 using Feature.Wealth.Component.Models.USStock;
@@ -9,18 +10,32 @@ using Sitecore.Data.Items;
 using Sitecore.Mvc.Presentation;
 using Sitecore.Services.Core.ComponentModel;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using Sitecore.Configuration;
 
 namespace Feature.Wealth.Component.Controllers
 {
     public class USStockController : Controller
     {
         private readonly USStockRepository _uSStockRepository = new USStockRepository();
+        private readonly CommonRepository _commonRespository = new CommonRepository();
+
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly string USStockSearchCacheKey = $"Fcb_USStockSearchCache";
+        private readonly string cacheTime = Settings.GetSetting("USStockSearchCacheTime");
 
         public ActionResult Index()
         {
             var item = RenderingContext.CurrentOrNull?.Rendering.Item;
+            IList<USStock> uSStockList;
+            uSStockList = (IList<USStock>)_cache.Get(USStockSearchCacheKey);
 
-            var uSStockList = this._uSStockRepository.GetUSStockList();
+            if (uSStockList == null) {
+                uSStockList = this._uSStockRepository.GetUSStockList();
+                if (uSStockList != null && uSStockList.Any())
+                {
+                    _cache.Set(USStockSearchCacheKey, uSStockList, _commonRespository.GetCacheExpireTime(cacheTime));
+                }
+            }
 
             return View("/Views/Feature/Wealth/Component/USStock/USStock.cshtml", CreateModel(item, uSStockList));
         }

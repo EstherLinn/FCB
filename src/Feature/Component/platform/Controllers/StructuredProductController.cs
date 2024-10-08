@@ -4,6 +4,7 @@ using Sitecore.Configuration;
 using Sitecore.Mvc.Presentation;
 using Sitecore.Web;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Caching;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
@@ -52,8 +53,9 @@ namespace Feature.Wealth.Component.Controllers
             if (datas == null)
             {
                 datas = (List<StructuredProductModel>)this._structuredProductRepository.GetStructuredProducts();
-
-                _cache.Set(StructuredProductSearchCacheKey, datas, _commonRespository.GetCacheExpireTime(cacheTime));
+                if (datas != null && datas.Any()) {
+                    _cache.Set(StructuredProductSearchCacheKey, datas, _commonRespository.GetCacheExpireTime(cacheTime));
+                }
             }
 
             return new JsonNetResult(datas);
