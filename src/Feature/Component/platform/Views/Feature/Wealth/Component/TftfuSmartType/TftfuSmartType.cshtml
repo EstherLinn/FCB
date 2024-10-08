@@ -3,659 +3,669 @@
 @model TftfuStgModel
 
 @{
-	var modelitem = Model.Item;
-	if (modelitem == null) { return; }
+    var modelitem = Model.Item;
+    if (modelitem == null) { return; }
 }
 
 <div class="l-mainstage">
-	<div class="l-mainstage__wrap">
-		<div class="l-mainstage__title">
-			<h1 class="t-title">@Html.Sitecore().Field(Template.TftfuStg.Fields.MainTitle.ToString(), Model.Item)</h1>
-		</div>
-		<div class="l-mainstage__content">
-			@Html.Sitecore().Field(Template.TftfuStg.Fields.SubTitle.ToString(), Model.Item)
-		</div>
-	</div>
+    <div class="l-mainstage__wrap">
+        <div class="l-mainstage__title">
+            <h1 class="t-title">@Html.Sitecore().Field(Template.TftfuStg.Fields.MainTitle.ToString(), Model.Item)</h1>
+        </div>
+        <div class="l-mainstage__content">
+            @Html.Sitecore().Field(Template.TftfuStg.Fields.SubTitle.ToString(), Model.Item)
+        </div>
+    </div>
 </div>
 
 <div class="l-wrap">
-	<div class="c-tab c-tab--wide" data-tab="true">
-		<div class="c-tab__header">
-			<ul class="c-tab__navs">
-				<!-- .is-active: 作用中的項目 -->
-				<!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
-				<!-- 若為外連，不要賦予[data-tab-target]屬性 -->
-				<li><a href="#" class="c-tab__item is-active" target="_self" title="母基金" data-tab-target="tab-1" value="1" id="SmartType">母基金</a></li>
-				<li><a href="#" class="c-tab__item " target="_self" title="子基金" data-tab-target="tab-2">子基金</a></li>
-			</ul>
-			<div class="c-tab__collapse">
-				<a href="#" class="c-tab__switch"></a>
-				<div class="c-tab__dropdown"><a href="#" class="c-tab__clone is-active" target="_self" title="母基金" data-tab-target="tab-1">母基金</a><a href="#" class="c-tab__clone " target="_self" title="子基金" data-tab-target="tab-2">子基金</a></div>
-			</div>
-		</div>
-		<!-- is-active: 作用中的項目 -->
-		<div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
-			<div class="l-flex u-flex-col u-flex-gap-max">
+    <div class="c-tab c-tab--wide" data-tab="true">
+        <div class="c-tab__header">
+            <ul class="c-tab__navs">
+                <!-- .is-active: 作用中的項目 -->
+                <!-- [data-tab-target]: 值需對應 [data-tab-panel-id] 的值，按下後會自動顯示相對的 panel -->
+                <!-- 若為外連，不要賦予[data-tab-target]屬性 -->
+                <li><a href="#" class="c-tab__item is-active" target="_self" title="母基金" data-tab-target="tab-1" value="1" id="SmartType">母基金</a></li>
+                <li><a href="#" class="c-tab__item " target="_self" title="子基金" data-tab-target="tab-2">子基金</a></li>
+            </ul>
+            <div class="c-tab__collapse">
+                <a href="#" class="c-tab__switch"></a>
+                <div class="c-tab__dropdown"><a href="#" class="c-tab__clone is-active" target="_self" title="母基金" data-tab-target="tab-1">母基金</a><a href="#" class="c-tab__clone " target="_self" title="子基金" data-tab-target="tab-2">子基金</a></div>
+            </div>
+        </div>
+        <!-- is-active: 作用中的項目 -->
+        <div class="c-tab__panel is-active" data-tab-panel-id="tab-1">
+            <div class="l-flex u-flex-col u-flex-gap-max">
 
-				<div class="l-flex__item">
-					<div class="l-flex u-flex-col u-flex-gap-sm">
-						<div class="l-flex__item" data-filter-empty="false">
-							<div class="l-flex l-flex--wrap u-flex-gap-sm">
-								<div class="l-flex__item u-right u-hidden@dt-only">
-									<div class="o-sortingbox">
-										<!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
-										<select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="hotTable" id="uid-sortbox1">
-											<option value="">排序</option>
-											<option value="基金名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">基金名稱高至低</option>
-											<option value="基金名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">基金名稱低至高</option>
-											<option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
-											<option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
-											<option value="幣別高至低" data-sorting-column="Currency.Key" data-sorting-class="is-desc">幣別高至低</option>
-											<option value="幣別低至高" data-sorting-column="Currency.Key" data-sorting-class="is-asc">幣別低至高</option>
-											<option value="當日漲跌幅高至低" data-sorting-column="PercentageChangeInFundPrice.Value" data-sorting-class="is-desc">當日漲跌幅高至低</option>
-											<option value="當日漲跌幅低至高" data-sorting-column="PercentageChangeInFundPrice.Value" data-sorting-class="is-asc">當日漲跌幅低至高</option>
-											<option value="6個月績效高至低" data-sorting-column="SixMonthReturnOriginalCurrency.Value" data-sorting-class="is-desc">6個月績效高至低</option>
-											<option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency.Value" data-sorting-class="is-asc">6個月績效低至高</option>
-											<option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
-											<option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
-										</select>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="l-flex__item" data-filter-empty="false">
-							<div class="l-table">
-								<table class="c-table@dt-only c-cardTable@lt" data-table-name="hotTable" id="table1">
-									<colgroup>
-										<col style="width: auto;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-									</colgroup>
-									<thead>
-										<tr class="u-nowrap">
-											<th>
-												<div class="c-table__title">
-													<span>基金名稱</span>
-													<!-- .is-asc: 升冪 -->
-													<!-- .is-desc: 降冪 -->
-													<a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>最新淨值<br>(淨值日)</span>
-													<a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>幣別</span>
-													<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-													<a href="#" class="o-sorting" data-sorting-column="Currency.Key"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>當日漲跌幅</span>
-													<a href="#" class="o-sorting" data-sorting-column="PercentageChangeInFundPrice.Value"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>6個月績效</span>
-													<a href="#" class="o-sorting" data-sorting-column="SixMonthReturnOriginalCurrency.Value"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>基金類型</span>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>風險屬性</span>
-													<a href="#" class="o-sorting" data-sorting-column="RiskRewardLevel"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>關注/比較</span>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>申購</span>
-												</div>
-											</th>
-										</tr>
-									</thead>
-									<tbody id="result1"></tbody>
-								</table>
-								<div class="l-pagination">
-									<div class="l-pagination__size" id="uid-perPage1">
-									</div>
-									<script id="uid-template-perPage1" type="text/html">
-										<span>每頁顯示</span>
-										<!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
-										<select id="uid-view-perPage1" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
-											<% for(var i = 0; i < values.length - 1; i++ ) { %>
-											<option value="<%= values[i] %>"><%= values[i] %>筆</option>
-											<% } %>
-											<option value="<%= values[values.length - 1] %>">全部</option>
-										</select>
-									</script>
-									<div class="l-pagination__switch" id="uid-pagination1">
-									</div>
-									<script id="uid-template-pagination1" type="text/html">
-										<div class="o-pagination">
-											<% if (currentPage > 1) { %>
-											<a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
-											<% } else { %>
-											<!-- .is-disabled: 停用狀態，無法點擊 -->
-											<a href="#" class="o-pagination__prev is-disabled"></a>
-											<% } %>
-											<span class="o-pagination__pager">
-												<input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
-												<span class="o-pagination__total"><%= totalPages %></span>
-											</span>
-											<% if (currentPage < totalPages ) { %>
-											<a href="javascript:;" data-page="next" class="o-pagination__next"></a>
-											<% } else { %>
-											<a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
-											<% } %>
-										</div>
-									</script>
-								</div>
-							</div>
-						</div>
-						<div class="l-flex__item" data-filter-empty="true" style="display:none;">
-							<div class="c-section">
-								<div class="c-section__content">
-									<div class="c-empty">
-										<div class="c-empty__img">
-											<img src="~/themes/images/lions/lion-compare.svg" alt="">
-										</div>
-										<div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="c-tab__panel" data-tab-panel-id="tab-2">
-			<div class="l-flex u-flex-col u-flex-gap-max">
+                <div class="l-flex__item">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        <div class="l-flex__item" data-filter-empty="false">
+                            <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                                <div class="l-flex__item u-right u-hidden@dt-only">
+                                    <div class="o-sortingbox">
+                                        <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                        <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="hotTable" id="uid-sortbox1">
+                                            <option value="">排序</option>
+                                            <option value="基金名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">基金名稱高至低</option>
+                                            <option value="基金名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">基金名稱低至高</option>
+                                            <option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
+                                            <option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
+                                            <option value="幣別高至低" data-sorting-column="Currency.Key" data-sorting-class="is-desc">幣別高至低</option>
+                                            <option value="幣別低至高" data-sorting-column="Currency.Key" data-sorting-class="is-asc">幣別低至高</option>
+                                            <option value="當日漲跌幅高至低" data-sorting-column="PercentageChangeInFundPrice.Value" data-sorting-class="is-desc">當日漲跌幅高至低</option>
+                                            <option value="當日漲跌幅低至高" data-sorting-column="PercentageChangeInFundPrice.Value" data-sorting-class="is-asc">當日漲跌幅低至高</option>
+                                            <option value="6個月績效高至低" data-sorting-column="SixMonthReturnOriginalCurrency.Value" data-sorting-class="is-desc">6個月績效高至低</option>
+                                            <option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency.Value" data-sorting-class="is-asc">6個月績效低至高</option>
+                                            <option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
+                                            <option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" data-filter-empty="false">
+                            <div class="l-table">
+                                <table class="c-table@dt-only c-cardTable@lt" data-table-name="hotTable" id="table1">
+                                    <colgroup>
+                                        <col style="width: auto;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr class="u-nowrap">
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>基金名稱</span>
+                                                    <!-- .is-asc: 升冪 -->
+                                                    <!-- .is-desc: 降冪 -->
+                                                    <a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>最新淨值<br>(淨值日)</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>幣別</span>
+                                                    <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                                    <a href="#" class="o-sorting" data-sorting-column="Currency.Key"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>當日漲跌幅</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="PercentageChangeInFundPrice.Value"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>6個月績效</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnOriginalCurrency.Value"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>基金類型</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>風險屬性</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="RiskRewardLevel"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>關注/比較</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>申購</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="result1"></tbody>
+                                </table>
+                                <div class="l-pagination">
+                                    <div class="l-pagination__size" id="uid-perPage1">
+                                    </div>
+                                    <script id="uid-template-perPage1" type="text/html">
+                                        <span>每頁顯示</span>
+                                        <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+                                        <select id="uid-view-perPage1" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+                                            <% for(var i = 0; i < values.length - 1; i++ ) { %>
+                                            <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+                                            <% } %>
+                                            <option value="<%= values[values.length - 1] %>">全部</option>
+                                        </select>
+                                    </script>
+                                    <div class="l-pagination__switch" id="uid-pagination1">
+                                    </div>
+                                    <script id="uid-template-pagination1" type="text/html">
+                                        <div class="o-pagination">
+                                            <% if (currentPage > 1) { %>
+                                            <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+                                            <% } else { %>
+                                            <!-- .is-disabled: 停用狀態，無法點擊 -->
+                                            <a href="#" class="o-pagination__prev is-disabled"></a>
+                                            <% } %>
+                                            <span class="o-pagination__pager">
+                                                <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+                                                <span class="o-pagination__total"><%= totalPages %></span>
+                                            </span>
+                                            <% if (currentPage < totalPages ) { %>
+                                            <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+                                            <% } else { %>
+                                            <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+                                            <% } %>
+                                        </div>
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item" data-filter-empty="true" style="display:none;">
+                            <div class="c-section">
+                                <div class="c-section__content">
+                                    <div class="c-empty">
+                                        <div class="c-empty__img">
+                                            <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                                        </div>
+                                        <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-tab__panel" data-tab-panel-id="tab-2">
+            <div class="l-flex u-flex-col u-flex-gap-max">
 
-				<div class="l-flex__item" data-filter-empty="false">
-					<div class="l-flex u-flex-col u-flex-gap-sm">
-						<div class="l-flex__item">
-							<div class="l-flex l-flex--wrap u-flex-gap-sm">
-								<div class="l-flex__item u-right u-hidden@dt-only">
-									<div class="o-sortingbox">
-										<!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
-										<select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="hotTable2" id="uid-sortbox2">
-											<option value="">排序</option>
-											<option value="基金名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">基金名稱高至低</option>
-											<option value="基金名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">基金名稱低至高</option>
-											<option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
-											<option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
-											<option value="幣別高至低" data-sorting-column="Currency.Key" data-sorting-class="is-desc">幣別高至低</option>
-											<option value="幣別低至高" data-sorting-column="Currency.Key" data-sorting-class="is-asc">幣別低至高</option>
-											<option value="當日漲跌幅高至低" data-sorting-column="PercentageChangeInFundPrice.Value" data-sorting-class="is-desc">當日漲跌幅高至低</option>
-											<option value="當日漲跌幅低至高" data-sorting-column="PercentageChangeInFundPrice.Value" data-sorting-class="is-asc">當日漲跌幅低至高</option>
-											<option value="6個月績效高至低" data-sorting-column="SixMonthReturnOriginalCurrency.Value" data-sorting-class="is-desc">6個月績效高至低</option>
-											<option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency.Value" data-sorting-class="is-asc">6個月績效低至高</option>
-											<option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
-											<option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
-										</select>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="l-flex__item">
-							<div class="l-table">
-								<table class="c-table@dt-only c-cardTable@lt" data-table-name="hotTable2" id="table2">
-									<colgroup>
-										<col style="width: auto;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-										<col style="width: 1%;">
-									</colgroup>
-									<thead>
-										<tr class="u-nowrap">
-											<th>
-												<div class="c-table__title">
-													<span>基金名稱</span>
-													<!-- .is-asc: 升冪 -->
-													<!-- .is-desc: 降冪 -->
-													<a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>最新淨值<br>(淨值日)</span>
-													<a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>幣別</span>
-													<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-													<a href="#" class="o-sorting" data-sorting-column="Currency.Key"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>當日漲跌幅</span>
-													<a href="#" class="o-sorting" data-sorting-column="PercentageChangeInFundPrice.Value"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>6個月績效</span>
-													<a href="#" class="o-sorting" data-sorting-column="SixMonthReturnOriginalCurrency.Value"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>基金類型</span>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>風險屬性</span>
-													<a href="#" class="o-sorting" data-sorting-column="RiskRewardLevel"></a>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>關注/比較</span>
-												</div>
-											</th>
-											<th>
-												<div class="c-table__title">
-													<span>申購</span>
-												</div>
-											</th>
-										</tr>
-									</thead>
-									<tbody id="result2"></tbody>
-								</table>
-								<div class="l-pagination">
-									<div class="l-pagination__size" id="uid-perPage2">
-									</div>
-									<script id="uid-template-perPage2" type="text/html">
-										<span>每頁顯示</span>
-										<!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
-										<select id="uid-view-perPage2" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
-											<% for(var i = 0; i < values.length - 1; i++ ) { %>
-											<option value="<%= values[i] %>"><%= values[i] %>筆</option>
-											<% } %>
-											<option value="<%= values[values.length - 1] %>">全部</option>
-										</select>
-									</script>
-									<div class="l-pagination__switch" id="uid-pagination2">
-									</div>
-									<script id="uid-template-pagination2" type="text/html">
-										<div class="o-pagination">
-											<% if (currentPage > 1) { %>
-											<a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
-											<% } else { %>
-											<!-- .is-disabled: 停用狀態，無法點擊 -->
-											<a href="#" class="o-pagination__prev is-disabled"></a>
-											<% } %>
-											<span class="o-pagination__pager">
-												<input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
-												<span class="o-pagination__total"><%= totalPages %></span>
-											</span>
-											<% if (currentPage < totalPages ) { %>
-											<a href="javascript:;" data-page="next" class="o-pagination__next"></a>
-											<% } else { %>
-											<a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
-											<% } %>
-										</div>
-									</script>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="l-flex__item" data-filter-empty="true" style="display:none;">
-					<div class="c-section">
-						<div class="c-section__content">
-							<div class="c-empty">
-								<div class="c-empty__img">
-									<img src="~/themes/images/lions/lion-compare.svg" alt="">
-								</div>
-								<div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                <div class="l-flex__item" data-filter-empty="false">
+                    <div class="l-flex u-flex-col u-flex-gap-sm">
+                        <div class="l-flex__item">
+                            <div class="l-flex l-flex--wrap u-flex-gap-sm">
+                                <div class="l-flex__item u-right u-hidden@dt-only">
+                                    <div class="o-sortingbox">
+                                        <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                        <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="hotTable2" id="uid-sortbox2">
+                                            <option value="">排序</option>
+                                            <option value="基金名稱高至低" data-sorting-column="ProductCode" data-sorting-class="is-desc">基金名稱高至低</option>
+                                            <option value="基金名稱低至高" data-sorting-column="ProductCode" data-sorting-class="is-asc">基金名稱低至高</option>
+                                            <option value="最新淨值高至低" data-sorting-column="NetAssetValue" data-sorting-class="is-desc">最新淨值高至低</option>
+                                            <option value="最新淨值低至高" data-sorting-column="NetAssetValue" data-sorting-class="is-asc">最新淨值低至高</option>
+                                            <option value="幣別高至低" data-sorting-column="Currency.Key" data-sorting-class="is-desc">幣別高至低</option>
+                                            <option value="幣別低至高" data-sorting-column="Currency.Key" data-sorting-class="is-asc">幣別低至高</option>
+                                            <option value="當日漲跌幅高至低" data-sorting-column="PercentageChangeInFundPrice.Value" data-sorting-class="is-desc">當日漲跌幅高至低</option>
+                                            <option value="當日漲跌幅低至高" data-sorting-column="PercentageChangeInFundPrice.Value" data-sorting-class="is-asc">當日漲跌幅低至高</option>
+                                            <option value="6個月績效高至低" data-sorting-column="SixMonthReturnOriginalCurrency.Value" data-sorting-class="is-desc">6個月績效高至低</option>
+                                            <option value="6個月績效低至高" data-sorting-column="SixMonthReturnOriginalCurrency.Value" data-sorting-class="is-asc">6個月績效低至高</option>
+                                            <option value="風險屬性高至低" data-sorting-column="RiskRewardLevel" data-sorting-class="is-desc">風險屬性高至低</option>
+                                            <option value="風險屬性低至高" data-sorting-column="RiskRewardLevel" data-sorting-class="is-asc">風險屬性低至高</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="l-flex__item">
+                            <div class="l-table">
+                                <table class="c-table@dt-only c-cardTable@lt" data-table-name="hotTable2" id="table2">
+                                    <colgroup>
+                                        <col style="width: auto;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                        <col style="width: 1%;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr class="u-nowrap">
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>基金名稱</span>
+                                                    <!-- .is-asc: 升冪 -->
+                                                    <!-- .is-desc: 降冪 -->
+                                                    <a href="#" class="o-sorting" data-sorting-column="ProductCode"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>最新淨值<br>(淨值日)</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="NetAssetValue"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>幣別</span>
+                                                    <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                                                    <a href="#" class="o-sorting" data-sorting-column="Currency.Key"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>當日漲跌幅</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="PercentageChangeInFundPrice.Value"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>6個月績效</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="SixMonthReturnOriginalCurrency.Value"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>基金類型</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>風險屬性</span>
+                                                    <a href="#" class="o-sorting" data-sorting-column="RiskRewardLevel"></a>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>關注/比較</span>
+                                                </div>
+                                            </th>
+                                            <th>
+                                                <div class="c-table__title">
+                                                    <span>申購</span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="result2"></tbody>
+                                </table>
+                                <div class="l-pagination">
+                                    <div class="l-pagination__size" id="uid-perPage2">
+                                    </div>
+                                    <script id="uid-template-perPage2" type="text/html">
+                                        <span>每頁顯示</span>
+                                        <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
+                                        <select id="uid-view-perPage2" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+                                            <% for(var i = 0; i < values.length - 1; i++ ) { %>
+                                            <option value="<%= values[i] %>"><%= values[i] %>筆</option>
+                                            <% } %>
+                                            <option value="<%= values[values.length - 1] %>">全部</option>
+                                        </select>
+                                    </script>
+                                    <div class="l-pagination__switch" id="uid-pagination2">
+                                    </div>
+                                    <script id="uid-template-pagination2" type="text/html">
+                                        <div class="o-pagination">
+                                            <% if (currentPage > 1) { %>
+                                            <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
+                                            <% } else { %>
+                                            <!-- .is-disabled: 停用狀態，無法點擊 -->
+                                            <a href="#" class="o-pagination__prev is-disabled"></a>
+                                            <% } %>
+                                            <span class="o-pagination__pager">
+                                                <input data-page-input type="number" value="<%= currentPage %>" class="o-pagination__no">
+                                                <span class="o-pagination__total"><%= totalPages %></span>
+                                            </span>
+                                            <% if (currentPage < totalPages ) { %>
+                                            <a href="javascript:;" data-page="next" class="o-pagination__next"></a>
+                                            <% } else { %>
+                                            <a href="javascript:;" data-page="next" class="o-pagination__next is-disabled"></a>
+                                            <% } %>
+                                        </div>
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="l-flex__item" data-filter-empty="true" style="display:none;">
+                    <div class="c-section">
+                        <div class="c-section__content">
+                            <div class="c-empty">
+                                <div class="c-empty__img">
+                                    <img src="~/themes/images/lions/lion-compare.svg" alt="">
+                                </div>
+                                <div class="c-empty__desc">查無商品，請嘗試調整篩選條件</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 
 
 <script id="template" type="text/html">
-	<tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
-			<td class="c-cardTable__top"></td>
-			<td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
-				<div class="c-cardTable__content">
-					<div class="l-target">
-						<div class="l-target__name">
-							<a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= FundName %></a>
-						</div>
-						<% if (Tags!=null) { %>
-						<div class="l-target__additional">
-							<ul class="l-tag">
-								<% for(var i = 0; i < Tags.length; i++ ) { %>
-								<li class="l-tag__item">
-									<!-- <a href="#" class="o-tag">百元基金</a> -->
-									<span class="o-tag"><%= Tags[i] %></span>
-								</li>
-								<% } %>
-							</ul>
-						</div>
-						<% } %>
-					</div>
-				</div>
-			</td>
-			<td class="c-cardTable__space"></td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="4">最新淨值<br>(淨值日)</div>
-				<% if (NetAssetValue != null) { %>
-				<div class="c-cardTable__content"><%= NetAssetValue.toFixed(4) %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
-				<% } else {%>
-				<span>-</span>
-				<% } %>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="4">
-					幣別
-					<a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
-				</div>
-				<div class="c-cardTable__content">
-					<% if (Currency.Value != null) { %>
-					<a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= Currency.Value %></a>
-					<% } else {%>
-					<span>-</span>
-					<% } %>
-				</div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
-				<div class="c-cardTable__content">
-					<% if (PercentageChangeInFundPrice.Value!=null) { %>
-					<% if (PercentageChangeInFundPrice.Key) { %>
-					<span class="o-rise"><%= PercentageChangeInFundPrice.Text %>%</span>
-					<% } else { %>
-					<span class="o-fall"><%= PercentageChangeInFundPrice.Text %>%</span>
-					<% } %>
-					<% } else {%>
-					<span>-</span>
-					<% } %>
-				</div>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="4">6個月</div>
-				<div class="c-cardTable__content">
-					<% if (SixMonthReturnOriginalCurrency.Value!=null) { %>
-					<% if (SixMonthReturnOriginalCurrency.Key) { %>
-					<span class="o-rise"><%= SixMonthReturnOriginalCurrency.Text %>%</span>
-					<% } else { %>
-					<span class="o-fall"><%= SixMonthReturnOriginalCurrency.Text %>%</span>
-					<% } %>
-					<% } else {%>
-					<span>-</span>
-					<% } %>
-				</div>
-			</td>
-			 <td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="4">基金類型</div>
-				<% if (FundTypeName != null) { %>
-				<div class="c-cardTable__content"><%= FundTypeName %></div>
-				<% } else {%>
-				<span>-</span>
-				<% } %>
-			</td>
-			<td class="c-cardTable__body" data-card-table-width="1/2">
-				<div class="c-cardTable__title" data-length="5">風險屬性</div>
-				<% if (RiskRewardLevel != null) { %>
-				<div class="c-cardTable__content"><%= RiskRewardLevel %></div>
-				<% } else {%>
-				<span>-</span>
-				<% } %>
-			</td>
-			<td class="c-cardTable__space"></td>
-			<td class="c-cardTable__footer" data-card-table-width="<%= IsOnlineSubscriptionAvailability == true ? '2/3' : '1/1' %>">
-				<div class="c-cardTable__content">
-					<ul class="l-collect l-collect--divider@lt">
-						<li class="l-collect__item">
-							<%= FocusTag %>
-						</li>
-						<li class="l-collect__item">
-							<%= CompareTag %>
-						</li>
-					</ul>
-				</div>
-			</td>
-			<td class="c-cardTable__footer" data-card-table-width="1/3">
-				<div class="c-cardTable__content">
-					<% if (IsOnlineSubscriptionAvailability) { %>
-						<%= SubscriptionTag %>
-					<% } %>
-				</div>
-			</td>
-		</tr>
+    <tr class="c-cardTable__item u-nowrap@dt-only u-center@dt-only">
+            <td class="c-cardTable__top"></td>
+            <td class="c-cardTable__header u-wrap@dt-only u-left@dt-only">
+                <div class="c-cardTable__content">
+                    <div class="l-target">
+                        <div class="l-target__name">
+                            <a href="<%= DetailUrl %>?id=<%= ProductCode %>" class="o-contentLink t-bold u-ellipsis-2" target="_blank"><%= ProductCode %> <%= FundName %></a>
+                        </div>
+                        <% if (Tags!=null) { %>
+                        <div class="l-target__additional">
+                            <ul class="l-tag">
+                                <% for(var i = 0; i < Tags.length; i++ ) { %>
+                                <li class="l-tag__item">
+                                    <!-- <a href="#" class="o-tag">百元基金</a> -->
+                                    <span class="o-tag"><%= Tags[i] %></span>
+                                </li>
+                                <% } %>
+                            </ul>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </td>
+            <td class="c-cardTable__space"></td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="4">最新淨值<br>(淨值日)</div>
+                <% if (NetAssetValue != null) { %>
+                <div class="c-cardTable__content"><%= NetAssetValue.toFixed(4) %><br><span class="t-date"><%= NetAssetValueDate %></span></div>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="4">
+                    幣別
+                    <a href="#popupCurrency" class="o-icon o-icon--tip o-icon--xs" data-popup="true"></a>
+                </div>
+                <div class="c-cardTable__content">
+                    <% if (Currency.Value != null) { %>
+                    <a href="#popupCurrencyWebSite" class="o-link" data-popup="true"><%= Currency.Value %></a>
+                    <% } else {%>
+                    <span>-</span>
+                    <% } %>
+                </div>
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">當日漲跌幅</div>
+                <div class="c-cardTable__content">
+                    <% if (PercentageChangeInFundPrice.Value!=null) { %>
+                    <% if (PercentageChangeInFundPrice.Value == 0) { %>
+                    <span><%= PercentageChangeInFundPrice.Text %>%</span>
+                    <% } else if (PercentageChangeInFundPrice.Key) { %>
+                    <span class="o-rise"><%= PercentageChangeInFundPrice.Text %>%</span>
+                    <% } else { %>
+                    <span class="o-fall"><%= PercentageChangeInFundPrice.Text %>%</span>
+                    <% } %>
+                    <% } else {%>
+                    <span>-</span>
+                    <% } %>
+                </div>
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="4">6個月</div>
+                <div class="c-cardTable__content">
+                    <% if (SixMonthReturnOriginalCurrency.Value!=null) { %>
+                    <% if (SixMonthReturnOriginalCurrency.Value == 0) { %>
+                    <span><%= SixMonthReturnOriginalCurrency.Text %>%</span>
+                    <% } else if (SixMonthReturnOriginalCurrency.Key) { %>
+                    <span class="o-rise"><%= SixMonthReturnOriginalCurrency.Text %>%</span>
+                    <% } else { %>
+                    <span class="o-fall"><%= SixMonthReturnOriginalCurrency.Text %>%</span>
+                    <% } %>
+                    <% } else {%>
+                    <span>-</span>
+                    <% } %>
+                </div>
+            </td>
+             <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="4">基金類型</div>
+                <% if (FundTypeName != null) { %>
+                <div class="c-cardTable__content"><%= FundTypeName %></div>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </td>
+            <td class="c-cardTable__body" data-card-table-width="1/2">
+                <div class="c-cardTable__title" data-length="5">風險屬性</div>
+                <% if (RiskRewardLevel != null) { %>
+                <div class="c-cardTable__content"><%= RiskRewardLevel %></div>
+                <% } else {%>
+                <span>-</span>
+                <% } %>
+            </td>
+            <td class="c-cardTable__space"></td>
+            <td class="c-cardTable__footer" data-card-table-width="<%= IsOnlineSubscriptionAvailability == true ? '2/3' : '1/1' %>">
+                <div class="c-cardTable__content">
+                    <ul class="l-collect l-collect--divider@lt">
+                        <li class="l-collect__item">
+                            <%= FocusTag %>
+                        </li>
+                        <li class="l-collect__item">
+                            <%= CompareTag %>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+            <td class="c-cardTable__footer" data-card-table-width="1/3">
+                <div class="c-cardTable__content">
+                    <% if (IsOnlineSubscriptionAvailability) { %>
+                        <%= SubscriptionTag %>
+                    <% } %>
+                </div>
+            </td>
+        </tr>
 </script>
 
 
 <script>
-	(function ($, window, document, undefined) {
-		document.addEventListener('DOMContentLoaded', function () {
-			if (!jQuery) {
-				return;
-			}
-			let fjs;
+    (function ($, window, document, undefined) {
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!jQuery) {
+                return;
+            }
+            let fjs;
 
-			let int = '1';
-			var token = $('input[name="__RequestVerificationToken"]').val();
+            let int = '1';
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            window.loading = () => 0;//蓋掉window.loading function
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "TftfuSmartType", "GetAllFunds")',
+                type: 'POST',
+                data: { __RequestVerificationToken: token },
+                success: function (data) {
+                    initFilter(data, '1');
+                    OrderColumn("hotTable", 'SixMonthReturnOriginalCurrency.Value', 'is-desc', true);
+                },
+                complete: function () {
+                    $('.c-loading').loading('hide');
+                    window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
+                },
+                error: function (err) {
+                    console.log(err);
+                    $('.c-loading').loading('hide');
+                }
+            });
 
-			$.ajax({
-				url: '@ClientRoute.GenerateUrl(this, "TftfuSmartType", "GetAllFunds")',
-				type: 'POST',
-				data: { __RequestVerificationToken: token },
-			}).done(function (data, textStatus, jqXHR) {
-				initFilter(data, '1');
+            $.ajax({
+                url: '@ClientRoute.GenerateUrl(this, "TftfuSmartType", "GetAllFunds2")',
+                type: 'POST',
+                data: { __RequestVerificationToken: token },
+                success: function (data) {
+                    initFilter(data, '2');
+                    OrderColumn("hotTable2", 'SixMonthReturnOriginalCurrency.Value', 'is-desc', true);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
 
-				console.log(data);
-			}).fail(function (jqXHR, textStatus, errorThrown) {
-			}).always(function () {
-				window.loading('hide');
-			});
+            function initFilter(data, int) {
+                let uid = 'select#uid-sortbox' + int;
+                let result = '#result' + int;
+                let table = '#table' + int;
+                let uidpagination = '#uid-pagination' + int;
+                let uidtemplatepagination = '#uid-template-pagination' + int;
+                let uidperPage = '#uid-perPage' + int;
+                let uidtemplateperPage = '#uid-template-perPage' + int;
+                let uidviewperPage = '#uid-view-perPage' + int;
+                let opts = {
+                    template: '#template',
+                    callbacks: {
+                        beforeRecordRender: function (record) {
+                            const dot2 = 2;
+                            record.PercentageChangeInFundPrice.Text = Math.abs(record.PercentageChangeInFundPrice.Value).toFixed(dot2);
+                            record.SixMonthReturnOriginalCurrency.Text = Math.abs(record.SixMonthReturnOriginalCurrency.Value).toFixed(dot2);
+                        },
+                        afterFilter: function (result) {
+                            this.paginator.setCurrentPage(1);
+                            let isEmpty = result.length == 0;
+                            $(`[data-filter-empty=${isEmpty}]`).show();
+                            $(`[data-filter-empty=${!isEmpty}]`).hide();
+                            window.loading('hide');
+                        },
+                        afterPagination: function () {
+                            $('[data-popup]').magnificPopup();
+                            $('[eh-compare]').trigger('exec');
+                            $('[eh-focus]').trigger('exec');
+                            $('[eh-subscription-type]').trigger('exec');
+                        }
+                    },
+                    order: {
+                        default_sort: 'asc',
+                        sorts: [
+                            { field: 'group1', ele: uid }
+                        ],
+                        onSortEvent: function (f, e) {
+                            let $self = $(this);
+                            if (e.type === 'click') { } else if (e.type === 'change') {
+                                let $selected = $self.find(':selected');
+                                let field = $selected.data('sorting-column');
+                                let order = $selected.data('sorting-class');
+                                f.field = field;
+                                if (!!order) {
+                                    if (order === 'is-desc') {
+                                        f.order = 'desc';
+                                    } else if (order === 'is-asc') {
+                                        f.order = 'asc';
+                                    }
+                                } else {
+                                    f.order = f.order === 'desc' ? 'asc' : 'desc';
+                                }
+                            }
+                        }
+                    },
+                    pagination: {
+                        container: uidpagination,
+                        paginationView: uidtemplatepagination,
+                        visiblePages: 0,
+                        perPage: {
+                            values: [10, 50, 100, data.length],
+                            container: uidperPage,
+                            perPageView: uidtemplateperPage
+                        }
+                    }
+                };
+                fjs = FilterJS(data, result, opts);
 
-			$.ajax({
-				url: '@ClientRoute.GenerateUrl(this, "TftfuSmartType", "GetAllFunds2")',
-				type: 'POST',
-				data: { __RequestVerificationToken: token },
-			}).done(function (data, textStatus, jqXHR) {
-				initFilter(data, '2');
+                function fnScrollUp() {
+                    loading();
+                    $(table).scrollPosition('scroll');
+                }
 
-				console.log(data);
-			}).fail(function (jqXHR, textStatus, errorThrown) {
-			}).always(function () {
-				window.loading('hide');
-			});
-			function initFilter(data, int) {
-				let uid = 'select#uid-sortbox' + int;
-				let result = '#result' + int;
-				let table = '#table' + int;
-				let uidpagination = '#uid-pagination' + int;
-				let uidtemplatepagination = '#uid-template-pagination' + int;
-				let uidperPage = '#uid-perPage' + int;
-				let uidtemplateperPage = '#uid-template-perPage' + int;
-				let uidviewperPage = '#uid-view-perPage' + int;
-				let opts = {
-					template: '#template',
-					callbacks: {
-						beforeRecordRender: function (record) {
-							const dot2 = 2;
-							record.PercentageChangeInFundPrice.Text = Math.abs(record.PercentageChangeInFundPrice.Value).toFixed(dot2);
-							record.SixMonthReturnOriginalCurrency.Text = Math.abs(record.SixMonthReturnOriginalCurrency.Value).toFixed(dot2);
-						},
-						afterFilter: function (result) {
-							this.paginator.setCurrentPage(1);
-							let isEmpty = result.length == 0;
-							$(`[data-filter-empty=${isEmpty}]`).show();
-							$(`[data-filter-empty=${!isEmpty}]`).hide();
-							window.loading('hide');
-						},
-						afterPagination: function () {
-							$('[data-popup]').magnificPopup();
-							$('[eh-compare]').trigger('exec');
-							$('[eh-focus]').trigger('exec');
-							$('[eh-subscription-type]').trigger('exec');
-						}
-					},
-					order: {
-						default_sort: 'asc',
-						sorts: [
-							{ field: 'group1', ele: uid }
-						],
-						onSortEvent: function (f, e) {
-							let $self = $(this);
-							if (e.type === 'click') { } else if (e.type === 'change') {
-								let $selected = $self.find(':selected');
-								let field = $selected.data('sorting-column');
-								let order = $selected.data('sorting-class');
-								f.field = field;
-								if (!!order) {
-									if (order === 'is-desc') {
-										f.order = 'desc';
-									} else if (order === 'is-asc') {
-										f.order = 'asc';
-									}
-								} else {
-									f.order = f.order === 'desc' ? 'asc' : 'desc';
-								}
-							}
-						}
-					},
-					pagination: {
-						container: uidpagination,
-						paginationView: uidtemplatepagination,
-						visiblePages: 0,
-						perPage: {
-							values: [10, 50, 100, data.length],
-							container: uidperPage,
-							perPageView: uidtemplateperPage
-						}
-					}
-				};
-				fjs = FilterJS(data, result, opts);
+                function fnScrollUpPageTo1() {
+                    loading();
+                    $(table).scrollPosition('scroll');
+                    fjs.paginator.setCurrentPage(1);
+                }
 
-				function fnScrollUp() {
-					loading();
-					$(table).scrollPosition('scroll');
-				}
+                let $containgerPagination = $(uidpagination);
+                $containgerPagination.on('click', '[data-page]', fnScrollUp);
+                $containgerPagination.on('keypress', '[data-page-input]', function (e) {
+                    if (e.which === 13) {
+                        fnScrollUp();
+                    }
+                });
+                $(uidviewperPage).on('change.pagesize', function () {
+                    fnScrollUp();
+                    fjs.paginator.setCurrentPage(1);
+                }).sizebox();
+            }
 
-				function fnScrollUpPageTo1() {
-					loading();
-					$(table).scrollPosition('scroll');
-					fjs.paginator.setCurrentPage(1);
-				}
+            // table 排序功能
+            function initializeSorting(tableId, sortingBoxId, datasortingBox) {
+                $(tableId).on('click.sorting', '.o-sorting', function (e) {
+                    e.preventDefault();
+                    window.loading('show');
+                    var $this = $(this);
+                    var orderby = '';
 
-				let $containgerPagination = $(uidpagination);
-				$containgerPagination.on('click', '[data-page]', fnScrollUp);
-				$containgerPagination.on('keypress', '[data-page-input]', function (e) {
-					if (e.which === 13) {
-						fnScrollUp();
-					}
-				});
-				$(uidviewperPage).on('change.pagesize', function () {
-					fnScrollUp();
-					fjs.paginator.setCurrentPage(1);
-				}).sizebox();
-			}
+                    if ($this.hasClass('is-asc')) {
+                        $this.removeClass('is-asc').addClass('is-desc');
+                        orderby = 'is-desc';
+                    } else {
+                        $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                        $this.addClass('is-asc');
+                        orderby = 'is-asc';
+                    }
 
-			// table 排序功能
-			function initializeSorting(tableId, sortingBoxId, datasortingBox) {
-				$(tableId).on('click.sorting', '.o-sorting', function (e) {
-					e.preventDefault();
-					window.loading('show');
-					var $this = $(this);
-					var orderby = '';
+                    // 連動 sortingbox
+                    let $sortingbox = $(sortingBoxId);
+                    var sortingColumn = $this.data('sorting-column');
+                    let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
+                    if ($option.length != 0) {
+                        $option.prop('selected', true);
+                        $sortingbox.trigger('change');
+                    } else {
+                        $sortingbox.val(null).trigger('change');
+                    }
 
-					if ($this.hasClass('is-asc')) {
-						$this.removeClass('is-asc').addClass('is-desc');
-						orderby = 'is-desc';
-					} else {
-						$this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
-						$this.addClass('is-asc');
-						orderby = 'is-asc';
-					}
+                    // 因展示，使用 setTimeout 延遲關閉 loading
+                    setTimeout(() => {
+                        window.loading('hide');
+                    }, 300);
+                });
 
-					// 連動 sortingbox
-					let $sortingbox = $(sortingBoxId);
-					var sortingColumn = $this.data('sorting-column');
-					let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox);
-					if ($option.length != 0) {
-						$option.prop('selected', true);
-						$sortingbox.trigger('change');
-					} else {
-						$sortingbox.val(null).trigger('change');
-					}
+                $(sortingBoxId).on('change.select2', function (e) {
+                    let self = this;
+                    let $self = $(this);
+                    let sorting = $self.val();
+                    let $linkTable = $(tableId);
+                    let sortingColumn = $('option:selected', self).data('sorting-column');
+                    let orderby = $('option:selected', self).data('sorting-class');
 
-					// 因展示，使用 setTimeout 延遲關閉 loading
-					setTimeout(() => {
-						window.loading('hide');
-					}, 300);
-				});
+                    // 連動 table
+                    $('.o-sorting', $linkTable).removeClass('is-asc is-desc');
+                    $(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
 
-				$(sortingBoxId).on('change.select2', function (e) {
-					let self = this;
-					let $self = $(this);
-					let sorting = $self.val();
-					let $linkTable = $(tableId);
-					let sortingColumn = $('option:selected', self).data('sorting-column');
-					let orderby = $('option:selected', self).data('sorting-class');
+                    let $linkedBox = $(datasortingBox).not(self);
+                    for (box of $linkedBox) {
+                        let $box = $(box);
+                        let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
+                        if ($option.length != 0) {
+                            $option.prop('selected', true);
+                            $box.trigger('change.select2');
+                        } else {
+                            $box.val(null).trigger('change.select2');
+                        }
+                    }
+                });
+            }
 
-					// 連動 table
-					$('.o-sorting', $linkTable).removeClass('is-asc is-desc');
-					$(`[data-sorting-column="${sortingColumn}"]`, $linkTable).addClass(orderby);
-
-					let $linkedBox = $(datasortingBox).not(self);
-					for (box of $linkedBox) {
-						let $box = $(box);
-						let $option = $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $box);
-						if ($option.length != 0) {
-							$option.prop('selected', true);
-							$box.trigger('change.select2');
-						} else {
-							$box.val(null).trigger('change.select2');
-						}
-					}
-				});
-			}
-
-			initializeSorting('#table1', '#uid-sortbox1', '[data-sortingbox1]');
-			initializeSorting('#table2', '#uid-sortbox2', '[data-sortingbox2]');
-		});
-	})(jQuery, window, document);
+            initializeSorting('#table1', '#uid-sortbox1', '[data-sortingbox1]');
+            initializeSorting('#table2', '#uid-sortbox2', '[data-sortingbox2]');
+        });
+    })(jQuery, window, document);
 </script>
 
 
