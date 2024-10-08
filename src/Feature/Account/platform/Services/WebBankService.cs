@@ -1,4 +1,5 @@
 ﻿using Feature.Wealth.Account.Models.OAuth;
+using Feature.Wealth.Account.Repositories;
 using Flurl;
 using Flurl.Http;
 using Foundation.Wealth.Helper;
@@ -71,11 +72,8 @@ namespace Feature.Wealth.Account.Services
                     }
                     var computeStr2 = string.Format("merchantId={0}&txReqId={1}&key={2}",
                     _id, txReqIdString, _key);
-                    UserMark userMark = new UserMark();
-                    MarkInfo markInfo = new MarkInfo();
-                    markInfo.QueueId = getQueueId;
-                    markInfo.TxReqId = txReqIdString;
-                    userMark.AddMarkInfo(markInfo);
+                    LoginSharedRepository loginSharedRepository = new LoginSharedRepository();
+                    loginSharedRepository.RecordTansaction(getQueueId, txReqIdString);
                     //success return
                     objReturn = new
                     {
