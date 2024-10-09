@@ -2227,8 +2227,11 @@
 
                             let isEmpty = result.length == 0;
 
-                            $('#interestedFund').addClass('interested-hidden');
-                            $('#interestedFund').show();
+                            if (isEmpty) {
+                                $('#interestedFund').show();
+                            } else {
+                                $('#interestedFund').addClass('interested-hidden');
+                            }
 
                             setTimeout(() => {
                                 if (isEmpty) {
