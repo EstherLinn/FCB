@@ -14,7 +14,10 @@
             <div class="l-trend__banner">
                 <!-- .u-shadow-animation: hover時陰影特效 -->
                 <div class="c-box c-box--gapless u-shadow-animation">
-                    <a href="@Model.ArticleLink1" class="c-cardArticle" target="@Model.ArticleTarget1" title="@Model.ArticleTitle1">
+                    @{
+                        var html1 = Model.ArticleLink1.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
+                    }
+                    <a href="@Model.ArticleLink1" class="c-cardArticle" target="@Model.ArticleTarget1"@html1 title="@Model.ArticleTitle1">
                         <div class="c-cardArticle__media">
                             <img src="@Model.CardImageUrl1" class="c-cardArticle__img" alt="">
                         </div>
@@ -38,7 +41,10 @@
             <div class="l-trend__banner">
                 <!-- .u-shadow-animation: hover時陰影特效 -->
                 <div class="c-box c-box--gapless u-shadow-animation">
-                    <a href="@Model.ArticleLink2" class="c-cardArticle" target="@Model.ArticleTarget2" title="@Model.ArticleTitle2">
+                    @{
+                        var html2 = Model.ArticleLink2.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
+                    }
+                    <a href="@Model.ArticleLink2" class="c-cardArticle" target="@Model.ArticleTarget2"@html2 title="@Model.ArticleTitle2">
                         <div class="c-cardArticle__media">
                             <img src="@Model.CardImageUrl2" class="c-cardArticle__img" alt="">
                         </div>
