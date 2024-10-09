@@ -648,7 +648,7 @@ namespace Feature.Wealth.Component.Controllers
             var imvpFlag = false;
 
 
-            if (info.IsEmployee || ConsultRelatedLinkSetting.GetSkipIMVPAPI())
+            if (ConsultRelatedLinkSetting.GetSkipIMVPAPI())
             {
                 imvpFlag = true;
             }
@@ -670,7 +670,7 @@ namespace Feature.Wealth.Component.Controllers
                                 scheduleId = consultSchedule.ScheduleID.ToString(),
                                 action = "1",
                                 empId = consultSchedule.EmployeeID,
-                                type = "1",
+                                type = info.IsEmployee ? "2" : "1",
                                 date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
                                 startTime = consultSchedule.StartTime.Replace(":", string.Empty),
                                 endTime = consultSchedule.EndTime.Replace(":", string.Empty),
@@ -708,7 +708,7 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             // 呼叫 IMVP 失敗不新增預約
-            if(imvpFlag == false)
+            if (imvpFlag == false)
             {
                 result.Success = false;
                 result.Message = "新增預約失敗：呼叫 IMVP 錯誤";
@@ -792,7 +792,7 @@ namespace Feature.Wealth.Component.Controllers
             var errorMessage = string.Empty;
             var imvpFlag = false;
 
-            if (ConsultRelatedLinkSetting.GetSkipIMVPAPI() || consultSchedule.Type == "2")
+            if (ConsultRelatedLinkSetting.GetSkipIMVPAPI())
             {
                 imvpFlag = true;
             }
@@ -814,7 +814,7 @@ namespace Feature.Wealth.Component.Controllers
                                 scheduleId = consultSchedule.ScheduleID.ToString(),
                                 action = "2",
                                 empId = consultSchedule.EmployeeID,
-                                type = "1",
+                                type = consultSchedule.Type,
                                 date = consultSchedule.ScheduleDate.ToString("yyyyMMdd"),
                                 startTime = consultSchedule.StartTime.Replace(":", string.Empty),
                                 endTime = consultSchedule.EndTime.Replace(":", string.Empty),
