@@ -61,7 +61,7 @@
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
                                             <input id="downPayment" type="number" value="500" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   oninput="if(!/^\d*\.?\d{0,4}$/.test(this.value)) this.value = this.value.slice(0, -1)"
                                                    onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">萬元</span>
                                         </div>
@@ -117,7 +117,7 @@
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
                                             <input id="amountPrepared" type="number" value="0" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   oninput="if(!/^\d*\.?\d{0,4}$/.test(this.value)) this.value = this.value.slice(0, -1)"
                                                    onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">萬元</span>
                                         </div>
@@ -139,7 +139,7 @@
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
                                             <input id="monthlyInvestment" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="monthly"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   oninput="if(!/^\d*\.?\d{0,4}$/.test(this.value)) this.value = this.value.slice(0, -1)"
                                                    onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">萬元</span>
                                         </div>
@@ -233,7 +233,7 @@
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
                                             <input id="downPayment_Popup" type="number" value="500" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   oninput="if(!/^\d*\.?\d{0,4}$/.test(this.value)) this.value = this.value.slice(0, -1)"
                                                    onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">萬元</span>
                                         </div>
@@ -278,7 +278,7 @@
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
                                             <input id="amountPrepared_Popup" type="number" value="0" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   oninput="if(!/^\d*\.?\d{0,4}$/.test(this.value)) this.value = this.value.slice(0, -1)"
                                                    onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">萬元</span>
                                         </div>
@@ -298,7 +298,7 @@
                                     <div class="l-form__input">
                                         <div class="o-unitbox">
                                             <input id="monthlyInvestment_Popup" type="number" value="1" class="o-unitbox__input o-unitbox__input--full o-unitbox__input--calc" data-id="popup_monthly"
-                                                   oninput="if(!/^\d*\.?\d*$/.test(this.value)) this.value = this.value.slice(0, -1)"
+                                                   oninput="if(!/^\d*\.?\d{0,4}$/.test(this.value)) this.value = this.value.slice(0, -1)"
                                                    onkeydown="return (event.key === '.' || event.key === 'Backspace' || event.key === 'Delete' || (event.key >= '0' && event.key <= '9') || (event.key >= 'Numpad0' && event.key <= 'Numpad9') || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab' || event.key === 'Enter' || event.ctrlKey || event.metaKey)">
                                             <span class="o-unitbox__text">萬元</span>
                                         </div>
