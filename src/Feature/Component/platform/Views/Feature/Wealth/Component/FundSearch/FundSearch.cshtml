@@ -1006,8 +1006,8 @@
                     </div>
                 </div>
             </div>
+            @Html.Sitecore().Placeholder("InterestedFund")
         </div>
-        @Html.Sitecore().Placeholder("InterestedFund")
     </div>
 
     <div class="c-tab c-tab--wide" data-tab="true" data-filter-empty="false" style="display:none;">
@@ -2226,21 +2226,6 @@
                             $('[id="uid-total"]').text(result.length);
 
                             let isEmpty = result.length == 0;
-
-                            if (isEmpty) {
-                                $('#interestedFund').show();
-                            } else {
-                                $('#interestedFund').addClass('interested-hidden');
-                            }
-
-                            setTimeout(() => {
-                                if (isEmpty) {
-                                    $('#interestedFund').removeClass('interested-hidden');
-                                } else {
-                                    $('#interestedFund').hide();
-                                }
-                            }, 300);
-
                             $(`[data-filter-empty=${isEmpty}]`).show();
                             $(`[data-filter-empty=${!isEmpty}]`).hide();
 
