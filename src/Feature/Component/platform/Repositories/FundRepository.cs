@@ -336,7 +336,7 @@ namespace Feature.Wealth.Component.Repositories
                              ROW_NUMBER() OVER (order by SixMonthReturnOriginalCurrency desc) RowNumber
                              from {Sysjust_Return_Fund}  AS A with (nolock)
                              LEFT JOIN {FUND_BSC}  AS B  with (nolock) ON  A.FirstBankCode = B.BankProductCode
-                             where A.FirstBankCode  IN @fundIds and BankProductCode <> '' and BankProductCode <> @fundId  and A.SixMonthReturnOriginalCurrency is not null
+                             where A.FirstBankCode  IN @fundIds and BankProductCode <> '' and BankProductCode <> @fundId
                              )
                               , CTE2 AS
                              (
