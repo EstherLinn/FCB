@@ -220,7 +220,7 @@
                             </div>
                             <% } %>
                                <% if (Info.QuoteChangeOpen && (Info.RisePercent  != null  || Info.FallPercent != null )) { %>
-                            <div class="l-straight@lt"  data-info-risefallpricevalue="<%= Info.RiseFallPriceValue %>" data-info-quotechangesetdate="<%= Info.QuoteChangeSetDate %>">
+                            <div class="l-straight@lt" data-info-risefallpricevalue="<%= Info.RiseFallPriceValue %>" data-info-quotechangesetdate="<%= Info.QuoteChangeSetDate %>">
                                 <% if (Info.RisePercent  != null ) { %>
                                 <div class="l-straight__item">
                                     <span class="<% if (NetAssetValue >= Info.RiseValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="漲幅 <%= Info.RisePercent %>%"></span>

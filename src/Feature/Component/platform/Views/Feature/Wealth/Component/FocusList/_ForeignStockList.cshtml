@@ -188,20 +188,14 @@
                                 <div class="t-tip--lt">點鈴鐺設定到價通知</div>
                                 <% } else {%>
                                   <% if (Info.ReachValueOpen && Info.ReachValue  != null ) { %>
-                                      <div class="l-straight@lt">
-                                         <div class="l-straight__item">
-                                                      <span class="<% if ( (Info.ReachValue >= Info.PriceValue &&  Info.ReachValue <= ClosingPrice) || (Info.ReachValue <= Info.PriceValue &&  Info.ReachValue >= ClosingPrice)){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="收盤價 <%= Info.ReachValue %>"></span>
-                                        </div>
-                                            <div class="l-straight__item">
-                                                      <span class="t-date" data-after="設定收盤價 <%= Info.PriceValue %>"></span>
-                                       </div>
-                                        <div class="l-straight__item">
-                                                  <span class="t-date" data-after="設定日期 <%= Info.ReachValueSetDate %>"></span>
-                                        </div>
+                                <div class="l-straight@lt" data-info-pricevalue="<%= Info.PriceValue %>" data-info-reachvaluesetdate="<%= Info.ReachValueSetDate %>">
+                                    <div class="l-straight__item">
+                                        <span class="<% if ( (Info.ReachValue >= Info.PriceValue &&  Info.ReachValue <= ClosingPrice) || (Info.ReachValue <= Info.PriceValue &&  Info.ReachValue >= ClosingPrice)){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="收盤價 <%= Info.ReachValue %>"></span>
+                                    </div>
                                 </div>
                                 <% } %>
                                 <% if (Info.QuoteChangeOpen && (Info.RisePercent  != null  || Info.FallPercent != null )) { %>
-                                <div class="l-straight@lt">
+                                <div class="l-straight@lt" data-info-risefallpricevalue="<%= Info.RiseFallPriceValue %>" data-info-quotechangesetdate="<%= Info.QuoteChangeSetDate %>">
                                     <% if (Info.RisePercent  != null ) { %>
                                     <div class="l-straight__item">
                                         <span class="<% if (ClosingPrice>= Info.RiseValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="漲幅 <%= Info.RisePercent %>%"></span>
@@ -212,14 +206,6 @@
                                         <span class="<% if (ClosingPrice<= Info.FallValue){%><%= 'o-iconText o-iconText--tick t-warning' %><% }%>" data-after="跌幅 <%= Info.FallPercent %>%"></span>
                                     </div>
                                     <% } %>
-                                    <% if (Info.RisePercent  != null　|| Info.FallPercent  != null ) { %>
-                                      <div class="l-straight__item">
-                                           <span class="t-date" data-after="設定收盤價 <%= Info.RiseFallPriceValue %>"></span>
-                                      </div>
-                                      <div class="l-straight__item">
-                                                  <span class="t-date" data-after="設定日期 <%= Info.QuoteChangeSetDate %>"></span>
-                                        </div>
-                               <% } %>
                                 </div>
                                 <% } %>
                                 <% } %>

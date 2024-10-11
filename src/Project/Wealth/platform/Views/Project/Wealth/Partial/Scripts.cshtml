@@ -788,7 +788,6 @@
             $("#popupAlert").find('[data-pricevalue]').text($(self).closest("tr").find('[data-pricevalue]').data('pricevalue'));
             $("#popupAlert").find('[data-pricevaluedate]').text($(self).closest("tr").find('[data-pricevaluedate]').data('pricevaluedate'));
 
-
             let pricevalue = $(self).closest("tr").find('[data-info-pricevalue]').data('info-pricevalue') || '';
             let reachvaluesetdate = $(self).closest("tr").find('[data-info-reachvaluesetdate]').data('info-reachvaluesetdate') || '';
             $("#popupAlert").find('[data-info-pricevalue]').text(pricevalue ? '上次設定淨值 ' + pricevalue : '');
