@@ -253,7 +253,7 @@ namespace Feature.Wealth.Component.Repositories
 
                             select FirstBankCode from {Sysjust_Basic_Fund} as a  with (nolock)
                             inner join {WMS_DOC_RECM}  as b  with (nolock) on a.FirstBankCode = b.ProductCode
-                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3";
+                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3 and b.AvailabilityStatus = 'Y'";
             var para = new { fundId };
             fundList = DbManager.Custom.ExecuteIList<string>(planA_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             //方案A有達6檔且不超過9檔
@@ -272,7 +272,7 @@ namespace Feature.Wealth.Component.Repositories
 
                             select FirstBankCode from {Sysjust_Basic_Fund} as a  with (nolock)
                             inner join {WMS_DOC_RECM}  as b  with (nolock) on a.FirstBankCode = b.ProductCode
-                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3 and IndicatorIndexCode = @var4 ";
+                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3 and IndicatorIndexCode = @var4 and b.AvailabilityStatus = 'Y'";
                 fundList = DbManager.Custom.ExecuteIList<string>(planB_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
                 //方案B有達6檔
                 if (fundList != null && fundList.Count >= 6)
@@ -290,7 +290,7 @@ namespace Feature.Wealth.Component.Repositories
 
                             select FirstBankCode from {Sysjust_Basic_Fund} as a  with (nolock)
                             inner join {WMS_DOC_RECM}  as b  with (nolock) on a.FirstBankCode = b.ProductCode
-                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3 and IndicatorIndexCode = @var4 ";
+                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3 and IndicatorIndexCode = @var4 and b.AvailabilityStatus = 'Y'";
                 fundList = DbManager.Custom.ExecuteIList<string>(planC_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
 
             }
@@ -313,7 +313,7 @@ namespace Feature.Wealth.Component.Repositories
 							 SELECT FirstBankCode FROM {Sysjust_Basic_Fund_2} as a  with (nolock)
 							 left join {FUND_BSC} as b  with (nolock)  on a.FirstBankCode = b.BankProductCode
 							 inner join {WMS_DOC_RECM} as c with (nolock) on b.BankProductCode = c.ProductCode
-							 where A.InvestmentRegionName =@var2 and A.IndicatorIndexName = @var3 and B.FundTypeName =@var1";
+							 where A.InvestmentRegionName =@var2 and A.IndicatorIndexName = @var3 and B.FundTypeName =@var1 and b.AvailabilityStatus = 'Y'";
             var para = new { fundId };
             return DbManager.Custom.ExecuteIList<string>(planA_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
         }
