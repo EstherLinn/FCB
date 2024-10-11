@@ -17,6 +17,11 @@
 
 @if (Model.NeedEmployeeCode)
 {
+    <style>
+        .c-section--locker {
+            margin-top: 0px;
+        }
+    </style>
     <section class="c-section c-section--locker" id="consultlistLocker">
         <div class="c-calcLocker">
             <div class="l-wrap">
@@ -302,7 +307,7 @@
                     </template>
                     <div id="calendar" class="c-schedule"></div>
                     <div class="c-calendarList"></div>
-                </div>                
+                </div>
             </div>
         </div>
     </div>
@@ -324,7 +329,7 @@
                 <div class="l-info__item">
                     <div class="l-info__title">預約時段</div>
                     <div class="l-info__val" data-detail="ScheduleTime"></div>
-                </div>                
+                </div>
                 <div class="l-info__item">
                     <div class="l-info__title">預約客戶</div>
                     <div class="l-info__val" data-detail="CustomerName"></div>
@@ -364,7 +369,7 @@
                 <div class="l-info__item">
                     <div class="l-info__title">預約時段</div>
                     <div class="l-info__val" data-detail="ScheduleTime"></div>
-                </div>                
+                </div>
                 <div class="l-info__item">
                     <div class="l-info__title">預約客戶</div>
                     <div class="l-info__val" data-detail="CustomerName"></div>
@@ -425,17 +430,17 @@
     <tr class="c-cardTable__item u-center@dt-only">
         <td class="c-cardTable__space"></td>
         <% if (Comming) { %>
-            <td class="c-cardTable__body" data-card-table-width="1/1">
-                <div class="c-cardTable__content">
-                    <div class="o-iconText o-iconText--attention t-focus" data-after-lt="即將到來"></div>
-                </div>
-            </td>
+        <td class="c-cardTable__body" data-card-table-width="1/1">
+            <div class="c-cardTable__content">
+                <div class="o-iconText o-iconText--attention t-focus" data-after-lt="即將到來"></div>
+            </div>
+        </td>
         <% } else { %>
-            <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
-                <div class="c-cardTable__content">
-                    <div class="o-iconText o-iconText--attention t-focus u-invisible" data-after-lt="即將到來"></div>
-                </div>
-            </td>
+        <td class="c-cardTable__body u-important u-hidden@mb-only" data-card-table-width="1/1">
+            <div class="c-cardTable__content">
+                <div class="o-iconText o-iconText--attention t-focus u-invisible" data-after-lt="即將到來"></div>
+            </div>
+        </td>
         <% } %>
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約日期</div>
@@ -463,9 +468,9 @@
         <td class="c-cardTable__footer" data-card-table-width="1/1">
             <div class="c-cardTable__content">
                 <% if (Start) { %>
-                    <a href="@(Model.ConsultScheduleLink)?id=<%= ScheduleID %>&type=Employee" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult" target="_blank">開始諮詢</a>
+                <a href="@(Model.ConsultScheduleLink)?id=<%= ScheduleID %>&type=Employee" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult" target="_blank">開始諮詢</a>
                 <% } else { %>
-                    <a href="" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult is-disabled">等待中</a>
+                <a href="" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult is-disabled">等待中</a>
                 <% } %>
             </div>
         </td>
@@ -494,11 +499,11 @@
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約狀態</div>
             <% if (StatusCode == '0') { %>
-                <div class="c-cardTable__content">待確認</div>
+            <div class="c-cardTable__content">待確認</div>
             <% } else if (StatusCode == '2') { %>
-                <div class="c-cardTable__content">預約成功</div>
+            <div class="c-cardTable__content">預約成功</div>
             <% } else { %>
-                <div class="c-cardTable__content">預約取消</div>
+            <div class="c-cardTable__content">預約取消</div>
             <% } %>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
