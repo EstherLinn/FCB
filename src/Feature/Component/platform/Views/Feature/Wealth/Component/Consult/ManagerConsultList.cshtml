@@ -17,6 +17,14 @@
 
 @if (Model.NeedEmployeeCode)
 {
+    if (Model.ConsultSchedules != null && Model.ConsultSchedules.Where(c => c.StatusCode == "0" || c.StatusCode == "1").Count() < 3)
+    {
+        <style>
+            .c-section--locker {
+                margin-top: 0px;
+            }
+        </style>
+    }
     <section class="c-section c-section--locker" id="consultlistLocker">
         <div class="c-calcLocker">
             <div class="l-wrap">
@@ -173,13 +181,13 @@
                             <div class="l-flex__item">
                                 <div class="o-actionbox o-actionbox--md">
                                     <input type="text" class="o-actionbox__input" id="search-table2" placeholder="輸入理專姓名">
-                                    <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit2></button>                                    
+                                    <button type="submit" class="o-actionbox__btn o-actionbox__btn--magnifier" data-keyword-submit2></button>
                                 </div>
                                 <div class="o-actionbox o-actionbox--md u-hidden@lt">
                                     <button class="o-btn o-btn--primary o-btn--flat o-btn--sm" data-export>匯出列表</button>
                                 </div>
                             </div>
-                            <div class="l-flex__item u-hidden@dt-only">                                
+                            <div class="l-flex__item u-hidden@dt-only">
                                 <div class="o-actionbox o-actionbox--md">
                                     <button class="o-btn o-btn--primary o-btn--flat o-btn--sm" data-export>匯出列表</button>
                                 </div>
@@ -332,7 +340,7 @@
                     </template>
                     <div id="calendar" class="c-schedule"></div>
                     <div class="c-calendarList"></div>
-                </div>                
+                </div>
             </div>
         </div>
     </div>
@@ -358,7 +366,7 @@
                 <div class="l-info__item">
                     <div class="l-info__title">預約時段</div>
                     <div class="l-info__val" data-detail="ScheduleTime"></div>
-                </div>                
+                </div>
                 <div class="l-info__item">
                     <div class="l-info__title">預約客戶</div>
                     <div class="l-info__val" data-detail="CustomerName"></div>
@@ -402,7 +410,7 @@
                 <div class="l-info__item">
                     <div class="l-info__title">預約時段</div>
                     <div class="l-info__val" data-detail="ScheduleTime"></div>
-                </div>                
+                </div>
                 <div class="l-info__item">
                     <div class="l-info__title">預約客戶</div>
                     <div class="l-info__val" data-detail="CustomerName"></div>
@@ -485,9 +493,9 @@
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約狀態</div>
             <% if (StatusCode == '0') { %>
-                <div class="c-cardTable__content">待確認</div>
+            <div class="c-cardTable__content">待確認</div>
             <% } else { %>
-                <div class="c-cardTable__content">等待中</div>
+            <div class="c-cardTable__content">等待中</div>
             <% } %>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
@@ -535,9 +543,9 @@
         <td class="c-cardTable__body" data-card-table-width="1/1">
             <div class="c-cardTable__title" data-length="5">預約狀態</div>
             <% if (StatusCode == '2') { %>
-                <div class="c-cardTable__content">預約成功</div>
+            <div class="c-cardTable__content">預約成功</div>
             <% } else { %>
-                <div class="c-cardTable__content">預約取消</div>
+            <div class="c-cardTable__content">預約取消</div>
             <% } %>
         </td>
         <td class="c-cardTable__body" data-card-table-width="1/1">
@@ -551,7 +559,7 @@
             <div class="c-cardTable__title" data-length="5">錄影紀錄</div>
             <div class="c-cardTable__content">
                 <% if (StatusCode == '2') { %>
-                    <a href="#" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult" data-video data-id="<%= ScheduleID %>">查看錄影</a>
+                <a href="#" class="o-tableBtn o-tableBtn--card@lt o-tableBtn--consult" data-video data-id="<%= ScheduleID %>">查看錄影</a>
                 <% } else { %>
                 <% } %>
             </div>
@@ -836,7 +844,7 @@
                 e.preventDefault();
 
                 setPopup($(this).attr('data-id'));
-            });            
+            });
 
             $('[data-video]').on('click', function (e) {
                 e.preventDefault();
@@ -883,7 +891,7 @@
             }
         });
 
-        function cancelConsultSchedule(id) {            
+        function cancelConsultSchedule(id) {
             window.loading('show');
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
 
@@ -993,7 +1001,7 @@
                             }
                         });
                     }
-                }                
+                }
 
                 if (data.ErrorMessage) {
                     console.log(data.ErrorMessage);
@@ -1438,7 +1446,7 @@
 
             let id = $(this).data('eventId');
             getVideoUrl(id);
-        });        
+        });
 
         $('[data-export]').on('click', function(){
             let exportData = consultSchedules.filter(c => c.StatusCode == '2' || c.StatusCode == '3');
@@ -1465,15 +1473,15 @@
             var hour = d.getHours();
             var minute = d.getMinutes();
             var second = d.getSeconds();
-            
+
             if(month < 10) { month = "0" + month };
             if(day < 10) { day = "0" + day };
             if(hour < 10) { hour = "0" + hour };
             if(minute < 10) { minute = "0" + minute };
             if(second < 10) { second = "0" + second };
-            
+
             let fileName = '匯出列表_' + year + month + day + "_" + hour + minute + second + '.csv';
-            
+
             // 建立一個 a，並點擊它
             let link = document.createElement('a');
             link.setAttribute('href', 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURI(csvContent));
