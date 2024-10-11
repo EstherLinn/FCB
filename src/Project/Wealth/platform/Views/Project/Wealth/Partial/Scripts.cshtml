@@ -787,6 +787,28 @@
             $("#popupAlert").find('[data-title]').text($(self).closest("tr").find('[data-id]').text());
             $("#popupAlert").find('[data-pricevalue]').text($(self).closest("tr").find('[data-pricevalue]').data('pricevalue'));
             $("#popupAlert").find('[data-pricevaluedate]').text($(self).closest("tr").find('[data-pricevaluedate]').data('pricevaluedate'));
+
+
+            let pricevalue = $(self).closest("tr").find('[data-info-pricevalue]').data('info-pricevalue') || '';
+            let reachvaluesetdate = $(self).closest("tr").find('[data-info-reachvaluesetdate]').data('info-reachvaluesetdate') || '';
+            $("#popupAlert").find('[data-info-pricevalue]').text(pricevalue ? '上次設定淨值 ' + pricevalue : '');
+            $("#popupAlert").find('[data-info-reachvaluesetdate]').text(reachvaluesetdate ? '設定日期 ' + reachvaluesetdate : '');
+            if (pricevalue || reachvaluesetdate) {
+                $('[data-reachvalue]').removeClass('u-hidden');
+            } else {
+                $('[data-reachvalue]').addClass('u-hidden');
+            }
+
+            let risefallpricevalue = $(self).closest("tr").find('[data-info-risefallpricevalue]').data('info-risefallpricevalue') || '';
+            let quotechangesetdate = $(self).closest("tr").find('[data-info-quotechangesetdate]').data('info-quotechangesetdate') || '';
+            $("#popupAlert").find('[data-info-risefallpricevalue]').text(risefallpricevalue ? '上次設定淨值 ' + risefallpricevalue : '');
+            $("#popupAlert").find('[data-info-quotechangesetdate]').text(quotechangesetdate ? '設定日期 ' + quotechangesetdate : '');
+            if (risefallpricevalue || quotechangesetdate) {
+                $('[data-quotechange]').removeClass('u-hidden');
+            } else {
+                $('[data-quotechange]').addClass('u-hidden');
+            }
+
             let nowDate = getNowDate();
             let date = new Date();
             let threeMonthLaterDate = dayjs(date.setMonth(date.getMonth() + 3)).format('YYYY/MM/DD');
