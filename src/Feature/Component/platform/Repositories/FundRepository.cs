@@ -315,8 +315,8 @@ namespace Feature.Wealth.Component.Repositories
 							 SELECT @var2 = InvestmentRegionName, @var3 = IndicatorIndexName FROM  {Sysjust_Basic_Fund_2} with (nolock)  where FirstBankCode = @fundId
 							 SELECT FirstBankCode FROM {Sysjust_Basic_Fund_2} as a  with (nolock)
 							 left join {FUND_BSC} as b  with (nolock)  on a.FirstBankCode = b.BankProductCode
-							 inner join {WMS_DOC_RECM} as c with (nolock) on b.BankProductCode = c.ProductCode
-							 where A.InvestmentRegionName =@var2 and A.IndicatorIndexName = @var3 and B.FundTypeName =@var1 and b.AvailabilityStatus = 'Y'";
+							 inner join {WMS_DOC_RECM} as c with (nolock) on a.FirstBankCode = c.ProductCode
+							 where A.InvestmentRegionName =@var2 and A.IndicatorIndexName = @var3 and B.FundTypeName =@var1 and c.AvailabilityStatus = 'Y'";
             var para = new { fundId };
             return DbManager.Custom.ExecuteIList<string>(planA_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
         }
