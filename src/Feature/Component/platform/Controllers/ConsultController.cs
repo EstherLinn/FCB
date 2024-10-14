@@ -725,7 +725,7 @@ namespace Feature.Wealth.Component.Controllers
                 MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
 
                 var currentRequestUrl = Request.Url;
-                var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultScheduleUrl();
+                var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultListUrl();
 
                 if (info.IsEmployee)
                 {

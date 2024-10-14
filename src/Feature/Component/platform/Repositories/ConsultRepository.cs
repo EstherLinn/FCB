@@ -259,7 +259,7 @@ namespace Feature.Wealth.Component.Repositories
 諮詢主題：{consultSchedule.Subject}<br>
 其他諮詢內容：{consultSchedule.Description}<br><br> 
 為保障您的權益，若欲取消預約或更改預約時間，請於預定「遠距理財諮詢服務」開始前，登入第e理財網調整，感謝您的配合，謝謝。<br><br> 
-第e理財網連結：{url}?id={consultSchedule.ScheduleID.ToString()} <br><br>
+第e理財網連結：{url} <br><br>
 ※請勿直接回覆此信，若有疑問請洽第一銀行{consultSchedule.BranchName}理財業務人員，謝謝。
 ";
 
@@ -282,7 +282,7 @@ namespace Feature.Wealth.Component.Repositories
 諮詢主題：{consultSchedule.Subject}<br>
 其他諮詢內容：{consultSchedule.Description}<br><br> 
 為保障您的權益，若欲取消預約或更改預約時間，請於預定「遠距理財諮詢服務」開始前，登入第e理財網調整，感謝您的配合，謝謝。<br><br> 
-第e理財網連結：{url}?id={consultSchedule.ScheduleID.ToString()} <br><br>
+第e理財網連結：{url} <br><br>
 ※請勿直接回覆此信，若有疑問請洽第一銀行{consultSchedule.BranchName}理財業務人員，謝謝。
 ";
 
