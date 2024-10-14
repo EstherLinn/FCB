@@ -244,16 +244,17 @@ namespace Feature.Wealth.Component.Repositories
         {
             string Sysjust_Basic_Fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Basic_Fund);
             string WMS_DOC_RECM = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.WMS_DOC_RECM);
-
+            string FUND_BSC = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
             List<string> fundList = new List<string>();
             string planA_Sql = $@"DECLARE @var1 nvarchar(100), @var2 nvarchar(100), @var3 nvarchar(100);
-                            SELECT @var1 = [FundType], @var2 = [InvestmentRegionName], @var3 = [PrimaryInvestmentRegion]
-                            FROM {Sysjust_Basic_Fund} with (nolock)
-                             where FirstBankCode = @fundId
+                            SELECT @var1 =[FundTypeName] FROM  {FUND_BSC}  with (nolock) where BankProductCode = @fundId
+                            SELECT @var2 = [InvestmentRegionName], @var3 = [PrimaryInvestmentRegion]
+                            FROM {Sysjust_Basic_Fund} with (nolock) where FirstBankCode = @fundId
 
                             select FirstBankCode from {Sysjust_Basic_Fund} as a  with (nolock)
-                            inner join {WMS_DOC_RECM}  as b  with (nolock) on a.FirstBankCode = b.ProductCode
-                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3 and b.AvailabilityStatus = 'Y'";
+                            left join {FUND_BSC}  as b  with (nolock)  on a.FirstBankCode = b.BankProductCode
+                            inner join {WMS_DOC_RECM}  as c  with (nolock) on a.FirstBankCode = c.ProductCode
+                            where [FundTypeName] = @var1 and a.[InvestmentRegionName] = @var2 and a.[PrimaryInvestmentRegion] = @var3 and c.AvailabilityStatus = 'Y'";
             var para = new { fundId };
             fundList = DbManager.Custom.ExecuteIList<string>(planA_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
             //方案A有達6檔且不超過9檔
@@ -266,13 +267,14 @@ namespace Feature.Wealth.Component.Repositories
             {
 
                 string planB_Sql = $@"DECLARE @var1 nvarchar(100), @var2 nvarchar(100), @var3 nvarchar(100), @var4 nvarchar(100);
-                            SELECT @var1 = [FundType], @var2 = [InvestmentRegionName], @var3 = [PrimaryInvestmentRegion], @var4 = [IndicatorIndexCode]
-                            FROM {Sysjust_Basic_Fund} with (nolock)
-                             where FirstBankCode = @fundId
+                            SELECT @var1 =[FundTypeName] FROM  {FUND_BSC}  with (nolock) where BankProductCode = @fundId
+                            SELECT @var2 = [InvestmentRegionName], @var3 = [PrimaryInvestmentRegion], @var4 = [IndicatorIndexCode]
+                            FROM {Sysjust_Basic_Fund} with (nolock) where FirstBankCode = @fundId
 
                             select FirstBankCode from {Sysjust_Basic_Fund} as a  with (nolock)
-                            inner join {WMS_DOC_RECM}  as b  with (nolock) on a.FirstBankCode = b.ProductCode
-                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3 and IndicatorIndexCode = @var4 and b.AvailabilityStatus = 'Y'";
+                            left join {FUND_BSC}  as b  with (nolock)  on a.FirstBankCode = b.BankProductCode
+                            inner join {WMS_DOC_RECM}  as c  with (nolock) on a.FirstBankCode = c.ProductCode
+                            where [FundTypeName] = @var1 and a.[InvestmentRegionName] = @var2 and a.[PrimaryInvestmentRegion] = @var3 and a.IndicatorIndexCode = @var4 and c.AvailabilityStatus = 'Y'";
                 fundList = DbManager.Custom.ExecuteIList<string>(planB_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
                 //方案B有達6檔
                 if (fundList != null && fundList.Count >= 6)
@@ -283,14 +285,15 @@ namespace Feature.Wealth.Component.Repositories
             //方案A未滿6檔，執行方案C
             else if (fundList != null && fundList.Count < 6)
             {
-                string planC_Sql = $@"DECLARE @var1 nvarchar(100), @var2 nvarchar(100), @var3 nvarchar(100), @var4 nvarchar(100);
-                            SELECT @var1 = [FundType], @var2 = [InvestmentRegionName], @var3 = [PrimaryInvestmentRegion], @var4 = [IndicatorIndexCode]
-                            FROM {Sysjust_Basic_Fund} with (nolock)
-                             where FirstBankCode = @fundId
+                string planC_Sql = $@"DECLARE @var1 nvarchar(100), @var2 nvarchar(100), @var3 nvarchar(100)
+                            SELECT @var1 =[FundTypeName] FROM  {FUND_BSC}  with (nolock) where BankProductCode = @fundId
+                            SELECT @var2 = [InvestmentRegionName], @var3 = [IndicatorIndexCode]
+                            FROM {Sysjust_Basic_Fund} with (nolock) where FirstBankCode = @fundId
 
                             select FirstBankCode from {Sysjust_Basic_Fund} as a  with (nolock)
-                            inner join {WMS_DOC_RECM}  as b  with (nolock) on a.FirstBankCode = b.ProductCode
-                            where [FundType] = @var1 and [InvestmentRegionName] = @var2 and [PrimaryInvestmentRegion] = @var3 and IndicatorIndexCode = @var4 and b.AvailabilityStatus = 'Y'";
+                            left join {FUND_BSC}  as b  with (nolock)  on a.FirstBankCode = b.BankProductCode
+                            inner join {WMS_DOC_RECM}  as c  with (nolock) on a.FirstBankCode = c.ProductCode
+                            where [FundTypeName] = @var1 and a.[InvestmentRegionName] = @var2 and a.[IndicatorIndexCode] = @var3 and c.AvailabilityStatus = 'Y'";
                 fundList = DbManager.Custom.ExecuteIList<string>(planC_Sql, para, commandType: System.Data.CommandType.Text)?.ToList();
 
             }
