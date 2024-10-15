@@ -537,7 +537,7 @@
                                 return new RegExp(query, 'gi').test(item.value);
                             });
 
-                            result.sort((a, b) => (a.value > b.value ? 1 : -1));
+                            result.sort((a, b) => a.value.split(' ')[1].localeCompare(b.value.split(' ')[1]));
                         }
 
                         done({
