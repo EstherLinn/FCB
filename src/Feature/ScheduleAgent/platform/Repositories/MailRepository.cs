@@ -72,7 +72,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 var mail3 = group.Where(x => x.InfoType == "2" && x.RiseValue != null);//全部商品漲幅
                 var mail4 = group.Where(x => x.InfoType == "2" && x.FallValue != null);//全部商品跌幅
 
-                if (mail1 != null)
+                if (mail1.Any())
                 {
                     var mailSchema = new MailSchema();
                     StringBuilder sb = new StringBuilder();
@@ -104,7 +104,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     }
                 }
 
-                if (mail2 != null)
+                if (mail2.Any())
                 {
                     var mailSchema = new MailSchema();
                     StringBuilder sb = new StringBuilder();
@@ -136,7 +136,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     }
                 }
 
-                if (mail3 != null)
+                if (mail3.Any())
                 {
                     var mailSchema = new MailSchema();
                     StringBuilder sb = new StringBuilder();
@@ -168,7 +168,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     }
                 }
 
-                if (mail4 != null)
+                if (mail4.Any())
                 {
                     var mailSchema = new MailSchema();
                     StringBuilder sb = new StringBuilder();
@@ -224,7 +224,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                     message.Subject = item.Topic;
                                     message.Body = item.Content;
                                     client.Send(message);
-                                    _logger.Error($"到價通知Mail發送To:{item.MailTo}");
+                                    _logger.Info($"到價通知Mail發送To:{item.MailTo}");
                                 }
                                 catch (Exception ex)
                                 {
