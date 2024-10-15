@@ -151,12 +151,12 @@
 
                             let mapData = data.Body.resultSet.result.result.data.item.map((item, index) => {
                                 return {
-                                    close: Number(item.C),
-                                    date: dateStringToDate(item.D).getTime(),
-                                    high: Number(item.H),
-                                    low: Number(item.L),
-                                    open: Number(item.O),
-                                    value: Number(item.V)
+                                    close: Number(item.c),
+                                    date: dateStringToDate(item.d).getTime(),
+                                    high: Number(item.h),
+                                    low: Number(item.l),
+                                    open: Number(item.o),
+                                    value: Number(item.v)
                                 };
                             });
 
