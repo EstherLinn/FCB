@@ -7,8 +7,9 @@
             @if (!string.IsNullOrEmpty(Model.BannerLink1) || !string.IsNullOrEmpty(Model.ImageUrl1) || !string.IsNullOrEmpty(Model.Title1) || !string.IsNullOrEmpty(Model.Description1))
             {
                 var fontcolor1 = Model.IsBlackFont1 == true ? null : "c-banner__content--wt";
+                var html = Model.BannerLink1.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
                 <div class="swiper-slide c-swiper__slide">
-                    <a href="@Model.BannerLink1" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget1">
+                    <a href="@Model.BannerLink1" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget1"@html>
                         <img src="@Model.ImageUrl1" class="c-banner__img" loading="lazy" alt="">
                         <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
                         <div class="c-banner__content @fontcolor1">
@@ -21,8 +22,9 @@
             @if (!string.IsNullOrEmpty(Model.BannerLink2) || !string.IsNullOrEmpty(Model.ImageUrl2) || !string.IsNullOrEmpty(Model.Title2) || !string.IsNullOrEmpty(Model.Description2))
             {
                 var fontcolor2 = Model.IsBlackFont2 == true ? null : "c-banner__content--wt";
+                var html = Model.BannerLink2.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
                 <div class="swiper-slide c-swiper__slide">
-                    <a href="@Model.BannerLink2" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget2">
+                    <a href="@Model.BannerLink2" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget2"@html>
                         <img src="@Model.ImageUrl2" class="c-banner__img" loading="lazy" alt="">
                         <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
                         <div class="c-banner__content @fontcolor2">
@@ -35,8 +37,9 @@
             @if (!string.IsNullOrEmpty(Model.BannerLink3) || !string.IsNullOrEmpty(Model.ImageUrl3) || !string.IsNullOrEmpty(Model.Title3) || !string.IsNullOrEmpty(Model.Description3))
             {
                 var fontcolor3 = Model.IsBlackFont3 == true ? null : "c-banner__content--wt";
+                var html = Model.BannerLink3.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
                 <div class="swiper-slide c-swiper__slide">
-                    <a href="@Model.BannerLink3" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget3">
+                    <a href="@Model.BannerLink3" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget3"@html>
                         <img src="@Model.ImageUrl3" class="c-banner__img" loading="lazy" alt="">
                         <div class="c-banner__content @fontcolor3">
                             <h3 class="c-banner__title">@Model.Title3 </h3>
@@ -48,8 +51,9 @@
             @if (!string.IsNullOrEmpty(Model.BannerLink4) || !string.IsNullOrEmpty(Model.ImageUrl4) || !string.IsNullOrEmpty(Model.Title4) || !string.IsNullOrEmpty(Model.Description4))
             {
                 var fontcolor4 = Model.IsBlackFont4 == true ? null : "c-banner__content--wt";
+                var html = Model.BannerLink4.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
                 <div class="swiper-slide c-swiper__slide">
-                    <a href="@Model.BannerLink4" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget4">
+                    <a href="@Model.BannerLink4" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget4"@html>
                         <img src="@Model.ImageUrl4" class="c-banner__img" loading="lazy" alt="">
                         <div class="c-banner__content @fontcolor4">
                             <h3 class="c-banner__title">@Model.Title4 </h3>
@@ -61,8 +65,9 @@
             @if (!string.IsNullOrEmpty(Model.BannerLink5) || !string.IsNullOrEmpty(Model.ImageUrl5) || !string.IsNullOrEmpty(Model.Title5) || !string.IsNullOrEmpty(Model.Description5))
             {
                 var fontcolor5 = Model.IsBlackFont5 == true ? null : "c-banner__content--wt";
+                var html = Model.BannerLink5.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
                 <div class="swiper-slide c-swiper__slide">
-                    <a href="@Model.BannerLink5" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget5">
+                    <a href="@Model.BannerLink5" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget5"@html>
                         <img src="@Model.ImageUrl5" class="c-banner__img" loading="lazy" alt="">
                         <div class="c-banner__content @fontcolor5">
                             <h3 class="c-banner__title">@Model.Title5 </h3>
@@ -74,8 +79,9 @@
             @if (!string.IsNullOrEmpty(Model.BannerLink6) || !string.IsNullOrEmpty(Model.ImageUrl6) || !string.IsNullOrEmpty(Model.Title6) || !string.IsNullOrEmpty(Model.Description6))
             {
                 var fontcolor6 = Model.IsBlackFont6 == true ? null : "c-banner__content--wt";
+                var html = Model.BannerLink6.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
                 <div class="swiper-slide c-swiper__slide">
-                    <a href="@Model.BannerLink6" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget6">
+                    <a href="@Model.BannerLink6" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget6"@html>
                         <img src="@Model.ImageUrl6" class="c-banner__img" loading="lazy" alt="">
                         <div class="c-banner__content @fontcolor6">
                             <h3 class="c-banner__title">@Model.Title6 </h3>
@@ -87,8 +93,9 @@
             @if (!string.IsNullOrEmpty(Model.BannerLink7) || !string.IsNullOrEmpty(Model.ImageUrl7) || !string.IsNullOrEmpty(Model.Title7) || !string.IsNullOrEmpty(Model.Description7))
             {
                 var fontcolor7 = Model.IsBlackFont7 == true ? null : "c-banner__content--wt";
+                var html = Model.BannerLink7.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
                 <div class="swiper-slide c-swiper__slide">
-                    <a href="@Model.BannerLink7" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget7">
+                    <a href="@Model.BannerLink7" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget7"@html>
                         <img src="@Model.ImageUrl7" class="c-banner__img" loading="lazy" alt="">
                         <div class="c-banner__content @fontcolor7">
                             <h3 class="c-banner__title">@Model.Title7 </h3>
@@ -100,8 +107,9 @@
             @if (!string.IsNullOrEmpty(Model.BannerLink8) || !string.IsNullOrEmpty(Model.ImageUrl8) || !string.IsNullOrEmpty(Model.Title8) || !string.IsNullOrEmpty(Model.Description8))
             {
                 var fontcolor8 = Model.IsBlackFont8 == true ? null : "c-banner__content--wt";
+                var html = Model.BannerLink8.StartsWith("/") ? new HtmlString("") : new HtmlString(" rel=\"noopener noreferrer\"");
                 <div class="swiper-slide c-swiper__slide">
-                    <a href="@Model.BannerLink8" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget8">
+                    <a href="@Model.BannerLink8" class="c-banner c-banner--trend c-banner--zoom" target="@Model.BannerTarget8"@html>
                         <img src="@Model.ImageUrl8" class="c-banner__img" loading="lazy" alt="">
                         <div class="c-banner__content @fontcolor8">
                             <h3 class="c-banner__title">@Model.Title8 </h3>
