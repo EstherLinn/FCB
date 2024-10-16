@@ -65,9 +65,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 consultUrl = new Uri(consultUrl).AbsolutePath.ToString();
             }
             List<MailSchema> mails = new List<MailSchema>();
-            var mailSchema = new MailSchema();
             foreach (var consultSchedule in consults)
             {
+                var mailSchema = new MailSchema();
                 string content = $@"親愛的客戶您好：<br><br>
                     第一銀行通知您，您於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 申請預約「遠距理財諮詢服務」即將開始，以下是您的預約資訊：<br><br>
                     分行：{consultSchedule.BranchName}<br>
@@ -84,6 +84,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 mailSchema.Content = content;
                 mailSchema.MailTo = consultSchedule.Mail;
                 mails.Add(mailSchema);
+
             }
             if (mails.Any())
             {
@@ -108,7 +109,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                                 message.Subject = item.Topic;
                                 message.Body = item.Content;
                                 client.Send(message);
-                                _logger.Error($"預約諮詢Mail發送To:{item.MailTo}");
+                                _logger.Info($"預約諮詢Mail發送To:{item.MailTo}");
                             }
                             catch (Exception ex)
                             {
