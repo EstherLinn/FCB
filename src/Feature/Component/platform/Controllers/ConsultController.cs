@@ -651,6 +651,7 @@ namespace Feature.Wealth.Component.Controllers
             if (ConsultRelatedLinkSetting.GetSkipIMVPAPI())
             {
                 imvpFlag = true;
+                consultSchedule.StatusCode = "1";
             }
             else
             {
