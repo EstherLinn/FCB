@@ -691,6 +691,8 @@
                     loginUrl += `${key}=${value}&`;
                 }
             }
+            //模擬編碼，因channel參數是在link參數裡
+            loginUrl = loginUrl.replace('channel=', 'channel%3D');
             self.setAttribute('href', loginUrl);
         });
 
