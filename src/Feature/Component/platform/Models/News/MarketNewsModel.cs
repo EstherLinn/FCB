@@ -12,7 +12,14 @@
     {
         public int HotNews { get; set; }
         public string DisplayHotNews { get; set; }
+        public string NewsDetailDate { get; set; }
+        public string NewsContent { get; set; }
+        public string NewsRelatedProducts { get; set; }
         public string NewsType { get; set; }
+        public string PreviousPageTitle { get; set; }
+        public string PreviousPageId { get; set; }
+        public string NextPageTitle { get; set; }
+        public string NextPageId { get; set; }
         public int? NewsViewCount { get; set; }
         public string DisplayNewsViewCount { get; set; }
         public string NewsDetailLink { get; set; }
