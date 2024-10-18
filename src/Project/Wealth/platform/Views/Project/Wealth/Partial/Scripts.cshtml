@@ -678,7 +678,7 @@
                     continue;
                 }
                 if (key == "channel") {
-                    loginUrl += `${key}=${encodeURIComponent(value + '&')}`;
+                    loginUrl += `${key}${encodeURIComponent('='+ value + '&')}`;
                     continue;
                 }
                 if (key == "returnUrl") {
