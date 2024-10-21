@@ -6,6 +6,7 @@ using Xcms.Sitecore.Foundation.QuartzSchedule;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
+using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -37,14 +38,14 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     }
                     catch (Exception ex)
                     {
-                        this.Logger.Error(ex.Message, ex);
-                        _repository.LogChangeHistory(DateTime.UtcNow, fileName, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                        this.Logger.Error(ex.ToString(), ex);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(DateTime.UtcNow, fileName, IsfilePath.Key, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

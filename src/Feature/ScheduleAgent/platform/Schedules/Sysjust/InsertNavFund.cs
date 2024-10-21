@@ -44,16 +44,16 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     }
                     catch (Exception ex)
                     {
-                        this.Logger.Error(ex.Message, ex);
+                        this.Logger.Error(ex.ToString(), ex);
                         var executionTime = (DateTime.UtcNow - startTime).TotalSeconds;
-                        _repository.LogChangeHistory(DateTime.UtcNow, fileName, ex.Message, " ", 0, executionTime, "N");
+                        _repository.LogChangeHistory(fileName, ex.Message, " ", 0, executionTime, "N", ModificationID.Error);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
                     var executionTime = (DateTime.UtcNow - startTime).TotalSeconds;
-                    _repository.LogChangeHistory(DateTime.UtcNow, fileName, IsfilePath.Key, " ", 0, executionTime, "N");
+                    _repository.LogChangeHistory(fileName, IsfilePath.Key, " ", 0, executionTime, "N", ModificationID.Error);
                 }
             }
         }

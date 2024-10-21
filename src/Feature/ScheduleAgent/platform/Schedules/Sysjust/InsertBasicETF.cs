@@ -37,20 +37,21 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
                         _repository.BulkInsertToDatabase(datas, tableName + "_History", "FirstBankCode", "FirstBankCode", fileName, startTime);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+
                         etlService.FinishJob(fileName, startTime);
                     }
                     catch (Exception ex)
                     {
-                        this.Logger.Error(ex.Message, ex);
+                        this.Logger.Error(ex.ToString(), ex);
                         var executionTime = (DateTime.UtcNow - startTime).TotalSeconds;
-                        _repository.LogChangeHistory(DateTime.UtcNow, fileName, ex.Message, " ", 0, executionTime, "N");
+                        _repository.LogChangeHistory(fileName, ex.Message, " ", 0, executionTime, "N", ModificationID.Error);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
                     var executionTime = (DateTime.UtcNow - startTime).TotalSeconds;
-                    _repository.LogChangeHistory(DateTime.UtcNow, fileName, isFilePath.Key, " ", 0, executionTime, "N");
+                    _repository.LogChangeHistory(fileName, isFilePath.Key, " ", 0, executionTime, "N", ModificationID.Error);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

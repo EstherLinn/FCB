@@ -16,6 +16,7 @@ using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Foundation.Wealth.Models;
 using Sitecore.Configuration;
 using Sitecore.Data.Items;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
@@ -45,7 +46,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
-            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y");
+            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新);
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
@@ -76,7 +77,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
-            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y");
+            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新);
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
@@ -104,7 +105,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
-            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y");
+            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新);
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
@@ -133,7 +134,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
-            LogChangeHistory(DateTime.UtcNow, filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y");
+            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新);
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
@@ -176,7 +177,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
-            LogChangeHistory(DateTime.UtcNow, fileName, "最新資料", tableName, line, duration.TotalSeconds, "Y");
+            LogChangeHistory(fileName, "最新資料", tableName, line, duration.TotalSeconds, "Y", ModificationID.最新資料);
             _logger.Info($"{fileName} 最新資料 {tableName} {line}");
         }
 
@@ -214,12 +215,13 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
                         var endTime = DateTime.UtcNow;
                         var duration = endTime - now;
-                        LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, rowsAffected, duration.TotalSeconds, "Y");
+                        LogChangeHistory(filePath, "最新資料", tableName, rowsAffected, duration.TotalSeconds, "Y", ModificationID.最新資料);
                         _logger.Info($"{filePath} 最新資料 {tableName} {rowsAffected} 行");
                     }
                     catch (Exception ex)
                     {
                         this._logger.Error(ex.Message, ex);
+                        throw;
                     }
                 }
             }
@@ -242,7 +244,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             ";
 
             int line = ExecuteNonQuery(insertQuery, data, CommandType.Text, true);
-            LogChangeHistory(DateTime.UtcNow, filePath, "最新資料", tableName, line, (DateTime.UtcNow - startTime).TotalSeconds, "Y");
+            LogChangeHistory(filePath, "最新資料", tableName, line, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.最新資料);
             _logger.Info($"{filePath} 最新資料 {tableName} {line}，花費 {(DateTime.UtcNow - startTime).TotalSeconds} 秒匯入資料庫");
         }
 
@@ -302,6 +304,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     catch (Exception ex)
                     {
                         this._logger.Error(ex.Message, ex);
+                        throw;
                     }
                 }
             }
@@ -351,26 +354,32 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             ExecuteNonQuery(storedProcedureName, spparameters, CommandType.StoredProcedure, true);
         }
 
-        public void LogChangeHistory(DateTime timestamp, string filePath, string operationType, string tableName, int line, double time, string YorN)
+        public void LogChangeHistory(string filePath, string operationType, string tableName, int line, double time, string YorN, ModificationID id)
         {
             var changeHistory = new ChangeHistory
             {
                 FileName = Path.GetFileName(filePath),
-                ModificationDate = timestamp,
+                ModificationDate = DateTime.UtcNow,
                 ModificationType = operationType,
                 DataTable = tableName,
                 ModificationLine = line,
                 TotalSeconds = time,
-                Success = YorN
+                Success = YorN,
+                ModificationID = ((int)id).ToString()
             };
+            InsertChangeHistory(changeHistory);
+        }
+
+        public void LogChangeHistory(ChangeHistory changeHistory)
+        {
             InsertChangeHistory(changeHistory);
         }
 
         public void InsertChangeHistory(ChangeHistory changeHistory)
         {
             string insertHistoryQuery = """
-                                        INSERT INTO ChangeHistory (FileName, ModificationDate, ModificationType, DataTable,ModificationLine,TotalSeconds,Success)
-                                        VALUES (@FileName, @ModificationDate, @ModificationType, @DataTable, @ModificationLine,@TotalSeconds,@Success);
+                                        INSERT INTO ChangeHistory (FileName, ModificationDate, ModificationType, DataTable,ModificationLine,TotalSeconds,Success,ModificationID)
+                                        VALUES (@FileName, @ModificationDate, @ModificationType, @DataTable, @ModificationLine,@TotalSeconds,@Success,@ModificationID);
                                         """;
 
             using (var connection = DbManager.Custom.DbConnection())
@@ -387,6 +396,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     {
                         transaction.Rollback();
                         this._logger.Error(ex.Message, ex);
+                        throw;
                     }
                 }
 
@@ -412,6 +422,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         {
                             transaction.Rollback();
                             this._logger.Error(ex.Message, ex);
+                            throw;
                         }
                     }
                 }
@@ -424,6 +435,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     catch (Exception ex)
                     {
                         this._logger.Error(ex.Message, ex);
+                        throw;
                     }
                 }
             }
@@ -456,6 +468,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             {
                 this._logger.Error(ex.ToString());
                 yield break;
+                throw;
             }
 
             var properties = typeof(T).GetProperties();
@@ -492,7 +505,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         ///<summary>
         ///改變紅綠燈狀態
         ///</summary>
-        
+
         public void TurnTrafficLight(NameofTrafficLight name, TrafficLightStatus status)
         {
             // 先偵測總開關有沒有開
@@ -554,6 +567,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             catch (Exception ex)
             {
                 this._logger.Error(ex.Message, ex);
+                throw;
             }
         }
 

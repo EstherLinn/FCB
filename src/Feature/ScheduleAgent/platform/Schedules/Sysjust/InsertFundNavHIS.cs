@@ -46,14 +46,14 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     }
                     catch (Exception ex)
                     {
-                        this.Logger.Error(ex.Message, ex);
-                        _repository.LogChangeHistory(DateTime.UtcNow, filename, ex.Message, IsfilePath.Key, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                        this.Logger.Error(ex.ToString(), ex);
+                        _repository.LogChangeHistory(filename, ex.Message, IsfilePath.Key, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{filename} not found");
-                    _repository.LogChangeHistory(DateTime.UtcNow, filename, "找不到檔案或檔案相同不執行", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                    _repository.LogChangeHistory(filename, "找不到檔案或檔案相同不執行", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
                 }
             }
         }

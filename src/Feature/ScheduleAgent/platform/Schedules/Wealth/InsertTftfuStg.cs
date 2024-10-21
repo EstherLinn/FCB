@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.Wealth;
+﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Foundation.Wealth.Models;
 using System;
@@ -40,12 +41,12 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
                 this.Logger.Info($"取得TFTFU_STG資料完成：Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, "TFTFU_STG", " ", 0, duration.TotalSeconds, "Y");
+                _repository.LogChangeHistory(sql, "TFTFU_STG", string.Empty, 0, duration.TotalSeconds, "Y", ModificationID.OdbcDone);
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                this.Logger.Error(ex.ToString(), ex);
+                _repository.LogChangeHistory(sql, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
             }
         }
 
@@ -84,8 +85,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, 0, "N");
+                this.Logger.Error(ex.ToString(), ex);
+                _repository.LogChangeHistory(sql, ex.Message, string.Empty, 0, 0, "N", ModificationID.Error);
             }
         }
     }

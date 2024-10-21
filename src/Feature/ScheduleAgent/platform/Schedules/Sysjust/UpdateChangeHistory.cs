@@ -27,8 +27,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, "ChangeHistory", ex.Message, " ", 0, 0, "N");
+                this.Logger.Error(ex.ToString(), ex);
+                _repository.LogChangeHistory("ChangeHistory", ex.Message, string.Empty, 0, 0, "N", ModificationID.Error);
             }
 
         }
