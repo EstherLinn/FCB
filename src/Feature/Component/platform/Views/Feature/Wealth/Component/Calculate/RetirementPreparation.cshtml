@@ -1673,15 +1673,6 @@
                 if (SC_DATA.IsLoggedIn) {
                     $('[data-save="true"]').removeClass('u-hidden');
 
-                    if (SC_DATA.Risk === undefined) {
-                        try {
-                            const data = await RiskHandler();
-                            SC_DATA.Risk = data.risk;
-                        } catch (error) {
-                            console.error('Error fetching risk data:', error);
-                        }
-                    }
-
                     if (SC_DATA.Risk !== undefined && SC_DATA.PlatForm === 'WebBank') {
                         UpdateRiskAttributesContent(SC_DATA.Risk);
                     } else if (SC_DATA.Risk === undefined && SC_DATA.PlatForm === 'WebBank') {
@@ -3426,7 +3417,7 @@
                                 y: item.retire,
                                 color: '#238C6C'
                             }, {
-                                name: '已準備金',
+                                name: '已準備金額',
                                 y: item.prepared,
                                 color: '#FFAD04'
                             }]
@@ -3481,7 +3472,7 @@
             }
             //#endregion
 
-            //#region 取得長條圖已準備金或預估退休金資料
+            //#region 取得長條圖已準備金額或預估退休金資料
             function getReservedFundsOrPensionsData(amountPrepared, years) {
                 let data = [];
 
@@ -3648,7 +3639,7 @@
                             data: item.retire,
                             color: '#238C6C'
                         }, {
-                            name: "已準備金",
+                            name: "已準備金額",
                             data: item.prepared,
                             color: '#FFAD04'
                         }]
