@@ -264,7 +264,7 @@ namespace Feature.Wealth.Account.Controllers
                                 true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,
                                 cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
                                 cifMember.CIF_MAIN_BRANCH, cifMember.CIF_KYC_EXPIR_DATE, cifMember.CIF_EMP_PI_RISK_ATTR,
-                                cifMember.CIF_HIGH_ASSET_FLAG, cifMember.CIF_HIGH_ASSET_DATE,
+                                cifMember.CIF_HIGH_ASSET_FLAG, cifMember.CIF_HIGH_ASSET_VAL_DATE,
                                 cifMember.IsEmployee, cifMember.IsManager);
 
                             var createdSuccess = _memberRepository.CreateNewMember(member);
@@ -367,7 +367,7 @@ namespace Feature.Wealth.Account.Controllers
                                 true, true, QuoteChangeEunm.Taiwan, PlatFormEunm.WebBank, cifMember.CIF_PROMO_CODE,
                                 cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
                                 cifMember.CIF_MAIN_BRANCH, cifMember.CIF_KYC_EXPIR_DATE, cifMember.CIF_EMP_PI_RISK_ATTR,
-                                cifMember.CIF_HIGH_ASSET_FLAG, cifMember.CIF_HIGH_ASSET_DATE,
+                                cifMember.CIF_HIGH_ASSET_FLAG, cifMember.CIF_HIGH_ASSET_VAL_DATE,
                                 cifMember.IsEmployee, cifMember.IsManager);
 
                             var createdSuccess = _memberRepository.CreateNewMember(member);
