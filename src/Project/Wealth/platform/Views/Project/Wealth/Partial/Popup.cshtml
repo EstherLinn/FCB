@@ -514,12 +514,30 @@
         </div>
     </div>
 </div>
+<div id="focusMiss" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">到價通知</h2>
+        </header>
+        <div class="c-modal__content">
+            提醒您，「<span data-missname></span>」您已取消關注，欲再持續關注此商品請至商品搜尋頁面，點選關注，謝謝~
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="#" class="o-btn o-btn--primary o-btn--sm" data-popup-close="true" data-focusmiss-confirm>確定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @if (Session["LoginStatus"] != null)
 {
-    var item =  ItemUtils.GetItem(Templates.LoginErrorMesaage.Root);
+    var item = ItemUtils.GetItem(Templates.LoginErrorMesaage.Root);
     var defaultMsg = ItemUtils.GetFieldValue(item, Templates.LoginErrorMesaage.Fields.ErrorMessage);
     var serverErrorMsg = ItemUtils.GetFieldValue(item, Templates.LoginErrorMesaage.Fields.ServerErrorMessage);
-    if(Session["ServerError"] != null){
+    if (Session["ServerError"] != null)
+    {
         defaultMsg = serverErrorMsg;
         Session["ServerError"] = null;
     }
@@ -556,7 +574,7 @@
             $(`[data-alert="${alertId}"]`).removeClass('is-active').trigger('update.tooltip');
         }
     });
- 
+
     // 示意取消關注
     $('[data-focus]').off('click.interactive');
     $('[data-set-cancel-focus]').on('click.cancelFocus', function () {
@@ -616,158 +634,157 @@
         var newPercent = (Number(priceValue) - latestNetWorth) / latestNetWorth * 100;
         percent = newPercent.toFixed(2) < -100 ? -100 : newPercent.toFixed(2);
         percent = newPercent.toFixed(2) > 1000 ? 1000 : newPercent.toFixed(2);
-        if (percent == 1000)
-        {
+        if (percent == 1000) {
             var val = latestNetWorth + latestNetWorth * 1000 * 0.01;
             $('[data-alert-price]').val(val.toFixed(4)).trigger('change');
         }
         $('[data-count-input]').val(percent).trigger('change.count');
     });
     //申購deeplink init
-                let single = document.getElementById("subscriptionSingle");
-                let regular = document.getElementById("subscriptionRegular");
-                let go = document.getElementById("subscriptionGo");
-                let bond = document.getElementById("subscriptionBond");
-                let singlelink = "";
-                let regularlink = "";
-                let golink = "";
-                let bondlink = "";
-                if ($(window).width() < 1199) {
-                    //第e行動&&ileo按鈕切換
-                    $('input[name="platform"]', '#popupPurchase').on('click', function () {
-                        let val = $(this).data('name');
-                        let id = single.getAttribute("eh-subscription-id")
-                        if (val == "firste") {
-                            singlelink = "@MobileESingleLink";
-                            regularlink = "@MobileERegularLink";
-                            golink = "@MobileEntrustLink";
-                            bondlink = "@MobileBondLink";
-                        } else {
-                            singlelink = "@MobileIleoSingleLink";
-                            regularlink = "@MobileIleoRegularLink";
-                            golink = "@IleoEntrustLink";
-                            bondlink = "@IleoBondLink";
-                        }
-                        let singleUrl = new URL(singlelink.replaceAll("&amp;", "&"));
-                        let singleOriginAndPath = singleUrl.origin + singleUrl.pathname;
-                        let singleCombined = singleOriginAndPath + "?";
-                        let regularUrl = new URL(regularlink.replaceAll("&amp;", "&"));
-                        let regularOriginAndPath = regularUrl.origin + regularUrl.pathname;
-                        let regularCombined = regularOriginAndPath + "?";
-                        let goUrl = new URL(golink.replaceAll("&amp;", "&"));
-                        let goOriginAndPath = goUrl.origin + goUrl.pathname;
-                        let goCombined = goOriginAndPath + "?";
-                        let singleParms = singleUrl.searchParams;
-                        let regularParms = regularUrl.searchParams;
-                        let goParms = goUrl.searchParams;
-                        //行動版
-                            let singleInsindeUrl = new URL(singleParms.get("link"));
-                            let regularInsindUrl = new URL(regularParms.get("link"));
-                            let goInsindUrl = new URL(goParms.get("link"));
-                            //第e行動
-                            if (val == "firste") {
-                                for (const [key, value] of singleParms.entries()) {
-                                    if (key == "link") {
-                                        singleInsindeUrl.searchParams.delete("FundCode");
-                                        singleInsindeUrl.searchParams.append("FundCode", id);
-                                        singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
-                                        continue;
-                                    }
-                                    singleCombined += `${key}=${value}&`;
-                                }
-                                for (const [key, value] of regularParms.entries()) {
-                                    if (key == "link") {
-                                        regularInsindUrl.searchParams.delete("FundCode");
-                                        regularInsindUrl.searchParams.append("FundCode", id);
-                                        regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
-                                        continue;
-                                    }
-                                    regularCombined += `${key}=${value}&`;
-                                }
-                                for (const [key, value] of goParms.entries()) {
-                                    if (key == "link") {
-                                        goCombined += `${key}=${encodeURIComponent(value + '&')}`;
-                                        continue;
-                                    }
-                                    if (key == "chn" || key == "emp_id") {
-                                        goCombined += `${key}${encodeURIComponent('=' + value + '&')}`;
-                                        continue;
-                                    }
-                                    if (key == "prdCode") {
-                                        goCombined += `${key}${encodeURIComponent('=' + id)}&`;
-                                        continue;
-                                    }
-                                    goCombined += `${key}=${value}&`;
-                                }
-                            } else
-                            //iLeo
-                            {
-                                for (const [key, value] of singleParms.entries()) {
-                                    if (key == "link") {
-                                        singleInsindeUrl.searchParams.delete("FundCode");
-                                        singleInsindeUrl.searchParams.append("FundCode", id);
-                                        singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
-                                        continue;
-                                    }
-                                    singleCombined += `${key}=${value}&`;
-                                }
-                                for (const [key, value] of regularParms.entries()) {
-                                    if (key == "link") {
-                                        regularInsindUrl.searchParams.delete("FundCode");
-                                        regularInsindUrl.searchParams.append("FundCode", id);
-                                        regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
-                                        continue;
-                                    }
-                                    regularCombined += `${key}=${value}&`;
-                                }
-                                for (const [key, value] of goParms.entries()) {
-                                    if (key == "link") {
-                                        goInsindUrl.searchParams.delete("FundCode");
-                                        goInsindUrl.searchParams.append("FundCode", id);
-                                        goCombined += `${key}=${encodeURIComponent(goInsindUrl)}&`;
-                                        continue;
-                                    }
-                                    goCombined += `${key}=${value}&`;
-                                }
-                            }
-
-                        single.setAttribute("href", singleCombined.slice(0, -1));
-                        regular.setAttribute("href", regularCombined.slice(0, -1));
-                        go.setAttribute("href", goCombined.slice(0, -1));
-                        bond.setAttribute("href", bondlink.replaceAll("&amp;", "&"));
-                        store.set("MobilePlatform", val);
-                    });
-
-                    let val = store.get('MobilePlatform') || "";
-                    if (val == "firste" || val == "") {
-                        store.set("MobilePlatform", 'firste');
-                        $('input[data-name="firste"]', '#popupPurchase').prop('checked', true);
-                        singlelink = "@MobileESingleLink";
-                        regularlink = "@MobileERegularLink";
-                        golink = "@MobileEntrustLink";
-                        bondlink = "@MobileBondLink";
-                    } else {
-                        $('input[data-name="ileo"]', '#popupPurchase').prop('checked', true);
-                        singlelink = "@MobileIleoSingleLink";
-                        regularlink = "@MobileIleoRegularLink";
-                        golink = "@IleoEntrustLink";
-                        bondlink = "@IleoBondLink";
+    let single = document.getElementById("subscriptionSingle");
+    let regular = document.getElementById("subscriptionRegular");
+    let go = document.getElementById("subscriptionGo");
+    let bond = document.getElementById("subscriptionBond");
+    let singlelink = "";
+    let regularlink = "";
+    let golink = "";
+    let bondlink = "";
+    if ($(window).width() < 1199) {
+        //第e行動&&ileo按鈕切換
+        $('input[name="platform"]', '#popupPurchase').on('click', function () {
+            let val = $(this).data('name');
+            let id = single.getAttribute("eh-subscription-id")
+            if (val == "firste") {
+                singlelink = "@MobileESingleLink";
+                regularlink = "@MobileERegularLink";
+                golink = "@MobileEntrustLink";
+                bondlink = "@MobileBondLink";
+            } else {
+                singlelink = "@MobileIleoSingleLink";
+                regularlink = "@MobileIleoRegularLink";
+                golink = "@IleoEntrustLink";
+                bondlink = "@IleoBondLink";
+            }
+            let singleUrl = new URL(singlelink.replaceAll("&amp;", "&"));
+            let singleOriginAndPath = singleUrl.origin + singleUrl.pathname;
+            let singleCombined = singleOriginAndPath + "?";
+            let regularUrl = new URL(regularlink.replaceAll("&amp;", "&"));
+            let regularOriginAndPath = regularUrl.origin + regularUrl.pathname;
+            let regularCombined = regularOriginAndPath + "?";
+            let goUrl = new URL(golink.replaceAll("&amp;", "&"));
+            let goOriginAndPath = goUrl.origin + goUrl.pathname;
+            let goCombined = goOriginAndPath + "?";
+            let singleParms = singleUrl.searchParams;
+            let regularParms = regularUrl.searchParams;
+            let goParms = goUrl.searchParams;
+            //行動版
+            let singleInsindeUrl = new URL(singleParms.get("link"));
+            let regularInsindUrl = new URL(regularParms.get("link"));
+            let goInsindUrl = new URL(goParms.get("link"));
+            //第e行動
+            if (val == "firste") {
+                for (const [key, value] of singleParms.entries()) {
+                    if (key == "link") {
+                        singleInsindeUrl.searchParams.delete("FundCode");
+                        singleInsindeUrl.searchParams.append("FundCode", id);
+                        singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
+                        continue;
                     }
+                    singleCombined += `${key}=${value}&`;
+                }
+                for (const [key, value] of regularParms.entries()) {
+                    if (key == "link") {
+                        regularInsindUrl.searchParams.delete("FundCode");
+                        regularInsindUrl.searchParams.append("FundCode", id);
+                        regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
+                        continue;
+                    }
+                    regularCombined += `${key}=${value}&`;
+                }
+                for (const [key, value] of goParms.entries()) {
+                    if (key == "link") {
+                        goCombined += `${key}=${encodeURIComponent(value + '&')}`;
+                        continue;
+                    }
+                    if (key == "chn" || key == "emp_id") {
+                        goCombined += `${key}${encodeURIComponent('=' + value + '&')}`;
+                        continue;
+                    }
+                    if (key == "prdCode") {
+                        goCombined += `${key}${encodeURIComponent('=' + id)}&`;
+                        continue;
+                    }
+                    goCombined += `${key}=${value}&`;
+                }
+            } else
+            //iLeo
+            {
+                for (const [key, value] of singleParms.entries()) {
+                    if (key == "link") {
+                        singleInsindeUrl.searchParams.delete("FundCode");
+                        singleInsindeUrl.searchParams.append("FundCode", id);
+                        singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
+                        continue;
+                    }
+                    singleCombined += `${key}=${value}&`;
+                }
+                for (const [key, value] of regularParms.entries()) {
+                    if (key == "link") {
+                        regularInsindUrl.searchParams.delete("FundCode");
+                        regularInsindUrl.searchParams.append("FundCode", id);
+                        regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
+                        continue;
+                    }
+                    regularCombined += `${key}=${value}&`;
+                }
+                for (const [key, value] of goParms.entries()) {
+                    if (key == "link") {
+                        goInsindUrl.searchParams.delete("FundCode");
+                        goInsindUrl.searchParams.append("FundCode", id);
+                        goCombined += `${key}=${encodeURIComponent(goInsindUrl)}&`;
+                        continue;
+                    }
+                    goCombined += `${key}=${value}&`;
+                }
+            }
 
-                    single.setAttribute("href", singlelink.replaceAll("&amp;", "&"));
-                    regular.setAttribute("href", regularlink.replaceAll("&amp;", "&"));
-                    go.setAttribute("href", golink.replaceAll("&amp;", "&"));
-                    bond.setAttribute("href", bondlink.replaceAll("&amp;", "&"));
-                }
-                else {
-                    singlelink = "@SubcriptionSingleLink";
-                    regularlink = "@SubcriptionRegularLink";
-                    golink = "@WebEntrustLink";
-                    bondlink = "@WebBondLink";
-                    single.setAttribute("href", singlelink.replaceAll("&amp;", "&"));
-                    regular.setAttribute("href", regularlink.replaceAll("&amp;", "&"));
-                    go.setAttribute("href", golink.replaceAll("&amp;", "&"));
-                    bond.setAttribute("href", bondlink.replaceAll("&amp;", "&"));
-                }
+            single.setAttribute("href", singleCombined.slice(0, -1));
+            regular.setAttribute("href", regularCombined.slice(0, -1));
+            go.setAttribute("href", goCombined.slice(0, -1));
+            bond.setAttribute("href", bondlink.replaceAll("&amp;", "&"));
+            store.set("MobilePlatform", val);
+        });
+
+        let val = store.get('MobilePlatform') || "";
+        if (val == "firste" || val == "") {
+            store.set("MobilePlatform", 'firste');
+            $('input[data-name="firste"]', '#popupPurchase').prop('checked', true);
+            singlelink = "@MobileESingleLink";
+            regularlink = "@MobileERegularLink";
+            golink = "@MobileEntrustLink";
+            bondlink = "@MobileBondLink";
+        } else {
+            $('input[data-name="ileo"]', '#popupPurchase').prop('checked', true);
+            singlelink = "@MobileIleoSingleLink";
+            regularlink = "@MobileIleoRegularLink";
+            golink = "@IleoEntrustLink";
+            bondlink = "@IleoBondLink";
+        }
+
+        single.setAttribute("href", singlelink.replaceAll("&amp;", "&"));
+        regular.setAttribute("href", regularlink.replaceAll("&amp;", "&"));
+        go.setAttribute("href", golink.replaceAll("&amp;", "&"));
+        bond.setAttribute("href", bondlink.replaceAll("&amp;", "&"));
+    }
+    else {
+        singlelink = "@SubcriptionSingleLink";
+        regularlink = "@SubcriptionRegularLink";
+        golink = "@WebEntrustLink";
+        bondlink = "@WebBondLink";
+        single.setAttribute("href", singlelink.replaceAll("&amp;", "&"));
+        regular.setAttribute("href", regularlink.replaceAll("&amp;", "&"));
+        go.setAttribute("href", golink.replaceAll("&amp;", "&"));
+        bond.setAttribute("href", bondlink.replaceAll("&amp;", "&"));
+    }
 
 </script>

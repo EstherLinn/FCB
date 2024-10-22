@@ -88,7 +88,7 @@
                             }
                         </ul>
                     </nav>
-                    @if (FcbMemberHelper.BranchCanUseConsult() &&　!string.IsNullOrEmpty(member.WebBankId) && !string.IsNullOrEmpty(member.Advisror) && !member.IsManager)
+                    @if (FcbMemberHelper.BranchCanUseConsult() && !string.IsNullOrEmpty(member.WebBankId) && !string.IsNullOrEmpty(member.Advisror) && !member.IsManager)
                     {
                         @*網銀身分及網銀身分有理專及不是主管,顯示預約按鈕*@
                         <div class="c-popover__footer">
@@ -125,19 +125,19 @@
                         for (var i = 0; i < data.length; i++) {
                             isRead = data[i].HaveRead ? "" : "is-hint";
                             html += `<li class="c-listGroup__item" data-topInfoList>
-                                                    <div class="c-itemNotify ${isRead}" data-haveread=${data[i].HaveRead}  data-recordnum="${data[i].RecordNumber}">
-                                                        <div class="c-itemNotify__topbar">
-                                                            <span class="t-date">${data[i].InfoDateTimeString}</span>
-                                                            <span class="o-hangTag" data-mailType>${data[i].MailInfoType}</span>
-                                                        </div>
-                                                        <div class="c-itemNotify__link">
-                                                                <a href="${data[i].InfoLink}" target="_blank" class="o-itemLink">
-                                                                <span class="o-itemLink__title">${data[i].InfoContent}</span>
-                                                                <img src="/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </li>`
+                                                            <div class="c-itemNotify ${isRead}" data-haveread=${data[i].HaveRead}  data-recordnum="${data[i].RecordNumber}">
+                                                                <div class="c-itemNotify__topbar">
+                                                                    <span class="t-date">${data[i].InfoDateTimeString}</span>
+                                                                    <span class="o-hangTag" data-mailType>${data[i].MailInfoType}</span>
+                                                                </div>
+                                                                <div class="c-itemNotify__link">
+                                                                        <a href="${data[i].InfoLink}" target="_blank" class="o-itemLink">
+                                                                        <span class="o-itemLink__title" data-infocontent>${data[i].InfoContent}</span>
+                                                                        <img src="/themes/images/icons/green/corner-right.svg" class="o-itemLink__icon" alt="">
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </li>`
                         }
                         $('#topInfoList').html(DOMPurify.sanitize(html, { ADD_ATTR: ['target'] }));
                         $('[data-empty]').addClass('u-hidden');
@@ -160,8 +160,37 @@
                 });
             }
             window.ResetTopInfoList();
-            $('#topInfoList').on('click', '[data-topInfoList]', function () {
+            //到價通知產品已取消關注，跳出提醒
+            function PopUpEvent(url, title) {
+                $('#focusMiss').find('[data-missname]').text(title);
+                $.magnificPopup.open({
+                    items: {
+                        src: '#focusMiss'
+                    },
+                    type: 'inline',
+                    callbacks: {
+                        close: function Location() {
+                             window.open(url);
+                        }
+                    }
+                });
+            }
+            $('#topInfoList').on('click', '[data-topInfoList]', function (e) {
                 let $this = $(this);
+                let mailType = $this.find('[data-mailType]').text();
+                let prefix = location.protocol + "//" + location.hostname;
+                let locationUrl = new URL(prefix + this.getElementsByTagName('a')[0].getAttribute('href'));
+                let infoContent = $this.find('[data-infoContent]').text().split('已')[0].trim().replaceAll('收盤價', '');
+                if (mailType === "到價通知") {
+                    let focusId = locationUrl.searchParams.get('id');
+                    if (!window.checkItemExists('focus', focusId)) {
+                        e.preventDefault();
+                        if (e.target.tagName.toLowerCase() === 'a' || e.target.tagName.toLowerCase() === 'span') {
+                            focusId = locationUrl.searchParams.get('id');
+                            PopUpEvent(locationUrl, infoContent);
+                        }
+                    }
+                }
                 let isRead = $this.find('[data-haveread]').data('haveread');
                 if (isRead) {
                     return;
@@ -170,7 +199,7 @@
                     url: '@ClientRoute.GenerateUrl(this, "MemberInfoList", "SetInfoHaveReadByMember")',
                     type: 'POST',
                     data: {
-                        "mailInfoType": $this.find('[data-mailType]').text(), "recordNumber": $this.find('[data-recordnum]').data('recordnum')
+                        "mailInfoType": mailType, "recordNumber": $this.find('[data-recordnum]').data('recordnum')
                         , "pageUrl": window.location.pathname + window.location.search
                     },
                     beforeSend: function () { window.loading('show'); },
