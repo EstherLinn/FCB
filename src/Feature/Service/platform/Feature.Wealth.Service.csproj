@@ -10,5 +10,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Foundation\Wealth\platform\Foundation.Wealth.csproj" />
+    <ProjectReference Include="..\..\Component\platform\Feature.Wealth.Component.csproj" />
   </ItemGroup>
 </Project>
