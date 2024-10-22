@@ -100,7 +100,7 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// <summary>
         /// 高資產到期日
         /// </summary>
-        public string CIF_HIGH_ASSET_DATE { get; set; }
+        public string CIF_HIGH_ASSET_VAL_DATE { get; set; }
 
         public string CIF_ID { get; set; }
 
@@ -147,7 +147,7 @@ namespace Feature.Wealth.Account.Models.OAuth
             this.CIF_KYC_EXPIR_DATE = kycData;
             this.CIF_EMP_PI_RISK_ATTR = piRisk;
             this.CIF_HIGH_ASSET_FLAG = highAssetFlag;
-            this.CIF_HIGH_ASSET_DATE = highAssetDate;
+            this.CIF_HIGH_ASSET_VAL_DATE = highAssetDate;
         }
 
     }

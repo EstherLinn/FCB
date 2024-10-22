@@ -67,7 +67,7 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// <summary>
         /// 高資產到期日
         /// </summary>
-        public string CIF_HIGH_ASSET_DATE { get; set; }
+        public string CIF_HIGH_ASSET_VAL_DATE { get; set; }
         /// <summary>
         /// HRIS 員工代號 對應 所屬理專ID
         /// </summary>
