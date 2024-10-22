@@ -2,10 +2,9 @@
 using Feature.Wealth.Component.Models.News.NewsList;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
+using log4net;
 using Mapster;
-using Newtonsoft.Json.Linq;
 using Sitecore.Data;
-using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Extensions;
 using Sitecore.Mvc.Presentation;
@@ -13,16 +12,19 @@ using Sitecore.Resources.Media;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
     public class NewsRepository
     {
-        private readonly DjMoneyApiRespository _djMoneyApiRespository = new DjMoneyApiRespository();
+        private ILog Log { get; } = Logger.Account;
         private readonly VisitCountRepository _visitCountRepository = new VisitCountRepository();
 
         #region 最新消息
@@ -117,31 +119,100 @@ namespace Feature.Wealth.Component.Repositories
         #region 市場新聞
 
         /// <summary>
-        ///  整理市場新聞Api資料
+        ///  取得預設市場新聞資料庫資料
         /// </summary>
-        public List<MarketNewsModel> OrganizeMarketNewsApiData(JObject resp)
+        public IList<MarketNewsModel> GetDefaultMarketNewsDbData(string initialStartDatetime, string initialEndDatetime)
         {
-            var datas = new List<MarketNewsModel>();
+            IList<MarketNewsModel> datas = null;
+            int threshold = 5; // 設定最低需要的 "頭條新聞" 數量
+            int daysToShift = 2; // 每次查詢未找到時，初始往前推移的天數
+            string endDatetime = initialEndDatetime;
+            string startDatetime = initialStartDatetime;
+            bool foundEnoughHeadlines = false; // 標記是否找到足夠的 "頭條新聞"
 
-            if (resp != null
-                && resp.ContainsKey("resultSet")
-                && resp["resultSet"] != null
-                && resp["resultSet"]["result"] != null
-                && resp["resultSet"]["result"].Any())
+            // 當還未找到足夠的 "頭條新聞" 時進入迴圈
+            while (!foundEnoughHeadlines)
             {
-                var resultList = resp["resultSet"]["result"];
+                // SQL 查詢語句
+                string query = @"
+                   WITH CTE AS (
+                    SELECT
+                        nl.[NewsDate],
+                        nl.[NewsTime],
+                        nl.[NewsTitle],
+                        nl.[NewsSerialNumber],
+                        nd.[NewsDetailDate],
+                        nd.[NewsContent],
+                        nd.[NewsRelatedProducts],
+                        nd.[NewsType],
+                        ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC, nd.[NewsDetailDate] DESC) AS RowNum
+                    FROM
+                        [dbo].[NewsList] nl WITH (NOLOCK)
+                    LEFT JOIN
+                        [dbo].[NewsDetail] nd WITH (NOLOCK)
+                    ON
+                        nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
+                    WHERE
+                        (nl.[NewsDate] BETWEEN @StartDate AND @EndDate) AND
+                        nd.[NewsType] IS NOT NULL
+                ),
+                FilteredCTE AS (
+                    SELECT
+                        *,
+                        ROW_NUMBER() OVER (ORDER BY [NewsDate] DESC, [NewsTime] DESC, [NewsDetailDate] DESC) AS RowNumber
+                    FROM
+                        CTE
+                    WHERE
+                        RowNum = 1
+                )
+                SELECT
+                    curr.[NewsDate],
+                    curr.[NewsTime],
+                    curr.[NewsTitle],
+                    curr.[NewsSerialNumber],
+                    curr.[NewsDetailDate],
+                    curr.[NewsContent],
+                    curr.[NewsRelatedProducts],
+                    curr.[NewsType],
+                    prev.[NewsSerialNumber] AS PreviousPageId,
+                    prev.[NewsTitle] AS PreviousPageTitle,
+                    next.[NewsSerialNumber] AS NextPageId,
+                    next.[NewsTitle] AS NextPageTitle
+                FROM FilteredCTE curr WITH (NOLOCK)
+                LEFT JOIN FilteredCTE prev WITH (NOLOCK) ON curr.RowNumber = prev.RowNumber + 1
+                LEFT JOIN FilteredCTE next WITH (NOLOCK) ON curr.RowNumber = next.RowNumber - 1;";
 
-                foreach (var item in resultList)
+                try
                 {
-                    var newsData = new MarketNewsModel
-                    {
-                        NewsDate = item["v1"].ToString(),
-                        NewsTime = item["v2"].ToString(),
-                        NewsTitle = item["v3"].ToString(),
-                        NewsSerialNumber = item["v4"].ToString()
-                    };
+                    datas = DbManager.Custom.ExecuteIList<MarketNewsModel>(query, new { StartDate = startDatetime, EndDate = endDatetime }, CommandType.Text);
 
-                    datas.Add(newsData);
+                    // 計算 datas 中 NewsType 為 "頭條新聞" 的數量，如果 datas 為 null，則headlineCount 為 0
+                    var headlineCount = datas?.Count(news => news.NewsType != null && news.NewsType.Contains("頭條新聞")) ?? 0;
+
+                    // 如果找到了足夠的 "頭條新聞"，則退出循環
+                    if (headlineCount >= threshold)
+                    {
+                        // 設定標記為 true，表示已找到足夠的資料
+                        foundEnoughHeadlines = true;
+                    }
+                    else
+                    {
+                        // 如果不足，繼續更新 startDatetime，往前推動更多的天數
+                        daysToShift *= 2; // 每次推移的天數加倍
+                        startDatetime = DateTime.Parse(endDatetime, new CultureInfo("zh-TW")).AddDays(-daysToShift).ToString("yyyy/MM/dd"); // 更新開始時間
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.Message);
+                    datas = null;
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    datas = null;
+                    break;
                 }
             }
 
@@ -149,105 +220,76 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 更新市場新聞資料庫資料
+        ///  取得查詢市場新聞資料庫資料
         /// </summary>
-        public void UpdateMarketNewsData(List<MarketNewsModel> datas)
+        public IList<MarketNewsModel> GetSerchMarketNewsDbData(string startDatetime, string endDatetime)
         {
-            if (datas != null && datas.Any())
-            {
-                var existingNews = DbManager.Custom.ExecuteIList<MarketNewsModel>(@"
-        SELECT [NewsSerialNumber]
-        FROM [dbo].[NewsList]", null, CommandType.Text);
+            IList<MarketNewsModel> datas = null;
 
-                var existingSerialNumbers = existingNews.Select(news => news.NewsSerialNumber).ToList();
-
-                var newData = datas
-                    .Where(news => !existingSerialNumbers.Contains(news.NewsSerialNumber))
-                    .ToList();
-
-                if (newData.Any())
-                {
-                    foreach (var news in newData)
-                    {
-                        DbManager.Custom.ExecuteNonQuery(@"
-                INSERT INTO [dbo].[NewsList] ([NewsDate], [NewsTime], [NewsTitle], [NewsSerialNumber])
-                VALUES (@NewsDate, @NewsTime, @NewsTitle, @NewsSerialNumber)", new
-                        {
-                            NewsDate = news.NewsDate,
-                            NewsTime = news.NewsTime,
-                            NewsTitle = news.NewsTitle,
-                            NewsSerialNumber = news.NewsSerialNumber,
-                        }, CommandType.Text);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 排程用更新聞列表資料庫資料
-        /// </summary>
-        public void ScheduleUpdateNewsList(string id, string count, string startDatetime, string endDatetime)
-        {
-            // 取得 MarketNewsApi 資料
-            var resp = _djMoneyApiRespository.GetMarketNewsData(id, count, startDatetime, endDatetime);
-
-            // 整理 MarketNewsApi 資料
-            var repsDatas = OrganizeMarketNewsApiData(resp);
-
-            // 更新資料到資料庫
-            UpdateMarketNewsData(repsDatas);
-        }
-
-        /// <summary>
-        ///  取得市場新聞資料庫資料
-        /// </summary>
-        public IList<MarketNewsModel> GetMarketNewsDbData()
-        {
-            // 构建 SQL 查询
             string query = @"
-            WITH CTE AS (
+                WITH CTE AS (
+                    SELECT
+                        nl.[NewsDate],
+                        nl.[NewsTime],
+                        nl.[NewsTitle],
+                        nl.[NewsSerialNumber],
+                        nd.[NewsDetailDate],
+                        nd.[NewsContent],
+                        nd.[NewsRelatedProducts],
+                        nd.[NewsType],
+                        ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC, nd.[NewsDetailDate] DESC) AS RowNum
+                    FROM
+                        [dbo].[NewsList] nl WITH (NOLOCK)
+                    LEFT JOIN
+                        [dbo].[NewsDetail] nd WITH (NOLOCK)
+                    ON
+                        nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
+                    WHERE
+                        (nl.[NewsDate] BETWEEN @StartDate AND @EndDate) AND
+                        nd.[NewsType] IS NOT NULL
+                ),
+                FilteredCTE AS (
+                    SELECT
+                        *,
+                        ROW_NUMBER() OVER (ORDER BY [NewsDate] DESC, [NewsTime] DESC, [NewsDetailDate] DESC) AS RowNumber
+                    FROM
+                        CTE
+                    WHERE
+                        RowNum = 1
+                )
                 SELECT
-                    nl.[NewsDate],
-                    nl.[NewsTime],
-                    nl.[NewsTitle],
-                    nl.[NewsSerialNumber],
-                    nd.[NewsDetailDate],
-                    nd.[NewsContent],
-                    nd.[NewsRelatedProducts],
-                    nd.[NewsType],
-                    ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC, nd.[NewsDetailDate] DESC) AS RowNum
-                FROM
-                    [dbo].[NewsList] nl WITH (NOLOCK)
-                LEFT JOIN
-                    [dbo].[NewsDetail] nd
-                    ON nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-            ),
-            FilteredCTE AS (
-                SELECT
-                    *
-                FROM
-                    CTE
-                WHERE
-                    RowNum = 1
-                    AND [NewsType] IS NOT NULL
-            )
-            SELECT
-                [NewsDate],
-                [NewsTime],
-                [NewsTitle],
-                [NewsSerialNumber],
-                [NewsDetailDate],
-                [NewsContent],
-                [NewsRelatedProducts],
-                [NewsType]
-            FROM
-                FilteredCTE
-            ORDER BY
-                [NewsDate] DESC,
-                [NewsTime] DESC,
-                [NewsDetailDate] DESC";
+                    curr.[NewsDate],
+                    curr.[NewsTime],
+                    curr.[NewsTitle],
+                    curr.[NewsSerialNumber],
+                    curr.[NewsDetailDate],
+                    curr.[NewsContent],
+                    curr.[NewsRelatedProducts],
+                    curr.[NewsType],
+                    prev.[NewsSerialNumber] AS PreviousPageId,
+                    prev.[NewsTitle] AS PreviousPageTitle,
+                    next.[NewsSerialNumber] AS NextPageId,
+                    next.[NewsTitle] AS NextPageTitle
+                FROM FilteredCTE curr WITH (NOLOCK)
+                LEFT JOIN FilteredCTE prev WITH (NOLOCK) ON curr.RowNumber = prev.RowNumber + 1
+                LEFT JOIN FilteredCTE next WITH (NOLOCK) ON curr.RowNumber = next.RowNumber - 1;";
 
-            return DbManager.Custom.ExecuteIList<MarketNewsModel>(query, null, CommandType.Text);
+            try
+            {
+                datas = DbManager.Custom.ExecuteIList<MarketNewsModel>(query, new { StartDate = startDatetime, EndDate = endDatetime }, CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+                datas = null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                datas = null;
+            }
+
+            return datas;
         }
 
         /// <summary>
@@ -274,17 +316,30 @@ namespace Feature.Wealth.Component.Repositories
                 var idList = id.Split(',').Select(x => x.Trim()).ToList();
 
                 string query = @"
-            SELECT [NewsType]
-            FROM [dbo].[NewsType]
-            WHERE [TypeNumber] IN @IdList";
+                    SELECT [NewsType]
+                    FROM [dbo].[NewsType] WITH (NOLOCK)
+                    WHERE [TypeNumber] IN @IdList";
 
-                var newsTypeList = DbManager.Custom.ExecuteIList<string>(query, new { IdList = idList }, CommandType.Text);
+                try
+                {
+                    var newsTypeList = DbManager.Custom.ExecuteIList<string>(query, new { IdList = idList }, CommandType.Text);
 
-                filteredDatas = filteredDatas
-                    .Where(news =>
-                        !string.IsNullOrEmpty(news.NewsType) &&
-                        news.NewsType.Split(',').Any(type => newsTypeList.Contains(type.Trim())))
-                    .ToList();
+                    filteredDatas = filteredDatas
+                        .Where(news =>
+                            !string.IsNullOrEmpty(news.NewsType) &&
+                            news.NewsType.Split(',').Any(type => newsTypeList.Contains(type.Trim())))
+                        .ToList();
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.Message);
+                    return datas;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    return datas;
+                }
             }
 
             foreach (var item in filteredDatas)
@@ -297,7 +352,14 @@ namespace Feature.Wealth.Component.Repositories
                     NewsDate = item.NewsDate.ToString() + " " + item.NewsTime.ToString(),
                     NewsTitle = item.NewsTitle,
                     NewsSerialNumber = item.NewsSerialNumber,
-                    NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + item.NewsSerialNumber
+                    NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + item.NewsSerialNumber,
+                    NewsDetailDate = item.NewsDetailDate.ToString(),
+                    NewsContent = item.NewsContent,
+                    NewsRelatedProducts = item.NewsRelatedProducts,
+                    PreviousPageTitle = item.PreviousPageTitle,
+                    PreviousPageId = item.PreviousPageId,
+                    NextPageId = item.NextPageId,
+                    NextPageTitle = item.NextPageTitle,
                 };
 
                 newsData.Data = new MarketNewsData
@@ -346,53 +408,67 @@ namespace Feature.Wealth.Component.Repositories
         #region 市場新聞詳細頁
 
         /// <summary>
-        ///  取得市場新聞列表資料表裡還沒有取得詳細頁資料的ID
+        ///  整理市場新聞詳細頁資料
         /// </summary>
-        public IList<string> RetrieveIDsWithoutData()
-        {
-            string query = @"
-        WITH DetailSerialNumbers AS (
-            SELECT NewsSerialNumber
-            FROM [dbo].[NewsDetail]
-        )
-        SELECT DISTINCT nl.NewsSerialNumber
-        FROM [dbo].[NewsList] nl
-        LEFT JOIN DetailSerialNumbers ds
-        ON nl.NewsSerialNumber = ds.NewsSerialNumber
-        WHERE ds.NewsSerialNumber IS NULL";
-
-            // 透過 Dapper 執行 SQL 查詢並取得結果
-            var result = DbManager.Custom.ExecuteIList<string>(query, null, CommandType.Text);
-
-            return result;
-        }
-
-        /// <summary>
-        /// 整理市場新聞詳細頁Api資料
-        /// </summary>
-        public MarketNewsDetailModel OrganizeMarketNewsDetailApiData(JObject resp, string newsId)
+        public MarketNewsDetailModel OrganizeMarketNewsDetailData(List<MarketNewsModel> _datas, string newsId)
         {
             var model = new MarketNewsDetailModel();
-
             var detailData = new MarketNewsDetailData();
 
-            if (resp != null
-                && resp.ContainsKey("resultSet")
-                && resp["resultSet"] != null
-                && resp["resultSet"]["result"] != null
-                && resp["resultSet"]["result"].Any())
+            if (_datas != null && _datas.Any())
             {
-                var result = resp["resultSet"]["result"][0];
+                // 從預設 cache 裡拿資料篩選出符合 newsId 的資料
+                var filteredData = _datas.FirstOrDefault(news => news.NewsSerialNumber == newsId);
 
-                detailData.NewsSerialNumber = newsId;
-                detailData.NewsDetailDate = result["v1"].ToString();
-                detailData.NewsTitle = result["v2"].ToString();
-                detailData.NewsContent = result["v3"].ToString();
-                detailData.NewsContentHtmlString = new HtmlString(detailData.NewsContent);
-                detailData.NewsRelatedProducts = result["v4"].ToString();
-                detailData.NewsType = result["v5"].ToString();
+                // 確認 filteredData 是否是最後一筆資料
+                bool isLastItem = filteredData != null && _datas.IndexOf(filteredData) == _datas.Count - 1;
 
-                model.MarketNewsDetailData = detailData;
+                // 判斷查詢的新聞是否有在預設的 cache 裡面且不是預設 cache 的最後一筆資料
+                if (filteredData != null && !isLastItem)
+                {
+                    detailData.NewsSerialNumber = filteredData.NewsSerialNumber;
+                    detailData.NewsDetailDate = filteredData.NewsDetailDate;
+                    detailData.NewsTitle = filteredData.NewsTitle;
+                    detailData.NewsContent = filteredData.NewsContent;
+                    detailData.NewsContentHtmlString = new HtmlString(filteredData.NewsContent);
+                    detailData.NewsType = filteredData.NewsType;
+                    detailData.PreviousPageId = filteredData.PreviousPageId;
+                    detailData.PreviousPageTitle = filteredData.PreviousPageTitle;
+                    detailData.PreviousPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(filteredData.PreviousPageId);
+                    detailData.NextPageId = filteredData.NextPageId;
+                    detailData.NextPageTitle = filteredData.NextPageTitle;
+                    detailData.NextPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(filteredData.NextPageId);
+                    detailData.NewsListUrl = MarketNewsRelatedLinkSetting.GetMarketNewsListUrl();
+
+                    model.MarketNewsDetailData = detailData;
+                }
+                else
+                {
+                    var datas = GetMarketNewsDbDetailData(newsId);
+
+                    if (datas != null)
+                    {
+                        detailData.NewsSerialNumber = datas.NewsSerialNumber;
+                        detailData.NewsDetailDate = datas.NewsDetailDate;
+                        detailData.NewsTitle = datas.NewsTitle;
+                        detailData.NewsContent = datas.NewsContent;
+                        detailData.NewsContentHtmlString = new HtmlString(datas.NewsContent);
+                        detailData.NewsType = datas.NewsType;
+                        detailData.PreviousPageId = datas.PreviousPageId;
+                        detailData.PreviousPageTitle = datas.PreviousPageTitle;
+                        detailData.PreviousPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.PreviousPageId);
+                        detailData.NextPageId = datas.NextPageId;
+                        detailData.NextPageTitle = datas.NextPageTitle;
+                        detailData.NextPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.NextPageId);
+                        detailData.NewsListUrl = MarketNewsRelatedLinkSetting.GetMarketNewsListUrl();
+
+                        model.MarketNewsDetailData = detailData;
+                    }
+                    else
+                    {
+                        model.MarketNewsDetailData = null;
+                    }
+                }
             }
             else
             {
@@ -403,72 +479,39 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 更新市場新聞詳細頁資料庫資料
-        /// </summary>
-        public void UpdateMarketNewsDetailData(MarketNewsDetailModel datas)
-        {
-            if (datas.MarketNewsDetailData != null)
-            {
-                DbManager.Custom.ExecuteNonQuery(@"
-                INSERT INTO [dbo].[NewsDetail] ([NewsSerialNumber], [NewsDetailDate], [NewsTitle], [NewsContent], [NewsRelatedProducts], [NewsType])
-                VALUES (@NewsSerialNumber, @NewsDetailDate, @NewsTitle, @NewsContent, @NewsRelatedProducts, @NewsType)", new
-                {
-                    NewsSerialNumber = datas.MarketNewsDetailData.NewsSerialNumber,
-                    NewsDetailDate = datas.MarketNewsDetailData.NewsDetailDate,
-                    NewsTitle = datas.MarketNewsDetailData.NewsTitle,
-                    NewsContent = datas.MarketNewsDetailData.NewsContent,
-                    NewsRelatedProducts = datas.MarketNewsDetailData.NewsRelatedProducts,
-                    NewsType = datas.MarketNewsDetailData.NewsType,
-                }, CommandType.Text);
-            }
-        }
-
-        /// <summary>
-        /// 排程用更新聞詳細頁資料庫資料
-        /// </summary>
-        public void ScheduleUpdateNewsDetail()
-        {
-            // 取得市場新聞列表資料表裡還沒有取得詳細頁資料的ID
-            var retrieveIDsWithoutData = RetrieveIDsWithoutData();
-
-            if (retrieveIDsWithoutData.Any())
-            {
-                foreach (var id in retrieveIDsWithoutData)
-                {
-                    // 取得 MarketNewsDetailApi 資料
-                    var resp = _djMoneyApiRespository.GetMarketNewsDetailData(id);
-
-                    // 整理 MarketNewsDetailApi 資料
-                    var repsDatas = OrganizeMarketNewsDetailApiData(resp, id);
-
-                    // 更新資料到資料庫
-                    UpdateMarketNewsDetailData(repsDatas);
-                }
-            }
-        }
-
-        /// <summary>
         ///  取得市場新聞詳細頁資料庫資料
         /// </summary>
         public MarketNewsDetailData GetMarketNewsDbDetailData(string newsId)
         {
-            string serchQuery = "SELECT COUNT(*) FROM [dbo].[NewsDetail] WHERE [NewsSerialNumber] = @NewsSerialNumber";
+            DateTime? newsDate = null;
 
-            int count = DbManager.Custom.ExecuteScalar<int>(serchQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
+            string getDateQuery = "SELECT [NewsDate] FROM [dbo].[NewsList] WITH (NOLOCK) WHERE [NewsSerialNumber] = @NewsSerialNumber";
 
-            bool dbDataExists = count > 0;
-
-            if (dbDataExists)
+            try
             {
-                // 获取指定 newsId 的日期
-                string getDateQuery = "SELECT [NewsDate] FROM [dbo].[NewsList] WHERE [NewsSerialNumber] = @NewsSerialNumber";
-                DateTime newsDate = DbManager.Custom.ExecuteScalar<DateTime>(getDateQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
+                newsDate = DbManager.Custom.ExecuteScalar<DateTime?>(getDateQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return null;
+            }
 
-                // 计算日期范围
-                var startDate = newsDate.AddDays(-1).ToString("yyyy/MM/dd");
-                var endDate = newsDate.AddDays(1).ToString("yyyy/MM/dd");
+            if (newsDate == null)
+            {
+                return null;
+            }
 
-                string query = @"
+            // 計算日期範圍
+            var startDate = newsDate.Value.AddDays(-1).ToString("yyyy/MM/dd");
+            var endDate = newsDate.Value.AddDays(1).ToString("yyyy/MM/dd");
+
+            string query = @"
                     WITH CTE AS (
                         SELECT
                             nl.[NewsDate],
@@ -481,9 +524,9 @@ namespace Feature.Wealth.Component.Repositories
                             nd.[NewsType],
                             ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC, nd.[NewsDetailDate] DESC) AS RowNum
                         FROM
-                            [dbo].[NewsList] nl
+                            [dbo].[NewsList] nl WITH (NOLOCK)
                         LEFT JOIN
-                            [dbo].[NewsDetail] nd
+                            [dbo].[NewsDetail] nd WITH (NOLOCK)
                         ON
                             nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
                         WHERE
@@ -510,57 +553,34 @@ namespace Feature.Wealth.Component.Repositories
                         prev.[NewsTitle] AS PreviousPageTitle,
                         next.[NewsSerialNumber] AS NextPageId,
                         next.[NewsTitle] AS NextPageTitle
-                    FROM FilteredCTE curr
-                    LEFT JOIN FilteredCTE prev ON curr.RowNumber = prev.RowNumber + 1
-                    LEFT JOIN FilteredCTE next ON curr.RowNumber = next.RowNumber - 1
-                    WHERE curr.[NewsSerialNumber] = @NewsId";
+                    FROM FilteredCTE curr WITH (NOLOCK)
+                    LEFT JOIN FilteredCTE prev WITH (NOLOCK) ON curr.RowNumber = prev.RowNumber + 1
+                    LEFT JOIN FilteredCTE next WITH (NOLOCK) ON curr.RowNumber = next.RowNumber - 1
+                    WHERE curr.[NewsSerialNumber] = @NewsId;";
 
-                var result = DbManager.Custom.Execute<MarketNewsDetailData>(query, new
+            MarketNewsDetailData result = null;
+
+            try
+            {
+                result = DbManager.Custom.Execute<MarketNewsDetailData>(query, new
                 {
                     NewsId = newsId,
                     StartDate = startDate,
                     EndDate = endDate
                 }, CommandType.Text);
-
-                return result;
             }
-
-            return null;
-        }
-
-        /// <summary>
-        ///  整理市場新聞詳細頁資料庫資料
-        /// </summary>
-        public MarketNewsDetailModel OrganizeMarketNewsDetailDbData(MarketNewsDetailData _datas)
-        {
-            var model = new MarketNewsDetailModel();
-
-            if (_datas != null)
+            catch (SqlException ex)
             {
-                var detailData = new MarketNewsDetailData();
-
-                detailData.NewsSerialNumber = _datas.NewsSerialNumber;
-                detailData.NewsDetailDate = _datas.NewsDetailDate;
-                detailData.NewsTitle = _datas.NewsTitle;
-                detailData.NewsContent = _datas.NewsContent;
-                detailData.NewsContentHtmlString = new HtmlString(detailData.NewsContent);
-                detailData.NewsType = _datas.NewsType;
-                detailData.PreviousPageId = _datas.PreviousPageId;
-                detailData.PreviousPageTitle = _datas.PreviousPageTitle;
-                detailData.PreviousPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(_datas.PreviousPageId);
-                detailData.NextPageId = _datas.NextPageId;
-                detailData.NextPageTitle = _datas.NextPageTitle;
-                detailData.NextPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(_datas.NextPageId);
-                detailData.NewsListUrl = MarketNewsRelatedLinkSetting.GetMarketNewsListUrl();
-
-                model.MarketNewsDetailData = detailData;
+                Log.Error(ex.Message);
+                return null;
             }
-            else
+            catch (Exception ex)
             {
-                model.MarketNewsDetailData = null;
+                Log.Error(ex.Message);
+                return null;
             }
 
-            return model;
+            return result;
         }
 
         #endregion 市場新聞詳細頁
@@ -568,92 +588,64 @@ namespace Feature.Wealth.Component.Repositories
         #region 頭條新聞
 
         /// <summary>
-        /// 取得頭條新聞資料庫資料
+        /// 取得頭條新聞資料
         /// </summary>
-        public IList<HeadlineNewsData> GetHeadlineNewsDbData()
-        {
-            string newsTypeQuery = @"
-        SELECT [NewsType]
-        FROM [dbo].[NewsType]
-        WHERE [TypeNumber] = '2'";
-
-            var headlineNewsType = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
-
-            string query = @"
-            WITH CTE AS (
-                SELECT
-                    nl.[NewsDate],
-                    nl.[NewsTime],
-                    nl.[NewsTitle],
-                    nl.[NewsSerialNumber],
-                    nd.[NewsDetailDate],
-                    nd.[NewsContent],
-                    nd.[NewsRelatedProducts],
-                    nd.[NewsType],
-                    ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC, nd.[NewsDetailDate] DESC) AS RowNum
-                FROM
-                    [dbo].[NewsList] nl WITH (NOLOCK)
-                LEFT JOIN
-                    [dbo].[NewsDetail] nd
-                    ON nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-            ),
-            FilteredCTE AS (
-                SELECT TOP 5 *
-                FROM
-                    CTE
-                WHERE
-                    RowNum = 1
-                    AND [NewsType] LIKE @HeadlineNewsType
-	            ORDER BY
-		            [NewsDate] DESC,
-		            [NewsTime] DESC,
-		            [NewsDetailDate] DESC
-            )
-            SELECT
-                [NewsDate],
-                [NewsTime],
-                [NewsTitle],
-                [NewsSerialNumber],
-                [NewsDetailDate],
-                [NewsContent],
-                [NewsRelatedProducts],
-                [NewsType]
-            FROM
-                FilteredCTE";
-
-            var result = DbManager.Custom.ExecuteIList<HeadlineNewsData>(query, new { HeadlineNewsType = '%' + headlineNewsType[0] + '%' }, CommandType.Text);
-
-            return result;
-        }
-
-        /// <summary>
-        /// 整理頭條新聞資料庫資料
-        /// </summary>
-        public HeadlineNewsModel OrganizeHeadlineNewsDbData(List<HeadlineNewsData> _datas)
+        public HeadlineNewsModel GetHeadlineNewsData(List<MarketNewsModel> _datas)
         {
             var datas = new HeadlineNewsModel();
 
-            if (_datas != null
-                && _datas.Any())
+            if (_datas != null && _datas.Any())
             {
-                datas.LatestHeadlines = new HeadlineNewsData();
-                datas.LatestHeadlines.NewsDate = _datas[0].NewsDate;
-                datas.LatestHeadlines.NewsTime = _datas[0].NewsTime;
-                datas.LatestHeadlines.NewsTitle = _datas[0].NewsTitle;
-                datas.LatestHeadlines.NewsSerialNumber = _datas[0].NewsSerialNumber;
-                datas.LatestHeadlines.NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + _datas[0].NewsSerialNumber;
+                string newsTypeQuery = @"
+                SELECT [NewsType]
+                FROM [dbo].[NewsType] WITH (NOLOCK)
+                WHERE [TypeNumber] = '2'";
 
-                datas.Headlines = new List<HeadlineNewsData>();
-                for (int i = 1; i < _datas.Count; i++)
+                IList<string> headlineNewsTypes = null;
+
+                try
                 {
-                    var newsData = new HeadlineNewsData();
-                    newsData.NewsDate = _datas[i].NewsDate;
-                    newsData.NewsTime = _datas[i].NewsTime;
-                    newsData.NewsTitle = _datas[i].NewsTitle;
-                    newsData.NewsSerialNumber = _datas[i].NewsSerialNumber;
-                    newsData.NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + _datas[i].NewsSerialNumber;
+                    headlineNewsTypes = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                }
 
-                    datas.Headlines.Add(newsData);
+                var filteredData = _datas
+                    .Where(news => news.NewsType != null && headlineNewsTypes != null && headlineNewsTypes.Any(ht => news.NewsType.Contains(ht)))
+                    .Take(5)
+                    .ToList();
+
+                if (filteredData.Any())
+                {
+                    datas.LatestHeadlines = new HeadlineNewsData
+                    {
+                        NewsDate = filteredData[0].NewsDate,
+                        NewsTime = filteredData[0].NewsTime,
+                        NewsTitle = filteredData[0].NewsTitle,
+                        NewsSerialNumber = filteredData[0].NewsSerialNumber,
+                        NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + filteredData[0].NewsSerialNumber
+                    };
+
+                    datas.Headlines = new List<HeadlineNewsData>();
+                    for (int i = 1; i < filteredData.Count; i++)
+                    {
+                        var newsData = new HeadlineNewsData
+                        {
+                            NewsDate = filteredData[i].NewsDate,
+                            NewsTime = filteredData[i].NewsTime,
+                            NewsTitle = filteredData[i].NewsTitle,
+                            NewsSerialNumber = filteredData[i].NewsSerialNumber,
+                            NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + filteredData[i].NewsSerialNumber
+                        };
+
+                        datas.Headlines.Add(newsData);
+                    }
                 }
             }
 
@@ -667,17 +659,18 @@ namespace Feature.Wealth.Component.Repositories
         {
             string currentUrl;
             int? visitCount;
+            string pageItemId = MarketNewsRelatedLinkSetting.GetMarketNewsDetailPageItemId();
+            string rootPath = System.Web.HttpContext.Current.Request.Url.GetLeftPart(System.UriPartial.Authority);
 
-            if (datas != null && datas.LatestHeadlines != null
-                && datas.Headlines != null && datas.Headlines.Any())
+            if (datas != null && datas.LatestHeadlines != null)
             {
-                string pageItemId = MarketNewsRelatedLinkSetting.GetMarketNewsDetailPageItemId();
-                string rootPath = System.Web.HttpContext.Current.Request.Url.GetLeftPart(System.UriPartial.Authority);
-
                 currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.LatestHeadlines.NewsSerialNumber);
                 visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
                 datas.LatestHeadlines.NewsViewCount = visitCount?.ToString("N0") ?? "0";
+            }
 
+            if (datas != null && datas.Headlines != null && datas.Headlines.Any())
+            {
                 for (int i = 0; i < datas.Headlines.Count; i++)
                 {
                     currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.Headlines[i].NewsSerialNumber);
@@ -694,68 +687,9 @@ namespace Feature.Wealth.Component.Repositories
         #region 首頁頭條新聞
 
         /// <summary>
-        /// 取得首頁頭條新聞資料庫資料
+        /// 取得首頁焦點新聞資料
         /// </summary>
-        public IList<HomeHeadlinesData> GetHomeHeadlinesDbData()
-        {
-            string newsTypeQuery = @"
-        SELECT [NewsType]
-        FROM [dbo].[NewsType]
-        WHERE [TypeNumber] = '2'";
-
-            var homeHeadlinesType = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
-
-            string query = @"
-            WITH CTE AS (
-                SELECT
-                    nl.[NewsDate],
-                    nl.[NewsTime],
-                    nl.[NewsTitle],
-                    nl.[NewsSerialNumber],
-                    nd.[NewsDetailDate],
-                    nd.[NewsContent],
-                    nd.[NewsRelatedProducts],
-                    nd.[NewsType],
-                    ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC, nd.[NewsDetailDate] DESC) AS RowNum
-                FROM
-                    [dbo].[NewsList] nl WITH (NOLOCK)
-                LEFT JOIN
-                    [dbo].[NewsDetail] nd
-                    ON nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-            ),
-            FilteredCTE AS (
-                SELECT TOP 4 *
-                FROM
-                    CTE
-                WHERE
-                    RowNum = 1
-                    AND [NewsType] LIKE @HomeHeadlinesType
-	            ORDER BY
-		            [NewsDate] DESC,
-		            [NewsTime] DESC,
-		            [NewsDetailDate] DESC
-            )
-            SELECT
-                [NewsDate],
-                [NewsTime],
-                [NewsTitle],
-                [NewsSerialNumber],
-                [NewsDetailDate],
-                [NewsContent],
-                [NewsRelatedProducts],
-                [NewsType]
-            FROM
-                FilteredCTE";
-
-            var result = DbManager.Custom.ExecuteIList<HomeHeadlinesData>(query, new { HomeHeadlinesType = '%' + homeHeadlinesType[0] + '%' }, CommandType.Text);
-
-            return result;
-        }
-
-        /// <summary>
-        /// 整理頭條新聞資料庫資料
-        /// </summary>
-        public HomeHeadlinesModel OrganizeHomeHeadlinesDbData(List<HomeHeadlinesData> _datas)
+        public HomeHeadlinesModel GetHomeHeadlinesData(List<MarketNewsModel> _datas)
         {
             var dataSource = RenderingContext.CurrentOrNull?.ContextItem;
 
@@ -774,30 +708,58 @@ namespace Feature.Wealth.Component.Repositories
 
             if (_datas != null && _datas.Any())
             {
-                datas.LatestHeadlines = new HomeHeadlinesData
-                {
-                    NewsImage = imageUrlList.Count > 0 ? imageUrlList[0] : string.Empty,
-                    NewsDate = _datas[0].NewsDate,
-                    NewsTime = _datas[0].NewsTime,
-                    NewsTitle = _datas[0].NewsTitle,
-                    NewsSerialNumber = _datas[0].NewsSerialNumber,
-                    NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + _datas[0].NewsSerialNumber
-                };
+                string newsTypeQuery = @"
+                SELECT [NewsType] WITH (NOLOCK)
+                FROM [dbo].[NewsType]
+                WHERE [TypeNumber] = '2'";
 
-                datas.Headlines = new List<HomeHeadlinesData>();
-                for (int i = 1; i < _datas.Count; i++)
+                IList<string> homeHeadlinesType = null;
+
+                try
                 {
-                    var newsData = new HomeHeadlinesData
+                    homeHeadlinesType = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                }
+
+                var filteredData = _datas
+                    .Where(news => news.NewsType != null && homeHeadlinesType != null && homeHeadlinesType.Any(ht => news.NewsType.Contains(ht)))
+                    .Take(4)
+                    .ToList();
+
+                if (filteredData.Any())
+                {
+                    datas.LatestHeadlines = new HomeHeadlinesData
                     {
-                        NewsImage = imageUrlList.Count > i ? imageUrlList[i] : string.Empty,
-                        NewsDate = _datas[i].NewsDate,
-                        NewsTime = _datas[i].NewsTime,
-                        NewsTitle = _datas[i].NewsTitle,
-                        NewsSerialNumber = _datas[i].NewsSerialNumber,
-                        NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + _datas[i].NewsSerialNumber
+                        NewsImage = imageUrlList.Count > 0 ? imageUrlList[0] : string.Empty,
+                        NewsDate = filteredData[0].NewsDate,
+                        NewsTime = filteredData[0].NewsTime,
+                        NewsTitle = filteredData[0].NewsTitle,
+                        NewsSerialNumber = filteredData[0].NewsSerialNumber,
+                        NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + filteredData[0].NewsSerialNumber
                     };
 
-                    datas.Headlines.Add(newsData);
+                    datas.Headlines = new List<HomeHeadlinesData>();
+                    for (int i = 1; i < filteredData.Count; i++)
+                    {
+                        var newsData = new HomeHeadlinesData
+                        {
+                            NewsImage = imageUrlList.Count > i ? imageUrlList[i] : string.Empty,
+                            NewsDate = filteredData[i].NewsDate,
+                            NewsTime = filteredData[i].NewsTime,
+                            NewsTitle = filteredData[i].NewsTitle,
+                            NewsSerialNumber = filteredData[i].NewsSerialNumber,
+                            NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + filteredData[i].NewsSerialNumber
+                        };
+
+                        datas.Headlines.Add(newsData);
+                    }
                 }
             }
 
@@ -826,6 +788,7 @@ namespace Feature.Wealth.Component.Repositories
 
             return imageUrlList;
         }
+
         #endregion 首頁頭條新聞
     }
 }
