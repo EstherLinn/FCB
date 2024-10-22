@@ -135,52 +135,52 @@ namespace Feature.Wealth.Component.Repositories
             {
                 // SQL 查詢語句
                 string query = @"
-                    WITH CTE AS (
-                        SELECT
-                            nl.[NewsDate],
-                            nl.[NewsTime],
-                            nl.[NewsTitle],
-                            nl.[NewsSerialNumber],
-                            nd.[NewsDetailDate],
-                            nd.[NewsContent],
-                            nd.[NewsRelatedProducts],
-                            nd.[NewsType],
-                            ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC, nd.[NewsDetailDate] DESC) AS RowNum
-                        FROM
-                            [dbo].[NewsList] nl
-                        LEFT JOIN
-                            [dbo].[NewsDetail] nd
-                        ON
-                            nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
-                        WHERE
-                            (nl.[NewsDate] BETWEEN @StartDate AND @EndDate) AND
-                            nd.[NewsType] IS NOT NULL
-                    ),
-                    FilteredCTE AS (
-                        SELECT
-                            *,
-                            ROW_NUMBER() OVER (ORDER BY [NewsDate] DESC, [NewsTime] DESC, [NewsDetailDate] DESC) AS RowNumber
-                        FROM
-                            CTE
-                        WHERE
-                            RowNum = 1
-                    )
+                   WITH CTE AS (
                     SELECT
-                        curr.[NewsDate],
-                        curr.[NewsTime],
-                        curr.[NewsTitle],
-                        curr.[NewsSerialNumber],
-                        curr.[NewsDetailDate],
-                        curr.[NewsContent],
-                        curr.[NewsRelatedProducts],
-                        curr.[NewsType],
-                        prev.[NewsSerialNumber] AS PreviousPageId,
-                        prev.[NewsTitle] AS PreviousPageTitle,
-                        next.[NewsSerialNumber] AS NextPageId,
-                        next.[NewsTitle] AS NextPageTitle
-                    FROM FilteredCTE curr
-                    LEFT JOIN FilteredCTE prev ON curr.RowNumber = prev.RowNumber + 1
-                    LEFT JOIN FilteredCTE next ON curr.RowNumber = next.RowNumber - 1";
+                        nl.[NewsDate],
+                        nl.[NewsTime],
+                        nl.[NewsTitle],
+                        nl.[NewsSerialNumber],
+                        nd.[NewsDetailDate],
+                        nd.[NewsContent],
+                        nd.[NewsRelatedProducts],
+                        nd.[NewsType],
+                        ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC, nd.[NewsDetailDate] DESC) AS RowNum
+                    FROM
+                        [dbo].[NewsList] nl WITH (NOLOCK)
+                    LEFT JOIN
+                        [dbo].[NewsDetail] nd WITH (NOLOCK)
+                    ON
+                        nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
+                    WHERE
+                        (nl.[NewsDate] BETWEEN @StartDate AND @EndDate) AND
+                        nd.[NewsType] IS NOT NULL
+                ),
+                FilteredCTE AS (
+                    SELECT
+                        *,
+                        ROW_NUMBER() OVER (ORDER BY [NewsDate] DESC, [NewsTime] DESC, [NewsDetailDate] DESC) AS RowNumber
+                    FROM
+                        CTE
+                    WHERE
+                        RowNum = 1
+                )
+                SELECT
+                    curr.[NewsDate],
+                    curr.[NewsTime],
+                    curr.[NewsTitle],
+                    curr.[NewsSerialNumber],
+                    curr.[NewsDetailDate],
+                    curr.[NewsContent],
+                    curr.[NewsRelatedProducts],
+                    curr.[NewsType],
+                    prev.[NewsSerialNumber] AS PreviousPageId,
+                    prev.[NewsTitle] AS PreviousPageTitle,
+                    next.[NewsSerialNumber] AS NextPageId,
+                    next.[NewsTitle] AS NextPageTitle
+                FROM FilteredCTE curr WITH (NOLOCK)
+                LEFT JOIN FilteredCTE prev WITH (NOLOCK) ON curr.RowNumber = prev.RowNumber + 1
+                LEFT JOIN FilteredCTE next WITH (NOLOCK) ON curr.RowNumber = next.RowNumber - 1;";
 
                 try
                 {
@@ -239,9 +239,9 @@ namespace Feature.Wealth.Component.Repositories
                         nd.[NewsType],
                         ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC, nd.[NewsDetailDate] DESC) AS RowNum
                     FROM
-                        [dbo].[NewsList] nl
+                        [dbo].[NewsList] nl WITH (NOLOCK)
                     LEFT JOIN
-                        [dbo].[NewsDetail] nd
+                        [dbo].[NewsDetail] nd WITH (NOLOCK)
                     ON
                         nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
                     WHERE
@@ -270,9 +270,9 @@ namespace Feature.Wealth.Component.Repositories
                     prev.[NewsTitle] AS PreviousPageTitle,
                     next.[NewsSerialNumber] AS NextPageId,
                     next.[NewsTitle] AS NextPageTitle
-                FROM FilteredCTE curr
-                LEFT JOIN FilteredCTE prev ON curr.RowNumber = prev.RowNumber + 1
-                LEFT JOIN FilteredCTE next ON curr.RowNumber = next.RowNumber - 1";
+                FROM FilteredCTE curr WITH (NOLOCK)
+                LEFT JOIN FilteredCTE prev WITH (NOLOCK) ON curr.RowNumber = prev.RowNumber + 1
+                LEFT JOIN FilteredCTE next WITH (NOLOCK) ON curr.RowNumber = next.RowNumber - 1;";
 
             try
             {
@@ -316,9 +316,9 @@ namespace Feature.Wealth.Component.Repositories
                 var idList = id.Split(',').Select(x => x.Trim()).ToList();
 
                 string query = @"
-            SELECT [NewsType]
-            FROM [dbo].[NewsType]
-            WHERE [TypeNumber] IN @IdList";
+                    SELECT [NewsType]
+                    FROM [dbo].[NewsType] WITH (NOLOCK)
+                    WHERE [TypeNumber] IN @IdList";
 
                 try
                 {
@@ -408,9 +408,9 @@ namespace Feature.Wealth.Component.Repositories
         #region 市場新聞詳細頁
 
         /// <summary>
-        ///  取得市場新聞詳細頁資料
+        ///  整理市場新聞詳細頁資料
         /// </summary>
-        public MarketNewsDetailModel GetMarketNewsDetailData(List<MarketNewsModel> _datas, string newsId)
+        public MarketNewsDetailModel OrganizeMarketNewsDetailData(List<MarketNewsModel> _datas, string newsId)
         {
             var model = new MarketNewsDetailModel();
             var detailData = new MarketNewsDetailData();
@@ -483,53 +483,35 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         public MarketNewsDetailData GetMarketNewsDbDetailData(string newsId)
         {
-            string serchQuery = "SELECT COUNT(*) FROM [dbo].[NewsDetail] WHERE [NewsSerialNumber] = @NewsSerialNumber";
+            DateTime? newsDate = null;
 
-            int count = 0;
+            string getDateQuery = "SELECT [NewsDate] FROM [dbo].[NewsList] WITH (NOLOCK) WHERE [NewsSerialNumber] = @NewsSerialNumber";
 
             try
             {
-                count = DbManager.Custom.ExecuteScalar<int>(serchQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
+                newsDate = DbManager.Custom.ExecuteScalar<DateTime?>(getDateQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
             }
             catch (SqlException ex)
             {
                 Log.Error(ex.Message);
-                count = 0;
+                return null;
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
-                count = 0;
+                return null;
             }
 
-            bool dbDataExists = count > 0;
-
-            if (dbDataExists)
+            if (newsDate == null)
             {
-                DateTime newsDate;
+                return null;
+            }
 
-                string getDateQuery = "SELECT [NewsDate] FROM [dbo].[NewsList] WHERE [NewsSerialNumber] = @NewsSerialNumber";
+            // 計算日期範圍
+            var startDate = newsDate.Value.AddDays(-1).ToString("yyyy/MM/dd");
+            var endDate = newsDate.Value.AddDays(1).ToString("yyyy/MM/dd");
 
-                try
-                {
-                    newsDate = DbManager.Custom.ExecuteScalar<DateTime>(getDateQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
-                }
-                catch (SqlException ex)
-                {
-                    Log.Error(ex.Message);
-                    return null;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex.Message);
-                    return null;
-                }
-
-                // 計算日期範圍
-                var startDate = newsDate.AddDays(-1).ToString("yyyy/MM/dd");
-                var endDate = newsDate.AddDays(1).ToString("yyyy/MM/dd");
-
-                string query = @"
+            string query = @"
                     WITH CTE AS (
                         SELECT
                             nl.[NewsDate],
@@ -542,9 +524,9 @@ namespace Feature.Wealth.Component.Repositories
                             nd.[NewsType],
                             ROW_NUMBER() OVER (PARTITION BY nl.[NewsSerialNumber] ORDER BY nl.[NewsDate] DESC, nl.[NewsTime] DESC, nd.[NewsDetailDate] DESC) AS RowNum
                         FROM
-                            [dbo].[NewsList] nl
+                            [dbo].[NewsList] nl WITH (NOLOCK)
                         LEFT JOIN
-                            [dbo].[NewsDetail] nd
+                            [dbo].[NewsDetail] nd WITH (NOLOCK)
                         ON
                             nl.[NewsSerialNumber] = nd.[NewsSerialNumber]
                         WHERE
@@ -571,37 +553,34 @@ namespace Feature.Wealth.Component.Repositories
                         prev.[NewsTitle] AS PreviousPageTitle,
                         next.[NewsSerialNumber] AS NextPageId,
                         next.[NewsTitle] AS NextPageTitle
-                    FROM FilteredCTE curr
-                    LEFT JOIN FilteredCTE prev ON curr.RowNumber = prev.RowNumber + 1
-                    LEFT JOIN FilteredCTE next ON curr.RowNumber = next.RowNumber - 1
-                    WHERE curr.[NewsSerialNumber] = @NewsId";
+                    FROM FilteredCTE curr WITH (NOLOCK)
+                    LEFT JOIN FilteredCTE prev WITH (NOLOCK) ON curr.RowNumber = prev.RowNumber + 1
+                    LEFT JOIN FilteredCTE next WITH (NOLOCK) ON curr.RowNumber = next.RowNumber - 1
+                    WHERE curr.[NewsSerialNumber] = @NewsId;";
 
-                MarketNewsDetailData result = null;
+            MarketNewsDetailData result = null;
 
-                try
+            try
+            {
+                result = DbManager.Custom.Execute<MarketNewsDetailData>(query, new
                 {
-                    result = DbManager.Custom.Execute<MarketNewsDetailData>(query, new
-                    {
-                        NewsId = newsId,
-                        StartDate = startDate,
-                        EndDate = endDate
-                    }, CommandType.Text);
-                }
-                catch (SqlException ex)
-                {
-                    Log.Error(ex.Message);
-                    return null;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex.Message);
-                    return null;
-                }
-
-                return result;
+                    NewsId = newsId,
+                    StartDate = startDate,
+                    EndDate = endDate
+                }, CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return null;
             }
 
-            return null;
+            return result;
         }
 
         #endregion 市場新聞詳細頁
@@ -619,7 +598,7 @@ namespace Feature.Wealth.Component.Repositories
             {
                 string newsTypeQuery = @"
                 SELECT [NewsType]
-                FROM [dbo].[NewsType]
+                FROM [dbo].[NewsType] WITH (NOLOCK)
                 WHERE [TypeNumber] = '2'";
 
                 IList<string> headlineNewsTypes = null;
@@ -730,7 +709,7 @@ namespace Feature.Wealth.Component.Repositories
             if (_datas != null && _datas.Any())
             {
                 string newsTypeQuery = @"
-                SELECT [NewsType]
+                SELECT [NewsType] WITH (NOLOCK)
                 FROM [dbo].[NewsType]
                 WHERE [TypeNumber] = '2'";
 

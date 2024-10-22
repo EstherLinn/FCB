@@ -109,22 +109,19 @@ namespace Feature.Wealth.Component.Controllers
                             // 過濾 _datas 中 NewsDate 等於今天的資料
                             var todayNews = _datas.Where(news => news.NewsDate == today).ToList();
 
-                            if (todayNews.Any())
-                            {
-                                // 將 todayNews 合併到 defaultDatas 裡
-                                defaultDatas.AddRange(todayNews);
+                            // 將 todayNews 合併到 defaultDatas 裡
+                            defaultDatas.AddRange(todayNews);
 
-                                // 去重，防止相同的 NewsSerialNumber 重複
-                                defaultDatas = defaultDatas
-                                    .GroupBy(news => news.NewsSerialNumber)
-                                    .Select(g => g.First())
-                                    .OrderByDescending(news => news.NewsDate)      // 先按 NewsDate 降序排序
-                                    .ThenByDescending(news => news.NewsTime)       // 再按 NewsTime 降序排序
-                                    .ThenByDescending(news => news.NewsDetailDate) // 最後按 NewsDetailDate 降序排序
-                                    .ToList();
+                            // 去重，防止相同的 NewsSerialNumber 重複
+                            defaultDatas = defaultDatas
+                                .GroupBy(news => news.NewsSerialNumber)
+                                .Select(g => g.First())
+                                .OrderByDescending(news => news.NewsDate)      // 先按 NewsDate 降序排序
+                                .ThenByDescending(news => news.NewsTime)       // 再按 NewsTime 降序排序
+                                .ThenByDescending(news => news.NewsDetailDate) // 最後按 NewsDetailDate 降序排序
+                                .ToList();
 
-                                _cache.Set(defaultCacheKey, defaultDatas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
-                            }
+                            _cache.Set(defaultCacheKey, defaultDatas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
                         }
                     }
                 }
@@ -167,7 +164,7 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             // 整理 MarketNewsDetail 資料
-            datas = _newsRespository.GetMarketNewsDetailData(_datas, newsId);
+            datas = _newsRespository.OrganizeMarketNewsDetailData(_datas, newsId);
 
             return View("/Views/Feature/Wealth/Component/News/MarketNewsDetail.cshtml", datas);
         }
