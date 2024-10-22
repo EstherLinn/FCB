@@ -6,7 +6,48 @@
 {
     return;
 }
+<style>
+    /* 圖表上下分開*/
+    .l-calcCharts {
+        display: block;
+    }
 
+    @@media only screen and (max-width: 1199px) {
+        /* 行動版 橘底試算結果 左右對齊 */
+        .l-pipeList {
+            flex-direction: row;
+            align-items: center;
+        }
+       /*  行動版 橘底試算結果padding比照電腦版 */
+        .l-calcCard {
+            padding: 28px 40px;
+        }
+        /* 行動版 橘底試算結果項目左右對齊 */
+        .c-pipeList {
+            list-style-type: none;
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            flex-direction: row;
+            gap: 0;
+        }
+        /* 行動版試算結果 padding比照電腦版 */
+        .l-mainstage__wrap {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        /* 行動版試算結果 改成左右對齊 */
+        .l-calcResult, .c-calcLecture {
+            flex-direction: row;
+            gap: 0px;
+        }
+        /* 行動版試算結果 標題及小獅子文字置左 */
+        .c-calcLecture__content, .c-section__title, .earningsChartTitle {
+            text-align: left;
+        }
+    }
+</style>
 <div class="c-section">
     <div class="c-section__content">
         <div class="l-table">
@@ -135,29 +176,26 @@
             //#region 查看結果按鈕綁定事件
             $('.commonResultBtn').on('click', function (e) {
                 e.preventDefault();
-
                 var type = $(this).attr('calculation-type');
 
                 switch (type) {
-                        case "SavingList":
+                    case "SavingList":
                         data = _data.SavingList;
-                            break;
-                        case "EducationFundList":
+                        break;
+                    case "EducationFundList":
                         data = _data.EducationFundList;
-                            break;
-                        case "BuyHouseList":
+                        break;
+                    case "BuyHouseList":
                         data = _data.BuyHouseList;
-                            break;
-                        case "RetirementPreparationList":
+                        break;
+                    case "RetirementPreparationList":
                         data = _data.RetirementPreparationList;
-                            break;
+                        break;
                 }
 
                 if (data != null && data != "") {
                     window.loading('show');
-
                     $('#downloadPdf').append(data.Description);
-
                     var $imgElement1 = $('#resultSuccessMain .c-calcLecture__img');
 
                     if ($imgElement1.length) {
@@ -175,7 +213,7 @@
                     }
 
                     for (var i = 0; i < data.EarningsChart.length; i++) {
-                        $('#downloadPdf').append('<section class="c-section downloadPdf_Wrap"><div class="l-wrap">' + data.EarningsChart[i] + '</div></section>');
+                        $('#downloadPdf').append('<section class="c-section downloadPdf_Wrap" style="margin-top:15px"><div class="l-wrap">' + data.EarningsChart[i] + '</div></section>');
                     }
 
                     $('.earningsChartTitle').removeClass('u-hidden');
@@ -196,48 +234,8 @@
 
                     setTimeout(() => {
                         $('#downloadPdf').removeAttr('style');
-
-                        if ($(window).width() < 1199) {
-                            if ($(window).width() < 768) {
-                                $('#resultContent').css('padding-bottom', '10px');
-
-                                $('#downloadPdf .downloadPdf_Wrap').each(function (index) {
-                                    var $pipeList = $(this).find('ul.c-pipeList.s3.t-bold');
-                                    var ContentTotalWidth = $pipeList.width();
-
-                                    if ($pipeList.length) {
-                                        var contentWidth1 = ContentTotalWidth - 90 - 18;
-                                        $pipeList.find('.c-pipeList__item').eq(0).find('span').eq(0).css('width', '90px');
-                                        $pipeList.find('.c-pipeList__item').eq(0).find('span').eq(1).css('width', contentWidth1 + 'px');
-
-                                        var contentWidth2 = ContentTotalWidth - 72 - 18;
-                                        $pipeList.find('.c-pipeList__item').eq(1).find('span').eq(0).css('width', '72px');
-                                        $pipeList.find('.c-pipeList__item').eq(1).find('span').eq(1).css('width', contentWidth2 + 'px');
-
-                                        var contentWidth3 = ContentTotalWidth - 90 - 18;
-                                        $pipeList.find('.c-pipeList__item').eq(2).find('span').eq(0).css('width', '90px');
-                                        $pipeList.find('.c-pipeList__item').eq(2).find('span').eq(1).css('width', contentWidth3 + 'px');
-
-                                        if (type != 'RetirementPreparationList') {
-                                            var contentWidth4 = ContentTotalWidth - 36 - 18;
-                                            $pipeList.find('.c-pipeList__item').eq(3).find('span').eq(0).css('width', '36px');
-                                            $pipeList.find('.c-pipeList__item').eq(3).find('span').eq(1).css('width', contentWidth4 + 'px');
-                                        } else {
-                                            var contentWidth4 = ContentTotalWidth - 126 - 18;
-                                            $pipeList.find('.c-pipeList__item').eq(3).find('span').eq(0).css('width', '126px');
-                                            $pipeList.find('.c-pipeList__item').eq(3).find('span').eq(1).css('width', contentWidth4 + 'px');
-                                        }
-                                    }
-                                });
-
-                                generateMBPDF(type, 1.3);
-                            } else {
-                                generateMBPDF(type, 1.15);
-                            }
-                        } else {
-                            $('#downloadPdf').css('width', '1200px');
-                            generatePCPDF(type);
-                        }
+                        $('#downloadPdf').css('width', '1200px');
+                        generatePCPDF(type);
                     }, 2500);
                 }
             });
@@ -258,7 +256,7 @@
                 };
                 img.src = imgUrl;
             }
-             //#endregion
+            //#endregion
 
             //#region 試算結果讀條顯示
             function renderReadingbar(data) {
@@ -342,7 +340,7 @@
                             }
                         },
                         series: [{
-                            name: '已準備金額',
+                            name: '已準備金額額',
                             data: [data.current],
                             color: '#FDCE5E'
                         }, {
@@ -608,9 +606,9 @@
                                             bg = `background: url(${point.color.pattern.image}) repeat left top / 6px;`;
                                         }
                                         tooltip += `<div style="display: flex; align-items: center; gap: 4px; margin: 8px 0;">
-                                <span style="display: block; width: 12px; height: 12px; border-radius: 50%; ${bg}"></span>
-                                <span>${point.series.name}：${Highcharts.numberFormat(point.y, 0)}</span>
-                            </div>`;
+                                                <span style="display: block; width: 12px; height: 12px; border-radius: 50%; ${bg}"></span>
+                                                <span>${point.series.name}：${Highcharts.numberFormat(point.y, 0)}</span>
+                                            </div>`;
                                     });
                                     const index = this.points.findIndex(x => x.series.userOptions.name === '缺口');
                                     if (index > -1) {
@@ -760,9 +758,9 @@
                                             bg = `background: url(${point.color.pattern.image}) repeat left top / 6px;`;
                                         }
                                         tooltip += `<div style="display: flex; align-items: center; gap: 4px; margin: 8px 0;">
-                                <span style="display: block; width: 12px; height: 12px; border-radius: 50%; ${bg}"></span>
-                                <span>${point.series.name}：${Highcharts.numberFormat(point.y, 0)}</span>
-                            </div>`;
+                                                <span style="display: block; width: 12px; height: 12px; border-radius: 50%; ${bg}"></span>
+                                                <span>${point.series.name}：${Highcharts.numberFormat(point.y, 0)}</span>
+                                            </div>`;
                                     });
                                     const index = this.points.findIndex(x => x.series.userOptions.name === '缺口');
                                     if (index > -1) {
@@ -850,7 +848,6 @@
                 const pdf = new jsPDF();
                 const resultDescription = document.querySelector('#resultDescription');
                 const downloadPdfWrap = document.querySelectorAll('.downloadPdf_Wrap');
-
                 // 定義函數將 DOM 元素轉換為圖片並新增至 PDF
                 async function addPCElementToPDF(element, pdf, pdfWidth, imgeHight, bgColor, yOffset = 0) {
                     try {
@@ -858,22 +855,22 @@
                         const dataUrl = await domtoimage.toPng(element, { quality: 1, height: imgeHight, bgcolor: bgColor });
                         const img = new Image();
                         img.src = dataUrl;
-
                         return new Promise((resolve, reject) => {
                             img.onload = () => {
                                 const imgProps = pdf.getImageProperties(dataUrl);
                                 const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-                                // 處理頁面溢出
-                                if (yOffset + pdfHeight > pdf.internal.pageSize.getHeight()) {
-                                    pdf.addPage();
-                                    yOffset = 0;
-                                }
-                                pdf.addImage(dataUrl, 'PNG', 0, yOffset, pdfWidth, pdfHeight);
+                                /*加入一點左右邊距*/
+                                const margin = {
+                                    left: 5,
+                                    right: 5
+                                };
+                                pdf.addImage(dataUrl, 'PNG', 5, yOffset, pdfWidth - margin.left - margin.right, pdfHeight);
                                 yOffset += pdfHeight;
                                 resolve(yOffset);
                             };
                             img.onerror = reject;
+                        }).catch((reason) => {
+                            console.log('catch:', reason)
                         });
                     } catch (error) {
                         console.error('Error generating image for element:', element, error);
@@ -882,20 +879,18 @@
 
                 // PDF 頁面寬度
                 const pdfWidth = pdf.internal.pageSize.getWidth();
-
                 // 處理 resultDescription 和 downloadPdf_Wrap 的第一個 div
                 let yOffset = await addPCElementToPDF(resultDescription, pdf, pdfWidth);
                 if (downloadPdfWrap.length > 0) {
                     const firstDiv = downloadPdfWrap[0];
-                    yOffset = await addPCElementToPDF(firstDiv, pdf, pdfWidth, 1200, '#FFFFFF', yOffset);
+                    yOffset = await addPCElementToPDF(firstDiv, pdf, pdfWidth, 1500, '#FFFFFF', yOffset);
                 }
 
                 // 處理 downloadPdf_Wrap 其餘的 div，每個 div 獨立成頁
                 for (let i = 1; i < downloadPdfWrap.length; i++) {
                     pdf.addPage();
-                    await addPCElementToPDF(downloadPdfWrap[i], pdf, pdfWidth, 1200, '#FFFFFF');
+                    await addPCElementToPDF(downloadPdfWrap[i], pdf, pdfWidth, 1500, '#FFFFFF');
                 }
-
                 // 下載產生的 PDF
                 pdf.save(`${type}.pdf`);
 
@@ -904,136 +899,6 @@
                 window.loading('hide');
             }
             //#endregion
-
-            //#region 手機板試算結果生成PDF
-            async function generateMBPDF(type, reduction) {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF();
-                const resultDescription = document.querySelector('#resultDescription');
-                const downloadPdfWrap = document.querySelectorAll('.downloadPdf_Wrap');
-
-                // 定義函數將 DOM 元素轉換為圖片並新增至 PDF
-                async function addMBElementToPDF(element, pdf, pdfWidth, bgColor, yOffset = 0, newHeight = null) {
-                    try {
-                        // 如果传递了新的高度，调整元素高度
-                        if (newHeight) {
-                            element.style.height = `${newHeight}px`;
-                        }
-
-                        // 使用 dom-to-image 將元素轉換為圖片
-                        const dataUrl = await domtoimage.toPng(element, { quality: 1, bgcolor: bgColor });
-                        const img = new Image();
-                        img.src = dataUrl;
-
-                        return new Promise((resolve, reject) => {
-                            img.onload = () => {
-                                const imgProps = pdf.getImageProperties(dataUrl);
-                                const pdfHeight = ((imgProps.height * pdfWidth) / imgProps.width) / reduction;
-
-                                // 計算 xOffset 使圖片置中
-                                const xOffset = (pdf.internal.pageSize.getWidth() - pdfWidth) / 2;
-
-                                // 處理頁面溢出
-                                if (yOffset + pdfHeight > pdf.internal.pageSize.getHeight()) {
-                                    pdf.addPage();
-                                    yOffset = 0;
-                                }
-                                pdf.addImage(dataUrl, 'PNG', xOffset, yOffset, pdfWidth, pdfHeight);
-                                yOffset += pdfHeight;
-                                resolve(yOffset);
-                            };
-                            img.onerror = reject;
-                        });
-                    } catch (error) {
-                        console.error('生成元素图片时出错:', element, error);
-                    } finally {
-                        if (newHeight) {
-                            element.style.height = '';
-                        }
-                    }
-                }
-
-                // PDF 頁面寬度
-                const pdfWidth = pdf.internal.pageSize.getWidth() / reduction;
-
-                // 如果是手機，先處理 resultDescription 單獨一頁
-                await addMBElementToPDF(resultDescription, pdf, pdfWidth);
-
-                // 處理每個 downloadPdfWrap 中指定的元素，每個單獨生成一頁
-                for (let i = 0; i < downloadPdfWrap.length; i++) {
-                    const wrap = downloadPdfWrap[i];
-
-                    // 找到第一個 c-section
-                    const mainCSection = wrap.querySelector('.c-section');
-
-                    if (mainCSection) {
-
-                        if($(window).width() < 768) {
-                            // mainCSection 中的第一個 c-section 單獨一頁
-                            const firstCSection = mainCSection.querySelector('.c-section');
-                            if (firstCSection) {
-                                pdf.addPage();
-                                await addMBElementToPDF(firstCSection, pdf, pdfWidth, '#FFFFFF');
-                            }
-
-                            // l-calcCharts__item--1of3 單獨一頁
-                            const calcItem1 = wrap.querySelector('.l-calcCharts__item--1of3');
-                            if (calcItem1) {
-                                pdf.addPage();
-                                await addMBElementToPDF(calcItem1, pdf, pdfWidth, '#FFFFFF');
-                            }
-                        } else {
-                            // mainCSection 中的第一個 c-section 和l-calcCharts__item--1of3 同一頁
-                            const firstCSection = mainCSection.querySelector('.c-section');
-                            const calcItem1 = wrap.querySelector('.l-calcCharts__item--1of3');
-                            if (firstCSection && calcItem1) {
-                                pdf.addPage();
-
-                                let yOffset = 0;
-
-                                if (firstCSection) {
-                                    yOffset = await addMBElementToPDF(firstCSection, pdf, pdfWidth, '#FFFFFF', yOffset);
-                                }
-
-                                yOffset += 20;
-
-                                if (calcItem1) {
-                                    yOffset = await addMBElementToPDF(calcItem1, pdf, pdfWidth, '#FFFFFF', yOffset);
-                                }
-                            }
-                        }
-
-                        // l-calcCharts__item--2of3 和 l-revenueResult__notes 同一頁
-                        const calcItem2 = wrap.querySelector('.l-calcCharts__item--2of3');
-                        const note = wrap.querySelector('.l-revenueResult__notes');
-
-                        if (calcItem2 && note) {
-                            pdf.addPage(); 
-
-                            let yOffset = 0;
-
-                            if (calcItem2) {
-                                yOffset = await addMBElementToPDF(calcItem2, pdf, pdfWidth, '#FFFFFF', yOffset);
-                            }
-
-                            yOffset += 2;
-
-                            if (note) {
-                                yOffset = await addMBElementToPDF(note, pdf, pdfWidth, '#FFFFFF', yOffset, 60);
-                            }
-                        }
-                    }
-                }
-
-                // 最後合併的 PDF 文件進行下載
-                pdf.save(`${type}.pdf`);
-
-                $('#downloadPdf').css('visibility', 'hidden');
-                $('#downloadPdf').empty();
-                window.loading('hide');
-            }
-            //#endregion
-
         });
     })(jQuery, window, document);
 </script>
