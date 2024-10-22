@@ -1,10 +1,5 @@
 ﻿using Feature.Wealth.Service.Models.FundApi;
 using Feature.Wealth.Service.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 
