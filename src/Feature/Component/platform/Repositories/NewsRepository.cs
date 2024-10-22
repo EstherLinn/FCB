@@ -2,6 +2,7 @@
 using Feature.Wealth.Component.Models.News.NewsList;
 using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
+using log4net;
 using Mapster;
 using Sitecore.Data;
 using Sitecore.Data.Items;
@@ -11,16 +12,19 @@ using Sitecore.Resources.Media;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Web;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Repositories
 {
     public class NewsRepository
     {
+        private ILog Log { get; } = Logger.Account;
         private readonly VisitCountRepository _visitCountRepository = new VisitCountRepository();
 
         #region 最新消息
@@ -114,15 +118,19 @@ namespace Feature.Wealth.Component.Repositories
 
         #region 市場新聞
 
+        /// <summary>
+        ///  取得預設市場新聞資料庫資料
+        /// </summary>
         public IList<MarketNewsModel> GetDefaultMarketNewsDbData(string initialStartDatetime, string initialEndDatetime)
         {
-            IList<MarketNewsModel> datas = new List<MarketNewsModel>();
-            int threshold = 5; // 至少5筆資料
-            int daysToShift = 2; // 初始每次往前推移2天
+            IList<MarketNewsModel> datas = null;
+            int threshold = 5; // 設定最低需要的 "頭條新聞" 數量
+            int daysToShift = 2; // 每次查詢未找到時，初始往前推移的天數
             string endDatetime = initialEndDatetime;
             string startDatetime = initialStartDatetime;
-            bool foundEnoughHeadlines = false;
+            bool foundEnoughHeadlines = false; // 標記是否找到足夠的 "頭條新聞"
 
+            // 當還未找到足夠的 "頭條新聞" 時進入迴圈
             while (!foundEnoughHeadlines)
             {
                 // SQL 查詢語句
@@ -174,25 +182,37 @@ namespace Feature.Wealth.Component.Repositories
                     LEFT JOIN FilteredCTE prev ON curr.RowNumber = prev.RowNumber + 1
                     LEFT JOIN FilteredCTE next ON curr.RowNumber = next.RowNumber - 1";
 
-                // 使用當前的 startDatetime 和 endDatetime 查詢資料
-                datas = DbManager.Custom.ExecuteIList<MarketNewsModel>(query, new { StartDate = startDatetime, EndDate = endDatetime }, CommandType.Text);
-
-                if (datas != null && datas.Any())
+                try
                 {
-                    // 判斷 datas 中 NewsType 為 "頭條新聞" 的數量
-                    var headlineCount = datas.Count(news => news.NewsType != null && news.NewsType.Contains("頭條新聞"));
+                    datas = DbManager.Custom.ExecuteIList<MarketNewsModel>(query, new { StartDate = startDatetime, EndDate = endDatetime }, CommandType.Text);
+
+                    // 計算 datas 中 NewsType 為 "頭條新聞" 的數量，如果 datas 為 null，則headlineCount 為 0
+                    var headlineCount = datas?.Count(news => news.NewsType != null && news.NewsType.Contains("頭條新聞")) ?? 0;
 
                     // 如果找到了足夠的 "頭條新聞"，則退出循環
                     if (headlineCount >= threshold)
                     {
+                        // 設定標記為 true，表示已找到足夠的資料
                         foundEnoughHeadlines = true;
                     }
                     else
                     {
                         // 如果不足，繼續更新 startDatetime，往前推動更多的天數
-                        daysToShift *= 2;
-                        startDatetime = DateTime.Parse(endDatetime, new CultureInfo("zh-TW")).AddDays(-daysToShift).ToString("yyyy/MM/dd");
+                        daysToShift *= 2; // 每次推移的天數加倍
+                        startDatetime = DateTime.Parse(endDatetime, new CultureInfo("zh-TW")).AddDays(-daysToShift).ToString("yyyy/MM/dd"); // 更新開始時間
                     }
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.Message);
+                    datas = null;
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    datas = null;
+                    break;
                 }
             }
 
@@ -204,7 +224,7 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         public IList<MarketNewsModel> GetSerchMarketNewsDbData(string startDatetime, string endDatetime)
         {
-            IList<MarketNewsModel> datas;
+            IList<MarketNewsModel> datas = null;
 
             string query = @"
                 WITH CTE AS (
@@ -254,7 +274,20 @@ namespace Feature.Wealth.Component.Repositories
                 LEFT JOIN FilteredCTE prev ON curr.RowNumber = prev.RowNumber + 1
                 LEFT JOIN FilteredCTE next ON curr.RowNumber = next.RowNumber - 1";
 
-            datas = DbManager.Custom.ExecuteIList<MarketNewsModel>(query, new { StartDate = startDatetime, EndDate = endDatetime }, CommandType.Text);
+            try
+            {
+                datas = DbManager.Custom.ExecuteIList<MarketNewsModel>(query, new { StartDate = startDatetime, EndDate = endDatetime }, CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+                datas = null;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                datas = null;
+            }
 
             return datas;
         }
@@ -287,13 +320,26 @@ namespace Feature.Wealth.Component.Repositories
             FROM [dbo].[NewsType]
             WHERE [TypeNumber] IN @IdList";
 
-                var newsTypeList = DbManager.Custom.ExecuteIList<string>(query, new { IdList = idList }, CommandType.Text);
+                try
+                {
+                    var newsTypeList = DbManager.Custom.ExecuteIList<string>(query, new { IdList = idList }, CommandType.Text);
 
-                filteredDatas = filteredDatas
-                    .Where(news =>
-                        !string.IsNullOrEmpty(news.NewsType) &&
-                        news.NewsType.Split(',').Any(type => newsTypeList.Contains(type.Trim())))
-                    .ToList();
+                    filteredDatas = filteredDatas
+                        .Where(news =>
+                            !string.IsNullOrEmpty(news.NewsType) &&
+                            news.NewsType.Split(',').Any(type => newsTypeList.Contains(type.Trim())))
+                        .ToList();
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.Message);
+                    return datas;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    return datas;
+                }
             }
 
             foreach (var item in filteredDatas)
@@ -367,17 +413,19 @@ namespace Feature.Wealth.Component.Repositories
         public MarketNewsDetailModel GetMarketNewsDetailData(List<MarketNewsModel> _datas, string newsId)
         {
             var model = new MarketNewsDetailModel();
+            var detailData = new MarketNewsDetailData();
 
             if (_datas != null && _datas.Any())
             {
                 // 從預設 cache 裡拿資料篩選出符合 newsId 的資料
                 var filteredData = _datas.FirstOrDefault(news => news.NewsSerialNumber == newsId);
 
-                // 確認是否找到符合的新聞，若預設 cache 裡沒有資料就重新去 DB 裡拿資料
-                if (filteredData != null)
-                {
-                    var detailData = new MarketNewsDetailData();
+                // 確認 filteredData 是否是最後一筆資料
+                bool isLastItem = filteredData != null && _datas.IndexOf(filteredData) == _datas.Count - 1;
 
+                // 判斷查詢的新聞是否有在預設的 cache 裡面且不是預設 cache 的最後一筆資料
+                if (filteredData != null && !isLastItem)
+                {
                     detailData.NewsSerialNumber = filteredData.NewsSerialNumber;
                     detailData.NewsDetailDate = filteredData.NewsDetailDate;
                     detailData.NewsTitle = filteredData.NewsTitle;
@@ -400,8 +448,6 @@ namespace Feature.Wealth.Component.Repositories
 
                     if (datas != null)
                     {
-                        var detailData = new MarketNewsDetailData();
-
                         detailData.NewsSerialNumber = datas.NewsSerialNumber;
                         detailData.NewsDetailDate = datas.NewsDetailDate;
                         detailData.NewsTitle = datas.NewsTitle;
@@ -439,17 +485,47 @@ namespace Feature.Wealth.Component.Repositories
         {
             string serchQuery = "SELECT COUNT(*) FROM [dbo].[NewsDetail] WHERE [NewsSerialNumber] = @NewsSerialNumber";
 
-            int count = DbManager.Custom.ExecuteScalar<int>(serchQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
+            int count = 0;
+
+            try
+            {
+                count = DbManager.Custom.ExecuteScalar<int>(serchQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+                count = 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                count = 0;
+            }
 
             bool dbDataExists = count > 0;
 
             if (dbDataExists)
             {
-                // 获取指定 newsId 的日期
-                string getDateQuery = "SELECT [NewsDate] FROM [dbo].[NewsList] WHERE [NewsSerialNumber] = @NewsSerialNumber";
-                DateTime newsDate = DbManager.Custom.ExecuteScalar<DateTime>(getDateQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
+                DateTime newsDate;
 
-                // 计算日期范围
+                string getDateQuery = "SELECT [NewsDate] FROM [dbo].[NewsList] WHERE [NewsSerialNumber] = @NewsSerialNumber";
+
+                try
+                {
+                    newsDate = DbManager.Custom.ExecuteScalar<DateTime>(getDateQuery, new { NewsSerialNumber = newsId }, CommandType.Text);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.Message);
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    return null;
+                }
+
+                // 計算日期範圍
                 var startDate = newsDate.AddDays(-1).ToString("yyyy/MM/dd");
                 var endDate = newsDate.AddDays(1).ToString("yyyy/MM/dd");
 
@@ -500,12 +576,27 @@ namespace Feature.Wealth.Component.Repositories
                     LEFT JOIN FilteredCTE next ON curr.RowNumber = next.RowNumber - 1
                     WHERE curr.[NewsSerialNumber] = @NewsId";
 
-                var result = DbManager.Custom.Execute<MarketNewsDetailData>(query, new
+                MarketNewsDetailData result = null;
+
+                try
                 {
-                    NewsId = newsId,
-                    StartDate = startDate,
-                    EndDate = endDate
-                }, CommandType.Text);
+                    result = DbManager.Custom.Execute<MarketNewsDetailData>(query, new
+                    {
+                        NewsId = newsId,
+                        StartDate = startDate,
+                        EndDate = endDate
+                    }, CommandType.Text);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.Message);
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    return null;
+                }
 
                 return result;
             }
@@ -527,11 +618,24 @@ namespace Feature.Wealth.Component.Repositories
             if (_datas != null && _datas.Any())
             {
                 string newsTypeQuery = @"
-                    SELECT [NewsType]
-                    FROM [dbo].[NewsType]
-                    WHERE [TypeNumber] = '2'";
+                SELECT [NewsType]
+                FROM [dbo].[NewsType]
+                WHERE [TypeNumber] = '2'";
 
-                IList<string> headlineNewsTypes = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
+                IList<string> headlineNewsTypes = null;
+
+                try
+                {
+                    headlineNewsTypes = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                }
 
                 var filteredData = _datas
                     .Where(news => news.NewsType != null && headlineNewsTypes != null && headlineNewsTypes.Any(ht => news.NewsType.Contains(ht)))
@@ -626,11 +730,24 @@ namespace Feature.Wealth.Component.Repositories
             if (_datas != null && _datas.Any())
             {
                 string newsTypeQuery = @"
-                    SELECT [NewsType]
-                    FROM [dbo].[NewsType]
-                    WHERE [TypeNumber] = '2'";
+                SELECT [NewsType]
+                FROM [dbo].[NewsType]
+                WHERE [TypeNumber] = '2'";
 
-                var homeHeadlinesType = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
+                IList<string> homeHeadlinesType = null;
+
+                try
+                {
+                    homeHeadlinesType = DbManager.Custom.ExecuteIList<string>(newsTypeQuery, null, CommandType.Text);
+                }
+                catch (SqlException ex)
+                {
+                    Log.Error(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                }
 
                 var filteredData = _datas
                     .Where(news => news.NewsType != null && homeHeadlinesType != null && homeHeadlinesType.Any(ht => news.NewsType.Contains(ht)))
@@ -664,7 +781,7 @@ namespace Feature.Wealth.Component.Repositories
 
                         datas.Headlines.Add(newsData);
                     }
-                }     
+                }
             }
 
             return datas;

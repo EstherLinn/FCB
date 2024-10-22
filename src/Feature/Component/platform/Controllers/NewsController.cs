@@ -70,11 +70,11 @@ namespace Feature.Wealth.Component.Controllers
                 if (startDatetime == yesterday && endDatetime == today)
                 {
                     // 取得預設 MarketNews 資料庫資料
-                    _datas = (List<MarketNewsModel>)_newsRespository.GetDefaultMarketNewsDbData(startDatetime, endDatetime);
+                    _datas = (List<MarketNewsModel>)_newsRespository.GetDefaultMarketNewsDbData(yesterday, today);
 
                     if (_datas != null && _datas.Any())
                     {
-                        // 儲存 MarketNewsCache
+                        // 儲存預設 MarketNewsCache
                         _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
                     }
                 }
@@ -85,8 +85,47 @@ namespace Feature.Wealth.Component.Controllers
 
                     if (_datas != null && _datas.Any())
                     {
-                        // 儲存 MarketNewsCache
+                        // 儲存查詢 MarketNewsCache
                         _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(serchCacheTime));
+                    }
+
+                    // 判斷是否有 NewsDate 等於今天的資料
+                    bool hasTodayNews = _datas.Any(news => news.NewsDate == today);
+
+                    if (hasTodayNews)
+                    {
+                        string defaultCacheKey = yesterday + "~" + today + " " + MarketNewsCacheKey;
+
+                        // 取得預設 MarketNewsCache
+                        var defaultDatas = (List<MarketNewsModel>)_cache.Get(defaultCacheKey);
+
+                        if (defaultDatas == null)
+                        {
+                            // 儲存預設 MarketNewsCache
+                            _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                        }
+                        else
+                        {
+                            // 過濾 _datas 中 NewsDate 等於今天的資料
+                            var todayNews = _datas.Where(news => news.NewsDate == today).ToList();
+
+                            if (todayNews.Any())
+                            {
+                                // 將 todayNews 合併到 defaultDatas 裡
+                                defaultDatas.AddRange(todayNews);
+
+                                // 去重，防止相同的 NewsSerialNumber 重複
+                                defaultDatas = defaultDatas
+                                    .GroupBy(news => news.NewsSerialNumber)
+                                    .Select(g => g.First())
+                                    .OrderByDescending(news => news.NewsDate)      // 先按 NewsDate 降序排序
+                                    .ThenByDescending(news => news.NewsTime)       // 再按 NewsTime 降序排序
+                                    .ThenByDescending(news => news.NewsDetailDate) // 最後按 NewsDetailDate 降序排序
+                                    .ToList();
+
+                                _cache.Set(defaultCacheKey, defaultDatas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                            }
+                        }
                     }
                 }
             }
