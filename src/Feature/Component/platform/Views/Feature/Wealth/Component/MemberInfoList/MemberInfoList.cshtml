@@ -240,7 +240,7 @@
                 });
             }
             window.ResetMailInfoTable();
-            $('#uid-fjs-infoList').on('click', 'tr', function () {
+            $('#uid-fjs-infoList').on('click', 'tr', function (e) {
                 let $this = $(this);
                 let mailType = $this.find('[data-mailType]').text();
                 let prefix = location.protocol + "//" + location.hostname;
