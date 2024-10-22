@@ -709,8 +709,8 @@ namespace Feature.Wealth.Component.Repositories
             if (_datas != null && _datas.Any())
             {
                 string newsTypeQuery = @"
-                SELECT [NewsType] WITH (NOLOCK)
-                FROM [dbo].[NewsType]
+                SELECT [NewsType] 
+                FROM [dbo].[NewsType] WITH (NOLOCK)
                 WHERE [TypeNumber] = '2'";
 
                 IList<string> homeHeadlinesType = null;
