@@ -1669,7 +1669,7 @@
             //#endregion
 
             //#region 更新風險屬性&判斷對應遮罩方法
-            async function handleRisk() {
+            function handleRisk() {
                 if (SC_DATA.IsLoggedIn) {
                     $('[data-save="true"]').removeClass('u-hidden');
 
@@ -2916,7 +2916,7 @@
                     let eventStringEtf = '[data-tab-panel-id="tab-1"] .recommendedETF';
                     getEtfData(tab, eventEtf, eventStringEtf, years, monthlyInvestment, amountPrepared, targetAmount, pension, expectedRoi);
 
-                    if (SC_DATA.Risk == '3') {
+                    if (SC_DATA.Risk == '3' && !SC_DATA.IsKycExpire) {
                         let eventStock = $('[data-tab-panel-id="tab-1"] .recommendedStock .swiper-wrapper');
                         let eventStringStock = '[data-tab-panel-id="tab-1"] .recommendedStock';
                         getStockData(tab, eventStock, eventStringStock, years, monthlyInvestment, amountPrepared, targetAmount, pension, expectedRoi);
@@ -3015,7 +3015,7 @@
                     let eventStringEtf = '[data-tab-panel-id="tab-2"] .recommendedETF';
                     getEtfData(tab, eventEtf, eventStringEtf, years, result, amountPrepared, targetAmount, pension, expectedRoi);
 
-                    if (SC_DATA.Risk == '3') {
+                    if (SC_DATA.Risk == '3' && !SC_DATA.IsKycExpire) {
                         let eventStock = $('[data-tab-panel-id="tab-2"] .recommendedStock .swiper-wrapper');
                         let eventStringStock = '[data-tab-panel-id="tab-2"] .recommendedStock';
                         getStockData(tab, eventStock, eventStringStock, years, result, amountPrepared, targetAmount, pension, expectedRoi);
@@ -3106,7 +3106,7 @@
                     let eventStringEtf = '[data-tab-panel-id="tab-3"] .recommendedETF';
                     getEtfData(tab, eventEtf, eventStringEtf, years, monthlyInvestment, amountPrepared, targetAmount, pension, result);
 
-                    if (SC_DATA.Risk == '3') {
+                    if (SC_DATA.Risk == '3' && !SC_DATA.IsKycExpire) {
                         let eventStock = $('[data-tab-panel-id="tab-3"] .recommendedStock .swiper-wrapper');
                         let eventStringStock = '[data-tab-panel-id="tab-3"] .recommendedStock';
                         getStockData(tab, eventStock, eventStringStock, years, monthlyInvestment, amountPrepared, targetAmount, pension, result);
@@ -3196,7 +3196,7 @@
                     let eventStringEtf = '[data-tab-panel-id="tab-4"] .recommendedETF';
                     getEtfData(tab, eventEtf, eventStringEtf, years, monthlyInvestment, amountPrepared, targetAmount, pension, expectedRoi);
 
-                    if (SC_DATA.Risk == '3') {
+                    if (SC_DATA.Risk == '3' && !SC_DATA.IsKycExpire) {
                         let eventStock = $('[data-tab-panel-id="tab-4"] .recommendedStock .swiper-wrapper');
                         let eventStringStock = '[data-tab-panel-id="tab-4"] .recommendedStock';
                         getStockData(tab, eventStock, eventStringStock, years, monthlyInvestment, amountPrepared, targetAmount, pension, expectedRoi);
@@ -3803,12 +3803,20 @@
                         return;
                 }
 
+                //判斷Kyc是否逾期更改對應文案
+                if (SC_DATA.PlatForm === 'WebBank' && SC_DATA.IsKycExpire) {
+                    $('.l-riskCard__desc').text('您的風險屬性已逾期，合適商品風險等級限 RR1');
+                } else if (SC_DATA.PlatForm === 'WebBank' && !SC_DATA.IsKycExpire) {
+                    $('.l-riskCard__desc').text('將依您的投資屬性，提供合適的商品。');
+                }
+
                 $('.l-riskCard__charts img').attr('src', imgSrc);
             }
             //#endregion
 
             //#region 取得基金資料
             function getFundData(tab, event, eventString, years, monthlyInvestment, amountPrepared, targetAmount, pension, ExpectedRoi) {
+                var riskLevel;
                 var resultTab3Roi = tab3Compute(years, monthlyInvestment, amountPrepared, targetAmount, pension);
                 var expectedRoi;
                 if (tab == 'tab1') {
@@ -3819,6 +3827,13 @@
                     expectedRoi = ExpectedRoi;
                 }
 
+                //如果逾期只回傳RR1商品
+                if (SC_DATA.IsKycExpire) {
+                    riskLevel = "'RR1'";
+                } else {
+                    riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
+                }
+
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
@@ -3827,6 +3842,7 @@
                     data: {
                         ExpectedRoi: expectedRoi,
                         ProductFundIDs: fundIds,
+                        RiskLevel: riskLevel,
                         __RequestVerificationToken: token
                     },
                     beforeSend: function (xhr) {
@@ -3863,12 +3879,16 @@
                     expectedRoi = ExpectedRoi;
                 }
 
-                if (SC_DATA.Risk == '1') {
-                    riskLevel = "'RR1','RR2'";
-                } else if (SC_DATA.Risk == '2') {
-                    riskLevel = "'RR1','RR2','RR3','RR4'";
-                } else if (SC_DATA.Risk == '3') {
-                    riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
+                if (!SC_DATA.IsKycExpire) {
+                    if (SC_DATA.Risk == '1') {
+                        riskLevel = "'RR1','RR2'";
+                    } else if (SC_DATA.Risk == '2') {
+                        riskLevel = "'RR1','RR2','RR3','RR4'";
+                    } else if (SC_DATA.Risk == '3') {
+                        riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
+                    }
+                } else {
+                    riskLevel = "'RR1'";
                 }
 
                 var token = $('input[name="__RequestVerificationToken"]').val();

@@ -200,8 +200,9 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="ExpectedRoi">預期投資報酬率</param>
         /// <param name="ProductFundIDs">推薦基金商品ID</param>
+        /// <param name="RiskLevel">商品風險屬性</param>
         /// <returns>9筆基金資料</returns>
-        public List<FundModel> GetFundData(string ExpectedRoi, string[] ProductFundIDs)
+        public List<FundModel> GetFundData(string ExpectedRoi, string[] ProductFundIDs, string RiskLevel)
         {
             var FundUrl = FundRelatedSettingModel.GetFundDetailsUrl();
             string FundDataSql;
@@ -210,6 +211,7 @@ namespace Feature.Wealth.Component.Repositories
                 FundDataSql = @$"
                  SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
+                 WHERE [RiskLevel] IN ({RiskLevel})
                  ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] ASC";
             }
             else
@@ -217,7 +219,7 @@ namespace Feature.Wealth.Component.Repositories
                 FundDataSql = @$"
                  SELECT TOP 9 [ProductCode], [FundName], [OneMonthReturnOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
                  FROM [dbo].[vw_BasicFund]
-                 WHERE [OneYearReturnOriginalCurrency] >= '{ExpectedRoi}'
+                 WHERE [OneYearReturnOriginalCurrency] >= '{ExpectedRoi}' AND [RiskLevel] IN ({RiskLevel})
                  ORDER BY [OneYearReturnOriginalCurrency] DESC, [ProductCode] ASC";
             }
             var FundData = DbManager.Custom.ExecuteIList<FundModel>(FundDataSql, null, CommandType.Text);
@@ -227,7 +229,7 @@ namespace Feature.Wealth.Component.Repositories
                 fund.DataIsFormSitecore = false;
             }
 
-            if (FundData.Count < 9)
+            if (FundData.Count < 9 && RiskLevel != "'RR1'")
             {
                 var allRecommendedProductCodesSql = string.Join(", ", ProductFundIDs.Select(pc => $"'{pc}'"));
                 string allRecommendedDataSql = @$"
@@ -319,7 +321,7 @@ namespace Feature.Wealth.Component.Repositories
             }
             var EtfData = DbManager.Custom.ExecuteIList<EtfModel>(EtfDataSql, null, CommandType.Text);
 
-            if (EtfData.Count < 3)
+            if (EtfData.Count < 3 && RiskLevel != "'RR1'")
             {
                 EtfDataSql = @$"
                  SELECT TOP 3 [ProductCode], [ETFName], [MonthlyReturnNetValueOriginalCurrency], [AvailabilityStatus], [OnlineSubscriptionAvailability]
