@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Component.Models.ExclusiveRecommendation;
+﻿using Feature.Wealth.Account.Helpers;
+using Feature.Wealth.Component.Models.ExclusiveRecommendation;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
@@ -19,6 +20,11 @@ namespace Feature.Wealth.Component.Repositories
         /// <returns></returns>
         public IEnumerable<FundBasicDto> GetTopRiskList(string riskLevel)
         {
+            // kyc已逾期
+            if (FcbMemberHelper.GetMemberAllInfo().IsKycExpire)
+            {
+                riskLevel = "4";
+            }
             RiskCompare.RiskCompareDic.TryGetValue(riskLevel, out List<string> riskLevels);
 
             string sql = $@"SELECT TOP(6) ProductCode,FundName,AvailabilityStatus,OnlineSubscriptionAvailability,OneMonthReturnOriginalCurrency FROM vw_BasicFund

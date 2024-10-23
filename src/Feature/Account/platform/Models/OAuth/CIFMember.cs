@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Feature.Wealth.Account.Models.OAuth
 {
@@ -47,7 +43,7 @@ namespace Feature.Wealth.Account.Models.OAuth
         public string CIF_KYC_EXPIR_DATE { get; set; }
 
         /// <summary>
-        /// 專業投資人　非0均為專業投資人
+        /// 專業投資人　非0均為專業投資人,3為專業機構投資人
         /// </summary>
         public string CIF_EMP_PI_RISK_ATTR { get; set; }
         /// <summary>
@@ -87,5 +83,9 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// 是否為理顧主管
         /// </summary>
         public bool IsManager { get; set; } = false;
+        /// <summary>
+        /// 風險屬性是否逾期
+        /// </summary>
+        public bool IsKycExpire { get; set; } = false;
     }
 }

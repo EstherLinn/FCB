@@ -1247,43 +1247,59 @@ namespace Feature.Wealth.Account.Repositories
             {
                 return null;
             }
-            //判斷有無風險屬性及風險屬性有效日期
-            if (!string.IsNullOrEmpty(member.CIF_EMP_RISK) && !string.IsNullOrEmpty(member.CIF_KYC_EXPIR_DATE))
+            DateTime today = DateTime.Today;
+            //判斷是否為高資產客戶&&檢核高資產日期
+            if (member.CIF_HIGH_ASSET_FLAG.ToBoolean() && !string.IsNullOrEmpty(member.CIF_HIGH_ASSET_VAL_DATE))
             {
-                DateTime today = DateTime.Today;
+                DateTime highAssetDate;
+                bool isHighAssetDate = DateTime.TryParseExact(member.CIF_HIGH_ASSET_VAL_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out highAssetDate);
+                if (isHighAssetDate && highAssetDate >= today)
+                {
+                    //高資產身分有效
+                    member.CIF_EMP_RISK = "3";
+                    return member;
+                }
+            }
+            //專業機構投資人 3，不需檢核kyc日期
+            if (!string.IsNullOrEmpty(member.CIF_EMP_PI_RISK_ATTR) && member.CIF_EMP_PI_RISK_ATTR != "0" && member.CIF_EMP_PI_RISK_ATTR == "3")
+            {
+                member.CIF_EMP_RISK = "3";
+                return member;
+            }
+            //判斷風險屬性有效日期，9999/99/99表示未做過kyc
+            if (!string.IsNullOrEmpty(member.CIF_EMP_RISK) && !string.IsNullOrEmpty(member.CIF_KYC_EXPIR_DATE) && member.CIF_KYC_EXPIR_DATE != "9999/99/99")
+            {
                 DateTime kycDate;
                 bool isKycValidDate = DateTime.TryParseExact(member.CIF_KYC_EXPIR_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out kycDate);
-                if (isKycValidDate)
+
+                //判斷風險屬性有效
+                if (!string.IsNullOrEmpty(member.CIF_EMP_RISK))
                 {
-                    //風險屬性逾期
-                    if (kycDate < today)
+                    if (isKycValidDate)
                     {
-                        member.CIF_EMP_RISK = "4";
-                        return member;
-                    }
-                    //專業投資人並且風險屬性有效
-                    if (!string.IsNullOrEmpty(member.CIF_EMP_PI_RISK_ATTR) && member.CIF_EMP_PI_RISK_ATTR != "0")
-                    {
-                        member.CIF_EMP_RISK = "3";
-                        return member;
-                    }
-                    //判斷是否為高資產客戶
-                    if (member.CIF_HIGH_ASSET_FLAG.ToBoolean() && !string.IsNullOrEmpty(member.CIF_HIGH_ASSET_VAL_DATE))
-                    {
-                        DateTime highAssetDate;
-                        bool isHighAssetDate = DateTime.TryParseExact(member.CIF_HIGH_ASSET_VAL_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out highAssetDate);
-                        if (isHighAssetDate && highAssetDate >= today)
+                        //風險屬性逾期
+                        if (kycDate < today)
                         {
-                            //風險屬性及高資產皆有效
+                            member.IsKycExpire = true;
+                            return member;
+                        }
+                        //專業投資人1、2、4並且風險屬性有效 
+                        if (!string.IsNullOrEmpty(member.CIF_EMP_PI_RISK_ATTR) && member.CIF_EMP_PI_RISK_ATTR != "0" && member.CIF_EMP_PI_RISK_ATTR != "3")
+                        {
                             member.CIF_EMP_RISK = "3";
                             return member;
                         }
                     }
+                    else
+                    {
+                        //風險屬性非正常日期格式
+                        member.CIF_EMP_RISK = null;
+                        return member;
+                    }
                 }
                 else
                 {
-                    //風險屬性非正常日期格式
-                    member.CIF_EMP_RISK = null;
+                    member.IsKycExpire = true;
                     return member;
                 }
             }
@@ -1296,13 +1312,34 @@ namespace Feature.Wealth.Account.Repositories
         /// <returns></returns>
         private FcbMemberModel CheckUserIdentity(FcbMemberModel member)
         {
-            if (member == null) {
+            if (member == null)
+            {
                 return null;
             }
-            //判斷有無風險屬性及風險屬性有效日期
-            if (!string.IsNullOrEmpty(member.Risk) && !string.IsNullOrEmpty(member.CIF_KYC_EXPIR_DATE))
+            DateTime today = DateTime.Today;
+            //判斷是否為高資產客戶&&檢核高資產日期
+            if (member.CIF_HIGH_ASSET_FLAG.ToBoolean() && !string.IsNullOrEmpty(member.CIF_HIGH_ASSET_VAL_DATE))
             {
-                DateTime today = DateTime.Today;
+                DateTime highAssetDate;
+                bool isHighAssetDate = DateTime.TryParseExact(member.CIF_HIGH_ASSET_VAL_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out highAssetDate);
+                if (isHighAssetDate && highAssetDate >= today)
+                {
+                    //高資產身分有效
+                    member.Risk = "3";
+                    return member;
+                }
+            }
+
+            //專業機構投資人 3，不需檢核kyc日期
+            if (!string.IsNullOrEmpty(member.CIF_EMP_PI_RISK_ATTR) && member.CIF_EMP_PI_RISK_ATTR != "0" && member.CIF_EMP_PI_RISK_ATTR == "3")
+            {
+                member.Risk = "3";
+                return member;
+            }
+
+            //判斷風險屬性有效日期，9999/99/99表示未做過kyc
+            if (!string.IsNullOrEmpty(member.Risk) && !string.IsNullOrEmpty(member.CIF_KYC_EXPIR_DATE) && member.CIF_KYC_EXPIR_DATE != "9999/99/99")
+            {
                 DateTime kycDate;
                 bool isKycValidDate = DateTime.TryParseExact(member.CIF_KYC_EXPIR_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out kycDate);
                 if (isKycValidDate)
@@ -1310,26 +1347,14 @@ namespace Feature.Wealth.Account.Repositories
                     //風險屬性逾期
                     if (kycDate < today)
                     {
-                        member.Risk = "4";
+                        member.IsKycExpire = true;
                         return member;
                     }
-                    //專業投資人並且風險屬性有效
-                    if (!string.IsNullOrEmpty(member.CIF_EMP_PI_RISK_ATTR) && member.CIF_EMP_PI_RISK_ATTR != "0")
+                    //專業投資人1、2、4並且風險屬性有效 
+                    if (!string.IsNullOrEmpty(member.CIF_EMP_PI_RISK_ATTR) && member.CIF_EMP_PI_RISK_ATTR != "0" && member.CIF_EMP_PI_RISK_ATTR != "3")
                     {
                         member.Risk = "3";
                         return member;
-                    }
-                    //判斷是否為高資產客戶
-                    if (member.CIF_HIGH_ASSET_FLAG.ToBoolean() && !string.IsNullOrEmpty(member.CIF_HIGH_ASSET_VAL_DATE))
-                    {
-                        DateTime highAssetDate;
-                        bool isHighAssetDate = DateTime.TryParseExact(member.CIF_HIGH_ASSET_VAL_DATE, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out highAssetDate);
-                        if (isHighAssetDate && highAssetDate >= today)
-                        {
-                            //風險屬性及高資產皆有效
-                            member.Risk = "3";
-                            return member;
-                        }
                     }
                 }
                 else
