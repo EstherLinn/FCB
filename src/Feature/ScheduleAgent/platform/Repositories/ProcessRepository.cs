@@ -463,20 +463,16 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             try
             {
-                var columns = reader.GetColumnSchema();
                 while (reader.Read())
                 {
                     var item = new T();
-                    foreach (var column in columns)
+                    for (int i = 0; i < reader.FieldCount; i++)
                     {
-                        var property = properties.FirstOrDefault(p => p.Name == column.ColumnName);
-                        if (property != null)
+                        var columnName = reader.GetName(i);
+                        var property = properties.FirstOrDefault(p => p.Name == columnName);
+                        if (property != null && !reader.IsDBNull(i))
                         {
-                            var ordinal = column.ColumnOrdinal;
-                            if (!reader.IsDBNull((int)ordinal))
-                            {
-                                property.SetValue(item, reader.GetValue((int)ordinal), null);
-                            }
+                            property.SetValue(item, reader.GetValue(i), null);
                         }
                     }
                     yield return item;

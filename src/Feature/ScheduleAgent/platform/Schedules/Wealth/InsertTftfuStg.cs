@@ -20,20 +20,23 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
             //TFTFU_STG 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM TFTFU_STG";
-
             var TrafficLight = NameofTrafficLight.TFTFU_STG;
-
-            List<TftfuStg> batch = new List<TftfuStg>();
-            int batchSize = 1000;
-            var isTrancate = false;
 
             try
             {
-                await OdbcBulkInsert(_repository, sql, batch, batchSize, isTrancate, "[TFTFU_STG_Process]");
-                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                await OdbcBulkInsert(_repository,sql,batch, batchSize, isTrancate, "[TFTFU_STG]");
-                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-
+                var data = _repository.Enumerate<TftfuStg>(sql);
+                if (data != null && data.Any())
+                {
+                    await OdbcBulkInsert(_repository, sql, "[TFTFU_STG_Process]", data);
+                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                    await OdbcBulkInsert(_repository, sql, "[TFTFU_STG]", data);
+                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                }
+                else
+                {
+                    _repository.LogChangeHistory(DateTime.UtcNow, sql, "TFTFU_STG No datas", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                    this.Logger.Error($"{sql} No datas");
+                }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
                 this.Logger.Info($"取得TFTFU_STG資料完成：Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
@@ -46,15 +49,19 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             }
         }
 
-        private async Task OdbcBulkInsert(ProcessRepository _repository,string sql, List<TftfuStg> batch, int batchSize, bool isTrancate,string tableName)
+        private async Task OdbcBulkInsert(ProcessRepository _repository, string sql, string tableName, IEnumerable<TftfuStg> data)
         {
             try
             {
-                foreach (var result in _repository.Enumerate<TftfuStg>(sql))
+                List<TftfuStg> batch = new List<TftfuStg>();
+                int batchSize = 1000;
+                var isTrancate = false;
+
+                foreach (var result in data)
                 {
                     batch.Add(result);
 
-                    if (isTrancate == false)
+                    if (!isTrancate)
                     {
                         if (batch.Count > 0)
                         {
