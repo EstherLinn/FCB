@@ -89,11 +89,11 @@ namespace Feature.Wealth.Component.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult GetFundData(string ExpectedRoi, string[] ProductFundIDs)
+        public ActionResult GetFundData(string ExpectedRoi, string[] ProductFundIDs, string RiskLevel)
         {
             List<FundModel> datas;
 
-            datas = _calculateRepository.GetFundData(ExpectedRoi, ProductFundIDs);
+            datas = _calculateRepository.GetFundData(ExpectedRoi, ProductFundIDs, RiskLevel);
 
             return new JsonNetResult(datas);
         }
