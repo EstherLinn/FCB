@@ -198,7 +198,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         {
             var _repository = new ProcessRepository(this._logger);
             //CSV檔案資料完成後，檔案改名加_done
-            if (fileName.Equals("fundlist") || fileName.ToLower().Contains("bond"))
+            if (fileName.Equals("fundlist") || fileName.ToLower().Contains("bond") || fileName.Equals("IMVP_HOLIDAY"))
             {
                 fileName = Path.ChangeExtension(fileName, "csv");
                 string localFilePath = Path.Combine(LocalDirectory, fileName);
@@ -269,7 +269,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
 
                         //建立本機檔案目錄路徑
                         string localFiledonePath = "";
-                        if (fileName.Equals("fundlist") || fileName.ToLower().Contains("bond"))
+                        if (fileName.Equals("fundlist") || fileName.ToLower().Contains("bond") || fileName.Equals("IMVP_HOLIDAY"))
                         {
                             localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.csv");
                             fileName = Path.ChangeExtension(fileName, "csv");
