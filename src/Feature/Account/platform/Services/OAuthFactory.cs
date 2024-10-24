@@ -12,13 +12,14 @@ namespace Feature.Wealth.Account.Services
         {
             var domain = string.IsNullOrEmpty(Sitecore.Context.Site.TargetHostName) ? HttpContext.Current.Request.Url.Host : Sitecore.Context.Site.TargetHostName;
             Guid state = Guid.NewGuid();
+            
             switch (oAuthEunm)
             {
                 case PlatFormEunm.FaceBook:
                     string fbAppId = Settings.GetSetting("Facebook.AppId");
                     string fbAuthUrl = Settings.GetSetting("Facebook.AuthUrl");
                     string fbRedirectUrl = $"https://{domain}/api/client/Accounts/SignInFacebook";
-                    return fbAuthUrl.Replace("{AppId}", fbAppId).Replace("{RedirectUrl}", fbRedirectUrl).Replace("{state}", state.ToString());
+                    return fbAuthUrl.Replace("{AppId}", fbAppId).Replace("{RedirectUrl}", fbRedirectUrl).Replace("{state}", state.ToString()).Replace("{AuthNonce}", DateTime.Now.Ticks.ToString());
                 case PlatFormEunm.Line:
                     string lineAppId = Settings.GetSetting("Line.ClientId");
                     string lineAuthUrl = Settings.GetSetting("Line.AuthUrl");
