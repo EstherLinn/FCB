@@ -24,7 +24,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 string fileName = "fundlist";
                 var TrafficLight = NameofTrafficLight.FundTagsList;
 
-                var IsfilePath = await etlService.ExtractFile(fileName);
+                var IsfilePath = await etlService.ExtractFile(fileName, "csv");
 
                 if (IsfilePath.Value)
                 {
@@ -36,7 +36,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob(fileName, startTime);
+                        etlService.FinishJob(fileName, startTime, "csv");
                     }
                     catch (Exception ex)
                     {

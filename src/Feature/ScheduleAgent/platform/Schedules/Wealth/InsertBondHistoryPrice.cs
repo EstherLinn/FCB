@@ -21,7 +21,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
                 string fileName = "BondHistoryPrice";
-                var IsfilePath = await etlService.ExtractFile(fileName);
+                var IsfilePath = await etlService.ExtractFile(fileName, "csv");
 
                 if (IsfilePath.Value)
                 {
@@ -29,7 +29,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     {
                         var basic = (IList<BondHistoryPrice>)await etlService.ParseCsvNotTXT<BondHistoryPrice>(fileName);
                         _repository.BulkInsertToEncryptedDatabase(basic, "[BondHistoryPrice]", fileName, startTime);
-                        etlService.FinishJob(fileName, startTime);
+                        etlService.FinishJob(fileName, startTime, "csv");
                     }
                     catch (Exception ex)
                     {
