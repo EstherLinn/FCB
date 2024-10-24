@@ -35,7 +35,7 @@ namespace Feature.Wealth.Component.Repositories
                     SubscribeButtonHtml = (item.AvailabilityStatus == "Y" &&
                           (item.OnlineSubscriptionAvailability == "Y" ||
                            string.IsNullOrEmpty(item.OnlineSubscriptionAvailability)))
-                           ? PublicHelpers.SubscriptionButtonForCard(null, item.FundId, item.FundName, InvestTypeEnum.Fund).ToString()
+                           ? PublicHelpers.SubscriptionButtonForCard(null, null, item.FundId, InvestTypeEnum.Fund).ToString()
                            : string.Empty,
                     FocusButtonHtml = PublicHelpers.FocusButton(null, null, item.FundId, item.FundName, InvestTypeEnum.Fund, false).ToString(),
                     CompareButtonHtml = PublicHelpers.CompareButton(null, null, item.FundId, item.FundName, InvestTypeEnum.Fund, false).ToString()
