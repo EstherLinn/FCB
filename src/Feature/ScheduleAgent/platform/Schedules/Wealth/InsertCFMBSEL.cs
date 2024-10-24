@@ -20,19 +20,23 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
             //Cfmbsel 一次性排程 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM CFMBSEL_STG";
-
-            List<Cfmbsel> batch = new List<Cfmbsel>();
-            int batchSize = 1000;
-            var isTrancate = false;
             var TrafficLight = NameofTrafficLight.CFMBSEL;
 
             try
             {
-                await OdbcBulkInsert(_repository, sql, batch, batchSize, isTrancate, "[CFMBSEL_Process]");
-                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                await OdbcBulkInsert(_repository, sql, batch, batchSize, isTrancate, "[CFMBSEL]");
-                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-
+                var cfmbseldata = _repository.Enumerate<Cfmbsel>(sql);
+                if (cfmbseldata != null && cfmbseldata.Any())
+                {
+                    await OdbcBulkInsert(_repository, sql, "[CFMBSEL_Process]", cfmbseldata);
+                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                    await OdbcBulkInsert(_repository, sql, "[CFMBSEL]", cfmbseldata);
+                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                }
+                else
+                {
+                    _repository.LogChangeHistory(DateTime.UtcNow, sql, "Cfmbsel No datas", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                    this.Logger.Error($"{sql} No datas");
+                }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
                 this.Logger.Info($"取得CFMBSEL資料完成：Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
@@ -43,19 +47,21 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 this.Logger.Error(ex.Message, ex);
                 _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
             }
-
-
         }
 
-        private async Task OdbcBulkInsert(ProcessRepository _repository, string sql, List<Cfmbsel> batch, int batchSize, bool isTrancate, string tableName)
+        private async Task OdbcBulkInsert(ProcessRepository _repository, string sql, string tableName, IEnumerable<Cfmbsel> cfmbseldata)
         {
             try
             {
-                foreach (var result in _repository.Enumerate<Cfmbsel>(sql))
+                List<Cfmbsel> batch = new List<Cfmbsel>();
+                int batchSize = 1000;
+                var isTrancate = false;
+
+                foreach (var result in cfmbseldata)
                 {
                     batch.Add(result);
 
-                    if (isTrancate == false)
+                    if (!isTrancate)
                     {
                         if (batch.Count > 0)
                         {
