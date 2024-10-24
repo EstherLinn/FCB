@@ -168,8 +168,8 @@
 <script>
     (function ($, window, document, undefined) {
         document.addEventListener("DOMContentLoaded", function () {
-
-            $('body').append('<main id="downloadPdf" style="visibility:hidden"></main>');
+            //先隱藏downloadPdf及給定寬度避免行動版伸縮框度影響圖表
+            $('body').append('<main id="downloadPdf" style="visibility:hidden;width:1200px;"></main>');
 
             var _data = @(new HtmlString(JsonHelper.SerializeObject(Model)));
 
@@ -217,6 +217,8 @@
                     }
 
                     $('.earningsChartTitle').removeClass('u-hidden');
+                    // 各推薦方案上面一點距離
+                    $('.earningsChartTitle').css('padding-top', '60px');
                     $('.c-calcLecture__actions').remove();
                     $('.l-pipeList__actions').remove();
                     $('.l-revenueResult__actions').remove();
@@ -233,8 +235,8 @@
                     }
 
                     setTimeout(() => {
-                        $('#downloadPdf').removeAttr('style');
-                        $('#downloadPdf').css('width', '1200px');
+                        //顯示downloadPdf
+                        $('#downloadPdf').css('visibility','');
                         generatePCPDF(type);
                     }, 2500);
                 }
