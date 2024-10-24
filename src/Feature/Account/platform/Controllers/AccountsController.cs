@@ -265,7 +265,7 @@ namespace Feature.Wealth.Account.Controllers
                                 cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
                                 cifMember.CIF_MAIN_BRANCH, cifMember.CIF_KYC_EXPIR_DATE, cifMember.CIF_EMP_PI_RISK_ATTR,
                                 cifMember.CIF_HIGH_ASSET_FLAG, cifMember.CIF_HIGH_ASSET_VAL_DATE,
-                                cifMember.IsEmployee, cifMember.IsManager);
+                                cifMember.IsEmployee, cifMember.IsManager,cifMember.IsKycExpire);
 
                             var createdSuccess = _memberRepository.CreateNewMember(member);
                             if (!createdSuccess)
@@ -368,7 +368,7 @@ namespace Feature.Wealth.Account.Controllers
                                 cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
                                 cifMember.CIF_MAIN_BRANCH, cifMember.CIF_KYC_EXPIR_DATE, cifMember.CIF_EMP_PI_RISK_ATTR,
                                 cifMember.CIF_HIGH_ASSET_FLAG, cifMember.CIF_HIGH_ASSET_VAL_DATE,
-                                cifMember.IsEmployee, cifMember.IsManager);
+                                cifMember.IsEmployee, cifMember.IsManager,cifMember.IsKycExpire);
 
                             var createdSuccess = _memberRepository.CreateNewMember(member);
                             if (!createdSuccess)

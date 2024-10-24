@@ -17,13 +17,15 @@
         addObjectValue(SC_DATA, 'WebBankId', "@webBankId");
         addObjectValue(SC_DATA, 'PlatForm', "@platForm");
         addObjectValue(SC_DATA, 'ItemId', '@Sitecore.Context.Item.ID');
-        addObjectValue(SC_DATA, 'Gender', @member.Gender);
+        addObjectValue(SC_DATA, 'Gender', '@member.Gender');
+        addObjectValue(SC_DATA, 'IsKycExpire', @(member.IsKycExpire ? "true" : "false"));
     </script>
 
     if (!string.IsNullOrEmpty(member.Risk))
     {
         <script>
             addObjectValue(SC_DATA, 'Risk', '@member.Risk');
+            addObjectValue(SC_DATA, 'RiskExpireDate', '@member.CIF_KYC_EXPIR_DATE');
         </script>
     }
 

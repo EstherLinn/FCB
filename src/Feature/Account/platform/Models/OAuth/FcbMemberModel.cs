@@ -81,6 +81,10 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// </summary>
         public bool IsManager { get; set; } = false;
 
+        /// <summary>
+        /// 風險屬性是否逾期
+        /// </summary>
+        public bool IsKycExpire { get; set; } = false;
 
         /// <summary>
         /// 風險屬性　有效日期
@@ -88,7 +92,7 @@ namespace Feature.Wealth.Account.Models.OAuth
         public string CIF_KYC_EXPIR_DATE { get; set; }
 
         /// <summary>
-        /// 專業投資人　非0均為專業投資人
+        /// 專業投資人　非0均為專業投資人,3為專業機構投資人
         /// </summary>
         public string CIF_EMP_PI_RISK_ATTR { get; set; }
 
@@ -125,7 +129,7 @@ namespace Feature.Wealth.Account.Models.OAuth
             bool arrivedInfoOpen, QuoteChangeEunm stockShowColor, PlatFormEunm platForm,
             string platFormId, DateTime? birthday, string gender, string salFlag, string mainBranchCode,
             string kycData, string piRisk, string highAssetFlag, string highAssetDate,
-            bool isEmployee = false, bool isManager = false)
+            bool isEmployee = false, bool isManager = false, bool isKycExpire = false)
         {
             this.WebBankId = webBankId;
             this.MemberName = memberName;
@@ -143,6 +147,7 @@ namespace Feature.Wealth.Account.Models.OAuth
             this.SalFlag = salFlag;
             this.IsEmployee = isEmployee;
             this.IsManager = isManager;
+            this.IsKycExpire = isKycExpire;
             this.MainBranchCode = mainBranchCode;
             this.CIF_KYC_EXPIR_DATE = kycData;
             this.CIF_EMP_PI_RISK_ATTR = piRisk;
