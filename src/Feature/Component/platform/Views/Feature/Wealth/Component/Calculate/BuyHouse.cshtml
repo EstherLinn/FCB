@@ -3600,11 +3600,16 @@
                     expectedRoi = ExpectedRoi;
                 }
 
-                //如果逾期只回傳RR1商品
-                if (SC_DATA.IsKycExpire) {
-                    riskLevel = "'RR1'";
+                if (!SC_DATA.IsKycExpire) {
+                    if (SC_DATA.Risk == '1') {
+                        riskLevel = "'RR1','RR2'";
+                    } else if (SC_DATA.Risk == '2') {
+                        riskLevel = "'RR1','RR2','RR3','RR4'";
+                    } else if (SC_DATA.Risk == '3') {
+                        riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
+                    }
                 } else {
-                    riskLevel = "'RR1','RR2','RR3','RR4','RR5'";
+                    riskLevel = "'RR1'";
                 }
 
                 var token = $('input[name="__RequestVerificationToken"]').val();
