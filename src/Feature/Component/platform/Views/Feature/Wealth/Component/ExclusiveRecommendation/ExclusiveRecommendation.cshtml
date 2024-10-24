@@ -67,7 +67,7 @@
                                                     <div class="c-cardFund c-cardFund--inTable">
                                                         <div class="c-cardFund__trend">
                                                             <div class="c-cardFund__rate">
-                                                                <span class="t-small u-nowrap">                                                                  
+                                                                <span class="t-small u-nowrap">
                                                                     <span class="@(item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle() == "o-rise" ? "t-rise" : "t-fall")">月報酬率</span>
                                                                     <span class="@item.OneMonthReturnOriginalCurrency.DecimalNumberToStyle()">@item.OneMonthReturnOriginalCurrency.FormatDecimalNumber()</span>
                                                                 </span>
@@ -143,7 +143,7 @@
                                                         @if (item.AvailabilityStatus.ToBoolean() && (string.IsNullOrEmpty(item.OnlineSubscriptionAvailability) || item.OnlineSubscriptionAvailability.ToBoolean()))
                                                         {
                                                             <li class="l-collect__item l-collect__item--btn">
-                                                                @PublicHelpers.SubscriptionButtonForCard(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund)
+                                                                @PublicHelpers.SubscriptionButtonForCard(null, null, item.ProductCode, InvestTypeEnum.Fund)
                                                             </li>
                                                         }
                                                     </ul>
@@ -204,7 +204,7 @@
                                         @if (item.AvailabilityStatus.ToBoolean() && (string.IsNullOrEmpty(item.OnlineSubscriptionAvailability) || item.OnlineSubscriptionAvailability.ToBoolean()))
                                         {
                                             <li class="l-collect__item l-collect__item--btn">
-                                                @PublicHelpers.SubscriptionButtonForCard(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund)
+                                                @PublicHelpers.SubscriptionButtonForCard(null, null, item.ProductCode, InvestTypeEnum.Fund)
                                             </li>
                                         }
                                     </ul>
@@ -261,7 +261,7 @@
                                         @if (item.AvailabilityStatus.ToBoolean() && (string.IsNullOrEmpty(item.OnlineSubscriptionAvailability) || item.OnlineSubscriptionAvailability.ToBoolean()))
                                         {
                                             <li class="l-collect__item l-collect__item--btn">
-                                                @PublicHelpers.SubscriptionButtonForCard(null, item.ProductCode, item.FundName, InvestTypeEnum.Fund)
+                                                @PublicHelpers.SubscriptionButtonForCard(null, null, item.ProductCode, InvestTypeEnum.Fund)
                                             </li>
                                         }
                                     </ul>
