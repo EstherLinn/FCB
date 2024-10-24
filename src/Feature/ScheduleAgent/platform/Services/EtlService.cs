@@ -194,28 +194,12 @@ namespace Feature.Wealth.ScheduleAgent.Services
         /// 完成資料插入後，檔案改名加_done
         /// </summary>
         /// <param name="fileName"></param>
-        public void FinishJob(string fileName, DateTime startTime)
+        public void FinishJob(string fileName, DateTime startTime, string extension = "txt")
         {
             var _repository = new ProcessRepository(this._logger);
-            //CSV檔案資料完成後，檔案改名加_done
-            if (fileName.Equals("fundlist") || fileName.ToLower().Contains("bond") || fileName.Equals("IMVP_HOLIDAY"))
-            {
-                fileName = Path.ChangeExtension(fileName, "csv");
-                string localFilePath = Path.Combine(LocalDirectory, fileName);
-                string doneFileName = $"{Path.GetFileNameWithoutExtension(fileName)}_done.csv";
-                string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
-                if (File.Exists(localDoneFilePath))
-                {
-                    File.Delete(localDoneFilePath);
-                }
-                File.Move(localFilePath, localDoneFilePath);
-                this._logger.Info(fileName + " 執行完成");
-                var endTime = DateTime.UtcNow;
-                var duration = endTime - startTime;
-                _repository.LogChangeHistory(DateTime.UtcNow, fileName, $"{fileName}排程完成", "", 0, duration.TotalSeconds, "Y");
-            }
+
             //補檔案完成，修改後台checkbox設定，改成false
-            else if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
+            if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
             {
                 bool newValue = false;
                 using (new Sitecore.SecurityModel.SecurityDisabler())
@@ -229,12 +213,12 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 var duration = endTime - startTime;
                 _repository.LogChangeHistory(DateTime.UtcNow, fileName, $"{fileName}排程完成", "", 0, duration.TotalSeconds, "Y");
             }
-            //TXT檔案資料完成後，檔案改名加_done
+            //檔案資料完成後，檔案改名加_done
             else
             {
-                fileName = Path.ChangeExtension(fileName, "txt");
+                fileName = Path.ChangeExtension(fileName, extension);
                 string localFilePath = Path.Combine(LocalDirectory, fileName);
-                string doneFileName = $"{Path.GetFileNameWithoutExtension(fileName)}_done.txt";
+                string doneFileName = $"{Path.GetFileNameWithoutExtension(fileName)}_done.{extension}";
                 string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
                 if (File.Exists(localDoneFilePath))
                 {
@@ -251,7 +235,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         /// <summary>
         /// 檢查Ftps檔案存不存在，以及是否要做補檔
         /// </summary>
-        public async Task<KeyValuePair<string, bool>> ExtractFile(string fileName)
+        public async Task<KeyValuePair<string, bool>> ExtractFile(string fileName, string extension = "txt")
         {
             if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
             {
@@ -269,16 +253,9 @@ namespace Feature.Wealth.ScheduleAgent.Services
 
                         //建立本機檔案目錄路徑
                         string localFiledonePath = "";
-                        if (fileName.Equals("fundlist") || fileName.ToLower().Contains("bond") || fileName.Equals("IMVP_HOLIDAY"))
-                        {
-                            localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.csv");
-                            fileName = Path.ChangeExtension(fileName, "csv");
-                        }
-                        else
-                        {
-                            localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.txt");
-                            fileName = Path.ChangeExtension(fileName, "txt");
-                        }
+
+                        localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.{extension}");
+                        fileName = Path.ChangeExtension(fileName, extension);
 
                         //建立ftps上檔案目錄路徑
                         var filePath = Path.Combine(this.WorkingDirectory, fileName);

@@ -26,7 +26,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 string fileName = "bondnav-" + date + ".csv";
                 var TrafficLight = NameofTrafficLight.BondNav;
 
-                var IsfilePath = await etlService.ExtractFile(fileName);
+                var IsfilePath = await etlService.ExtractFile(fileName, "csv");
 
                 if (IsfilePath.Value)
                 {
@@ -40,7 +40,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
                         _repository.BulkInsertToDatabaseForHIS(datastoHis, "[BondHistoryPrice]", "BondCode", "Date", fileName, startTime);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob(fileName, startTime);
+                        etlService.FinishJob(fileName, startTime, "csv");
                     }
                     catch (Exception ex)
                     {
