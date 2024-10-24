@@ -406,7 +406,7 @@
                         $('#returnDetail').html(DOMPurify.sanitize(data));
                     },
                     error: function () {
-
+                        window.AjaxErrorRedirctToHome();
                     }
                 });
             }

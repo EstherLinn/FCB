@@ -619,6 +619,7 @@
                     }).catch((error) => {
                         console.log(error);
                         hideLoading();
+                        window.AjaxErrorRedirctToHome();
                     }).then(() => {
                         window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading
                         checkKeywordQueryString();
