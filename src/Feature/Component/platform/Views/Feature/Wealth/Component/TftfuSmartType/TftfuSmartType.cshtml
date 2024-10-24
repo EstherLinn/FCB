@@ -494,6 +494,7 @@
                 error: function (err) {
                     console.log(err);
                     $('.c-loading').loading('hide');
+                    window.AjaxErrorRedirctToHome();
                 }
             });
 
@@ -507,6 +508,7 @@
                 },
                 error: function (err) {
                     console.log(err);
+                    window.AjaxErrorRedirctToHome();
                 }
             });
 

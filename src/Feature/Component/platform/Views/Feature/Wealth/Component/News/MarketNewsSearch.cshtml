@@ -770,7 +770,8 @@
                         console.log(errorThrown);
                         $('[data-filter-empty="true"]').show();
                         $('[data-filter-empty="false"]').hide();
-                        $('.c-loading').loading('hide')
+                        $('.c-loading').loading('hide');
+                        window.AjaxErrorRedirctToHome();
                     }).always(function () {
                         $('.c-loading').loading('hide');
                         window.loading = (methodOrOptions) => $('.c-loading').loading(methodOrOptions);  // 重新定義 loading

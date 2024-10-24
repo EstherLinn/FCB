@@ -395,6 +395,7 @@
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
+                    window.AjaxErrorRedirctToHome();
                 }
             });
 
@@ -407,6 +408,7 @@
 
                 console.log(data);
             }).fail(function (jqXHR, textStatus, errorThrown) {
+                window.AjaxErrorRedirctToHome();
             }).always(function () {
                 window.loading('hide');
             });
