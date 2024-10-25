@@ -121,18 +121,18 @@ namespace Feature.Wealth.Component.Models.IndexRecommendation
         /// <summary>
         /// 淨值日期
         /// </summary>
-        public DateTime MarketPriceDate { get; set; }
+        public DateTime BasicMarketPriceDate { get; set; }
 
         /// <summary>
         /// 淨值日期
         /// </summary>
-        public string MarketPriceDateFormat => MarketPriceDate.ToString("yyyy/MM/dd");
+        public string MarketPriceDateFormat => BasicMarketPriceDate.ToString("yyyy/MM/dd");
 
         /// <summary>
         /// 市價
         /// </summary>
-        public decimal? MarketPrice { get; set; }
-        public decimal? MarketPriceFormat => NumberExtensions.RoundingValue(MarketPrice);
+        public decimal? BasicMarketPrice { get; set; }
+        public decimal? MarketPriceFormat => NumberExtensions.RoundingValue(BasicMarketPrice);
 
 
         /// <summary>
