@@ -90,10 +90,10 @@ namespace Feature.Wealth.Component.Repositories
                         Value = src.RiskLevel,
                         Text = string.IsNullOrEmpty(src.RiskLevel) ? "-" : src.RiskLevel
                     };
-                    dest.NetAssetValueDate = DateTimeFormat(src.NetAssetValueDate);
-                    dest.MarketPriceDate = DateTimeFormat(src.MarketPriceDate);
-                    dest.MarketPrice = ParseVolume(src.MarketPrice.RoundingValue());
-                    dest.NetAssetValue = ParseVolume(src.NetAssetValue.RoundingValue());
+                    dest.NetAssetValueDate = DateTimeFormat(src.BasicNetAssetValueDate);
+                    dest.MarketPriceDate = DateTimeFormat(src.BasicMarketPriceDate);
+                    dest.MarketPrice = ParseVolume(src.BasicMarketPrice.RoundingValue());
+                    dest.NetAssetValue = ParseVolume(src.BasicNetAssetValue.RoundingValue());
 
                     #region 報酬率
 
