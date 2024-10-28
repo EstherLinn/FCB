@@ -3428,6 +3428,7 @@
                             data: indexParams
                         }));
                     }
+                    let isNetWorth = obj.trend == "netWorth";
                        Promise.all(p).then(values => {
                         $.each( values, function( index, value ) {
                         let data = value;
@@ -3439,7 +3440,7 @@
                                         upDown: Number(item.v2) < 0 ? 'down' : 'up',
                                         name: item.v1.replaceAll('/', '-'),
                                         y: roundToTwo(item.v2),
-                                        type: obj.trend == "netWorth" ? '淨值' : ''
+                                            type: isNetWorth ? '淨值' : ''
                                     };
                                 });
                                 mapData.reverse();
@@ -3462,7 +3463,7 @@
                             name: text,
                             data: mapData,
                             legendSymbol: 'rectangle',
-                            color: obj.trend == "netWorth" ? '#A4844E' : '#238C6C',
+                            color: isNetWorth ? '#A4844E' : '#238C6C',
                             turboThreshold: 0,
                         }];
                         //淨值不需指標指數
@@ -3482,7 +3483,74 @@
                                             enabled: false
                                         }
                                     },
-                                    height: 280
+                                    height: 400,
+                                    events: {
+                                    // 抓出淨值最高最低的資料
+                                    load: function () {
+                                        var chart = this,
+                                            allPoints = chart.series[0].points,
+                                            maxValue,
+                                            maxPoint,
+                                            minValue,
+                                            minPoint;
+
+                                        allPoints.filter(function (point) {
+                                            if (!maxValue || maxValue < point.y) {
+                                                maxValue = point.y;
+                                                maxPoint = point;
+                                            }
+                                            if (!minValue || minValue > point.y) {
+                                                minValue = point.y;
+                                                minPoint = point;
+                                            }
+                                        });
+
+                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
+                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+
+                                        setTimeout(function () {
+                                            if (maxPoint) {
+                                                maxPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: maxPointMoreThanHalf ? -45 : 45,
+                                                        y: -5,
+                                                        formatter: function () {
+                                                            var label = maxPointMoreThanHalf ? `最高 ${this.point.y}${isNetWorth ? '' : '%'} →` : `← 最高 ${this.point.y}${isNetWorth ? '' : '%'} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }, 300);
+                                        setTimeout(function () {
+                                            if (minPoint) {
+                                                minPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: minPointMoreThanHalf ? -45 : 45,
+                                                        formatter: function () {
+                                                            var label = minPointMoreThanHalf ? `最低 ${this.point.y}${isNetWorth ? '' : '%'} →` : `← 最低 ${this.point.y}${isNetWorth ? '' : '%'} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }, 300);
+                                    }
+                                },
                                 },
                                 credits: {
                                     enabled: false
@@ -3602,7 +3670,7 @@
                                     labels: {
                                         y: 4,
                                         formatter: function (value) {
-                                            let percentage = obj.trend == "netWorth" ? '' : '%';
+                                        let percentage = isNetWorth ? '' : '%';
                                             return value.value + percentage;
                                         },
                                         style: {
