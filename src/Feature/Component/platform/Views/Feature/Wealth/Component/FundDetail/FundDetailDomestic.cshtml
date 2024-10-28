@@ -2700,12 +2700,12 @@
                     });
                     for (let i = 0; i < yearData.length; i++) {
                         dividendTableHtml += `<tr>
-                                                       <td>${emptyValueToDash(yearData[i].BaseDate)}</td>
-                                                       <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
-                                                       <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
-                                                       <td>配息</td>
-                                                       <td>${yearData[i].Dividend}</td>
-                                                             </tr>`
+                                                           <td>${emptyValueToDash(yearData[i].BaseDate)}</td>
+                                                           <td>${emptyValueToDash(yearData[i].ExDividendDate)}</td>
+                                                           <td>${emptyValueToDash(yearData[i].ReleaseDate)}</td>
+                                                           <td>配息</td>
+                                                           <td>${yearData[i].Dividend}</td>
+                                                                 </tr>`
                     }
                     $('#dividendTable').html(dividendTableHtml);
 
@@ -3349,6 +3349,7 @@
                             data: indexParams
                         }));
                     }
+                    let isNetWorth = obj.trend == "netWorth";
                     Promise.all(p).then(values => {
                         $.each(values, function (index, value) {
                             let data = value;
@@ -3360,7 +3361,7 @@
                                             upDown: Number(item.v2) < 0 ? 'down' : 'up',
                                             name: item.v1.replaceAll('/', '-'),
                                             y: roundToTwo(item.v2),
-                                            type: obj.trend == "netWorth" ? '淨值' : ''
+                                            type: isNetWorth ? '淨值' : ''
                                         };
                                     });
                                     mapData.reverse();
@@ -3383,7 +3384,7 @@
                             name: text,
                             data: mapData,
                             legendSymbol: 'rectangle',
-                            color: obj.trend == "netWorth" ? '#A4844E' : '#238C6C',
+                            color: isNetWorth ? '#A4844E' : '#238C6C',
                             turboThreshold: 0,
                         }];
                         //淨值不需指標指數
@@ -3403,7 +3404,74 @@
                                         enabled: false
                                     }
                                 },
-                                height: 280
+                                height: 400,
+                                events: {
+                                    // 抓出淨值最高最低的資料
+                                    load: function () {
+                                        var chart = this,
+                                            allPoints = chart.series[0].points,
+                                            maxValue,
+                                            maxPoint,
+                                            minValue,
+                                            minPoint;
+
+                                        allPoints.filter(function (point) {
+                                            if (!maxValue || maxValue < point.y) {
+                                                maxValue = point.y;
+                                                maxPoint = point;
+                                            }
+                                            if (!minValue || minValue > point.y) {
+                                                minValue = point.y;
+                                                minPoint = point;
+                                            }
+                                        });
+
+                                        var maxPointMoreThanHalf = allPoints.indexOf(maxPoint) > allPoints.length / 2;
+                                        var minPointMoreThanHalf = allPoints.indexOf(minPoint) > allPoints.length / 2;
+
+                                        setTimeout(function () {
+                                            if (maxPoint) {
+                                                maxPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: maxPointMoreThanHalf ? -45 : 45,
+                                                        y: -5,
+                                                        formatter: function () {
+                                                            var label = maxPointMoreThanHalf ? `最高 ${this.point.y}${isNetWorth ? '' : '%'} →` : `← 最高 ${this.point.y}${isNetWorth ? '' : '%'} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }, 300);
+                                        setTimeout(function () {
+                                            if (minPoint) {
+                                                minPoint.update({
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        verticalAlign: 'middle',
+                                                        x: minPointMoreThanHalf ? -45 : 45,
+                                                        formatter: function () {
+                                                            var label = minPointMoreThanHalf ? `最低 ${this.point.y}${isNetWorth ? '' : '%'} →` : `← 最低 ${this.point.y}${isNetWorth ? '' : '%'} `;
+                                                            return label;
+                                                        },
+                                                        style: {
+                                                            fontSize: 14,
+                                                            fontWeight: 'normal',
+                                                            textOutline: 'none'
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }, 300);
+                                    }
+                                },
                             },
                             credits: {
                                 enabled: false
@@ -3523,7 +3591,7 @@
                                 labels: {
                                     y: 4,
                                     formatter: function (value) {
-                                        let percentage = obj.trend == "netWorth" ? '' : '%';
+                                        let percentage = isNetWorth ? '' : '%';
                                         return value.value + percentage;
                                     },
                                     style: {
@@ -4143,49 +4211,49 @@
                                 if (i === 0 || i === 6) {
                                     let hiddenHeadClass = i === 6 ? "u-hidden@lt" : "";
                                     tbHtml += `<div class="l-flex__item">
-                                                                    <div class="l-table">
-                                                                        <table class="c-table u-center">
-                                                                            <colgroup>
-                                                                                <col style="width: 33.33%;">
-                                                                                <col style="width: 33.33%;">
-                                                                                <col style="width: 33.33%;">
-                                                                            </colgroup>
-                                                                            <thead class="${hiddenHeadClass}">
-                                                                                <tr>
-                                                                                    <th>
-                                                                                        <div class="c-table__title">
-                                                                                            <span>規模日期</span>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th>
-                                                                                        <div class="c-table__title">
-                                                                                            <span>規模(百萬)</span>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th>
-                                                                                        <div class="c-table__title">
-                                                                                            <span>幣別</span>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>`;
+                                                                        <div class="l-table">
+                                                                            <table class="c-table u-center">
+                                                                                <colgroup>
+                                                                                    <col style="width: 33.33%;">
+                                                                                    <col style="width: 33.33%;">
+                                                                                    <col style="width: 33.33%;">
+                                                                                </colgroup>
+                                                                                <thead class="${hiddenHeadClass}">
+                                                                                    <tr>
+                                                                                        <th>
+                                                                                            <div class="c-table__title">
+                                                                                                <span>規模日期</span>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th>
+                                                                                            <div class="c-table__title">
+                                                                                                <span>規模(百萬)</span>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th>
+                                                                                            <div class="c-table__title">
+                                                                                                <span>幣別</span>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>`;
                                 }
                                 tbHtml += ` <tr>
-                                                                      <td>
-                                                                           ${rangeData[i].ScaleDate}
-                                                                                    </td>
-                                                                                    <td>
-                                                                                         ${numberComma(Math.round(rangeData[i].Scale, 3))}
-                                                                                    </td>
-                                                                                    <td>
-                                                                                         ${rangeData[i].Currency}
-                                                                                    </td>
-                                                                                </tr>`;
+                                                                          <td>
+                                                                               ${rangeData[i].ScaleDate}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                             ${numberComma(Math.round(rangeData[i].Scale, 3))}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                             ${rangeData[i].Currency}
+                                                                                        </td>
+                                                                                    </tr>`;
                                 if (i === 5 || i === rangeData - 1) {
                                     tbHtml += `   </tbody>
-                                                                        </table>
-                                                                    </div> </div>`;
+                                                                            </table>
+                                                                        </div> </div>`;
                                 }
 
 
