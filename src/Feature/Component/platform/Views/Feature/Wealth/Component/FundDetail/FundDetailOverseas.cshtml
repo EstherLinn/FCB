@@ -3413,10 +3413,21 @@
                         ...obj
                     };
                     let p = [];
-                     let mapData = [];
-                     let mapData2 = [];
-                      p.push( $.ajax({url: '@FundReturnAndNetValueApiUrl', method: 'post',data: params}));
-                      p.push( $.ajax({url: '@FundReferenceIndexApiUrl', method: 'post',data: indexParams}));
+                    let mapData = [];
+                    let mapData2 = [];
+                    p.push($.ajax({
+                        url: '@FundReturnAndNetValueApiUrl',
+                        method: 'post',
+                        data: params
+                    }));
+                    //淨值不需指標指數
+                    if (obj.trend !== "netWorth") {
+                        p.push($.ajax({
+                            url: '@FundReferenceIndexApiUrl',
+                            method: 'post',
+                            data: indexParams
+                        }));
+                    }
                        Promise.all(p).then(values => {
                         $.each( values, function( index, value ) {
                         let data = value;
@@ -3447,19 +3458,23 @@
                             }
                         }
                        });
-                            let series = [{
-                                name: text,
-                                data: mapData,
-                                legendSymbol: 'rectangle',
-                                color: obj.trend == "netWorth"  ? '#A4844E' : '#238C6C',
-                                turboThreshold: 0,
-                                }, {
+                           let series = [{
+                            name: text,
+                            data: mapData,
+                            legendSymbol: 'rectangle',
+                            color: obj.trend == "netWorth" ? '#A4844E' : '#238C6C',
+                            turboThreshold: 0,
+                        }];
+                        //淨值不需指標指數
+                        if (obj.trend !== "netWorth") {
+                            series.push({
                                 name: '@BasicData.IndicatorIndexName',
                                 data: mapData2,
                                 legendSymbol: 'rectangle',
                                 turboThreshold: 0,
                                 color: '#F58220'
-                            }];
+                            });
+                        }
                             chart = Highcharts.stockChart('trendChart', {
                                 chart: {
                                     zooming: {
