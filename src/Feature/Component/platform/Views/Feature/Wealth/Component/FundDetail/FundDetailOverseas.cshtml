@@ -3413,12 +3413,20 @@
                         ...obj
                     };
                     let p = [];
-                     let mapData = [];
-                     let mapData2 = [];
-                      p.push( $.ajax({url: '@FundReturnAndNetValueApiUrl', method: 'post',data: params}));
+                    let mapData = [];
+                    let mapData2 = [];
+                    p.push($.ajax({
+                        url: '@FundReturnAndNetValueApiUrl',
+                        method: 'post',
+                        data: params
+                    }));
                     //淨值不需指標指數
                     if (obj.trend !== "netWorth") {
-                        p.push($.ajax({ url: '@FundReferenceIndexApiUrl', method: 'post', data: indexParams }));
+                        p.push($.ajax({
+                            url: '@FundReferenceIndexApiUrl',
+                            method: 'post',
+                            data: indexParams
+                        }));
                     }
                        Promise.all(p).then(values => {
                         $.each( values, function( index, value ) {
