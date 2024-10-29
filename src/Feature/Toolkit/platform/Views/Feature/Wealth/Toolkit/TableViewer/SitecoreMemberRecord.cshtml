@@ -251,7 +251,11 @@
                     <option value="4">建立時間</option>
                     <option value="1">Id</option>
                     <option value="2">執行動作</option>
-                    <option value="3">使用者名稱</option>
+                    <option value="3">使用者Id</option>
+                    <option value="5">使用者姓名</option>
+                    <option value="6">單位名稱</option>
+                    <option value="7">角色</option>
+                    <option value="8">IP</option>
                 </select>
             </label>
             <label class="o-select select-2">
@@ -312,8 +316,12 @@
                             <select class="w3-select" style="width:98%;">
                                 <option value="1">Id</option>
                                 <option value="2">執行動作</option>
-                                <option value="3">使用者名稱</option>
+                                <option value="3">使用者Id</option>
                                 <option value="4">建立時間</option>
+                                <option value="5">使用者姓名</option>
+                                <option value="6">單位名稱</option>
+                                <option value="7">角色</option>
+                                <option value="8">IP</option>
                             </select>
                         </label>
                     </td>
@@ -406,8 +414,12 @@
                     <tr>
                         <th scope="col">Id</th>
                         <th scope="col">執行動作</th>
-                        <th scope="col">使用者名稱</th>
+                        <th scope="col">使用者Id</th>
                         <th scope="col">建立時間</th>
+                        <th scope="col">使用者姓名</th>
+                        <th scope="col">單位名稱</th>
+                        <th scope="col">角色</th>
+                        <th scope="col">IP</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -452,19 +464,19 @@
                             <th scope="col">DOMAIN_NAME</th>*@
                     </tr>
                     <tr>
-                        @*<td>AuthenticationHistory</td>
+                        @*<td>sitecore_Custom</td>
                             <td>dbo</td>
-                            <td>History</td>*@
+                            <td>AuthenticationHistory</td>*@
                         <td>Id</td>
                         <td>1</td>
                         <td>(newid())</td>
                         <td>NO</td>
-                        <td>uniqueidentifier</td>
+                        <td>bigint</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
+                        <td>19</td>
+                        <td>10</td>
+                        <td>0</td>
                         <td>&nbsp;</td>
                         @*<td>&nbsp;</td>
                             <td>&nbsp;</td>
@@ -477,16 +489,16 @@
                             <td>&nbsp;</td>*@
                     </tr>
                     <tr>
-                        @*<td>AuthenticationHistory</td>
+                        @*<td>sitecore_Custom</td>
                             <td>dbo</td>
-                            <td>History</td>*@
+                            <td>AuthenticationHistory</td>*@
                         <td>Action</td>
                         <td>2</td>
                         <td>&nbsp;</td>
                         <td>NO</td>
                         <td>varchar</td>
-                        <td>50</td>
-                        <td>50</td>
+                        <td>15</td>
+                        <td>15</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -502,16 +514,16 @@
                             <td>&nbsp;</td>*@
                     </tr>
                     <tr>
-                        @*<td>AuthenticationHistory</td>
+                        @*<td>sitecore_Custom</td>
                             <td>dbo</td>
-                            <td>History</td>*@
+                            <td>AuthenticationHistory</td>*@
                         <td>UserName</td>
                         <td>3</td>
                         <td>&nbsp;</td>
                         <td>NO</td>
-                        <td>nvarchar</td>
-                        <td>250</td>
-                        <td>500</td>
+                        <td>varchar</td>
+                        <td>100</td>
+                        <td>100</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>
@@ -527,12 +539,12 @@
                             <td>&nbsp;</td>*@
                     </tr>
                     <tr>
-                        @*<td>AuthenticationHistory</td>
+                        @*<td>sitecore_Custom</td>
                             <td>dbo</td>
-                            <td>History</td>*@
+                            <td>AuthenticationHistory</td>*@
                         <td>Created</td>
                         <td>4</td>
-                        <td>&nbsp;</td>
+                        <td>(getdate())</td>
                         <td>NO</td>
                         <td>datetime</td>
                         <td>&nbsp;</td>
@@ -547,6 +559,106 @@
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>sitecore_Custom</td>
+                            <td>dbo</td>
+                            <td>AuthenticationHistory</td>*@
+                        <td>FullName</td>
+                        <td>5</td>
+                        <td>&nbsp;</td>
+                        <td>YES</td>
+                        <td>nvarchar</td>
+                        <td>50</td>
+                        <td>100</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>cp950</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>sitecore_Custom</td>
+                            <td>dbo</td>
+                            <td>AuthenticationHistory</td>*@
+                        <td>DepartmentName</td>
+                        <td>6</td>
+                        <td>&nbsp;</td>
+                        <td>YES</td>
+                        <td>nvarchar</td>
+                        <td>60</td>
+                        <td>120</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>sitecore_Custom</td>
+                            <td>dbo</td>
+                            <td>AuthenticationHistory</td>*@
+                        <td>Roles</td>
+                        <td>8</td>
+                        <td>&nbsp;</td>
+                        <td>YES</td>
+                        <td>varchar</td>
+                        <td>255</td>
+                        <td>255</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>UNICODE</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>*@
+                    </tr>
+                    <tr>
+                        @*<td>sitecore_Custom</td>
+                            <td>dbo</td>
+                            <td>AuthenticationHistory</td>*@
+                        <td>IP</td>
+                        <td>8</td>
+                        <td>&nbsp;</td>
+                        <td>YES</td>
+                        <td>varchar</td>
+                        <td>39</td>
+                        <td>39</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        @*<td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>UNICODE</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>Chinese_Taiwan_Stroke_CI_AS</td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>*@
