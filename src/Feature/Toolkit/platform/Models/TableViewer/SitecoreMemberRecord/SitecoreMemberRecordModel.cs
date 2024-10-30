@@ -320,15 +320,15 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer.SitecoreMemberRecord
                     continue;
                 }
 
-                string fieldTxetValue;
+                string fieldTxetValue = string.Empty;
                 if (!string.IsNullOrEmpty(rules[i][3]))
                 {
                     fieldTxetValue = rules[i][3];
                 }
-                else
-                {
-                    continue;
-                }
+                //else
+                //{
+                //    continue;
+                //}
 
                 string ddlComparisonOperator = string.Empty;
                 if (int.TryParse(rules[i][2], out int k))
