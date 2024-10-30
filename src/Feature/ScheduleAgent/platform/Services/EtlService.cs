@@ -211,7 +211,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 this._logger.Info(fileName + " 完成補檔執行");
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
-                _repository.LogChangeHistory(fileName, $"{fileName}排程完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done);
+                _repository.LogChangeHistory(fileName, $"{fileName}排程補檔完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done);
             }
             //帶日期的檔案改名加_done
             else if(fileName.Contains("1000"))

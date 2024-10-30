@@ -48,7 +48,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 }
 
                 bool hasFailure = results.Any(i => i.Success == "N");
-                var mailServerOption = new MailServerOption(settings);
+                var mailServerOption = new ScheduleMailServerOption(settings);
                 string mailBody = BuildMailBody(results, mailServerOption, hasFailure);
 
                 if (string.IsNullOrEmpty(mailBody))
@@ -65,7 +65,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
         }
 
-        private string BuildMailBody(IList<ChangeHistory> results, MailServerOption mailServerOption, bool hasFailure)
+        private string BuildMailBody(IList<ChangeHistory> results, ScheduleMailServerOption mailServerOption, bool hasFailure)
         {
             var modificationLines = results
                 .Where(i => i.Success == "Y" && (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102))
@@ -103,7 +103,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             return mailBody.ToString();
         }
 
-        private void SendEmail(string mailBody, MailServerOption mailServerOption, bool hasFailure)
+        private void SendEmail(string mailBody, ScheduleMailServerOption mailServerOption, bool hasFailure)
         {
             using (var client = mailServerOption.ToSMTPClient())
             {
