@@ -39,5 +39,9 @@ namespace Feature.Wealth.ScheduleAgent.Models.Mail
         /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// 理財視訊通知是否開啟
+        /// </summary>
+        public bool VideoInfoOpen { get; set; }
     }
 }
