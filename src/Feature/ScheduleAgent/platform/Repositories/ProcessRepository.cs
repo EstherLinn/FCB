@@ -231,7 +231,6 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 將資料直接插入最新的資料表中
         /// </summary>
-
         public void BulkInsertDirectToDatabase<T>(IEnumerable<T> data, string tableName, string filePath, DateTime startTime)
         {
             var properties = typeof(T).GetProperties();
@@ -499,13 +498,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
         }
 
-
-
-
         ///<summary>
         ///改變紅綠燈狀態
         ///</summary>
-
         public void TurnTrafficLight(NameofTrafficLight name, TrafficLightStatus status)
         {
             // 先偵測總開關有沒有開

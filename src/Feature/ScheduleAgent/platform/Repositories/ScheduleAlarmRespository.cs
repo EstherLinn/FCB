@@ -16,6 +16,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
     public class ScheduleAlarmRespository
     {
         private readonly ILoggerService _logger;
+        private readonly string _200done = ((int)ModificationID.Done).ToString();
+        private readonly string _102 = ((int)ModificationID.OdbcDone).ToString();
+        private readonly string _100 = ((int)ModificationID.最新資料).ToString();
+        private readonly string _101 = ((int)ModificationID.資料差異更新).ToString();
+
         public ScheduleAlarmRespository(ILoggerService logger)
         {
             this._logger = logger;
@@ -38,102 +43,104 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             {
                 if (results == null || !results.Any())
                 {
-                    _logger.Info("無");
+                    _logger.Info("資料庫查無資訊");
                     return;
                 }
 
                 bool hasFailure = results.Any(i => i.Success == "N");
                 var mailServerOption = new MailServerOption(settings);
+                string mailBody = BuildMailBody(results, mailServerOption, hasFailure);
 
-                string mailBody;
-
-                var modificationLines = results
-                .Where(i => i.Success == "Y" && (i.ModificationID == "100" || i.ModificationID == "101"))
-                .GroupBy(i => Path.GetFileNameWithoutExtension(i.FileName))
-                .ToDictionary(g => g.Key, g => g.ToList());
-
-                if (hasFailure)
+                if (string.IsNullOrEmpty(mailBody))
                 {
-                    var failData = results.Where(i => i.Success == "N").ToList();
-                    var failDataTable = ConvertToDataTable(failData);
-
-                    var filteredSuccessData = GetSuccessData(results, modificationLines);
-                    var successDataTable = ConvertToDataTable(filteredSuccessData);
-
-                    mailBody = BuildHtmlBody(failDataTable, mailServerOption.FailedTitle, failData.Count);
-
-                    if (filteredSuccessData != null && filteredSuccessData.Count > 0)
-                    {
-                        mailBody += BuildHtmlBody(successDataTable, mailServerOption.SuccessTitle, filteredSuccessData.Count);
-                    }
-                }
-                else
-                {
-                    var successData = GetSuccessData(results, modificationLines);
-                    var successDataTable = ConvertToDataTable(successData);
-                    mailBody = BuildHtmlBody(successDataTable, mailServerOption.SuccessTitle, successData.Count);
+                    _logger.Info("沒資料");
+                    return;
                 }
 
-                var runningTasks = results
-                     .Where(i => i.Success == "Y" && i.ModificationID != "200"
-                                 && !results.Any(s => Path.GetFileNameWithoutExtension(s.FileName) == Path.GetFileNameWithoutExtension(i.FileName) && s.ModificationID == "200"))
-                     .ToList();
-
-
-                if (runningTasks.Count > 0)
-                {
-                    var tasksDataTable = ConvertToDataTable(runningTasks);
-                    mailBody += BuildHtmlBody(tasksDataTable, "未完成的排程(尚在執行中)", runningTasks.Count);
-                }
-
-                using (var client = mailServerOption.ToSMTPClient())
-                {
-                    var encoding = Encoding.UTF8;
-                    using (var mail = new MailMessage())
-                    {
-                        mail.From = new MailAddress(mailServerOption.From, string.IsNullOrEmpty(mailServerOption.UserName) ? "第e理財網" : mailServerOption.UserName);
-                        mail.Subject = hasFailure ? mailServerOption.FailedSubject : mailServerOption.SuccessSubject;
-                        mail.IsBodyHtml = true;
-                        if (hasFailure)
-                        {
-                            mail.Body = mailBody + mailServerOption.FailedContent;
-                        }
-                        else
-                        {
-                            mail.Body = mailBody + mailServerOption.SuccessContent;
-                        }
-                        mail.HeadersEncoding = encoding;
-                        mail.BodyEncoding = encoding;
-                        mail.SubjectEncoding = encoding;
-                        var mailTo = hasFailure ? mailServerOption.FailedTo : mailServerOption.SuccessTo;
-
-                        try
-                        {
-                            mail.To.Add(mailTo);
-                            client.Send(mail);
-                            _logger.Info("郵件發送成功！");
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Error("郵件發送失敗: " + ex.Message);
-                        }
-                    }
-                }
+                SendEmail(mailBody, mailServerOption, hasFailure);
             }
             catch (Exception ex)
             {
                 _logger.Error("發送郵件Error: " + ex.Message);
             }
         }
+
+        private string BuildMailBody(IList<ChangeHistory> results, MailServerOption mailServerOption, bool hasFailure)
+        {
+            var modificationLines = results
+                .Where(i => i.Success == "Y" && (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102))
+                .GroupBy(i => Path.GetFileNameWithoutExtension(i.FileName))
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            var successData = GetSuccessData(results, modificationLines);
+            var successDataTable = ConvertToDataTable(successData);
+
+            var runningTasks = results
+                .Where(i => i.Success == "Y" && i.ModificationID != this._200done
+                            && !results.Any(s => Path.GetFileNameWithoutExtension(s.FileName) == Path.GetFileNameWithoutExtension(i.FileName)
+                            && (s.ModificationID == this._200done))).ToList();
+
+            var mailBody = new StringBuilder();
+
+            if (hasFailure)
+            {
+                var failData = results.Where(i => i.Success == "N").ToList();
+                var failDataTable = ConvertToDataTable(failData);
+                mailBody.Append(BuildHtmlBody(failDataTable, mailServerOption.FailedTitle, failData.Count));
+            }
+
+            if (successData != null && successData.Count > 0)
+            {
+                mailBody.Append(BuildHtmlBody(successDataTable, mailServerOption.SuccessTitle, successData.Count));
+            }
+
+            if (runningTasks.Count > 0)
+            {
+                var tasksDataTable = ConvertToDataTable(runningTasks);
+                mailBody.Append(BuildHtmlBody(tasksDataTable, "未完成的排程(尚在執行中)", runningTasks.Count));
+            }
+
+            return mailBody.ToString();
+        }
+
+        private void SendEmail(string mailBody, MailServerOption mailServerOption, bool hasFailure)
+        {
+            using (var client = mailServerOption.ToSMTPClient())
+            {
+                var encoding = Encoding.UTF8;
+                using (var mail = new MailMessage())
+                {
+                    mail.From = new MailAddress(mailServerOption.From, string.IsNullOrEmpty(mailServerOption.UserName) ? "第e理財網" : mailServerOption.UserName);
+                    mail.Subject = hasFailure ? mailServerOption.FailedSubject : mailServerOption.SuccessSubject;
+                    mail.IsBodyHtml = true;
+                    mail.Body = mailBody + (hasFailure ? mailServerOption.FailedContent : mailServerOption.SuccessContent);
+                    mail.HeadersEncoding = encoding;
+                    mail.BodyEncoding = encoding;
+                    mail.SubjectEncoding = encoding;
+                    mail.To.Add(hasFailure ? mailServerOption.FailedTo : mailServerOption.SuccessTo);
+
+                    try
+                    {
+                        client.Send(mail);
+                        _logger.Info("郵件發送成功！");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error("郵件發送失敗: " + ex.Message);
+                    }
+                }
+            }
+        }
+
         private List<ChangeHistory> GetSuccessData(IList<ChangeHistory> results, Dictionary<string, List<ChangeHistory>> modificationLines)
         {
-            var successData = results.Where(i => i.Success == "Y" && i.ModificationID == "200").ToList();
+            var successData = results.Where(i => i.Success == "Y" && i.ModificationID == this._200done).ToList();
 
             var filteredSuccessData = new List<ChangeHistory>();
 
             var dataTableMapping = new Dictionary<string, List<string>>();
 
-            foreach (var record in results.Where(i => i.Success == "Y" && (i.ModificationID == "100" || i.ModificationID == "101")))
+            foreach (var record in results.Where(i => i.Success == "Y" && (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)))
             {
                 var childKey = Path.GetFileNameWithoutExtension(record.FileName);
                 if (!dataTableMapping.ContainsKey(childKey))
@@ -155,9 +162,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 var modificationLine = modificationLines
                     .Where(line => line.Key == childKey)
                     .SelectMany(line => line.Value)
-                    .FirstOrDefault(i => i.ModificationID == "100" || i.ModificationID == "101")?.ModificationLine;
+                    .FirstOrDefault(i => i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)?.ModificationLine;
 
-                if (modificationLine.HasValue && modificationLine.Value != 0)
+                if (modificationLine.HasValue)
                 {
                     record.ModificationLine = modificationLine.Value;
                     filteredSuccessData.Add(record);
