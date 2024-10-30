@@ -20,6 +20,8 @@ namespace Feature.Wealth.Component.Models.Consult
         public string EmployeeName { get; set; }
         public string CustomerID { get; set; }
         public string CustomerName { get; set; }
+        public string Phone { get; set; }
+        public string Mail { get; set; }
         public string PersonalInformationText { get; set; }
         public string PersonalInformationLink { get; set; }
         public List<string> SubjectList { get; set; } = new List<string>();
@@ -314,6 +316,18 @@ namespace Feature.Wealth.Component.Models.Consult
         /// </summary>
         public string CIF_ID { get; set; }
         public string CustomerName { get; set; }
+        /// <summary>
+        /// Email
+        /// </summary>
+        public string CIF_E_MAIL_ADDRESS { get; set; }
+        /// <summary>
+        /// 住家電話
+        /// </summary>
+        public string CIF_TEL_NO1 { get; set; }
+        /// <summary>
+        /// 行動電話
+        /// </summary>
+        public string CIF_TEL_NO3 { get; set; }
         public string WebBankId { get; set; }
         public string BranchName { get; set; }
     }

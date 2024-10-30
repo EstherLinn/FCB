@@ -328,6 +328,8 @@ namespace Feature.Wealth.Component.Controllers
                 EmployeeName = info.Advisror,
                 CustomerID = info.WebBankId,
                 CustomerName = info.MemberName,
+                Phone = string.IsNullOrEmpty(info.Phone3) ? info.Phone1 : info.Phone3,
+                Mail = info.MemberEmail,
                 PersonalInformationText = ItemUtils.GetFieldValue(item, Template.ConsultSchedule.Fields.PersonalInformationText),
                 PersonalInformationLink = ItemUtils.GeneralLink(item, Template.ConsultSchedule.Fields.PersonalInformationLink).Url,
                 NeedEmployeeCode = ConsultRelatedLinkSetting.GetNeedEmployeeIPCheck() ? CheckIP() : true,

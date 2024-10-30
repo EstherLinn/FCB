@@ -21,6 +21,14 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// </summary>
         public string CIF_E_MAIL_ADDRESS { get; set; }
         /// <summary>
+        /// 住家電話
+        /// </summary>
+        public string CIF_TEL_NO1 { get; set; }
+        /// <summary>
+        /// 行動電話
+        /// </summary>
+        public string CIF_TEL_NO3 { get; set; }
+        /// <summary>
         /// 生日
         /// </summary>
         public DateTime? CIF_ESTABL_BIRTH_DATE { get; set; }

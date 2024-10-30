@@ -250,6 +250,8 @@ namespace Feature.Wealth.Account.Repositories
                             A.CIF_CUST_NAME,
                             A.CIF_CUST_ATTR,
                             A.CIF_E_MAIL_ADDRESS,
+                            A.CIF_TEL_NO1,
+                            A.CIF_TEL_NO3,
                             A.CIF_ESTABL_BIRTH_DATE,
                             A.CIF_SAL_FLAG,
                             SUBSTRING(A.CIF_EMP_RISK,1,1) AS CIF_EMP_RISK,
@@ -323,6 +325,8 @@ namespace Feature.Wealth.Account.Repositories
                             A.CIF_CUST_NAME,
                             A.CIF_CUST_ATTR,
                             A.CIF_E_MAIL_ADDRESS,
+                            A.CIF_TEL_NO1,
+                            A.CIF_TEL_NO3,
                             A.CIF_ESTABL_BIRTH_DATE,
                             A.CIF_SAL_FLAG,
                             SUBSTRING(A.CIF_EMP_RISK,1,1) AS CIF_EMP_RISK,
@@ -408,7 +412,10 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_KYC_EXPIR_DATE,
                             B.CIF_EMP_PI_RISK_ATTR,
                             B.CIF_HIGH_ASSET_FLAG,
-                            B.CIF_HIGH_ASSET_VAL_DATE
+                            B.CIF_HIGH_ASSET_VAL_DATE,
+                            B.CIF_E_MAIL_ADDRESS AS MemberEmail,
+                            B.CIF_TEL_NO1 AS Phone1,
+                            B.CIF_TEL_NO3 AS Phone3
                             FROM [FCB_Member]  AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
@@ -481,7 +488,10 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_KYC_EXPIR_DATE,
                             B.CIF_EMP_PI_RISK_ATTR,
                             B.CIF_HIGH_ASSET_FLAG,
-                            B.CIF_HIGH_ASSET_VAL_DATE
+                            B.CIF_HIGH_ASSET_VAL_DATE,
+                            B.CIF_E_MAIL_ADDRESS AS MemberEmail,
+                            B.CIF_TEL_NO1 AS Phone1,
+                            B.CIF_TEL_NO3 AS Phone3
                             FROM [FCB_Member] AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
@@ -544,7 +554,10 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_KYC_EXPIR_DATE,
                             B.CIF_EMP_PI_RISK_ATTR,
                             B.CIF_HIGH_ASSET_FLAG,
-                            B.CIF_HIGH_ASSET_VAL_DATE
+                            B.CIF_HIGH_ASSET_VAL_DATE,
+                            B.CIF_E_MAIL_ADDRESS AS MemberEmail,
+                            B.CIF_TEL_NO1 AS Phone1,
+                            B.CIF_TEL_NO3 AS Phone3
                             FROM [FCB_Member] AS A WITH (NOLOCK)
                             LEFT JOIN {CIF} AS B WITH (NOLOCK) ON B.CIF_ID = (SELECT TOP 1 CUST_ID FROM CFMBSEL WHERE PROMOTION_CODE COLLATE Latin1_General_CS_AS = A.WebBankId)
                             LEFT JOIN {HRIS} AS C WITH (NOLOCK) ON RIGHT(REPLICATE('0', 8) + CAST(B.[CIF_AO_EMPNO] AS VARCHAR(8)),8) = C.EmployeeCode
