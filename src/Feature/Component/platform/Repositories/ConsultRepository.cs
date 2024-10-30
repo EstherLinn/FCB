@@ -375,6 +375,9 @@ namespace Feature.Wealth.Component.Repositories
             string sql = $@"SELECT DISTINCT
                             A.CIF_ID AS CIF_ID,
                             A.CIF_CUST_NAME AS CustomerName,
+                            A.CIF_E_MAIL_ADDRESS,
+                            A.CIF_TEL_NO1,
+                            A.CIF_TEL_NO3,
                             C.WebBankId AS WebBankId,
                             D.OfficeOrBranchName AS BranchName
                             FROM {CIF} AS A WITH (NOLOCK)

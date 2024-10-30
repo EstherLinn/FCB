@@ -18,6 +18,14 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// </summary>
         public string MemberEmail { get; set; }
         /// <summary>
+        /// 住家電話
+        /// </summary>
+        public string Phone1 { get; set; }
+        /// <summary>
+        /// 行動電話
+        /// </summary>
+        public string Phone3 { get; set; }
+        /// <summary>
         /// 生日 from cif
         /// </summary>
         public DateTime? Birthday { get; set; }
@@ -129,6 +137,7 @@ namespace Feature.Wealth.Account.Models.OAuth
             bool arrivedInfoOpen, QuoteChangeEunm stockShowColor, PlatFormEunm platForm,
             string platFormId, DateTime? birthday, string gender, string salFlag, string mainBranchCode,
             string kycData, string piRisk, string highAssetFlag, string highAssetDate,
+            string phone1, string phone3,
             bool isEmployee = false, bool isManager = false, bool isKycExpire = false)
         {
             this.WebBankId = webBankId;
@@ -153,6 +162,8 @@ namespace Feature.Wealth.Account.Models.OAuth
             this.CIF_EMP_PI_RISK_ATTR = piRisk;
             this.CIF_HIGH_ASSET_FLAG = highAssetFlag;
             this.CIF_HIGH_ASSET_VAL_DATE = highAssetDate;
+            this.Phone1 = phone1;
+            this.Phone3 = phone3;
         }
 
     }
