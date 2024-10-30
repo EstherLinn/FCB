@@ -504,7 +504,7 @@
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
                                                     <div class="l-riskCard__actions">
-                                                        <a href="@WebKycLink" target="_blank" rel="noopener noreferrer" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GoKYC">進行風險屬性評估</a>
+                                                        <a href="#" rel="noopener noreferrer" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GOKYC">進行風險屬性評估</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -689,7 +689,7 @@
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
                                                     <div class="l-riskCard__actions">
-                                                        <a href="@WebKycLink" target="_blank" rel="noopener noreferrer" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GoKYC">進行風險屬性評估</a>
+                                                        <a href="#" rel="noopener noreferrer" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GOKYC">進行風險屬性評估</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -875,7 +875,7 @@
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
                                                     <div class="l-riskCard__actions">
-                                                        <a href="@WebKycLink" target="_blank" rel="noopener noreferrer" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GoKYC">進行風險屬性評估</a>
+                                                        <a href="#" rel="noopener noreferrer" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GOKYC">進行風險屬性評估</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1061,7 +1061,7 @@
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
                                                     <div class="l-riskCard__actions">
-                                                        <a href="@WebKycLink" target="_blank" rel="noopener noreferrer" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GoKYC">進行風險屬性評估</a>
+                                                        <a href="#" rel="noopener noreferrer" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GOKYC">進行風險屬性評估</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1249,7 +1249,7 @@
                                                 <div class="l-riskCard__content">
                                                     <div class="l-riskCard__desc">已自動帶入您的風險屬性，如果想要變更請自行前往變更！如您已變更完成，請重新更新頁面</div>
                                                     <div class="l-riskCard__actions">
-                                                        <a href="@WebKycLink" target="_blank" rel="noopener noreferrer" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GoKYC">進行風險屬性評估</a>
+                                                        <a href="#" rel="noopener noreferrer" class="o-btn o-btn--secondary o-btn--thin o-btn--auto GOKYC">進行風險屬性評估</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1484,7 +1484,7 @@
                     <div class="c-calcLocker__desc ">您尚未完成風險評估，可至網銀進行風險屬性評估</div>
                     <div class="c-calcLocker__actions">
                         <div class="c-calcLocker__btn">
-                            <button type="button" id="GOKYC1" class="o-btn o-btn--primary o-btn--lg">風險屬性評估</button>
+                            <button type="button" class="o-btn o-btn--primary o-btn--lg GOKYC1">風險屬性評估</button>
                         </div>
                     </div>
                 </div>
@@ -2223,9 +2223,17 @@
             //#endregion
 
             //#region 連結風險屬性驗測網站綁定事件
-            $(document).on('click', '#GOKYC1, #GOKYC2', function (event) {
+            ///我的風險屬性
+            $(document).on('click', '.GOKYC', function (event) {
                 event.preventDefault();
-                var webKycLink = '@WebKycLink';
+                const webKycLink = getKycLink();
+
+                window.open(webKycLink, '_blank');
+            });
+            ///風險屬性遮罩
+            $(document).on('click', '.GOKYC1', function (event) {
+                event.preventDefault();
+                const webKycLink = getKycLink();
 
                 window.open(webKycLink, '_blank');
 
@@ -2241,19 +2249,21 @@
             });
             //#endregion
 
-            //#region 行動裝置判斷
-            if ($(window).width() < 1199) {
-                let MobilePlatform = store.get("MobilePlatform") || "firste";
-                let url;
-
-                if (MobilePlatform == "firste") {
-                    url = "@FirsteKycLink";
+            //#region 判斷使用裝置獲取KYC連結
+            function getKycLink() {
+                let webKycLink;
+                if ($(window).width() < 1199) {
+                    let MobilePlatform = store.get("MobilePlatform") || "firste";
+                    if (MobilePlatform == "firste") {
+                        webKycLink = "@FirsteKycLink";
+                    } else {
+                        webKycLink = "@IleoKycLink";
+                    }
+                    webKycLink = webKycLink.replaceAll('&amp;', '&');
                 } else {
-                    url = "@IleoKycLink";
+                    webKycLink = "@WebKycLink";
                 }
-
-                url.replaceAll('&amp;', '&');
-                $(".GoKYC").attr('href', url);
+                return webKycLink;
             }
             //#endregion
 
@@ -3525,7 +3535,7 @@
                                                                                             </div>
                                                                                             <div class="c-calcLocker__desc t2 t-bold">進行風險屬性評估後即可獲得專屬推薦</div>
                                                                                             <div class="c-calcLocker__actions">
-                                                                                                                <div class="c-calcLocker__btn"><a id="GOKYC2" href="#popupRisk" class="o-btn o-btn--primary o-btn--lg" data-popup="true">風險屬性評估</a></div>
+                                                                                                                <div class="c-calcLocker__btn"><a href="#popupRisk" class="o-btn o-btn--primary o-btn--lg GOKYC1" data-popup="true">風險屬性評估</a></div>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
