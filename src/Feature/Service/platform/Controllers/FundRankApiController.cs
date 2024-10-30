@@ -10,6 +10,7 @@ namespace Feature.Wealth.Service.Controllers
         private readonly FundRankApiRepository _fundRankApiRepository = new FundRankApiRepository();
 
         [HttpPost]
+        [OutputCache(Duration = 30, VaryByParam = "data")]
         public ActionResult GetFundRank(string data = "6")
         {
             var result = new ReturnFundSet
