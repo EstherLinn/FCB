@@ -2204,7 +2204,7 @@
 
             //#region 解鎖專屬推薦方法
             function unlockRecommendations(data) {
-                if (data.success && data.risk != undefined) {
+                if (data.success && data.risk != undefined && data.risk != "") {
                     SC_DATA.Risk = data.risk;
 
                     setTimeout(function (e) {
