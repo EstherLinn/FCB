@@ -265,7 +265,7 @@ namespace Feature.Wealth.Account.Controllers
                                 cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
                                 cifMember.CIF_MAIN_BRANCH, cifMember.CIF_KYC_EXPIR_DATE, cifMember.CIF_EMP_PI_RISK_ATTR,
                                 cifMember.CIF_HIGH_ASSET_FLAG, cifMember.CIF_HIGH_ASSET_VAL_DATE,
-                                cifMember.IsEmployee, cifMember.IsManager,cifMember.IsKycExpire);
+                                cifMember.IsEmployee, cifMember.IsManager, cifMember.IsKycExpire);
 
                             var createdSuccess = _memberRepository.CreateNewMember(member);
                             if (!createdSuccess)
@@ -368,7 +368,7 @@ namespace Feature.Wealth.Account.Controllers
                                 cifMember.CIF_ESTABL_BIRTH_DATE, cifMember.CIF_CUST_ATTR, cifMember.CIF_SAL_FLAG,
                                 cifMember.CIF_MAIN_BRANCH, cifMember.CIF_KYC_EXPIR_DATE, cifMember.CIF_EMP_PI_RISK_ATTR,
                                 cifMember.CIF_HIGH_ASSET_FLAG, cifMember.CIF_HIGH_ASSET_VAL_DATE,
-                                cifMember.IsEmployee, cifMember.IsManager,cifMember.IsKycExpire);
+                                cifMember.IsEmployee, cifMember.IsManager, cifMember.IsKycExpire);
 
                             var createdSuccess = _memberRepository.CreateNewMember(member);
                             if (!createdSuccess)
@@ -486,14 +486,7 @@ namespace Feature.Wealth.Account.Controllers
             Authentication.LogOutUser();
             if (FcbMemberHelper.CheckMemberLogin())
             {
-                MemberLog memberLog = new MemberLog()
-                {
-                    PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
-                    PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
-                    Action = ActionEnum.Logout.ToString(),
-                    ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
-                };
-                _memberRepository.RecordMemberActionLog(memberLog);
+                RecordUserAction(ActionEnum.Logout);
             }
             if (string.IsNullOrEmpty(callBackUrl))
             {
@@ -637,15 +630,7 @@ namespace Feature.Wealth.Account.Controllers
                 success = _memberRepository.SetMemberEmail(FcbMemberHelper.GetMemberPlatFormId(), email),
                 errorMessage = string.Empty
             };
-            MemberLog memberLog = new MemberLog()
-            {
-                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
-                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
-                Action = ActionEnum.Edit.ToString(),
-                Description = string.Format("修改Email: {0} > {1}", FcbMemberHelper.fcbMemberModel.MemberEmail, email),
-                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
-            };
-            _memberRepository.RecordMemberActionLog(memberLog);
+            RecordUserAction(ActionEnum.Edit, string.Format("修改Email: {0} > {1}", FcbMemberHelper.fcbMemberModel.MemberEmail, email));
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
@@ -666,15 +651,7 @@ namespace Feature.Wealth.Account.Controllers
             {
                 success = _memberRepository.SetVideoInfo(FcbMemberHelper.GetMemberPlatFormId(), open)
             };
-            MemberLog memberLog = new MemberLog()
-            {
-                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
-                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
-                Action = ActionEnum.Edit.ToString(),
-                Description = string.Format("理財視訊通知: {0} > {1}", FcbMemberHelper.fcbMemberModel.VideoInfoOpen, open),
-                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
-            };
-            _memberRepository.RecordMemberActionLog(memberLog);
+            RecordUserAction(ActionEnum.Edit, string.Format("理財視訊通知: {0} > {1}", FcbMemberHelper.fcbMemberModel.VideoInfoOpen, open));
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
@@ -695,15 +672,7 @@ namespace Feature.Wealth.Account.Controllers
             {
                 success = _memberRepository.SetArriedInfo(FcbMemberHelper.GetMemberPlatFormId(), open)
             };
-            MemberLog memberLog = new MemberLog()
-            {
-                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
-                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
-                Action = ActionEnum.Edit.ToString(),
-                Description = string.Format("到價通知: {0} > {1}", FcbMemberHelper.fcbMemberModel.ArrivedInfoOpen, open),
-                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
-            };
-            _memberRepository.RecordMemberActionLog(memberLog);
+            RecordUserAction(ActionEnum.Edit, string.Format("到價通知: {0} > {1}", FcbMemberHelper.fcbMemberModel.ArrivedInfoOpen, open));
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
@@ -724,15 +693,7 @@ namespace Feature.Wealth.Account.Controllers
             {
                 success = _memberRepository.SetQuoteChangeColor(FcbMemberHelper.GetMemberPlatFormId(), color)
             };
-            MemberLog memberLog = new MemberLog()
-            {
-                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
-                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
-                Action = ActionEnum.Edit.ToString(),
-                Description = string.Format("修改漲跌顏色: {0} > {1}", FcbMemberHelper.fcbMemberModel.StockShowColor.ToString(), color),
-                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
-            };
-            _memberRepository.RecordMemberActionLog(memberLog);
+            RecordUserAction(ActionEnum.Edit, string.Format("修改漲跌顏色: {0} > {1}", FcbMemberHelper.fcbMemberModel.StockShowColor.ToString(), color));
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
@@ -757,15 +718,7 @@ namespace Feature.Wealth.Account.Controllers
             {
                 success = _memberRepository.SetCommonFunctions(FcbMemberHelper.GetMemberPlatFormId(), commons)
             };
-            MemberLog memberLog = new MemberLog()
-            {
-                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
-                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
-                Action = ActionEnum.Edit.ToString(),
-                Description = string.Format("修改常用功能: {0}", string.Join(",", commons.ToArray())),
-                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
-            };
-            _memberRepository.RecordMemberActionLog(memberLog);
+            RecordUserAction(ActionEnum.Edit, string.Format("修改常用功能: {0}", string.Join(",", commons.ToArray())));
             RefreshMemberInfo();
             return new JsonNetResult(objReturn);
         }
@@ -785,14 +738,7 @@ namespace Feature.Wealth.Account.Controllers
             user.Profile.SetCustomProperty("MemberInfo", objToJson);
             user.Profile.Save();
             Authentication.LoginVirtualUser(user);
-            MemberLog memberLog = new MemberLog()
-            {
-                PlatForm = fcbMember.PlatForm.ToString(),
-                PlatFormId = fcbMember.PlatFormId,
-                Action = ActionEnum.Login.ToString(),
-                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
-            };
-            _memberRepository.RecordMemberActionLog(memberLog);
+            RecordUserAction(ActionEnum.Login);
         }
         /// <summary>
         /// 遮罩保留前後3碼
@@ -868,7 +814,63 @@ namespace Feature.Wealth.Account.Controllers
         [HttpPost]
         [MemberAuthenticationFilter]
         public ActionResult SetCommonTools(string itemId, bool isActive) => FcbMemberHelper.CheckMemberLogin() && _memberRepository.CheckCommonTools(itemId) ?
-            new JsonNetResult(_memberRepository.SetCommonTools(itemId, isActive)) :
+            new JsonNetResult(_memberRepository.SetCommonTools(itemId, isActive, GetClientIpAddressAndPort(), GetClientBrowserVersion())) :
             new JsonNetResult(new { Item1 = false });
+
+        /// <summary>
+        /// 取得client ip and port
+        /// </summary>
+        /// <returns>Tuple(string,string)</returns>
+        public (string, string) GetClientIpAddressAndPort()
+        {
+            // 從 X-Forwarded-For 獲取 IP
+            string clientIp = HttpContext.Request.Headers["X-Forwarded-For"]
+                    ?.Split(',').Select(ip => ip.Trim()).FirstOrDefault();
+
+            // 如果無取到X-Forwarded-For，則使用直接連接的 IP　REMOTE_ADDR
+            if (string.IsNullOrEmpty(clientIp))
+            {
+                clientIp = HttpContext.Request.UserHostAddress;
+            }
+            // 分割ip及port
+            var IpAndPortArray = clientIp.Split(':');
+            clientIp = IpAndPortArray[0];
+            string port = IpAndPortArray.Length > 1 ? IpAndPortArray[1] : string.Empty;
+
+            // 驗證ip有效
+            return System.Net.IPAddress.TryParse(clientIp, out var ipAddress) ? (ipAddress.ToString(), port) : (string.Empty, string.Empty);
+        }
+        /// <summary>
+        /// 取得client瀏覽器
+        /// </summary>
+        /// <returns></returns>
+        public string GetClientBrowserVersion()
+        {
+            //Edge 基於Chromium 開發，Request.Browser會取到chrome，因此多增加UserAgent判斷Edge
+            string userAgent = Request.UserAgent;
+            HttpBrowserCapabilitiesBase bc = Request.Browser;
+            return userAgent.Contains("Edg") ? "Edge " + bc.Version : bc.Browser + " " + bc.Version;
+        }
+        /// <summary>
+        /// 紀錄會員操作log
+        /// </summary>
+        /// <param name="actionEnum">ActionEnum</param>
+        /// <param name="description">操作詳細描述</param>
+        public void RecordUserAction(ActionEnum actionEnum, string description = "")
+        {
+            var ipAndPort = GetClientIpAddressAndPort();
+            MemberLog memberLog = new MemberLog()
+            {
+                PlatForm = FcbMemberHelper.fcbMemberModel.PlatForm.ToString(),
+                PlatFormId = FcbMemberHelper.fcbMemberModel.PlatFormId,
+                ClientIp = ipAndPort.Item1,
+                Port = ipAndPort.Item2,
+                Browser = GetClientBrowserVersion(),
+                Description = description == "" ? null : description,
+                Action = actionEnum.ToString(),
+                ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
+            };
+            _memberRepository.RecordMemberActionLog(memberLog);
+        }
     }
 }
