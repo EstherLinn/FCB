@@ -109,8 +109,12 @@ namespace Feature.Wealth.Toolkit.Repositories
                 var headerRow = sheet.GetRow(rowCounter);
                 headerRow.CreateCell(0).SetCellValue("Id");
                 headerRow.CreateCell(1).SetCellValue("執行動作");
-                headerRow.CreateCell(2).SetCellValue("使用者名稱");
+                headerRow.CreateCell(2).SetCellValue("使用者Id");
                 headerRow.CreateCell(3).SetCellValue("建立時間");
+                headerRow.CreateCell(4).SetCellValue("使用者姓名");
+                headerRow.CreateCell(5).SetCellValue("單位名稱");
+                headerRow.CreateCell(6).SetCellValue("角色");
+                headerRow.CreateCell(7).SetCellValue("IP");
 
                 // Excel 資料
                 List<AuthenticationHistory> historyData = objects.OfType<AuthenticationHistory>().ToList();
@@ -124,6 +128,10 @@ namespace Feature.Wealth.Toolkit.Repositories
                     currentRow.CreateCell(1).SetCellValue(historyRowData.Action);
                     currentRow.CreateCell(2).SetCellValue(historyRowData.UserName);
                     currentRow.CreateCell(3).SetCellValue(historyRowData.Created.ToString(DATETIMEFORMAT));
+                    currentRow.CreateCell(4).SetCellValue(historyRowData.FullName);
+                    currentRow.CreateCell(5).SetCellValue(historyRowData.DepartmentName);
+                    currentRow.CreateCell(6).SetCellValue(historyRowData.Roles);
+                    currentRow.CreateCell(7).SetCellValue(historyRowData.IP);
                 }
 
                 xssfworkbook.Write(excelDatas);
