@@ -4,6 +4,7 @@ using Sitecore.Security;
 using Sitecore.Security.Accounts;
 using Sitecore.Security.Domains;
 using Sitecore.SecurityModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -150,9 +151,11 @@ namespace Feature.Wealth.Account.SingleSignOn
                 foreach (var role in roles)
                 {
                     scUser.Roles.Add(role);
-                    scUser.Profile.Save();
                     roleName.Add(role.Name);
                 }
+
+                scUser.Profile.SetCustomProperty("Roles", string.Join(Environment.NewLine, roleName));
+                scUser.Profile.Save();
                 Sitecore.Diagnostics.Log.Info($"用戶 '{scUser.LocalName}' 已成功分配角色 '{string.Join(", ", roleName)}'.", this);
             }
             return (true, null);

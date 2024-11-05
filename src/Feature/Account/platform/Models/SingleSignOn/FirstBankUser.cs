@@ -112,6 +112,11 @@
         /// </summary>
         public string Supervisor { get; set; }
 
-        #endregion
+        /// <summary>
+        /// 角色
+        /// </summary>
+        public string Roles { get; set; }
+
+        #endregion === Custom Property ===
     }
 }

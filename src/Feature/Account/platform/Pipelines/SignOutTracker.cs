@@ -1,27 +1,28 @@
 ﻿using Feature.Wealth.Account.Models.SingleSignOn;
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
+using Sitecore;
 using Sitecore.Diagnostics;
-using Sitecore.Owin.Authentication.Pipelines.CookieAuthentication.SignOut;
+using Sitecore.Pipelines.Logout;
 using Sitecore.Security.Accounts;
 using System;
 using System.Data;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
-namespace Feature.Wealth.Account.Pipelines.Owin.CookieAuthentication.SignOut
+namespace Feature.Wealth.Account.Pipelines
 {
-    internal class LogoutTracker : SignOutProcessor
+    public class SignOutTracker
     {
-        public override void Process(SignOutArgs args)
+        public void Process(LogoutArgs args)
         {
-            Assert.ArgumentNotNull(args, "args");
-            var user = GetUser(args);
+            Assert.ArgumentNotNull(args, nameof(args));
 
+            var user = GetUser();
             var domain = DomainUtils.GetDomain(SsoDomain.fcb);
             FirstBankUserProfile firstBankUser = new FirstBankUserProfile();
 
             // Check if the domain is FCB
-            if (user.GetDomainName().Equals(domain?.Name, StringComparison.OrdinalIgnoreCase))
+            if (Context.User.Domain.Name.Equals(domain?.Name, StringComparison.OrdinalIgnoreCase))
             {
                 firstBankUser.Roles = user.Profile.GetCustomProperty("Roles").Replace(Environment.NewLine, ";");
                 firstBankUser.DepartmentName = user.Profile.GetCustomProperty("DepartmentName");
@@ -33,7 +34,7 @@ namespace Feature.Wealth.Account.Pipelines.Owin.CookieAuthentication.SignOut
                     VALUES (@UserName, @Action, @FullName, @DepartmentName, @Roles, @IP);",
                 new
                 {
-                    args.UserName,
+                    UserName = user.Name,
                     Action = "Logout",
                     FullName = user.Profile.FullName,
                     DepartmentName = firstBankUser.DepartmentName,
@@ -47,11 +48,11 @@ namespace Feature.Wealth.Account.Pipelines.Owin.CookieAuthentication.SignOut
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        private User GetUser(SignOutArgs args)
+        private User GetUser()
         {
             User tempUser = null;
             // Get the user from the claims identity
-            string userName = args.UserName;
+            string userName = Context.User.Name;
             if (!string.IsNullOrEmpty(userName))
             {
                 // True will make sure that the user is authenticated

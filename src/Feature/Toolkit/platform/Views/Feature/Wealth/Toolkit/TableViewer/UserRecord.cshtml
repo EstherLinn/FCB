@@ -10,6 +10,21 @@
         }
     };
 
+    function operatorChanged(self) {
+        let $select = $(self);
+        let $field = $select.closest('tr').find('[data-field-value]');
+        let option = $select.val();
+
+        if (option == '12' || option == '13' || option == '14' || option == '15' || option == '17' || option == '18') {
+            $field.data('field-value', '');
+            $field.hide();
+        }
+        else // 其他欄位
+        {
+            $field.show();
+        }
+    }
+
     function addRuleItem() {
         let tr = $('tr', TalbeGvQuery).last();
         let index = tr.data('index');
@@ -333,7 +348,7 @@
                     </td>
                     <td style="width:15%;">
                         <label class="o-select select-2">
-                            <select class="w3-select" style="width:98%;">
+                            <select id="ddlComparisonOperator" onChange="operatorChanged(this)" class="w3-select" style="width:98%;">
                                 <option value="0">&gt;=</option>
                                 <option value="1">&gt;</option>
                                 <option value="2">=</option>
@@ -357,7 +372,7 @@
                         </label>
                     </td>
                     <td style="width:30%;">
-                        <input type="text" class="w3-input o-input" style="width:95%;" />
+                        <input type="text" class="w3-input o-input" style="width:95%;" data-field-value/>
                     </td>
                     <td style="width:5%;">
                         <label class="o-select select-2">

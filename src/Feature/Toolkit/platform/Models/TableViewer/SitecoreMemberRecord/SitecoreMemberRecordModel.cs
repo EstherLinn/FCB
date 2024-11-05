@@ -86,7 +86,7 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer.SitecoreMemberRecord
             this.Count = iCount;
             this.Order = iOrder;
             this.OrderColumeName = columeName;
-            this.SqlAuthComm = $@"SELECT {str_TopCount}  [Id], [Action], [UserName], [Created]
+            this.SqlAuthComm = $@"SELECT {str_TopCount}  [Id], [Action], [UserName], [Created], [FullName], [DepartmentName], [Roles], [IP]
                                   FROM [dbo].[AuthenticationHistory] WITH(NOLOCK) {result} {sqlOrder}";
 
             this.Dictionary = sqlParams.ToDictionary(x => x.ParameterName, y => y.Value);
@@ -155,6 +155,22 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer.SitecoreMemberRecord
 
                 case 4:
                     columeName = "Created";
+                    break;
+
+                case 5:
+                    columeName = "FullName";
+                    break;
+
+                case 6:
+                    columeName = "DepartmentName";
+                    break;
+
+                case 7:
+                    columeName = "Roles";
+                    break;
+
+                case 8:
+                    columeName = "IP";
                     break;
             }
 
@@ -304,15 +320,15 @@ namespace Feature.Wealth.Toolkit.Models.TableViewer.SitecoreMemberRecord
                     continue;
                 }
 
-                string fieldTxetValue;
+                string fieldTxetValue = string.Empty;
                 if (!string.IsNullOrEmpty(rules[i][3]))
                 {
                     fieldTxetValue = rules[i][3];
                 }
-                else
-                {
-                    continue;
-                }
+                //else
+                //{
+                //    continue;
+                //}
 
                 string ddlComparisonOperator = string.Empty;
                 if (int.TryParse(rules[i][2], out int k))
