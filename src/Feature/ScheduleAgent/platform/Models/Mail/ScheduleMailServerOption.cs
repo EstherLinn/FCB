@@ -1,4 +1,5 @@
 ﻿using Sitecore.Data.Items;
+using System;
 using System.Net.Mail;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
@@ -6,8 +7,8 @@ namespace Feature.Wealth.ScheduleAgent.Models.Mail
 {
     public class ScheduleMailServerOption : MailServerOption
     {
-        public string SuccessTo { get; set; }
-        public string FailedTo { get; set; }
+        public string[] SuccessTo { get; set; }
+        public string[] FailedTo { get; set; }
         public string SuccessSubject { get; set; }
         public string SuccessTitle { get; set; }
         public string SuccessContent { get; set; }
@@ -17,8 +18,8 @@ namespace Feature.Wealth.ScheduleAgent.Models.Mail
 
         public ScheduleMailServerOption(Item item) : base(item)
         {
-            var successTo = item["Success To"];
-            var failedTo = item["Failed To"];
+            var successTo = item["Success To"]?.Trim();
+            var failedTo = item["Failed To"]?.Trim();
             var successsubject = item["Success Subject"];
             var successtitle = item["Success Title"];
             var successcontent = item["Success Content"];
@@ -26,8 +27,12 @@ namespace Feature.Wealth.ScheduleAgent.Models.Mail
             var failedtitle = item["Failed Title"];
             var failedcontent = item["Failed Content"];
 
-            this.SuccessTo = string.IsNullOrEmpty(successTo) ? Sitecore.Configuration.Settings.GetSetting("MailServerTo") : successTo;
-            this.FailedTo = string.IsNullOrEmpty(failedTo) ? Sitecore.Configuration.Settings.GetSetting("MailServerTo") : failedTo;
+            string[] successToEmails = !string.IsNullOrEmpty(successTo) ? successTo.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) : new string[0];
+            string[] failedToEmails = !string.IsNullOrEmpty(failedTo) ? failedTo.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) : new string[0];
+
+            this.SuccessTo = successToEmails.Length > 0 ? successToEmails : new[] { Sitecore.Configuration.Settings.GetSetting("MailServerTo") };
+            this.FailedTo = failedToEmails.Length > 0 ? failedToEmails : new[] { Sitecore.Configuration.Settings.GetSetting("MailServerTo") };
+
             this.SuccessSubject = string.IsNullOrEmpty(successsubject) ? Sitecore.Configuration.Settings.GetSetting("SuccessSubject") : successsubject;
             this.SuccessTitle = string.IsNullOrEmpty(successtitle) ? Sitecore.Configuration.Settings.GetSetting("SuccessTitle") : successtitle;
             this.SuccessContent = string.IsNullOrEmpty(successcontent) ? Sitecore.Configuration.Settings.GetSetting("SuccessContent") : successcontent;

@@ -1,22 +1,21 @@
-﻿using System;
-using Dapper;
-using System.IO;
-using System.Linq;
-using System.Data;
-using System.Data.Odbc;
-using System.Reflection;
-using System.Data.Common;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using Foundation.Wealth.Manager;
-using System.Collections.Generic;
-using Xcms.Sitecore.Foundation.Basic.Logging;
+﻿using Dapper;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
 using Sitecore.Configuration;
 using Sitecore.Data.Items;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.Common;
+using System.Data.Odbc;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Xcms.Sitecore.Foundation.Basic.Logging;
 
 
 namespace Feature.Wealth.ScheduleAgent.Repositories

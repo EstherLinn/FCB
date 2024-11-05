@@ -117,7 +117,19 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     mail.HeadersEncoding = encoding;
                     mail.BodyEncoding = encoding;
                     mail.SubjectEncoding = encoding;
-                    mail.To.Add(hasFailure ? mailServerOption.FailedTo : mailServerOption.SuccessTo);
+
+                    string[] emailAddresses = hasFailure ? mailServerOption.FailedTo : mailServerOption.SuccessTo;
+
+                    if (emailAddresses != null && emailAddresses.Length > 0)
+                    {
+                        foreach (var email in emailAddresses)
+                        {
+                            if (!string.IsNullOrEmpty(email))
+                            {
+                                mail.To.Add(email.Trim());
+                            }
+                        }
+                    }
 
                     try
                     {
@@ -131,6 +143,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 }
             }
         }
+
 
         private List<ChangeHistory> GetSuccessData(IList<ChangeHistory> results, Dictionary<string, List<ChangeHistory>> modificationLines)
         {
