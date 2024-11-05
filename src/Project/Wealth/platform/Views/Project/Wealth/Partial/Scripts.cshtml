@@ -246,7 +246,21 @@
                 let homePage = new URL(location.protocol + "//" + location.hostname);
                 location.href = homePage;
         }
-
+        /**
+        * 解壓縮並解析 Base64 編碼的 GZip 壓縮數據
+        * @param {string} base64String - 經過 Base64 編碼的 GZip 壓縮字串       
+        */
+        window.DecompressData = function(base64String) {
+            let binaryString = atob(base64String);
+            let len = binaryString.length;
+            let bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            let decompressed = pako.inflate(bytes);
+            let decodedString = new TextDecoder("utf-8").decode(decompressed);
+            return JSON.parse(decodedString);
+        }
         window.RiskHandler = function () {
             return new Promise((resolve, reject) => {
                 $.ajax({

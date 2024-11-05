@@ -10,13 +10,18 @@ using System.Web.UI.WebControls;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Sitecore.Configuration;
+using Newtonsoft.Json;
+using System.IO.Compression;
+using System.IO;
+using System.Text;
+using System;
 
 namespace Feature.Wealth.Component.Controllers
 {
     public class FundSearchController : Controller
     {
-        private FundSearchRepository _fundsearchrepository = new FundSearchRepository();
-        private FundTagRepository _tagrepository = new FundTagRepository();
+        private readonly FundSearchRepository _fundsearchrepository = new FundSearchRepository();
+        private readonly FundTagRepository _tagrepository = new FundTagRepository();
         private readonly CommonRepository _commonRespository = new CommonRepository();
 
         private readonly MemoryCache _cache = MemoryCache.Default;
@@ -125,7 +130,18 @@ namespace Feature.Wealth.Component.Controllers
                     }
                 }
             }
-            return new JsonNetResult(funds);
+            var jsonString = JsonConvert.SerializeObject(funds);
+            // GZIP 壓縮
+            byte[] bytes = Encoding.UTF8.GetBytes(jsonString);
+            using (var msi = new MemoryStream(bytes))
+            using (var mso = new MemoryStream())
+            {
+                using (var gs = new GZipStream(mso, CompressionMode.Compress))
+                {
+                    msi.CopyTo(gs);
+                }              
+                return Content(Convert.ToBase64String(mso.ToArray()));
+            }
         }
     }
 }

@@ -603,6 +603,8 @@
                     var query = apiRequest('@ClientRoute.GenerateUrl(this, "EtfSearch", "GetSearchResultData")');
 
                     query.then((data) => {
+                        console.log(data)
+                        data = DecompressData(data);
                         console.log(data);
                         this.Result.List = data;
                         if (data) {

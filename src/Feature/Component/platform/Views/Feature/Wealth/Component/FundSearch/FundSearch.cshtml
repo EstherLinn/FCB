@@ -2086,7 +2086,7 @@
                         result.sort((a, b) => (a.value > b.value ? 1 : -1))
                     }
                     done({
-                            suggestions: result.slice(0, 5)
+                        suggestions: result.slice(0, 5)
                     });
                 },
                 onSearchComplete: function (query, suggestions) {
@@ -2130,14 +2130,14 @@
                     // 申購按鈕
                     let $purchase = suggestion.Data.Purchase ? `<div class="c-itemKeyword__actions"><a ${suggestion.Data.AutoSubscribeButtonHtml}>申購</a></div>` : '';
                     return `<div class="c-itemKeyword">
-                                                                                                            <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
+                                                                                                                <a href="${detailUrl}" class="c-itemKeyword__content" target="_blank">
 
-                                                                                                                <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
-                                                                                                            </a>
-                                                                                                            <div class="c-itemKeyword__collections">${$like}</div>
-                                                                                                            <div class="c-itemKeyword__collections">${$compare}</div>
-                                                                                                            ${$purchase}
-                                                                                                        </div>`;
+                                                                                                                    <div class="c-itemKeyword__title">${$.Autocomplete.defaults.formatResult(suggestion, currentValue)}</div>
+                                                                                                                </a>
+                                                                                                                <div class="c-itemKeyword__collections">${$like}</div>
+                                                                                                                <div class="c-itemKeyword__collections">${$compare}</div>
+                                                                                                                ${$purchase}
+                                                                                                            </div>`;
                 }
             });
         }
@@ -2148,7 +2148,6 @@
             }
             initBind();
             let fjs;
-
             var token = $('input[name="__RequestVerificationToken"]').val();
             window.loading = () => 0;//蓋掉window.loading function
             $.ajax({
@@ -2156,6 +2155,7 @@
                 type: 'POST',
                 data: { __RequestVerificationToken: token },
                 success: function (data, textStatus, jqXHR) {
+                    data = DecompressData(data);
                     initFilter(data);
                     data.sort((a, b) => {
                         return b.SixMonthReturnOriginalCurrency.Value - a.SixMonthReturnOriginalCurrency.Value;

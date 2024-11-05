@@ -7,6 +7,11 @@ using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 using Sitecore.Configuration;
 using System.Runtime.Caching;
+using Newtonsoft.Json;
+using System.IO.Compression;
+using System.IO;
+using System.Text;
+using System;
 
 namespace Feature.Wealth.Component.Controllers
 {
@@ -36,7 +41,18 @@ namespace Feature.Wealth.Component.Controllers
                 resp = _searchRepository.GetResultList();
                 _cache.Set(EtfSearchCacheKey, resp, _commonRespository.GetCacheExpireTime(cacheTime));
             }
-            return new JsonNetResult(resp);
+            var jsonString = JsonConvert.SerializeObject(resp);
+            // GZIP 壓縮
+            byte[] bytes = Encoding.UTF8.GetBytes(jsonString);
+            using (var msi = new MemoryStream(bytes))
+            using (var mso = new MemoryStream())
+            {
+                using (var gs = new GZipStream(mso, CompressionMode.Compress))
+                {
+                    msi.CopyTo(gs);
+                }
+                return Content(Convert.ToBase64String(mso.ToArray()));
+            }
         }
     }
 }
