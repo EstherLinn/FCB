@@ -1,10 +1,9 @@
 ﻿using Feature.Wealth.Service.Models.FundApi;
+using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
-using System;
+using Foundation.Wealth.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Feature.Wealth.Service.Repositories
 {
@@ -12,8 +11,9 @@ namespace Feature.Wealth.Service.Repositories
     {
         public List<Dictionary<string, string>> GetFundCompany(string dff)
         {
-            var sql = @" SELECT DISTINCT [FundCompanyID], [FundCompanyName]
-                 FROM [dbo].[FUND_BSC]
+            string fund_bsc = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
+            var sql = @$" SELECT DISTINCT [FundCompanyID], [FundCompanyName]
+                 FROM {fund_bsc} WITH (NOLOCK)
                  WHERE [DomesticForeignFundIndicator] = @dff";
             var para = new { dff };
             var fundCompanys = DbManager.Custom.ExecuteIList<FundCompany>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
@@ -27,11 +27,13 @@ namespace Feature.Wealth.Service.Repositories
 
         public List<Dictionary<string, string>> GetInvestmentTargets()
         {
-            var sql = @"SELECT
+            string fund_bsc = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
+            string basic_fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Basic_Fund);
+            var sql = $@"SELECT
                 [InvestmentTargetID] AS FundInvestmentTargetID,
                 [InvestmentTargetName] AS FundInvestmentTargetName
             FROM 
-                [dbo].[FUND_BSC]
+                {fund_bsc} WITH (NOLOCK)
             WHERE 
                 [BankProductCode] IS NOT NULL
                 AND [InvestmentTargetID] IS NOT NULL
@@ -41,7 +43,8 @@ namespace Feature.Wealth.Service.Repositories
                 [UnKnown] AS FundInvestmentTargetID,
                 [FundType] AS FundInvestmentTargetName
             FROM 
-                [dbo].[Sysjust_Basic_Fund]";
+                {basic_fund} WITH (NOLOCK)";
+
             var investmentTargets = DbManager.Custom.ExecuteIList<FundInvestmentTarget>(sql, null, commandType: System.Data.CommandType.Text)?.ToList();
             var result = investmentTargets
                 .Select(it => new Dictionary<string, string> { { it.FundInvestmentTargetID, it.FundInvestmentTargetName } })
