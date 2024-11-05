@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Feature.Wealth.Account.Models.MemberLog
 {
@@ -12,6 +8,9 @@ namespace Feature.Wealth.Account.Models.MemberLog
         public string PlatFormId { get; set; }
         public string Action { get; set; }
         public string Description { get; set; }
+        public string ClientIp { get; set; }
+        public string Port { get; set; }
+        public string Browser { get; set; }
         public DateTime ActionTime { get; set; }
 
     }

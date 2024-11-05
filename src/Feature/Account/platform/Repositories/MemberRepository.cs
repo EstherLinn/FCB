@@ -880,8 +880,10 @@ namespace Feature.Wealth.Account.Repositories
         /// </summary>
         /// <param name="itemId"></param>
         /// <param name="isActive"></param>
+        /// <param name="ipAndPort"></param>
+        /// <param name="browser"></param>
         /// <returns></returns>
-        public (bool, bool, CommonFuncrionsResp) SetCommonTools(string itemId, bool isActive)
+        public (bool, bool, CommonFuncrionsResp) SetCommonTools(string itemId, bool isActive, (string, string) ipAndPort, string browser)
         {
             var id = FcbMemberHelper.GetMemberPlatFormId();
             var commons = GetCommonFunctions(id);
@@ -910,6 +912,9 @@ namespace Feature.Wealth.Account.Repositories
                         PlatForm = FcbMemberHelper.GetMemberPlatForm().ToString(),
                         PlatFormId = id,
                         Action = ActionEnum.Edit.ToString(),
+                        ClientIp = ipAndPort.Item1,
+                        Port = ipAndPort.Item2,
+                        Browser = browser,
                         Description = string.Format("修改常用功能: {0}", string.Join(",", tools.ToArray())),
                         ActionTime = Sitecore.DateUtil.ToServerTime(DateTime.UtcNow)
                     };
@@ -1166,8 +1171,8 @@ namespace Feature.Wealth.Account.Repositories
 
         public void RecordMemberActionLog(MemberLog memberLog)
         {
-            string strSql = $"INSERT INTO [MemberActionLog] (PlatForm,PlatFormId,Action,Description,ActionTime) values " +
-               $"(@PlatForm,@PlatFormId,@Action,@Description,@ActionTime)";
+            string strSql = $"INSERT INTO [MemberActionLog] (PlatForm,PlatFormId,Action,ClientIp,Port,Browser,Description,ActionTime) values " +
+               $"(@PlatForm,@PlatFormId,@Action,@ClientIp,@Port,@Browser,@Description,@ActionTime)";
             try
             {
                 DbManager.Custom.ExecuteNonQuery(strSql, memberLog, commandType: System.Data.CommandType.Text);
@@ -1366,5 +1371,6 @@ namespace Feature.Wealth.Account.Repositories
             }
             return member;
         }
+
     }
 }
