@@ -915,6 +915,8 @@
 
                 if (infos.length < 1) {
                     $('#input-customerid').val('');
+                    $('#input-tel').val('');
+                    $('#input-email').val('');
                     currentConsultSchedule.CustomerID = '';
                     $('#errorText-customername').text("找不到指定客戶");
                     $('#l-form-customername').addClass('is-error');
@@ -922,6 +924,13 @@
                 }
                 else if (infos.length == 1) {
                     $('#input-customerid').val(DOMPurify.sanitize(infos[0].CIF_ID));
+                    if (infos[0].CIF_TEL_NO3) {
+                        $('#input-tel').val(DOMPurify.sanitize(infos[0].CIF_TEL_NO3));
+                    }
+                    else {
+                        $('#input-tel').val(DOMPurify.sanitize(infos[0].CIF_TEL_NO1));
+                    }
+                    $('#input-email').val(DOMPurify.sanitize(infos[0].CIF_E_MAIL_ADDRESS));
                     currentConsultSchedule.CustomerID = DOMPurify.sanitize(infos[0].WebBankId);
                     $('#l-form-customername').removeClass('is-error');
                     bindText();
@@ -962,69 +971,8 @@
             }
             else {
                 $('#input-customerid').val('');
-                currentConsultSchedule.CustomerID = '';
-                $('#errorText-customername').text("請輸入客戶姓名");
-                $('#l-form-customername').addClass('is-error');
-            }
-
-            bindText();
-        });
-
-        // 示意相同姓名之客戶
-        $('[data-name]').on('blur', function (e) {
-            if (!!e.target.value) {
-                var name = e.target.value;
-                var infos = customerInfos.filter(c => c.CustomerName == name);
-
-                if (infos.length < 1) {
-                    $('#input-customerid').val('');
-                    currentConsultSchedule.CustomerID = '';
-                    $('#errorText-customername').text("找不到指定客戶");
-                    $('#l-form-customername').addClass('is-error');
-                    bindText();
-                }
-                else if (infos.length == 1) {
-                    $('#input-customerid').val(DOMPurify.sanitize(infos[0].CIF_ID));
-                    currentConsultSchedule.CustomerID = DOMPurify.sanitize(infos[0].WebBankId);
-                    $('#l-form-customername').removeClass('is-error');
-                    bindText();
-                }
-                else if (infos.length > 1) {
-                    $('#customerInfo').html('');
-
-                    infos.forEach(info => {
-                        $('#customerInfo').append(
-                            `<tr>
-                                     <td>
-                                         <label class="o-radio o-radio--box">
-                                             <input class="o-radio__input" type="radio" name="radio" value="${DOMPurify.sanitize(info.WebBankId)}" data-client>
-                                             <div class="o-radio__text"></div>
-                                         </label>
-                                     </td >
-                                     <td>
-                                         ${DOMPurify.sanitize(info.CustomerName)}
-                                     </td>
-                                     <td>
-                                         ${DOMPurify.sanitize(info.CIF_ID)}
-                                     </td>
-                                     <td>
-                                         ${DOMPurify.sanitize(info.BranchName)}
-                                     </td>
-                                 </tr>`
-                        );
-                    });
-
-
-                    $.magnificPopup.open({
-                        items: {
-                            src: '#popupChose'
-                        },
-                        closeOnBgClick: false
-                    });
-                }
-            }
-            else {
-                $('#input-customerid').val('');
+                $('#input-tel').val('');
+                $('#input-email').val('');
                 currentConsultSchedule.CustomerID = '';
                 $('#errorText-customername').text("請輸入客戶姓名");
                 $('#l-form-customername').addClass('is-error');
@@ -1045,6 +993,13 @@
                 var info = customerInfos.filter(c => c.WebBankId == v)[0];
 
                 $('#input-customerid').val(DOMPurify.sanitize(info.CIF_ID));
+                if (info.CIF_TEL_NO3) {
+                    $('#input-tel').val(DOMPurify.sanitize(info.CIF_TEL_NO3));
+                }
+                else {
+                    $('#input-tel').val(DOMPurify.sanitize(info.CIF_TEL_NO1));
+                }
+                $('#input-email').val(DOMPurify.sanitize(info.CIF_E_MAIL_ADDRESS));
                 currentConsultSchedule.CustomerID = DOMPurify.sanitize(info.WebBankId);
                 $('#l-form-customername').removeClass('is-error');
 
@@ -1073,6 +1028,8 @@
                     callbacks: {
                         afterClose: function () {
                             $('#input-customerid').val('');
+                            $('#input-tel').val('');
+                            $('#input-email').val('');
                             currentConsultSchedule.CustomerID = '';
                             $('#errorText-customername').text("請輸入客戶姓名");
                             $('#l-form-customername').addClass('is-error');
