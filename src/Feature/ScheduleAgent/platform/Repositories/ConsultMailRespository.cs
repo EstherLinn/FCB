@@ -40,7 +40,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                            ,[Mail]
                            ,[Subject]
 						   ,[Description]
-                           FROM [ConsultSchedule] WITH (NOLOCK)
+                           ,b.VideoInfoOpen
+                           FROM [ConsultSchedule] as a WITH (NOLOCK)
+                           left join FCB_Member as b WITH (NOLOCK) on a.CustomerID = b.WebBankId
                            where [ScheduleDate]= CAST(GETDATE() AS DATE) and StartTime >= FORMAT(GETDATE(), 'HH:mm') and StatusCode = '1'
                            ORDER BY [CustomerName],[StartTime]";
 
@@ -67,6 +69,11 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             List<MailSchema> mails = new List<MailSchema>();
             foreach (var consultSchedule in consults)
             {
+                //會員如關閉理財視訊通知，不發Mail
+                if (!consultSchedule.VideoInfoOpen)
+                {
+                    continue;
+                }
                 var mailSchema = new MailSchema();
                 string content = $@"親愛的客戶您好：<br><br>
                     第一銀行通知您，您於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 申請預約「遠距理財諮詢服務」即將開始，以下是您的預約資訊：<br><br>
