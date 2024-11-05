@@ -1042,7 +1042,7 @@ namespace Feature.Wealth.Account.Repositories
         {
             var success = false;
             var id = GetMemberId();
-            if (string.IsNullOrEmpty(getRisk) || string.IsNullOrEmpty(id))
+            if (string.IsNullOrWhiteSpace(getRisk) || string.IsNullOrEmpty(id))
             {
                 return (success, string.Empty);
             }

@@ -5,6 +5,7 @@ namespace Feature.Wealth.Account.Models.OAuth
 {
     public class FcbMemberModel
     {
+        private string _risk;
         /// <summary>
         /// 網銀識別碼
         /// </summary>
@@ -24,7 +25,11 @@ namespace Feature.Wealth.Account.Models.OAuth
         /// <summary>
         /// 風險屬性 from cif
         /// </summary>
-        public string Risk { get; set; }
+        public string Risk
+        {
+            get => _risk;
+            set => _risk = string.IsNullOrWhiteSpace(value) ? null : value;
+        }
         /// <summary>
         /// 性別 from cif
         /// </summary>
