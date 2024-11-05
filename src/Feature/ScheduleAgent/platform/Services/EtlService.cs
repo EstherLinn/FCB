@@ -211,7 +211,23 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 this._logger.Info(fileName + " 完成補檔執行");
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
-                _repository.LogChangeHistory(DateTime.UtcNow, fileName, $"{fileName}排程完成", "", 0, duration.TotalSeconds, "Y");
+                _repository.LogChangeHistory(fileName, $"{fileName}排程補檔完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done);
+            }
+            //帶日期的檔案改名加_done
+            else if(fileName.Contains("1000"))
+            {
+                string localFilePath = Path.Combine(LocalDirectory, fileName);
+                string doneFileName = $"{Path.GetFileNameWithoutExtension(fileName)}_done.txt";
+                string localDoneFilePath = Path.Combine(LocalDirectory, doneFileName);
+                if (File.Exists(localDoneFilePath))
+                {
+                    File.Delete(localDoneFilePath);
+                }
+                File.Move(localFilePath, localDoneFilePath);
+                this._logger.Info(fileName + " 執行完成");
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                _repository.LogChangeHistory(fileName, $"{fileName}排程完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done);
             }
             //檔案資料完成後，檔案改名加_done
             else
@@ -228,10 +244,9 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 this._logger.Info(fileName + " 執行完成");
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
-                _repository.LogChangeHistory(DateTime.UtcNow, fileName, $"{fileName}排程完成", "", 0, duration.TotalSeconds, "Y");
+                _repository.LogChangeHistory(fileName, $"{fileName}排程完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done);
             }
         }
-
         /// <summary>
         /// 檢查Ftps檔案存不存在，以及是否要做補檔
         /// </summary>

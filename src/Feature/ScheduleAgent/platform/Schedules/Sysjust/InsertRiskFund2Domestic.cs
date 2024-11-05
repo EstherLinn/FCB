@@ -32,7 +32,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseCsv<SysjustRiskFund2Domestic>(fileName);
-                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
+                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime); 
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
                         _repository.BulkInsertToDatabase(datas, tableName + "_History", "FirstBankCode", "Date", fileName, startTime);
@@ -41,14 +41,14 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     }
                     catch (Exception ex)
                     {
-                        this.Logger.Error(ex.Message, ex);
-                        _repository.LogChangeHistory(DateTime.UtcNow, fileName, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                        this.Logger.Error(ex.ToString(), ex);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(DateTime.UtcNow, fileName, IsfilePath.Key, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.Wealth;
+﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Foundation.Wealth.Models;
 using System;
@@ -27,30 +28,32 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var cfmbseldata = _repository.Enumerate<Cfmbsel>(sql);
                 if (cfmbseldata != null && cfmbseldata.Any())
                 {
-                    await OdbcBulkInsert(_repository, sql, "[CFMBSEL_Process]", cfmbseldata);
+                    await OdbcBulkInsert(_repository, sql, "[CFMBSEL_Process]", cfmbseldata, startTime);
                     _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                    await OdbcBulkInsert(_repository, sql, "[CFMBSEL]", cfmbseldata);
+                    await OdbcBulkInsert(_repository, sql, "[CFMBSEL]", cfmbseldata, startTime);
                     _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                 }
                 else
                 {
-                    _repository.LogChangeHistory(DateTime.UtcNow, sql, "Cfmbsel No datas", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                    _repository.LogChangeHistory(sql, "Cfmbsel No datas", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
                     this.Logger.Error($"{sql} No datas");
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
+                _repository.LogChangeHistory("CFMBSEL", "CFMBSEL排程完成", "CFMBSEL", 0, duration.TotalSeconds, "Y", ModificationID.Done);
                 this.Logger.Info($"取得CFMBSEL資料完成：Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, "CFMBSEL", " ", 0, duration.TotalSeconds, "Y");
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                this.Logger.Error(ex.ToString(), ex);
+                _repository.LogChangeHistory(sql, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
             }
         }
 
-        private async Task OdbcBulkInsert(ProcessRepository _repository, string sql, string tableName, IEnumerable<Cfmbsel> cfmbseldata)
+        private async Task OdbcBulkInsert(ProcessRepository _repository, string sql, string tableName, IEnumerable<Cfmbsel> cfmbseldata,DateTime startTime)
         {
+            int totalInsertedCount = 0;
+
             try
             {
                 List<Cfmbsel> batch = new List<Cfmbsel>();
@@ -72,6 +75,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                     if (batch.Count >= batchSize)
                     {
+                        totalInsertedCount += batch.Count;
                         await _repository.BulkInsertFromOracle(batch, tableName);
                         batch.Clear();
                     }
@@ -79,13 +83,16 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                 if (batch.Any())
                 {
+                    totalInsertedCount += batch.Count;
                     await _repository.BulkInsertFromOracle(batch, tableName);
                 }
+
+                _repository.LogChangeHistory("CFMBSEL", sql, "CFMBSEL", totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone);
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, 0, "N");
+                this.Logger.Error(ex.ToString(), ex);
+                _repository.LogChangeHistory("CFMBSEL", ex.Message, sql, 0, 0, "N", ModificationID.Error);
             }
         }
     }

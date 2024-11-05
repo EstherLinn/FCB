@@ -1,19 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Feature.Wealth.ScheduleAgent.Services;
-using Xcms.Sitecore.Foundation.QuartzSchedule;
-using Feature.Wealth.ScheduleAgent.Repositories;
+﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using System.Linq;
-using System.IO;
-using FixedWidthParserWriter;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using Foundation.Wealth.Manager;
-using System.Data;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Feature.Wealth.ScheduleAgent.Repositories;
 using Foundation.Wealth.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Xcms.Sitecore.Foundation.QuartzSchedule;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -36,31 +29,33 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var cifdata = _repository.Enumerate<Cif>(sql);
                 if (cifdata != null && cifdata.Any())
                 {
-                    await ProcessData(_repository, sql, "[CIF_Process]", cifdata);
+                    await ProcessData(_repository, sql, "[CIF_Process]", cifdata, startTime);
                     _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                    await ProcessData(_repository, sql, "[CIF]", cifdata);
+                    await ProcessData(_repository, sql, "[CIF]", cifdata, startTime);
                     _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                 }
                 else
                 {
-                    _repository.LogChangeHistory(DateTime.UtcNow, sql, "CIF No datas", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                    _repository.LogChangeHistory(sql, "CIF No datas", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
                     this.Logger.Error($"{sql} No datas");
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
+                _repository.LogChangeHistory("CIF", "CIF排程完成", "CIF", 0, duration.TotalSeconds, "Y", ModificationID.Done);
                 this.Logger.Info($"取得CIF資料完成：Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, "CIF", " ", 0, duration.TotalSeconds, "Y");
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                this.Logger.Error(ex.ToString(), ex);
+                _repository.LogChangeHistory(sql, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
             }
         }
 
 
-        private async Task ProcessData(ProcessRepository _repository, string sql, string tableName, IEnumerable<Cif> cifdata)
+        private async Task ProcessData(ProcessRepository _repository, string sql, string tableName, IEnumerable<Cif> cifdata, DateTime startTime)
         {
+            int totalInsertedCount = 0;
+
             try
             {
                 List<Cif> batch = new List<Cif>();
@@ -82,6 +77,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                     if (batch.Count >= batchSize)
                     {
+                        totalInsertedCount += batch.Count;
                         await _repository.BulkInsertFromOracle(batch, tableName);
                         batch.Clear();
                     }
@@ -89,13 +85,16 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                 if (batch.Any())
                 {
+                    totalInsertedCount += batch.Count;
                     await _repository.BulkInsertFromOracle(batch, tableName);
                 }
+
+                _repository.LogChangeHistory("CIF", sql, "CIF", totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone);
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, 0, "N");
+                this.Logger.Error(ex.ToString(), ex);
+                _repository.LogChangeHistory("CIF", ex.Message, sql, 0, 0, "N", ModificationID.Error);
             }
         }
     }

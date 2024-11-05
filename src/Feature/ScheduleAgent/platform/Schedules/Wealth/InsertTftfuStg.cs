@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.ScheduleAgent.Models.Wealth;
+﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Feature.Wealth.ScheduleAgent.Models.Wealth;
 using Feature.Wealth.ScheduleAgent.Repositories;
 using Foundation.Wealth.Models;
 using System;
@@ -27,30 +28,33 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var data = _repository.Enumerate<TftfuStg>(sql);
                 if (data != null && data.Any())
                 {
-                    await OdbcBulkInsert(_repository, sql, "[TFTFU_STG_Process]", data);
+                    await OdbcBulkInsert(_repository, sql, "[TFTFU_STG_Process]", data, startTime);
                     _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                    await OdbcBulkInsert(_repository, sql, "[TFTFU_STG]", data);
+                    await OdbcBulkInsert(_repository, sql, "[TFTFU_STG]", data, startTime);
                     _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                 }
                 else
                 {
-                    _repository.LogChangeHistory(DateTime.UtcNow, sql, "TFTFU_STG No datas", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                    _repository.LogChangeHistory(sql, "TFTFU_STG No datas", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
                     this.Logger.Error($"{sql} No datas");
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
+
+                _repository.LogChangeHistory("TFTFU_STG", "TFTFU_STG排程完成", "TFTFU_STG", 0, duration.TotalSeconds, "Y", ModificationID.Done);
                 this.Logger.Info($"取得TFTFU_STG資料完成：Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, "TFTFU_STG", " ", 0, duration.TotalSeconds, "Y");
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N");
+                this.Logger.Error(ex.ToString(), ex);
+                _repository.LogChangeHistory(sql, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
             }
         }
 
-        private async Task OdbcBulkInsert(ProcessRepository _repository, string sql, string tableName, IEnumerable<TftfuStg> data)
+        private async Task OdbcBulkInsert(ProcessRepository _repository, string sql, string tableName, IEnumerable<TftfuStg> data, DateTime startTime)
         {
+            int totalInsertedCount = 0;
+
             try
             {
                 List<TftfuStg> batch = new List<TftfuStg>();
@@ -72,6 +76,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                     if (batch.Count >= batchSize)
                     {
+                        totalInsertedCount += batch.Count;
                         await _repository.BulkInsertFromOracle(batch, tableName);
                         batch.Clear();
                     }
@@ -79,13 +84,16 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                 if (batch.Any())
                 {
+                    totalInsertedCount += batch.Count;
                     await _repository.BulkInsertFromOracle(batch, tableName);
                 }
+
+                _repository.LogChangeHistory("TFTFU_STG", sql, "TFTFU_STG", totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone);
             }
             catch (Exception ex)
             {
-                this.Logger.Error(ex.Message, ex);
-                _repository.LogChangeHistory(DateTime.UtcNow, sql, ex.Message, " ", 0, 0, "N");
+                this.Logger.Error(ex.ToString(), ex);
+                _repository.LogChangeHistory("TFTFU_STG", ex.Message, sql, 0, 0, "N", ModificationID.Error);
             }
         }
     }
