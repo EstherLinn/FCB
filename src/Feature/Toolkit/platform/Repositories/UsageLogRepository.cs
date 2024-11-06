@@ -109,7 +109,7 @@ namespace Feature.Wealth.Toolkit.Repositories
                 var headerRow = sheet.GetRow(rowCounter);
                 headerRow.CreateCell(0).SetCellValue("Id");
                 headerRow.CreateCell(1).SetCellValue("執行動作");
-                headerRow.CreateCell(2).SetCellValue("使用者Id");
+                headerRow.CreateCell(2).SetCellValue("使用者帳號");
                 headerRow.CreateCell(3).SetCellValue("建立時間");
                 headerRow.CreateCell(4).SetCellValue("使用者姓名");
                 headerRow.CreateCell(5).SetCellValue("單位名稱");
