@@ -30,14 +30,9 @@ namespace Feature.Wealth.Component.Models.SiteProductSearch.Product
         public VolumePair MarketPrice { get; set; }
 
         /// <summary>
-        /// 價格(淨值)
+        /// 市價日期
         /// </summary>
-        public VolumePair NetAssetValue { get; set; }
-
-        /// <summary>
-        /// 淨值日期
-        /// </summary>
-        public string NetAssetValueDate { get; set; }
+        public string MarketPriceDate { get; set; }
 
         /// <summary>
         /// 幣別
