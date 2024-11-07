@@ -46,11 +46,11 @@ namespace Feature.Wealth.Component.Controllers
                 }
             }
 
-            if (top5BondHistoryPrice.Any())
+            if (top5BondHistoryPrice.Any() && !string.IsNullOrEmpty(bond.Date) && !string.IsNullOrEmpty(top5BondHistoryPrice[0].Date))
             {
                 var lastBondHistoryPrice = top5BondHistoryPrice.First();
-                var now = DateTime.Parse(bond.Date);
-                var last = DateTime.Parse(lastBondHistoryPrice.Date);
+                DateTime.TryParse(bond.Date, out var now);
+                DateTime.TryParse(lastBondHistoryPrice.Date, out var last);
 
                 if (DateTime.Compare(now, last) == 0)
                 {
