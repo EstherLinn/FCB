@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Foundation.Wealth.Models;
-using Feature.Wealth.ScheduleAgent.Services;
-using Xcms.Sitecore.Foundation.QuartzSchedule;
-using Feature.Wealth.ScheduleAgent.Repositories;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
+﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Feature.Wealth.ScheduleAgent.Repositories;
+using Feature.Wealth.ScheduleAgent.Services;
+using Foundation.Wealth.Models;
+using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.QuartzSchedule;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -28,6 +28,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var TrafficLight = NameofTrafficLight.BondNav;
 
                 var IsfilePath = await etlService.ExtractFile(fileName, "csv");
+                if (etlService.ContainsDateFormat(IsfilePath.Key, out string extractedDate, "yyyyMMdd"))
+                {
+                    fileName = "bondnav-" + extractedDate + ".csv";
+                }
 
                 if (IsfilePath.Value)
                 {
@@ -52,7 +56,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                    _repository.LogChangeHistory(fileName, IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

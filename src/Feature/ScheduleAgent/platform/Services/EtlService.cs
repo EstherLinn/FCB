@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using Xcms.Sitecore.Foundation.Basic.Logging;
@@ -41,6 +42,20 @@ namespace Feature.Wealth.ScheduleAgent.Services
             if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
             {
                 this.LocalDirectory = this._Supplementsettings["LocalDirectory"];
+                this.FileNameDate = this._Supplementsettings["FileNameDate"];
+                DateTime parsedDate;
+
+                if (DateTime.TryParseExact(this.FileNameDate, "yyyyMMdd'T'HHmmss'Z'", null, DateTimeStyles.AssumeUniversal, out parsedDate))
+                {
+                    DateTime taipeiDateTime = parsedDate.AddHours(8);
+                    this.FileNameDate = taipeiDateTime.ToString("yyyyMMdd");
+                    this._logger.Info($"FileNameDate: {this.FileNameDate}");
+                }
+                else
+                {
+                    this.FileNameDate = DateTime.Now.ToString("yyyyMMdd");
+                    this._logger.Warn($"日期格式轉換有問題，原始值: {this._Supplementsettings["FileNameDate"]}");
+                }
             }
             else
             {
@@ -56,6 +71,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         public string LocalDirectory { get; set; }
         private string BackUpDirectory { get; set; } = Settings.GetSetting("BackUpDirectory");
         private string WorkingDirectory { get; set; }
+        public string FileNameDate { get; set; }
 
         /// <summary>
         /// 設定FTPs目錄
@@ -206,6 +222,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 {
                     this._Supplementsettings.Editing.BeginEdit();
                     this._Supplementsettings["Do Supplement"] = newValue.ToString();
+                    this._Supplementsettings["FileNameDate"] = null;
                     this._Supplementsettings.Editing.EndEdit();
                 }
                 this._logger.Info(fileName + " 完成補檔執行");
@@ -214,7 +231,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 _repository.LogChangeHistory(fileName, $"{fileName}排程補檔完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done);
             }
             //帶日期的檔案改名加_done
-            else if(fileName.Contains("1000"))
+            else if (fileName.Contains("1000"))
             {
                 string localFilePath = Path.Combine(LocalDirectory, fileName);
                 string doneFileName = $"{Path.GetFileNameWithoutExtension(fileName)}_done.txt";
@@ -254,7 +271,7 @@ namespace Feature.Wealth.ScheduleAgent.Services
         {
             if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
             {
-                return new KeyValuePair<string, bool>("執行補檔", true);
+                return new KeyValuePair<string, bool>("執行補檔" + this.FileNameDate, true);
             }
             else if (this._settings != null)
             {
@@ -319,5 +336,37 @@ namespace Feature.Wealth.ScheduleAgent.Services
 
             return new KeyValuePair<string, bool>($"Error while ExtractFile", false);
         }
+
+
+        public bool ContainsDateFormat(string input, out string extractedDate, string dateFormat = "yyMMdd")
+        {
+            string pattern = @"(\d{8})";
+
+            var match = Regex.Match(input, pattern);
+
+            if (match.Success)
+            {
+                string dateValue = match.Groups[1].Value;
+
+                if (dateValue.Length == 8)
+                {
+                    if (dateFormat == "yyMMdd")
+                    {
+                        extractedDate = dateValue.Substring(2);
+                    }
+                    else
+                    {
+                        extractedDate = dateValue;
+                    }
+
+                    _logger.Warn(extractedDate);
+                    return true;
+                }
+            }
+
+            extractedDate = null;
+            return false;
+        }
+
     }
 }

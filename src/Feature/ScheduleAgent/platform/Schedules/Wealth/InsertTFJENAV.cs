@@ -27,6 +27,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var TrafficLight = NameofTrafficLight.ETF_NAV_TFJENAV;
 
                 var IsfilePath = await etlService.ExtractFile(fileName);
+                if (etlService.ContainsDateFormat(IsfilePath.Key, out string extractedDate))
+                {
+                    fileName = "TFJENAV." + extractedDate + ".1000.txt";
+                }
 
                 if (IsfilePath.Value)
                 {
