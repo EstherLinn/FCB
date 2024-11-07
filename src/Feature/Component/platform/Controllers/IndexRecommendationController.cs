@@ -38,10 +38,10 @@ namespace Feature.Wealth.Component.Controllers
                 ETFDetailLink = EtfRelatedLinkSetting.GetETFDetailUrl(),
                 HotUSStocks = usStocks,
                 HotBonds = bonds,
-                FundNetAssetValueDate = funds.Select(f => f.NetAssetValueDate).FirstOrDefault(),
-                ETFMarketPriceDate = etfs.Select(f => f.BasicMarketPriceDate).OrderByDescending(date => date).FirstOrDefault(),
-                USStockDataDate = usStocks.Where(f => string.IsNullOrEmpty(f.DataDate) == false && DateTime.TryParse(f.DataDate, out var d)).Select(f => DateTime.Parse(f.DataDate)).FirstOrDefault(),
-                BondDataDate = bonds.Where(f => string.IsNullOrEmpty(f.Date) == false && DateTime.TryParse(f.Date, out var d)).Select(f => DateTime.Parse(f.Date)).FirstOrDefault(),
+                FundNetAssetValueDate = DateTime.Now,
+                ETFMarketPriceDate = DateTime.Now,
+                USStockDataDate = DateTime.Now,
+                BondDataDate = DateTime.Now,
             };
 
 
