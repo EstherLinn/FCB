@@ -22,7 +22,7 @@ namespace Feature.Wealth.Component.Controllers
     {
         private readonly NewsRepository _newsRespository = new NewsRepository();
         private readonly CommonRepository _commonRespository = new CommonRepository();
-
+        private static readonly object cahceLock = new object();
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly string MarketNewsCacheKey = $"Fcb_MarketNewsCache";
         private readonly string defaultCacheTime = Settings.GetSetting("DefaultNewsCacheTime");
@@ -54,12 +54,11 @@ namespace Feature.Wealth.Component.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [OutputCache(Duration = 30)]
+        [OutputCache(Duration = 30, VaryByParam = "id, startDatetime, endDatetime")]
         public ActionResult GetMarketNewsData(string id, string startDatetime, string endDatetime)
         {
             List<MarketNewsModel> _datas;
             List<MarketNewsModel> datas;
-            var cahceLock = new object();
 
             startDatetime = DateTime.Parse(startDatetime, new CultureInfo("zh-TW")).ToString("yyyy/MM/dd");
             endDatetime = DateTime.Parse(endDatetime, new CultureInfo("zh-TW")).ToString("yyyy/MM/dd");
@@ -164,7 +163,6 @@ namespace Feature.Wealth.Component.Controllers
         public ActionResult MarketNewsDetail()
         {
             string newsId = HttpUtility.UrlDecode(Request.QueryString["id"]);
-            var cahceLock = new object();
             List<MarketNewsModel> _datas;
             MarketNewsDetailModel datas;
 
@@ -206,7 +204,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             List<MarketNewsModel> _datas;
             HeadlineNewsModel datas;
-            var cahceLock = new object();
+
             string today = DateTime.Now.ToString("yyyy/MM/dd");
             string yesterday = DateTime.Now.AddDays(-1).ToString("yyyy/MM/dd");
 
@@ -254,7 +252,7 @@ namespace Feature.Wealth.Component.Controllers
         {
             List<MarketNewsModel> _datas;
             HomeHeadlinesModel datas;
-            var cahceLock = new object();
+
             string today = DateTime.Now.ToString("yyyy/MM/dd");
             string yesterday = DateTime.Now.AddDays(-1).ToString("yyyy/MM/dd");
 
