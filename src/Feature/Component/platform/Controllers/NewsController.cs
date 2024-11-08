@@ -54,7 +54,7 @@ namespace Feature.Wealth.Component.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [OutputCache(Duration = 30, VaryByParam = "id, startDatetime, endDatetime")]
+        [OutputCache(Duration = 30, VaryByParam = "id;startDatetime;endDatetime")]
         public ActionResult GetMarketNewsData(string id, string startDatetime, string endDatetime)
         {
             List<MarketNewsModel> _datas;
