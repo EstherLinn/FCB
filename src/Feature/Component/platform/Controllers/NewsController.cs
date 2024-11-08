@@ -1,13 +1,17 @@
 ﻿using Feature.Wealth.Component.Models.News;
 using Feature.Wealth.Component.Models.News.NewsList;
 using Feature.Wealth.Component.Repositories;
+using Newtonsoft.Json;
 using Sitecore.Configuration;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO.Compression;
+using System.IO;
 using System.Linq;
 using System.Runtime.Caching;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
@@ -18,7 +22,7 @@ namespace Feature.Wealth.Component.Controllers
     {
         private readonly NewsRepository _newsRespository = new NewsRepository();
         private readonly CommonRepository _commonRespository = new CommonRepository();
-
+        private static readonly object cahceLock = new object();
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly string MarketNewsCacheKey = $"Fcb_MarketNewsCache";
         private readonly string defaultCacheTime = Settings.GetSetting("DefaultNewsCacheTime");
@@ -50,6 +54,7 @@ namespace Feature.Wealth.Component.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [OutputCache(Duration = 30, VaryByParam = "id;startDatetime;endDatetime")]
         public ActionResult GetMarketNewsData(string id, string startDatetime, string endDatetime)
         {
             List<MarketNewsModel> _datas;
@@ -67,61 +72,69 @@ namespace Feature.Wealth.Component.Controllers
 
             if (_datas == null)
             {
-                if (startDatetime == yesterday && endDatetime == today)
+                lock (cahceLock)
                 {
-                    // 取得預設 MarketNews 資料庫資料
-                    _datas = (List<MarketNewsModel>)_newsRespository.GetDefaultMarketNewsDbData(yesterday, today);
+                    _datas = (List<MarketNewsModel>)_cache.Get(cacheKey);
 
-                    if (_datas != null && _datas.Any())
+                    if (_datas == null)
                     {
-                        // 儲存預設 MarketNewsCache
-                        _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
-                    }
-                }
-                else
-                {
-                    // 取得查詢 MarketNews 資料庫資料
-                    _datas = (List<MarketNewsModel>)_newsRespository.GetSerchMarketNewsDbData(startDatetime, endDatetime);
-
-                    if (_datas != null && _datas.Any())
-                    {
-                        // 儲存查詢 MarketNewsCache
-                        _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(serchCacheTime));
-                    }
-
-                    // 判斷是否有 NewsDate 等於今天的資料
-                    bool hasTodayNews = _datas.Any(news => news.NewsDate == today);
-
-                    if (hasTodayNews)
-                    {
-                        string defaultCacheKey = yesterday + "~" + today + " " + MarketNewsCacheKey;
-
-                        // 取得預設 MarketNewsCache
-                        var defaultDatas = (List<MarketNewsModel>)_cache.Get(defaultCacheKey);
-
-                        if (defaultDatas == null)
+                        if (startDatetime == yesterday && endDatetime == today)
                         {
-                            // 儲存預設 MarketNewsCache
-                            _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                            // 取得預設 MarketNews 資料庫資料
+                            _datas = (List<MarketNewsModel>)_newsRespository.GetDefaultMarketNewsDbData(yesterday, today);
+
+                            if (_datas != null && _datas.Any())
+                            {
+                                // 儲存預設 MarketNewsCache
+                                _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                            }
                         }
                         else
                         {
-                            // 過濾 _datas 中 NewsDate 等於今天的資料
-                            var todayNews = _datas.Where(news => news.NewsDate == today).ToList();
+                            // 取得查詢 MarketNews 資料庫資料
+                            _datas = (List<MarketNewsModel>)_newsRespository.GetSerchMarketNewsDbData(startDatetime, endDatetime);
 
-                            // 將 todayNews 合併到 defaultDatas 裡
-                            defaultDatas.AddRange(todayNews);
+                            if (_datas != null && _datas.Any())
+                            {
+                                // 儲存查詢 MarketNewsCache
+                                _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(serchCacheTime));
+                            }
 
-                            // 去重，防止相同的 NewsSerialNumber 重複
-                            defaultDatas = defaultDatas
-                                .GroupBy(news => news.NewsSerialNumber)
-                                .Select(g => g.First())
-                                .OrderByDescending(news => news.NewsDate)      // 先按 NewsDate 降序排序
-                                .ThenByDescending(news => news.NewsTime)       // 再按 NewsTime 降序排序
-                                .ThenByDescending(news => news.NewsDetailDate) // 最後按 NewsDetailDate 降序排序
-                                .ToList();
+                            // 判斷是否有 NewsDate 等於今天的資料
+                            bool hasTodayNews = _datas.Any(news => news.NewsDate == today);
 
-                            _cache.Set(defaultCacheKey, defaultDatas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                            if (hasTodayNews)
+                            {
+                                string defaultCacheKey = yesterday + "~" + today + " " + MarketNewsCacheKey;
+
+                                // 取得預設 MarketNewsCache
+                                var defaultDatas = (List<MarketNewsModel>)_cache.Get(defaultCacheKey);
+
+                                if (defaultDatas == null)
+                                {
+                                    // 儲存預設 MarketNewsCache
+                                    _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                                }
+                                else
+                                {
+                                    // 過濾 _datas 中 NewsDate 等於今天的資料
+                                    var todayNews = _datas.Where(news => news.NewsDate == today).ToList();
+
+                                    // 將 todayNews 合併到 defaultDatas 裡
+                                    defaultDatas.AddRange(todayNews);
+
+                                    // 去重，防止相同的 NewsSerialNumber 重複
+                                    defaultDatas = defaultDatas
+                                        .GroupBy(news => news.NewsSerialNumber)
+                                        .Select(g => g.First())
+                                        .OrderByDescending(news => news.NewsDate)      // 先按 NewsDate 降序排序
+                                        .ThenByDescending(news => news.NewsTime)       // 再按 NewsTime 降序排序
+                                        .ThenByDescending(news => news.NewsDetailDate) // 最後按 NewsDetailDate 降序排序
+                                        .ToList();
+
+                                    _cache.Set(defaultCacheKey, defaultDatas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                                }
+                            }
                         }
                     }
                 }
@@ -133,13 +146,23 @@ namespace Feature.Wealth.Component.Controllers
             // 取得 MarketNews 瀏覽次數
             datas = _newsRespository.GetMarketNewsViewCount(datas);
 
-            return new JsonNetResult(datas);
+            var jsonString = JsonConvert.SerializeObject(datas);
+            // GZIP 壓縮
+            byte[] bytes = Encoding.UTF8.GetBytes(jsonString);
+            using (var msi = new MemoryStream(bytes))
+            using (var mso = new MemoryStream())
+            {
+                using (var gs = new GZipStream(mso, CompressionMode.Compress))
+                {
+                    msi.CopyTo(gs);
+                }
+                return Content(Convert.ToBase64String(mso.ToArray()));
+            }
         }
 
         public ActionResult MarketNewsDetail()
         {
             string newsId = HttpUtility.UrlDecode(Request.QueryString["id"]);
-
             List<MarketNewsModel> _datas;
             MarketNewsDetailModel datas;
 
@@ -153,13 +176,21 @@ namespace Feature.Wealth.Component.Controllers
 
             if (_datas == null)
             {
-                // 取得預設 MarketNews 資料庫資料
-                _datas = (List<MarketNewsModel>)_newsRespository.GetDefaultMarketNewsDbData(yesterday, today);
-
-                if (_datas != null && _datas.Any())
+                lock (cahceLock)
                 {
-                    // 儲存 MarketNewsCache
-                    _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                    _datas = (List<MarketNewsModel>)_cache.Get(cacheKey);
+
+                    if (_datas == null)
+                    {
+                        // 取得預設 MarketNews 資料庫資料
+                        _datas = (List<MarketNewsModel>)_newsRespository.GetDefaultMarketNewsDbData(yesterday, today);
+
+                        if (_datas != null && _datas.Any())
+                        {
+                            // 儲存 MarketNewsCache
+                            _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                        }
+                    }
                 }
             }
 
@@ -184,13 +215,21 @@ namespace Feature.Wealth.Component.Controllers
 
             if (_datas == null)
             {
-                // 取得預設 MarketNews 資料庫資料
-                _datas = (List<MarketNewsModel>)_newsRespository.GetDefaultMarketNewsDbData(yesterday, today);
-
-                if (_datas != null && _datas.Any())
+                lock (cahceLock)
                 {
-                    // 儲存 MarketNewsCache
-                    _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                    _datas = (List<MarketNewsModel>)_cache.Get(cacheKey);
+
+                    if (_datas == null)
+                    {
+                        // 取得預設 MarketNews 資料庫資料
+                        _datas = (List<MarketNewsModel>)_newsRespository.GetDefaultMarketNewsDbData(yesterday, today);
+
+                        if (_datas != null && _datas.Any())
+                        {
+                            // 儲存 MarketNewsCache
+                            _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                        }
+                    }
                 }
             }
 
@@ -224,13 +263,21 @@ namespace Feature.Wealth.Component.Controllers
 
             if (_datas == null)
             {
-                // 取得預設 MarketNews 資料庫資料
-                _datas = (List<MarketNewsModel>)_newsRespository.GetDefaultMarketNewsDbData(yesterday, today);
-
-                if (_datas != null && _datas.Any())
+                lock (cahceLock)
                 {
-                    // 儲存 MarketNewsCache
-                    _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                    _datas = (List<MarketNewsModel>)_cache.Get(cacheKey);
+
+                    if (_datas == null)
+                    {
+                        // 取得預設 MarketNews 資料庫資料
+                        _datas = (List<MarketNewsModel>)_newsRespository.GetDefaultMarketNewsDbData(yesterday, today);
+
+                        if (_datas != null && _datas.Any())
+                        {
+                            // 儲存 MarketNewsCache
+                            _cache.Set(cacheKey, _datas, _commonRespository.GetCacheExpireTime(defaultCacheTime));
+                        }
+                    }
                 }
             }
 
