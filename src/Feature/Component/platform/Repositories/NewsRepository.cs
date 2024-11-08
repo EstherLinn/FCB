@@ -4,6 +4,7 @@ using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Manager;
 using log4net;
 using Mapster;
+using Sitecore.ContentSearch.Utilities;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Mvc.Extensions;
@@ -25,7 +26,9 @@ namespace Feature.Wealth.Component.Repositories
     public class NewsRepository
     {
         private ILog Log { get; } = Logger.Account;
-        private readonly VisitCountRepository _visitCountRepository = new VisitCountRepository();
+        private string detailUrl { get; } = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl();
+        private string listUrl { get; } = MarketNewsRelatedLinkSetting.GetMarketNewsListUrl();
+        private Guid? pageItemId { get; } = MarketNewsRelatedLinkSetting.GetMarketNewsDetailPageItemId().ToGuid();
 
         #region 最新消息
 
@@ -352,14 +355,14 @@ namespace Feature.Wealth.Component.Repositories
                     NewsDate = item.NewsDate.ToString() + " " + item.NewsTime.ToString(),
                     NewsTitle = item.NewsTitle,
                     NewsSerialNumber = item.NewsSerialNumber,
-                    NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + item.NewsSerialNumber,
+                    NewsDetailLink = detailUrl + "?id=" + item.NewsSerialNumber,
                     NewsDetailDate = item.NewsDetailDate.ToString(),
                     NewsContent = item.NewsContent,
                     NewsRelatedProducts = item.NewsRelatedProducts,
                     PreviousPageTitle = item.PreviousPageTitle,
                     PreviousPageId = item.PreviousPageId,
                     NextPageId = item.NextPageId,
-                    NextPageTitle = item.NextPageTitle,
+                    NextPageTitle = item.NextPageTitle
                 };
 
                 newsData.Data = new MarketNewsData
@@ -368,7 +371,7 @@ namespace Feature.Wealth.Component.Repositories
                     IsLogin = false,
                     IsNews = false,
                     IsLike = false,
-                    DetailUrl = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + item.NewsSerialNumber,
+                    DetailUrl = detailUrl + "?id=" + item.NewsSerialNumber,
                     Purchase = false
                 };
 
@@ -385,18 +388,26 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         public List<MarketNewsModel> GetMarketNewsViewCount(List<MarketNewsModel> datas)
         {
-            if (datas != null
-                && datas.Any())
+            if (datas != null && datas.Any())
             {
-                string pageItemId = MarketNewsRelatedLinkSetting.GetMarketNewsDetailPageItemId();
-                string rootPath = System.Web.HttpContext.Current.Request.Url.GetLeftPart(System.UriPartial.Authority);
+                var viewCount = GetNewsViewCount(pageItemId);
 
-                foreach (var item in datas)
+                if (viewCount == null)
                 {
-                    var currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(item.NewsSerialNumber.ToString());
-                    var visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
-                    item.NewsViewCount = visitCount ?? 0;
-                    item.DisplayNewsViewCount = visitCount?.ToString("N0") ?? "0";
+                    foreach (var item in datas)
+                    {
+                        item.NewsViewCount = 0;
+                        item.DisplayNewsViewCount = "0";
+                    }
+                }
+                else
+                {
+                    foreach (var item in datas)
+                    {
+                        var visitCountData = viewCount.FirstOrDefault(r => r.NewsSerialNumber == item.NewsSerialNumber);
+                        item.NewsViewCount = visitCountData?.VisitCount ?? 0;
+                        item.DisplayNewsViewCount = visitCountData != null ? visitCountData.VisitCount.ToString("N0") : "0";
+                    }
                 }
             }
 
@@ -434,11 +445,11 @@ namespace Feature.Wealth.Component.Repositories
                     detailData.NewsType = filteredData.NewsType;
                     detailData.PreviousPageId = filteredData.PreviousPageId;
                     detailData.PreviousPageTitle = filteredData.PreviousPageTitle;
-                    detailData.PreviousPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(filteredData.PreviousPageId);
+                    detailData.PreviousPageLink = detailUrl + "?id=" + HttpUtility.UrlEncode(filteredData.PreviousPageId);
                     detailData.NextPageId = filteredData.NextPageId;
                     detailData.NextPageTitle = filteredData.NextPageTitle;
-                    detailData.NextPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(filteredData.NextPageId);
-                    detailData.NewsListUrl = MarketNewsRelatedLinkSetting.GetMarketNewsListUrl();
+                    detailData.NextPageLink = detailUrl + "?id=" + HttpUtility.UrlEncode(filteredData.NextPageId);
+                    detailData.NewsListUrl = listUrl;
 
                     model.MarketNewsDetailData = detailData;
                 }
@@ -456,11 +467,11 @@ namespace Feature.Wealth.Component.Repositories
                         detailData.NewsType = datas.NewsType;
                         detailData.PreviousPageId = datas.PreviousPageId;
                         detailData.PreviousPageTitle = datas.PreviousPageTitle;
-                        detailData.PreviousPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.PreviousPageId);
+                        detailData.PreviousPageLink = detailUrl + "?id=" + HttpUtility.UrlEncode(datas.PreviousPageId);
                         detailData.NextPageId = datas.NextPageId;
                         detailData.NextPageTitle = datas.NextPageTitle;
-                        detailData.NextPageLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.NextPageId);
-                        detailData.NewsListUrl = MarketNewsRelatedLinkSetting.GetMarketNewsListUrl();
+                        detailData.NextPageLink = detailUrl + "?id=" + HttpUtility.UrlEncode(datas.NextPageId);
+                        detailData.NewsListUrl = listUrl;
 
                         model.MarketNewsDetailData = detailData;
                     }
@@ -629,7 +640,7 @@ namespace Feature.Wealth.Component.Repositories
                         NewsTime = filteredData[0].NewsTime,
                         NewsTitle = filteredData[0].NewsTitle,
                         NewsSerialNumber = filteredData[0].NewsSerialNumber,
-                        NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + filteredData[0].NewsSerialNumber
+                        NewsDetailLink = detailUrl + "?id=" + filteredData[0].NewsSerialNumber
                     };
 
                     datas.Headlines = new List<HeadlineNewsData>();
@@ -641,7 +652,7 @@ namespace Feature.Wealth.Component.Repositories
                             NewsTime = filteredData[i].NewsTime,
                             NewsTitle = filteredData[i].NewsTitle,
                             NewsSerialNumber = filteredData[i].NewsSerialNumber,
-                            NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + filteredData[i].NewsSerialNumber
+                            NewsDetailLink = detailUrl + "?id=" + filteredData[i].NewsSerialNumber
                         };
 
                         datas.Headlines.Add(newsData);
@@ -657,25 +668,41 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         public HeadlineNewsModel GetHeadlineNewsViewCount(HeadlineNewsModel datas)
         {
-            string currentUrl;
-            int? visitCount;
-            string pageItemId = MarketNewsRelatedLinkSetting.GetMarketNewsDetailPageItemId();
-            string rootPath = System.Web.HttpContext.Current.Request.Url.GetLeftPart(System.UriPartial.Authority);
-
-            if (datas != null && datas.LatestHeadlines != null)
+            if (datas != null)
             {
-                currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.LatestHeadlines.NewsSerialNumber);
-                visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
-                datas.LatestHeadlines.NewsViewCount = visitCount?.ToString("N0") ?? "0";
-            }
+                var viewCount = GetNewsViewCount(pageItemId);
 
-            if (datas != null && datas.Headlines != null && datas.Headlines.Any())
-            {
-                for (int i = 0; i < datas.Headlines.Count; i++)
+                if (viewCount == null)
                 {
-                    currentUrl = rootPath + MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + HttpUtility.UrlEncode(datas.Headlines[i].NewsSerialNumber);
-                    visitCount = _visitCountRepository.GetVisitCount(pageItemId.ToGuid(), currentUrl);
-                    datas.Headlines[i].NewsViewCount = visitCount?.ToString("N0") ?? "0";
+                    if (datas.LatestHeadlines != null)
+                    {
+                        datas.LatestHeadlines.NewsViewCount = "0";
+                    }
+
+                    if (datas.Headlines != null && datas.Headlines.Any())
+                    {
+                        foreach (var headline in datas.Headlines)
+                        {
+                            headline.NewsViewCount = "0";
+                        }
+                    }
+                }
+                else
+                {
+                    if (datas.LatestHeadlines != null)
+                    {
+                        var visitCountData = viewCount.FirstOrDefault(r => r.NewsSerialNumber == datas.LatestHeadlines.NewsSerialNumber);
+                        datas.LatestHeadlines.NewsViewCount = visitCountData != null ? visitCountData.VisitCount.ToString("N0") : "0";
+                    }
+
+                    if (datas.Headlines != null && datas.Headlines.Any())
+                    {
+                        foreach (var headline in datas.Headlines)
+                        {
+                            var visitCountData = viewCount.FirstOrDefault(r => r.NewsSerialNumber == headline.NewsSerialNumber);
+                            headline.NewsViewCount = visitCountData != null ? visitCountData.VisitCount.ToString("N0") : "0";
+                        }
+                    }
                 }
             }
 
@@ -742,7 +769,7 @@ namespace Feature.Wealth.Component.Repositories
                         NewsTime = filteredData[0].NewsTime,
                         NewsTitle = filteredData[0].NewsTitle,
                         NewsSerialNumber = filteredData[0].NewsSerialNumber,
-                        NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + filteredData[0].NewsSerialNumber
+                        NewsDetailLink = detailUrl + "?id=" + filteredData[0].NewsSerialNumber
                     };
 
                     datas.Headlines = new List<HomeHeadlinesData>();
@@ -755,7 +782,7 @@ namespace Feature.Wealth.Component.Repositories
                             NewsTime = filteredData[i].NewsTime,
                             NewsTitle = filteredData[i].NewsTitle,
                             NewsSerialNumber = filteredData[i].NewsSerialNumber,
-                            NewsDetailLink = MarketNewsRelatedLinkSetting.GetMarketNewsDetailUrl() + "?id=" + filteredData[i].NewsSerialNumber
+                            NewsDetailLink = detailUrl + "?id=" + filteredData[i].NewsSerialNumber
                         };
 
                         datas.Headlines.Add(newsData);
@@ -790,5 +817,39 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         #endregion 首頁頭條新聞
+
+        /// <summary>
+        /// 取得頭條新聞瀏覽人次
+        /// </summary>
+        public IEnumerable<NewsVisitCountModel> GetNewsViewCount(Guid? pageItemId)
+        {
+            IEnumerable<NewsVisitCountModel> result = null;
+
+            try
+            {
+                string sql = @"
+            SELECT 
+                [PageId],
+                [VisitCount],
+                REPLACE(REPLACE([QueryStrings], 'id=%7b', '{'), '%7d', '}') AS NewsSerialNumber
+            FROM 
+                [dbo].[VisitCount] WITH(NOLOCK)
+            WHERE 
+                [PageId] = @PageId";
+
+                var param = new { PageId = pageItemId.Value };
+                result = DbManager.Custom.ExecuteIList<NewsVisitCountModel>(sql, param, CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+
+            return result;
+        }
     }
 }

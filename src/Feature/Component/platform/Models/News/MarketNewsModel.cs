@@ -1,4 +1,6 @@
-﻿namespace Feature.Wealth.Component.Models.News
+﻿using System;
+
+namespace Feature.Wealth.Component.Models.News
 {
     public class MarketNewsTableModel
     {
@@ -38,5 +40,13 @@
         public bool IsLike { get; set; }
         public string DetailUrl { get; set; }
         public bool Purchase { get; set; }
+    }
+
+    public class NewsVisitCountModel
+    {
+        public Guid PageId { get; set; }
+        public int VisitCount { get; set; }
+        public string QueryStrings { get; set; }
+        public string NewsSerialNumber { get; set; }
     }
 }

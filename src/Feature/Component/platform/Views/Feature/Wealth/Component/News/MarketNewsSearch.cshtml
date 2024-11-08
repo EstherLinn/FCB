@@ -739,8 +739,8 @@
                         type: 'POST',
                         data: params,
                     }).done(function (data, textStatus, jqXHR) {
-                        console.log(data);
 
+                        data = DecompressData(data);
                         initFilter(data);
 
                         if (isMarketNewsFirstCall) {
