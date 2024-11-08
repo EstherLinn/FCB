@@ -92,9 +92,8 @@ namespace Feature.Wealth.Component.Repositories
                         Value = src.CurrencyName,
                         Text = string.IsNullOrEmpty(src.CurrencyName) ? "-" : src.CurrencyName
                     };
-                    dest.NetAssetValueDate = DateTimeExtensions.FormatDate(src.BasicNetAssetValueDate);
+                    dest.MarketPriceDate = DateTimeExtensions.FormatDate(src.BasicMarketPriceDate);
                     dest.MarketPrice = ParseVolume(src.BasicMarketPrice.RoundingValue());
-                    dest.NetAssetValue = ParseVolume(src.BasicNetAssetValue.RoundingValue());
 
                     #region == 報酬率 ==
 
