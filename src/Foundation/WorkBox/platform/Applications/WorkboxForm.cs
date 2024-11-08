@@ -111,17 +111,17 @@ namespace Foundation.WorkBox.Applications.Workflows
         private bool IsApproval(string state) => APPROVAL.Equals(state) || PUBLISH.Equals(state);
 
         /// <summary>
-        /// 檢驗是否為第一銀行使用者可檢視之節點
+        /// 檢驗是否為第一銀行使用者可檢視之節點(同部門)
         /// </summary>
         /// <param name="state"></param>
         /// <returns></returns>
-        private bool IsFcb(string state) => this.IsFcbUser && !IsDraft(state);
+        private bool IsFcbDraft(string state, string code, string user) => this.IsFcbUser && !IsDraft(state) && CheckSameDepartment(code, user);
 
         /// <summary>
         /// 檢驗是否為第一銀行可檢視之節點(同部門)
         /// </summary>
         /// <returns></returns>
-        private bool IsFcbView(string state, string code, string user) => this.IsFcbUser && IsApproval(state) && CheckSameDepartment(code, user);
+        private bool IsFcbApproval(string state, string code, string user) => this.IsFcbUser && IsApproval(state) && CheckSameDepartment(code, user);
 
         /// <summary>
         /// Gets or sets the size of the page.
@@ -382,6 +382,7 @@ namespace Foundation.WorkBox.Applications.Workflows
             Assert.ArgumentNotNull(stateItems, "stateItems");
             Assert.ArgumentNotNull(control, "control");
             Item[] array = stateItems.Items.ToArray();
+
             if (array.Length != 0)
             {
                 int num = offset + pageSize;
@@ -389,7 +390,7 @@ namespace Foundation.WorkBox.Applications.Workflows
                 {
                     num = array.Length;
                 }
-                for (int i = offset; i < num; i++)
+                for (int i = offset ; i < num ; i++)
                 {
                     CreateItem(workflow, array[i], control);
                 }
@@ -402,6 +403,7 @@ namespace Foundation.WorkBox.Applications.Workflows
                 border.Padding = "5px 10px";
                 border.Class = "scWorkboxToolbarButtons";
                 WorkflowCommand[] commands = workflow.GetCommands(state.StateID);
+
                 foreach (WorkflowCommand workflowCommand in commands)
                 {
                     if (stateItems.CommandIds.Contains(workflowCommand.CommandID))
@@ -775,11 +777,13 @@ namespace Foundation.WorkBox.Applications.Workflows
                 return Array.Empty<DataUri>();
             }
             ArrayList arrayList = new ArrayList(items.Length);
+            var departmentCode = this.DepartmentCode;
+
             foreach (DataUri dataUri in items)
             {
                 Item item = Context.ContentDatabase.GetItem(dataUri);
 
-                if (item != null && item.Access.CanRead() && item.Access.CanReadLanguage() && item.Access.CanWriteLanguage() && (IsFcb(state.StateID) || Context.IsAdministrator || item.Locking.CanLock() || item.Locking.HasLock()))
+                if (item != null && item.Access.CanRead() && item.Access.CanReadLanguage() && item.Access.CanWriteLanguage() && (IsFcbDraft(state.StateID, departmentCode, item["__Submitted by"]) || Context.IsAdministrator || item.Locking.CanLock() || item.Locking.HasLock()))
                 {
                     arrayList.Add(dataUri);
                 }
@@ -1108,7 +1112,7 @@ namespace Foundation.WorkBox.Applications.Workflows
                 foreach (DataUri dataUri in items)
                 {
                     Item item = Context.ContentDatabase.GetItem(dataUri);
-                    if (item != null && item.Access.CanRead() && item.Access.CanReadLanguage() && item.Access.CanWriteLanguage() && (Context.IsAdministrator || item.Locking.CanLock() || item.Locking.HasLock() || IsFcbView(state.StateID, departmentCode, item["__Submitted by"])))
+                    if (item != null && item.Access.CanRead() && item.Access.CanReadLanguage() && item.Access.CanWriteLanguage() && (Context.IsAdministrator || item.Locking.CanLock() || item.Locking.HasLock() || IsFcbApproval(state.StateID, departmentCode, item["__Submitted by"])))
                     {
                         list.Add(item);
                         if (!flag)
