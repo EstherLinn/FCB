@@ -62,7 +62,7 @@ namespace Feature.Wealth.Component.Models.Consult
     public class QandA
     {
         public string Question { get; set; }
-        public string Answer { get; set; }
+        public HtmlString Answer { get; set; }
     }
 
     public class ConsultSchedule
