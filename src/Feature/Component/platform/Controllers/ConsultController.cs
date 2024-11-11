@@ -125,7 +125,7 @@ namespace Feature.Wealth.Component.Controllers
                     qandAListModel.QandAList.Add(new QandA
                     {
                         Question = ItemUtils.GetFieldValue(qna, Template.ConsultQandA.Fields.Question),
-                        Answer = ItemUtils.GetFieldValue(qna, Template.ConsultQandA.Fields.Answer)
+                        Answer = new HtmlString(ItemUtils.GetFieldValue(qna, Template.ConsultQandA.Fields.Answer))
                     });
                 }
             }
