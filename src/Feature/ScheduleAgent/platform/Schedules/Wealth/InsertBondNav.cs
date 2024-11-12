@@ -4,7 +4,6 @@ using Feature.Wealth.ScheduleAgent.Repositories;
 using Feature.Wealth.ScheduleAgent.Services;
 using Foundation.Wealth.Models;
 using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
@@ -26,12 +25,14 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var date = DateTime.Now.ToString("yyyyMMdd");
                 string fileName = "bondnav-" + date + ".csv";
                 var TrafficLight = NameofTrafficLight.BondNav;
+                var filedate = etlService.GetFileDate(fileName);
 
-                var IsfilePath = await etlService.ExtractFile(fileName, "csv");
-                if (etlService.ContainsDateFormat(IsfilePath.Key, out string extractedDate, "yyyyMMdd"))
+                if (etlService.ContainsDateFormat(filedate, out string extractedDate, "yyyyMMdd"))
                 {
                     fileName = "bondnav-" + extractedDate + ".csv";
                 }
+
+                var IsfilePath = await etlService.ExtractFile(fileName, "csv");
 
                 if (IsfilePath.Value)
                 {
@@ -43,7 +44,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                         _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
-                        _repository.BulkInsertToDatabaseForHIS(datastoHis, "[BondHistoryPrice]", "BondCode", "Date", fileName, startTime);
+                        _repository.BulkInsertToDatabaseForHISWithDate(datastoHis, "[BondHistoryPrice]", "BondCode", "Date", fileName, startTime, filedate);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                         etlService.FinishJob(fileName, startTime, "csv");
                     }

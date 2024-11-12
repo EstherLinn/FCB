@@ -41,20 +41,19 @@ namespace Feature.Wealth.ScheduleAgent.Services
 
             if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
             {
-                this.LocalDirectory = this._Supplementsettings["LocalDirectory"];
-                this.FileNameDate = this._Supplementsettings["FileNameDate"];
-                DateTime parsedDate;
-
-                if (DateTime.TryParseExact(this.FileNameDate, "yyyyMMdd'T'HHmmss'Z'", null, DateTimeStyles.AssumeUniversal, out parsedDate))
+                this._settings = jobItems.FirstOrDefault(j => j.TemplateID == Templates.FtpsSettings.Id);
+                if (this._settings != null)
                 {
-                    DateTime taipeiDateTime = parsedDate.AddHours(8);
-                    this.FileNameDate = taipeiDateTime.ToString("yyyyMMdd");
-                    this._logger.Info($"FileNameDate: {this.FileNameDate}");
+                    SetDirectory();
+                    EnsureDirectoryExists(this.LocalDirectory);
                 }
-                else
+                var filenamedate = ItemUtils.GetLocalDateFieldValue(this._Supplementsettings, "FileNameDate");
+                
+                this.FileNameDate = filenamedate?.ToLocalTime().ToString("yyyyMMdd");
+
+                if (this._Supplementsettings.IsChecked("Use Physical Path"))
                 {
-                    this.FileNameDate = DateTime.Now.ToString("yyyyMMdd");
-                    this._logger.Warn($"日期格式轉換有問題，原始值: {this._Supplementsettings["FileNameDate"]}");
+                    this.LocalDirectory = this._Supplementsettings["LocalDirectory"];
                 }
             }
             else
@@ -264,77 +263,84 @@ namespace Feature.Wealth.ScheduleAgent.Services
                 _repository.LogChangeHistory(fileName, $"{fileName}排程完成", string.Empty, 0, duration.TotalSeconds, "Y", Models.Sysjust.ModificationID.Done);
             }
         }
+
         /// <summary>
         /// 檢查Ftps檔案存不存在，以及是否要做補檔
         /// </summary>
         public async Task<KeyValuePair<string, bool>> ExtractFile(string fileName, string extension = "txt")
         {
-            if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
+            if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement") && this._Supplementsettings.IsChecked("Use Physical Path"))
             {
-                return new KeyValuePair<string, bool>("執行補檔" + this.FileNameDate, true);
+                return new KeyValuePair<string, bool>("執行補檔", true);
             }
             else if (this._settings != null)
             {
-                try
-                {
-                    // 建立FTPs連線
-                    using (var ftpClient = new AsyncFtpClient(this._settings["Ip"], this._settings["UserName"], this._settings["Password"], this._settings.GetInteger("Port") ?? 21))
-                    {
-                        await ftpClient.SetWorkingDirectory(this.WorkingDirectory);
-                        await ftpClient.Connect();
-
-                        //建立本機檔案目錄路徑
-                        string localFiledonePath = "";
-
-                        localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.{extension}");
-                        fileName = Path.ChangeExtension(fileName, extension);
-
-                        //建立ftps上檔案目錄路徑
-                        var filePath = Path.Combine(this.WorkingDirectory, fileName);
-
-                        //確認檔案是否存在
-                        if (!await ftpClient.FileExists(filePath))
-                        {
-                            this._logger.Error($"File {fileName} not found.");
-                            return new KeyValuePair<string, bool>($"File {fileName} not found.", false);
-                        }
-                        string localFilePath = Path.Combine(this.LocalDirectory, fileName);
-
-                        //確認檔案是否相同
-                        if (File.Exists(localFilePath) && await ftpClient.CompareFile(localFilePath, filePath, FtpCompareOption.Checksum) == FtpCompareResult.Equal)
-                        {
-                            string localFileHash = CalculateHash(localFilePath);
-
-                            if (File.Exists(localFiledonePath))
-                            {
-                                string localFiledoneHash = CalculateHash(localFiledonePath);
-                                if (localFileHash.Equals(localFiledoneHash))
-                                {
-                                    this._logger.Error("Same file content, skip download.");
-                                    return new KeyValuePair<string, bool>("Same file content, skip download.", false);
-                                }
-                            }
-                            this._logger.Error("Same file content, skip download.");
-                            return new KeyValuePair<string, bool>("Same file content, skip download.", false);
-                        }
-                        //下載檔案
-                        if (await ftpClient.DownloadFile(localFilePath, filePath, FtpLocalExists.Overwrite) == FtpStatus.Success)
-                        {
-                            return new KeyValuePair<string, bool>("從FTPS下載檔案", true);
-                        }
-
-                        this._logger.Error($"File {fileName} not found on FTPS server.");
-                        return new KeyValuePair<string, bool>($"File {fileName} not found on FTPS server.", false);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    this._logger.Error($"Error while downloading file from FTPS server: {ex.Message}", ex);
-                    return new KeyValuePair<string, bool>($"Error while downloading file from FTPS server: {ex.Message}", false);
-                }
+                var result = await Ftp(fileName, extension);
+                return result;
             }
 
             return new KeyValuePair<string, bool>($"Error while ExtractFile", false);
+        }
+
+        private async Task<KeyValuePair<string, bool>> Ftp(string fileName, string extension = "txt")
+        {
+            try
+            {
+                // 建立FTPs連線
+                using (var ftpClient = new AsyncFtpClient(this._settings["Ip"], this._settings["UserName"], this._settings["Password"], this._settings.GetInteger("Port") ?? 21))
+                {
+                    await ftpClient.SetWorkingDirectory(this.WorkingDirectory);
+                    await ftpClient.Connect();
+
+                    //建立本機檔案目錄路徑
+                    string localFiledonePath = "";
+
+                    localFiledonePath = Path.Combine(this.LocalDirectory, $"{fileName}_done.{extension}");
+                    fileName = Path.ChangeExtension(fileName, extension);
+
+                    //建立ftps上檔案目錄路徑
+                    var filePath = Path.Combine(this.WorkingDirectory, fileName);
+
+                    //確認檔案是否存在
+                    if (!await ftpClient.FileExists(filePath))
+                    {
+                        this._logger.Error($"File {fileName} not found.");
+                        return new KeyValuePair<string, bool>($"File {fileName} not found.", false);
+                    }
+                    string localFilePath = Path.Combine(this.LocalDirectory, fileName);
+
+                    //確認檔案是否相同
+                    if (File.Exists(localFilePath) && await ftpClient.CompareFile(localFilePath, filePath, FtpCompareOption.Checksum) == FtpCompareResult.Equal)
+                    {
+                        string localFileHash = CalculateHash(localFilePath);
+
+                        if (File.Exists(localFiledonePath))
+                        {
+                            string localFiledoneHash = CalculateHash(localFiledonePath);
+                            if (localFileHash.Equals(localFiledoneHash))
+                            {
+                                this._logger.Error("Same file content, skip download.");
+                                return new KeyValuePair<string, bool>("Same file content, skip download.", false);
+                            }
+                        }
+                        this._logger.Error("Same file content, skip download.");
+                        return new KeyValuePair<string, bool>("Same file content, skip download.", false);
+                    }
+                    //下載檔案
+                    if (await ftpClient.DownloadFile(localFilePath, filePath, FtpLocalExists.Overwrite) == FtpStatus.Success)
+                    {
+                        return new KeyValuePair<string, bool>("從FTPS下載檔案", true);
+                    }
+
+                    this._logger.Error($"File {fileName} not found on FTPS server.");
+                    return new KeyValuePair<string, bool>($"File {fileName} not found on FTPS server.", false);
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger.Error($"Error while downloading file from FTPS server: {ex.Message}", ex);
+                return new KeyValuePair<string, bool>($"Error while downloading file from FTPS server: {ex.Message}", false);
+            }
         }
 
 
@@ -368,5 +374,20 @@ namespace Feature.Wealth.ScheduleAgent.Services
             return false;
         }
 
+        public string GetFileDate(string fileName)
+        {
+            if (this._Supplementsettings != null && this._Supplementsettings.IsChecked("Do Supplement"))
+            {
+                return this.FileNameDate;
+            }
+            else
+            {
+                if (ContainsDateFormat(fileName, out string extractedDate, "yyyyMMdd"))
+                {
+                    fileName = extractedDate;
+                }
+                return fileName;
+            }
+        }
     }
 }

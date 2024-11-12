@@ -192,8 +192,6 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         {
             var htmlBody = new StringBuilder();
             htmlBody.Append($@"
-            <html>
-            <body>
                 <h3>{title}：{line} 筆</h3>
                 <table border='1' style='width:100%; text-align:center;'>
                     <tr>
@@ -229,8 +227,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             htmlBody.Append(@"
                 </table>
-            </body>
-            </html>");
+           ");
 
             return htmlBody.ToString();
         }
