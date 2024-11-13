@@ -9,7 +9,7 @@ namespace Feature.Wealth.Service.Controllers
     {
         private readonly FundRankApiRepository _fundRankApiRepository = new FundRankApiRepository();
 
-        [HttpPost]
+        [HttpGet]
         [OutputCache(Duration = 30, VaryByParam = "data")]
         public ActionResult GetFundRank(string data = "6")
         {
