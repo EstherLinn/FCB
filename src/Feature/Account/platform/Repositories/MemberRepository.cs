@@ -413,7 +413,6 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_EMP_PI_RISK_ATTR,
                             B.CIF_HIGH_ASSET_FLAG,
                             B.CIF_HIGH_ASSET_VAL_DATE,
-                            B.CIF_E_MAIL_ADDRESS AS MemberEmail,
                             B.CIF_TEL_NO1 AS Phone1,
                             B.CIF_TEL_NO3 AS Phone3
                             FROM [FCB_Member]  AS A WITH (NOLOCK)
@@ -489,7 +488,6 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_EMP_PI_RISK_ATTR,
                             B.CIF_HIGH_ASSET_FLAG,
                             B.CIF_HIGH_ASSET_VAL_DATE,
-                            B.CIF_E_MAIL_ADDRESS AS MemberEmail,
                             B.CIF_TEL_NO1 AS Phone1,
                             B.CIF_TEL_NO3 AS Phone3
                             FROM [FCB_Member] AS A WITH (NOLOCK)
@@ -555,7 +553,6 @@ namespace Feature.Wealth.Account.Repositories
                             B.CIF_EMP_PI_RISK_ATTR,
                             B.CIF_HIGH_ASSET_FLAG,
                             B.CIF_HIGH_ASSET_VAL_DATE,
-                            B.CIF_E_MAIL_ADDRESS AS MemberEmail,
                             B.CIF_TEL_NO1 AS Phone1,
                             B.CIF_TEL_NO3 AS Phone3
                             FROM [FCB_Member] AS A WITH (NOLOCK)
