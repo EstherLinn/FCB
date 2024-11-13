@@ -15,8 +15,8 @@ namespace Feature.Wealth.Service.Controllers
         {
             var result = new FundCompanyList()
             {
-                Funds = _fundRepository.GetFundCompany("O"),
-                WFunds = _fundRepository.GetFundCompany("D")
+                Funds = _fundRepository.GetOrSetFundCompanyCache("O"),
+                WFunds = _fundRepository.GetOrSetFundCompanyCache("D")
             };
             return new JsonNetResult(result);
         }
@@ -25,7 +25,7 @@ namespace Feature.Wealth.Service.Controllers
         [OutputCache(Duration = 30)]
         public ActionResult FundTargetJson()
         {
-            var result = _fundRepository.GetInvestmentTargets();
+            var result = _fundRepository.GetOrSetInvestmentTargets();
 
             return new JsonNetResult(result);
         }

@@ -2,55 +2,89 @@
 using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 
 namespace Feature.Wealth.Service.Repositories
 {
     public class FundApiRepository
     {
-        public List<Dictionary<string, string>> GetFundCompany(string dff)
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private static readonly object _lock = new object();
+        private readonly string FundCompanyApiCache = $"Fcb_FundCompanyApiCache";
+        private readonly string FundInvestmentTargetsApiCache = $"Fcb_FundInvestmentTargetsApiCache";
+
+        public List<Dictionary<string, string>> GetOrSetFundCompanyCache(string dff)
         {
-            string fund_bsc = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
-            var sql = @$" SELECT DISTINCT [FundCompanyID], [FundCompanyName]
-                 FROM {fund_bsc} WITH (NOLOCK)
-                 WHERE [DomesticForeignFundIndicator] = @dff";
-            var para = new { dff };
-            var fundCompanys = DbManager.Custom.ExecuteIList<FundCompany>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+            lock (_lock)
+            {
+                var fundCompanys = (List<FundCompany>)_cache.Get(FundCompanyApiCache);
+                if (fundCompanys == null)
+                {
+                    string fund_bsc = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
 
-            var result = fundCompanys
-                .Select(fc => new Dictionary<string, string> { { fc.FundCompanyID, fc.FundCompanyName } })
-                .ToList();
+                    var sql = @$" SELECT DISTINCT [FundCompanyID], [FundCompanyName]
+                                  FROM {fund_bsc} WITH (NOLOCK)
+                                  WHERE [DomesticForeignFundIndicator] = @dff";
+                    var para = new { dff };
 
-            return result;
+                    fundCompanys = DbManager.Custom.ExecuteIList<FundCompany>(sql, para, commandType: System.Data.CommandType.Text)?.ToList();
+
+                    if (fundCompanys != null)
+                    {
+                        _cache.Set(FundCompanyApiCache, fundCompanys, DateTimeOffset.Now.AddMinutes(30));
+                    }
+                }
+
+                var result = fundCompanys
+                    .Select(fc => new Dictionary<string, string> { { fc.FundCompanyID, fc.FundCompanyName } })
+                    .ToList();
+
+                return result;
+            }
         }
 
-        public List<Dictionary<string, string>> GetInvestmentTargets()
+        public List<Dictionary<string, string>> GetOrSetInvestmentTargets()
         {
-            string fund_bsc = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
-            string basic_fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Basic_Fund);
-            var sql = $@"SELECT
-                [InvestmentTargetID] AS FundInvestmentTargetID,
-                [InvestmentTargetName] AS FundInvestmentTargetName
-            FROM 
-                {fund_bsc} WITH (NOLOCK)
-            WHERE 
-                [BankProductCode] IS NOT NULL
-                AND [InvestmentTargetID] IS NOT NULL
-                AND [InvestmentTargetName] IS NOT NULL
-            UNION
-            SELECT
-                [UnKnown] AS FundInvestmentTargetID,
-                [FundType] AS FundInvestmentTargetName
-            FROM 
-                {basic_fund} WITH (NOLOCK)";
+            lock (_lock)
+            {
+                var investmentTargets = (List<FundInvestmentTarget>)_cache.Get(FundInvestmentTargetsApiCache);
+                if (investmentTargets == null)
+                {
+                    string fund_bsc = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
+                    string basic_fund = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.Sysjust_Basic_Fund);
+                    var sql = $@"SELECT
+                                [InvestmentTargetID] AS FundInvestmentTargetID,
+                                [InvestmentTargetName] AS FundInvestmentTargetName
+                                FROM 
+                                    {fund_bsc} WITH (NOLOCK)
+                                WHERE 
+                                    [BankProductCode] IS NOT NULL
+                                    AND [InvestmentTargetID] IS NOT NULL
+                                    AND [InvestmentTargetName] IS NOT NULL
+                                UNION
+                                SELECT
+                                    [UnKnown] AS FundInvestmentTargetID,
+                                    [FundType] AS FundInvestmentTargetName
+                                FROM 
+                                    {basic_fund} WITH (NOLOCK)";
 
-            var investmentTargets = DbManager.Custom.ExecuteIList<FundInvestmentTarget>(sql, null, commandType: System.Data.CommandType.Text)?.ToList();
-            var result = investmentTargets
-                .Select(it => new Dictionary<string, string> { { it.FundInvestmentTargetID, it.FundInvestmentTargetName } })
-                .ToList();
+                    investmentTargets = DbManager.Custom.ExecuteIList<FundInvestmentTarget>(sql, null, commandType: System.Data.CommandType.Text)?.ToList();
 
-            return result;
+                    if (investmentTargets != null)
+                    {
+                        _cache.Set(FundInvestmentTargetsApiCache, investmentTargets, DateTimeOffset.Now.AddMinutes(30));
+                    }
+                }
+
+                var result = investmentTargets
+                    .Select(it => new Dictionary<string, string> { { it.FundInvestmentTargetID, it.FundInvestmentTargetName } })
+                    .ToList();
+
+                return result;
+            }
         }
     }
 }
