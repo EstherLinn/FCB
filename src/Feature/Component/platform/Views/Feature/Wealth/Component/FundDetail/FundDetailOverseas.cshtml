@@ -3499,7 +3499,7 @@
                                                 maxValue = point.y;
                                                 maxPoint = point;
                                             }
-                                            if (!minValue || minValue > point.y) {
+                                            if ((!minValue && minValue !== 0) || minValue > point.y) {
                                                 minValue = point.y;
                                                 minPoint = point;
                                             }
