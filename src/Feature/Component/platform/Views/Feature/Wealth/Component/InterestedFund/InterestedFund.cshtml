@@ -3,7 +3,7 @@
 @model InterestedFundModle
 
 @{
-    var FundCloseYearPerformanceApiUrl = ClientRoute.GenerateUrl(this, "FundDetail", "GetCloseYearPerformance");
+    var FundCloseYearPerformanceApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetCloseYearPerformance");
     var InterestedFundApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetInterestedFund");
 }
 
@@ -57,10 +57,11 @@
                     url: '@FundCloseYearPerformanceApiUrl',
                     method: 'POST',
                     data: {
-                        fundId: fundId
+                        fundID: fundId
                     },
                     success: function (res) {
-                        if (res && res.resultSet && res.resultSet.result && res.resultSet.result.length !== 0) {
+                      
+                        if ( res.resultSet && res.resultSet.result && res.resultSet.result.length !== 0) {
                             const dataValues = res.resultSet.result.map(item => parseFloat(item.v2));
                             dataValues.reverse();
 
