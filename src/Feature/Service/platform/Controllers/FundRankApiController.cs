@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Service.Repositories;
+﻿using Feature.Wealth.Service.Filter;
+using Feature.Wealth.Service.Repositories;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using static Feature.Wealth.Service.Models.FundRankApi.FundRankApiModel;
@@ -10,6 +11,7 @@ namespace Feature.Wealth.Service.Controllers
         private readonly FundRankApiRepository _fundRankApiRepository = new FundRankApiRepository();
 
         [HttpGet]
+        [AuthorizationFilter]
         [OutputCache(Duration = 30, VaryByParam = "data")]
         public ActionResult GetFundRank(string data = "6")
         {
