@@ -63,33 +63,37 @@
                     try {
                         if (performanceData && performanceData.length !== 0) {
                             performanceData.forEach(function (data) {
-                                var $chartElement = $(`[data-chart="mini"][data-fund-id="${data.fundId}"]`);
-                                if ($chartElement.length > 0) {
-                                    const dataValues = data.resultSet.result.map(item => parseFloat(item.v2));
-                                    dataValues.reverse();
+                                if (data.fundId && data.resultSet && data.resultSet.result && data.resultSet.result.length > 0) {
+                                    var $chartElement = $(`[data-chart="mini"][data-fund-id="${data.fundId}"]`);
+                                    if ($chartElement.length > 0) {
+                                        const dataValues = data.resultSet.result.map(item => parseFloat(item.v2));
+                                        dataValues.reverse();
 
-                                    $chartElement.highcharts({
-                                        chart: {
-                                            type: 'area',
-                                            margin: [0, 0, 0, 0],
-                                            backgroundColor: 'transparent'
-                                        },
-                                        title: { text: undefined },
-                                        legend: { enabled: false },
-                                        plotOptions: {
-                                            series: {
-                                                enableMouseTracking: false,
-                                                marker: { enabled: false }
-                                            }
-                                        },
-                                        credits: { enabled: false },
-                                        xAxis: { visible: false },
-                                        yAxis: { visible: false },
-                                        series: [{
-                                            fillOpacity: 0.06,
-                                            data: dataValues
-                                        }]
-                                    });
+                                        $chartElement.highcharts({
+                                            chart: {
+                                                type: 'area',
+                                                margin: [0, 0, 0, 0],
+                                                backgroundColor: 'transparent'
+                                            },
+                                            title: { text: undefined },
+                                            legend: { enabled: false },
+                                            plotOptions: {
+                                                series: {
+                                                    enableMouseTracking: false,
+                                                    marker: { enabled: false }
+                                                }
+                                            },
+                                            credits: { enabled: false },
+                                            xAxis: { visible: false },
+                                            yAxis: { visible: false },
+                                            series: [{
+                                                fillOpacity: 0.06,
+                                                data: dataValues
+                                            }]
+                                        });
+                                    }
+                                } else {
+                                    console.log(`沒有對應到的績效資料或績效結果為空值，fundId: ${data.fundId}`);
                                 }
                             });
                         } else {
@@ -172,40 +176,40 @@
 
                 // 將 fund.FundId 設置到 data-fund-id 屬性
                 fundHTML += `
-                            <div class="swiper-slide c-swiper__slide">
-                                <div class="c-box c-box--goods">
-                                    <div class="c-box__main">
-                                        <div class="c-cardFund">
-                                            <a href="${fund.DetailUrl}" class="c-cardFund__name u-ellipsis-2">
-                                                ${fund.FundId} ${fund.FundName}
-                                            </a>
-                                            <div class="c-cardFund__trend">
-                                                <div class="c-cardFund__rate">
-                                                    <span class="t-small">
-                                                        <span class="${style1}">月報酬率</span>
-                                                        <span class="${style2}">${rateOfReturnText}%</span>
-                                                    </span>
+                                        <div class="swiper-slide c-swiper__slide">
+                                            <div class="c-box c-box--goods">
+                                                <div class="c-box__main">
+                                                    <div class="c-cardFund">
+                                                        <a href="${fund.DetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                                            ${fund.FundId} ${fund.FundName}
+                                                        </a>
+                                                        <div class="c-cardFund__trend">
+                                                            <div class="c-cardFund__rate">
+                                                                <span class="t-small">
+                                                                    <span class="${style1}">月報酬率</span>
+                                                                    <span class="${style2}">${rateOfReturnText}%</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="c-cardFund__charts">
+                                                                <!-- 在這裡設置 data-fund-id -->
+                                                                <div class="o-charts ${style3}" data-chart="mini" data-fund-id="${fund.FundId}"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="c-cardFund__charts">
-                                                    <!-- 在這裡設置 data-fund-id -->
-                                                    <div class="o-charts ${style3}" data-chart="mini" data-fund-id="${fund.FundId}"></div>
+                                                <div class="c-box__actions">
+                                                    <ul class="l-collect l-collect--divider">
+                                                        <li class="l-collect__item">
+                                                            ${fund.FocusButtonHtml}
+                                                        </li>
+                                                        <li class="l-collect__item">
+                                                            ${fund.CompareButtonHtml}
+                                                        </li>
+                                                        ${SubscribeButtonHtml}
+                                                    </ul>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="c-box__actions">
-                                        <ul class="l-collect l-collect--divider">
-                                            <li class="l-collect__item">
-                                                ${fund.FocusButtonHtml}
-                                            </li>
-                                            <li class="l-collect__item">
-                                                ${fund.CompareButtonHtml}
-                                            </li>
-                                            ${SubscribeButtonHtml}
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>`;
+                                        </div>`;
             });
 
             // 插入生成的基金 HTML
