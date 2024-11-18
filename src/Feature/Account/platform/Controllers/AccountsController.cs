@@ -250,7 +250,7 @@ namespace Feature.Wealth.Account.Controllers
                             step = "Step3 理財網無會員，取得理財網db cif客戶資料";
                             //取得CIF資料
                             var cifMember = _memberRepository.GetWebBankUserInfo(id);
-                            if (cifMember == null)
+                            if (cifMember == null || string.IsNullOrEmpty(cifMember.CIF_PROMO_CODE))
                             {
                                 step = $"Step3  cifMember:null id={MaskIdNumber(id)}";
                                 Session["LoginStatus"] = false;
@@ -284,7 +284,7 @@ namespace Feature.Wealth.Account.Controllers
                             step = "Step3 理財網已有會員直接登入";
                             //登入
                             FcbMemberModel member = _memberRepository.GetMemberInfo(PlatFormEunm.WebBank, id);
-                            if (member == null)
+                            if (member == null  || string.IsNullOrEmpty(member.PlatFormId))
                             {
                                 errorDescription = $"取得理財網會員資料有誤 id={MaskIdNumber(id)}";
                                 Session["LoginStatus"] = false;
@@ -355,7 +355,7 @@ namespace Feature.Wealth.Account.Controllers
                             step = $"Step3 創建用戶開始，取得理財網db CIF資料";
                             //創建User
                             CIFMember cifMember = _memberRepository.GetAppUserInfo(code);
-                            if (cifMember == null)
+                            if (cifMember == null || string.IsNullOrEmpty(cifMember.CIF_PROMO_CODE))
                             {
                                 step = "Step3-1 cifMember:null";
                                 Session["LoginStatus"] = false;
@@ -386,7 +386,7 @@ namespace Feature.Wealth.Account.Controllers
                         {
                             step = $"Step3 理財網已有會員，直接登入";
                             FcbMemberModel member = _memberRepository.GetAppMemberInfo(PlatFormEunm.WebBank, code);
-                            if (member == null)
+                            if (member == null || string.IsNullOrEmpty(member.PlatFormId))
                             {
                                 errorDescription = "取得會員資料有誤";
                                 Session["LoginStatus"] = false;
