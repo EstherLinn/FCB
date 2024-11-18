@@ -26,19 +26,37 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GetCloseYearPerformance(string fundID)
+        public async Task<ActionResult> GetCloseYearPerformanceBatch(string fundIDs)
         {
-            string cacheKey = $"CloseYearPerformance_{fundID.ToUpper()}";
-            var cachedData = _cache.Get(cacheKey) as JObject;
+            var fundIdArray = fundIDs.ToUpper().Split(',');
+            JArray performanceDataArray = new JArray();
 
-            if (cachedData != null)
+            foreach (var fundID in fundIdArray)
             {
-                return new JsonNetResult(cachedData);
+                string cacheKey = $"CloseYearPerformance_{fundID}";
+                var cachedData = _cache.Get(cacheKey) as JObject;
+
+                JObject resultObject = new JObject
+                {
+                    ["fundId"] = fundID,
+                    ["resultSet"] = new JObject()
+                };
+
+                if (cachedData != null)
+                {
+                    resultObject["resultSet"] = cachedData["resultSet"];
+                }
+                else
+                {
+                    var resp = await _djMoneyApiRespository.GetGetCloseYearPerformance(fundID);
+                    _cache.Add(cacheKey, resp, DateTimeOffset.Now.AddMinutes(30));
+                    resultObject["resultSet"] = resp["resultSet"];
+                }
+
+                performanceDataArray.Add(resultObject);
             }
 
-            var resp = await _djMoneyApiRespository.GetGetCloseYearPerformance(fundID.ToUpper());
-            _cache.Add(cacheKey, resp, DateTimeOffset.Now.AddMinutes(30));
-            return new JsonNetResult(resp);
+            return new JsonNetResult(performanceDataArray);
         }
     }
 }

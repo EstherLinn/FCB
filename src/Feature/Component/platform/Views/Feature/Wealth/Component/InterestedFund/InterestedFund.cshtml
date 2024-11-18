@@ -3,7 +3,7 @@
 @model InterestedFundModle
 
 @{
-    var FundCloseYearPerformanceApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetCloseYearPerformance");
+    var FundCloseYearPerformanceApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetCloseYearPerformanceBatch");
     var InterestedFundApiUrl = ClientRoute.GenerateUrl(this, "InterestedFund", "GetInterestedFund");
 }
 
@@ -39,6 +39,8 @@
                     if (data != null && data.length != 0) {
                         realrenderRecommendedFunds(event, data);
                         fundinitializeSwiper(eventString);
+                        // 請求六支基金的績效數據
+                        getBatchFundPerformance(data);
                     }
                 },
                 error: function (xhr, status, error) {
@@ -47,54 +49,59 @@
             });
         }
 
-        //請求績效線圖資料並繪圖
-        function initCharts() {
-            $('[data-chart="mini"]').each(function (i, el) {
-                var $chartElement = $(el);
-                var fundId = $chartElement.data('fund-id');
+        //請求六支基金的績效數據並繪圖
+        function getBatchFundPerformance(fundData) {
+            var fundIds = fundData.map(fund => fund.FundId).join(',');
 
-                $.ajax({
-                    url: '@FundCloseYearPerformanceApiUrl',
-                    method: 'POST',
-                    data: {
-                        fundID: fundId
-                    },
-                    success: function (res) {
-                      
-                        if ( res.resultSet && res.resultSet.result && res.resultSet.result.length !== 0) {
-                            const dataValues = res.resultSet.result.map(item => parseFloat(item.v2));
-                            dataValues.reverse();
+            $.ajax({
+                url: '@FundCloseYearPerformanceApiUrl',
+                method: 'POST',
+                data: {
+                    fundIDs: fundIds
+                },
+                success: function (performanceData) {
+                    try {
+                        if (performanceData && performanceData.length !== 0) {
+                            performanceData.forEach(function (data) {
+                                var $chartElement = $(`[data-chart="mini"][data-fund-id="${data.fundId}"]`);
+                                if ($chartElement.length > 0) {
+                                    const dataValues = data.resultSet.result.map(item => parseFloat(item.v2));
+                                    dataValues.reverse();
 
-                            $chartElement.highcharts({
-                                chart: {
-                                    type: 'area',
-                                    margin: [0, 0, 0, 0],
-                                    backgroundColor: 'transparent'
-                                },
-                                title: { text: undefined },
-                                legend: { enabled: false },
-                                plotOptions: {
-                                    series: {
-                                        enableMouseTracking: false,
-                                        marker: { enabled: false }
-                                    }
-                                },
-                                credits: { enabled: false },
-                                xAxis: { visible: false },
-                                yAxis: { visible: false },
-                                series: [{
-                                    fillOpacity: 0.06,
-                                    data: dataValues
-                                }]
+                                    $chartElement.highcharts({
+                                        chart: {
+                                            type: 'area',
+                                            margin: [0, 0, 0, 0],
+                                            backgroundColor: 'transparent'
+                                        },
+                                        title: { text: undefined },
+                                        legend: { enabled: false },
+                                        plotOptions: {
+                                            series: {
+                                                enableMouseTracking: false,
+                                                marker: { enabled: false }
+                                            }
+                                        },
+                                        credits: { enabled: false },
+                                        xAxis: { visible: false },
+                                        yAxis: { visible: false },
+                                        series: [{
+                                            fillOpacity: 0.06,
+                                            data: dataValues
+                                        }]
+                                    });
+                                }
                             });
                         } else {
-                            console.log('沒有資料，fundId:', fundId);
+                            console.log('沒有績效資料');
                         }
-                    },
-                    error: function (err) {
-                        console.error('AJAX 請求失敗，fundId:', fundId, err);
+                    } catch (error) {
+                        console.error('處理績效資料時發生錯誤', error);
                     }
-                });
+                },
+                error: function (err) {
+                    console.error('AJAX 請求失敗', err);
+                }
             });
         }
 
@@ -165,47 +172,44 @@
 
                 // 將 fund.FundId 設置到 data-fund-id 屬性
                 fundHTML += `
-                    <div class="swiper-slide c-swiper__slide">
-                        <div class="c-box c-box--goods">
-                            <div class="c-box__main">
-                                <div class="c-cardFund">
-                                    <a href="${fund.DetailUrl}" class="c-cardFund__name u-ellipsis-2">
-                                        ${fund.FundId} ${fund.FundName}
-                                    </a>
-                                    <div class="c-cardFund__trend">
-                                        <div class="c-cardFund__rate">
-                                            <span class="t-small">
-                                                <span class="${style1}">月報酬率</span>
-                                                <span class="${style2}">${rateOfReturnText}%</span>
-                                            </span>
-                                        </div>
-                                        <div class="c-cardFund__charts">
-                                            <!-- 在這裡設置 data-fund-id -->
-                                            <div class="o-charts ${style3}" data-chart="mini" data-fund-id="${fund.FundId}"></div>
+                            <div class="swiper-slide c-swiper__slide">
+                                <div class="c-box c-box--goods">
+                                    <div class="c-box__main">
+                                        <div class="c-cardFund">
+                                            <a href="${fund.DetailUrl}" class="c-cardFund__name u-ellipsis-2">
+                                                ${fund.FundId} ${fund.FundName}
+                                            </a>
+                                            <div class="c-cardFund__trend">
+                                                <div class="c-cardFund__rate">
+                                                    <span class="t-small">
+                                                        <span class="${style1}">月報酬率</span>
+                                                        <span class="${style2}">${rateOfReturnText}%</span>
+                                                    </span>
+                                                </div>
+                                                <div class="c-cardFund__charts">
+                                                    <!-- 在這裡設置 data-fund-id -->
+                                                    <div class="o-charts ${style3}" data-chart="mini" data-fund-id="${fund.FundId}"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="c-box__actions">
+                                        <ul class="l-collect l-collect--divider">
+                                            <li class="l-collect__item">
+                                                ${fund.FocusButtonHtml}
+                                            </li>
+                                            <li class="l-collect__item">
+                                                ${fund.CompareButtonHtml}
+                                            </li>
+                                            ${SubscribeButtonHtml}
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="c-box__actions">
-                                <ul class="l-collect l-collect--divider">
-                                    <li class="l-collect__item">
-                                        ${fund.FocusButtonHtml}
-                                    </li>
-                                    <li class="l-collect__item">
-                                        ${fund.CompareButtonHtml}
-                                    </li>
-                                    ${SubscribeButtonHtml}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>`;
+                            </div>`;
             });
 
             // 插入生成的基金 HTML
             $swiperWrapper.append(fundHTML);
-
-            // 渲染完基金後初始化圖表
-            initCharts();
         }
     })(jQuery, window, document);
 
