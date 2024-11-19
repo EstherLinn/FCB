@@ -84,6 +84,7 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
+            MailSchema advisorMail = new MailSchema { MailTo = this._consultRepository.GetEmployeeEmail(consultSchedule)};
 
             if (action == "1")
             {
@@ -95,12 +96,15 @@ namespace Feature.Wealth.Component.Controllers
 
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
                 mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
+                advisorMail.Topic = this._consultRepository.GetSuccessMailTopic();
+                advisorMail.Content = this._consultRepository.GetAdvisorSuccessMailContent(consultSchedule, url);
 
                 using (new SecurityDisabler())
                 {
                     using (new LanguageSwitcher("en"))
                     {
                         this._consultRepository.SendMail(mail, GetMailSetting());
+                        this._consultRepository.SendMail(advisorMail, GetMailSetting());
 
                         var mailRecord = this._consultRepository.GetMailRecord(consultSchedule, url);
                         this._consultRepository.InsertMailRecords(new List<MailRecord>() { mailRecord });

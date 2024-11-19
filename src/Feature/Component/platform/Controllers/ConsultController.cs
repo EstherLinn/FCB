@@ -726,6 +726,7 @@ namespace Feature.Wealth.Component.Controllers
             try
             {
                 MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
+                MailSchema advisorMail = new MailSchema { MailTo = this._consultRepository.GetEmployeeEmail(consultSchedule)};
 
                 var currentRequestUrl = Request.Url;
                 var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultListUrl();
@@ -734,11 +735,15 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     mail.Topic = this._consultRepository.GetSuccessMailTopic();
                     mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
+                    advisorMail.Topic = this._consultRepository.GetSuccessMailTopic();
+                    advisorMail.Content = this._consultRepository.GetAdvisorSuccessMailContent(consultSchedule, url);
                 }
                 else
                 {
                     mail.Topic = this._consultRepository.GetWaitMailTopic();
                     mail.Content = this._consultRepository.GetWaitMailContent(consultSchedule);
+                    advisorMail.Topic = this._consultRepository.GetWaitMailTopic();
+                    advisorMail.Content = this._consultRepository.GetAdvisorConfirmationMailContent(consultSchedule);
                 }
 
                 using (new SecurityDisabler())
@@ -746,6 +751,7 @@ namespace Feature.Wealth.Component.Controllers
                     using (new LanguageSwitcher("en"))
                     {
                         this._consultRepository.SendMail(mail, GetMailSetting());
+                        this._consultRepository.SendMail(advisorMail, GetMailSetting());
 
                         if (info.IsEmployee)
                         {
@@ -869,15 +875,18 @@ namespace Feature.Wealth.Component.Controllers
             try
             {
                 MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
-
+                MailSchema advisorMail = new MailSchema { MailTo = this._consultRepository.GetEmployeeEmail(consultSchedule) };
                 mail.Topic = this._consultRepository.GetCancelMailTopic();
                 mail.Content = this._consultRepository.GetCancelMailContent(consultSchedule);
+                advisorMail.Topic = this._consultRepository.GetCancelMailTopic();
+                advisorMail.Content = this._consultRepository.GetAdvisorCancellationMailContent(consultSchedule);
 
                 using (new SecurityDisabler())
                 {
                     using (new LanguageSwitcher("en"))
                     {
                         this._consultRepository.SendMail(mail, GetMailSetting());
+                        this._consultRepository.SendMail(advisorMail, GetMailSetting());
                     }
                 }
             }
