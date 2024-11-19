@@ -34,7 +34,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                             [ScheduleID]
                            ,[CustomerName]
                            ,[EmployeeName]
-                           ,[[EmployeeID]]
+                           ,[EmployeeID]
 						   ,[ScheduleDate]
                            ,[StartTime]
 						   ,[EndTime]
