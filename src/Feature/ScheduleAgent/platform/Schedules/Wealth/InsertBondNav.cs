@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Foundation.Wealth.Models;
-using Feature.Wealth.ScheduleAgent.Services;
-using Xcms.Sitecore.Foundation.QuartzSchedule;
-using Feature.Wealth.ScheduleAgent.Repositories;
-using Xcms.Sitecore.Foundation.Basic.Extensions;
+﻿using Feature.Wealth.ScheduleAgent.Models.Sysjust;
 using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using Feature.Wealth.ScheduleAgent.Models.Sysjust;
+using Feature.Wealth.ScheduleAgent.Repositories;
+using Feature.Wealth.ScheduleAgent.Services;
+using Foundation.Wealth.Models;
+using System;
+using System.Threading.Tasks;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
+using Xcms.Sitecore.Foundation.QuartzSchedule;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
@@ -26,6 +25,12 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 var date = DateTime.Now.ToString("yyyyMMdd");
                 string fileName = "bondnav-" + date + ".csv";
                 var TrafficLight = NameofTrafficLight.BondNav;
+                var filedate = etlService.GetFileDate(fileName);
+
+                if (etlService.ContainsDateFormat(filedate, out string extractedDate, "yyyyMMdd"))
+                {
+                    fileName = "bondnav-" + extractedDate + ".csv";
+                }
 
                 var IsfilePath = await etlService.ExtractFile(fileName, "csv");
 
@@ -39,7 +44,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                         _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
-                        _repository.BulkInsertToDatabaseForHIS(datastoHis, "[BondHistoryPrice]", "BondCode", "Date", fileName, startTime);
+                        _repository.BulkInsertToDatabaseForHISWithDate(datastoHis, "[BondHistoryPrice]", "BondCode", "Date", fileName, startTime, filedate);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                         etlService.FinishJob(fileName, startTime, "csv");
                     }
@@ -52,7 +57,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                    _repository.LogChangeHistory(fileName, IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

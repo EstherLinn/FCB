@@ -108,6 +108,35 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
+        public void BulkInsertToDatabaseForHISWithDate<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now,string filedate)
+        {
+            var properties = typeof(T).GetProperties();
+            string columns = string.Join(",", properties.Select(p => p.Name));
+            string parameters = string.Join(",", properties.Select(p => "@" + p.Name));
+
+            string mergeQuery = $@"
+            MERGE INTO {tableName} AS target
+            USING (VALUES ({parameters})) AS source ({columns})
+            ON
+            (target.{key} = '{filedate}')
+            AND (source.{uniqueColumn} IS NULL
+            AND target.{uniqueColumn} IS NULL
+            OR target.{uniqueColumn} = source.{uniqueColumn})
+            AND (target.{key} = source.{key})
+            WHEN MATCHED THEN
+              UPDATE SET {GenerateUpdateSet(properties)}
+            WHEN NOT MATCHED THEN
+              INSERT ({columns}) VALUES ({parameters});
+             ";
+
+            _logger.Info($"{mergeQuery}");
+            int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
+            var endTime = DateTime.UtcNow;
+            var duration = endTime - now;
+            LogChangeHistory(filePath, "資料差異更新", tableName, line, duration.TotalSeconds, "Y", ModificationID.資料差異更新);
+            _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
+        }
+
         public void BulkInsertToDatabaseFor30Days<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, string date, DateTime now)
         {
             var properties = typeof(T).GetProperties();

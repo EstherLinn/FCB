@@ -26,6 +26,12 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                 string fileName = "TFJSBSC." + date + ".1000.txt";
                 var TrafficLight = NameofTrafficLight.FUND_BSC;
+                var filedate = etlService.GetFileDate(fileName);
+
+                if (etlService.ContainsDateFormat(filedate, out string extractedDate))
+                {
+                    fileName = "TFJSBSC." + extractedDate + ".1000.txt";
+                }
 
                 var IsfilePath = await etlService.ExtractFile(fileName);
 
