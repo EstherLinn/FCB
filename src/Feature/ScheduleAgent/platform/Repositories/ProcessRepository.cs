@@ -108,7 +108,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             _logger.Info($"{filePath} 資料差異更新 {tableName} {line}");
         }
 
-        public void BulkInsertToDatabaseForHISWithDate<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now,string filedate)
+        public void BulkInsertToDatabaseForHISWithDate<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string filePath, DateTime now, string filedate)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -594,5 +594,22 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
         }
 
+    }
+
+    public static class Extensions
+    {
+        public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunkSize)
+        {
+            if (chunkSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException("chunkSize must be greater than 0.");
+            }
+
+            while (source.Any())
+            {
+                yield return source.Take(chunkSize);
+                source = source.Skip(chunkSize);
+            }
+        }
     }
 }
