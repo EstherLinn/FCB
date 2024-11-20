@@ -10,6 +10,7 @@ using Foundation.Wealth.Extensions;
 using Foundation.Wealth.Helper;
 using Newtonsoft.Json;
 using Sitecore.Configuration;
+using Sitecore.Data;
 using Sitecore.Security.Accounts;
 using Sitecore.Web;
 using System;
@@ -238,6 +239,12 @@ namespace Feature.Wealth.Account.Controllers
                 if (!string.IsNullOrEmpty(id))
                 {
                     id = AESHelper.Decrypt(id);
+                    step = $"Step1-1 確認CIF && CFMBSEL 有無此客戶資料 id={MaskIdNumber(id)}";
+                    if (!_memberRepository.CheckWebBankDataExists(id,"pc"))
+                    {
+                        Session["LoginStatus"] = false;
+                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                    }
                     //網銀登入
                     step = "Step2-1 確認CFMBSEL Table有無重複資料";
                     var IsMoreThanOneUser = _memberRepository.CheckCFMBSELTableMoreThanOneUser("pc", id);
@@ -343,7 +350,13 @@ namespace Feature.Wealth.Account.Controllers
                 if (!string.IsNullOrEmpty(qs["promotionCode"]) && !string.IsNullOrEmpty(qs["rtCode"]) && qs["rtCode"] == "0000")
                 {
                     var code = qs["promotionCode"];
-                    step = $"Step2 promotionCode和rtCode通過，確認CFMBSEL Table是否有重複資料";
+                    step = $"Step1-1 promotionCode和rtCode通過，確認CIF && CFMBSEL 有無此客戶資料";
+                    if (!_memberRepository.CheckWebBankDataExists(code, "app"))
+                    {
+                        Session["LoginStatus"] = false;
+                        return View("~/Views/Feature/Wealth/Account/Oauth/Oauth.cshtml");
+                    }
+                    step = $"Step2 確認CFMBSEL Table是否有重複資料";
                     var IsMoreThanOneUser = _memberRepository.CheckCFMBSELTableMoreThanOneUser("app", code);
                     if (!IsMoreThanOneUser)
                     {
@@ -429,6 +442,7 @@ namespace Feature.Wealth.Account.Controllers
         {
             var ticks = DateTime.Now.Ticks;
             var guid = Guid.NewGuid().ToString();
+            //預先隨機組合queueId 用於登入回理財網時帶回queueId來mapping user證號
             var queueId = ticks.ToString() + '-' + guid;
             var uri = new Uri(callBackUrl);
             string uriSchemaAndHost = string.Format("{0}://{1}", uri.Scheme, uri.Host);
@@ -450,7 +464,7 @@ namespace Feature.Wealth.Account.Controllers
                 ack = "ok",
                 autoRedirectWaitSec = "0"
             };
-            if (LoginResult == "0000")
+            if (LoginResult == "0000" && !string.IsNullOrEmpty(txReqId))
             {
                 if (!getCustDic.TryGetValue("custId", out string id))
                 {

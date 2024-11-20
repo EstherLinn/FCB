@@ -112,6 +112,47 @@ namespace Feature.Wealth.Account.Repositories
         }
 
         /// <summary>
+        /// 判斷CIF&&CFMBSEL皆有此客戶資料
+        /// </summary>
+        /// <param name="promotionCodeOrId">6碼或id</param>
+        /// <returns>bool</returns>
+        public bool CheckWebBankDataExists(string promotionCodeOrId,string pcOrApp)
+        {
+            int count = 0;
+            string CIF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CIF);
+            string CFMBSEL = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CFMBSEL);
+            string strSql = @$" Declare @@id varchar(100) = @id
+                        SELECT COUNT(*)
+                        FROM {CIF} as A
+                        INNER JOIN {CFMBSEL} AS B ON A.CIF_ID = B.CUST_ID
+                        WHERE A.CIF_ID = @@id";
+            if (pcOrApp.ToLower() == "app")
+            {
+                strSql = @$" Declare @@id varchar(100) = @id
+                        SELECT COUNT(*)
+                        FROM {CFMBSEL} as A
+                        INNER JOIN {CIF} AS B ON A.CUST_ID = B.CIF_ID
+                        WHERE A.PROMOTION_CODE = @@id";
+            }
+            var para = new
+            {
+                id = new DbString() { Value = promotionCodeOrId, Length = 100 }
+            };
+            try
+            {
+                count = DbManager.Custom.ExecuteScalar<int>(strSql, para, commandType: System.Data.CommandType.Text);
+            }
+            catch (SqlException ex)
+            {
+                Log.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+            return count != 0;
+        }
+        /// <summary>
         /// 確認CFMBSEL Table User是否超過一人
         /// </summary>
         /// <param name="PcOrApp">個網或app</param>
