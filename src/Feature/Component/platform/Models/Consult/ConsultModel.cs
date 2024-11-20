@@ -329,6 +329,7 @@ namespace Feature.Wealth.Component.Models.Consult
         /// </summary>
         public string CIF_TEL_NO3 { get; set; }
         public string WebBankId { get; set; }
+        public string MemberEmail { get; set; }
         public string BranchName { get; set; }
     }
 

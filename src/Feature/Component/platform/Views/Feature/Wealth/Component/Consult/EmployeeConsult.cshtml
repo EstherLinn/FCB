@@ -930,7 +930,7 @@
                     else {
                         $('#input-tel').val(DOMPurify.sanitize(infos[0].CIF_TEL_NO1));
                     }
-                    $('#input-email').val(DOMPurify.sanitize(infos[0].CIF_E_MAIL_ADDRESS));
+                    $('#input-email').val(DOMPurify.sanitize(infos[0].MemberEmail));
                     currentConsultSchedule.CustomerID = DOMPurify.sanitize(infos[0].WebBankId);
                     $('#l-form-customername').removeClass('is-error');
                     bindText();
@@ -999,7 +999,7 @@
                 else {
                     $('#input-tel').val(DOMPurify.sanitize(info.CIF_TEL_NO1));
                 }
-                $('#input-email').val(DOMPurify.sanitize(info.CIF_E_MAIL_ADDRESS));
+                $('#input-email').val(DOMPurify.sanitize(info.MemberEmail));
                 currentConsultSchedule.CustomerID = DOMPurify.sanitize(info.WebBankId);
                 $('#l-form-customername').removeClass('is-error');
 
