@@ -5,7 +5,9 @@ using Foundation.Wealth.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
 
 namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
@@ -25,19 +27,12 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
             try
             {
-                var cfmbseldata = _repository.Enumerate<Cfmbsel>(sql);
-                if (cfmbseldata != null && cfmbseldata.Any())
-                {
-                    await OdbcBulkInsert(_repository, sql, "[CFMBSEL_Process]", cfmbseldata, startTime);
-                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                    await OdbcBulkInsert(_repository, sql, "[CFMBSEL]", cfmbseldata, startTime);
-                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                }
-                else
-                {
-                    _repository.LogChangeHistory(sql, "Cfmbsel No datas", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
-                    this.Logger.Error($"{sql} No datas");
-                }
+                string tableName = EnumUtil.GetEnumDescription(TrafficLight);
+                await OdbcBulkInsert(_repository, sql, tableName + "_Process", startTime);
+                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                await OdbcBulkInsert(_repository, sql, tableName, startTime);
+                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
                 _repository.LogChangeHistory("CFMBSEL", "CFMBSEL排程完成", "CFMBSEL", 0, duration.TotalSeconds, "Y", ModificationID.Done);
@@ -50,49 +45,75 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             }
         }
 
-        private async Task OdbcBulkInsert(ProcessRepository _repository, string sql, string tableName, IEnumerable<Cfmbsel> cfmbseldata,DateTime startTime)
+        private async Task OdbcBulkInsert(ProcessRepository _repository, string sql, string tableName, DateTime startTime)
         {
-            int totalInsertedCount = 0;
+            int _maxConcurrentTasks = 5;
+            var _semaphore = new SemaphoreSlim(_maxConcurrentTasks);
+            int _batchSize = 1000;
+            bool isTruncate = false;
 
             try
             {
-                List<Cfmbsel> batch = new List<Cfmbsel>();
-                int batchSize = 1000;
-                var isTrancate = false;
-
-                foreach (var result in cfmbseldata)
+                var cfmbseldata = _repository.Enumerate<Cfmbsel>(sql).ToList();
+                if (cfmbseldata.Any())
                 {
-                    batch.Add(result);
+                    var tasks = new List<Task>();
+                    var totalCount = cfmbseldata.Count;
 
-                    if (!isTrancate)
+                    foreach (var batch in cfmbseldata.Chunk(_batchSize))
                     {
-                        if (batch.Count > 0)
+                        tasks.Add(Task.Run(async () =>
                         {
-                            _repository.TrancateTable(tableName);
-                            isTrancate = true;
-                        }
+                            await _semaphore.WaitAsync();
+                            try
+                            {
+                                if (!isTruncate && batch.Any())
+                                {
+                                    _repository.TrancateTable(tableName);
+                                    isTruncate = true;
+                                }
+
+                                await InsertBatchAsync(_repository, batch.ToList(), tableName);
+                            }
+                            finally
+                            {
+                                _semaphore.Release();
+                            }
+                        }));
                     }
 
-                    if (batch.Count >= batchSize)
-                    {
-                        totalInsertedCount += batch.Count;
-                        await _repository.BulkInsertFromOracle(batch, tableName);
-                        batch.Clear();
-                    }
+                    await Task.WhenAll(tasks);
+                    _repository.LogChangeHistory("CFMBSEL", sql, tableName, totalCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone);
                 }
-
-                if (batch.Any())
+                else
                 {
-                    totalInsertedCount += batch.Count;
-                    await _repository.BulkInsertFromOracle(batch, tableName);
+                    this.Logger.Info($"No data found for {tableName}");
+                    _repository.LogChangeHistory(tableName, $"No data found for {tableName}", tableName, 0, 0, "N", ModificationID.Error);
                 }
-
-                _repository.LogChangeHistory("CFMBSEL", sql, "CFMBSEL", totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone);
             }
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory("CFMBSEL", ex.Message, sql, 0, 0, "N", ModificationID.Error);
+                _repository.LogChangeHistory(tableName, ex.Message, sql, 0, 0, "N", ModificationID.Error);
+            }
+        }
+
+        private async Task InsertBatchAsync(ProcessRepository _repository, List<Cfmbsel> batch, string tableName)
+        {
+            int insertedCount = 0;
+            try
+            {
+                foreach (var record in batch)
+                {
+                    await _repository.BulkInsertFromOracle(new List<Cfmbsel> { record }, tableName);
+                    insertedCount++;
+                }
+                this.Logger.Info($"{tableName} 成功匯入 {insertedCount} 筆資料.");
+            }
+            catch (Exception ex)
+            {
+                this.Logger.Error($"Error {tableName}: {ex.Message}", ex);
+                throw;
             }
         }
     }

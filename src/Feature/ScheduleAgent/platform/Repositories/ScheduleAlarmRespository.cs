@@ -138,7 +138,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("郵件發送失敗: " + ex.Message);
+                        _logger.Error("郵件發送失敗: " + ex.ToString());
                     }
                 }
             }
