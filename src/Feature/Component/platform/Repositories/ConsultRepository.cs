@@ -381,7 +381,7 @@ namespace Feature.Wealth.Component.Repositories
                             A.CIF_TEL_NO1,
                             A.CIF_TEL_NO3,
                             C.WebBankId AS WebBankId,
-                            C.MemberEmail
+                            C.MemberEmail,
                             D.OfficeOrBranchName AS BranchName
                             FROM {CIF} AS A WITH (NOLOCK)
                             LEFT JOIN {CFMBSEL} AS B WITH (NOLOCK) ON A.CIF_ID = B.CUST_ID
