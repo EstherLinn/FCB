@@ -232,7 +232,7 @@ namespace Feature.Wealth.Component.Repositories
 
         public string GetWaitMailTopic()
         {
-            return "「第一銀行第e理財網」遠距理財諮詢服務預約 – 確認中";
+            return "「第一銀行第e理財網」遠距理財諮詢服務 – 確認中";
         }
 
         public string GetWaitMailContent(ConsultSchedule consultSchedule)
@@ -451,30 +451,46 @@ namespace Feature.Wealth.Component.Repositories
         public string GetAdvisorConfirmationMailContent(ConsultSchedule consultSchedule)
         {
             string result = $@"親愛的理顧您好：<br><br>
-第一銀行通知您，客戶 {consultSchedule.CustomerName} 於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 已預約「遠距理財諮詢服務」，本次預約請至 IMVP 系統確認客戶預約後，系統將寄送預約完成通知信通知客戶。<br><br>
-※請勿直接回覆此信，若有疑問請洽相關部門，謝謝。";
+通知您， {consultSchedule.CustomerName}客戶於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 已預約「遠距理財諮詢服務」，請至智慧行銷全通路平台(IMVP)系統-理顧行事曆功能，確認並回覆客戶預約時間，系統將您回覆之內容寄通知信給予客戶。<br><br>
+預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
+預約時段：{consultSchedule.StartTime}~{consultSchedule.EndTime}<br>
+客戶姓名:{consultSchedule.CustomerName}<br>
+主要往來分行：{consultSchedule.BranchName}<br>
+專責理顧：{consultSchedule.EmployeeName}<br>
+諮詢主題：{consultSchedule.Subject}<br>
+其他諮詢內容：{consultSchedule.Description}<br><br> 
+※此為系統主動發送信函，請勿直接回覆此封信件，謝謝。";
             return result;
         }
 
         public string GetAdvisorSuccessMailContent(ConsultSchedule consultSchedule, string url)
         {
             string result = $@"親愛的理顧您好：<br><br>
-第一銀行通知您，客戶 {consultSchedule.CustomerName} 於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 申請「遠距理財諮詢服務」已預約成功，以下是本次的預約資訊：<br><br>
-分行：{consultSchedule.BranchName}<br>
-理財顧問：{consultSchedule.EmployeeName}<br>
+通知您，您已完成確認 {consultSchedule.CustomerName}客戶於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 申請「遠距理財諮詢服務」之預約，以下是本次的預約資訊：<br><br>
 預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
 預約時段：{consultSchedule.StartTime}~{consultSchedule.EndTime}<br>
+客戶姓名:{consultSchedule.CustomerName}<br>
+主要往來分行：{consultSchedule.BranchName}<br>
+專責理顧：{consultSchedule.EmployeeName}<br>
 諮詢主題：{consultSchedule.Subject}<br>
 其他諮詢內容：{consultSchedule.Description}<br><br>
-為維護服務品質，請於預定「遠距理財諮詢服務」時間開始前，登入第e理財網為客戶提供服務。<br><br>
-第e理財網連結：{url} <br><br>";
+為維護良好之客我關係及服務品質，請於預定「遠距理財諮詢服務」時間開始前，登入第e理財網提供諮詢服務。<br><br>
+第e理財網連結：{url} <br><br>
+※此為系統主動發送信函，請勿直接回覆此封信件，謝謝。";
             return result;
         }
         //理顧收信-取消預約
         public string GetAdvisorCancellationMailContent(ConsultSchedule consultSchedule)
         {
             string result = $@"親愛的理顧您好：<br><br>
-第一銀行通知您，客戶 {consultSchedule.CustomerName} 已成功取消於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 預約的「遠距理財諮詢服務」。";
+通知您，{consultSchedule.CustomerName}客戶取消「遠距理財諮詢服務」預約，以下是您的客戶預約資訊：<br><br>
+預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
+預約時段：{consultSchedule.StartTime}~{ consultSchedule.EndTime}<br>
+主要往來分行：{consultSchedule.BranchName}<br>
+理財顧問：{consultSchedule.EmployeeName}<br>
+諮詢主題：{consultSchedule.Subject}<br>
+其他諮詢內容：{consultSchedule.Description}<br><br>
+※此為系統主動發送信函，請勿直接回覆此封信件，謝謝。";
             return result;
         }
 

@@ -97,16 +97,18 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 // 給理財顧問的郵件內容
                 var advisorMailSchema = new MailSchema()
                 {
-                    Topic = "「第一銀行第e理財網」遠距理財諮詢服務 - 預約即將開始提醒",
+                    Topic = "「第一銀行第e理財網」遠距理財諮詢服務 - 今日預約即將開始提醒",
                     Content = $@"親愛的理顧您好：<br><br>
-                第一銀行通知您，客戶 {consultSchedule.CustomerName} 於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 申請預約「遠距理財諮詢服務」即將開始，以下是本次的預約資訊：<br><br>
-                分行：{consultSchedule.BranchName}<br>
-                理財顧問：{consultSchedule.EmployeeName}<br>
+                第一銀行通知您， {consultSchedule.CustomerName}客戶預約之「遠距理財諮詢服務」即將開始，以下是您的客戶預約資訊：<br><br>
                 預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
                 預約時段：{consultSchedule.StartTime}~{consultSchedule.EndTime}<br>
+                主要往來分行：{consultSchedule.BranchName}<br>
+                理財顧問：{consultSchedule.EmployeeName}<br>
                 諮詢主題：{consultSchedule.Subject}<br>
-                其他諮詢內容：{consultSchedule.Description}<br><br> 
-                請確認您的行程安排，並準時提供服務，感謝您的配合。",
+                其他諮詢內容：{consultSchedule.Description}<br><br>
+                為維護良好之客我關係及服務品質，請於預定「遠距理財諮詢服務」時間開始前，登入第e理財網提供諮詢服務。<br><br>
+                第e理財網連結：{homeUrl + consultUrl} <br><br>
+                ※此為系統主動發送信函，請勿直接回覆此封信件，謝謝。",
                     MailTo = "i" + Regex.Replace(consultSchedule.EmployeeID.TrimStart('0'), ".$", string.Empty).PadLeft(5, '0') + "@firstbank.com.tw"
                 };
                 mails.Add(advisorMailSchema);
