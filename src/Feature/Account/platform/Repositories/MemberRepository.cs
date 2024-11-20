@@ -116,19 +116,19 @@ namespace Feature.Wealth.Account.Repositories
         /// </summary>
         /// <param name="promotionCodeOrId">6碼或id</param>
         /// <returns>bool</returns>
-        public bool CheckWebBankDataExists(string promotionCodeOrId,string pcOrApp)
+        public bool CheckWebBankDataExists(string promotionCodeOrId, string pcOrApp)
         {
             int count = 0;
             string CIF = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CIF);
             string CFMBSEL = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.CFMBSEL);
-            string strSql = @$" Declare @@id varchar(100) = @id
+            string strSql = @$" Declare @@id varchar(33) = @id
                         SELECT COUNT(*)
                         FROM {CIF} as A
                         INNER JOIN {CFMBSEL} AS B ON A.CIF_ID = B.CUST_ID
                         WHERE A.CIF_ID = @@id";
             if (pcOrApp.ToLower() == "app")
             {
-                strSql = @$" Declare @@id varchar(100) = @id
+                strSql = @$" Declare @@id varchar(33) = @id
                         SELECT COUNT(*)
                         FROM {CFMBSEL} as A
                         INNER JOIN {CIF} AS B ON A.CUST_ID = B.CIF_ID
@@ -136,7 +136,7 @@ namespace Feature.Wealth.Account.Repositories
             }
             var para = new
             {
-                id = new DbString() { Value = promotionCodeOrId, Length = 100 }
+                id = new DbString() { Value = promotionCodeOrId, IsAnsi = true, Length = 33 }
             };
             try
             {
