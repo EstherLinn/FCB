@@ -20,12 +20,14 @@ namespace Feature.Wealth.Component.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult GetInterestedFund()
         {
             return new JsonNetResult(_interestedFundRepository.GetOrSetCacheFundData());
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> GetCloseYearPerformanceBatch(string fundIDs)
         {
             var fundIdArray = fundIDs.ToUpper().Split(',');

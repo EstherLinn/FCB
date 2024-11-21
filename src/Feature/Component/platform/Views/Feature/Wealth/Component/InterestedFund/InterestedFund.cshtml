@@ -32,9 +32,13 @@
 
         //請求基金資料
         function getFundData(event, eventString) {
+            var token = $('input[name="__RequestVerificationToken"]').val();
             $.ajax({
                 url: '@InterestedFundApiUrl',
                 method: 'POST',
+                 data: {
+                    __RequestVerificationToken: token
+                },
                 success: function (data) {
                     if (data != null && data.length != 0) {
                         realrenderRecommendedFunds(event, data);
@@ -52,19 +56,22 @@
         //請求六支基金的績效數據並繪圖
         function getBatchFundPerformance(fundData) {
             var fundIds = fundData.map(fund => fund.FundId).join(',');
+            var token = $('input[name="__RequestVerificationToken"]').val();
 
             $.ajax({
                 url: '@FundCloseYearPerformanceApiUrl',
                 method: 'POST',
                 data: {
-                    fundIDs: fundIds
+                    fundIDs: fundIds,
+                    __RequestVerificationToken: token
                 },
                 success: function (performanceData) {
                     try {
                         if (performanceData && performanceData.length !== 0) {
                             performanceData.forEach(function (data) {
                                 if (data.fundId && data.resultSet && data.resultSet.result && data.resultSet.result.length > 0) {
-                                    var $chartElement = $(`[data-chart="mini"][data-fund-id="${data.fundId}"]`);
+                                   var sanitizedFundId = DOMPurify.sanitize(data.fundId);
+                                   var $chartElement = $(`[data-chart="mini"][data-fund-id="${sanitizedFundId}"]`);
                                     if ($chartElement.length > 0) {
                                         const dataValues = data.resultSet.result.map(item => parseFloat(item.v2));
                                         dataValues.reverse();
