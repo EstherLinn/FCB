@@ -96,7 +96,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory("CIF", ex.Message, "CIF", 0, 0, "N", ModificationID.Error);
+                throw;
             }
         }
     }

@@ -95,7 +95,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory("CFMBSEL", ex.Message, "CFMBSEL", 0, 0, "N", ModificationID.Error);
+                throw;
             }
         }
     }
