@@ -11,6 +11,7 @@ using Feature.Wealth.ScheduleAgent.Models.Mail;
 using Foundation.Wealth.Helper;
 using log4net;
 using Newtonsoft.Json;
+using Sitecore.Configuration;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
 using Sitecore.Mvc.Presentation;
@@ -729,7 +730,7 @@ namespace Feature.Wealth.Component.Controllers
                 MailSchema advisorMail = new MailSchema { MailTo = this._consultRepository.GetEmployeeEmail(consultSchedule)};
 
                 var currentRequestUrl = Request.Url;
-                var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultListUrl();
+                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName") + ConsultRelatedLinkSetting.GetConsultListUrl();
 
                 if (info.IsEmployee)
                 {

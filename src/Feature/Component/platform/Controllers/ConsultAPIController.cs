@@ -92,7 +92,7 @@ namespace Feature.Wealth.Component.Controllers
                 this._consultRepository.UpdateConsultSchedule(consultSchedule);
 
                 var currentRequestUrl = Request.Url;
-                var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultListUrl();
+                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName") + ConsultRelatedLinkSetting.GetConsultListUrl();
 
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
                 mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
@@ -117,7 +117,7 @@ namespace Feature.Wealth.Component.Controllers
                 this._consultRepository.UpdateConsultSchedule(consultSchedule);
 
                 var currentRequestUrl = Request.Url;
-                var url = currentRequestUrl.Scheme + "://" + Sitecore.Context.Site.TargetHostName + ConsultRelatedLinkSetting.GetConsultListUrl();
+                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName") + ConsultRelatedLinkSetting.GetConsultListUrl();
 
                 mail.Topic = this._consultRepository.GetRejectMailTopic();
                 mail.Content = this._consultRepository.GetRejectMailContent(consultSchedule, description, url);
