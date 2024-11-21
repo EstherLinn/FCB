@@ -307,6 +307,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
         public async Task BulkInsertFromOracle<T>(IList<T> data, string tableName)
         {
+            var startTime = DateTime.UtcNow;
             var properties = typeof(T).GetProperties();
 
             using (SqlConnection connection = (SqlConnection)DbManager.Custom.DbConnection())
@@ -326,7 +327,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     try
                     {
                         DataTable dataTable = ConvertToDataTable(data, properties);
+                        int rowCount = dataTable.Rows.Count;
                         await bulkCopy.WriteToServerAsync(dataTable);
+                        this._logger.Info($"{tableName} 成功匯入 {rowCount} 筆資料.from bulk {(DateTime.UtcNow - startTime).TotalSeconds}");
                     }
                     catch (Exception ex)
                     {
@@ -494,7 +497,6 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             catch (Exception ex)
             {
                 this._logger.Error(ex.ToString());
-                yield break;
                 throw;
             }
 
@@ -594,22 +596,5 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             }
         }
 
-    }
-
-    public static class Extensions
-    {
-        public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunkSize)
-        {
-            if (chunkSize <= 0)
-            {
-                throw new ArgumentOutOfRangeException("chunkSize must be greater than 0.");
-            }
-
-            while (source.Any())
-            {
-                yield return source.Take(chunkSize);
-                source = source.Skip(chunkSize);
-            }
-        }
     }
 }
