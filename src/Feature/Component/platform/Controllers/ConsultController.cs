@@ -735,14 +735,14 @@ namespace Feature.Wealth.Component.Controllers
                 {
                     mail.Topic = this._consultRepository.GetSuccessMailTopic();
                     mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
-                    advisorMail.Topic = this._consultRepository.GetSuccessMailTopic();
+                    advisorMail.Topic = this._consultRepository.GetAdvisorSuccessMailTopic();
                     advisorMail.Content = this._consultRepository.GetAdvisorSuccessMailContent(consultSchedule, url);
                 }
                 else
                 {
                     mail.Topic = this._consultRepository.GetWaitMailTopic();
                     mail.Content = this._consultRepository.GetWaitMailContent(consultSchedule);
-                    advisorMail.Topic = this._consultRepository.GetWaitMailTopic();
+                    advisorMail.Topic = this._consultRepository.GetAdvisorConfirmationMailTopic();
                     advisorMail.Content = this._consultRepository.GetAdvisorConfirmationMailContent(consultSchedule);
                 }
 
@@ -874,12 +874,23 @@ namespace Feature.Wealth.Component.Controllers
 
             try
             {
+                var member = FcbMemberHelper.GetMemberAllInfo();
                 MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
                 MailSchema advisorMail = new MailSchema { MailTo = this._consultRepository.GetEmployeeEmail(consultSchedule) };
-                mail.Topic = this._consultRepository.GetCancelMailTopic();
-                mail.Content = this._consultRepository.GetCancelMailContent(consultSchedule);
-                advisorMail.Topic = this._consultRepository.GetCancelMailTopic();
-                advisorMail.Content = this._consultRepository.GetAdvisorCancellationMailContent(consultSchedule);
+                if (member.IsManager)
+                {
+                    mail.Topic = this._consultRepository.GetCancelManagerMailTopic();
+                    mail.Content = this._consultRepository.GetCancelManagerMailContent(consultSchedule);
+                    advisorMail.Topic = this._consultRepository.GetManagerCancelMailTopic();
+                    advisorMail.Content = this._consultRepository.GetManagerCancellationMailContent(consultSchedule);
+                }
+                else {
+                    mail.Topic = this._consultRepository.GetClientCancelMailTopic();
+                    mail.Content = this._consultRepository.GetClientCancelMailContent(consultSchedule);
+                    advisorMail.Topic = this._consultRepository.GetAdvisorCancelMailTopic();
+                    advisorMail.Content = this._consultRepository.GetAdvisorCancellationMailContent(consultSchedule);
+                }
+                
 
                 using (new SecurityDisabler())
                 {
