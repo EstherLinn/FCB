@@ -5,7 +5,6 @@ using Foundation.Wealth.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.QuartzSchedule;
@@ -14,7 +13,6 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 {
     public class InsertCif : SitecronAgentBase
     {
-
         protected override async Task Execute()
         {
             var startTime = DateTime.UtcNow;
@@ -29,10 +27,20 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             try
             {
                 string tableName = EnumUtil.GetEnumDescription(TrafficLight);
-                await ProcessData(_repository, sql, tableName + "_Process", startTime);
-                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                await ProcessData(_repository, sql, tableName, startTime);
-                _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+
+                var cifdata = _repository.Enumerate<Cif>(sql).ToList();
+                if (cifdata.Any())
+                {
+                    await ProcessData(_repository, sql, tableName + "_Process", cifdata, startTime);
+                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
+                    await ProcessData(_repository, sql, tableName, cifdata, startTime);
+                    _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
+                }
+                else
+                {
+                    _repository.LogChangeHistory("CIF", "CIF No datas", "CIF", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                    this.Logger.Error($"{sql} No datas");
+                }
 
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
@@ -42,81 +50,53 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory(sql, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                _repository.LogChangeHistory("CIF", ex.Message, "CIF", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
             }
         }
 
 
-        private async Task ProcessData(ProcessRepository _repository, string sql, string tableName, DateTime startTime)
+        private async Task ProcessData(ProcessRepository _repository, string sql, string tableName, IEnumerable<Cif> cifdata, DateTime startTime)
         {
-            int _maxConcurrentTasks = 5;
-            var _semaphore = new SemaphoreSlim(_maxConcurrentTasks);
-            int _batchSize = 1000;
-            bool isTruncate = false;
+            int totalInsertedCount = 0;
 
             try
             {
-                var cifdata = _repository.Enumerate<Cif>(sql).ToList();
+                List<Cif> batch = new List<Cif>();
+                int batchSize = 10000;
+                var isTrancate = false;
 
-                if (cifdata.Any())
+                foreach (var result in cifdata)
                 {
-                    var tasks = new List<Task>();
-                    var totalCount = cifdata.Count;
+                    batch.Add(result);
 
-                    foreach (var batch in cifdata.Chunk(_batchSize))
+                    if (!isTrancate)
                     {
-                        tasks.Add(Task.Run(async () =>
+                        if (batch.Count > 0)
                         {
-                            await _semaphore.WaitAsync();
-                            try
-                            {
-                                if (!isTruncate && batch.Any())
-                                {
-                                    _repository.TrancateTable(tableName);
-                                    isTruncate = true;
-                                }
-
-                                await InsertBatchAsync(_repository, batch.ToList(), tableName);
-                            }
-                            finally
-                            {
-                                _semaphore.Release();
-                            }
-                        }));
+                            _repository.TrancateTable(tableName);
+                            isTrancate = true;
+                        }
                     }
 
-                    await Task.WhenAll(tasks);
-                    _repository.LogChangeHistory("CIF", sql, tableName, totalCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone);
+                    if (batch.Count >= batchSize)
+                    {
+                        totalInsertedCount += batch.Count;
+                        await _repository.BulkInsertFromOracle(batch, tableName);
+                        batch.Clear();
+                    }
                 }
-                else
+
+                if (batch.Any())
                 {
-                    this.Logger.Info($"No data found for {tableName}");
-                    _repository.LogChangeHistory(tableName, $"No data found for {tableName}", tableName, 0, 0, "N", ModificationID.Error);
+                    totalInsertedCount += batch.Count;
+                    await _repository.BulkInsertFromOracle(batch, tableName);
                 }
+                _repository.LogChangeHistory("CIF", sql, tableName, totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone);
             }
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory(tableName, ex.Message, sql, 0, 0, "N", ModificationID.Error);
-            }
-        }
-
-        private async Task InsertBatchAsync(ProcessRepository _repository, List<Cif> batch, string tableName)
-        {
-            int insertedCount = 0;
-            try
-            {
-                foreach (var record in batch)
-                {
-                    await _repository.BulkInsertFromOracle(new List<Cif> { record }, tableName);
-                    insertedCount++;
-                }
-                this.Logger.Info($"{tableName} 成功匯入 {insertedCount} 筆資料.");
-            }
-            catch (Exception ex)
-            {
-                this.Logger.Error($"Error {tableName}: {ex.Message}", ex);
-                throw;
+                _repository.LogChangeHistory("CIF", ex.Message, "CIF", 0, 0, "N", ModificationID.Error);
             }
         }
     }
