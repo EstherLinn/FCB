@@ -53,10 +53,6 @@
             });
         }
 
-        function sanitize(str) {
-            return $('<div>').text(str).html();
-            }
-
         //請求六支基金的績效數據並繪圖
         function getBatchFundPerformance(fundData) {
             var fundIds = fundData.map(fund => fund.FundId).join(',');
