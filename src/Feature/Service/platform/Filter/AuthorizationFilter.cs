@@ -19,6 +19,7 @@ namespace Feature.Wealth.Service.Filter
             // 檢查 IP 是否在白名單中
             if (!validatedIps.Contains(ip) && Config.IsEnableCheck)
             {
+                //&& Config.IsEnableCheck 加這段會通過本機與開發環境會通過
                 // 如果不在白名單中，返回 403 Forbidden
                 //filterContext.Result = new HttpStatusCodeResult(403, "IP not allowed");
                 filterContext.Result = new JsonNetResult(new { statusCode = 403, message = "IP not allowed" });
