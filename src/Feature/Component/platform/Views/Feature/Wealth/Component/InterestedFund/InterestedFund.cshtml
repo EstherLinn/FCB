@@ -32,9 +32,13 @@
 
         //請求基金資料
         function getFundData(event, eventString) {
+            var token = $('input[name="__RequestVerificationToken"]').val();
             $.ajax({
                 url: '@InterestedFundApiUrl',
                 method: 'POST',
+                 data: {
+                    __RequestVerificationToken: token
+                },
                 success: function (data) {
                     if (data != null && data.length != 0) {
                         realrenderRecommendedFunds(event, data);
