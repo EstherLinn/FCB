@@ -80,7 +80,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 string content = $@"親愛的客戶您好：<br><br>
                     第一銀行通知您，您於 {consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")} {consultSchedule.StartTime} 申請預約「遠距理財諮詢服務」即將開始，以下是您的預約資訊：<br><br>
                     分行：{consultSchedule.BranchName}<br>
-                    理財顧問：{consultSchedule.EmployeeName}<br>
+                    理財顧問：{consultSchedule.EmployeeName}先生/小姐<br>
                     預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
                     預約時段：{consultSchedule.StartTime}~{consultSchedule.EndTime}<br>
                     諮詢主題：{consultSchedule.Subject}<br>
@@ -103,7 +103,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
                 預約時段：{consultSchedule.StartTime}~{consultSchedule.EndTime}<br>
                 主要往來分行：{consultSchedule.BranchName}<br>
-                理財顧問：{consultSchedule.EmployeeName}<br>
+                理財顧問：{consultSchedule.EmployeeName}先生/小姐<br>
                 諮詢主題：{consultSchedule.Subject}<br>
                 其他諮詢內容：{consultSchedule.Description}<br><br>
                 為維護良好之客我關係及服務品質，請於預定「遠距理財諮詢服務」時間開始前，登入第e理財網提供諮詢服務。<br><br>
