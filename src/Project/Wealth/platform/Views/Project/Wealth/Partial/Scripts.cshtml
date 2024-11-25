@@ -1,9 +1,11 @@
 ﻿@using Sitecore.Configuration;
 @using Foundation.Wealth.Helper;
 @{
+    //各通路登入route
     var AppPayLoginUrl = WebUtility.UrlDecode(Settings.GetSetting("AppPay.CallLoginUrl"));
     var MobileFristeLogin = WebUtility.UrlDecode(Settings.GetSetting("MobileFirste"));
     var MobileIleoLogin = WebUtility.UrlDecode(Settings.GetSetting("MobileIleo"));
+    //組合App登入returnUrl並base64加密
     var domain = HttpContext.Current.Request.Url.Host;
     var sitecoredomain = Sitecore.Context.Site.TargetHostName;
     var url = HttpContext.Current.Request.Url.AbsoluteUri.Replace(domain, string.IsNullOrEmpty(sitecoredomain) ? domain : sitecoredomain);
@@ -23,72 +25,71 @@
         if (SC_DATA.IsLoggedIn) {
             isLogin = true;
         }
-
         if (SC_DATA.IsGlobalStyle) {
             $('html').addClass('is-globalization');
         }
 
-       function SetUrlCookie(){
-           return new Promise((resolve, reject) => {
-            $.ajax({
-                type: "post",
-                url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
-                data: { "url": '@url' },
-                success: function(response) {
-                    resolve(response);
-                },
-                error: function(error) {
-                    reject(error);
-                }
+        function SetUrlCookie() {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "post",
+                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "SetUrlCookie")",
+                    data: { "url": '@url' },
+                    success: function (response) {
+                        resolve(response);
+                    },
+                    error: function (error) {
+                        reject(error);
+                    }
+                });
             });
-         });
         }
 
-        function GetUrlCookie(){
-           return new Promise((resolve, reject) => {
-            $.ajax({
-                type: "post",
-                url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
-                data: { "unlockBlock": false },
-                success: function(response) {
-                    resolve(response);
-                },
-                error: function(error) {
-                    reject(error);
-                }
-               });
-         });
+        function GetUrlCookie() {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "post",
+                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
+                    data: { "unlockBlock": false },
+                    success: function (response) {
+                        resolve(response);
+                    },
+                    error: function (error) {
+                        reject(error);
+                    }
+                });
+            });
         }
 
         //確保set完cookie後才取得cookie
-        SetUrlCookie().then(function(resp){
+        SetUrlCookie().then(function (resp) {
             return GetUrlCookie();
-        }).then(function(resp){
+        }).then(function (resp) {
             if (resp) {
-                    //被阻擋回首頁彈窗登入
-                    if (!isLogin && resp.beBlock) {
-                        $.magnificPopup.open({
-                            items: {
-                                src: '#popupLogin'
-                            },
-                            type: 'inline',
-                            callbacks: {
-                                close: function CancelBlock() {
-                                    $.ajax({
-                                        type: "post",
-                                        url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
-                                        data: { "unlockBlock": true },
-                                        success: function (msg) {
-                                            //關閉登入popup刪除block cookie
-                                        },
-                                    });
-                                }
+                //被阻擋回首頁彈窗登入
+                if (!isLogin && resp.beBlock) {
+                    $.magnificPopup.open({
+                        items: {
+                            src: '#popupLogin'
+                        },
+                        type: 'inline',
+                        callbacks: {
+                            close: function CancelBlock() {
+                                $.ajax({
+                                    type: "post",
+                                    url: "@ClientRoute.GenerateUrl(this, "Accounts", "GetUrlCookie")",
+                                    data: { "unlockBlock": true },
+                                    success: function (msg) {
+                                        //關閉登入popup刪除block cookie
+                                    },
+                                });
                             }
-                        });
-                    }
+                        }
+                    });
                 }
-        }).catch(function(error) {
-        console.error('Error:', error);
+            }
+        }).catch(function (error) {
+            console.error('Error:', error);
         });
 
         if (isLogin) {
@@ -188,7 +189,7 @@
         }
 
         window.getNowDate = function () {
-           return dayjs().format('YYYY/MM/DD');
+            return dayjs().format('YYYY/MM/DD');
         }
 
         window.insertKeywords = function () {
@@ -227,30 +228,33 @@
             }).fail(function (jqXHR, textStatus, errorThrown) {
             });
         }
-
+        /**
+        * 驗證登入狀態，登入過期則導回首頁
+        * @@param {bool} verifyLogin - 登入狀態
+        */
         window.VerifyLoginRedirctToHome = function (verifyLogin) {
             if (!verifyLogin) {
-                 $('[data-errormsg]', '#infoFail').text("由於長時間未操作，您的登入已過期，請重新登入。");
-                    $.magnificPopup.open({
-                        items: {
-                            src: '#infoFail'
-                        },
-                        type: 'inline'
-                    });
+                $('[data-errormsg]', '#infoFail').text("由於長時間未操作，您的登入已過期，請重新登入。");
+                $.magnificPopup.open({
+                    items: {
+                        src: '#infoFail'
+                    },
+                    type: 'inline'
+                });
                 let homePage = new URL(location.protocol + "//" + location.hostname);
                 location.href = homePage;
             }
         }
         //共用ajax error時導回首頁
         window.AjaxErrorRedirctToHome = function () {
-                let homePage = new URL(location.protocol + "//" + location.hostname);
-                location.href = homePage;
+            let homePage = new URL(location.protocol + "//" + location.hostname);
+            location.href = homePage;
         }
         /**
         * 解壓縮並解析 Base64 編碼的 GZip 壓縮數據
-        * @@param {string} base64String - 經過 Base64 編碼的 GZip 壓縮字串       
+        * @@param {string} base64String - 經過 Base64 編碼的 GZip 壓縮字串
         */
-        window.DecompressData = function(base64String) {
+        window.DecompressData = function (base64String) {
             let binaryString = atob(base64String);
             let len = binaryString.length;
             let bytes = new Uint8Array(len);
@@ -261,6 +265,15 @@
             let decodedString = new TextDecoder("utf-8").decode(decompressed);
             return JSON.parse(decodedString);
         }
+        /**
+        * 正規表達修改申購FundCode
+        * @@param {string} value - url 參數 go
+        * @@param {string} id - 商品id
+        */
+        window.ModifyFundCode = function (value, id) {
+            return value.replace(/FundCode=[^&]*/, "FundCode=" + id);
+        }
+        //取即時風險屬性api
         window.RiskHandler = function () {
             return new Promise((resolve, reject) => {
                 $.ajax({
@@ -436,17 +449,17 @@
                     $.ajax({
                         type: "post",
                         url: "@ClientRoute.GenerateUrl(this, "Accounts", "InsertTrack")",
-                        data: { "trackList": store.get("focus") || [], "productId": id ,"pageUrl": window.location.pathname + window.location.search
-                            , "productType": type},
+                        data: {
+                            "trackList": store.get("focus") || [], "productId": id, "pageUrl": window.location.pathname + window.location.search
+                            , "productType": type
+                        },
                         beforeSend: function () { $('.c-loading').loading('show'); },
                         success: function (resp) {
-                            if(!resp.success && resp.block)
-                            {
-                                    window.VerifyLoginRedirctToHome(resp.success);
-                                    return;
+                            if (!resp.success && resp.block) {
+                                window.VerifyLoginRedirctToHome(resp.success);
+                                return;
                             }
-                            if (!resp.success)
-                            {
+                            if (!resp.success) {
                                 if (self.getAttribute('eh-focus-add').toString() == "true") {
                                     removeItem('focus', obj);
                                     self.setAttribute('eh-focus-add', false);
@@ -467,14 +480,14 @@
                             }
                         },
                         complete: function () {
-                        $('.c-loading').loading('hide');
-                    }
+                            $('.c-loading').loading('hide');
+                        }
                     })
                 }
 
             }
         });
-
+        //申購按鈕 初始
         EventHandler.AddOnExec('subscription-init', function (e) {
             let self = e.target;
             if (!isLogin) {
@@ -484,7 +497,43 @@
                 self.setAttribute("href", "#popupPurchase");
             }
         });
-
+        /**
+         * 處理 個網 URL 的查詢參數並組合成完整的 URL
+         * @@param {URL} url - 原始的 URL 物件
+         * @@param {string} matchKey - 要匹配的參數名稱 (如 "FundCode" 或 "prdCode")
+         * @@param {string} id - 替換的 ID 值
+         * @@param {Array} paramsArray - 用於存儲查詢參數的陣列
+         * @@returns {string} - 組合完成的查詢字串
+         */
+        function processUrlParams(url, matchKey, id, paramsArray) {
+            url.searchParams.forEach((value, key) => {
+                let params = `${key}=${key === matchKey ? id : value}`;
+                paramsArray.push(key === matchKey ? encodeURIComponent(params) : params);
+            });
+            return paramsArray.join(encodeURIComponent('&'));
+        }
+        /**
+         * 處理 app DeepLink URL 的查詢參數並組合成完整的 URL
+         * @@param {URL} url - 原始的 URL 物件
+         * @@param {string} id - 替換的 ID 值
+         * @@param {Array} paramsArray - 用於存儲查詢參數的陣列
+         * @@returns {string} - 組合完成的查詢字串
+         */
+        function processDeepLinkUrlParams(url, id, paramsArray) {
+            url.searchParams.forEach((value, key) => {
+                let params;
+                //go裡面包含 FundCode替換id
+                if (key == "go") {
+                    params = `${key}=${ModifyFundCode(value, id)}`;
+                } else {
+                    //參數為 prdCode替換id
+                    params = `${key}=${key == "prdCode" ? id : value.replace(/=$/, '')}`; //utm重複加密移除最後=
+                }
+                paramsArray.push(params.includes("utm") ? params : encodeURIComponent(params));
+            });
+            return paramsArray.join(encodeURIComponent('&'));
+        }
+        //申購按鈕 click事件 替換deeplink產品id
         EventHandler.AddClick('subscription-click', function (e) {
             if (isLogin) {
                 let self = e.target;
@@ -494,143 +543,64 @@
                 let regular = document.getElementById("subscriptionRegular");
                 let go = document.getElementById("subscriptionGo");
                 let bond = document.getElementById("subscriptionBond");
-                single.setAttribute('eh-subscription-id', id);
-                regular.setAttribute('eh-subscription-id', id);
-                go.setAttribute('eh-subscription-id', id);
-                bond.setAttribute('eh-subscription-id', id);
-                let singleUrl = new URL(single.getAttribute("href"));
+                [single, regular, go, bond].forEach(button => {
+                    button.setAttribute('eh-subscription-id', id);
+                });
+                let singleUrl = new URL(decodeURIComponent(single.getAttribute("href")));
                 let singleOriginAndPath = singleUrl.origin + singleUrl.pathname;
                 let singleCombined = singleOriginAndPath + "?";
-                let regularUrl = new URL(regular.getAttribute("href"));
+                let regularUrl = new URL(decodeURIComponent(regular.getAttribute("href")));
                 let regularOriginAndPath = regularUrl.origin + regularUrl.pathname;
                 let regularCombined = regularOriginAndPath + "?";
-                let goUrl = new URL(go.getAttribute("href"));
+                let goUrl = new URL(decodeURIComponent(go.getAttribute("href")));
                 let goOriginAndPath = goUrl.origin + goUrl.pathname;
                 let goCombined = goOriginAndPath + "?";
-                let singleParms = singleUrl.searchParams;
-                let regularParms = regularUrl.searchParams;
-                let goParms = goUrl.searchParams;
+                let allParamsArray = {
+                    single: [],
+                    regular: [],
+                    go: []
+                };
                 //行動版
-                if (singleParms.has("link")) {
-                    let mobilePlatform = store.get("MobilePlatform") || "firste";
-                    let singleInsindeUrl = new URL(singleParms.get("link"));
-                    let regularInsindUrl = new URL(regularParms.get("link"));
-                    let goInsindUrl = new URL(goParms.get("link"));
-                    //第e行動
-                    if (mobilePlatform == "firste") {
-                        for (const [key, value] of singleParms.entries()) {
-                            if (key == "link") {
-                                singleInsindeUrl.searchParams.delete("FundCode");
-                                singleInsindeUrl.searchParams.append("FundCode", id);
-                                singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
-                                continue;
-                            }
-                            singleCombined += `${key}=${value}&`;
-                        }
-                        for (const [key, value] of regularParms.entries()) {
-                            if (key == "link") {
-                                regularInsindUrl.searchParams.delete("FundCode");
-                                regularInsindUrl.searchParams.append("FundCode", id);
-                                regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
-                                continue;
-                            }
-                            regularCombined += `${key}=${value}&`;
-                        }
-                        for (const [key, value] of goParms.entries()) {
-                            if (key == "link") {
-                                goCombined += `${key}=${encodeURIComponent(value + '&')}`;
-                                continue;
-                            }
-                            if (key == "chn" || key == "emp_id") {
-                                goCombined += `${key}${encodeURIComponent('=' + value + '&')}`;
-                                continue;
-                            }
-                            if (key == "prdCode") {
-                                goCombined += `${key}${encodeURIComponent('=' + id)}&`;
-                                continue;
-                            }
-                            goCombined += `${key}=${value}&`;
-                        }
-                    } else
-                    //iLeo
-                    {
-                        for (const [key, value] of singleParms.entries()) {
-                            if (key == "link") {
-                                singleInsindeUrl.searchParams.delete("FundCode");
-                                singleInsindeUrl.searchParams.append("FundCode", id);
-                                singleCombined += `${key}=${encodeURIComponent(singleInsindeUrl)}&`;
-                                continue;
-                            }
-                            singleCombined += `${key}=${value}&`;
-                        }
-                        for (const [key, value] of regularParms.entries()) {
-                            if (key == "link") {
-                                regularInsindUrl.searchParams.delete("FundCode");
-                                regularInsindUrl.searchParams.append("FundCode", id);
-                                regularCombined += `${key}=${encodeURIComponent(regularInsindUrl)}&`;
-                                continue;
-                            }
-                            regularCombined += `${key}=${value}&`;
-                        }
-                        for (const [key, value] of goParms.entries()) {
-                            if (key == "link") {
-                                goInsindUrl.searchParams.delete("FundCode");
-                                goInsindUrl.searchParams.append("FundCode", id);
-                                goCombined += `${key}=${encodeURIComponent(goInsindUrl)}&`;
-                                continue;
-                            }
-                            goCombined += `${key}=${value}&`;
-                        }
-                    }
+                if ($(window).width() < 1199) {
+                    singleCombined += processDeepLinkUrlParams(singleUrl, id, allParamsArray.single);
+                    regularCombined += processDeepLinkUrlParams(regularUrl, id, allParamsArray.regular);
+                    goCombined += processDeepLinkUrlParams(goUrl, id, allParamsArray.go);
                 }
                 //第e個網
                 else {
-                    if (singleParms.has("FundCode")) {
-                        for (const [key, value] of singleParms.entries()) {
-                            if (key == "FundCode") {
-                                singleCombined += `${key}=${id}&`;
-                                continue;
-                            }
-                            singleCombined += `${key}=${value}&`;
-                        }
-                        for (const [key, value] of regularParms.entries()) {
-                            if (key == "FundCode") {
-                                regularCombined += `${key}=${id}&`;
-                                continue;
-                            }
-                            regularCombined += `${key}=${value}&`;
-                        }
-                    }
-                    if (goParms.has("prdCode")) {
-                        for (const [key, value] of goParms.entries()) {
-                            if (key == "prdCode") {
-                                goCombined += `${key}=${id}&`;
-                                continue;
-                            }
-                            goCombined += `${key}=${value}&`;
-                        }
-                    }
+                    singleCombined += processUrlParams(singleUrl, "FundCode", id, allParamsArray.single);
+                    regularCombined += processUrlParams(regularUrl, "FundCode", id, allParamsArray.regular);
+                    goCombined += processUrlParams(goUrl, "prdCode", id, allParamsArray.go);
                 }
-                single.setAttribute("href", singleCombined.slice(0, -1));
-                regular.setAttribute("href", regularCombined.slice(0, -1));
-                go.setAttribute("href", goCombined.slice(0, -1));
-                if (type.toLowerCase() == "fund") {
-                    $(single).closest('div').removeClass('u-hidden');
-                    $(regular).closest('div').removeClass('u-hidden');
-                    $(go).closest('div').addClass('u-hidden');
-                    $(bond).closest('div').addClass('u-hidden');
-                } else if (type.toLowerCase() == "foreignbonds") {
-                    $(single).closest('div').addClass('u-hidden');
-                    $(regular).closest('div').addClass('u-hidden');
-                    $(go).closest('div').addClass('u-hidden');
-                    $(bond).closest('div').removeClass('u-hidden');
-                } else
-                {
-                    $(single).closest('div').addClass('u-hidden');
-                    $(regular).closest('div').addClass('u-hidden');
-                    $(go).closest('div').removeClass('u-hidden');
-                    $(bond).closest('div').addClass('u-hidden');
-                }
+                single.setAttribute("href", singleCombined);
+                regular.setAttribute("href", regularCombined);
+                go.setAttribute("href", goCombined);
+                //依照商品顯示deeplink按鈕
+                const showMap = {
+                    fund: {
+                        single: true,
+                        regular: true,
+                        go: false,
+                        bond: false
+                    }, //基金
+                    foreignbonds: {
+                        single: false,
+                        regular: false,
+                        go: false,
+                        bond: true
+                    }, //國外債劵
+                    default: {
+                        single: false,
+                        regular: false,
+                        go: true,
+                        bond: false
+                    } //etf、國外股票
+                };
+                let visibility = showMap[type.toLowerCase()] || showMap.default;
+                $(single).closest('div').toggleClass('u-hidden', !visibility.single);
+                $(regular).closest('div').toggleClass('u-hidden', !visibility.regular);
+                $(go).closest('div').toggleClass('u-hidden', !visibility.go);
+                $(bond).closest('div').toggleClass('u-hidden', !visibility.bond);
             }
         });
 
@@ -677,6 +647,7 @@
         EventHandler.AddOnExec('fcbapplogin-init', function (e) {
             let self = e.target;
             let loginType = self.getAttribute('eh-login-type');
+            //依照登入渠道取對應deeplink
             let mobileLoginLink = "@MobileFristeLogin";
             if (loginType == "ileo") {
                 mobileLoginLink = "@MobileIleoLogin";
@@ -684,34 +655,18 @@
             let mobileLoginUrl = new URL(mobileLoginLink.replaceAll('&amp;', '&'));
             let loginUrl = "";
             let urlOriginAndPath = mobileLoginUrl.origin + mobileLoginUrl.pathname;
+            //取出全部網址參數
             let mobileLoginParms = mobileLoginUrl.searchParams;
             let allParams = mobileLoginParms.entries();
             loginUrl = urlOriginAndPath + "?";
+            let paramsArray = [];
+            //加密組合全部參數
             for (const [key, value] of allParams) {
-                if (key == "link") {
-                    if (loginType !== "ileo") {
-                        loginUrl += `${key}=${encodeURIComponent(value + '&')}`;
-                    } else {
-                        loginUrl += `${key}=${value + encodeURIComponent('&')}`;
-                    }
-                    continue;
-                }
-                if (key == "channel") {
-                    loginUrl += `${key}${encodeURIComponent('='+ value + '&')}`;
-                    continue;
-                }
-                if (key == "returnUrl") {
-                    loginUrl += `${key}${encodeURIComponent('=')}@(encodeUrl)&`;
-                    continue;
-                }
-                if (key == "ibi") {
-                    loginUrl += `${key}=${value}`;
-                } else {
-                    loginUrl += `${key}=${value}&`;
-                }
+                //returnUrl帶入加密後url，其餘參數帶入原本值
+                let params = `${key}=${key === "returnUrl" ? "@(encodeUrl)" : value}`;
+                paramsArray.push(encodeURIComponent(params));
             }
-            //模擬編碼，因channel參數是在link參數裡
-            loginUrl = loginUrl.replace('channel=', 'channel%3D');
+            loginUrl += paramsArray.join(encodeURIComponent('&'));
             self.setAttribute('href', loginUrl);
         });
 
@@ -952,10 +907,10 @@
         window.activateTabFromUrl = function () {
             let url = new URL(location.href);
             let tabParam = url.searchParams.get('tab');
-            if(tabParam){
+            if (tabParam) {
                 let activeTab = `tab-${tabParam}`;
                 $(`[data-tab-target=${activeTab}]`).trigger('click');
-            }            
+            }
         };
 
     })(jQuery, window, document);
