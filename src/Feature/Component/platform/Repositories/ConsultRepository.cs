@@ -34,7 +34,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,[EmployeeURL],[CustomerURL],[DepartmentCode]
                            ,[BranchCode],[BranchName],[BranchPhone]
                            ,[Type],[Phone],[Mail]
-                           ,[Subject],[Description]
+                           ,[Subject],[Description],[AdvistorAdvice]
                            ,CASE 
                             WHEN ([StatusCode] = '1' AND GETDATE() > (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]))
                             THEN '2'
@@ -70,7 +70,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,[EmployeeURL],[CustomerURL],[DepartmentCode]
                            ,[BranchCode],[BranchName],[BranchPhone]
                            ,[Type],[Phone],[Mail]
-                           ,[Subject],[Description]
+                           ,[Subject],[Description],[AdvistorAdvice]
                            ,CASE 
                             WHEN ([StatusCode] = '1' AND GETDATE() > (CAST([ScheduleDate] AS varchar) + ' ' + [EndTime]))
                             THEN '2'
@@ -135,6 +135,7 @@ namespace Feature.Wealth.Component.Repositories
                            ,Mail = @Mail
                            ,Subject = @Subject
                            ,Description = @Description
+                           ,AdvistorAdvice = @AdvistorAdvice
                            ,StatusCode = @StatusCode
                            ,ModifiedOn = GETDATE()
                            WHERE ScheduleID = @ScheduleID";

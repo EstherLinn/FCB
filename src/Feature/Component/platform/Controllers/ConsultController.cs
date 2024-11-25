@@ -191,6 +191,7 @@ namespace Feature.Wealth.Component.Controllers
                         email = consultSchedule.Mail,
                         topic = consultSchedule.Subject,
                         other = consultSchedule.Description,
+                        advistorAdvice = consultSchedule.AdvistorAdvice,
                         start = consultSchedule.ScheduleDate.ToString("yyyy-MM-dd") + "T" + consultSchedule.StartTime,
                         end = consultSchedule.ScheduleDate.ToString("yyyy-MM-dd") + "T" + consultSchedule.EndTime,
                         release = consultSchedule.Start,

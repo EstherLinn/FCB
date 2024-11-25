@@ -149,6 +149,10 @@ namespace Feature.Wealth.Component.Models.Consult
         /// </summary>
         public string Description { get; set; }
         /// <summary>
+        /// 理顧意見
+        /// </summary>
+        public string AdvistorAdvice { get; set; }
+        /// <summary>
         /// 0：未確認、1：已確認、2：已完成、3：已取消
         /// </summary>
         public string StatusCode { get; set; }
@@ -214,6 +218,10 @@ namespace Feature.Wealth.Component.Models.Consult
         /// 行事曆狀態排序用 0：預約成功、1：預約中、2：歷史紀錄
         /// </summary>
         public string StatusOrder { get; set; }
+        /// <summary>
+        /// 理顧意見
+        /// </summary>
+        public string advistorAdvice { get; set; }
     }
 
 

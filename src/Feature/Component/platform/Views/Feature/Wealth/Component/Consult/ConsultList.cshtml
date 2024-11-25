@@ -306,6 +306,7 @@
                                     <div class="l-info__title">其他諮詢內容</div>
                                     <div class="l-info__val">${Other}</div>
                                 </div>
+                                ${AdvistorAdviceDiv}
                             </div>
                         </div>
                         ${footer}
@@ -354,6 +355,10 @@
                 <div class="l-info__item">
                     <div class="l-info__title">其他諮詢內容</div>
                     <div class="l-info__val" data-detail="Description"></div>
+                </div>
+                <div class="l-info__item">
+                    <div class="l-info__title">理顧意見</div>
+                    <div class="l-info__val" data-detail="AdvistorAdvice"></div>
                 </div>
             </div>
         </div>
@@ -844,6 +849,15 @@
             $('[data-detail="Mail"]').text(consultSchedule.Mail);
             $('[data-detail="Subject"]').text(consultSchedule.Subject);
             $('[data-detail="Description"]').text(consultSchedule.Description);
+            $('[data-detail="AdvistorAdvice"]').text(consultSchedule.AdvistorAdvice);
+
+            // 檢查 AdvistorAdvice 是否有值，來決定顯示或隱藏該 div
+            if (consultSchedule.AdvistorAdvice && consultSchedule.AdvistorAdvice.trim() !== "") {
+                $('[data-detail="AdvistorAdvice"]').closest('.l-info__item').show();
+            } else {
+                $('[data-detail="AdvistorAdvice"]').closest('.l-info__item').hide();
+            }
+
             $('[data-cancel]').attr('data-id', id);
         }
 
@@ -1242,16 +1256,24 @@
         // 設定單筆行程泡泡內容
         function setEventPopupContent(data) {
             var $floatingEl = document.getElementById('tmpl').innerHTML;
-            $floatingEl = $floatingEl.replace('${PopupColor}', data.popupColor).replace('${Title}', data.title).replace('${StartDay}', moment(data.start).format('YYYY/MM/DD (dd)')).replace('${StartTime}', `${moment(data.start).format('AHH:mm')}~${moment(data.end).format('HH:mm')}`).replace('${Phone}', data.phone).replace('${Email}', data.email).replace('${Topic}', data.topic).replace('${Other}', data.other);
+
+            // 檢查 AdvistorAdvice 是否有值
+            var advistorAdviceDiv = data.advistorAdvice
+                ? `<div class="l-info__item">
+                        <div class="l-info__title">理顧意見</div>
+                        <div class="l-info__val">${data.advistorAdvice}</div>
+                </div>`
+                : '';
+            $floatingEl = $floatingEl.replace('${PopupColor}', data.popupColor).replace('${Title}', data.title).replace('${StartDay}', moment(data.start).format('YYYY/MM/DD (dd)')).replace('${StartTime}', `${moment(data.start).format('AHH:mm')}~${moment(data.end).format('HH:mm')}`).replace('${Phone}', data.phone).replace('${Email}', data.email).replace('${Topic}', data.topic).replace('${Other}', data.other).replace('${AdvistorAdviceDiv}', advistorAdviceDiv);
             var footerBtnSuccess = `
-                                                <div class="l-action l-action--inline" data-footer-tmpl="success">
-                                                    <div class="l-action__item">
-                                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-cancel-btn>取消預約</a>
-                                                    </div>
-                                                    <div class="l-action__item">
-                                                        <a href="#" class="o-btn o-btn--primary o-btn--sm {isDisabled}" data-event-id="{cid}" data-start-btn>{starBtnText}</a>
-                                                    </div>
-                                                </div>`;
+                                <div class="l-action l-action--inline" data-footer-tmpl="success">
+                                    <div class="l-action__item">
+                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-cancel-btn>取消預約</a>
+                                    </div>
+                                    <div class="l-action__item">
+                                        <a href="#" class="o-btn o-btn--primary o-btn--sm {isDisabled}" data-event-id="{cid}" data-start-btn>{starBtnText}</a>
+                                    </div>
+                                </div>`;
             var footerBtnReserving = `
                                                 <div class="l-action l-action--inline" data-footer-tmpl="reserving">
                                                     <div class="l-action__item">
