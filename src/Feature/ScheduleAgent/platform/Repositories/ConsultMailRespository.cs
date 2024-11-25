@@ -69,7 +69,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             using (new LanguageSwitcher("zh-TW"))
             {
                 Database db = Database.GetDatabase("web");
-                consultUrl = ItemUtils.GeneralLink(db.GetItem(consultRelatedRoot), consultListLink)?.Url;
+                consultUrl = ItemUtils.GeneralLink(db.GetItem(consultRelatedRoot), consultScheduleLink)?.Url;
                 consultUrl = new Uri(consultUrl).AbsolutePath.ToString();
             }
             List<MailSchema> mails = new List<MailSchema>();
@@ -90,7 +90,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 諮詢主題：{consultSchedule.Subject}<br>
 其他諮詢內容：{consultSchedule.Description}<br><br> 
 為保障您的權益，若欲取消預約或更改預約時間，請於預定「遠距理財諮詢服務」開始前，登入第e理財網調整，感謝您的配合，謝謝。<br><br> 
-第e理財網連結：{homeUrl + consultUrl} <br><br>
+第e理財網連結：{homeUrl + consultUrl + "?id=" + consultSchedule.ScheduleID.ToString()} <br><br>
 ※請勿直接回覆此信，若有疑問請洽第一銀行{consultSchedule.BranchName}理財業務人員，謝謝。
 ";
                 mailSchema.Topic = "「第一銀行第e理財網」遠距理財諮詢服務 - 預約即將開始提醒";
@@ -111,7 +111,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 諮詢主題：{consultSchedule.Subject}<br>
 其他諮詢內容：{consultSchedule.Description}<br><br>
 為維護良好之客我關係及服務品質，請於預定「遠距理財諮詢服務」時間開始前，登入第e理財網提供諮詢服務。<br><br>
-第e理財網連結：{homeUrl + consultUrl} <br><br>
+第e理財網連結：{homeUrl + consultUrl + "?id=" + consultSchedule.ScheduleID.ToString()} <br><br>
 ※此為系統主動發送信函，請勿直接回覆此封信件，謝謝。"
                 };
 
