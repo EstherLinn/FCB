@@ -80,7 +80,7 @@ namespace Feature.Wealth.Component.Controllers
 
             if (!string.IsNullOrEmpty(description))
             {
-                consultSchedule.Description = consultSchedule.Description + " 理顧意見：" + description;
+                consultSchedule.AdvistorAdvice = description;
             }
 
             MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
