@@ -1,4 +1,5 @@
-﻿using Feature.Wealth.Service.Models.FundApi;
+﻿using Feature.Wealth.Service.Filter;
+using Feature.Wealth.Service.Models.FundApi;
 using Feature.Wealth.Service.Repositories;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
@@ -10,6 +11,7 @@ namespace Feature.Wealth.Service.Controllers
         private readonly FundApiRepository _fundRepository = new FundApiRepository();
 
         [HttpGet]
+        [AuthorizationFilter]
         [OutputCache(Duration = 30)]
         public ActionResult FundCorpJson()
         {
@@ -22,6 +24,7 @@ namespace Feature.Wealth.Service.Controllers
         }
 
         [HttpGet]
+        [AuthorizationFilter]
         [OutputCache(Duration = 30)]
         public ActionResult FundTargetJson()
         {

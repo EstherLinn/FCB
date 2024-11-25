@@ -9,10 +9,9 @@ namespace Foundation.Wealth.Models
     /// </summary>
     public class Config
     {
-
         /// <summary>
         /// 環境定義 取得當前環境
-        /// </summary>     
+        /// </summary>
         public static string CuntextEnvironment = new RoleConfigurationHelper().DefinedEnvironment.FirstOrDefault();
 
         /// <summary>
