@@ -58,70 +58,97 @@
                     </div>
                     <!-- is-active: 作用中的項目 -->
                     <div class="c-tab__panel is-active" data-tab-panel-id="tab-status-1">
-                        <div class="l-table">
-                            <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
-                                <colgroup>
-                                    <col style="width: 1%;">
-                                    <col style="width: 2%;">
-                                    <col style="width: 3%;">
-                                    <col style="width: 3%;">
-                                    <col style="width: 2%;">
-                                    <col style="width: 1%;">
-                                    <col style="width: 1%;">
-                                </colgroup>
-                                <thead>
-                                    <tr class="u-nowrap">
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>即將到來</span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>預約日期</span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>預約時段</span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>電子信箱</span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>預約明細</span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>取消預約</span>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="c-table__title">
-                                                <span>開始諮詢</span>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody1">
-                                </tbody>
-                            </table>
-                            <div class="l-pagination">
-                                <div class="l-pagination__size" id="uid-perPage-1">
+                        <div class="l-flex u-flex-col u-flex-gap-sm">
+                            <div class="l-flex__item u-right u-hidden@dt-only">
+                                <div class="o-sortingbox">
+                                    <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                    <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="consultationListTable1">
+                                        <option value="">排序</option>
+                                        <option value="預約日期高至低" data-sorting-column="ScheduleDate" data-sorting-class="is-desc">預約日期高至低</option>
+                                        <option value="預約日期低至高" data-sorting-column="ScheduleDate" data-sorting-class="is-asc">預約日期低至高</option>
+                                    </select>
                                 </div>
-                                <div class="l-pagination__switch" id="uid-pagination-1">
+                            </div>
+                            <div class="l-flex__item">
+                                <div class="l-table">
+                                    <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra" data-table-name="consultationListTable1" id="consultationListTable1">
+                                        <colgroup>
+                                            <col style="width: 1%;">
+                                            <col style="width: 2%;">
+                                            <col style="width: 3%;">
+                                            <col style="width: 3%;">
+                                            <col style="width: 2%;">
+                                            <col style="width: 1%;">
+                                            <col style="width: 1%;">
+                                        </colgroup>
+                                        <thead>
+                                            <tr class="u-nowrap">
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>即將到來</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>預約日期</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="ScheduleDate"></a>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>預約時段</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>電子信箱</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>預約明細</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>取消預約</span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="c-table__title">
+                                                        <span>開始諮詢</span>
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody1">
+                                        </tbody>
+                                    </table>
+                                    <div class="l-pagination">
+                                        <div class="l-pagination__size" id="uid-perPage-1">
+                                        </div>
+                                        <div class="l-pagination__switch" id="uid-pagination-1">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="c-tab__panel" data-tab-panel-id="tab-status-2">
-                        <div class="l-table">
-                            <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra">
+                        <div class="l-flex u-flex-col u-flex-gap-sm">
+                            <div class="l-flex__item u-right u-hidden@dt-only">
+                                <div class="o-sortingbox">
+                                    <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
+                                    <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="consultationListTable1">
+                                        <option value="">排序</option>
+                                        <option value="預約日期高至低" data-sorting-column="ScheduleDate" data-sorting-class="is-desc">預約日期高至低</option>
+                                        <option value="預約日期低至高" data-sorting-column="ScheduleDate" data-sorting-class="is-asc">預約日期低至高</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="l-flex__item">
+                                <div class="l-table">
+                                    <table class="c-table@dt-only c-cardTable@lt c-cardTable--zebra"data-table-name="consultationListTable0" id="consultationListTable0">
                                 <colgroup>
                                     <col style="width: 2%;">
                                     <col style="width: 2%;">
@@ -134,6 +161,7 @@
                                         <th>
                                             <div class="c-table__title">
                                                 <span>預約日期</span>
+                                                <a href="#" class="o-sorting" data-sorting-column="ScheduleDate"></a>
                                             </div>
                                         </th>
                                         <th>
@@ -161,10 +189,12 @@
                                 <tbody id="tbody0">
                                 </tbody>
                             </table>
-                            <div class="l-pagination">
-                                <div class="l-pagination__size" id="uid-perPage-0">
-                                </div>
-                                <div class="l-pagination__switch" id="uid-pagination-0">
+                                    <div class="l-pagination">
+                                        <div class="l-pagination__size" id="uid-perPage-0">
+                                        </div>
+                                        <div class="l-pagination__switch" id="uid-pagination-0">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -176,6 +206,8 @@
                                     <!-- [data-sortingbox="true"]: 載入後自動綁定手機版排序客製樣式下拉功能 -->
                                     <select class="o-sortingbox__input" data-sortingbox="true" data-sorting-linkto="consultationListTable2">
                                         <option value="">排序</option>
+                                        <option value="預約日期高至低" data-sorting-column="ScheduleDate" data-sorting-class="is-desc">預約日期高至低</option>
+                                        <option value="預約日期低至高" data-sorting-column="ScheduleDate" data-sorting-class="is-asc">預約日期低至高</option>
                                         <option value="預約狀態高至低" data-sorting-column="StatusCode" data-sorting-class="is-desc">預約狀態高至低</option>
                                         <option value="預約狀態低至高" data-sorting-column="StatusCode" data-sorting-class="is-asc">預約狀態低至高</option>
                                     </select>
@@ -196,6 +228,7 @@
                                                 <th>
                                                     <div class="c-table__title">
                                                         <span>預約日期</span>
+                                                        <a href="#" class="o-sorting" data-sorting-column="ScheduleDate"></a>
                                                     </div>
                                                 </th>
                                                 <th>
@@ -232,7 +265,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>                                                
+                        </div>
                     </div>
                 </div>
             </div>
@@ -571,8 +604,27 @@
             search: {},
             order: {
                 default_sort: 'asc',
-                sorts: [],
-                onSortEvent: function (f, e) { },
+                sorts: [{ field: 'group1', ele: 'select[data-sorting-linkto="consultationListTable0"]' }],
+                onSortEvent: function (f, e) {
+                let $self = $(this);
+                    if (e.type === 'click') {
+
+                    } else if (e.type === 'change') {
+                        let $selected = $self.find(':selected');
+                        let field = $selected.data('sorting-column');
+                        let order = $selected.data('sorting-class');
+                        f.field = field;
+                        if (!!order) {
+                            if (order === 'is-desc') {
+                                f.order = 'desc';
+                            } else if (order === 'is-asc') {
+                                f.order = 'asc';
+                            }
+                        } else {
+                            f.order = f.order === 'desc' ? 'asc' : 'desc';
+                        }
+                    }
+                },
             },
             pagination: {
                 //headerView: '#uid-filter-header',
@@ -589,6 +641,36 @@
             }
         });
 
+        $('#consultationListTable0').on('click.sorting', '.o-sorting', function (e) {
+            e.preventDefault();
+            // 呼叫 loading
+            window.loading('show');
+            var $this = $(this);
+            var orderby = '';
+            if ($this.hasClass('is-asc')) {
+                $this.removeClass('is-asc').addClass('is-desc');
+                orderby = 'is-desc';
+            } else {
+                $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                $this.addClass('is-asc');
+                orderby = 'is-asc';
+            }
+
+            // 連動 sortingbox
+            var tableName = $(this).closest('[data-table-name]').data('table-name');
+            var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+            var sortingColumn = $(this).data('sorting-column');
+            $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+            $sortingbox.trigger('change');
+
+            // 因展示，使用 setTimeout 延遲關閉 loading
+            setTimeout(() => {
+                // 關閉loading
+                window.loading('hide');
+            }, 300);
+        });
+        OrderColumn("consultationListTable0", 'ScheduleDate', 'is-asc', true);
+
         var fjs1 = FilterJS(data1, '#tbody1', {
             template: '#template1',
             callbacks: {
@@ -602,8 +684,27 @@
             search: {},
             order: {
                 default_sort: 'asc',
-                sorts: [],
-                onSortEvent: function (f, e) { },
+                sorts: [{ field: 'group1', ele: 'select[data-sorting-linkto="consultationListTable1"]' }],
+                onSortEvent: function (f, e) {
+                let $self = $(this);
+                    if (e.type === 'click') {
+
+                    } else if (e.type === 'change') {
+                        let $selected = $self.find(':selected');
+                        let field = $selected.data('sorting-column');
+                        let order = $selected.data('sorting-class');
+                        f.field = field;
+                        if (!!order) {
+                            if (order === 'is-desc') {
+                                f.order = 'desc';
+                            } else if (order === 'is-asc') {
+                                f.order = 'asc';
+                            }
+                        } else {
+                            f.order = f.order === 'desc' ? 'asc' : 'desc';
+                        }
+                    }
+                },
             },
             pagination: {
                 //headerView: '#uid-filter-header',
@@ -619,6 +720,36 @@
                 }
             }
         });
+
+        $('#consultationListTable1').on('click.sorting', '.o-sorting', function (e) {
+            e.preventDefault();
+            // 呼叫 loading
+            window.loading('show');
+            var $this = $(this);
+            var orderby = '';
+            if ($this.hasClass('is-asc')) {
+                $this.removeClass('is-asc').addClass('is-desc');
+                orderby = 'is-desc';
+            } else {
+                $this.closest('.l-table').find('.o-sorting').removeClass('is-asc is-desc');
+                $this.addClass('is-asc');
+                orderby = 'is-asc';
+            }
+
+            // 連動 sortingbox
+            var tableName = $(this).closest('[data-table-name]').data('table-name');
+            var $sortingbox = $(`[data-sorting-linkto="${tableName}"]`);
+            var sortingColumn = $(this).data('sorting-column');
+            $(`option[data-sorting-column="${sortingColumn}"][data-sorting-class="${orderby}"]`, $sortingbox).prop('selected', true);
+            $sortingbox.trigger('change');
+
+            // 因展示，使用 setTimeout 延遲關閉 loading
+            setTimeout(() => {
+                // 關閉loading
+                window.loading('hide');
+            }, 300);
+        });
+        OrderColumn("consultationListTable1", 'ScheduleDate', 'is-asc', true);
 
         var fjs2 = FilterJS(data2, '#tbody2', {
             template: '#template2',
@@ -700,6 +831,7 @@
                 window.loading('hide');
             }, 300);
         });
+        OrderColumn("consultationListTable2", 'ScheduleDate', 'is-desc', true);
 
         function setPopup(id) {
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
@@ -731,7 +863,7 @@
             });
         }
 
-        function cancelConsultSchedule(id) {            
+        function cancelConsultSchedule(id) {
             window.loading('show');
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
 
@@ -787,7 +919,7 @@
 
                     calendarData.forEach((data) => {
                         calendar.addEvent(data);
-                    });                 
+                    });
 
                     calendar.render();
 
@@ -885,7 +1017,7 @@
                     let data = {
                         title: info.event.title,
                         start: info.event.start,
-						end: info.event.end,
+                        end: info.event.end,
                         ...info.event.extendedProps
                     };
                     if (!$('.c-eventPopup').length) {
@@ -911,21 +1043,21 @@
             dateClick(arg) {
                 if (window.innerWidth < 1200) {
                     const datas = dataSource.filter(item => item.start.split('T')[0] === arg.dateStr);
-                    datas.sort((a,b) => {
+                    datas.sort((a, b) => {
                         if (a.StatusOrder > b.StatusOrder) {
                             return 1;
                         }
                         else if (a.StatusOrder < b.StatusOrder) {
-                           return -1;
+                            return -1;
                         }
-                        else{
-                            if (a.start > b.start){
+                        else {
+                            if (a.start > b.start) {
                                 return 1;
                             }
-                            else if (a.start < b.start){
+                            else if (a.start < b.start) {
                                 return -1;
                             }
-                            else{
+                            else {
                                 return 0;
                             }
                         }
@@ -936,12 +1068,12 @@
                     // 需下事件點選單筆行程跳出泡泡
                     datas.forEach(item => {
                         html += `
-                                            <div data-mb-popup class="c-event" style="background-color:${item.categoryColor}">
-                                                <div class="c-event__details">
-                                                    <div>${item.title}</div>
-                                                    <div>${moment(item.start).format("HH:mm")}</div>
-                                                </div>
-                                            </div>`;
+                                                            <div data-mb-popup class="c-event" style="background-color:${item.categoryColor}">
+                                                                <div class="c-event__details">
+                                                                    <div>${item.title}</div>
+                                                                    <div>${moment(item.start).format("HH:mm")}</div>
+                                                                </div>
+                                                            </div>`;
                     });
                     if (datas.length == 0) {
                         html = '無預約紀錄';
@@ -1030,12 +1162,12 @@
             eventContent: function (info) {
                 if (window.innerWidth > 1200) {
                     let tmpl = `
-                                        <div class="c-event" style="background-color:${info.event.extendedProps.categoryColor}">
-                                            <div class="c-event__details">
-                                                <div>${info.event.title}</div>
-                                                <div>${moment(info.event.start).format("HH:mm")}</div>
-                                            </div>
-                                        </div>`;
+                                                        <div class="c-event" style="background-color:${info.event.extendedProps.categoryColor}">
+                                                            <div class="c-event__details">
+                                                                <div>${info.event.title}</div>
+                                                                <div>${moment(info.event.start).format("HH:mm")}</div>
+                                                            </div>
+                                                        </div>`;
                     return {
                         html: tmpl
                     };
@@ -1072,7 +1204,7 @@
             });
             $('.fc-datePicker-button').addClass('btn');
 
-            if($datepicker){
+            if ($datepicker) {
                 $datepicker.datepicker('update', date);
             }
         }
@@ -1112,24 +1244,24 @@
             var $floatingEl = document.getElementById('tmpl').innerHTML;
             $floatingEl = $floatingEl.replace('${PopupColor}', data.popupColor).replace('${Title}', data.title).replace('${StartDay}', moment(data.start).format('YYYY/MM/DD (dd)')).replace('${StartTime}', `${moment(data.start).format('AHH:mm')}~${moment(data.end).format('HH:mm')}`).replace('${Phone}', data.phone).replace('${Email}', data.email).replace('${Topic}', data.topic).replace('${Other}', data.other);
             var footerBtnSuccess = `
-                                <div class="l-action l-action--inline" data-footer-tmpl="success">
-                                    <div class="l-action__item">
-                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-cancel-btn>取消預約</a>
-                                    </div>
-                                    <div class="l-action__item">
-                                        <a href="#" class="o-btn o-btn--primary o-btn--sm {isDisabled}" data-event-id="{cid}" data-start-btn>{starBtnText}</a>
-                                    </div>
-                                </div>`;
+                                                <div class="l-action l-action--inline" data-footer-tmpl="success">
+                                                    <div class="l-action__item">
+                                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-cancel-btn>取消預約</a>
+                                                    </div>
+                                                    <div class="l-action__item">
+                                                        <a href="#" class="o-btn o-btn--primary o-btn--sm {isDisabled}" data-event-id="{cid}" data-start-btn>{starBtnText}</a>
+                                                    </div>
+                                                </div>`;
             var footerBtnReserving = `
-                                <div class="l-action l-action--inline" data-footer-tmpl="reserving">
-                                    <div class="l-action__item">
-                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-cancel-btn>取消預約</a>
-                                    </div>
-                                </div>`;
+                                                <div class="l-action l-action--inline" data-footer-tmpl="reserving">
+                                                    <div class="l-action__item">
+                                                        <a href="#" class="o-btn o-btn--secondary o-btn--sm" data-event-id="{cid}" data-cancel-btn>取消預約</a>
+                                                    </div>
+                                                </div>`;
             var $footerWrapper = `
-                                <div class="c-eventPopup__footer">
-                                    {btns}
-                                </div>`;
+                                                <div class="c-eventPopup__footer">
+                                                    {btns}
+                                                </div>`;
             switch (data.type) {
                 case 'history':
                     $floatingEl = $floatingEl.replace('${footer}', '');
