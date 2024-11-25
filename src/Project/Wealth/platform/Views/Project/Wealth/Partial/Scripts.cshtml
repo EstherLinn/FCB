@@ -506,10 +506,14 @@
          * @@returns {string} - 組合完成的查詢字串
          */
         function processUrlParams(url, matchKey, id, paramsArray) {
+            let returnUrl = '';
             url.searchParams.forEach((value, key) => {
                 let params = `${key}=${key === matchKey ? id : value}`;
                 paramsArray.push(key === matchKey ? encodeURIComponent(params) : params);
             });
+            returnUrl = paramsArray.join(encodeURIComponent('&'));
+            //go = 不加密
+            returnUrl = returnUrl.replace('go%3D', decodeURIComponent('go%3D'));
             return paramsArray.join(encodeURIComponent('&'));
         }
         /**
@@ -520,6 +524,7 @@
          * @@returns {string} - 組合完成的查詢字串
          */
         function processDeepLinkUrlParams(url, id, paramsArray) {
+            let returnUrl = '';
             url.searchParams.forEach((value, key) => {
                 let params;
                 //go裡面包含 FundCode替換id
@@ -531,7 +536,10 @@
                 }
                 paramsArray.push(params.includes("utm") ? params : encodeURIComponent(params));
             });
-            return paramsArray.join(encodeURIComponent('&'));
+            returnUrl = paramsArray.join(encodeURIComponent('&'));
+            //go = 不加密
+            returnUrl = returnUrl.replace('go%3D', decodeURIComponent('go%3D'));
+            return returnUrl;
         }
         //申購按鈕 click事件 替換deeplink產品id
         EventHandler.AddClick('subscription-click', function (e) {
@@ -667,6 +675,8 @@
                 paramsArray.push(encodeURIComponent(params));
             }
             loginUrl += paramsArray.join(encodeURIComponent('&'));
+            //go= 不加密
+            loginUrl = loginUrl.replace('go%3D', decodeURIComponent('go%3D'));
             self.setAttribute('href', loginUrl);
         });
 
