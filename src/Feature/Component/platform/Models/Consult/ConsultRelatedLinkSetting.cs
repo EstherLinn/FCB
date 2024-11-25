@@ -1,7 +1,6 @@
-﻿using Feature.Wealth.Account.Models.OAuth;
+﻿using Sitecore.Configuration;
 using Sitecore.Data;
 using Sitecore.Data.Items;
-using System.Collections.Generic;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
 
 namespace Feature.Wealth.Component.Models.Consult
@@ -68,6 +67,18 @@ namespace Feature.Wealth.Component.Models.Consult
             return item.GetFieldValue(Template.ConsultRelatedLink.Fields.SkipIMVPAPI) == "1";
         }
 
+        public static bool GetUseTestEmail()
+        {
+            Item item = ItemUtils.GetItem(Template.ConsultRelatedLink.Root);
+            return Settings.GetSetting("ConsultUseTestEmail") == "1" && item.GetFieldValue(Template.ConsultRelatedLink.Fields.UseTestEmail) == "1";
+        }
+
+        public static string GetTestEmail()
+        {
+            Item item = ItemUtils.GetItem(Template.ConsultRelatedLink.Root);
+            return item.GetFieldValue(Template.ConsultRelatedLink.Fields.TestEmail);
+        }
+
         public struct Template
         {
             public struct ConsultRelatedLink
@@ -82,6 +93,9 @@ namespace Feature.Wealth.Component.Models.Consult
 
                     public static readonly ID NeedEmployeeIPCheck = new ID("{616A86FF-47D3-48C6-B682-EB879AD80194}");
                     public static readonly ID SkipIMVPAPI = new ID("{CBC2E5FE-FFA1-47E5-8ECB-B8692DA96E6F}");
+
+                    public static readonly ID UseTestEmail = new ID("{CF5A5BF5-B530-4ABB-8D88-AA54FC27FA35}");
+                    public static readonly ID TestEmail = new ID("{A1CC4A9D-B62D-4E87-BCB9-198646633A90}");
                 }
             }
 

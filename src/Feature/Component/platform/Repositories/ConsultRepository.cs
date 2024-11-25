@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using FastMember;
 using Feature.Wealth.Component.Models.Consult;
 using Feature.Wealth.ScheduleAgent.Models.Mail;
 using Foundation.Wealth.Helper;
@@ -505,7 +504,7 @@ namespace Feature.Wealth.Component.Repositories
             string result = $@"親愛的理顧您好：<br><br>
 通知您，{consultSchedule.CustomerName}客戶取消「遠距理財諮詢服務」預約，以下是您的客戶預約資訊：<br><br>
 預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
-預約時段：{consultSchedule.StartTime}~{ consultSchedule.EndTime}<br>
+預約時段：{consultSchedule.StartTime}~{consultSchedule.EndTime}<br>
 主要往來分行：{consultSchedule.BranchName}<br>
 理財顧問：{consultSchedule.EmployeeName}先生/小姐<br>
 諮詢主題：{consultSchedule.Subject}<br>
@@ -536,8 +535,19 @@ namespace Feature.Wealth.Component.Repositories
 
         public string GetEmployeeEmail(ConsultSchedule consultSchedule)
         {
-            string mailCode = Regex.Replace(consultSchedule.EmployeeID.TrimStart('0'), ".$", string.Empty);
-            string email = "i" + mailCode.PadLeft(5, '0') + "@firstbank.com.tw";
+            var email = string.Empty;
+
+            if (ConsultRelatedLinkSetting.GetUseTestEmail())
+            {
+                email = ConsultRelatedLinkSetting.GetTestEmail();
+            }
+
+            if (string.IsNullOrEmpty(email))
+            {
+                var mailCode = Regex.Replace(consultSchedule.EmployeeID.TrimStart('0'), ".$", string.Empty);
+                email = "i" + mailCode.PadLeft(5, '0') + "@firstbank.com.tw";
+            }
+
             return email;
         }
     }
