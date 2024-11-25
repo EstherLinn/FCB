@@ -490,6 +490,8 @@ namespace Feature.Wealth.Component.Controllers
             string id = Sitecore.Web.WebUtil.GetSafeQueryString("id");
             string type = Sitecore.Web.WebUtil.GetSafeQueryString("type");
 
+            var info = FcbMemberHelper.GetMemberAllInfo();
+
             var consultScheduleModel = CreateConsultScheduleModel(item);
 
             if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out var result))
@@ -511,6 +513,14 @@ namespace Feature.Wealth.Component.Controllers
                 else if (consultSchedule.StatusCode == "3")
                 {
                     consultScheduleModel.Message = "該筆預約紀錄已取消，即將返回列表。";
+                }
+                else if (info.IsEmployee && info.AdvisrorID != consultSchedule.EmployeeID)
+                {
+                    consultScheduleModel.Message = "目前登入者並非該筆預約理顧，即將返回列表。";
+                }
+                else if (info.IsEmployee == false && info.WebBankId != consultSchedule.CustomerID)
+                {
+                    consultScheduleModel.Message = "目前登入者並非該筆預約客戶，即將返回列表。";
                 }
                 else
                 {
@@ -558,7 +568,7 @@ namespace Feature.Wealth.Component.Controllers
                         }
 
                         // 進入預約連結
-                        if (type == "Employee")
+                        if (info.IsEmployee)
                         {
                             consultScheduleModel.ReturnLink = consultSchedule.EmployeeURL;
                         }
@@ -727,10 +737,10 @@ namespace Feature.Wealth.Component.Controllers
             try
             {
                 MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
-                MailSchema advisorMail = new MailSchema { MailTo = this._consultRepository.GetEmployeeEmail(consultSchedule)};
+                MailSchema advisorMail = new MailSchema { MailTo = this._consultRepository.GetEmployeeEmail(consultSchedule) };
 
                 var currentRequestUrl = Request.Url;
-                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName") + ConsultRelatedLinkSetting.GetConsultListUrl();
+                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName") + ConsultRelatedLinkSetting.GetConsultScheduleUrl() + "?id=" + consultSchedule.ScheduleID.ToString();
 
                 if (info.IsEmployee)
                 {
@@ -885,13 +895,14 @@ namespace Feature.Wealth.Component.Controllers
                     advisorMail.Topic = this._consultRepository.GetManagerCancelMailTopic();
                     advisorMail.Content = this._consultRepository.GetManagerCancellationMailContent(consultSchedule);
                 }
-                else {
+                else
+                {
                     mail.Topic = this._consultRepository.GetClientCancelMailTopic();
                     mail.Content = this._consultRepository.GetClientCancelMailContent(consultSchedule);
                     advisorMail.Topic = this._consultRepository.GetAdvisorCancelMailTopic();
                     advisorMail.Content = this._consultRepository.GetAdvisorCancellationMailContent(consultSchedule);
                 }
-                
+
 
                 using (new SecurityDisabler())
                 {

@@ -84,7 +84,7 @@ namespace Feature.Wealth.Component.Controllers
             }
 
             MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
-            MailSchema advisorMail = new MailSchema { MailTo = this._consultRepository.GetEmployeeEmail(consultSchedule)};
+            MailSchema advisorMail = new MailSchema { MailTo = this._consultRepository.GetEmployeeEmail(consultSchedule) };
 
             if (action == "1")
             {
@@ -92,7 +92,7 @@ namespace Feature.Wealth.Component.Controllers
                 this._consultRepository.UpdateConsultSchedule(consultSchedule);
 
                 var currentRequestUrl = Request.Url;
-                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName") + ConsultRelatedLinkSetting.GetConsultListUrl();
+                var url = currentRequestUrl.Scheme + "://" + Settings.GetSetting("CDHostName") + ConsultRelatedLinkSetting.GetConsultScheduleUrl() + "?id=" + consultSchedule.ScheduleID.ToString();
 
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
                 mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
