@@ -20,6 +20,9 @@
     var WebBondLink = WebUtility.UrlDecode(Settings.GetSetting("WebBond"));
     var MobileBondLink = WebUtility.UrlDecode(Settings.GetSetting("MobileBond"));
     var IleoBondLink = WebUtility.UrlDecode(Settings.GetSetting("IleoBond"));
+    var WebKycLink = Settings.GetSetting("WebKYC");
+    var FirsteKycLink = Settings.GetSetting("FirsteKYC");
+    var IleoKycLink = Settings.GetSetting("IleoKYC");
 }
 <div id="popupLogin" class="c-modal mfp-hide">
     <div class="c-modal__wrap">
@@ -119,6 +122,50 @@
         </div>
     </div>
 </div>
+<div id="popupGoKyc" class="c-modal c-modal--sm mfp-hide">
+    <div class="c-modal__wrap">
+        <header class="c-modal__header">
+            <h2 class="c-modal__title">風險屬性評估</h2>
+        </header>
+        <div class="c-modal__content">
+            <div class="u-hidden@dt-only">
+                <div class="l-flex u-flex-col u-flex-gap-xs">
+                    <div class="l-flex__item">
+                        <span class="t-bold">選擇平台：</span>
+                    </div>
+                    <div class="l-flex__item">
+                        <div class="l-pickGroup">
+                            <div class="l-pickGroup__item">
+                                <label class="o-btnRadio">
+                                    <input class="o-btnRadio__input" type="radio" name="platform" data-name="firste" checked>
+                                    <div class="o-btnRadio__text">
+                                        <span>第e行動</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="l-pickGroup__item">
+                                <label class="o-btnRadio">
+                                    <input class="o-btnRadio__input" type="radio" name="platform" data-name="ileo">
+                                    <div class="o-btnRadio__text">
+                                        <span>iLEO APP</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-modal__action">
+            <div class="l-action l-action--inline">
+                <div class="l-action__item">
+                    <a href="@WebKycLink" class="o-btn o-btn--primary o-btn" id="GoKycBtn" target="_blank">進行風險屬性評估</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="popupCurrency" class="c-modal c-modal--xs mfp-hide">
     <div class="c-modal__wrap">
         <header class="c-modal__header">
@@ -747,5 +794,18 @@
         setHref(regular, links.regular);
         setHref(go, links.go);
         setHref(bond, links.bond);
+    }
+
+    //風險屬性評估彈窗
+    if ($(window).width() < 1199) {
+        //第e行動&&ileo按鈕切換
+        $('input[name="platform"]', '#popupGoKyc').on('click', function () {
+            let choicePlatform = $(this).data('name');
+            let url = choicePlatform === "firste" ? "@FirsteKycLink" : "@IleoKycLink";;
+            document.getElementById('GoKycBtn').setAttribute('href', url.replaceAll('&amp;', '&'));
+        });
+        //預設哪個平台登入先預選哪個平台風險評估
+        let defalutPlatForm = store.get("MobilePlatform") || "firste";
+        $(`input[name="platform"][data-name="${defalutPlatForm}"]`, '#popupGoKyc').trigger('click');
     }
 </script>
