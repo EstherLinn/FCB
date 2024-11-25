@@ -137,7 +137,7 @@
                         <div class="l-pickGroup">
                             <div class="l-pickGroup__item">
                                 <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform" data-name="firste" checked>
+                                    <input class="o-btnRadio__input" type="radio" name="platform" data-platform="firste" checked>
                                     <div class="o-btnRadio__text">
                                         <span>第e行動</span>
                                     </div>
@@ -145,7 +145,7 @@
                             </div>
                             <div class="l-pickGroup__item">
                                 <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform" data-name="ileo">
+                                    <input class="o-btnRadio__input" type="radio" name="platform" data-platform="ileo">
                                     <div class="o-btnRadio__text">
                                         <span>iLEO APP</span>
                                     </div>
@@ -736,7 +736,7 @@
             //go裡面包含FundCode參數先解密後替換再加密 ex: 原先:go%3DF01%3FFundCode%3DAA01 解密 go=F01?FundCode=AA01
             if (key === "go") {
                 let decodeParam = decodeURIComponent(value);
-                param = `${key}${encodeURIComponent('=')}${encodeURIComponent(decodeParam.replace(/FundCode=[^&]*/, "FundCode=" + id)).replace('?', encodeURIComponent('?'))}`;
+                param = `${key}=${encodeURIComponent(decodeParam.replace(/FundCode=[^&]*/, "FundCode=" + id)).replace('?', encodeURIComponent('?'))}`;
             } else if (isFirste && (key === "chn" || key === "emp_id" || key === "prdCode")) {
                 //第e行動 etf、國外股票是prdCode
                 param = `${key}${encodeURIComponent('=')}${key === "prdCode" ? id : value}`;
@@ -800,12 +800,12 @@
     if ($(window).width() < 1199) {
         //第e行動&&ileo按鈕切換
         $('input[name="platform"]', '#popupGoKyc').on('click', function () {
-            let choicePlatform = $(this).data('name');
+            let choicePlatform = $(this).data('platform');
             let url = choicePlatform === "firste" ? "@FirsteKycLink" : "@IleoKycLink";;
             document.getElementById('GoKycBtn').setAttribute('href', url.replaceAll('&amp;', '&'));
         });
         //預設哪個平台登入先預選哪個平台風險評估
         let defalutPlatForm = store.get("MobilePlatform") || "firste";
-        $(`input[name="platform"][data-name="${defalutPlatForm}"]`, '#popupGoKyc').trigger('click');
+        $(`input[name="platform"][data-platform="${defalutPlatForm}"]`, '#popupGoKyc').trigger('click');
     }
 </script>
