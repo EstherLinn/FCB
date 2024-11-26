@@ -304,8 +304,7 @@ namespace Feature.Wealth.Component.Repositories
 預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
 預約時段：{consultSchedule.StartTime}~{consultSchedule.EndTime}<br>
 諮詢主題：{consultSchedule.Subject}<br>
-其他諮詢內容：{consultSchedule.Description}<br>
-{(string.IsNullOrEmpty(consultSchedule.AdvistorAdvice) ? "<br>" : $"理顧意見：{consultSchedule.AdvistorAdvice}<br><br>")}
+其他諮詢內容：{consultSchedule.Description}<br><br> 
 {url}<br><br>
 ※請勿直接回覆此信，若有疑問請洽第一銀行{consultSchedule.BranchName}理財業務人員，謝謝。
 ";
