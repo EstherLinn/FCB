@@ -783,7 +783,10 @@
         // 初始化平台選擇
         let initialPlatform = store.get('MobilePlatform') || "firste";
         store.set("MobilePlatform", initialPlatform);
-        $('input[data-name="' + initialPlatform + '"]', '#popupPurchase').trigger('click');
+        //確保dom加載完執行
+        setTimeout(function () {
+            $('input[name="platform"]input[data-name="' + initialPlatform + '"]', '#popupPurchase').trigger('click');
+        }, 100);
     } else {
         // 桌面版連結設定
         links.single = "@SubcriptionSingleLink";
@@ -806,6 +809,9 @@
         });
         //預設哪個平台登入先預選哪個平台風險評估
         let defalutPlatForm = store.get("MobilePlatform") || "firste";
-        $(`input[name="platform"][data-platform="${defalutPlatForm}"]`, '#popupGoKyc').trigger('click');
+        //確保dom加載完執行
+        setTimeout(function () {
+             $(`input[name="platform"][data-platform="${defalutPlatForm}"]`, '#popupGoKyc').trigger('click');
+        }, 100);
     }
 </script>
