@@ -137,7 +137,7 @@
                         <div class="l-pickGroup">
                             <div class="l-pickGroup__item">
                                 <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform" data-platform="firste" checked>
+                                    <input class="o-btnRadio__input" type="radio" name="kycPlatform" data-platform="firste" checked>
                                     <div class="o-btnRadio__text">
                                         <span>第e行動</span>
                                     </div>
@@ -145,7 +145,7 @@
                             </div>
                             <div class="l-pickGroup__item">
                                 <label class="o-btnRadio">
-                                    <input class="o-btnRadio__input" type="radio" name="platform" data-platform="ileo">
+                                    <input class="o-btnRadio__input" type="radio" name="kycPlatform" data-platform="ileo">
                                     <div class="o-btnRadio__text">
                                         <span>iLEO APP</span>
                                     </div>
@@ -601,8 +601,9 @@
     Session["LoginStatus"] = null;
 }
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
 
-    $('[data-calendar]').datepickerExtend();
+        $('[data-calendar]').datepickerExtend();
     $('[data-tab="true"]').tab();
 
     //#region 關注清單相關
@@ -783,7 +784,7 @@
         // 初始化平台選擇
         let initialPlatform = store.get('MobilePlatform') || "firste";
         store.set("MobilePlatform", initialPlatform);
-        $('input[data-name="' + initialPlatform + '"]', '#popupPurchase').trigger('click');
+        $(`input[name="platform"][data-name="${initialPlatform}"]`, '#popupPurchase').trigger('click');
     } else {
         // 桌面版連結設定
         links.single = "@SubcriptionSingleLink";
@@ -799,13 +800,14 @@
     //風險屬性評估彈窗
     if ($(window).width() < 1199) {
         //第e行動&&ileo按鈕切換
-        $('input[name="platform"]', '#popupGoKyc').on('click', function () {
+        $('input[name="kycPlatform"]', '#popupGoKyc').on('click', function () {
             let choicePlatform = $(this).data('platform');
             let url = choicePlatform === "firste" ? "@FirsteKycLink" : "@IleoKycLink";;
             document.getElementById('GoKycBtn').setAttribute('href', url.replaceAll('&amp;', '&'));
         });
         //預設哪個平台登入先預選哪個平台風險評估
         let defalutPlatForm = store.get("MobilePlatform") || "firste";
-        $(`input[name="platform"][data-platform="${defalutPlatForm}"]`, '#popupGoKyc').trigger('click');
+        $(`input[name="kycPlatform"][data-platform="${defalutPlatForm}"]`, '#popupGoKyc').trigger('click');
     }
+    });
 </script>
