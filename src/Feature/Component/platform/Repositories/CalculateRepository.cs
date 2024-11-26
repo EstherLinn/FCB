@@ -10,6 +10,7 @@ using Foundation.Wealth.Manager;
 using Foundation.Wealth.Models;
 using log4net;
 using Newtonsoft.Json;
+using Sitecore.Data;
 using Sitecore.Extensions;
 using Sitecore.Mvc.Presentation;
 using System;
@@ -20,6 +21,7 @@ using System.Linq;
 using System.Web;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 using Xcms.Sitecore.Foundation.Basic.SitecoreExtensions;
+using static Feature.Wealth.Component.ComponentTemplates;
 using Templates = Feature.Wealth.Component.Models.Calculate.Template;
 
 namespace Feature.Wealth.Component.Repositories
@@ -63,8 +65,12 @@ namespace Feature.Wealth.Component.Repositories
 
             var defaultRiskAttributes = ItemUtils.GetReferenceFieldItem(dataSource, Templates.Calculate.Fields.DefaultRiskAttributes);
             model.DefaultRiskAttributes = defaultRiskAttributes != null
-            ? ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.DropdownOption.Fields.OptionValue)
-            : "2";
+            ? ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.SimpleDropdownOption.Fields.OptionValue)
+            : GetOptionValue("保守型");
+
+            model.Conservative = GetOptionValue("保守型");
+            model.Stable = GetOptionValue("穩健型");
+            model.Positive = GetOptionValue("積極型");
 
             model.RecommendedProductContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RecommendedProductContent);
             model.ConservativeRiskImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.ConservativeRiskImage);
@@ -110,6 +116,26 @@ namespace Feature.Wealth.Component.Repositories
             model.FundID = ItemUtils.GetMultiLineText(dataSource, Templates.Calculate.Fields.FundID);
 
             return model;
+        }
+
+        /// <summary>
+        /// 獲取增加投報率設定值
+        /// </summary>
+        /// <param name="optionText"></param>
+        /// <returns>投報率設定值</returns>
+        private string GetOptionValue(string optionText)
+        {
+            var item = Sitecore.Context.Database.GetItem(new ID("{909E3250-22E5-4E06-85DD-B11262B416A4}"));
+
+            if (item == null)
+            {
+                return null;
+            }
+
+            var optionItem = item.Children
+                .FirstOrDefault(child => child.Fields[SimpleDropdownOption.Fields.OptionText]?.Value == optionText);
+
+            return optionItem?.Fields[SimpleDropdownOption.Fields.OptionValue]?.Value;
         }
 
         /// <summary>

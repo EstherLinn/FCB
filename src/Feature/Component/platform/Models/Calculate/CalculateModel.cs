@@ -66,6 +66,9 @@ namespace Feature.Wealth.Component.Models.Calculate
         public string RemoteConsultationSuccessfulButtonLink { get; set; }
         public string RemoteConsultationSuccessfulImage { get; set; }
         public string[] FundID { get; set; }
+        public string Conservative { get; set; }
+        public string Stable { get; set; }
+        public string Positive { get; set; }
     }
 
     public class CalculationResultData
