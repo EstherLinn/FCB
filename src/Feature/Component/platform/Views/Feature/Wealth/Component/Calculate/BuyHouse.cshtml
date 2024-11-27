@@ -1519,6 +1519,9 @@
             var hasRenderedRecommendations = false;
             var lockImg = "/themes/images/icons/others/lock.svg"
             var defaultRiskAttributes = '@Model.DefaultRiskAttributes';
+            var conservative = '@Model.Conservative';
+            var stable = '@Model.Stable';
+            var positive = '@Model.Positive';
             var fundIds = @(new HtmlString(JsonHelper.SerializeObject(Model.FundID)));
             var downPayment, years, amountPrepared, monthlyInvestment, expectedRoi;
             var BuyHousedownPayment, BuyHouseyears, BuyHouseamountPrepared, BuyHousemonthlyInvestment, BuyHouseexpectedRoi;
@@ -1594,13 +1597,13 @@
             } else if (SC_DATA.Risk == '3') {
                 assetsData = positiveAssetsData;
             } else {
-                if (defaultRiskAttributes == '2') {
+                if (defaultRiskAttributes == conservative) {
                     assetsData = conservativeAssetsData;
                     UpdateRiskAttributesContent('1');
-                } else if (defaultRiskAttributes == '5') {
+                } else if (defaultRiskAttributes == stable) {
                     assetsData = robustAssetsData;
                     UpdateRiskAttributesContent('2');
-                } else if (defaultRiskAttributes == '7') {
+                } else if (defaultRiskAttributes == positive) {
                     assetsData = positiveAssetsData;
                     UpdateRiskAttributesContent('3');
                 }
@@ -1894,11 +1897,11 @@
                         $(".tab5Btn").removeClass("u-hidden");
 
                         if (SC_DATA.Risk == '1') {
-                            defaultRiskAttributes = 2;
+                            defaultRiskAttributes = conservative;
                         } else if (SC_DATA.Risk == '2') {
-                            defaultRiskAttributes = 5;
+                            defaultRiskAttributes = stable;
                         } else if (SC_DATA.Risk == '3') {
-                            defaultRiskAttributes = 7;
+                            defaultRiskAttributes = positive;
                         }
 
                         tab1Results = planningResults;
@@ -3549,18 +3552,18 @@
 
                 switch (risk) {
                     case "1":
-                        defaultRiskAttributes = 2;
+                        defaultRiskAttributes = conservative;
                         imgSrc = '@Model.ConservativeRiskImage';
                         assetsData = conservativeAssetsData;
                         break;
                     case "2":
-                        defaultRiskAttributes = 5;
-                        imgSrc = '@Model.RobustRiskImage'
+                        defaultRiskAttributes = stable;
+                        imgSrc = '@Model.RobustRiskImage';
                         assetsData = robustAssetsData;
                         break;
                     case "3":
-                        defaultRiskAttributes = 7;
-                        imgSrc = '@Model.PositiveRiskImage'
+                        defaultRiskAttributes = positive;
+                        imgSrc = '@Model.PositiveRiskImage';
                         assetsData = positiveAssetsData;
                         break;
                     default:

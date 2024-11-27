@@ -28,6 +28,17 @@ namespace Feature.Wealth.Component
             }
         }
 
+        public struct SimpleDropdownOption
+        {
+            public static readonly ID Id = new ID("{12414F7A-2E63-45EB-8AB5-586CB1122A11}");
+
+            public struct Fields
+            {
+                public static readonly ID OptionText = new ID("{0EE26DDB-2503-4436-83F0-AC203B8241E5}");
+                public static readonly ID OptionValue = new ID("{2099E923-E6F8-4F87-A714-5B27B6722D39}");
+            }
+        }
+
         public struct Category
         {
             public static readonly ID Id = new ID("{44DAE333-F9A8-45B1-A876-310C13E5A50A}");
