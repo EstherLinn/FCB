@@ -62,16 +62,13 @@ namespace Feature.Wealth.Component.Repositories
             model.UnsuccessfulImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.UnsuccessfulImage);
             model.UnsuccessfulContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.UnsuccessfulContent);
             model.ExpectedReturnRemarks = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.ExpectedReturnRemarks);
-
             var defaultRiskAttributes = ItemUtils.GetReferenceFieldItem(dataSource, Templates.Calculate.Fields.DefaultRiskAttributes);
             model.DefaultRiskAttributes = defaultRiskAttributes != null
             ? ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.SimpleDropdownOption.Fields.OptionValue)
             : GetOptionValue("保守型");
-
             model.Conservative = GetOptionValue("保守型");
             model.Stable = GetOptionValue("穩健型");
             model.Positive = GetOptionValue("積極型");
-
             model.RecommendedProductContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RecommendedProductContent);
             model.ConservativeRiskImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.ConservativeRiskImage);
             model.ConservativeRiskStockAllocation = ItemUtils.GetInteger(dataSource, Templates.Calculate.Fields.ConservativeRiskStockAllocation) ?? 0;
@@ -123,18 +120,15 @@ namespace Feature.Wealth.Component.Repositories
         /// </summary>
         /// <param name="optionText"></param>
         /// <returns>投報率設定值</returns>
-        private string GetOptionValue(string optionText)
+        public string GetOptionValue(string optionText)
         {
-            var item = Sitecore.Context.Database.GetItem(new ID("{909E3250-22E5-4E06-85DD-B11262B416A4}"));
-
+            var item = Sitecore.Context.Database.GetItem(Templates.Calculate.Fields.ExpectedRoiValueID);
             if (item == null)
             {
                 return null;
             }
-
             var optionItem = item.Children
                 .FirstOrDefault(child => child.Fields[SimpleDropdownOption.Fields.OptionText]?.Value == optionText);
-
             return optionItem?.Fields[SimpleDropdownOption.Fields.OptionValue]?.Value;
         }
 
