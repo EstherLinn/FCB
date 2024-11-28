@@ -63,12 +63,10 @@ namespace Feature.Wealth.Component.Repositories
             model.UnsuccessfulContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.UnsuccessfulContent);
             model.ExpectedReturnRemarks = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.ExpectedReturnRemarks);
             var defaultRiskAttributes = ItemUtils.GetReferenceFieldItem(dataSource, Templates.Calculate.Fields.DefaultRiskAttributes);
-            model.DefaultRiskAttributes = defaultRiskAttributes != null
-            ? ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.SimpleDropdownOption.Fields.OptionValue)
-            : GetOptionValue("保守型");
-            model.Conservative = GetOptionValue("保守型");
-            model.Stable = GetOptionValue("穩健型");
-            model.Positive = GetOptionValue("積極型");
+            model.DefaultRiskAttributes = defaultRiskAttributes != null ? (string.IsNullOrEmpty(ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.SimpleDropdownOption.Fields.OptionValue))? "0": ItemUtils.GetFieldValue(defaultRiskAttributes, ComponentTemplates.SimpleDropdownOption.Fields.OptionValue)): GetOptionValueById(Templates.Calculate.Fields.ConservativeID.ToString());
+            model.Conservative = GetOptionValueById(Templates.Calculate.Fields.ConservativeID.ToString());
+            model.Stable = GetOptionValueById(Templates.Calculate.Fields.StableID.ToString());
+            model.Positive = GetOptionValueById(Templates.Calculate.Fields.PositiveID.ToString());
             model.RecommendedProductContent = ItemUtils.GetFieldValue(dataSource, Templates.Calculate.Fields.RecommendedProductContent);
             model.ConservativeRiskImage = ItemUtils.ImageUrl(dataSource, Templates.Calculate.Fields.ConservativeRiskImage);
             model.ConservativeRiskStockAllocation = ItemUtils.GetInteger(dataSource, Templates.Calculate.Fields.ConservativeRiskStockAllocation) ?? 0;
@@ -116,20 +114,23 @@ namespace Feature.Wealth.Component.Repositories
         }
 
         /// <summary>
-        /// 獲取增加投報率設定值
+        /// 根據各風險屬性節點ID獲取增加投報率設定值
         /// </summary>
-        /// <param name="optionText"></param>
+        /// <param name="optionId">風險屬性節點ID</param>
         /// <returns>投報率設定值</returns>
-        public string GetOptionValue(string optionText)
+        public string GetOptionValueById(string optionId)
         {
-            var item = Sitecore.Context.Database.GetItem(Templates.Calculate.Fields.ExpectedRoiValueID);
-            if (item == null)
+            if (string.IsNullOrEmpty(optionId))
             {
                 return null;
             }
-            var optionItem = item.Children
-                .FirstOrDefault(child => child.Fields[SimpleDropdownOption.Fields.OptionText]?.Value == optionText);
-            return optionItem?.Fields[SimpleDropdownOption.Fields.OptionValue]?.Value;
+            var optionItem = Sitecore.Context.Database.GetItem(optionId);
+            if (optionItem == null)
+            {
+                return null;
+            }
+            var optionValue = optionItem.Fields[SimpleDropdownOption.Fields.OptionValue]?.Value;
+            return string.IsNullOrEmpty(optionValue) ? "0" : optionValue;
         }
 
         /// <summary>
