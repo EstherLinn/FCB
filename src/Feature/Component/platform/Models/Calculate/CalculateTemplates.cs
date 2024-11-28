@@ -69,7 +69,9 @@ namespace Feature.Wealth.Component.Models.Calculate
                 public static readonly ID RemoteConsultationSuccessfulButtonLink = new ID("{5DBEBF93-25DE-48EA-9C22-F8AADE31D00C}");
                 public static readonly ID RemoteConsultationSuccessfulImage = new ID("{226055AC-83B9-4DC0-86FB-7B428BB791E0}");
                 public static readonly ID FundID = new ID("{48CDA75C-20FA-4074-9BDB-0A90AE89EEB6}");
-                public static readonly ID ExpectedRoiValueID = new ID("{909E3250-22E5-4E06-85DD-B11262B416A4}");
+                public static readonly ID ConservativeID = new ID("{E7014EB4-5EEC-4E7F-906C-C9B162B1A84B}");
+                public static readonly ID StableID = new ID("{21CEA529-B5EB-4B37-B886-8CD0365EFFE7}");
+                public static readonly ID PositiveID = new ID("{2E0D9AD3-BA43-4163-AA3D-B1B2B8FC0AA9}");
             }
         }
     }
