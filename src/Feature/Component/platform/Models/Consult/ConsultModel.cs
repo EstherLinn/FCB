@@ -59,6 +59,11 @@ namespace Feature.Wealth.Component.Models.Consult
         public bool Needbr { get; set; } = false;
     }
 
+    public class MaintainModel
+    {
+        public HtmlString Info { get; set; }
+    }
+
     public class QandA
     {
         public string Question { get; set; }

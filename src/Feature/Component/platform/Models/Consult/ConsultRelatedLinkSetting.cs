@@ -79,6 +79,18 @@ namespace Feature.Wealth.Component.Models.Consult
             return item.GetFieldValue(Template.ConsultRelatedLink.Fields.TestEmail);
         }
 
+        public static bool GetIsMaintain()
+        {
+            Item item = ItemUtils.GetItem(Template.ConsultRelatedLink.Root);
+            return item.GetFieldValue(Template.ConsultRelatedLink.Fields.IsMaintain) == "1";
+        }
+
+        public static string GetMaintainInfo()
+        {
+            Item item = ItemUtils.GetItem(Template.ConsultRelatedLink.Root);
+            return item.GetFieldValue(Template.ConsultRelatedLink.Fields.MaintainInfo);
+        }
+
         public struct Template
         {
             public struct ConsultRelatedLink
@@ -96,6 +108,9 @@ namespace Feature.Wealth.Component.Models.Consult
 
                     public static readonly ID UseTestEmail = new ID("{CF5A5BF5-B530-4ABB-8D88-AA54FC27FA35}");
                     public static readonly ID TestEmail = new ID("{A1CC4A9D-B62D-4E87-BCB9-198646633A90}");
+
+                    public static readonly ID IsMaintain = new ID("{F73AB36F-8E2F-4C54-99F3-4D089DC4F5C3}");
+                    public static readonly ID MaintainInfo = new ID("{9C26D94D-6591-49B8-8BB5-9BD36EA3BAD8}");
                 }
             }
 
