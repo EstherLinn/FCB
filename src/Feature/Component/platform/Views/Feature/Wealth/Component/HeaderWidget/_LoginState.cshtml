@@ -1,6 +1,7 @@
 ﻿@using Feature.Wealth.Account.Helpers;
 @using Foundation.Wealth.Helper;
 @using Sitecore.Configuration;
+@using Feature.Wealth.Component.Models.Consult;
 @{
     var logoutUrl = ClientRoute.GenerateUrl(this, "Accounts", "Logout");
     var member = FcbMemberHelper.GetMemberAllInfo();
@@ -88,7 +89,7 @@
                             }
                         </ul>
                     </nav>
-                    @if (FcbMemberHelper.BranchCanUseConsult() && !string.IsNullOrEmpty(member.WebBankId) && !string.IsNullOrEmpty(member.Advisror) && !member.IsManager)
+                    @if (!ConsultRelatedLinkSetting.GetIsMaintain() && FcbMemberHelper.BranchCanUseConsult() && !string.IsNullOrEmpty(member.WebBankId) && !string.IsNullOrEmpty(member.Advisror) && !member.IsManager)
                     {
                         @*網銀身分及網銀身分有理專及不是主管,顯示預約按鈕*@
                         <div class="c-popover__footer">
