@@ -1,7 +1,10 @@
-﻿using Foundation.Wealth.Models;
+﻿using Feature.Wealth.Service.Models.WhiteListIp;
+using Foundation.Wealth.Models;
 using Sitecore.Configuration;
+using Sitecore.Web.IPAddresses;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
+using static Sitecore.Platform.Shell32;
 
 namespace Feature.Wealth.Service.Filter
 {
@@ -9,7 +12,7 @@ namespace Feature.Wealth.Service.Filter
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var validatedIps = Settings.GetSetting("ApiAllowedIps"); //TODO: 待確認 config
+            // var validatedIps = Settings.GetSetting("ApiAllowedIps"); //TODO: 待確認 config
 
             // 取得當前請求的 IP 位址
             var request = filterContext.HttpContext.Request;
@@ -17,12 +20,13 @@ namespace Feature.Wealth.Service.Filter
             var ip = GetIPAddress();
 
             // 檢查 IP 是否在白名單中
-            if (!validatedIps.Contains(ip) && Config.IsEnableCheck)
+            if (!ConfirmIP(ip))
             {
                 //&& Config.IsEnableCheck 加這段會通過本機與開發環境會通過
                 // 如果不在白名單中，返回 403 Forbidden
                 //filterContext.Result = new HttpStatusCodeResult(403, "IP not allowed");
                 filterContext.Result = new JsonNetResult(new { statusCode = 403, message = "IP not allowed" });
+                return;
             }
 
             base.OnActionExecuting(filterContext);
@@ -42,6 +46,38 @@ namespace Feature.Wealth.Service.Filter
                 }
             }
             return context.Request.ServerVariables["REMOTE_ADDR"];
+        }
+
+        private bool ConfirmIP(string ip)
+        {
+            if (!string.IsNullOrEmpty(ip))
+            {
+                var ipAllow = ApiWhiteListSetting.CkeckApiAllow();
+                var ipList = ApiWhiteListSetting.ApiWhiteList();
+  
+                    if (ipAllow)
+                    {
+                        bool confirm = false;
+
+                        foreach (string ipTemp in ipList)
+                        {
+                            if (ipTemp.Trim().CompareTo(ip) == 0)
+                            {
+                                confirm = true;
+                                break;
+                            }
+                        }
+                        return confirm;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
