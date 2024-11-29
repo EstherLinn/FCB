@@ -474,7 +474,7 @@
                 template: '#template',
                 callbacks: {
                     afterFilter: function (result) {
-
+                        this.paginator.setCurrentPage(1);
                         let isEmpty = result.length == 0;
                         $(`[data-filter-empty=${isEmpty}]`).show();
                         $(`[data-filter-empty=${!isEmpty}]`).hide();
