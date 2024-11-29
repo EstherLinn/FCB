@@ -96,7 +96,7 @@ namespace Feature.Wealth.Component.Controllers
 
                 mail.Topic = this._consultRepository.GetSuccessMailTopic();
                 mail.Content = this._consultRepository.GetSuccessMailContent(consultSchedule, url);
-                advisorMail.Topic = this._consultRepository.GetSuccessMailTopic();
+                advisorMail.Topic = this._consultRepository.GetAdvisorSuccessMailTopic();
                 advisorMail.Content = this._consultRepository.GetAdvisorSuccessMailContent(consultSchedule, url);
 
                 using (new SecurityDisabler())
