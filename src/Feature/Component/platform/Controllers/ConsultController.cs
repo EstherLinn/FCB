@@ -44,6 +44,11 @@ namespace Feature.Wealth.Component.Controllers
                 return View("/Views/Feature/Wealth/Component/Consult/Consult.cshtml", null);
             }
 
+            if (ConsultRelatedLinkSetting.GetIsMaintain())
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/MaintainConsult.cshtml", new MaintainModel { Info = new HtmlString(ConsultRelatedLinkSetting.GetMaintainInfo()) });
+            }
+
             if (FcbMemberHelper.fcbMemberModel.IsEmployee)
             {
                 return View("/Views/Feature/Wealth/Component/Consult/EmployeeConsult.cshtml", CreateConsultModel(item));
@@ -66,6 +71,11 @@ namespace Feature.Wealth.Component.Controllers
             if (!FcbMemberHelper.BranchCanUseConsult())
             {
                 return View("/Views/Feature/Wealth/Component/Consult/ConsultList.cshtml", null);
+            }
+
+            if (ConsultRelatedLinkSetting.GetIsMaintain())
+            {
+                return View("/Views/Feature/Wealth/Component/Consult/MaintainConsultList.cshtml", new MaintainModel { Info = new HtmlString(ConsultRelatedLinkSetting.GetMaintainInfo()) });
             }
 
             var model = CreateConsultListModel(item);
