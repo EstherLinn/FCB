@@ -580,6 +580,7 @@
             template: '#template1',
             callbacks: {
                 afterFilter: function (result) {
+                    this.paginator.setCurrentPage(1);
                     bindClickEvent();
                     window.loading('hide');
                 },
@@ -645,6 +646,7 @@
             template: '#template2',
             callbacks: {
                 afterFilter: function (result) {
+                    this.paginator.setCurrentPage(1);
                     window.loading('hide');
                     bindClickEvent();
                 },
@@ -765,6 +767,35 @@
             }, 300);
         });
         OrderColumn("consultationListTable2", 'ScheduleDate', 'is-desc', true);
+
+        function fnScrollUp() {
+            loading();
+            $('#consultationListTable1, #consultationListTable2').scrollPosition('scroll');
+        }
+
+        function fnToFirstPage() {
+            loading();
+            $('#consultationListTable1, #consultationListTable2').scrollPosition('scroll');
+            fjs1.paginator.setCurrentPage(1);
+            fjs2.paginator.setCurrentPage(1);
+        }
+
+        function attachPaginationEvents(paginatorSelector, handler) {
+            $(paginatorSelector).on('click', '[data-page]', handler);
+            $(paginatorSelector).on('keypress', '[data-page-input]', function (e) {
+                if (e.which === 13) {
+                    handler();
+                }
+            });
+        }
+        
+        attachPaginationEvents('#uid-pagination-1', fnScrollUp);
+        attachPaginationEvents('#uid-pagination-2', fnScrollUp);
+
+        $(document).on('change.pagesize', '#uid-view-perPage', function () {
+            fnToFirstPage();
+         }).sizebox();
+
         function setPopup(id) {
             var consultSchedule = consultSchedules.find((item) => item.ScheduleID == id);
 
