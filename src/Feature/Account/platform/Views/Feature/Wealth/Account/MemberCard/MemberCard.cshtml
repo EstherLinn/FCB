@@ -3,6 +3,7 @@
 @using Feature.Wealth.Account.Models.MemberCard;
 @using Sitecore.Configuration;
 @using Xcms.Sitecore.Foundation.Basic.Extensions;
+@using Feature.Wealth.Account.Models.Consult;
 @model MemberCardViewModel
 @{
     var model = Model.MemberCardModel;
@@ -92,7 +93,7 @@
                                         }
                                     </div>
                                 </div>
-                                if (FcbMemberHelper.BranchCanUseConsult() && !member.IsEmployee && !member.IsManager )
+                                if (!ConsultRelatedLinkSetting.GetIsMaintain() && FcbMemberHelper.BranchCanUseConsult() && !member.IsEmployee && !member.IsManager )
                                 {
                                 <div class="c-member__info">
                                     <div class="c-member__title">

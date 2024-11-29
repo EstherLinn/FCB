@@ -23,6 +23,11 @@ namespace Feature.Wealth.Account.Models.Consult
 
             return result;
         }
+        public static bool GetIsMaintain()
+        {
+            Item item = ItemUtils.GetItem(Template.ConsultRelatedLink.Root);
+            return item.GetFieldValue(Template.ConsultRelatedLink.Fields.IsMaintain) == "1";
+        }
     }
 
     public struct Template
@@ -37,6 +42,7 @@ namespace Feature.Wealth.Account.Models.Consult
                 public static readonly ID ConsultListLink = new ID("{E770630B-C8E6-443C-8387-1D3525B11151}");
                 public static readonly ID ConsultScheduleLink = new ID("{E10AE7C2-4C31-4A92-AB8D-DD82898DFCD1}");
                 public static readonly ID BranchCodeList = new ID("{0C8E3A34-B08B-42CF-9EA2-B28A690EEC18}");
+                public static readonly ID IsMaintain = new ID("{F73AB36F-8E2F-4C54-99F3-4D089DC4F5C3}");
             }
         }
 

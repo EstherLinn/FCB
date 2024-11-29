@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Feature.Wealth.Account.Filter;
-using Sitecore.Mvc.Presentation;
+﻿using Feature.Wealth.Account.Filter;
+using Feature.Wealth.Account.Helpers;
+using Feature.Wealth.Account.Models.Consult;
 using Feature.Wealth.Account.Models.MemberCard;
 using Feature.Wealth.Account.Repositories;
-using Feature.Wealth.Account.Helpers;
+using Sitecore.Mvc.Presentation;
+using System;
+using System.Web.Mvc;
 
 namespace Feature.Wealth.Account.Controllers
 {
@@ -22,17 +20,20 @@ namespace Feature.Wealth.Account.Controllers
             if (!string.IsNullOrEmpty(FcbMemberHelper.GetMemberWebBankId()))
             {
                 MemberRepository memberRepository = new MemberRepository();
-                viewModel.ScheduleDate = memberRepository.GetMemberScheduleDate();
-                viewModel.ScheduleSpace = CalculateDays(viewModel.ScheduleDate);
+                if (!ConsultRelatedLinkSetting.GetIsMaintain())
+                {
+                    viewModel.ScheduleDate = memberRepository.GetMemberScheduleDate();
+                    viewModel.ScheduleSpace = CalculateDays(viewModel.ScheduleDate);
+                }
                 var member = FcbMemberHelper.GetMemberAllInfo();
 
                 if (!member.IsManager && member.IsEmployee)
                 {
-                    viewModel.ScheduleMessage = memberRepository.GetAdvisrorScheduleMessage();
+                    viewModel.ScheduleMessage = ConsultRelatedLinkSetting.GetIsMaintain() ? null : memberRepository.GetAdvisrorScheduleMessage();
                 }
                 else if(!member.IsManager && !member.IsEmployee)
                 {
-                    viewModel.ScheduleMessage = memberRepository.GetMemberScheduleMessage();
+                    viewModel.ScheduleMessage = ConsultRelatedLinkSetting.GetIsMaintain() ? null : memberRepository.GetMemberScheduleMessage();
                     viewModel.BranchInfo = memberRepository.GetMainBranchInfoByBranchCode(member.MainBranchCode);
                 }
                 if (member.IsManager || member.IsEmployee)
