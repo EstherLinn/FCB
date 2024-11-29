@@ -306,7 +306,7 @@ namespace Feature.Wealth.Component.Repositories
 諮詢主題：{consultSchedule.Subject}<br>
 其他諮詢內容：{consultSchedule.Description}<br>
 {(string.IsNullOrEmpty(consultSchedule.AdvistorAdvice) ? "<br>" : $"理顧意見：{consultSchedule.AdvistorAdvice}<br><br>")}
-{url}<br><br>
+第e理財網連結：{url}<br><br>
 ※請勿直接回覆此信，若有疑問請洽第一銀行{consultSchedule.BranchName}理財業務人員，謝謝。
 ";
 
