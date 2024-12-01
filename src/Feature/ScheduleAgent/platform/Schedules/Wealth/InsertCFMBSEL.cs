@@ -23,7 +23,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             //Cfmbsel 一次性排程 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM CFMBSEL_STG";
             var TrafficLight = NameofTrafficLight.CFMBSEL;
-
+            var scheduleName = ScheduleName.InsertCfmbsel.ToString();
             try
             {
                 string tableName = EnumUtil.GetEnumDescription(TrafficLight);
@@ -38,26 +38,26 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 }
                 else
                 {
-                    _repository.LogChangeHistory("CFMBSEL", "CFMBSEL No datas", "CFMBSEL", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                    _repository.LogChangeHistory("CFMBSEL", "CFMBSEL No datas", "CFMBSEL", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                     this.Logger.Error($"{sql} No datas");
                 }
 
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
-                _repository.LogChangeHistory("CFMBSEL", "CFMBSEL排程完成", "CFMBSEL", 0, duration.TotalSeconds, "Y", ModificationID.Done);
+                _repository.LogChangeHistory("CFMBSEL", "CFMBSEL排程完成", "CFMBSEL", 0, duration.TotalSeconds, "Y", ModificationID.Done, scheduleName);
                 this.Logger.Info($"取得CFMBSEL資料完成：Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
             }
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory("CFMBSEL", ex.Message, "CFMBSEL", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                _repository.LogChangeHistory("CFMBSEL", ex.Message, "CFMBSEL", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
             }
         }
 
         private async Task ProcessData(ProcessRepository _repository, string sql, string tableName, IEnumerable<Cfmbsel> data, DateTime startTime)
         {
             int totalInsertedCount = 0;
-
+            var scheduleName = ScheduleName.InsertCfmbsel.ToString();
             try
             {
                 List<Cfmbsel> batch = new List<Cfmbsel>();
@@ -90,7 +90,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     totalInsertedCount += batch.Count;
                     await _repository.BulkInsertFromOracle(batch, tableName);
                 }
-                _repository.LogChangeHistory("CFMBSEL", sql, tableName, totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone);
+                _repository.LogChangeHistory("CFMBSEL", sql, tableName, totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone, scheduleName);
             }
             catch (Exception ex)
             {

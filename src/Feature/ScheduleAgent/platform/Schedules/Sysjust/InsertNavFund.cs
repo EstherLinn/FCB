@@ -27,7 +27,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 
                 string fileName = "SYSJUST-NAV-FUND";
                 var TrafficLight = NameofTrafficLight.Sysjust_Nav_Fund;
-
+                var scheduleName = ScheduleName.InsertNavFund.ToString();
                 var IsfilePath = await etlService.ExtractFile(fileName);
 
                 if (IsfilePath.Value)
@@ -40,26 +40,27 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         await Bulk30datas(basic, fileName, _repository, tableName, startTime);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob(fileName, startTime);
+                        etlService.FinishJob(fileName, startTime, scheduleName);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
                         var executionTime = (DateTime.UtcNow - startTime).TotalSeconds;
-                        _repository.LogChangeHistory(fileName, ex.Message, " ", 0, executionTime, "N", ModificationID.Error);
+                        _repository.LogChangeHistory(fileName, ex.Message, " ", 0, executionTime, "N", ModificationID.Error, scheduleName);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
                     var executionTime = (DateTime.UtcNow - startTime).TotalSeconds;
-                    _repository.LogChangeHistory(fileName, IsfilePath.Key, " ", 0, executionTime, "N", ModificationID.Error);
+                    _repository.LogChangeHistory(fileName, IsfilePath.Key, " ", 0, executionTime, "N", ModificationID.Error, scheduleName);
                 }
             }
         }
         private async Task Bulk30datas(IEnumerable<SysjustNavFund> basic, string filename, ProcessRepository _repository,string tableName,DateTime startTime)
         {
             string sql = "SELECT * FROM [Sysjust_Nav_Fund] WITH (NOLOCK)";
+            var scheduleName = ScheduleName.InsertNavFund.ToString();
             var results = await DbManager.Custom.ExecuteIListAsync<SysjustNavFund>(sql, null, CommandType.Text);
 
             var oldestDatesQuery = basic.GroupBy(fund => fund.FirstBankCode).Select(group => new { FirstBankCode = group.Key, OldestDate = group.Min(fund => fund.NetAssetValueDate) });
@@ -80,10 +81,10 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             .Select(group => group.OrderByDescending(fund => fund.NetAssetValueDate).First());
 
 
-            _repository.BulkInsertToNewDatabase(basic, tableName, filename, startTime);
+            _repository.BulkInsertToNewDatabase(basic, tableName, filename, startTime, scheduleName);
             if (results != null)
             {
-                _repository.BulkInsertDirectToDatabase(maxDatesQuery, tableName, "最舊日期的那筆", startTime);
+                _repository.BulkInsertDirectToDatabase(maxDatesQuery, tableName, "最舊日期的那筆", startTime, scheduleName);
             }
         }
     }

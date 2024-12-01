@@ -20,7 +20,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                 var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
-
+                var scheduleName = ScheduleName.InsertBondHistoryPrice.ToString();
                 string fileName = "BondHistoryPrice";
                 var IsfilePath = await etlService.ExtractFile(fileName, "csv");
 
@@ -29,19 +29,19 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     try
                     {
                         var basic = (IList<BondHistoryPrice>)await etlService.ParseCsvNotTXT<BondHistoryPrice>(fileName);
-                        _repository.BulkInsertToEncryptedDatabase(basic, "[BondHistoryPrice]", fileName, startTime);
+                        _repository.BulkInsertToEncryptedDatabase(basic, "[BondHistoryPrice]", fileName, startTime, scheduleName);
                         etlService.FinishJob(fileName, startTime, "csv");
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error);
+                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error, scheduleName);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

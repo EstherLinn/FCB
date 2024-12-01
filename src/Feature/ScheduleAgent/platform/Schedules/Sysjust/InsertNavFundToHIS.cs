@@ -23,25 +23,25 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 
                 string fileName = "SYSJUST-NAV-FUND";
                 var IsfilePath = await etlService.ExtractFile(fileName);
-
+                var scheduleName = ScheduleName.InsertNavFund.ToString();
                 if (IsfilePath.Value)
                 {
                     try
                     {
                         var basic = await etlService.ParseCsv<SysjustNavFundToHis>(fileName);
-                        _repository.BulkInsertToDatabaseForHIS(basic, "[Sysjust_FUNDNAV_HIS]", "FirstBankCode", "Date", fileName, startTime);
-                        etlService.FinishJob(fileName, startTime);
+                        _repository.BulkInsertToDatabaseForHIS(basic, "[Sysjust_FUNDNAV_HIS]", "FirstBankCode", "Date", fileName, startTime, scheduleName);
+                        etlService.FinishJob(fileName, startTime, scheduleName);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                                               _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error);
+                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error, scheduleName);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

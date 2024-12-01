@@ -23,7 +23,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             //TFTFU_STG 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM TFTFU_STG";
             var TrafficLight = NameofTrafficLight.TFTFU_STG;
-
+            var scheduleName = ScheduleName.InsertTft.ToString();
             try
             {
                 string tableName = EnumUtil.GetEnumDescription(TrafficLight);
@@ -38,25 +38,26 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 }
                 else
                 {
-                    _repository.LogChangeHistory("TFTFU_STG", "TFTFU_STG No datas", "TFTFU_STG", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                    _repository.LogChangeHistory("TFTFU_STG", "TFTFU_STG No datas", "TFTFU_STG", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                     this.Logger.Error($"{sql} No datas");
                 }
 
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
-                _repository.LogChangeHistory("TFTFU_STG", "TFTFU_STG排程完成", "TFTFU_STG", 0, duration.TotalSeconds, "Y", ModificationID.Done);
+                _repository.LogChangeHistory("TFTFU_STG", "TFTFU_STG排程完成", "TFTFU_STG", 0, duration.TotalSeconds, "Y", ModificationID.Done, scheduleName);
                 this.Logger.Info($"取得TFTFU_STG資料完成：Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
             }
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory("TFTFU_STG", ex.Message, "TFTFU_STG", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                _repository.LogChangeHistory("TFTFU_STG", ex.Message, "TFTFU_STG", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error,scheduleName);
             }
         }
 
         private async Task ProcessData(ProcessRepository _repository, string sql, string tableName, IEnumerable<TftfuStg> data, DateTime startTime)
         {
             int totalInsertedCount = 0;
+            var scheduleName = ScheduleName.InsertTft.ToString();
 
             try
             {
@@ -90,7 +91,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     totalInsertedCount += batch.Count;
                     await _repository.BulkInsertFromOracle(batch, tableName);
                 }
-                _repository.LogChangeHistory("TFTFU_STG", sql, tableName, totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone);
+                _repository.LogChangeHistory("TFTFU_STG", sql, tableName, totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone, scheduleName);
             }
             catch (Exception ex)
             {

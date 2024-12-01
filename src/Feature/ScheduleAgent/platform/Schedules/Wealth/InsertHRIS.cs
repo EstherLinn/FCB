@@ -27,29 +27,29 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 string fileName = "HRIS";
                 var TrafficLight = NameofTrafficLight.HRIS;
                 var IsfilePath = await etlService.ExtractFile(fileName);
-
+                var scheduleName = ScheduleName.InsertHRIS.ToString();
                 if (IsfilePath.Value)
                 {
                     try
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = (IList<Hris>)await etlService.ParseCsv<Hris>(fileName);
-                        _repository.BulkInsertToEncryptedDatabase(datas, tableName + "_Process", fileName, startTime);
+                        _repository.BulkInsertToEncryptedDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
-                        _repository.BulkInsertToEncryptedDatabase(datas, tableName, fileName, startTime);
+                        _repository.BulkInsertToEncryptedDatabase(datas, tableName, fileName, startTime, scheduleName);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob(fileName, startTime);
+                        etlService.FinishJob(fileName, startTime, scheduleName);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                                               _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;
