@@ -515,12 +515,12 @@ namespace Feature.Wealth.Component.Repositories
             return result;
         }
         //預約取消-理顧
-        public string GetManagerCancelMailTopic()
+        public string GetEmployeeCancelMailTopic()
         {
             return "【第e理財網】遠距理財諮詢服務 -- 取消預約(理財主管線上取消)";
         }
 
-        public string GetManagerCancellationMailContent(ConsultSchedule consultSchedule)
+        public string GetEmployeeCancellationMailContent(ConsultSchedule consultSchedule)
         {
             string result = $@"親愛的理顧您好：<br><br>
 通知您，{consultSchedule.CustomerName}客戶取消「遠距理財諮詢服務」預約，以下是您的客戶預約資訊：<br><br>
@@ -551,6 +551,27 @@ namespace Feature.Wealth.Component.Repositories
             }
 
             return email;
+        }
+
+        //預約取消-主管
+        public string GetManagerCancelMailTopic()
+        {
+            return "【第e理財網】遠距理財諮詢服務 -- 取消預約(理財主管線上取消)";
+        }
+
+        public string GetManagerCancellationMailContent(ConsultSchedule consultSchedule)
+        {
+            string result = $@"親愛的主管您好：<br><br>
+通知您，您已協助{consultSchedule.CustomerName}客戶取消「遠距理財諮詢服務」預約，以下是該筆預約資訊：<br><br>
+預約日期：{consultSchedule.ScheduleDate.ToString("yyyy/MM/dd")}<br>
+預約時段：{consultSchedule.StartTime}~{consultSchedule.EndTime}<br>
+主要往來分行：{consultSchedule.BranchName}<br>
+理財顧問：{consultSchedule.EmployeeName}先生/小姐<br>
+諮詢主題：{consultSchedule.Subject}<br>
+其他諮詢內容：{consultSchedule.Description}<br><br>
+若對此次預約取消有任何問題，請致電客戶聯繫，謝謝。<br>
+※此為系統主動發送信函，請勿直接回覆此封信件，謝謝。";
+            return result;
         }
     }
 }

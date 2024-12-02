@@ -899,12 +899,19 @@ namespace Feature.Wealth.Component.Controllers
                 var member = FcbMemberHelper.GetMemberAllInfo();
                 MailSchema mail = new MailSchema { MailTo = consultSchedule.Mail };
                 MailSchema advisorMail = new MailSchema { MailTo = this._consultRepository.GetEmployeeEmail(consultSchedule) };
+                MailSchema managerMail = null;
                 if (member.IsManager)
                 {
                     mail.Topic = this._consultRepository.GetCancelManagerMailTopic();
                     mail.Content = this._consultRepository.GetCancelManagerMailContent(consultSchedule);
-                    advisorMail.Topic = this._consultRepository.GetManagerCancelMailTopic();
-                    advisorMail.Content = this._consultRepository.GetManagerCancellationMailContent(consultSchedule);
+                    advisorMail.Topic = this._consultRepository.GetEmployeeCancelMailTopic();
+                    advisorMail.Content = this._consultRepository.GetEmployeeCancellationMailContent(consultSchedule);
+                    managerMail = new MailSchema
+                    {
+                        MailTo = member.MemberEmail,
+                        Topic = this._consultRepository.GetManagerCancelMailTopic(),
+                        Content = this._consultRepository.GetManagerCancellationMailContent(consultSchedule)
+                    };
                 }
                 else
                 {
@@ -921,6 +928,10 @@ namespace Feature.Wealth.Component.Controllers
                     {
                         this._consultRepository.SendMail(mail, GetMailSetting());
                         this._consultRepository.SendMail(advisorMail, GetMailSetting());
+                        if (managerMail != null)
+                        {
+                            this._consultRepository.SendMail(managerMail, GetMailSetting());
+                        }
                     }
                 }
             }
