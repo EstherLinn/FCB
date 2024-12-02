@@ -567,10 +567,10 @@
     </tr>
 </script>
 
-<script id="uid-template-perPage" type="text/html">
+<script id="uid-Managertemplate-perPage" type="text/html">
     <span>每頁顯示</span>
     <!-- [data-sizebox="true"]: 載入後自動綁定分頁筆數客製樣式下拉功能 -->
-    <select id="uid-view-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
+    <select id="uid-Managerview-perPage" name="per_page" data-perpage="true" class="o-selectbox o-selectbox--pagesize">
         <% for(var i = 0; i < values.length - 1; i++ ) { %>
         <option value="<%= values[i] %>"><%= values[i] %>筆</option>
         <% } %>
@@ -578,7 +578,7 @@
     </select>
 </script>
 
-<script id="uid-template-pagination" type="text/html">
+<script id="uid-Managertemplate-pagination" type="text/html">
     <div class="o-pagination">
         <% if (currentPage > 1) { %>
         <a href="javascript:;" data-page="prev" class="o-pagination__prev"></a>
@@ -675,12 +675,12 @@
             pagination: {
                 //headerView: '#uid-filter-header',
                 container: '#uid-pagination-1',
-                paginationView: '#uid-template-pagination',
+                paginationView: '#uid-Managertemplate-pagination',
                 visiblePages: 5,
                 perPage: {
                     values: [10, 50, 100, data1.length],
                     container: '#uid-perPage-1',
-                    perPageView: '#uid-template-perPage'
+                    perPageView: '#uid-Managertemplate-perPage'
                 },
                 onPagination: function () {
                 }
@@ -741,12 +741,12 @@
             pagination: {
                 //headerView: '#uid-filter-header',
                 container: '#uid-pagination-2',
-                paginationView: '#uid-template-pagination',
+                paginationView: '#uid-Managertemplate-pagination',
                 visiblePages: 5,
                 perPage: {
                     values: [10, 50, 100, data2.length],
                     container: '#uid-perPage-2',
-                    perPageView: '#uid-template-perPage'
+                    perPageView: '#uid-Managertemplate-perPage'
                 },
                 onPagination: function () {
                 }
@@ -844,7 +844,7 @@
         attachPaginationEvents('#uid-pagination-1', fnScrollUp);
         attachPaginationEvents('#uid-pagination-2', fnScrollUp);
 
-        $(document).on('change.pagesize', '#uid-view-perPage', function () {
+        $(document).on('change.pagesize', '#uid-Managerview-perPage', function () {
             fnToFirstPage();
          }).sizebox();
 
