@@ -265,8 +265,12 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
                     for (int i = 0; i < totalTables; i++)
                     {
-                        string tableName = tableNames[i].Trim();
-                        string tableCount = tableCounts[i].Trim();
+                        if (i >= tableNames.Count || i >= tableCounts.Count)
+                        {
+                            break;
+                        }
+                        string tableName = tableNames[i].Trim() ?? string.Empty;
+                        string tableCount = tableCounts[i].Trim() ?? string.Empty;
                         string tableDescription = "";
                         if (Enum.TryParse(row["ScheduleName"].ToString(), out ScheduleName scheduleEnum))
                         {
