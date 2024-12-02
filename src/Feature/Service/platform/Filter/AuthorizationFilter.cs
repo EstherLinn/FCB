@@ -1,5 +1,5 @@
-﻿using Foundation.Wealth.Models;
-using Sitecore.Configuration;
+﻿using Feature.Wealth.Service.Models.WhiteListIp;
+using Foundation.Wealth.Helper;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 
@@ -7,41 +7,66 @@ namespace Feature.Wealth.Service.Filter
 {
     internal class AuthorizationFilterAttribute : ActionFilterAttribute
     {
+        private string whiteListCacheKey = $"Fcb_WhiteListCache";
+        private string ckeckApiAllowCacheKey = $"Fcb_CkeckApiAllowCache";
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var validatedIps = Settings.GetSetting("ApiAllowedIps"); //TODO: 待確認 config
+            // var validatedIps = Settings.GetSetting("ApiAllowedIps"); //TODO: 待確認 config
 
             // 取得當前請求的 IP 位址
             var request = filterContext.HttpContext.Request;
             //var userIpAddress = GetIPAddress(request);
-            var ip = GetIPAddress();
+            var ip = IPHelper.GetIPAddress();
 
             // 檢查 IP 是否在白名單中
-            if (!validatedIps.Contains(ip) && Config.IsEnableCheck)
+            if (!ConfirmIP(ip))
             {
                 //&& Config.IsEnableCheck 加這段會通過本機與開發環境會通過
                 // 如果不在白名單中，返回 403 Forbidden
                 //filterContext.Result = new HttpStatusCodeResult(403, "IP not allowed");
                 filterContext.Result = new JsonNetResult(new { statusCode = 403, message = "IP not allowed" });
+                return;
             }
 
             base.OnActionExecuting(filterContext);
         }
 
-        private string GetIPAddress()
+        private bool ConfirmIP(string ip)
         {
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
-            string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
 
-            if (!string.IsNullOrEmpty(ipAddress))
+            if (string.IsNullOrEmpty(ip))
             {
-                string[] addresses = ipAddress.Split(',');
-                if (addresses.Length != 0)
+                return false;
+            }
+
+            var ipAllow = ApiWhiteListSetting.CkeckApiAllow();
+
+            if (!ipAllow)
+            {
+                return false;
+            }
+
+            var ipList = ApiWhiteListSetting.ApiWhiteList();
+
+            //未上節點，預設通過
+            if (ipList == null)
+            {
+                return true;
+            }
+
+            bool confirm = false;
+
+            foreach (string ipTemp in ipList)
+            {
+                if (ipTemp.Trim().CompareTo(ip) == 0)
                 {
-                    return addresses[0];
+                    confirm = true;
+                    break;
                 }
             }
-            return context.Request.ServerVariables["REMOTE_ADDR"];
+
+            return confirm;
         }
     }
 }
