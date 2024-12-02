@@ -1,10 +1,7 @@
 ﻿using Feature.Wealth.Service.Models.WhiteListIp;
-using Foundation.Wealth.Models;
-using Sitecore.Configuration;
-using Sitecore.Web.IPAddresses;
+using Foundation.Wealth.Helper;
 using System.Web.Mvc;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
-using static Sitecore.Platform.Shell32;
 
 namespace Feature.Wealth.Service.Filter
 {
@@ -17,7 +14,7 @@ namespace Feature.Wealth.Service.Filter
             // 取得當前請求的 IP 位址
             var request = filterContext.HttpContext.Request;
             //var userIpAddress = GetIPAddress(request);
-            var ip = GetIPAddress();
+            var ip = IPHelper.GetIPAddress();
 
             // 檢查 IP 是否在白名單中
             if (!ConfirmIP(ip))
@@ -32,52 +29,41 @@ namespace Feature.Wealth.Service.Filter
             base.OnActionExecuting(filterContext);
         }
 
-        private string GetIPAddress()
-        {
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
-            string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-
-            if (!string.IsNullOrEmpty(ipAddress))
-            {
-                string[] addresses = ipAddress.Split(',');
-                if (addresses.Length != 0)
-                {
-                    return addresses[0];
-                }
-            }
-            return context.Request.ServerVariables["REMOTE_ADDR"];
-        }
-
         private bool ConfirmIP(string ip)
         {
-            if (!string.IsNullOrEmpty(ip))
-            {
-                var ipAllow = ApiWhiteListSetting.CkeckApiAllow();
-                var ipList = ApiWhiteListSetting.ApiWhiteList();
-  
-                    if (ipAllow)
-                    {
-                        bool confirm = false;
 
-                        foreach (string ipTemp in ipList)
-                        {
-                            if (ipTemp.Trim().CompareTo(ip) == 0)
-                            {
-                                confirm = true;
-                                break;
-                            }
-                        }
-                        return confirm;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-            }
-            else
+            if (string.IsNullOrEmpty(ip))
             {
                 return false;
             }
+
+            var ipAllow = ApiWhiteListSetting.CkeckApiAllow();
+
+            if (!ipAllow)
+            {
+                return false;
+            }
+
+            var ipList = ApiWhiteListSetting.ApiWhiteList();
+
+            //未上節點，預設通過
+            if (ipList == null)
+            {
+                return true;
+            }
+
+            bool confirm = false;
+
+            foreach (string ipTemp in ipList)
+            {
+                if (ipTemp.Trim().CompareTo(ip) == 0)
+                {
+                    confirm = true;
+                    break;
+                }
+            }
+
+            return confirm;
         }
     }
 }

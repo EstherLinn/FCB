@@ -13,6 +13,13 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
         {
             List<string> result = new List<string>();
             Item item = ItemUtils.GetItem(Template.WhiteList.Root);
+
+            //未上節點，預設通過
+            if (item == null)
+            {
+                return null;
+            }
+
             string whiteListString = ItemUtils.GetFieldValue(item, Template.WhiteList.Fields.IPList);
 
             if (!string.IsNullOrEmpty(whiteListString))
@@ -27,6 +34,12 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
         {
             bool result = false;
             Item item = ItemUtils.GetItem(Template.WhiteList.Root);
+
+            if (item == null)
+            {
+                return true;
+            }
+
             var ipAllow = ItemUtils.GetFieldValue(item, Template.WhiteList.Fields.IPAllow);
             if (ipAllow == "1")
             {
@@ -41,7 +54,7 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
     {
         public struct WhiteList
         {
-            public static readonly ID Root = new ID("{BCCA4D61-6D03-48EE-BFC2-D57C13676E81}");
+            public static readonly ID Root = new ID("{A83635DC-5D9F-46AC-842B-97B5629A8CCE}");
 
             public struct Fields
             {
