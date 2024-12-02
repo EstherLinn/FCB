@@ -53,14 +53,8 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         [Description("境內基金公司-經營團隊")]
         InsertCompanyFund4,
 
-        [Description("ETF歷史淨值")]
-        InsertEtfNavHIS,
-
         [Description("美元匯率資訊")]
         InsertExchangeRate,
-
-        [Description("基金歷史淨值 ")]
-        InsertFundNavHIS,
 
         [Description("全球指數-區間報酬率")]
         InsertGlobalIndexRoi,
@@ -74,11 +68,14 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         [Description("列表報酬資訊 ")]
         InsertUSStockList,
 
-        [Description("待確認")]
-        SiteCronJob,
+        [Description("排程執行紀錄表")]
+        UpdateChangeHistory,
 
         [Description("ETF - 基本資料")]
         InsertBasicEtf,
+
+        [Description("ETF - 基本資料 2")]
+        InsertBasicEtf2,
 
         [Description("基金 – 基本資料 ")]
         InsertBasicFund,
@@ -104,6 +101,12 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         [Description("全球指數列表")]
         InsertGlobalIndex,
 
+        [Description("ETF歷史淨值")]
+        InsertEtfNavHIS,
+
+        [Description("基金歷史淨值 ")]
+        InsertFundNavHIS,
+        
         [Description("持股 - 依產業")]
         InsertHoldingEtf1,
 
@@ -164,7 +167,7 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         [Description("年報酬率比較表 ")]
         InsertRiskEtf,
 
-        [Description("基金各期別績效評比")]
+        [Description("ETF各期別績效評比")]
         InsertRiskEtf2,
 
         [Description("基金各期別績效評比 ")]
@@ -184,12 +187,6 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
 
         [Description("債券歷史價格檔")]
         InsertBondHistoryPrice,
-
-        [Description("查詢客戶的基本資料(風險屬性、理專AO代號)")]
-        InsertCif1,
-
-        [Description("")]
-        InsertTft,
 
         [Description("債券商品檔")]
         InsertBondList,
@@ -242,16 +239,16 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         [Description("一銀假日檔")]
         InsertImvpHoliday,
 
-        [Description("查詢客戶六碼與身分證ID對應")]
-        InsertCfmbsel,
-
         [Description("好評基金")]
         InsertFundHighRated,
 
-        [Description("")]
-        InsertTfjeNav,
+        [Description("查詢客戶六碼與身分證ID對應")]
+        InsertCfmbsel,
 
-        [Description("")]
-        InsertTfjsNav
+        [Description("神機妙算投資法、金速配投資法")]
+        InsertTFTFU_STG,
+
+        [Description("查詢客戶的基本資料(風險屬性、理專AO代號)")]
+        InsertCif,
     }
 }

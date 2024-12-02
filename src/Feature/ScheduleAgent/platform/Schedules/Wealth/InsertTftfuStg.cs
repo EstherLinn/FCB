@@ -23,7 +23,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             //TFTFU_STG 去連線orcale 資料庫查詢之後結果放物件再塞回去sql，使用bulkInsert
             string sql = "SELECT * FROM TFTFU_STG";
             var TrafficLight = NameofTrafficLight.TFTFU_STG;
-            var scheduleName = ScheduleName.InsertTft.ToString();
+            var scheduleName = ScheduleName.InsertTFTFU_STG.ToString();
             try
             {
                 string tableName = EnumUtil.GetEnumDescription(TrafficLight);
@@ -57,7 +57,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
         private async Task ProcessData(ProcessRepository _repository, string sql, string tableName, IEnumerable<TftfuStg> data, DateTime startTime)
         {
             int totalInsertedCount = 0;
-            var scheduleName = ScheduleName.InsertTft.ToString();
+            var scheduleName = ScheduleName.InsertTFTFU_STG.ToString();
 
             try
             {

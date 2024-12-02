@@ -20,7 +20,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             var results = await DbManager.Custom.ExecuteIListAsync<ChangeHistory>(sql, null, CommandType.Text);
 
             var newresults = results.Where(f => f.ModificationDate >= DateTime.Today.AddMonths(-2));
-            var scheduleName = "";
+            var scheduleName = ScheduleName.UpdateChangeHistory.ToString();
             try
             {
                 

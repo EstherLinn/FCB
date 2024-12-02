@@ -26,7 +26,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 string fileName = "TFJSNAV." + date + ".1000.txt";
                 var TrafficLight = NameofTrafficLight.FUND_NAV_TFJSNAV;
                 var filedate = etlService.GetFileDate(fileName);
-                var scheduleName = ScheduleName.InsertTfjsNav.ToString();
+                var scheduleName = ScheduleName.InsertFUND_NAV_TFJSNAV.ToString();
                 if (etlService.ContainsDateFormat(filedate, out string extractedDate))
                 {
                     fileName = "TFJSNAV." + extractedDate + ".1000.txt";

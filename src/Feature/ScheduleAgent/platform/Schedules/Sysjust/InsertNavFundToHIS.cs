@@ -23,7 +23,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 
                 string fileName = "SYSJUST-NAV-FUND";
                 var IsfilePath = await etlService.ExtractFile(fileName);
-                var scheduleName = ScheduleName.InsertNavFund.ToString();
+                var scheduleName = ScheduleName.InsertNavFundToHis.ToString();
                 if (IsfilePath.Value)
                 {
                     try
