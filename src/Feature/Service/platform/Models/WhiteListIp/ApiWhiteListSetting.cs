@@ -17,13 +17,11 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
         public static List<string> ApiWhiteList()
         {
             // 嘗試從快取中取得白名單數據
-            var cacheData = _cache.Get(whiteListCacheKey) as string;
+            var cacheData = _cache.Get(whiteListCacheKey) as List<string>;
 
-            if (!string.IsNullOrWhiteSpace(cacheData))
+            if (cacheData != null)
             {
-                return cacheData.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                                .Select(s => s.Trim())
-                                .ToList();
+                return cacheData;
             }
 
             // 從資料源獲取白名單數據
@@ -45,7 +43,7 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
                                         .ToList();
 
                 // 將獲取的白名單數據存入快取，有效期設置為30分鐘
-                _cache.Set(whiteListCacheKey, whiteListString, DateTimeOffset.Now.AddMinutes(30));
+                _cache.Set(whiteListCacheKey, result, DateTimeOffset.Now.AddMinutes(30));
             }
 
             return result;
