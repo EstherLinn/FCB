@@ -7,6 +7,9 @@ namespace Feature.Wealth.Service.Filter
 {
     internal class AuthorizationFilterAttribute : ActionFilterAttribute
     {
+        private string whiteListCacheKey = $"Fcb_WhiteListCache";
+        private string ckeckApiAllowCacheKey = $"Fcb_CkeckApiAllowCache";
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             // var validatedIps = Settings.GetSetting("ApiAllowedIps"); //TODO: 待確認 config
