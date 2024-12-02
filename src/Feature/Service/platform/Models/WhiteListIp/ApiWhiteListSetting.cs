@@ -19,9 +19,9 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
             // 嘗試從快取中取得白名單數據
             var cacheData = _cache.Get(whiteListCacheKey) as string;
 
-            if (!string.IsNullOrEmpty(cacheData))
+            if (!string.IsNullOrWhiteSpace(cacheData))
             {
-                return cacheData.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
+                return cacheData.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                                 .Select(s => s.Trim())
                                 .ToList();
             }
@@ -38,9 +38,9 @@ namespace Feature.Wealth.Service.Models.WhiteListIp
 
             string whiteListString = ItemUtils.GetFieldValue(item, Template.WhiteList.Fields.IPList);
 
-            if (!string.IsNullOrEmpty(whiteListString))
+            if (!string.IsNullOrWhiteSpace(whiteListString))
             {
-                result = whiteListString.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
+                result = whiteListString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
                                         .Select(s => s.Trim())
                                         .ToList();
 
