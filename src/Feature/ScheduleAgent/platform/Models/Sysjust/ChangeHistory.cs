@@ -26,6 +26,9 @@ namespace Feature.Wealth.ScheduleAgent.Models.Sysjust
         [Description("資料差異更新")]
         資料差異更新 = 101,
 
+        [Description("最舊日期的那筆")]
+        最舊日期的那筆 = 103,
+
         [Description("倉儲")]
         OdbcDone = 102,
 

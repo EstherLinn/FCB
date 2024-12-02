@@ -279,7 +279,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             int line = ExecuteNonQuery(insertQuery, data, CommandType.Text, true);
             int tableCount = GetTableNumber(tableName);
-            LogChangeHistory(filePath, "最新資料", tableName, line, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.最新資料, scheduleName, tableCount);
+            LogChangeHistory(filePath, "最新資料(最舊日期的那筆)", tableName, line, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.最舊日期的那筆, scheduleName, tableCount);
             _logger.Info($"{filePath} 最新資料 {tableName} {line}，花費 {(DateTime.UtcNow - startTime).TotalSeconds} 秒匯入資料庫");
         }
 

@@ -84,7 +84,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             _repository.BulkInsertToNewDatabase(basic, tableName, filename, startTime, scheduleName);
             if (results != null)
             {
-                _repository.BulkInsertDirectToDatabase(maxDatesQuery, tableName, "最舊日期的那筆", startTime, scheduleName);
+                _repository.BulkInsertDirectToDatabase(maxDatesQuery, tableName, filename, startTime, scheduleName);
             }
         }
     }

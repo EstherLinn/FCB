@@ -45,7 +45,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
-                        etlService.FinishJob("TFJSBSC", startTime,scheduleName);
+                        etlService.FinishJob(fileName, startTime,scheduleName);
                     }
                     catch (Exception ex)
                     {

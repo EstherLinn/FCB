@@ -1,20 +1,13 @@
 ﻿using Feature.Wealth.ScheduleAgent.Models.Mail;
 using Feature.Wealth.ScheduleAgent.Models.Sysjust;
-using Feature.Wealth.ScheduleAgent.Models.Wealth;
-using Foundation.Wealth.Helper;
 using Foundation.Wealth.Manager;
-using Foundation.Wealth.Models;
-using Sitecore.Analytics.Tracking.Identification.IdentificationStrategies;
 using Sitecore.Data.Items;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using System.Reflection;
 using System.Text;
 using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.Logging;
@@ -28,6 +21,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         private readonly string _102 = ((int)ModificationID.OdbcDone).ToString();
         private readonly string _100 = ((int)ModificationID.最新資料).ToString();
         private readonly string _101 = ((int)ModificationID.資料差異更新).ToString();
+        private readonly string _103 = ((int)ModificationID.最舊日期的那筆).ToString();
 
         public ScheduleAlarmRespository(ILoggerService logger)
         {
@@ -163,6 +157,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var dataTableMapping = new Dictionary<string, List<string>>();
             var dataCountMapping = new Dictionary<string, List<string>>();
 
+            var modificationID103Records = results.Where(i => i.Success == "Y" && i.ModificationID == this._103).ToList();
+
             foreach (var record in results.Where(i => i.Success == "Y" && (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)))
             {
                 var childKey = Path.GetFileNameWithoutExtension(record.FileName);
@@ -175,6 +171,17 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                     dataCountMapping[childKey] = new List<string>();
                 }
                 dataTableMapping[childKey].Add(record.DataTable);
+
+                if (modificationID103Records.Count > 0)
+                {
+                    var matching103Record = modificationID103Records.FirstOrDefault(i => i.ScheduleName == record.ScheduleName);
+
+                    if (matching103Record != null)
+                    {
+                        record.TableCount = matching103Record.TableCount;
+                    }
+
+                }
                 dataCountMapping[childKey].Add(record.TableCount.ToString());
             }
 
@@ -235,7 +242,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             {
                 string success = row["Success"].ToString();
                 string idColor = success.StartsWith("N") ? "style='color:red;'" : "";
-                
+
                 if (success.StartsWith("N"))
                 {
                     htmlBody.Append($@"
@@ -254,7 +261,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 }
                 else
                 {
-                    
+
                     // 取得資料表名稱並拆分
                     string dataTables = row["DataTable"].ToString();
                     string dataTablesCount = row["TableCountConver"].ToString();
@@ -274,7 +281,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                         string tableDescription = "";
                         if (Enum.TryParse(row["ScheduleName"].ToString(), out ScheduleName scheduleEnum))
                         {
-                           tableDescription = EnumUtil.GetEnumDescription(scheduleEnum);
+                            tableDescription = EnumUtil.GetEnumDescription(scheduleEnum);
                         }
 
                         if (i == 0)
