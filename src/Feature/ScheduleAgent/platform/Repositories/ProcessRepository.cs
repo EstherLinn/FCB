@@ -53,7 +53,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         /// <summary>
         /// 將資料插入資料庫(如果有一樣的就更新，有不同資料則新增)三個參數比對
         /// </summary>
-        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, DateTime now,string scheduleName)
+        public void BulkInsertToDatabase<T>(IEnumerable<T> data, string tableName, string uniqueColumn, string key, string key2, string filePath, DateTime now, string scheduleName)
         {
             var properties = typeof(T).GetProperties();
             string columns = string.Join(",", properties.Select(p => p.Name));
@@ -132,7 +132,6 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
               INSERT ({columns}) VALUES ({parameters});
              ";
 
-            _logger.Info($"{mergeQuery}");
             int line = DbManager.Custom.ExecuteNonQuery(mergeQuery, data, CommandType.Text);
             var endTime = DateTime.UtcNow;
             var duration = endTime - now;
@@ -605,7 +604,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 throw;
             }
         }
-        private int GetTableNumber(string tableName)
+        public int GetTableNumber(string tableName)
         {
 
             if (string.IsNullOrEmpty(tableName))
@@ -615,7 +614,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
 
             string sql = $@"
                             SELECT COUNT(*)
-                            FROM [{tableName}] WITH (NOLOCK)";
+                            FROM {tableName} WITH (NOLOCK)";
             var result = DbManager.Custom.ExecuteScalar<int>(sql, null, commandType: CommandType.Text);
             return result;
         }

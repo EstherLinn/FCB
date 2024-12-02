@@ -29,8 +29,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     try
                     {
                         var basic = (IList<BondHistoryPrice>)await etlService.ParseCsvNotTXT<BondHistoryPrice>(fileName);
-                        _repository.BulkInsertToEncryptedDatabase(basic, "[BondHistoryPrice]", fileName, startTime, scheduleName);
-                        etlService.FinishJob(fileName, startTime, "csv");
+                        _repository.BulkInsertToEncryptedDatabase(basic, "BondHistoryPrice", fileName, startTime, scheduleName);
+                        etlService.FinishJob(fileName, startTime, scheduleName, "csv");
                     }
                     catch (Exception ex)
                     {
@@ -41,7 +41,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error, scheduleName);
+                    _repository.LogChangeHistory(fileName, IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

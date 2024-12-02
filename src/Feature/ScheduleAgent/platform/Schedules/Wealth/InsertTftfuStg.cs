@@ -50,7 +50,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory("TFTFU_STG", ex.Message, "TFTFU_STG", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error,scheduleName);
+                _repository.LogChangeHistory("TFTFU_STG", ex.Message, "TFTFU_STG", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
             }
         }
 
@@ -91,7 +91,8 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     totalInsertedCount += batch.Count;
                     await _repository.BulkInsertFromOracle(batch, tableName);
                 }
-                _repository.LogChangeHistory("TFTFU_STG", sql, tableName, totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone, scheduleName);
+                int tableCount = _repository.GetTableNumber(tableName);
+                _repository.LogChangeHistory("TFTFU_STG", sql, tableName, totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone, scheduleName, tableCount);
             }
             catch (Exception ex)
             {

@@ -35,7 +35,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                         _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName);
-                        _repository.BulkInsertToDatabase(datas, tableName + "_History", "FundCompanyCode", "FundCompanyCode", fileName, startTime, scheduleName);
+                        _repository.BulkInsertToDatabase(datas, tableName + "_History", "FundCompanyCode", "Name", "Title", fileName, startTime, scheduleName);
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                         etlService.FinishJob(fileName, startTime, scheduleName);
                     }
@@ -48,7 +48,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error, scheduleName);
+                    _repository.LogChangeHistory(fileName, IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

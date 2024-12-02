@@ -90,7 +90,9 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     totalInsertedCount += batch.Count;
                     await _repository.BulkInsertFromOracle(batch, tableName);
                 }
-                _repository.LogChangeHistory("CFMBSEL", sql, tableName, totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone, scheduleName);
+
+                int tableCount = _repository.GetTableNumber(tableName);
+                _repository.LogChangeHistory("CFMBSEL", sql, tableName, totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.OdbcDone, scheduleName, tableCount);
             }
             catch (Exception ex)
             {
