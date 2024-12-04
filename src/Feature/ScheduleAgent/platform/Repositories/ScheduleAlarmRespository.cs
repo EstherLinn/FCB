@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using Xcms.Sitecore.Foundation.Basic.Extensions;
 using Xcms.Sitecore.Foundation.Basic.Logging;
 
 namespace Feature.Wealth.ScheduleAgent.Repositories
@@ -20,6 +21,7 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         private readonly string _102 = ((int)ModificationID.OdbcDone).ToString();
         private readonly string _100 = ((int)ModificationID.最新資料).ToString();
         private readonly string _101 = ((int)ModificationID.資料差異更新).ToString();
+        private readonly string _103 = ((int)ModificationID.最舊日期的那筆).ToString();
 
         public ScheduleAlarmRespository(ILoggerService logger)
         {
@@ -31,7 +33,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             string sql = @"SELECT *
                            FROM [ChangeHistory] WITH (NOLOCK)
                            WHERE ModificationDate >= DATEADD(HOUR, -1, GETUTCDATE())
-                           ORDER BY [ModificationDate] DESC";
+                           ORDER BY [ModificationDate] DESC
+                          ";
 
             var result = DbManager.Custom.ExecuteIList<ChangeHistory>(sql, null, commandType: CommandType.Text)?.ToList() ?? new List<ChangeHistory>();
             return result;
@@ -152,6 +155,9 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             var filteredSuccessData = new List<ChangeHistory>();
 
             var dataTableMapping = new Dictionary<string, List<string>>();
+            var dataCountMapping = new Dictionary<string, List<string>>();
+
+            var modificationID103Records = results.Where(i => i.Success == "Y" && i.ModificationID == this._103).ToList();
 
             foreach (var record in results.Where(i => i.Success == "Y" && (i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)))
             {
@@ -160,7 +166,23 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 {
                     dataTableMapping[childKey] = new List<string>();
                 }
+                if (!dataCountMapping.ContainsKey(childKey))
+                {
+                    dataCountMapping[childKey] = new List<string>();
+                }
                 dataTableMapping[childKey].Add(record.DataTable);
+
+                if (modificationID103Records.Count > 0)
+                {
+                    var matching103Record = modificationID103Records.FirstOrDefault(i => i.ScheduleName == record.ScheduleName);
+
+                    if (matching103Record != null)
+                    {
+                        record.TableCount = matching103Record.TableCount;
+                    }
+
+                }
+                dataCountMapping[childKey].Add(record.TableCount.ToString());
             }
 
             foreach (var record in successData)
@@ -171,10 +193,15 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 {
                     record.DataTable = string.Join("<br/>", tables);
                 }
+                if (dataCountMapping.TryGetValue(childKey, out var counts))
+                {
+                    record.TableCountConvert = string.Join("<br/>", counts);
+                }
 
                 var modificationLine = modificationLines
                     .Where(line => line.Key == childKey)
                     .SelectMany(line => line.Value)
+                    .OrderBy(i=>i.ModificationDate)
                     .FirstOrDefault(i => i.ModificationID == this._100 || i.ModificationID == this._101 || i.ModificationID == this._102)?.ModificationLine;
 
                 if (modificationLine.HasValue)
@@ -191,19 +218,47 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
         private string BuildHtmlBody(DataTable dataTable, string title, int line)
         {
             var htmlBody = new StringBuilder();
-            htmlBody.Append($@"
+
+            bool hasFailure = dataTable.AsEnumerable().Any(row => row["Success"].ToString().StartsWith("N"));
+
+            if (hasFailure)
+            {
+                htmlBody.Append($@"
                 <h3>{title}：{line} 筆</h3>
                 <table border='1' style='width:100%; text-align:center;'>
-                    <tr>
-                        <th>編號</th>
-                        <th>檔案名稱</th>
-                        <th>日期</th>
-                        <th>執行類型</th>
-                        <th>執行行數</th>
-                        <th>資料表</th>
-                        <th>執行時間</th>
-                        <th>成功與否</th>
-                    </tr>");
+                    <thead>
+                        <tr>
+                            <th>編號</th>
+                            <th>排程名稱</th>
+                            <th>最近執行時間</th>
+                            <th>執行結果</th>
+                            <th>總執行時間(秒)</th>
+                            <th>成功與否</th>
+                        </tr>
+                    </thead>
+                    <tbody>");
+            }
+            else
+            {
+                htmlBody.Append($@"
+                <h3>{title}：{line} 筆</h3>
+                <table border='1' style='width:100%; text-align:center;'>
+                    <thead>
+                        <tr>
+                           <th>編號</th>
+                            <th>排程名稱</th>
+                            <th>最近執行時間</th>
+                            <th>執行結果</th>
+                            <th>資料異動筆數</th>
+                            <th>資料表</th>
+                            <th>資料表說明</th>
+                            <th>資料表總筆數</th>
+                            <th>總執行時間(秒)</th>
+                            <th>成功與否</th>
+                        </tr>
+                    </thead>
+                    <tbody>");
+            }
 
             int rowNumber = 1;
 
@@ -212,25 +267,78 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 string success = row["Success"].ToString();
                 string idColor = success.StartsWith("N") ? "style='color:red;'" : "";
 
-                htmlBody.Append($@"
-                <tr>
-                    <td>{rowNumber++}</td>
-                    <td>{row["FileName"]}</td>
-                    <td>{row["ModificationDate"]}</td>
-                    <td {idColor}>{row["ModificationType"]}</td>
-                    <td>{row["ModificationLine"]}</td>
-                    <td>{row["DataTable"]}</td>
-                    <td>{row["TotalSeconds"]}</td>
-                    <td {idColor}>{success}</td>
-                </tr>");
+                if (success.StartsWith("N"))
+                {
+                    htmlBody.Append($@"
+                    <tr>
+                        <td>{rowNumber++}</td>
+                        <td>{row["ScheduleName"]}</td>
+                        <td>{row["ModificationDate"]}</td>
+                        <td {idColor}>{row["ModificationType"]}</td>
+                        <td>{row["TotalSeconds"]}</td>
+                        <td {idColor}>{success}</td>
+                    </tr>");
+                }
+                else
+                {
+
+                    // 取得資料表名稱並拆分
+                    string dataTables = row["DataTable"].ToString();
+                    string dataTablesCount = row["TableCountConvert"].ToString();
+                    List<string> tableNames = dataTables.Split(new[] { "<br/>" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    List<string> tableCounts = dataTablesCount.Split(new[] { "<br/>" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    // 使用新的格式，合併資料表顯示
+                    int totalTables = tableNames.Count;
+
+                    for (int i = 0; i < totalTables; i++)
+                    {
+                        if (i >= tableNames.Count || i >= tableCounts.Count)
+                        {
+                            break;
+                        }
+                        string tableName = tableNames[i].Trim() ?? string.Empty;
+                        string tableCount = tableCounts[i].Trim() ?? string.Empty;
+                        string tableDescription = string.Empty;
+                        if (Enum.TryParse(row["ScheduleName"].ToString(), out ScheduleName scheduleEnum))
+                        {
+                            tableDescription = EnumUtil.GetEnumDescription(scheduleEnum);
+                        }
+
+                        if (i == 0)
+                        {
+                            htmlBody.Append($@"
+                            <tr>
+                                <td rowspan=""{totalTables}"">{rowNumber++}</td>
+                                <td rowspan=""{totalTables}"">{row["ScheduleName"]}</td>
+                                <td rowspan=""{totalTables}"">{row["ModificationDate"]}</td>
+                                <td rowspan=""{totalTables}"" {idColor}>{row["ModificationType"]}</td>
+                                <td rowspan=""{totalTables}"">{row["ModificationLine"]}</td>
+                                <td>{tableName}</td>
+                                <td rowspan=""{totalTables}"">{tableDescription}</td>
+                                <td>{tableCount}
+                                <td rowspan=""{totalTables}"">{row["TotalSeconds"]}</td>
+                                <td rowspan=""{totalTables}"" {idColor}>{success}</td>
+                            </tr>");
+                        }
+                        else
+                        {
+                            htmlBody.Append($@"
+                            <tr>
+                                <td>{tableName}</td>
+                                <td>{tableCount}</td>
+                            </tr>");
+                        }
+                    }
+                }
             }
 
             htmlBody.Append(@"
-                </table>
-           ");
+            </tbody>
+            </table>");
 
             return htmlBody.ToString();
         }
+
 
 
         private DataTable ConvertToDataTable(IList<ChangeHistory> results)
@@ -249,6 +357,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
             dataTable.Columns.Add("ModificationLine");
             dataTable.Columns.Add("TotalSeconds");
             dataTable.Columns.Add("Success");
+            dataTable.Columns.Add("ScheduleName");
+            dataTable.Columns.Add("TableCountConvert");
 
             foreach (var result in results)
             {
@@ -260,6 +370,8 @@ namespace Feature.Wealth.ScheduleAgent.Repositories
                 row["ModificationLine"] = result.ModificationLine;
                 row["TotalSeconds"] = result.TotalSeconds;
                 row["Success"] = result.Success;
+                row["ScheduleName"] = result.ScheduleName;
+                row["TableCountConvert"] = result.TableCountConvert;
                 dataTable.Rows.Add(row);
             }
 

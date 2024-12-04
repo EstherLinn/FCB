@@ -21,7 +21,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
 
                 var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
-
+                var scheduleName = ScheduleName.InsertFundEtf.ToString();
                 string fileName = "FUND_ETF";
                 var TrafficLight = NameofTrafficLight.FUND_ETF;
 
@@ -33,19 +33,19 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Wealth
                     {
                         string tableName = EnumUtil.GetEnumDescription(TrafficLight);
                         var datas = await etlService.ParseFixedLength<FundEtf>(fileName);
-                        _repository.BulkInsertToDatabase(datas, tableName, "BankProductCode", "PriceBaseDate", fileName, startTime);
-                        etlService.FinishJob(fileName, startTime);
+                        _repository.BulkInsertToDatabase(datas, tableName, "BankProductCode", "PriceBaseDate", fileName, startTime, scheduleName);
+                        etlService.FinishJob(fileName, startTime, scheduleName);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

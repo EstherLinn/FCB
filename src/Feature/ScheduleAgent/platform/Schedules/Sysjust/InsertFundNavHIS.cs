@@ -22,6 +22,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                 var etlService = new EtlService(this.Logger, this.JobItems);
 
                 string filename = "SYSJUST-FUNDNAV-HIS";
+                var scheduleName = ScheduleName.InsertFundNavHIS.ToString();
                 var IsfilePath = await etlService.ExtractFile(filename);
 
                 if (IsfilePath.Value)
@@ -31,6 +32,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                         var basic = (IList<SysjustFundNavHis>)await etlService.ParseCsv<SysjustFundNavHis>(filename);
                         int batchSize = 10000;
                         var isTrancate = false;
+                        int totalInsertedCount = 0;
                         for (int i = 0; i < basic.Count; i += batchSize)
                         {
                             if (!isTrancate)
@@ -40,21 +42,32 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                             }
                             var batch = basic.Skip(i).Take(batchSize).ToList();
                             await _repository.BulkInsertFromOracle(batch, "[Sysjust_FUNDNAV_HIS]");
+                            totalInsertedCount += batch.Count;
                         }
-                        etlService.FinishJob(filename, startTime);
+
+                        int tableCount = _repository.GetTableNumber("[Sysjust_FUNDNAV_HIS]");
+                        _repository.LogChangeHistory(filename, "最新資料", "Sysjust_FUNDNAV_HIS", totalInsertedCount, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.最新資料, scheduleName, tableCount);
+                        etlService.FinishJob(filename, startTime, scheduleName);
 
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(filename, ex.Message, IsfilePath.Key, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                        _repository.LogChangeHistory(filename, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{filename} not found");
-                    _repository.LogChangeHistory(filename, "找不到檔案或檔案相同不執行", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                    _repository.LogChangeHistory(filename, IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                 }
+                var endTime = DateTime.UtcNow;
+                var duration = endTime - startTime;
+                this.Logger.Info($"Execution finished at {endTime}. Total duration: {duration.TotalSeconds} seconds.");
+            }
+            else
+            {
+                this.Logger.Warn($"Not Setting Any JobItems");
             }
         }
     }

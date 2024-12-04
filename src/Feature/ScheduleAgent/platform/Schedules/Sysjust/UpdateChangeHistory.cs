@@ -20,16 +20,17 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
             var results = await DbManager.Custom.ExecuteIListAsync<ChangeHistory>(sql, null, CommandType.Text);
 
             var newresults = results.Where(f => f.ModificationDate >= DateTime.Today.AddMonths(-2));
-
+            var scheduleName = ScheduleName.UpdateChangeHistory.ToString();
             try
             {
-                _repository.BulkInsertToNewDatabase(newresults, "ChangeHistory", "UpdateChangeHistory", DateTime.UtcNow);
-                _repository.LogChangeHistory("UpdateChangeHistory", "ChangeHistory更新完成", "ChangeHistory", 0, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.Done);
+                
+                _repository.BulkInsertToNewDatabase(newresults, "ChangeHistory", "UpdateChangeHistory", DateTime.UtcNow, scheduleName);
+                _repository.LogChangeHistory("UpdateChangeHistory", "ChangeHistory更新完成", "ChangeHistory", 0, (DateTime.UtcNow - startTime).TotalSeconds, "Y", ModificationID.Done, scheduleName);
             }
             catch (Exception ex)
             {
                 this.Logger.Error(ex.ToString(), ex);
-                _repository.LogChangeHistory("ChangeHistory", ex.Message, string.Empty, 0, 0, "N", ModificationID.Error);
+                _repository.LogChangeHistory("ChangeHistory", ex.Message, string.Empty, 0, 0, "N", ModificationID.Error, scheduleName);
             }
 
         }

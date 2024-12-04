@@ -24,7 +24,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 
                 string fileName = "SYSJUST-HOLDING-ETF-3";
                 var TrafficLight = NameofTrafficLight.Sysjust_Holding_ETF_3;
-
+                var scheduleName = ScheduleName.InsertHoldingEtf3.ToString();
                 var IsfilePath = await etlService.ExtractFile(fileName);
 
                 if (IsfilePath.Value)
@@ -36,11 +36,11 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                         //透過CsvHelper解析資料
                         var datas = await etlService.ParseCsv<SysjustHoldingEtf3>(fileName);
                         //執行匯入temp資料表
-                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime);
+                        _repository.BulkInsertToNewDatabase(datas, tableName + "_Process", fileName, startTime, scheduleName);
                         //匯入完成後開起紅燈
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Red);
                         //執行匯入主資料表
-                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime);
+                        _repository.BulkInsertToNewDatabase(datas, tableName, fileName, startTime, scheduleName);
 
                         var thirtyDaysAgo = DateTime.Today.AddDays(-30);
                         var thirtyDaysData = datas
@@ -48,22 +48,22 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                             .ToList();
 
                         //執行匯入歷史資料表(History)
-                        _repository.BulkInsertToDatabaseFor30Days(thirtyDaysData, tableName + "_History", "FirstBankCode", "StockName", "Percentage", fileName, "Date", startTime);
+                        _repository.BulkInsertToDatabaseFor30Days(thirtyDaysData, tableName + "_History", "FirstBankCode", "StockName", "Percentage", fileName, "Date", startTime, scheduleName);
                         //匯入完成後轉為綠燈
                         _repository.TurnTrafficLight(TrafficLight, TrafficLightStatus.Green);
                         //完成匯入更改檔案名稱_done
-                        etlService.FinishJob(fileName, startTime);
+                        etlService.FinishJob(fileName, startTime, scheduleName);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                        _repository.LogChangeHistory(fileName, ex.Message, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{fileName} not found");
-                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error);
+                    _repository.LogChangeHistory(fileName,IsfilePath.Key, string.Empty, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N",  ModificationID.Error, scheduleName);
                 }
                 var endTime = DateTime.UtcNow;
                 var duration = endTime - startTime;

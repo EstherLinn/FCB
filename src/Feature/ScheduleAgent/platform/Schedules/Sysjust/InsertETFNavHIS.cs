@@ -20,7 +20,7 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
 
                 var _repository = new ProcessRepository(this.Logger, this.JobItems);
                 var etlService = new EtlService(this.Logger, this.JobItems);
-
+                var scheduleName = ScheduleName.InsertEtfNavHIS.ToString();
                 string filename = "SYSJUST-ETFNAV-HIS";
                 var IsfilePath = await etlService.ExtractFile(filename);
 
@@ -29,19 +29,19 @@ namespace Feature.Wealth.ScheduleAgent.Schedules.Sysjust
                     try
                     {
                         var basic = (IList<SysjustEtfNavHis>)await etlService.ParseCsv<SysjustEtfNavHis>(filename);
-                        _repository.BulkInsertToEncryptedDatabase(basic, "[Sysjust_ETFNAV_HIS]", filename, startTime);
-                        etlService.FinishJob(filename, startTime);
+                        _repository.BulkInsertToEncryptedDatabase(basic, "[Sysjust_ETFNAV_HIS]", filename, startTime, scheduleName);
+                        etlService.FinishJob(filename, startTime, scheduleName);
                     }
                     catch (Exception ex)
                     {
                         this.Logger.Error(ex.ToString(), ex);
-                        _repository.LogChangeHistory(filename, ex.Message, IsfilePath.Key, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                        _repository.LogChangeHistory(filename, ex.Message, IsfilePath.Key, 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                     }
                 }
                 else
                 {
                     this.Logger.Error($"{filename} not found");
-                    _repository.LogChangeHistory(filename, "找不到檔案或檔案相同不執行", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error);
+                    _repository.LogChangeHistory(filename, "找不到檔案或檔案相同不執行", " ", 0, (DateTime.UtcNow - startTime).TotalSeconds, "N", ModificationID.Error, scheduleName);
                 }
             }
         }
