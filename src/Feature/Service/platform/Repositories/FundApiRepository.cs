@@ -13,14 +13,14 @@ namespace Feature.Wealth.Service.Repositories
     {
         private readonly MemoryCache _cache = MemoryCache.Default;
         private static readonly object _lock = new object();
-        private readonly string FundCompanyApiCache = $"Fcb_FundCompanyApiCache";
         private readonly string FundInvestmentTargetsApiCache = $"Fcb_FundInvestmentTargetsApiCache";
 
         public List<Dictionary<string, string>> GetOrSetFundCompanyCache(string dff)
         {
             lock (_lock)
             {
-                var fundCompanys = (List<FundCompany>)_cache.Get(FundCompanyApiCache);
+                string fundCompanyApiCachekey = $"Fcb_FundCompanyApiCache_{dff}";
+                var fundCompanys = (List<FundCompany>)_cache.Get(fundCompanyApiCachekey);
                 if (fundCompanys == null)
                 {
                     string fund_bsc = TrafficLightHelper.GetTrafficLightTable(NameofTrafficLight.FUND_BSC);
@@ -34,7 +34,7 @@ namespace Feature.Wealth.Service.Repositories
 
                     if (fundCompanys != null)
                     {
-                        _cache.Set(FundCompanyApiCache, fundCompanys, DateTimeOffset.Now.AddMinutes(30));
+                        _cache.Set(fundCompanyApiCachekey, fundCompanys, DateTimeOffset.Now.AddMinutes(30));
                     }
                 }
 
